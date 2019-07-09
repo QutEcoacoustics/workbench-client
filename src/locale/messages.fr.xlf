@@ -315,12 +315,12 @@
           <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
         </source>
         <target>
-          Bienvenue! Ecosounds est un référentiel d’enregistrements audio environnementaux. Ce site Web facilite la gestion, l'accès, la visualisation et l'analyse des données acoustiques environnementales. Il utilise le logiciel Acoustic Workbench qui est open source et disponible auprès de
+          Bienvenue! Ecosounds est un référentiel d’enregistrements audio environnementaux. Ce site internet facilite la gestion, l'accès, la visualisation et l'analyse des données acoustiques environnementales. Il utilise le logiciel Acoustic Workbench qui est open source et disponible auprès de
           <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>
             GitHub.
           <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
           <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
-          Le site Web est géré par le groupe de recherche QUT Ecoacoustics pour
+          Le site internet est géré par le groupe de recherche QUT Ecoacoustics pour
           <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>
             soutenir la recherche en bioacoustique et écoacoustique.
           <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
