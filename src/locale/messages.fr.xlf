@@ -299,6 +299,39 @@
         <note priority="1" from="description">A description for the under construction card</note>
         <note priority="1" from="meaning">Card Description</note>
       </trans-unit>
+      <trans-unit id="ecosoundsDescription" datatype="html">
+        <source>
+          Welcome! Ecosounds is a repository of environmental audio recordings. This
+          website facilitates the management, access, visualization, and analysis of
+          environmental acoustic data. It uses the Acoustic Workbench software which
+          is is open source and available from
+          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>
+            GitHub.
+          <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+          <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+          The website is run by the QUT Ecoacoustics Research Group to
+          <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>
+            support bioacoustics and ecoacoustics research.
+          <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </source>
+        <target>
+          Bienvenue! Ecosounds est un référentiel d’enregistrements audio environnementaux. Ce site Web facilite la gestion, l'accès, la visualisation et l'analyse des données acoustiques environnementales. Il utilise le logiciel Acoustic Workbench qui est open source et disponible auprès de
+          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>
+            GitHub.
+          <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+          <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+          Le site Web est géré par le groupe de recherche QUT Ecoacoustics pour
+          <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>
+            soutenir la recherche en bioacoustique et écoacoustique.
+          <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/projects-home/projects-home.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Description of what ecosounds is.</note>
+        <note priority="1" from="meaning">Ecosounds Description</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,0 +1,29 @@
+.landing-image {
+  background-image: url("../../../assets/landing-image-640x360.jpg");
+  background-size: cover;
+  content: "";
+  height: 100%;
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+
+  @media screen and (max-width: 640px) {
+    background-image: url("../../../assets/landing-image-640x360.jpg");
+  }
+  @media screen and (max-width: 1280px) and (min-width: 641px) {
+    background-image: url("../../../assets/landing-image-1280x720.jpg");
+  }
+  @media screen and (max-width: 3840px) and (min-width: 1281px) {
+    background-image: url("../../../assets/landing-image-1920x1080.jpg");
+  }
+  @media screen and (min-width: 3841px) {
+    background-image: url("../../../assets/landing-image-3840x2160.jpg");
+  }
+}
+
+.jumbotron {
+  background: rgba(255, 255, 255, 0.6);
+}
