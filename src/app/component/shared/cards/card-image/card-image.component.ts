@@ -6,15 +6,16 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss'],
+  selector: 'app-card-image',
+  templateUrl: './card-image.component.html',
+  styleUrls: ['./card-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnInit {
+export class CardImageComponent implements OnInit {
   @Input() title: string;
+  @Input() image: { url: string; alt: string };
+  @Input() link: string;
   @Input() description?: string;
-  @Input() link?: string;
 
   constructor() {}
 

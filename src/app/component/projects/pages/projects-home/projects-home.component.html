@@ -33,7 +33,7 @@
   <div class="container">
     <h1 class="display-4">Our Process</h1>
 
-    <app-cards [processItems]="processList"> </app-cards>
+    <app-cards [cards]="processList"> </app-cards>
   </div>
 </div>
 
@@ -46,68 +46,10 @@
       existing account or Register for a new account.
     </p>
 
-    <div class="row">
-      <div class="col-lg-4 col-sm-6 portfolio-item mb-4">
-        <div class="card h-100">
-          <a href="https://www.ecosounds.org/projects/1094">
-            <img
-              class="card-img-top"
-              src="https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306"
-              alt="Tortuguero"
-            />
-          </a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="https://www.ecosounds.org/projects/1094">Tortuguero</a>
-            </h4>
-            <p class="card-text">
-              Soundscape recordings made in Turtuguero, Costa Rica, 2011.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item mb-4">
-        <div class="card h-100">
-          <a href="https://www.ecosounds.org/projects/1007">
-            <img
-              class="card-img-top"
-              src="https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277"
-              alt="Oxley Creek Common"
-            />
-          </a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="https://www.ecosounds.org/projects/1007">
-                Oxley Creek Common
-              </a>
-            </h4>
-            <p class="card-text font-italic">
-              No description available.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item mb-4">
-        <div class="card h-100">
-          <a href="https://www.ecosounds.org/projects/1029">
-            <img
-              class="card-img-top"
-              src="https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
-              alt="Cooloola"
-            />
-          </a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="https://www.ecosounds.org/projects/1029">Cooloola</a>
-            </h4>
-            <p class="card-text">
-              Sound recordings from the Gympie area.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <button class="m-auto btn btn-outline-primary">More Projects</button>
-    </div>
+    <app-cards [cards]="projectList">
+      <ng-container>
+        <button class="m-auto btn btn-outline-primary">More Projects</button>
+      </ng-container>
+    </app-cards>
   </div>
 </div>

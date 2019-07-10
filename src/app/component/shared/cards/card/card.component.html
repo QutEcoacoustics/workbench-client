@@ -1,6 +1,9 @@
 <div class="card h-100">
   <h4 class="card-header text-center">
-    {{ title }}
+    <a [href]="link" *ngIf="link; else noLinkTitle">
+      {{ title }}
+    </a>
+    <ng-template #noLinkTitle>{{ title }}</ng-template>
   </h4>
   <div class="card-body">
     <p class="card-text" [ngClass]="{ 'font-italic': !description }">

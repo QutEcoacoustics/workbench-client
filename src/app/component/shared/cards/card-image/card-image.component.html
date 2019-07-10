@@ -1,0 +1,25 @@
+<div class="card h-100">
+  <!-- Card Image -->
+  <a [href]="link" *ngIf="link; else noLinkImg">
+    <img class="card-img-top" [src]="image.url" alt="{{ image.alt }}" />
+  </a>
+  <ng-template #noLinkImg>
+    <img class="card-img-top" [src]="image.url" alt="{{ image.alt }}" />
+  </ng-template>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <!-- Title -->
+    <h4 class="card-title">
+      <a [href]="link" *ngIf="link; else noLinkTitle">
+        {{ title }}
+      </a>
+      <ng-template #noLinkTitle>{{ title }}</ng-template>
+    </h4>
+
+    <!-- Card Description -->
+    <p class="card-text">
+      {{ description }}
+    </p>
+  </div>
+</div>

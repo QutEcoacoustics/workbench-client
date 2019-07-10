@@ -12,9 +12,23 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardsComponent implements OnInit {
-  @Input() processItems: { title: string; description?: string }[];
+  @Input() cards: {
+    title: string;
+    image?: { url: string; alt: string };
+    description?: string;
+    link?: string;
+  }[];
+  imageCards: boolean;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.imageCards = false;
+    this.cards.forEach(card => {
+      if (card.image) {
+        this.imageCards = true;
+        return;
+      }
+    });
+  }
 }

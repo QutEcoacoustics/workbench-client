@@ -9,6 +9,7 @@ import { FooterComponent } from './component/shared/footer/footer.component';
 import { CardsComponent } from './component/shared/cards/cards.component';
 import { CardComponent } from './component/shared/cards/card/card.component';
 import { ProjectsHomeComponent } from './component/projects/pages/projects-home/projects-home.component';
+import { CardImageComponent } from './component/shared/cards/card-image/card-image.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ProjectsHomeComponent } from './component/projects/pages/projects-home/
     ProjectsHomeComponent,
     FooterComponent,
     CardsComponent,
-    CardComponent
+    CardComponent,
+    CardImageComponent
   ],
   imports: [NgbModule, BrowserModule, AppRoutingModule],
   providers: [],

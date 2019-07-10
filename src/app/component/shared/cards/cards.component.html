@@ -1,8 +1,22 @@
 <div class="row">
-  <app-card
-    *ngFor="let item of processItems"
-    class="col-lg-4 mb-4"
-    [title]="item.title"
-    [description]="item.description"
-  ></app-card>
+  <ng-container *ngIf="imageCards; else defaultCards">
+    <app-card-image
+      *ngFor="let item of cards"
+      [title]="item.title"
+      [image]="item.image"
+      [description]="item.description"
+      [link]="item.link"
+      class="col-lg-4 col-sm-6 portfolio-item mb-4"
+    ></app-card-image>
+  </ng-container>
+  <ng-template #defaultCards>
+    <app-card
+      *ngFor="let item of cards"
+      [title]="item.title"
+      [description]="item.description"
+      [link]="item.link"
+      class="col-lg-4 mb-4"
+    ></app-card>
+  </ng-template>
+  <ng-content></ng-content>
 </div>
