@@ -1,29 +1,28 @@
 .landing-image {
   background-image: url("../../../assets/landing-image-640x360.jpg");
+  background: no-repeat center center scroll;
   background-size: cover;
-  content: "";
-  height: 100%;
-  left: 0;
-  opacity: 0.5;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: -1;
+  height: 50vh;
 
-  @media screen and (max-width: 640px) {
+  @media screen and (max-height: 360px) {
     background-image: url("../../../assets/landing-image-640x360.jpg");
   }
-  @media screen and (max-width: 1280px) and (min-width: 641px) {
+  @media screen and (max-height: 720px) and (min-height: 361px) {
     background-image: url("../../../assets/landing-image-1280x720.jpg");
   }
-  @media screen and (max-width: 3840px) and (min-width: 1281px) {
+  @media screen and (max-height: 1080px) and (min-height: 721px) {
     background-image: url("../../../assets/landing-image-1920x1080.jpg");
   }
-  @media screen and (min-width: 3841px) {
+  @media screen and (min-height: 1081px) {
     background-image: url("../../../assets/landing-image-3840x2160.jpg");
   }
 }
 
-.jumbotron {
-  background: rgba(255, 255, 255, 0.6);
+.card-header {
+  font-size: 1.25rem;
+}
+
+.credit {
+  font-size: 0.8rem;
+  font-weight: 100;
 }
