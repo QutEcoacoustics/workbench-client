@@ -1,7 +1,7 @@
 <div class="container-fluid bg-dark fixed-top">
   <nav class="container navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Ecosounds</a>
-    <button class="navbar-toggler" type="button" (click)="toggleNavBar()">
+    <button class="navbar-toggler" type="button" (click)="toggleCollapse()">
       <span class="sr-only">Toggle Navigation</span>
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,26 +11,30 @@
       [ngClass]="{ collapse: collapsed }"
     >
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">
+        <li class="nav-item" [ngClass]="{ active: isActive('Projects') }">
+          <a class="nav-link" routerLink="/projects" routerLinkActive="active">
             Projects
-            <span class="sr-only">(current)</span>
+            <span class="sr-only" *ngIf="isActive('Projects')">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{ active: isActive('Listen') }">
           <a class="nav-link" href="#">Listen</a>
+          <span class="sr-only" *ngIf="isActive('Listen')">(current)</span>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
           <a class="nav-link" href="#">Library</a>
+          <span class="sr-only" *ngIf="isActive('Library')">(current)</span>
         </li>
         <li class="nav-item dropdown" ngbDropdown>
           <a
             id="dropdownBasic1"
             ngbDropdownToggle
             class="nav-link dropdown-toggle"
+            [ngClass]="{ active: isActive('Research') }"
           >
             Research
           </a>
+          <span class="sr-only" *ngIf="isActive('Research')">(current)</span>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
             <button ngbDropdownItem>About</button>
             <button ngbDropdownItem>Articles</button>
@@ -43,9 +47,11 @@
             id="dropdownBasic2"
             ngbDropdownToggle
             class="nav-link dropdown-toggle"
+            [ngClass]="{ active: isActive('Analysis') }"
           >
             Analysis
           </a>
+          <span class="sr-only" *ngIf="isActive('Analysis')">(current)</span>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
             <button ngbDropdownItem>Send Audio</button>
             <button ngbDropdownItem>Data Request</button>
@@ -53,16 +59,23 @@
             <button ngbDropdownItem>Website Statistics</button>
           </div>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{ active: isActive('Contact Us') }">
           <a class="nav-link" href="#">Contact Us</a>
+          <span class="sr-only" *ngIf="isActive('Contact Us')">(current)</span>
         </li>
       </ul>
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Login</a>
+        <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active">
+            Login
+          </a>
+          <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Register</a>
+        <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
+          <a class="nav-link" routerLink="/register" routerLinkActive="active">
+            Register
+          </a>
+          <span class="sr-only" *ngIf="isActive('Register')">(current)</span>
         </li>
       </ul>
     </div>
