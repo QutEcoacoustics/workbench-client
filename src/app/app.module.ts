@@ -10,6 +10,9 @@ import { CardsComponent } from './component/shared/cards/cards.component';
 import { CardComponent } from './component/shared/cards/card/card.component';
 import { ProjectsHomeComponent } from './component/projects/pages/projects-home/projects-home.component';
 import { CardImageComponent } from './component/shared/cards/card-image/card-image.component';
+import { LoginComponent } from './component/authentication/pages/login/login.component';
+import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
+import { RegisterComponent } from './component/authentication/pages/register/register.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { CardImageComponent } from './component/shared/cards/card-image/card-ima
     FooterComponent,
     CardsComponent,
     CardComponent,
-    CardImageComponent
+    CardImageComponent,
+    LoginComponent,
+    LogoutComponent,
+    RegisterComponent
   ],
   imports: [NgbModule, BrowserModule, AppRoutingModule],
   providers: [],
