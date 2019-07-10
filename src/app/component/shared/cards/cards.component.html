@@ -1,0 +1,8 @@
+<div class="row">
+  <app-card
+    *ngFor="let item of processItems"
+    class="col-lg-4 mb-4"
+    [title]="item.title"
+    [description]="item.description"
+  ></app-card>
+</div>

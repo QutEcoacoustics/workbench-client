@@ -7,12 +7,16 @@
     <h1 class="display-4">Ecosounds</h1>
     <p
       class="lead"
+      i18n="Ecosounds Subtitle|Subtitle for ecosounds.@@ecosoundsSubtitle"
+    >
+      Welcome! Ecosounds is a repository of environmental audio recordings.
+    </p>
+    <p
       i18n="Ecosounds Description|Description of what ecosounds is.@@ecosoundsDescription"
     >
-      Welcome! Ecosounds is a repository of environmental audio recordings. This
-      website facilitates the management, access, visualization, and analysis of
-      environmental acoustic data. It uses the Acoustic Workbench software which
-      is is open source and available from
+      This website facilitates the management, access, visualization, and
+      analysis of environmental acoustic data. It uses the Acoustic Workbench
+      software which is is open source and available from
       <a href="https://github.com/QutEcoacoustics">GitHub.</a><br />The website
       is run by the QUT Ecoacoustics Research Group to
       <a href="https://research.ecosounds.org/">
@@ -22,55 +26,25 @@
   </div>
 </div>
 
-<div class="jumbotron jumbotron-fluid mb-0" style="background-color: #e9f5e2;">
+<div
+  class="jumbotron jumbotron-fluid mb-0"
+  style="background-color: whitesmoke;"
+>
   <div class="container">
     <h1 class="display-4">Our Process</h1>
 
-    <div class="row">
-      <div class="col-lg-4 mb-4">
-        <div class="card h-100">
-          <h4 class="card-header text-center">
-            Environment
-          </h4>
-          <div class="card-body">
-            <p class="card-text">
-              Faunal vocalisations and other human-audible environmental sounds
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 mb-4">
-        <div class="card h-100">
-          <h4 class="card-header text-center">
-            Acoustic Sensors
-          </h4>
-          <div class="card-body">
-            <p class="card-text">
-              Acoustic sensors record sound in a wide range of environments
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 mb-4">
-        <div class="card h-100">
-          <h4 class="card-header text-center">
-            Annotated Spectrogram
-          </h4>
-          <div class="card-body">
-            <p class="card-text">
-              Practical identification of animal sounds by people and automated
-              detectors. Ecologists use these to answer environmental questions.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-cards [processItems]="processList"> </app-cards>
   </div>
 </div>
 
 <div class="jumbotron jumbotron-fluid mb-0">
   <div class="container">
     <h1 class="display-4">Some of the projects you can access</h1>
+    <p>
+      You can browse some public projects and audio recordings without logging
+      in. To participate in the analysis work you will need to Log in with an
+      existing account or Register for a new account.
+    </p>
 
     <div class="row">
       <div class="col-lg-4 col-sm-6 portfolio-item mb-4">
@@ -103,9 +77,9 @@
           </a>
           <div class="card-body">
             <h4 class="card-title">
-              <a href="https://www.ecosounds.org/projects/1007"
-                >Oxley Creek Common</a
-              >
+              <a href="https://www.ecosounds.org/projects/1007">
+                Oxley Creek Common
+              </a>
             </h4>
             <p class="card-text font-italic">
               No description available.

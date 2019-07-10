@@ -1,0 +1,10 @@
+<div class="card h-100">
+  <h4 class="card-header text-center">
+    {{ title }}
+  </h4>
+  <div class="card-body">
+    <p class="card-text" [ngClass]="{ 'font-italic': !description }">
+      {{ description ? description : "No description given" }}
+    </p>
+  </div>
+</div>

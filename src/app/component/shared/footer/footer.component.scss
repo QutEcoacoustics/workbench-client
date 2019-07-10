@@ -1,0 +1,10 @@
+p.nav-link {
+  margin: 0px;
+  cursor: default;
+
+  &:hover,
+  &:focus {
+    /* Overwrite Bootstrap navlink hover efect */
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+}
