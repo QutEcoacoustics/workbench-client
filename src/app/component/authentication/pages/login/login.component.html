@@ -1,1 +1,39 @@
-<p>login works!</p>
+<div class="login-form">
+  <h2 class="text-center">Member Login</h2>
+  <form action="/examples/actions/confirmation.php" method="post">
+    <div class="avatar">
+      <img src="../../../../../assets/avatar.png" alt="Avatar" />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control input-lg"
+        name="username"
+        placeholder="Username/Email"
+        required="required"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="password"
+        class="form-control input-lg"
+        name="password"
+        placeholder="Password"
+        required="required"
+      />
+    </div>
+    <div class="form-group clearfix">
+      <label class="pull-left checkbox-inline">
+        <input type="checkbox" />
+        Remember me
+      </label>
+      <button type="submit" class="btn btn-primary btn-lg float-right">
+        Sign in
+      </button>
+    </div>
+  </form>
+  <div class="hint-text">
+    Don't have an account?
+    <a routerLink="/register" routerLinkActive="active">Sign up here</a>
+  </div>
+</div>

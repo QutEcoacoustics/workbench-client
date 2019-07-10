@@ -1,30 +1,44 @@
+<!-- Maintain header height of 3.5rem -->
 <div class="container-fluid bg-dark fixed-top">
   <nav class="container navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Brand Logo -->
     <a class="navbar-brand" href="#">Ecosounds</a>
+
+    <!-- Toggle button for collapsable content -->
     <button class="navbar-toggler" type="button" (click)="toggleCollapse()">
       <span class="sr-only">Toggle Navigation</span>
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Collapsable content -->
     <div
       class="collapse navbar-collapse"
       id="navbarNavDropdown"
       [ngClass]="{ collapse: collapsed }"
     >
+      <!-- Left aligned navigation links -->
       <ul class="navbar-nav mr-auto">
+        <!-- Projects Link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Projects') }">
           <a class="nav-link" routerLink="/projects" routerLinkActive="active">
             Projects
             <span class="sr-only" *ngIf="isActive('Projects')">(current)</span>
           </a>
         </li>
+
+        <!-- Listen link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Listen') }">
           <a class="nav-link" href="#">Listen</a>
           <span class="sr-only" *ngIf="isActive('Listen')">(current)</span>
         </li>
+
+        <!-- Library link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
           <a class="nav-link" href="#">Library</a>
           <span class="sr-only" *ngIf="isActive('Library')">(current)</span>
         </li>
+
+        <!-- Research links -->
         <li class="nav-item dropdown" ngbDropdown>
           <a
             id="dropdownBasic1"
@@ -42,6 +56,8 @@
             <button ngbDropdownItem>Publications</button>
           </div>
         </li>
+
+        <!-- Analysis links -->
         <li class="nav-item dropdown" ngbDropdown>
           <a
             id="dropdownBasic2"
@@ -59,11 +75,15 @@
             <button ngbDropdownItem>Website Statistics</button>
           </div>
         </li>
+
+        <!-- Contact Us links-->
         <li class="nav-item" [ngClass]="{ active: isActive('Contact Us') }">
           <a class="nav-link" href="#">Contact Us</a>
           <span class="sr-only" *ngIf="isActive('Contact Us')">(current)</span>
         </li>
       </ul>
+
+      <!-- Right aligned authentication links -->
       <ul class="navbar-nav">
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a class="nav-link" routerLink="/login" routerLinkActive="active">
@@ -81,4 +101,6 @@
     </div>
   </nav>
 </div>
+
+<!-- Displace header section of webpage -->
 <div style="height: 3.5rem;"></div>
