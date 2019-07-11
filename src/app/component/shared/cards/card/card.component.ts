@@ -18,5 +18,13 @@ export class CardComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkRequiredFields('title', this.title);
+  }
+
+  checkRequiredFields(name: string, input: any) {
+    if (input === null || input === undefined) {
+      throw new Error('Attribute ' + name + ' is required');
+    }
+  }
 }

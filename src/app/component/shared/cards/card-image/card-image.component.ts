@@ -14,10 +14,19 @@ import {
 export class CardImageComponent implements OnInit {
   @Input() title: string;
   @Input() image: { url: string; alt: string };
-  @Input() link: string;
+  @Input() link?: string;
   @Input() description?: string;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkRequiredFields('title', this.title);
+    this.checkRequiredFields('image', this.image);
+  }
+
+  checkRequiredFields(name: string, input: any) {
+    if (input === null || input === undefined) {
+      throw new Error('Attribute ' + name + ' is required');
+    }
+  }
 }

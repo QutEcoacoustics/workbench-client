@@ -23,12 +23,29 @@ export class CardsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.checkRequiredFields('cards', this.cards);
+
     this.imageCards = false;
+    let noImageCards = false;
     this.cards.forEach(card => {
       if (card.image) {
         this.imageCards = true;
-        return;
+      } else {
+        noImageCards = true;
       }
     });
+
+    // If some cards have images but others do not, throw error
+    if (this.imageCards && noImageCards) {
+      throw new Error(
+        'If an image is given, all cards must have image component.'
+      );
+    }
+  }
+
+  checkRequiredFields(name: string, input: any) {
+    if (input === null || input === undefined) {
+      throw new Error('Attribute ' + name + ' is required');
+    }
   }
 }
