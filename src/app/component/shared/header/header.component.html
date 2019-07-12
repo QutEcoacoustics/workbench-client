@@ -11,7 +11,11 @@
     </button>
 
     <!-- Collapsable content -->
-    <div class="collapse navbar-collapse" id="navbarNavDropdown" [ngClass]="{ collapse: collapsed }">
+    <div
+      class="collapse navbar-collapse"
+      id="navbarNavDropdown"
+      [ngClass]="{ collapse: collapsed }"
+    >
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav mr-auto">
         <!-- Projects Link -->
@@ -29,15 +33,25 @@
 
         <!-- Listen link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Listen') }">
-          <a class="nav-link" href="#" i18n="Navbar Listen Link|Link to Listen page@@navbarListen">Listen</a>
+          <a
+            class="nav-link"
+            href="#"
+            i18n="Navbar Listen Link|Link to Listen page@@navbarListen"
+          >
+            Listen
+          </a>
           <span class="sr-only" *ngIf="isActive('Listen')">(current)</span>
         </li>
 
         <!-- Library link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
-          <a class="nav-link" href="#" i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
-            >Library</a
+          <a
+            class="nav-link"
+            href="#"
+            i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
           >
+            Library
+          </a>
           <span class="sr-only" *ngIf="isActive('Library')">(current)</span>
         </li>
 
@@ -58,30 +72,45 @@
               ngbDropdownItem
               i18n="Navbar Research About Link|Link to explain what research is being done@@navbarAbout"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fa', 'users']"></fa-icon>
+              </div>
               About
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Research Articles Link|Link to research articles@@navbarArticles"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'newspaper']"></fa-icon>
+              </div>
               Articles
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
+              </div>
               Resources
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Research People Link|Link to list of people working on the research articles@@navbarPeople"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'user-circle']"></fa-icon>
+              </div>
               People
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Research Publications Link|Link to list of publications by research team@@navbarPublications"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'globe-asia']"></fa-icon>
+              </div>
               Publications
             </button>
           </div>
@@ -104,24 +133,36 @@
               ngbDropdownItem
               i18n="Navbar Anaysis Send Audio Link|Link to upload audio to research team@@navbarSendAudio"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
+              </div>
               Send Audio
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Analysis Data Request Link|Link to request daat from research team@@navbarDataRequest"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'table']"></fa-icon>
+              </div>
               Data Request
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
+              </div>
               Audio Analysis
             </button>
             <button
               ngbDropdownItem
               i18n="Navbar Statistics Link|Link to website statistics@@navbarStatistics"
             >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'chart-area']"></fa-icon>
+              </div>
               Website Statistics
             </button>
           </div>
@@ -129,9 +170,13 @@
 
         <!-- Contact Us links-->
         <li class="nav-item" [ngClass]="{ active: isActive('Contact Us') }">
-          <a class="nav-link" href="#" i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
-            >Contact Us</a
+          <a
+            class="nav-link"
+            href="#"
+            i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
           >
+            Contact Us
+          </a>
           <span class="sr-only" *ngIf="isActive('Contact Us')">(current)</span>
         </li>
       </ul>
