@@ -11,16 +11,17 @@
     </button>
 
     <!-- Collapsable content -->
-    <div
-      class="collapse navbar-collapse"
-      id="navbarNavDropdown"
-      [ngClass]="{ collapse: collapsed }"
-    >
+    <div class="collapse navbar-collapse" id="navbarNavDropdown" [ngClass]="{ collapse: collapsed }">
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav mr-auto">
         <!-- Projects Link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Projects') }">
-          <a class="nav-link" routerLink="/projects" routerLinkActive="active">
+          <a
+            class="nav-link"
+            routerLink="/projects"
+            routerLinkActive="active"
+            i18n="Navbar Projects Link|Link to Projects page@@navbarProjects"
+          >
             Projects
             <span class="sr-only" *ngIf="isActive('Projects')">(current)</span>
           </a>
@@ -28,13 +29,15 @@
 
         <!-- Listen link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Listen') }">
-          <a class="nav-link" href="#">Listen</a>
+          <a class="nav-link" href="#" i18n="Navbar Listen Link|Link to Listen page@@navbarListen">Listen</a>
           <span class="sr-only" *ngIf="isActive('Listen')">(current)</span>
         </li>
 
         <!-- Library link -->
         <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
-          <a class="nav-link" href="#">Library</a>
+          <a class="nav-link" href="#" i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
+            >Library</a
+          >
           <span class="sr-only" *ngIf="isActive('Library')">(current)</span>
         </li>
 
@@ -45,15 +48,42 @@
             ngbDropdownToggle
             class="nav-link dropdown-toggle"
             [ngClass]="{ active: isActive('Research') }"
+            i18n="Navbar Research Dropdown|Research dropdown options header@@navbarResearch"
           >
             Research
           </a>
           <span class="sr-only" *ngIf="isActive('Research')">(current)</span>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-            <button ngbDropdownItem>About</button>
-            <button ngbDropdownItem>Articles</button>
-            <button ngbDropdownItem>People</button>
-            <button ngbDropdownItem>Publications</button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Research About Link|Link to explain what research is being done@@navbarAbout"
+            >
+              About
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Research Articles Link|Link to research articles@@navbarArticles"
+            >
+              Articles
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
+            >
+              Resources
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Research People Link|Link to list of people working on the research articles@@navbarPeople"
+            >
+              People
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Research Publications Link|Link to list of publications by research team@@navbarPublications"
+            >
+              Publications
+            </button>
           </div>
         </li>
 
@@ -64,21 +94,44 @@
             ngbDropdownToggle
             class="nav-link dropdown-toggle"
             [ngClass]="{ active: isActive('Analysis') }"
+            i18n="Navbar Analysis Dropdown|Analysis dropdown options header@@navbarAnalysis"
           >
             Analysis
           </a>
           <span class="sr-only" *ngIf="isActive('Analysis')">(current)</span>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-            <button ngbDropdownItem>Send Audio</button>
-            <button ngbDropdownItem>Data Request</button>
-            <button ngbDropdownItem>Audio Analysis</button>
-            <button ngbDropdownItem>Website Statistics</button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Anaysis Send Audio Link|Link to upload audio to research team@@navbarSendAudio"
+            >
+              Send Audio
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Analysis Data Request Link|Link to request daat from research team@@navbarDataRequest"
+            >
+              Data Request
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
+            >
+              Audio Analysis
+            </button>
+            <button
+              ngbDropdownItem
+              i18n="Navbar Statistics Link|Link to website statistics@@navbarStatistics"
+            >
+              Website Statistics
+            </button>
           </div>
         </li>
 
         <!-- Contact Us links-->
         <li class="nav-item" [ngClass]="{ active: isActive('Contact Us') }">
-          <a class="nav-link" href="#">Contact Us</a>
+          <a class="nav-link" href="#" i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
+            >Contact Us</a
+          >
           <span class="sr-only" *ngIf="isActive('Contact Us')">(current)</span>
         </li>
       </ul>
@@ -86,13 +139,23 @@
       <!-- Right aligned authentication links -->
       <ul class="navbar-nav">
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
-          <a class="nav-link" routerLink="/login" routerLinkActive="active">
+          <a
+            class="nav-link"
+            routerLink="/login"
+            routerLinkActive="active"
+            i18n="Navbar Login Link|Link to account login page@@navbarLogin"
+          >
             Login
           </a>
           <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
-          <a class="nav-link" routerLink="/register" routerLinkActive="active">
+          <a
+            class="nav-link"
+            routerLink="/register"
+            routerLinkActive="active"
+            i18n="Navbar Register Link|Link to account registration page@@navbarStatistics"
+          >
             Register
           </a>
           <span class="sr-only" *ngIf="isActive('Register')">(current)</span>

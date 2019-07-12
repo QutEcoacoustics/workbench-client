@@ -4,21 +4,15 @@
 
 <div class="jumbotron jumbotron-fluid mb-0">
   <div class="container">
-    <h1 class="display-4">Ecosounds</h1>
-    <p
-      class="lead"
-      i18n="Ecosounds Subtitle|Subtitle for ecosounds.@@ecosoundsSubtitle"
-    >
+    <h1 class="display-4" i18n="Ecosounds Title|Title for ecosounds.@@Title">Ecosounds</h1>
+    <p class="lead" i18n="Ecosounds Subtitle|Subtitle for ecosounds.@@ecosoundsSubtitle">
       Welcome! Ecosounds is a repository of environmental audio recordings.
     </p>
-    <p
-      i18n="Ecosounds Description|Description of what ecosounds is.@@ecosoundsDescription"
-    >
-      This website facilitates the management, access, visualization, and
-      analysis of environmental acoustic data. It uses the Acoustic Workbench
-      software which is is open source and available from
-      <a href="https://github.com/QutEcoacoustics">GitHub.</a><br />The website
-      is run by the QUT Ecoacoustics Research Group to
+    <p i18n="Ecosounds Description|Description of what ecosounds is.@@ecosoundsDescription">
+      This website facilitates the management, access, visualization, and analysis of environmental acoustic
+      data. It uses the Acoustic Workbench software which is is open source and available from
+      <a href="https://github.com/QutEcoacoustics">GitHub.</a><br />The website is run by the QUT Ecoacoustics
+      Research Group to
       <a href="https://research.ecosounds.org/">
         support bioacoustics and ecoacoustics research.
       </a>
@@ -26,12 +20,11 @@
   </div>
 </div>
 
-<div
-  class="jumbotron jumbotron-fluid mb-0"
-  style="background-color: transparent;"
->
+<div class="jumbotron jumbotron-fluid mb-0" style="background-color: transparent;">
   <div class="container">
-    <h1 class="display-4">Our Process</h1>
+    <h1 class="display-4" i18n="Our Process|Our process for creating and analysing data.@@ourProcessTitle">
+      Our Process
+    </h1>
 
     <app-cards [cards]="processList"> </app-cards>
   </div>
@@ -39,16 +32,25 @@
 
 <div class="jumbotron jumbotron-fluid mb-0">
   <div class="container">
-    <h1 class="display-4">Some of the projects you can access</h1>
-    <p>
-      You can browse some public projects and audio recordings without logging
-      in. To participate in the analysis work you will need to Log in with an
-      existing account or Register for a new account.
+    <h1
+      class="display-4"
+      i18n="Projects Title|Projects users are allowed to access without logging in.@@projectsTitle"
+    >
+      Some of the projects you can access
+    </h1>
+    <p i18n="Projects Description|Description of public projects.@@projectsDescription">
+      You can browse some public projects and audio recordings without logging in. To participate in the
+      analysis work you will need to Log in with an existing account or Register for a new account.
     </p>
 
     <app-cards [cards]="projectList">
       <ng-container>
-        <button class="m-auto btn btn-outline-primary">More Projects</button>
+        <button
+          class="m-auto btn btn-outline-primary"
+          i18n="Projects Button|Link to further list of projects.@@projectsButton"
+        >
+          More Projects
+        </button>
       </ng-container>
     </app-cards>
   </div>
