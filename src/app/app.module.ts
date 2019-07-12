@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -41,7 +43,14 @@ import { RegisterComponent } from './component/authentication/pages/register/reg
     LogoutComponent,
     RegisterComponent
   ],
-  imports: [NgbModule, BrowserModule, AppRoutingModule, FontAwesomeModule],
+  imports: [
+    NgbModule,
+    BrowserModule,
+    AppRoutingModule,
+    FontAwesomeModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

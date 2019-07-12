@@ -1,39 +1,57 @@
-<div class="login-form">
-  <h2 class="text-center">Member Login</h2>
-  <form action="/examples/actions/confirmation.php" method="post">
-    <div class="avatar">
-      <img src="../../../../../assets/avatar.png" alt="Avatar" />
+<div class="pl-2 pr-2">
+  <div class="login-form">
+    <h2 class="text-center">Member Login</h2>
+
+    <form [formGroup]="myFormGroup" (ngSubmit)="onSubmit()">
+      <!-- Icon at top of form -->
+      <div class="avatar">
+        <img src="../../../../../assets/avatar.png" alt="Avatar" />
+      </div>
+
+      <!-- Convert form json to html -->
+      <div *ngFor="let form_el of formTemplate">
+        <div [ngSwitch]="form_el.type" class="form-group">
+          <div *ngSwitchCase="'select'">
+            <label for="{{ form_el.id }}">{{ form_el.label }}</label>
+            <select
+              [id]="form_el.id"
+              class="form-control input-lg"
+              formControlName="{{ form_el.id }}"
+            >
+              <option disabled selected *ngIf="form_el.placeholder">
+                {{ form_el.placeholder }}
+              </option>
+              <option *ngFor="let opt of form_el.options">{{ opt }}</option>
+            </select>
+          </div>
+          <div *ngSwitchCase="'submit'">
+            <div class="form-group clearfix">
+              <button
+                type="submit"
+                value="save"
+                class="btn btn-primary btn-lg float-right"
+              >
+                {{ form_el.label }}
+              </button>
+            </div>
+          </div>
+          <div *ngSwitchDefault>
+            <label for="{{ form_el.id }}">{{ form_el.label }}</label>
+            <input
+              [id]="form_el.id"
+              [type]="form_el.type"
+              [placeholder]="form_el.placeholder ? form_el.placeholder : ''"
+              class="form-control input-lg"
+              formControlName="{{ form_el.id }}"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="hint-text">
+      Don't have an account?
+      <a routerLink="/register" routerLinkActive="active">Sign up here</a>
     </div>
-    <div class="form-group">
-      <input
-        type="text"
-        class="form-control input-lg"
-        name="username"
-        placeholder="Username/Email"
-        required="required"
-      />
-    </div>
-    <div class="form-group">
-      <input
-        type="password"
-        class="form-control input-lg"
-        name="password"
-        placeholder="Password"
-        required="required"
-      />
-    </div>
-    <div class="form-group clearfix">
-      <label class="pull-left checkbox-inline">
-        <input type="checkbox" />
-        Remember me
-      </label>
-      <button type="submit" class="btn btn-primary btn-lg float-right">
-        Sign in
-      </button>
-    </div>
-  </form>
-  <div class="hint-text">
-    Don't have an account?
-    <a routerLink="/register" routerLinkActive="active">Sign up here</a>
   </div>
 </div>
