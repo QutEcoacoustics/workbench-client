@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import register_form_template from 'src/app/templates/register-form-template';
+import { FormGroup } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -8,20 +9,23 @@ import register_form_template from 'src/app/templates/register-form-template';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
+  private _jsonURL = 'assets/templates/register-form-template.json';
   myFormGroup: FormGroup;
-  formTemplate: any = register_form_template;
+  formTemplate: any[];
 
-  constructor() {}
-
-  ngOnInit() {
-    const group = {};
-    this.formTemplate.map(input_template => {
-      group[input_template.id] = new FormControl('');
+  constructor(private http: HttpClient) {
+    this.getJSON().subscribe(data => {
+      this.formTemplate = data;
     });
-    this.myFormGroup = new FormGroup(group);
   }
 
-  onSubmit() {
-    console.log(this.myFormGroup.value);
+  ngOnInit() {}
+
+  receiveFormOutput($event: any) {
+    console.debug($event);
+  }
+
+  getJSON(): Observable<any> {
+    return this.http.get(this._jsonURL);
   }
 }

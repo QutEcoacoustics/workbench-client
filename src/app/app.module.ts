@@ -29,6 +29,8 @@ import { ProjectsHomeComponent } from './component/projects/pages/projects-home/
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormGenerationComponent } from './component/shared/form-generation/form-generation.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { RegisterComponent } from './component/authentication/pages/register/reg
     ProjectsHomeComponent,
     LoginComponent,
     LogoutComponent,
-    RegisterComponent
+    RegisterComponent,
+    FormGenerationComponent
   ],
   imports: [
     NgbModule,
@@ -49,7 +52,8 @@ import { RegisterComponent } from './component/authentication/pages/register/reg
     AppRoutingModule,
     FontAwesomeModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

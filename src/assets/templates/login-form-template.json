@@ -1,0 +1,19 @@
+[
+  {
+    "id": "username",
+    "type": "text",
+    "label": "Username/Email",
+    "required": true
+  },
+  {
+    "id": "password",
+    "type": "password",
+    "label": "Password",
+    "required": true
+  },
+  {
+    "id": "submit",
+    "type": "submit",
+    "label": "Sign Up"
+  }
+]

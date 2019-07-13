@@ -1,0 +1,85 @@
+.form-control {
+  background: #f2f2f2;
+  font-size: 16px;
+  border-color: transparent;
+  border-radius: 2px;
+  box-shadow: none !important;
+
+  &:focus {
+    border-color: #91d5a8;
+    background: #e9f5ee;
+  }
+}
+
+.btn {
+  border-radius: 2px;
+}
+
+.login-form {
+  max-width: 380px;
+  width: 100%;
+  margin: 0 auto;
+
+  a {
+    color: #4aba70;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  h2 {
+    margin: 0;
+    padding: 30px 0;
+    font-size: 34px;
+  }
+
+  form {
+    color: #7a7a7a;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+  }
+
+  .avatar {
+    margin: 0 auto 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    z-index: 9;
+    background: #4aba70;
+    padding: 15px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .btn {
+    font-size: 16px;
+    line-height: 26px;
+    min-width: 120px;
+    font-weight: bold;
+    background: #4aba70;
+    border: none;
+
+    &:hover,
+    &:focus {
+      background: #40aa65;
+      outline: none !important;
+    }
+  }
+}
+
+.checkbox-inline input {
+  margin-top: 3px;
+}
+
+.hint-text {
+  color: #999;
+  text-align: center;
+  padding-bottom: 15px;
+}
