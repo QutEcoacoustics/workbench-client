@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { List } from 'immutable';
 
 @Component({
   selector: 'app-projects-home',
@@ -6,23 +7,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./projects-home.component.scss']
 })
 export class ProjectsHomeComponent implements OnInit {
-  processList: {
+  processList: List<{
     title: string;
     image?: { url: string; alt: string };
     description?: string;
     link?: string;
-  }[];
-  projectList: {
+  }>;
+  projectList: List<{
     title: string;
     image?: { url: string; alt: string };
     description?: string;
     link?: string;
-  }[];
+  }>;
 
   constructor() {}
 
   ngOnInit() {
-    this.processList = [
+    this.processList = List([
       {
         title: 'Environment',
         description:
@@ -38,8 +39,8 @@ export class ProjectsHomeComponent implements OnInit {
         description:
           'Practical identification of animal sounds by people and automated detectors. Ecologists use these to answer environmental questions.'
       }
-    ];
-    this.projectList = [
+    ]);
+    this.projectList = List([
       {
         title: 'Tortuguero',
         image: {
@@ -70,6 +71,6 @@ export class ProjectsHomeComponent implements OnInit {
         description: 'Sound recordings from the Gympie area.',
         link: 'https://www.ecosounds.org/projects/1029'
       }
-    ];
+    ]);
   }
 }

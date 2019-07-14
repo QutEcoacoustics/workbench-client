@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input
 } from '@angular/core';
+import { List } from 'immutable';
 
 @Component({
   selector: 'app-cards',
@@ -12,12 +13,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardsComponent implements OnInit {
-  @Input() cards: {
+  @Input() cards: List<{
     title: string;
     image?: { url: string; alt: string };
     description?: string;
     link?: string;
-  }[];
+  }>;
   imageCards: boolean;
 
   constructor() {}
