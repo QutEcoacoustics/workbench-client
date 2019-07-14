@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-projects-home',
@@ -14,6 +15,12 @@ export class ProjectsHomeComponent implements OnInit {
     link?: string;
   }>;
   projectList: List<{
+    title: string;
+    image?: { url: string; alt: string };
+    description?: string;
+    link?: string;
+  }>;
+  postList: List<{
     title: string;
     image?: { url: string; alt: string };
     description?: string;
@@ -72,5 +79,23 @@ export class ProjectsHomeComponent implements OnInit {
         link: 'https://www.ecosounds.org/projects/1029'
       }
     ]);
+
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then(response => response.json())
+      .then(json =>
+        json.map(
+          (row: {
+            userId: Number;
+            id: Number;
+            title: string;
+            body: string;
+          }) => {
+            return { title: row.title, description: row.body };
+          }
+        )
+      )
+      .then(posts => {
+        this.postList = List(posts);
+      });
   }
 }
