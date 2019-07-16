@@ -45,3 +45,10 @@ export class CardsComponent implements OnInit {
     }
   }
 }
+
+export interface Card {
+  title: string;
+  image?: { url: string; alt: string };
+  description?: string;
+  link?: string;
+}

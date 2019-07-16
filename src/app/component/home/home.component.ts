@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
+import { Card } from '../shared/cards/cards.component';
 
 @Component({
   selector: 'app-home',
@@ -7,24 +8,9 @@ import { List } from 'immutable';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  processList: List<{
-    title: string;
-    image?: { url: string; alt: string };
-    description?: string;
-    link?: string;
-  }>;
-  projectList: List<{
-    title: string;
-    image?: { url: string; alt: string };
-    description?: string;
-    link?: string;
-  }>;
-  postList: List<{
-    title: string;
-    image?: { url: string; alt: string };
-    description?: string;
-    link?: string;
-  }>;
+  processList: List<Card>;
+  projectList: List<Card>;
+  postList: List<Card>;
   testing: string;
 
   constructor() {}

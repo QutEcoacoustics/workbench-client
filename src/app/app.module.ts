@@ -32,6 +32,7 @@ import { LoginComponent } from './component/authentication/pages/login/login.com
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
+import { SiteComponent } from './component/projects/pages/site/site.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { HttpClientModule } from '@angular/common/http';
     ProjectsHomeComponent,
     LoginComponent,
     LogoutComponent,
-    RegisterComponent
+    RegisterComponent,
+    SiteComponent
   ],
   imports: [
     NgbModule,
