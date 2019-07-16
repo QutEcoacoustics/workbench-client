@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormioModule, FormioAppConfig } from 'angular-formio';
+import { FormioModule } from 'angular-formio';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -31,7 +31,6 @@ import { LoginComponent } from './component/authentication/pages/login/login.com
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormGenerationComponent } from './component/shared/form-generation/form-generation.component';
 
 @NgModule({
   declarations: [
@@ -44,8 +43,7 @@ import { FormGenerationComponent } from './component/shared/form-generation/form
     ProjectsHomeComponent,
     LoginComponent,
     LogoutComponent,
-    RegisterComponent,
-    FormGenerationComponent
+    RegisterComponent
   ],
   imports: [
     NgbModule,
