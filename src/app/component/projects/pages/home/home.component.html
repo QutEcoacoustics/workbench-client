@@ -1,4 +1,22 @@
-<div class="container">
-  <h1>Projects</h1>
+<div class="container pt-3">
+  <h1 class="display-4">Projects</h1>
+
+  <div class="d-flex flex-wrap justify-content-center">
+    <div
+      class="mb-3 col-12 col-sm-6 pl-sm-0 d-flex justify-content-center justify-content-sm-end"
+    >
+      <button class="btn btn-primary w-100">
+        New Project
+      </button>
+    </div>
+    <div
+      class="mb-3 col-12 col-sm-6 pr-sm-0 d-flex justify-content-center justify-content-sm-start"
+    >
+      <button class="btn btn-primary w-100">
+        Request Access
+      </button>
+    </div>
+  </div>
+
   <app-cards [cards]="projectList"></app-cards>
 </div>

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row justify-content-center">
   <ng-container *ngIf="imageCards; else defaultCards">
     <app-card-image
       *ngFor="let item of cards"
@@ -6,7 +6,7 @@
       [image]="item.image"
       [description]="item.description"
       [link]="item.link"
-      class="col-lg-4 col-sm-6 portfolio-item mb-4"
+      class="col-xl-3 col-lg-4 col-sm-6 portfolio-item mb-4"
     ></app-card-image>
   </ng-container>
   <ng-template #defaultCards>
@@ -15,7 +15,7 @@
       [title]="item.title"
       [description]="item.description"
       [link]="item.link"
-      class="col-lg-4 mb-4"
+      class="col-xl-3 col-lg-4 col-sm-6 mb-4"
     ></app-card>
   </ng-template>
   <ng-content></ng-content>
