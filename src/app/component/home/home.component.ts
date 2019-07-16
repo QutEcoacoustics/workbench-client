@@ -35,18 +35,18 @@ export class HomeComponent implements OnInit {
     ]);
     this.projectList = List([
       {
-        title: 'Tortuguero',
+        title: 'Lorem ipsum',
         image: {
           url:
             'https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306',
-          alt: 'Tortuguero'
+          alt: 'Lorem ipsum'
         },
         description:
-          'Soundscape recordings made in Turtuguero, Costa Rica, 2011.',
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
         link: 'https://www.ecosounds.org/projects/1094'
       },
       {
-        title: 'Oxley Creek Common',
+        title: 'Lorem ipsum',
         image: {
           url:
             'https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277',
@@ -55,13 +55,14 @@ export class HomeComponent implements OnInit {
         link: 'https://www.ecosounds.org/projects/1007'
       },
       {
-        title: 'Cooloola',
+        title: 'Lorem ipsum',
         image: {
           url:
             'https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186',
-          alt: 'Cooloola'
+          alt: 'Lorem ipsum'
         },
-        description: 'Sound recordings from the Gympie area.',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
         link: 'https://www.ecosounds.org/projects/1029'
       }
     ]);

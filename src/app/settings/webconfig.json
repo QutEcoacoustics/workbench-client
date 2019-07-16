@@ -1,0 +1,154 @@
+{
+  "routes": [
+    {
+      "/": {
+        "title": "Ecosounds",
+        "description": "Home Directory",
+        "component": "HomeComponent",
+        "nav": true
+      },
+      "/projects": {
+        "title": "Projects",
+        "description": "Acoustic research projects",
+        "component": "ProjectsHomeComponent",
+        "nav": true,
+        "routes": [
+          {
+            "/:project": {
+              "title": "Project",
+              "description": "Project description",
+              "component": "ProjectsProjectComponent",
+              "nav": false,
+              "routes": [
+                {
+                  "/:site": {
+                    "title": "Site",
+                    "description": "Site description",
+                    "component": "ProjectsSiteComponent",
+                    "nav": false
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "/listen": {
+        "title": "Listen",
+        "description": "Listen to recent audio recordings",
+        "component": "ListenComponent",
+        "nav": true
+      },
+      "/library": {
+        "title": "Library",
+        "description": "Annotation Library",
+        "component": "LibraryComponent",
+        "nav": true
+      },
+      "/research": {
+        "title": "Research",
+        "description": "Listen to recent audio recordings",
+        "nav": false,
+        "routes": [
+          {
+            "/about": {
+              "title": "About",
+              "description": "About the research performed",
+              "component": "ResearchAboutComponent",
+              "nav": true
+            }
+          },
+          {
+            "/articles": {
+              "title": "Articles",
+              "description": "Research articles from the research group",
+              "component": "ResearchArticlesComponent",
+              "nav": true
+            }
+          },
+          {
+            "/resources": {
+              "title": "Resources",
+              "description": "Resources published by the research group",
+              "component": "ResearchResourcesComponent",
+              "nav": true
+            }
+          },
+          {
+            "/people": {
+              "title": "People",
+              "description": "People in the research group",
+              "component": "ResearchPeopleComponent",
+              "nav": true
+            }
+          },
+          {
+            "/publications": {
+              "title": "Publications",
+              "description": "Publications by the research group",
+              "component": "ResearchPublicationsComponent",
+              "nav": true
+            }
+          }
+        ]
+      },
+      "/analysis": {
+        "title": "Analysis",
+        "description": "Group of online analysis tools",
+        "nav": false,
+        "routes": [
+          {
+            "/submit": {
+              "title": "Send Audio",
+              "description": "Submit audio samples to the website",
+              "component": "AnalysisSubmitComponent",
+              "nav": true
+            }
+          },
+          {
+            "/request": {
+              "title": "Data Request",
+              "description": "Request customised data from the website",
+              "component": "AnalysisRequestComponent",
+              "nav": true
+            }
+          },
+          {
+            "/analysis": {
+              "title": "Audio Analysis",
+              "description": "Analyse audio files on the website",
+              "component": "AnalysisAnalysisComponent",
+              "nav": true
+            }
+          },
+          {
+            "/statistics": {
+              "title": "Website Statistics",
+              "description": "Statistics about the website and the analysis performed by the research group",
+              "component": "AnalysisStatisticsComponent",
+              "nav": true
+            }
+          }
+        ]
+      },
+      "/contact": {
+        "title": "Contact Us",
+        "description": "Contact the research group",
+        "component": "ContactComponent",
+        "nav": true
+      },
+      "/login": {
+        "title": "Login",
+        "description": "Login to account",
+        "component": "LoginComponent",
+        "nav": true
+      },
+      "/register": {
+        "title": "Register",
+        "description": "Register new account",
+        "component": "RegisterComponent",
+        "nav": true
+      }
+    }
+  ]
+}

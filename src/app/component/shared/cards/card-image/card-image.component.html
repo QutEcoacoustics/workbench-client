@@ -18,8 +18,8 @@
     </h4>
 
     <!-- Card Description -->
-    <p class="card-text">
-      {{ description }}
+    <p class="card-text" [ngClass]="{ 'font-italic': !description }">
+      {{ description ? description : 'No description given' }}
     </p>
   </div>
 </div>
