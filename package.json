@@ -1,9 +1,15 @@
 {
-  "name": "angular-testbench",
-  "version": "0.0.0",
+  "name": "ecosounds",
+  "author": {
+    "name": "Charles Alleman",
+    "email": "charles@alleman.com.au"
+  },
+  "description": "Ecosounds website for online ecoacoustic analysis.",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:ssl": "ng serve --ssl true --port 443",
     "start:fr": "ng serve --configuration=fr",
     "build": "ng build",
     "build:fr": "ng build --configuration=fr",
