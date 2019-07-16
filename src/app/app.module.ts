@@ -26,7 +26,8 @@ import { FooterComponent } from './component/shared/footer/footer.component';
 import { CardComponent } from './component/shared/cards/card/card.component';
 import { CardImageComponent } from './component/shared/cards/card-image/card-image.component';
 import { CardsComponent } from './component/shared/cards/cards.component';
-import { ProjectsHomeComponent } from './component/projects/pages/projects-home/projects-home.component';
+import { HomeComponent } from './component/home/home.component';
+import { ProjectsHomeComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
@@ -40,6 +41,7 @@ import { HttpClientModule } from '@angular/common/http';
     CardComponent,
     CardImageComponent,
     CardsComponent,
+    HomeComponent,
     ProjectsHomeComponent,
     LoginComponent,
     LogoutComponent,

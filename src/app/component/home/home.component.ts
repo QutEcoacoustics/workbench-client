@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
-import { stringify } from '@angular/compiler/src/util';
 
 @Component({
-  selector: 'app-projects-home',
-  templateUrl: './projects-home.component.html',
-  styleUrls: ['./projects-home.component.scss']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
 })
-export class ProjectsHomeComponent implements OnInit {
+export class HomeComponent implements OnInit {
   processList: List<{
     title: string;
     image?: { url: string; alt: string };
