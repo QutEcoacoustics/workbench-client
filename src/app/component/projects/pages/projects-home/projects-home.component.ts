@@ -26,6 +26,7 @@ export class ProjectsHomeComponent implements OnInit {
     description?: string;
     link?: string;
   }>;
+  testing: string;
 
   constructor() {}
 
@@ -80,6 +81,7 @@ export class ProjectsHomeComponent implements OnInit {
       }
     ]);
 
+    this.postList = List();
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(json =>

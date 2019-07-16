@@ -29,6 +29,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.9.0",
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@ng-bootstrap/ng-bootstrap": "^5.0.0-rc.1",
+    "angular-formio": "^4.0.0-beta.3",
     "immutable": "^4.0.0-rc.12",
     "marked": "^0.7.0",
     "rxjs": "^6.4.0",

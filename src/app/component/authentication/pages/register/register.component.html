@@ -2,16 +2,13 @@
   <div class="login-form">
     <h2 class="text-center">Member Registration</h2>
 
-    <app-form-generation
-      *ngIf="formTemplate"
-      [template]="formTemplate"
-      (messageEvent)="receiveFormOutput($event)"
-    >
+    <div class="form-background clearfix">
       <!-- Icon at top of form -->
       <div class="avatar">
-        <img src="../../../../../assets/avatar.png" alt="Avatar" />
+        <img src="assets/avatar.png" alt="Avatar" />
       </div>
-    </app-form-generation>
+      <formio [form]="formTemplate" (submit)="onSubmit($event)"></formio>
+    </div>
 
     <div class="hint-text">
       Already have an account?

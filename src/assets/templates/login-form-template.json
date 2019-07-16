@@ -1,19 +1,99 @@
-[
-  {
-    "id": "username",
-    "type": "text",
-    "label": "Username/Email",
-    "required": true
-  },
-  {
-    "id": "password",
-    "type": "password",
-    "label": "Password",
-    "required": true
-  },
-  {
-    "id": "submit",
-    "type": "submit",
-    "label": "Sign Up"
-  }
-]
+{
+  "components": [
+    {
+      "label": "Username/Email",
+      "allowMultipleMasks": false,
+      "tabindex": "1",
+      "showWordCount": false,
+      "showCharCount": false,
+      "autofocus": true,
+      "tableView": true,
+      "alwaysEnabled": false,
+      "type": "textfield",
+      "input": true,
+      "key": "usernameEmail",
+      "defaultValue": "",
+      "validate": {
+        "required": true,
+        "customMessage": "",
+        "json": ""
+      },
+      "conditional": {
+        "show": "",
+        "when": "",
+        "json": ""
+      },
+      "inputFormat": "plain",
+      "encrypted": false,
+      "properties": {},
+      "customConditional": "",
+      "logic": [],
+      "widget": {
+        "type": ""
+      },
+      "reorder": false
+    },
+    {
+      "label": "Password",
+      "tabindex": "2",
+      "showWordCount": false,
+      "showCharCount": false,
+      "tableView": true,
+      "alwaysEnabled": false,
+      "type": "password",
+      "input": true,
+      "key": "password2",
+      "defaultValue": "",
+      "validate": {
+        "required": true,
+        "customMessage": "",
+        "json": ""
+      },
+      "conditional": {
+        "show": "",
+        "when": "",
+        "json": ""
+      },
+      "customConditional": "",
+      "logic": [],
+      "inputFormat": "plain",
+      "encrypted": false,
+      "properties": {},
+      "reorder": false
+    },
+    {
+      "label": "Login",
+      "state": "",
+      "theme": "success",
+      "shortcut": "",
+      "customClass": "float-right",
+      "disableOnInvalid": true,
+      "mask": false,
+      "tableView": true,
+      "alwaysEnabled": false,
+      "labelMargin": 100,
+      "type": "button",
+      "key": "submit",
+      "input": true,
+      "defaultValue": false,
+      "validate": {
+        "customMessage": "",
+        "json": ""
+      },
+      "conditional": {
+        "show": "",
+        "when": "",
+        "json": ""
+      },
+      "encrypted": false,
+      "properties": {},
+      "customConditional": "",
+      "logic": [],
+      "showValidations": false,
+      "event": "",
+      "url": "",
+      "custom": "",
+      "reorder": false
+    }
+  ]
+}

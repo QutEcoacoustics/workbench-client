@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -10,22 +9,21 @@ import { Observable } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
   private _jsonURL = 'assets/templates/login-form-template.json';
-  myFormGroup: FormGroup;
-  formTemplate: any[];
+  formTemplate: any;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
     this.getJSON().subscribe(data => {
       this.formTemplate = data;
     });
   }
 
-  ngOnInit() {}
-
-  receiveFormOutput($event: any) {
-    console.debug($event);
-  }
-
   getJSON(): Observable<any> {
     return this.http.get(this._jsonURL);
+  }
+
+  onSubmit(submission: any) {
+    console.log(submission); // This will print out the full submission from Form.io API.
   }
 }

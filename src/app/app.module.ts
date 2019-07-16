@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormioModule, FormioAppConfig } from 'angular-formio';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -53,7 +54,8 @@ import { FormGenerationComponent } from './component/shared/form-generation/form
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

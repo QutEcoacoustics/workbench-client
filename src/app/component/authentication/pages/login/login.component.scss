@@ -11,10 +11,6 @@
   }
 }
 
-.btn {
-  border-radius: 2px;
-}
-
 .login-form {
   max-width: 380px;
   width: 100%;
@@ -34,7 +30,7 @@
     font-size: 34px;
   }
 
-  form {
+  .form-background {
     color: #7a7a7a;
     border-radius: 4px;
     margin-bottom: 20px;
@@ -57,29 +53,4 @@
       width: 100%;
     }
   }
-
-  .btn {
-    font-size: 16px;
-    line-height: 26px;
-    min-width: 120px;
-    font-weight: bold;
-    background: #4aba70;
-    border: none;
-
-    &:hover,
-    &:focus {
-      background: #40aa65;
-      outline: none !important;
-    }
-  }
-}
-
-.checkbox-inline input {
-  margin-top: 3px;
-}
-
-.hint-text {
-  color: #999;
-  text-align: center;
-  padding-bottom: 15px;
 }
