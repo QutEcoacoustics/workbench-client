@@ -33,6 +33,8 @@ import { LogoutComponent } from './component/authentication/pages/logout/logout.
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SiteComponent } from './component/projects/pages/site/site.component';
+import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
+import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { SiteComponent } from './component/projects/pages/site/site.component';
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    SiteComponent
+    SiteComponent,
+    AnalysisSubmitComponent,
+    AnalysisRequestComponent
   ],
   imports: [
     NgbModule,
@@ -60,7 +64,8 @@ import { SiteComponent } from './component/projects/pages/site/site.component';
     FormioModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [HomeComponent]
 })
 export class AppModule {
   constructor() {

@@ -5,10 +5,19 @@ import { ProjectsHomeComponent } from './component/projects/pages/home/home.comp
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
+import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
+import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'projects', component: ProjectsHomeComponent },
+  {
+    path: 'analysis',
+    children: [
+      { path: 'submit', component: AnalysisSubmitComponent },
+      { path: 'request', component: AnalysisRequestComponent }
+    ]
+  },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'register', component: RegisterComponent }

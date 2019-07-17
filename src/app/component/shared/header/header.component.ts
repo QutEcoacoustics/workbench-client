@@ -7,7 +7,6 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  href: string;
   activeLink: string;
   collapsed: boolean;
 
@@ -15,7 +14,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.collapsed = true;
-    this.href = this.router.url;
     this.activeLink = 'projects';
 
     this.router.events.subscribe(val => {
@@ -29,11 +27,10 @@ export class HeaderComponent implements OnInit {
     return this.activeLink.toLowerCase() === link.toLowerCase();
   }
 
-  // TODO Update this to determine the URL more accurately for subpages (eg. /projects/Cooloola)
   updateActiveLink(url: string) {
-    this.href = url;
-
-    this.activeLink = url;
+    console.debug(url);
+    console.debug(url.split('/')[1]);
+    this.activeLink = url.split('/')[1];
   }
 
   toggleCollapse() {

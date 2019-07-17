@@ -62,3 +62,6 @@ typings/
 
 # Angular build files
 dist
+
+# Temporary files
+website tree
