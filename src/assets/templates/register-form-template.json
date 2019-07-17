@@ -1,158 +1,42 @@
 {
-  "components": [
+  "model": {
+    "username": "",
+    "email": "",
+    "password": "",
+    "passwordConf": ""
+  },
+  "fields": [
     {
-      "label": "Username",
-      "allowMultipleMasks": false,
-      "tabindex": "1",
-      "showWordCount": false,
-      "showCharCount": false,
-      "autofocus": true,
-      "tableView": true,
-      "alwaysEnabled": false,
-      "type": "textfield",
-      "input": true,
       "key": "username",
-      "defaultValue": "",
-      "validate": {
-        "required": true,
-        "customMessage": "",
-        "json": ""
-      },
-      "conditional": {
-        "show": "",
-        "when": "",
-        "json": ""
-      },
-      "widget": {
-        "type": ""
-      },
-      "inputFormat": "plain",
-      "encrypted": false,
-      "properties": {},
-      "customConditional": "",
-      "logic": [],
-      "reorder": false
-    },
-    {
-      "label": "Email",
-      "tabindex": "2",
-      "tableView": true,
-      "alwaysEnabled": false,
-      "type": "email",
-      "input": true,
-      "key": "email",
-      "defaultValue": "",
-      "validateOn": "change",
-      "validate": {
-        "customMessage": "",
-        "json": "",
+      "type": "input",
+      "templateOptions": {
+        "label": "Username",
         "required": true
-      },
-      "conditional": {
-        "show": "",
-        "when": "",
-        "json": ""
-      },
-      "encrypted": false,
-      "properties": {},
-      "customConditional": "",
-      "logic": [],
-      "tags": [],
-      "reorder": false
+      }
     },
     {
-      "label": "Password",
-      "tabindex": "3",
-      "showWordCount": false,
-      "showCharCount": false,
-      "tableView": true,
-      "alwaysEnabled": false,
-      "type": "password",
-      "input": true,
+      "key": "email",
+      "type": "email",
+      "templateOptions": {
+        "label": "Email",
+        "required": true
+      }
+    },
+    {
       "key": "password",
-      "defaultValue": "",
-      "validate": {
-        "required": true,
-        "customMessage": "",
-        "json": ""
-      },
-      "conditional": {
-        "show": "",
-        "when": "",
-        "json": ""
-      },
-      "inputFormat": "plain",
-      "encrypted": false,
-      "properties": {},
-      "tags": [],
-      "customConditional": "",
-      "logic": [],
-      "reorder": false
-    },
-    {
-      "label": "Password Confirmation",
-      "tabindex": "4",
-      "showWordCount": false,
-      "showCharCount": false,
-      "tableView": true,
-      "alwaysEnabled": false,
       "type": "password",
-      "input": true,
-      "key": "passwordConf",
-      "defaultValue": "",
-      "validateOn": "change",
-      "validate": {
-        "required": true,
-        "customMessage": "Passwords do not match.",
-        "json": "",
-        "custom": "valid = input === data.password"
-      },
-      "conditional": {
-        "show": "",
-        "when": "",
-        "json": ""
-      },
-      "inputFormat": "plain",
-      "encrypted": false,
-      "properties": {},
-      "tags": [],
-      "customConditional": "",
-      "logic": [],
-      "reorder": false
+      "templateOptions": {
+        "label": "Password",
+        "required": true
+      }
     },
     {
-      "label": "Register",
-      "state": "",
-      "theme": "success",
-      "shortcut": "",
-      "customClass": "float-right",
-      "tabindex": "5",
-      "disableOnInvalid": true,
-      "mask": false,
-      "tableView": true,
-      "alwaysEnabled": false,
-      "type": "button",
-      "key": "submit",
-      "input": true,
-      "defaultValue": false,
-      "validate": {
-        "customMessage": "",
-        "json": ""
-      },
-      "conditional": {
-        "show": "",
-        "when": "",
-        "json": ""
-      },
-      "encrypted": false,
-      "properties": {},
-      "customConditional": "",
-      "logic": [],
-      "showValidations": false,
-      "event": "",
-      "url": "",
-      "custom": "",
-      "reorder": false
+      "key": "passwordConf",
+      "type": "password",
+      "templateOptions": {
+        "label": "Password Confirmation",
+        "required": true
+      }
     }
   ]
 }

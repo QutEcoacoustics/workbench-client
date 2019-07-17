@@ -5,7 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormioModule } from 'angular-formio';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -35,6 +36,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { SiteComponent } from './component/projects/pages/site/site.component';
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
+import { FormlyPasswordInput } from './component/formly/password';
+import { FormlyEmailInput } from './component/formly/email';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,9 @@ import { AnalysisRequestComponent } from './component/analysis/pages/request/req
     RegisterComponent,
     SiteComponent,
     AnalysisSubmitComponent,
-    AnalysisRequestComponent
+    AnalysisRequestComponent,
+    FormlyPasswordInput,
+    FormlyEmailInput
   ],
   imports: [
     NgbModule,
@@ -61,7 +66,13 @@ import { AnalysisRequestComponent } from './component/analysis/pages/request/req
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormioModule
+    FormlyModule.forRoot({
+      types: [
+        { name: 'password', component: FormlyPasswordInput },
+        { name: 'email', component: FormlyEmailInput }
+      ]
+    }),
+    FormlyBootstrapModule
   ],
   providers: [],
   bootstrap: [AppComponent],

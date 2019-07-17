@@ -7,7 +7,18 @@
       <div class="avatar">
         <img src="assets/avatar.png" alt="Avatar" />
       </div>
-      <formio [form]="formTemplate" (submit)="onSubmit($event)"></formio>
+      <form [formGroup]="form" (ngSubmit)="submit(model)">
+        <formly-form
+          [form]="form"
+          [fields]="fields"
+          [model]="model"
+        ></formly-form>
+        <div class="clearfix">
+          <button type="submit" class="btn btn-success float-right">
+            Login
+          </button>
+        </div>
+      </form>
     </div>
 
     <div class="hint-text">

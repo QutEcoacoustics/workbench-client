@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
   selector: 'app-register',
@@ -9,13 +11,17 @@ import { Observable } from 'rxjs';
 })
 export class RegisterComponent implements OnInit {
   private _jsonURL = 'assets/templates/register-form-template.json';
-  formTemplate: any;
+  form: FormGroup;
+  model: {};
+  fields: FormlyFieldConfig[];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    this.form = new FormGroup({});
     this.getJSON().subscribe(data => {
-      this.formTemplate = data;
+      this.model = data.model;
+      this.fields = data.fields;
     });
   }
 
@@ -23,7 +29,7 @@ export class RegisterComponent implements OnInit {
     return this.http.get(this._jsonURL);
   }
 
-  onSubmit(submission: any) {
-    console.log(submission); // This will print out the full submission from Form.io API.
+  submit(model) {
+    console.log(model);
   }
 }

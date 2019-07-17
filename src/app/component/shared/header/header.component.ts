@@ -28,8 +28,6 @@ export class HeaderComponent implements OnInit {
   }
 
   updateActiveLink(url: string) {
-    console.debug(url);
-    console.debug(url.split('/')[1]);
     this.activeLink = url.split('/')[1];
   }
 
