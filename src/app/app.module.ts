@@ -36,8 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SiteComponent } from './component/projects/pages/site/site.component';
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
-import { FormlyPasswordInput } from './component/formly/password';
-import { FormlyEmailInput } from './component/formly/email';
+import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +54,6 @@ import { FormlyEmailInput } from './component/formly/email';
     SiteComponent,
     AnalysisSubmitComponent,
     AnalysisRequestComponent,
-    FormlyPasswordInput,
     FormlyEmailInput
   ],
   imports: [
@@ -67,10 +65,7 @@ import { FormlyEmailInput } from './component/formly/email';
     ReactiveFormsModule,
     HttpClientModule,
     FormlyModule.forRoot({
-      types: [
-        { name: 'password', component: FormlyPasswordInput },
-        { name: 'email', component: FormlyEmailInput }
-      ]
+      types: [{ name: 'email', component: FormlyEmailInput }]
     }),
     FormlyBootstrapModule
   ],

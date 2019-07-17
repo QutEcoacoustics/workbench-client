@@ -1,0 +1,15 @@
+<div class="form-group">
+  <label for="{{ id }}">
+    {{ to.label }}
+    <span *ngIf="to.required">*</span>
+  </label>
+  <input
+    type="email"
+    class="form-control"
+    [id]="id"
+    [ngClass]="{ 'is-invalid': showError || invalid }"
+    [formControl]="formControl"
+    [formlyAttributes]="field"
+    (keyup)="checkError($event)"
+  />
+</div>

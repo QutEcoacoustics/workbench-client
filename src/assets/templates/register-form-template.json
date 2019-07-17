@@ -24,16 +24,18 @@
     },
     {
       "key": "password",
-      "type": "password",
+      "type": "input",
       "templateOptions": {
+        "type": "password",
         "label": "Password",
         "required": true
       }
     },
     {
       "key": "passwordConf",
-      "type": "password",
+      "type": "input",
       "templateOptions": {
+        "type": "password",
         "label": "Password Confirmation",
         "required": true
       }
