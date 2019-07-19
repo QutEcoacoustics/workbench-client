@@ -9,7 +9,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:ssl": "ng serve --ssl true --port 443",
     "start:fr": "ng serve --configuration=fr",
     "build": "ng build",
     "build:fr": "ng build --configuration=fr",

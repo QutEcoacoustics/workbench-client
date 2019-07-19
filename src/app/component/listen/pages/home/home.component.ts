@@ -2,8 +2,7 @@ import {
   Component,
   OnInit,
   ChangeDetectionStrategy,
-  ViewEncapsulation,
-  OnDestroy
+  ViewEncapsulation
 } from '@angular/core';
 
 @Component({
@@ -13,19 +12,25 @@ import {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListenComponent implements OnInit, OnDestroy {
+export class ListenComponent implements OnInit {
   imageUrl: string;
+  loadAnnotorious: string;
 
   constructor() {}
 
   ngOnInit() {
-    console.debug('Create');
     this.imageUrl =
       'https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fc%2Fc5%2FSpectrogram-19thC.png&f=1';
-  }
+    this.loadAnnotorious = `
+      function init() {
+        if (typeof anno === 'undefined') {
+          setTimeout(init, 500);
+          return;
+        }
 
-  ngOnDestroy() {
-    console.debug('Destroy');
-    this.imageUrl = null;
+        anno.reset();
+        anno.makeAnnotatable(document.getElementById('myImage'));
+      }
+    `;
   }
 }

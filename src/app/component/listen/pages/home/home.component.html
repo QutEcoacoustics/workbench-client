@@ -1,15 +1,5 @@
-<app-script
-  src="assets/libraries/annotorious.min.js"
-  type="text/javascript"
-></app-script>
 <app-script>
-  function init()
-  {{ '{' }}
-  if (typeof anno === 'undefined'){{ '{' }}
-  console.debug('Not loaded'); setTimeout(init, 500); return;
-  {{ '}' }}
-  anno.makeAnnotatable(document.getElementById('myImage'));
-  {{ '}' }}
+  {{ loadAnnotorious }}
 </app-script>
 <div>
   <img onload="init();" [src]="imageUrl" id="myImage" />
