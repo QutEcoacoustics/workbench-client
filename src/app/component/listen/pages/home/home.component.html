@@ -1,11 +1,16 @@
+<app-script
+  src="assets/libraries/annotorious.min.js"
+  type="text/javascript"
+></app-script>
 <app-script>
   function init()
-  {{ '{' }} anno.makeAnnotatable(document.getElementById('myImage')); {{ '}' }}
+  {{ '{' }}
+  if (typeof anno === 'undefined'){{ '{' }}
+  console.debug('Not loaded'); setTimeout(init, 500); return;
+  {{ '}' }}
+  anno.makeAnnotatable(document.getElementById('myImage'));
+  {{ '}' }}
 </app-script>
 <div>
-  <img
-    onload="init();"
-    src="https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fc%2Fc5%2FSpectrogram-19thC.png&f=1"
-    id="myImage"
-  />
+  <img onload="init();" [src]="imageUrl" id="myImage" />
 </div>
