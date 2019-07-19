@@ -7,7 +7,7 @@ import { Card } from 'src/app/component/shared/cards/cards.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class ProjectsHomeComponent implements OnInit {
+export class ProjectsComponent implements OnInit {
   projectList: List<Card>;
 
   constructor() {}

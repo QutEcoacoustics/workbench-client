@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-analysis-request',
-  templateUrl: './request.component.html',
-  styleUrls: ['./request.component.scss'],
+  selector: 'app-listen',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AnalysisRequestComponent implements OnInit {
+export class ListenComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}

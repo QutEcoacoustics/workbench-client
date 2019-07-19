@@ -28,15 +28,17 @@ import { CardComponent } from './component/shared/cards/card/card.component';
 import { CardImageComponent } from './component/shared/cards/card-image/card-image.component';
 import { CardsComponent } from './component/shared/cards/cards.component';
 import { HomeComponent } from './component/home/home.component';
-import { ProjectsHomeComponent } from './component/projects/pages/home/home.component';
+import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
-import { SiteComponent } from './component/projects/pages/site/site.component';
+import { ProjectsSiteComponent } from './component/projects/pages/site/site.component';
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
+import { ListenComponent } from './component/listen/pages/home/home.component';
+import { ScriptComponent } from './component/shared/script/script.component';
 
 @NgModule({
   declarations: [
@@ -47,14 +49,16 @@ import { FormlyEmailInput } from './component/shared/formly/email/email.componen
     CardImageComponent,
     CardsComponent,
     HomeComponent,
-    ProjectsHomeComponent,
+    ProjectsComponent,
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    SiteComponent,
+    ProjectsSiteComponent,
     AnalysisSubmitComponent,
     AnalysisRequestComponent,
-    FormlyEmailInput
+    FormlyEmailInput,
+    ListenComponent,
+    ScriptComponent
   ],
   imports: [
     NgbModule,
