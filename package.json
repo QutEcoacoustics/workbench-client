@@ -37,6 +37,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.0.0-rc.1",
     "@ngx-formly/bootstrap": "^5.2.0",
     "@ngx-formly/core": "^5.2.0",
+    "bootstrap": "^4.3.1",
     "immutable": "^4.0.0-rc.12",
     "marked": "^0.7.0",
     "rxjs": "^6.4.0",
