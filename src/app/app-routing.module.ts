@@ -7,6 +7,7 @@ import { RegisterComponent } from './component/authentication/pages/register/reg
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
+import { ContactComponent } from './component/contact/pages/home/home.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
     ]
   },
   { path: 'listen', component: ListenComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];

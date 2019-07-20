@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Inject } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -17,7 +17,8 @@ import {
   faEnvelope,
   faTable,
   faFileAudio,
-  faChartArea
+  faChartArea,
+  faQuestionCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
@@ -37,6 +38,7 @@ import { AnalysisRequestComponent } from './component/analysis/pages/request/req
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ScriptComponent } from './component/shared/script/script.component';
+import { ContactComponent } from './component/contact/pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,8 @@ import { ScriptComponent } from './component/shared/script/script.component';
     AnalysisRequestComponent,
     FormlyEmailInput,
     ListenComponent,
-    ScriptComponent
+    ScriptComponent,
+    ContactComponent
   ],
   imports: [
     NgbModule,
@@ -85,7 +88,8 @@ export class AppModule {
       faEnvelope,
       faTable,
       faFileAudio,
-      faChartArea
+      faChartArea,
+      faQuestionCircle
     );
   }
 }

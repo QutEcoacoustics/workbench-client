@@ -4,8 +4,8 @@
 
     <div class="form-background clearfix">
       <!-- Icon at top of form -->
-      <div class="avatar">
-        <img src="assets/avatar.png" alt="Avatar" />
+      <div class="avatar d-flex justify-content-center align-content-center">
+        <fa-icon [icon]="['fa', 'user-circle']" class="form-icon"></fa-icon>
       </div>
 
       <form [formGroup]="form" (ngSubmit)="submit(model)">
