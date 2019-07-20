@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { BawApiService } from 'src/app/services/baw-api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +16,13 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
+  error: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private api: BawApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.form = new FormGroup({});
@@ -29,7 +36,23 @@ export class LoginComponent implements OnInit {
     return this.http.get(this._jsonURL);
   }
 
-  submit(model) {
+  clearError() {
+    this.error = null;
+  }
+
+  submit(model: any) {
+    if (this.form.status === 'INVALID') {
+      return;
+    }
+
     console.log(model);
+    this.api.login(model).subscribe(data => {
+      console.log(data);
+      if (typeof data === 'string') {
+        this.error = data;
+      } else {
+        this.router.navigate(['/']);
+      }
+    });
   }
 }

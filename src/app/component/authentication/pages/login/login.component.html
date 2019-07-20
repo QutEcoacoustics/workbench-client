@@ -2,6 +2,10 @@
   <div class="login-form">
     <h2 class="text-center">Member Login</h2>
 
+    <ngb-alert [type]="'danger'" (close)="clearError()" *ngIf="error">{{
+      error
+    }}</ngb-alert>
+
     <div class="form-background clearfix">
       <!-- Icon at top of form -->
       <div class="avatar">

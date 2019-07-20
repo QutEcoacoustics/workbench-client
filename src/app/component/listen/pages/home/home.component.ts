@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ViewEncapsulation
 } from '@angular/core';
+import { BawApiService } from 'src/app/services/baw-api.service';
 
 @Component({
   selector: 'app-listen',
@@ -16,7 +17,7 @@ export class ListenComponent implements OnInit {
   imageUrl: string;
   loadAnnotorious: string;
 
-  constructor() {}
+  constructor(private api: BawApiService) {}
 
   ngOnInit() {
     this.imageUrl =

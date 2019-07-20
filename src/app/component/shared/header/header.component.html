@@ -189,7 +189,7 @@
       </ul>
 
       <!-- Right aligned authentication links -->
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" *ngIf="!loggedIn">
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
             class="nav-link"
