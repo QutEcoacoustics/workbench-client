@@ -23,28 +23,60 @@ export class HeaderComponent implements OnInit {
       if (val instanceof NavigationEnd) {
         this.updateActiveLink(val.url);
         this.checkAuthenticated();
+        this.toggleCollapse(false);
       }
     });
   }
 
-  isActive(link: string) {
+  /**
+   * Check if navbar link is active
+   * @param link Navbar link
+   * @returns True if navbar is active
+   */
+  isActive(link: string): boolean {
     return this.activeLink.toLowerCase() === link.toLowerCase();
   }
 
+  /**
+   * Update the active link variable using the router url
+   * @param url Router url
+   */
   updateActiveLink(url: string) {
     this.activeLink = url.split('/')[1];
   }
 
+  /**
+   * Check if user is authenticated
+   */
   checkAuthenticated() {
-    console.debug('Checking authentication');
     this.loggedIn = this.api.loggedIn;
   }
 
-  toggleCollapse() {
-    this.collapsed = !this.collapsed;
+  /**
+   * Toggle the collapse of the navbar
+   * @param setState Set the state of the navbar
+   */
+  toggleCollapse(setState?: boolean) {
+    if (setState) {
+      this.collapsed = setState;
+    } else {
+      this.collapsed = !this.collapsed;
+    }
   }
 
+  /**
+   * Toggle the collapse of a dropdown element
+   * @param el Dropdown element
+   */
   toggleDropdown(el: HTMLAnchorElement) {
     el.classList.toggle('show');
+  }
+
+  /**
+   * Logout user
+   */
+  logout() {
+    this.api.logout();
+    this.checkAuthenticated();
   }
 }

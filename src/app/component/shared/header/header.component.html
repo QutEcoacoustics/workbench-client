@@ -188,7 +188,7 @@
         </li>
       </ul>
 
-      <!-- Right aligned authentication links -->
+      <!-- Right aligned unauthenticated links -->
       <ul class="navbar-nav" *ngIf="!loggedIn">
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
@@ -211,6 +211,16 @@
             Register
           </a>
           <span class="sr-only" *ngIf="isActive('Register')">(current)</span>
+        </li>
+      </ul>
+
+      <!-- Right aligned authenticated links -->
+      <ul class="navbar-nav" *ngIf="loggedIn">
+        <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
+          <a class="nav-link" (click)="logout()">
+            Logout
+          </a>
+          <span class="sr-only" *ngIf="isActive('Logout')">(current)</span>
         </li>
       </ul>
     </div>

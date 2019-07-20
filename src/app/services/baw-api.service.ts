@@ -14,9 +14,20 @@ import { catchError, retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BawApiService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const auth_token = sessionStorage.getItem(this.SESSION_STORAGE.auth_token);
+    const user_name = sessionStorage.getItem(this.SESSION_STORAGE.user_name);
 
-  private _authentication_token: string;
+    if (auth_token && user_name) {
+      this._auth_token = auth_token;
+      this._user_name = user_name;
+
+      console.debug(this._auth_token);
+      console.debug(this._user_name);
+    }
+  }
+
+  private _auth_token: string;
   private _user_name: string;
   private _bawClientUrl = 'https://staging.ecosounds.org';
   private _httpOptions = {
@@ -25,9 +36,14 @@ export class BawApiService {
       'Content-Type': 'application/json'
     })
   };
+
   private RETURN_CODE = {
     SUCCESS: 200,
     BAD_AUTHENTICATION: 401
+  };
+  private SESSION_STORAGE = {
+    auth_token: 'auth_token',
+    user_name: 'user_name'
   };
 
   /**
@@ -44,6 +60,20 @@ export class BawApiService {
   }
 
   /**
+   * Logout user and clear session storage values
+   */
+  logout() {
+    if (this.loggedIn) {
+      return;
+    }
+
+    this._auth_token = null;
+    this._user_name = null;
+    sessionStorage.removeItem(this.SESSION_STORAGE.auth_token);
+    sessionStorage.removeItem(this.SESSION_STORAGE.user_name);
+  }
+
+  /**
    * Login the user, this function can only be called if user
    * is not logged in. Details are retrieved directly from the
    * login form template so that changes to the api are reflected
@@ -53,7 +83,7 @@ export class BawApiService {
    */
   login(details: {}): Observable<boolean | string> {
     const subject = new Subject<boolean | string>();
-    if (this._authentication_token) {
+    if (this._auth_token) {
       subject.next('User already logged in');
     }
 
@@ -67,14 +97,22 @@ export class BawApiService {
       .subscribe(
         data => {
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            this._authentication_token = data.data.auth_token;
+            this._auth_token = data.data.auth_token;
             this._user_name = data.data.user_name;
             this._httpOptions = {
               headers: this._httpOptions.headers.append(
                 'Authorization',
-                `Token token "${this._authentication_token}"`
+                `Token token "${this._auth_token}"`
               )
             };
+            sessionStorage.setItem(
+              this.SESSION_STORAGE.auth_token,
+              this._auth_token
+            );
+            sessionStorage.setItem(
+              this.SESSION_STORAGE.user_name,
+              this._user_name
+            );
             subject.next(true);
           } else {
             console.error('Unknown error thrown by login rest api');
@@ -96,17 +134,26 @@ export class BawApiService {
     return subject.asObservable();
   }
 
+  /**
+   * Check if user is logged in
+   * TODO Ping API to check token is still valid
+   */
   get loggedIn() {
-    return !!this._authentication_token;
+    return !!this._auth_token;
   }
 
   /**
    * Username of the logged in user
    */
-  get username() {
+  get user_name() {
     return this._user_name ? this._user_name : 'NOT LOGGED IN';
   }
 
+  /**
+   * Writes error to console and throws error
+   * @param error HTTP Error
+   * @throws Observable<never>
+   */
   private handleError(error: HttpErrorResponse): Observable<string> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
