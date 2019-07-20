@@ -29,7 +29,6 @@ import { CardsComponent } from './component/shared/cards/cards.component';
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
-import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProjectsSiteComponent } from './component/projects/pages/site/site.component';
@@ -50,7 +49,6 @@ import { ScriptComponent } from './component/shared/script/script.component';
     HomeComponent,
     ProjectsComponent,
     LoginComponent,
-    LogoutComponent,
     RegisterComponent,
     ProjectsSiteComponent,
     AnalysisSubmitComponent,

@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
       if (val instanceof NavigationEnd) {
         this.updateActiveLink(val.url);
         this.checkAuthenticated();
-        this.toggleCollapse(false);
+        this.toggleCollapse(true);
       }
     });
   }

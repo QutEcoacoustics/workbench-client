@@ -37,6 +37,11 @@ section {
   }
 }
 
+.body {
+  background-color: $light;
+  min-height: calc(100vh - 7rem);
+}
+
 .toImplement h1 {
   color: red !important;
 }

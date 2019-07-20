@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
-import { LogoutComponent } from './component/authentication/pages/logout/logout.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
@@ -21,7 +20,6 @@ const routes: Routes = [
   },
   { path: 'listen', component: ListenComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'logout', component: LogoutComponent },
   { path: 'register', component: RegisterComponent }
 ];
 
