@@ -39,6 +39,11 @@ export class CardsComponent implements OnInit {
     });
   }
 
+  /**
+   * Check input field is provided
+   * @param name Input variable name
+   * @param input Input variable
+   */
   checkRequiredFields(name: string, input: any) {
     if (input === null || input === undefined) {
       throw new Error('Attribute ' + name + ' is required');
@@ -46,6 +51,9 @@ export class CardsComponent implements OnInit {
   }
 }
 
+/**
+ * Card Interface
+ */
 export interface Card {
   title: string;
   image?: { url: string; alt: string };

@@ -32,14 +32,25 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieve the form template in JSON
+   * @returns Observable JSON containing form details
+   */
   getJSON(): Observable<any> {
     return this.http.get(this._jsonURL);
   }
 
+  /**
+   * Clear form error
+   */
   clearError() {
     this.error = null;
   }
 
+  /**
+   * Form submission
+   * @param model Form response
+   */
   submit(model: any) {
     if (this.form.status === 'INVALID') {
       return;

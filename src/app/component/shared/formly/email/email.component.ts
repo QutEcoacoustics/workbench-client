@@ -18,6 +18,10 @@ export class FormlyEmailInput extends FieldType implements OnInit {
     this.invalid = false;
   }
 
+  /**
+   * Check for error in form
+   * @param event HTML event element
+   */
   checkError(event: any) {
     this.invalid = !event.srcElement.validity.valid;
   }

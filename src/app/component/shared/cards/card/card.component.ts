@@ -22,6 +22,11 @@ export class CardComponent implements OnInit {
     this.checkRequiredFields('title', this.title);
   }
 
+  /**
+   * Check input field is provided
+   * @param name Input variable name
+   * @param input Input variable
+   */
   checkRequiredFields(name: string, input: any) {
     if (input === null || input === undefined) {
       throw new Error('Attribute ' + name + ' is required');

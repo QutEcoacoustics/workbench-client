@@ -18,11 +18,7 @@ export class ContactComponent implements OnInit {
   fields: FormlyFieldConfig[];
   error: string;
 
-  constructor(
-    private http: HttpClient,
-    private api: BawApiService,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.form = new FormGroup({});

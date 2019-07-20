@@ -170,6 +170,9 @@ export class BawApiService {
   }
 }
 
+/**
+ * Login interface
+ */
 interface AuthenticationLogin {
   meta: {
     message: string;
@@ -182,7 +185,10 @@ interface AuthenticationLogin {
   };
 }
 
-export interface Projects {
+/**
+ * Projects interface
+ */
+interface Projects {
   meta: {
     status: number;
     message: string;
