@@ -1,4 +1,4 @@
-<section class="toImplement container-fluid body">
+<section class="toImplement container body">
   <div class="row pl-3 pr-3 pr-xl-0">
     <!-- Navigation Bar -->
     <div class="col-lg-2 col-sm-12 p-0 mb-3">
@@ -39,17 +39,10 @@
       <div class="row">
         <!-- Profile icon and download -->
         <div class="col-md-4 col-12 mb-3">
-          <!-- Icon -->
-          <div class="thumbnail">
-            <img
-              alt="Allcharles"
-              src="https://www.ecosounds.org/images/user/user_span3.png"
-            />
-            <div class="caption">
-              <p>Last seen 2 minutes ago</p>
-              <p>Member for 7 months</p>
-            </div>
-          </div>
+          <app-profile-icon
+            [icon]="'https://staging.ecosounds.org/images/user/user_span3.png'"
+            [user_name]="'Allcharles'"
+          ></app-profile-icon>
 
           <!-- Download Annotations -->
           <div class="card">
@@ -57,7 +50,10 @@
               Download
             </div>
             <div class="card-body">
-              <a href="#" class="card-text m-0">
+              <a
+                href="https://staging.ecosounds.org/data_request?selected_timezone_name=UTC&selected_user_id=1"
+                class="card-text m-0"
+              >
                 Annotations you've created
               </a>
             </div>
@@ -67,76 +63,10 @@
         <!-- Profile Overview -->
         <div class="col-md-8 col-12">
           <!-- Profile Statistics -->
-          <div class="row mb-3">
-            <div class="col-sm-6 mb-3">
-              <ul class="list-group">
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Projects
-                  <span class="badge badge-success badge-pill">
-                    8
-                  </span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Tags
-                  <span class="badge badge-success badge-pill">
-                    0
-                  </span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Bookmarks
-                  <span class="badge badge-success badge-pill">
-                    1
-                  </span>
-                </li>
-              </ul>
-            </div>
-            <div class="col-sm-6 mb-3">
-              <ul class="list-group">
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Sites
-                  <span class="badge badge-success badge-pill">
-                    177
-                  </span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Annotations
-                  <span class="badge badge-success badge-pill">
-                    0
-                  </span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Comments
-                  <span class="badge badge-success badge-pill">
-                    0
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <app-profile-statistics [stats]="stats"></app-profile-statistics>
 
           <!-- Popular Tags -->
-          <div class="card">
-            <div class="card-header">
-              Most Popular Tags
-            </div>
-            <div class="card-body">
-              <p class="card-text">
-                No annotations
-              </p>
-            </div>
-          </div>
+          <app-profile-tags [tags]="tags"></app-profile-tags>
         </div>
       </div>
     </div>

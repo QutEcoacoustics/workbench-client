@@ -8,19 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faBriefcase,
-  faBug,
-  faChartArea,
-  faEnvelope,
-  faFileAudio,
-  faGlobeAsia,
-  faNewspaper,
-  faQuestionCircle,
-  faTable,
-  faUserCircle,
-  faUsers
-} from '@fortawesome/free-solid-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './component/shared/header/header.component';
@@ -45,6 +33,9 @@ import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.comp
 import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
 import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
 import { ProfileComponent } from './component/profile/pages/home/home.component';
+import { ProfileIconComponent } from './component/profile/icon/icon.component';
+import { ProfileStatisticsComponent } from './component/profile/statistics/statistics.component';
+import { ProfileTagsComponent } from './component/profile/tags/tags.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +60,10 @@ import { ProfileComponent } from './component/profile/pages/home/home.component'
     AboutEthicsComponent,
     AboutCreditsComponent,
     AboutDisclaimersComponent,
-    ProfileComponent
+    ProfileComponent,
+    ProfileIconComponent,
+    ProfileStatisticsComponent,
+    ProfileTagsComponent
   ],
   imports: [
     NgbModule,
@@ -90,18 +84,6 @@ import { ProfileComponent } from './component/profile/pages/home/home.component'
 })
 export class AppModule {
   constructor() {
-    library.add(
-      faBriefcase,
-      faBug,
-      faChartArea,
-      faEnvelope,
-      faFileAudio,
-      faGlobeAsia,
-      faNewspaper,
-      faQuestionCircle,
-      faTable,
-      faUserCircle,
-      faUsers
-    );
+    library.add(fas);
   }
 }

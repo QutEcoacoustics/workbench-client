@@ -1,0 +1,21 @@
+<div class="card">
+  <div class="card-header">
+    Most Popular Tags
+  </div>
+  <div class="card-body p-0">
+    <ul class="card-text list-group">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+        *ngFor="let tag of tags"
+      >
+        <span>
+          <div class="icon-wrapper">
+            <fa-icon [icon]="['fas', 'tag']"></fa-icon>
+          </div>
+          <a [href]="tag.link"> {{ tag.tag }}</a>
+        </span>
+        <span class="badge badge-success badge-pill">{{ tag.value }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
