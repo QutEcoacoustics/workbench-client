@@ -21,7 +21,6 @@ import { ProjectsComponent } from './component/projects/pages/home/home.componen
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ProjectsSiteComponent } from './component/projects/pages/site/site.component';
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
@@ -49,7 +48,6 @@ import { ProfileTagsComponent } from './component/profile/tags/tags.component';
     ProjectsComponent,
     LoginComponent,
     RegisterComponent,
-    ProjectsSiteComponent,
     AnalysisSubmitComponent,
     AnalysisRequestComponent,
     FormlyEmailInput,

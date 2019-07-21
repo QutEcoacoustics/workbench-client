@@ -26,9 +26,9 @@ const routes: Routes = [
   },
   { path: 'listen', component: ListenComponent },
   {
-    path: 'contact',
+    path: 'about',
     children: [
-      { path: '', pathMatch: 'full', component: AboutContactComponent },
+      { path: 'contact', component: AboutContactComponent },
       { path: 'report', component: AboutReportComponent },
       { path: 'ethics', component: AboutEthicsComponent },
       { path: 'credits', component: AboutCreditsComponent },

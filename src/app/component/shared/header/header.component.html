@@ -91,15 +91,6 @@
             </a>
             <a
               ngbDropdownItem
-              i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
-              </div>
-              Resources
-            </a>
-            <a
-              ngbDropdownItem
               i18n="Navbar Research People Link|Link to list of people working on the research articles@@navbarPeople"
             >
               <div class="icon-wrapper">
@@ -115,6 +106,15 @@
                 <fa-icon [icon]="['fas', 'globe-asia']"></fa-icon>
               </div>
               Publications
+            </a>
+            <a
+              ngbDropdownItem
+              i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
+              </div>
+              Resources
             </a>
           </div>
         </li>
@@ -134,14 +134,12 @@
           <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
             <a
               ngbDropdownItem
-              i18n="Navbar Anaysis Send Audio Link|Link to upload audio to research team@@navbarSendAudio"
-              routerLink="/analysis/submit"
-              routerLinkActive="active"
+              i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
+                <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
               </div>
-              Send Audio
+              Audio Analysis
             </a>
             <a
               ngbDropdownItem
@@ -156,12 +154,14 @@
             </a>
             <a
               ngbDropdownItem
-              i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
+              i18n="Navbar Anaysis Send Audio Link|Link to upload audio to research team@@navbarSendAudio"
+              routerLink="/analysis/submit"
+              routerLinkActive="active"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
+                <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
               </div>
-              Audio Analysis
+              Send Audio
             </a>
             <a
               ngbDropdownItem
@@ -176,16 +176,69 @@
         </li>
 
         <!-- Contact Us links-->
-        <li class="nav-item" [ngClass]="{ active: isActive('Contact Us') }">
+        <li class="nav-item dropdown" ngbDropdown>
           <a
-            class="nav-link"
-            routerLink="/contact"
-            routerLinkActive="active"
-            i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
+            id="dropdownBasic2"
+            ngbDropdownToggle
+            class="nav-link dropdown-toggle"
+            [ngClass]="{ active: isActive('about') }"
           >
-            Contact Us
+            About
           </a>
-          <span class="sr-only" *ngIf="isActive('Contact Us')">(current)</span>
+          <span class="sr-only" *ngIf="isActive('about')">(current)</span>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+            <a
+              ngbDropdownItem
+              routerLink="/about/report"
+              routerLinkActive="active"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'bug']"></fa-icon>
+              </div>
+              Report Problem
+            </a>
+            <a
+              ngbDropdownItem
+              routerLink="/about/contact"
+              routerLinkActive="active"
+              i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fa', 'users']"></fa-icon>
+              </div>
+              Contact Us
+            </a>
+            <a
+              ngbDropdownItem
+              routerLink="/about/credits"
+              routerLinkActive="active"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'hands-helping']"></fa-icon>
+              </div>
+              Credits
+            </a>
+            <a
+              ngbDropdownItem
+              routerLink="/about/disclaimers"
+              routerLinkActive="active"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon>
+              </div>
+              Disclaimers
+            </a>
+            <a
+              ngbDropdownItem
+              routerLink="/about/ethics"
+              routerLinkActive="active"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'balance-scale']"></fa-icon>
+              </div>
+              Ethics
+            </a>
+          </div>
         </li>
       </ul>
 

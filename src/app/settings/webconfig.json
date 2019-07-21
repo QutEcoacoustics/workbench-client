@@ -1,153 +1,201 @@
 {
   "routes": [
     {
-      "/": {
-        "title": "Ecosounds",
-        "description": "Home Directory",
+      "": {
+        "authenticated": false,
         "component": "HomeComponent",
-        "nav": true
+        "dropdown": false,
+        "nav": "Ecosounds",
+        "title": "Ecosounds",
+        "production": true
       },
-      "/projects": {
+      "projects": {
+        "authenticated": false,
+        "component": "ProjectsComponent",
+        "dropdown": false,
+        "nav": "Projects",
         "title": "Projects",
-        "description": "Acoustic research projects",
-        "component": "ProjectsHomeComponent",
-        "nav": true,
-        "routes": [
-          {
-            "/:project": {
-              "title": "Project",
-              "description": "Project description",
-              "component": "ProjectsProjectComponent",
-              "nav": false,
-              "routes": [
-                {
-                  "/:site": {
-                    "title": "Site",
-                    "description": "Site description",
-                    "component": "ProjectsSiteComponent",
-                    "nav": false
-                  }
-                }
-              ]
-            }
-          }
-        ]
+        "production": true
       },
-      "/listen": {
-        "title": "Listen",
-        "description": "Listen to recent audio recordings",
+      "listen": {
+        "authenticated": true,
         "component": "ListenComponent",
-        "nav": true
+        "dropdown": false,
+        "nav": "Listen",
+        "title": "Listen",
+        "production": true
       },
-      "/library": {
-        "title": "Library",
-        "description": "Annotation Library",
+      "library": {
+        "authenticated": true,
         "component": "LibraryComponent",
-        "nav": true
+        "dropdown": false,
+        "nav": "Library",
+        "title": "Library",
+        "production": false
       },
-      "/research": {
+      "research": {
+        "dropdown": true,
+        "nav": "Research",
         "title": "Research",
-        "description": "Listen to recent audio recordings",
-        "nav": false,
+        "production": false,
         "routes": [
           {
-            "/about": {
-              "title": "About",
-              "description": "About the research performed",
+            "about": {
+              "authenticated": false,
               "component": "ResearchAboutComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "About",
+              "title": "About",
+              "production": false
             }
           },
           {
-            "/articles": {
-              "title": "Articles",
-              "description": "Research articles from the research group",
+            "articles": {
+              "authenticated": false,
               "component": "ResearchArticlesComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Articles",
+              "title": "Articles",
+              "production": false
             }
           },
           {
-            "/resources": {
-              "title": "Resources",
-              "description": "Resources published by the research group",
+            "resources": {
+              "authenticated": false,
               "component": "ResearchResourcesComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Resources",
+              "title": "Resources",
+              "production": false
             }
           },
           {
-            "/people": {
-              "title": "People",
-              "description": "People in the research group",
+            "people": {
+              "authenticated": false,
               "component": "ResearchPeopleComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "People",
+              "title": "People",
+              "production": false
             }
           },
           {
-            "/publications": {
-              "title": "Publications",
-              "description": "Publications by the research group",
+            "publications": {
+              "authenticated": false,
               "component": "ResearchPublicationsComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Publications",
+              "title": "Publications",
+              "production": false
             }
           }
         ]
       },
-      "/analysis": {
+      "analysis": {
+        "dropdown": true,
+        "nav": "Analysis",
         "title": "Analysis",
-        "description": "Group of online analysis tools",
-        "nav": false,
+        "production": true,
         "routes": [
           {
-            "/submit": {
-              "title": "Send Audio",
-              "description": "Submit audio samples to the website",
+            "submit": {
+              "authenticated": false,
               "component": "AnalysisSubmitComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Submit Audio",
+              "title": "Submit Audio",
+              "production": true
             }
           },
           {
-            "/request": {
-              "title": "Data Request",
-              "description": "Request customised data from the website",
+            "request": {
+              "authenticated": false,
               "component": "AnalysisRequestComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Data Request",
+              "title": "Data Request",
+              "production": true
             }
           },
           {
-            "/analysis": {
+            "audio": {
+              "authenticated": true,
+              "component": "AnalysisAudioComponent",
+              "dropdown": false,
+              "nav": "Audio Analysis",
               "title": "Audio Analysis",
-              "description": "Analyse audio files on the website",
-              "component": "AnalysisAnalysisComponent",
-              "nav": true
+              "production": false
             }
           },
           {
-            "/statistics": {
-              "title": "Website Statistics",
-              "description": "Statistics about the website and the analysis performed by the research group",
+            "statistics": {
+              "authenticated": false,
               "component": "AnalysisStatisticsComponent",
-              "nav": true
+              "dropdown": false,
+              "nav": "Website Statistics",
+              "title": "Website Statistics",
+              "production": false
             }
           }
         ]
       },
-      "/contact": {
-        "title": "Contact Us",
-        "description": "Contact the research group",
-        "component": "ContactComponent",
-        "nav": true
-      },
-      "/login": {
-        "title": "Login",
-        "description": "Login to account",
-        "component": "LoginComponent",
-        "nav": true
-      },
-      "/register": {
-        "title": "Register",
-        "description": "Register new account",
-        "component": "RegisterComponent",
-        "nav": true
+      "about": {
+        "dropdown": true,
+        "nav": "About",
+        "title": "About",
+        "production": true,
+        "routes": [
+          {
+            "report": {
+              "authenticated": false,
+              "component": "AboutReportComponent",
+              "dropdown": false,
+              "nav": "Report Problem",
+              "title": "Report Problem",
+              "production": true
+            }
+          },
+          {
+            "contact": {
+              "authenticated": false,
+              "component": "AboutContactComponent",
+              "dropdown": false,
+              "nav": "Contact",
+              "title": "Contact",
+              "production": true
+            }
+          },
+          {
+            "credit": {
+              "authenticated": false,
+              "component": "AboutCreditComponent",
+              "dropdown": false,
+              "nav": "Credit",
+              "title": "Credit",
+              "production": true
+            }
+          },
+          {
+            "disclaimers": {
+              "authenticated": false,
+              "component": "AboutDisclaimersComponent",
+              "dropdown": false,
+              "nav": "Disclaimers",
+              "title": "Disclaimers",
+              "production": true
+            }
+          },
+          {
+            "ethics": {
+              "authenticated": false,
+              "component": "AboutEthicsComponent",
+              "dropdown": false,
+              "nav": "Ethics",
+              "title": "Ethics",
+              "production": true
+            }
+          }
+        ]
       }
     }
   ]
