@@ -41,6 +41,9 @@ import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ScriptComponent } from './component/shared/script/script.component';
 import { ContactComponent } from './component/contact/pages/home/home.component';
 import { ContactReportComponent } from './component/contact/pages/report/report.component';
+import { ContactEthicsComponent } from './component/contact/pages/ethics/ethics.component';
+import { ContactCreditsComponent } from './component/contact/pages/credits/credits.component';
+import { ContactDisclaimersComponent } from './component/contact/pages/disclaimers/disclaimers.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +64,10 @@ import { ContactReportComponent } from './component/contact/pages/report/report.
     ListenComponent,
     ScriptComponent,
     ContactComponent,
-    ContactReportComponent
+    ContactReportComponent,
+    ContactEthicsComponent,
+    ContactCreditsComponent,
+    ContactDisclaimersComponent
   ],
   imports: [
     NgbModule,

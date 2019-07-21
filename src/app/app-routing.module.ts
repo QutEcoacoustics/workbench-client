@@ -9,6 +9,9 @@ import { AnalysisRequestComponent } from './component/analysis/pages/request/req
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ContactComponent } from './component/contact/pages/home/home.component';
 import { ContactReportComponent } from './component/contact/pages/report/report.component';
+import { ContactEthicsComponent } from './component/contact/pages/ethics/ethics.component';
+import { ContactCreditsComponent } from './component/contact/pages/credits/credits.component';
+import { ContactDisclaimersComponent } from './component/contact/pages/disclaimers/disclaimers.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
@@ -25,7 +28,10 @@ const routes: Routes = [
     path: 'contact',
     children: [
       { path: '', pathMatch: 'full', component: ContactComponent },
-      { path: 'report', component: ContactReportComponent }
+      { path: 'report', component: ContactReportComponent },
+      { path: 'ethics', component: ContactEthicsComponent },
+      { path: 'credits', component: ContactCreditsComponent },
+      { path: 'disclaimers', component: ContactDisclaimersComponent }
     ]
   },
   { path: 'login', component: LoginComponent },
