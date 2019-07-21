@@ -8,9 +8,10 @@ import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submi
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ContactComponent } from './component/contact/pages/home/home.component';
+import { ContactReportComponent } from './component/contact/pages/report/report.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', pathMatch: 'full', component: HomeComponent },
   { path: 'projects', component: ProjectsComponent },
   {
     path: 'analysis',
@@ -20,7 +21,13 @@ const routes: Routes = [
     ]
   },
   { path: 'listen', component: ListenComponent },
-  { path: 'contact', component: ContactComponent },
+  {
+    path: 'contact',
+    children: [
+      { path: '', pathMatch: 'full', component: ContactComponent },
+      { path: 'report', component: ContactReportComponent }
+    ]
+  },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];

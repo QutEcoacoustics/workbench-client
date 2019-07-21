@@ -9,16 +9,17 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faUsers,
-  faNewspaper,
   faBriefcase,
-  faUserCircle,
-  faGlobeAsia,
-  faEnvelope,
-  faTable,
-  faFileAudio,
+  faBug,
   faChartArea,
-  faQuestionCircle
+  faEnvelope,
+  faFileAudio,
+  faGlobeAsia,
+  faNewspaper,
+  faQuestionCircle,
+  faTable,
+  faUserCircle,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
@@ -39,6 +40,7 @@ import { FormlyEmailInput } from './component/shared/formly/email/email.componen
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ScriptComponent } from './component/shared/script/script.component';
 import { ContactComponent } from './component/contact/pages/home/home.component';
+import { ContactReportComponent } from './component/contact/pages/report/report.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,8 @@ import { ContactComponent } from './component/contact/pages/home/home.component'
     FormlyEmailInput,
     ListenComponent,
     ScriptComponent,
-    ContactComponent
+    ContactComponent,
+    ContactReportComponent
   ],
   imports: [
     NgbModule,
@@ -80,16 +83,17 @@ import { ContactComponent } from './component/contact/pages/home/home.component'
 export class AppModule {
   constructor() {
     library.add(
-      faUsers,
-      faNewspaper,
       faBriefcase,
-      faUserCircle,
-      faGlobeAsia,
-      faEnvelope,
-      faTable,
-      faFileAudio,
+      faBug,
       faChartArea,
-      faQuestionCircle
+      faEnvelope,
+      faFileAudio,
+      faGlobeAsia,
+      faNewspaper,
+      faQuestionCircle,
+      faTable,
+      faUserCircle,
+      faUsers
     );
   }
 }
