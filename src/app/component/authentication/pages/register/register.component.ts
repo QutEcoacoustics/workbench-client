@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-authentication-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

@@ -5,11 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-contact-report',
+  selector: 'app-about-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss']
 })
-export class ContactReportComponent implements OnInit {
+export class AboutReportComponent implements OnInit {
   private _jsonURL = 'assets/templates/report-form-template.json';
   form: FormGroup;
   model: {};

@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-contact-credits',
+  selector: 'app-about-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContactCreditsComponent implements OnInit {
+export class AboutCreditsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}

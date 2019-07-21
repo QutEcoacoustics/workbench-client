@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-contact-ethics',
+  selector: 'app-about-ethics',
   templateUrl: './ethics.component.html',
   styleUrls: ['./ethics.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContactEthicsComponent implements OnInit {
+export class AboutEthicsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}

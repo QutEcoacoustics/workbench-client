@@ -7,11 +7,11 @@ import { RegisterComponent } from './component/authentication/pages/register/reg
 import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
-import { ContactComponent } from './component/contact/pages/home/home.component';
-import { ContactReportComponent } from './component/contact/pages/report/report.component';
-import { ContactEthicsComponent } from './component/contact/pages/ethics/ethics.component';
-import { ContactCreditsComponent } from './component/contact/pages/credits/credits.component';
-import { ContactDisclaimersComponent } from './component/contact/pages/disclaimers/disclaimers.component';
+import { AboutContactComponent } from './component/about/pages/contact/contact.component';
+import { AboutReportComponent } from './component/about/pages/report/report.component';
+import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
+import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
+import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
@@ -27,11 +27,11 @@ const routes: Routes = [
   {
     path: 'contact',
     children: [
-      { path: '', pathMatch: 'full', component: ContactComponent },
-      { path: 'report', component: ContactReportComponent },
-      { path: 'ethics', component: ContactEthicsComponent },
-      { path: 'credits', component: ContactCreditsComponent },
-      { path: 'disclaimers', component: ContactDisclaimersComponent }
+      { path: '', pathMatch: 'full', component: AboutContactComponent },
+      { path: 'report', component: AboutReportComponent },
+      { path: 'ethics', component: AboutEthicsComponent },
+      { path: 'credits', component: AboutCreditsComponent },
+      { path: 'disclaimers', component: AboutDisclaimersComponent }
     ]
   },
   { path: 'login', component: LoginComponent },

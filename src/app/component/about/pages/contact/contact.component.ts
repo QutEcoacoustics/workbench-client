@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BawApiService } from 'src/app/services/baw-api.service';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
-  selector: 'app-contact-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'app-about-home',
+  templateUrl: './contact.component.html',
+  styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class AboutContactComponent implements OnInit {
   private _jsonURL = 'assets/templates/contact-form-template.json';
   form: FormGroup;
   model: {};

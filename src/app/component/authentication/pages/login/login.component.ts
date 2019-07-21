@@ -7,7 +7,7 @@ import { BawApiService } from 'src/app/services/baw-api.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-authentication-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

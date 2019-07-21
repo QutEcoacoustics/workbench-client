@@ -39,11 +39,11 @@ import { AnalysisRequestComponent } from './component/analysis/pages/request/req
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { ScriptComponent } from './component/shared/script/script.component';
-import { ContactComponent } from './component/contact/pages/home/home.component';
-import { ContactReportComponent } from './component/contact/pages/report/report.component';
-import { ContactEthicsComponent } from './component/contact/pages/ethics/ethics.component';
-import { ContactCreditsComponent } from './component/contact/pages/credits/credits.component';
-import { ContactDisclaimersComponent } from './component/contact/pages/disclaimers/disclaimers.component';
+import { AboutContactComponent } from './component/about/pages/contact/contact.component';
+import { AboutReportComponent } from './component/about/pages/report/report.component';
+import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
+import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
+import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
 
 @NgModule({
   declarations: [
@@ -63,11 +63,11 @@ import { ContactDisclaimersComponent } from './component/contact/pages/disclaime
     FormlyEmailInput,
     ListenComponent,
     ScriptComponent,
-    ContactComponent,
-    ContactReportComponent,
-    ContactEthicsComponent,
-    ContactCreditsComponent,
-    ContactDisclaimersComponent
+    AboutContactComponent,
+    AboutReportComponent,
+    AboutEthicsComponent,
+    AboutCreditsComponent,
+    AboutDisclaimersComponent
   ],
   imports: [
     NgbModule,
