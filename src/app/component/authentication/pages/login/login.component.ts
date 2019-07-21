@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { BawApiService } from 'src/app/services/baw-api.service';
+import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router } from '@angular/router';
 
 @Component({
