@@ -63,7 +63,7 @@ export class BawApiService {
    * Logout user and clear session storage values
    */
   logout() {
-    if (this.loggedIn) {
+    if (!this.loggedIn) {
       return;
     }
 
@@ -83,7 +83,7 @@ export class BawApiService {
    */
   login(details: {}): Observable<boolean | string> {
     const subject = new Subject<boolean | string>();
-    if (this._auth_token) {
+    if (this.loggedIn) {
       subject.next('User already logged in');
     }
 

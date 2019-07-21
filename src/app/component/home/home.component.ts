@@ -66,24 +66,5 @@ export class HomeComponent implements OnInit {
         link: 'https://www.ecosounds.org/projects/1029'
       }
     ]);
-
-    this.postList = List();
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(response => response.json())
-      .then(json =>
-        json.map(
-          (row: {
-            userId: Number;
-            id: Number;
-            title: string;
-            body: string;
-          }) => {
-            return { title: row.title, description: row.body };
-          }
-        )
-      )
-      .then(posts => {
-        this.postList = List(posts);
-      });
   }
 }

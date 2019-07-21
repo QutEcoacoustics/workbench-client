@@ -44,6 +44,7 @@ import { AboutReportComponent } from './component/about/pages/report/report.comp
 import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
 import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
 import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
+import { ProfileComponent } from './component/profile/pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/d
     AboutReportComponent,
     AboutEthicsComponent,
     AboutCreditsComponent,
-    AboutDisclaimersComponent
+    AboutDisclaimersComponent,
+    ProfileComponent
   ],
   imports: [
     NgbModule,

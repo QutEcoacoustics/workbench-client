@@ -12,10 +12,10 @@ $white: #fff;
 /* You can add global styles to this file, and also import other style files */
 html,
 body {
+  background-color: $light;
   padding: 0px;
   margin: 0px;
   height: 100%;
-  background-color: #dfe7e9;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -38,7 +38,6 @@ section {
 }
 
 .body {
-  background-color: $light;
   min-height: calc(100vh - 7rem);
 }
 

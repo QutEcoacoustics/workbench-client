@@ -12,6 +12,7 @@ import { AboutReportComponent } from './component/about/pages/report/report.comp
 import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
 import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
 import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
+import { ProfileComponent } from './component/profile/pages/home/home.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
@@ -33,6 +34,10 @@ const routes: Routes = [
       { path: 'credits', component: AboutCreditsComponent },
       { path: 'disclaimers', component: AboutDisclaimersComponent }
     ]
+  },
+  {
+    path: 'profile',
+    children: [{ path: '', pathMatch: 'full', component: ProfileComponent }]
   },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }

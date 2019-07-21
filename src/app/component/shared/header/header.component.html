@@ -217,6 +217,20 @@
 
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="loggedIn">
+        <li class="nav-item" [ngClass]="{ active: isActive('Profile') }">
+          <a
+            class="nav-link login-widget"
+            routerLink="/profile"
+            routerLinkActive="active"
+          >
+            <span>Allcharles</span>
+            <img
+              src="https://staging.ecosounds.org/images/user/user_spanhalf.png"
+              alt="Profile Icon"
+            />
+          </a>
+          <span class="sr-only" *ngIf="isActive('Profile')">(current)</span>
+        </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
           <a class="nav-link" (click)="logout()">
             Logout
