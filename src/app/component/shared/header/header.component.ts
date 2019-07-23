@@ -77,6 +77,5 @@ export class HeaderComponent implements OnInit {
    */
   logout() {
     this.api.logout();
-    this.checkAuthenticated();
   }
 }

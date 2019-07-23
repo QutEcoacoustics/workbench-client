@@ -50,8 +50,9 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
           <a
             class="nav-link"
-            href="#"
             i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
+            routerLink="/library"
+            routerLinkActive="active"
           >
             Library
           </a>
@@ -59,7 +60,7 @@
         </li>
 
         <!-- Research links -->
-        <li class="nav-item dropdown" ngbDropdown>
+        <li class="nav-item dropdown" ngbDropdown *ngIf="false">
           <a
             id="dropdownBasic1"
             ngbDropdownToggle
@@ -135,6 +136,8 @@
             <a
               ngbDropdownItem
               i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
+              routerLink="/analysis/audio"
+              routerLinkActive="active"
             >
               <div class="icon-wrapper">
                 <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
@@ -166,6 +169,8 @@
             <a
               ngbDropdownItem
               i18n="Navbar Statistics Link|Link to website statistics@@navbarStatistics"
+              routerLink="/analysis/statistics"
+              routerLinkActive="active"
             >
               <div class="icon-wrapper">
                 <fa-icon [icon]="['fas', 'chart-area']"></fa-icon>
@@ -285,7 +290,12 @@
           <span class="sr-only" *ngIf="isActive('Profile')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
-          <a class="nav-link" (click)="logout()">
+          <a
+            class="nav-link"
+            (click)="logout()"
+            routerLink="/"
+            routerLinkActive="active"
+          >
             Logout
           </a>
           <span class="sr-only" *ngIf="isActive('Logout')">(current)</span>

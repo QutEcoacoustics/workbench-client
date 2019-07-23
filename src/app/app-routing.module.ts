@@ -16,6 +16,9 @@ import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/d
 import { ProfileComponent } from './component/profile/pages/home/home.component';
 
 import { settings, RouteSettings } from './settings/app-settings';
+import { AnalysisAudioComponent } from './component/analysis/pages/audio/audio.component';
+import { AnalysisStatisticsComponent } from './component/analysis/pages/statistics/statistics.component';
+import { LibraryComponent } from './component/library/pages/library/home.component';
 
 function readRoutes(path: string, routes: RouteSettings[]) {
   routes.map(route => {
@@ -39,10 +42,13 @@ const routes: Routes = [
     path: 'analysis',
     children: [
       { path: 'submit', component: AnalysisSubmitComponent },
-      { path: 'request', component: AnalysisRequestComponent }
+      { path: 'request', component: AnalysisRequestComponent },
+      { path: 'audio', component: AnalysisAudioComponent },
+      { path: 'statistics', component: AnalysisStatisticsComponent }
     ]
   },
   { path: 'listen', component: ListenComponent },
+  { path: 'library', component: LibraryComponent },
   {
     path: 'about',
     children: [
