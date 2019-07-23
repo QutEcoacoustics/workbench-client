@@ -21,8 +21,8 @@ import { ProjectsComponent } from './component/projects/pages/home/home.componen
 import { LoginComponent } from './component/authentication/pages/login/login.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
-import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submit.component';
-import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
+import { SendAudioComponent } from './component/send-audio/send-audio.component';
+import { DataRequestComponent } from './component/data-request/data-request.component';
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
 import { AboutContactComponent } from './component/about/pages/contact/contact.component';
@@ -40,8 +40,8 @@ import { ResearchArticlesComponent } from './component/research/pages/articles/a
 import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
 import { ResearchPeopleComponent } from './component/research/pages/people/people.component';
 import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
-import { AnalysisAudioComponent } from './component/analysis/pages/audio/audio.component';
-import { AnalysisStatisticsComponent } from './component/analysis/pages/statistics/statistics.component';
+import { AudioAnalysisComponent } from './component/audio-analysis/audio-analysis.component';
+import { WebStatisticsComponent } from './component/web-statistics/web-statistics.component';
 import { LayoutComponent } from './component/shared/layout/layout.component';
 
 @NgModule({
@@ -56,8 +56,8 @@ import { LayoutComponent } from './component/shared/layout/layout.component';
     ProjectsComponent,
     LoginComponent,
     RegisterComponent,
-    AnalysisSubmitComponent,
-    AnalysisRequestComponent,
+    SendAudioComponent,
+    DataRequestComponent,
     FormlyEmailInput,
     ListenComponent,
     AboutContactComponent,
@@ -75,8 +75,8 @@ import { LayoutComponent } from './component/shared/layout/layout.component';
     ResearchResourcesComponent,
     ResearchPeopleComponent,
     ResearchPublicationsComponent,
-    AnalysisAudioComponent,
-    AnalysisStatisticsComponent,
+    AudioAnalysisComponent,
+    WebStatisticsComponent,
     LayoutComponent
   ],
   imports: [
