@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
@@ -13,6 +14,23 @@ import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.comp
 import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
 import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
 import { ProfileComponent } from './component/profile/pages/home/home.component';
+
+import { settings, RouteSettings } from './settings/app-settings';
+
+function readRoutes(path: string, routes: RouteSettings[]) {
+  routes.map(route => {
+    const newPath = path + '/' + route.path;
+
+    if (route.routes) {
+      readRoutes(newPath, route.routes);
+    } else {
+      console.debug('Path: ' + newPath);
+      console.debug(route);
+    }
+  });
+}
+
+readRoutes(settings.path, settings.routes);
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },

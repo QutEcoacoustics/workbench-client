@@ -35,6 +35,14 @@ import { ProfileComponent } from './component/profile/pages/home/home.component'
 import { ProfileIconComponent } from './component/profile/icon/icon.component';
 import { ProfileStatisticsComponent } from './component/profile/statistics/statistics.component';
 import { ProfileTagsComponent } from './component/profile/tags/tags.component';
+import { LibraryComponent } from './component/library/pages/library/home.component';
+import { ResearchAboutComponent } from './component/research/pages/about/about.component';
+import { ResearchArticlesComponent } from './component/research/pages/articles/articles.component';
+import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
+import { ResearchPeopleComponent } from './component/research/pages/people/people.component';
+import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
+import { AnalysisAudioComponent } from './component/analysis/pages/audio/audio.component';
+import { AnalysisStatisticsComponent } from './component/analysis/pages/statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +69,15 @@ import { ProfileTagsComponent } from './component/profile/tags/tags.component';
     ProfileComponent,
     ProfileIconComponent,
     ProfileStatisticsComponent,
-    ProfileTagsComponent
+    ProfileTagsComponent,
+    LibraryComponent,
+    ResearchAboutComponent,
+    ResearchArticlesComponent,
+    ResearchResourcesComponent,
+    ResearchPeopleComponent,
+    ResearchPublicationsComponent,
+    AnalysisAudioComponent,
+    AnalysisStatisticsComponent
   ],
   imports: [
     NgbModule,

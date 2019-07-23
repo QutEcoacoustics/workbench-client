@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Card } from 'src/app/component/shared/cards/cards.component';
-import { AppSettingsService } from 'src/app/services/app-settings/app-settings.service';
 
 @Component({
   selector: 'app-projects',
@@ -11,7 +10,7 @@ import { AppSettingsService } from 'src/app/services/app-settings/app-settings.s
 export class ProjectsComponent implements OnInit {
   projectList: List<Card>;
 
-  constructor(private settings: AppSettingsService) {}
+  constructor() {}
 
   ngOnInit() {
     this.projectList = List([
