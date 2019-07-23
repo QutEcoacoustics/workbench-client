@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { settings, RouteSettings } from './settings/app-settings';
-
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
@@ -24,21 +22,6 @@ import { ResearchArticlesComponent } from './component/research/pages/articles/a
 import { ResearchPeopleComponent } from './component/research/pages/people/people.component';
 import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
 import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
-
-function readRoutes(path: string, routes: RouteSettings[]) {
-  routes.map(route => {
-    const newPath = path + '/' + route.path;
-
-    if (route.routes) {
-      readRoutes(newPath, route.routes);
-    } else {
-      console.debug('Path: ' + newPath);
-      console.debug(route);
-    }
-  });
-}
-
-readRoutes(settings.path, settings.routes);
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
