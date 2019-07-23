@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { settings, RouteSettings } from './settings/app-settings';
+
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { LoginComponent } from './component/authentication/pages/login/login.component';
@@ -14,11 +16,14 @@ import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.comp
 import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
 import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
 import { ProfileComponent } from './component/profile/pages/home/home.component';
-
-import { settings, RouteSettings } from './settings/app-settings';
 import { AnalysisAudioComponent } from './component/analysis/pages/audio/audio.component';
 import { AnalysisStatisticsComponent } from './component/analysis/pages/statistics/statistics.component';
 import { LibraryComponent } from './component/library/pages/library/home.component';
+import { ResearchAboutComponent } from './component/research/pages/about/about.component';
+import { ResearchArticlesComponent } from './component/research/pages/articles/articles.component';
+import { ResearchPeopleComponent } from './component/research/pages/people/people.component';
+import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
+import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
 
 function readRoutes(path: string, routes: RouteSettings[]) {
   routes.map(route => {
@@ -37,34 +42,36 @@ readRoutes(settings.path, settings.routes);
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
-  { path: 'projects', component: ProjectsComponent },
-  {
-    path: 'analysis',
-    children: [
-      { path: 'submit', component: AnalysisSubmitComponent },
-      { path: 'request', component: AnalysisRequestComponent },
-      { path: 'audio', component: AnalysisAudioComponent },
-      { path: 'statistics', component: AnalysisStatisticsComponent }
-    ]
-  },
-  { path: 'listen', component: ListenComponent },
-  { path: 'library', component: LibraryComponent },
   {
     path: 'about',
     children: [
       { path: 'contact', component: AboutContactComponent },
-      { path: 'report', component: AboutReportComponent },
-      { path: 'ethics', component: AboutEthicsComponent },
       { path: 'credits', component: AboutCreditsComponent },
-      { path: 'disclaimers', component: AboutDisclaimersComponent }
+      { path: 'disclaimers', component: AboutDisclaimersComponent },
+      { path: 'ethics', component: AboutEthicsComponent },
+      { path: 'report', component: AboutReportComponent }
     ]
   },
-  {
-    path: 'profile',
-    children: [{ path: '', pathMatch: 'full', component: ProfileComponent }]
-  },
+  { path: 'audio', component: AnalysisAudioComponent },
+  { path: 'library', component: LibraryComponent },
+  { path: 'listen', component: ListenComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'projects', component: ProjectsComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'request', component: AnalysisRequestComponent },
+  { path: 'statistics', component: AnalysisStatisticsComponent },
+  { path: 'submit', component: AnalysisSubmitComponent },
+  { path: 'register', component: RegisterComponent },
+  {
+    path: 'research',
+    children: [
+      { path: 'about', component: ResearchAboutComponent },
+      { path: 'articles', component: ResearchArticlesComponent },
+      { path: 'people', component: ResearchPeopleComponent },
+      { path: 'publications', component: ResearchPublicationsComponent },
+      { path: 'resources', component: ResearchResourcesComponent }
+    ]
+  }
 ];
 
 @NgModule({

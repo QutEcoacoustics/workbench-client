@@ -1,4 +1,13 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .content {
-  /* Header and footer are both 3.5rem tall */
-  min-height: calc(100vh - 7rem);
+  flex: 1;
+
+  &:last-child {
+    min-height: 100%;
+  }
 }

@@ -1,6 +1,5 @@
-<!-- Maintain header height of 3.5rem -->
-<div class="container-fluid bg-dark fixed-top">
-  <nav class="container navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="container-fluid navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container">
     <!-- Brand Logo -->
     <a class="navbar-brand" routerLink="/" routerLinkActive="active">
       Ecosounds
@@ -116,66 +115,6 @@
                 <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
               </div>
               Resources
-            </a>
-          </div>
-        </li>
-
-        <!-- Analysis links -->
-        <li class="nav-item dropdown" ngbDropdown>
-          <a
-            id="dropdownBasic2"
-            ngbDropdownToggle
-            class="nav-link dropdown-toggle"
-            [ngClass]="{ active: isActive('analysis') }"
-            i18n="Navbar Analysis Dropdown|Analysis dropdown options header@@navbarAnalysis"
-          >
-            Analysis
-          </a>
-          <span class="sr-only" *ngIf="isActive('analysis')">(current)</span>
-          <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-            <a
-              ngbDropdownItem
-              i18n="Navbar Analysis Audio Analysis Link|Link to view audio analyses performed by research team@@navbarAudioAnalysis"
-              routerLink="/analysis/audio"
-              routerLinkActive="active"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
-              </div>
-              Audio Analysis
-            </a>
-            <a
-              ngbDropdownItem
-              i18n="Navbar Analysis Data Request Link|Link to request daat from research team@@navbarDataRequest"
-              routerLink="/analysis/request"
-              routerLinkActive="active"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'table']"></fa-icon>
-              </div>
-              Data Request
-            </a>
-            <a
-              ngbDropdownItem
-              i18n="Navbar Anaysis Send Audio Link|Link to upload audio to research team@@navbarSendAudio"
-              routerLink="/analysis/submit"
-              routerLinkActive="active"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
-              </div>
-              Send Audio
-            </a>
-            <a
-              ngbDropdownItem
-              i18n="Navbar Statistics Link|Link to website statistics@@navbarStatistics"
-              routerLink="/analysis/statistics"
-              routerLinkActive="active"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'chart-area']"></fa-icon>
-              </div>
-              Website Statistics
             </a>
           </div>
         </li>
@@ -302,8 +241,8 @@
         </li>
       </ul>
     </div>
-  </nav>
-</div>
+  </div>
+</nav>
 
 <!-- Displace header section of webpage -->
 <div style="height: 3.5rem;"></div>

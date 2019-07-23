@@ -43,6 +43,7 @@ import { ResearchPeopleComponent } from './component/research/pages/people/peopl
 import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
 import { AnalysisAudioComponent } from './component/analysis/pages/audio/audio.component';
 import { AnalysisStatisticsComponent } from './component/analysis/pages/statistics/statistics.component';
+import { LayoutComponent } from './component/shared/layout/layout.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { AnalysisStatisticsComponent } from './component/analysis/pages/statisti
     ResearchPeopleComponent,
     ResearchPublicationsComponent,
     AnalysisAudioComponent,
-    AnalysisStatisticsComponent
+    AnalysisStatisticsComponent,
+    LayoutComponent
   ],
   imports: [
     NgbModule,
