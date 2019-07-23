@@ -25,7 +25,6 @@ import { AnalysisSubmitComponent } from './component/analysis/pages/submit/submi
 import { AnalysisRequestComponent } from './component/analysis/pages/request/request.component';
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
-import { ScriptComponent } from './component/shared/script/script.component';
 import { AboutContactComponent } from './component/about/pages/contact/contact.component';
 import { AboutReportComponent } from './component/about/pages/report/report.component';
 import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
@@ -61,7 +60,6 @@ import { LayoutComponent } from './component/shared/layout/layout.component';
     AnalysisRequestComponent,
     FormlyEmailInput,
     ListenComponent,
-    ScriptComponent,
     AboutContactComponent,
     AboutReportComponent,
     AboutEthicsComponent,
