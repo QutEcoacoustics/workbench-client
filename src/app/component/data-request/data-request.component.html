@@ -1,6 +1,11 @@
-<app-layout>
+<app-layout
+  [secondaryLinks]="secondaryLinks"
+  [actionTitle]="actionTitle"
+  [actionLinks]="actionLinks"
+>
   <h1>Data Request</h1>
   <p class="lead">Request annotations from projects you are able to access.</p>
+
   <h2>Annotations Download</h2>
   <p>To download a standard CSV of annotations</p>
   <ol>

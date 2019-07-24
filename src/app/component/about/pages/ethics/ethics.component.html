@@ -1,4 +1,8 @@
-<app-layout>
+<app-layout
+  [secondaryLinks]="secondaryLinks"
+  [actionTitle]="actionTitle"
+  [actionLinks]="actionLinks"
+>
   <h1>Ethics Statement</h1>
   <p>This website is run by the QUT Ecoacoustics Research Group.</p>
 
@@ -128,7 +132,8 @@
   <p>
     If have any questions or require any further information, please contact the
     research team via the
-    <a routerLink="/contact" routerLinkActive="active">contact us</a> form.
+    <a routerLink="/about/contact" routerLinkActive="active">contact us</a>
+    form.
   </p>
 
   <h2>Concerns or Complaints</h2>

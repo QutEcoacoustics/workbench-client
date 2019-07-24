@@ -8,5 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class WebStatisticsComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    window.location.href = 'https://www.ecosounds.org/website_status';
+  }
 }

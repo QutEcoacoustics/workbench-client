@@ -1,4 +1,8 @@
-<app-layout>
+<app-layout
+  [secondaryLinks]="secondaryLinks"
+  [actionTitle]="actionTitle"
+  [actionLinks]="actionLinks"
+>
   <div class="pl-2 pr-2">
     <div class="login-form">
       <h2 class="text-center">Contact Us</h2>
@@ -17,10 +21,13 @@
         </div>
         <p class="text-center">
           This form is for general enquires. We have separate forms to
-          <a routerLink="/analysis/request" routerLinkActive="active"
+          <a routerLink="/data_request" routerLinkActive="active"
             >request data</a
           >
-          or <a href="https://www.ecosounds.org/bug_report">report issues</a>.
+          or
+          <a routerLink="/about/report" routerLinkActive="active"
+            >report issues</a
+          >.
         </p>
         <form [formGroup]="form" (ngSubmit)="submit(model)">
           <div class="d-flex justify-content-center" *ngIf="!fields">
