@@ -13,20 +13,37 @@
             class="nav-item"
             *ngFor="let link of secondaryLinks; let i = index"
           >
-            <a
-              class="nav-link"
-              aria-describedby="{{'secondary-tooltip-' + i"
-              routerLink="{{ link.route }}"
-              routerLinkActive="active"
-              placement="right"
-              ngbTooltip="{{ link.tooltip }}"
-            >
-              <fa-icon [icon]="link.icon"></fa-icon>
-              <span>{{ link.label }}</span>
-              <span class="d-none" [id]="'secondary-tooltip-' + i">
-                {{ link.tooltip }}
-              </span>
-            </a>
+            <ng-container *ngIf="link.route.includes('http'); else localroute">
+              <a
+                class="nav-link"
+                aria-describedby="{{'secondary-tooltip-' + i"
+                href="{{ link.route }}"
+                placement="right"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'secondary-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-container>
+            <ng-template #localroute>
+              <a
+                class="nav-link"
+                aria-describedby="{{'secondary-tooltip-' + i"
+                routerLink="{{ link.route }}"
+                routerLinkActive="active"
+                placement="right"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'secondary-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-template>
           </li>
         </ul>
       </nav>
