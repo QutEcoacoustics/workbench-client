@@ -1,11 +1,7 @@
-/* Maintain footer height of 3.5rem */
-p.nav-link {
-  margin: 0px;
-  cursor: default;
-
-  &:hover,
-  &:focus {
-    /* Overwrite Bootstrap navlink hover efect */
-    color: rgba(255, 255, 255, 0.5) !important;
-  }
+.nav > li > a:hover {
+  text-decoration: none;
+  background-color: #eee;
+}
+.nav-pills > li > a {
+  border-radius: 4px;
 }

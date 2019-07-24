@@ -1,0 +1,55 @@
+@import '../../../../styles.scss';
+div.container {
+  min-height: 100%;
+}
+
+nav {
+  h6 {
+    color: rgb(119, 119, 119);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  ul {
+    width: 100%;
+  }
+
+  li {
+    font-size: 0.85rem;
+    width: 100%;
+  }
+
+  fa-icon {
+    margin-right: 3px;
+    color: black;
+  }
+}
+
+.secondary {
+  @extend .order-1;
+  @extend .col-lg-2;
+  @extend .col-sm-12;
+  @extend .m-0;
+  @extend .p-0;
+  @extend .pt-2;
+}
+
+.page {
+  @extend .order-lg-2;
+  @extend .order-3;
+  @extend .col-lg-8;
+  @extend .col-sm-12;
+  @extend .pt-4;
+}
+
+.actions {
+  @extend .order-lg-3;
+  @extend .order-2;
+  @extend .col-lg-2;
+  @extend .col-sm-12;
+  @extend .m-0;
+  @extend .p-0;
+  @extend .pt-2;
+}

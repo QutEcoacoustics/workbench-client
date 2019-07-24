@@ -2,7 +2,8 @@ import {
   Component,
   OnInit,
   ChangeDetectionStrategy,
-  Input
+  Input,
+  OnChanges
 } from '@angular/core';
 import { List } from 'immutable';
 
@@ -12,7 +13,7 @@ import { List } from 'immutable';
   styleUrls: ['./cards.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardsComponent implements OnInit {
+export class CardsComponent implements OnChanges {
   @Input() cards: List<{
     title: string;
     image?: { url: string; alt: string };
@@ -23,7 +24,7 @@ export class CardsComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
+  ngOnChanges() {
     this.checkRequiredFields('cards', this.cards);
 
     this.imageCards = false;

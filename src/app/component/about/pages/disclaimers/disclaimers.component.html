@@ -1,4 +1,8 @@
-<section class="toImplement container body">
+<app-layout
+  [secondaryLinks]="secondaryLinks"
+  [actionTitle]="actionTitle"
+  [actionLinks]="actionLinks"
+>
   <h1>Disclaimers</h1>
   <p>
     We make no representations about the suitability of this information for any
@@ -62,6 +66,6 @@
 
   <p>
     If you have any questions, please
-    <a routerLink="/contact" routerLinkActive="active">contact us</a>.
+    <a routerLink="/about/contact" routerLinkActive="active">contact us</a>.
   </p>
-</section>
+</app-layout>

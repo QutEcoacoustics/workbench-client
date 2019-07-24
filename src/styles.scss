@@ -9,14 +9,21 @@ $dark: #343a40;
 $white: #fff;
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
+/* Overwrite bootstrap maximum window size */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1170px;
+  }
+}
+
 /* You can add global styles to this file, and also import other style files */
 html,
 body {
   background-color: $white;
-  padding: 0px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin: 0px;
-  height: 100%;
-  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  padding: 0px;
 }
 
 section {
@@ -37,11 +44,7 @@ section {
   }
 }
 
-.body {
-  min-height: calc(100vh - 7rem);
-}
-
 .toImplement h1 {
   // DEBUGING
-  //color: red !important;
+  color: red !important;
 }

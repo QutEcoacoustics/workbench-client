@@ -1,0 +1,103 @@
+<div class="container p-0">
+  <div class="d-flex flex-wrap col">
+    <div class="secondary">
+      <nav
+        class="container navbar navbar-expand-lg navbar-light bg-light p-0"
+        *ngIf="secondaryLinks"
+      >
+        <ul class="nav nav-pills align-items-center">
+          <li class="nav-item">
+            <h6 class="nav-link disabled m-0">Menu</h6>
+          </li>
+          <li
+            class="nav-item"
+            *ngFor="let link of secondaryLinks; let i = index"
+          >
+            <ng-container *ngIf="link.route.includes('http'); else localroute">
+              <a
+                class="nav-link"
+                aria-describedby="{{'secondary-tooltip-' + i"
+                href="{{ link.route }}"
+                placement="right"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'secondary-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-container>
+            <ng-template #localroute>
+              <a
+                class="nav-link"
+                aria-describedby="{{'secondary-tooltip-' + i"
+                routerLink="{{ link.route }}"
+                routerLinkActive="active"
+                placement="right"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'secondary-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-template>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="page">
+      <ng-content></ng-content>
+    </div>
+    <div class="actions">
+      <nav
+        class="container navbar navbar-expand-lg navbar-light bg-light p-0"
+        *ngIf="actionTitle"
+      >
+        <ul class="nav nav-pills align-items-center">
+          <li class="nav-item">
+            <h6 class="nav-link disabled m-0">
+              <fa-icon [icon]="actionTitle.icon"></fa-icon>
+              {{ actionTitle.label }}
+            </h6>
+          </li>
+          <li class="nav-item" *ngFor="let link of actionLinks; let i = index">
+            <ng-container *ngIf="link.route.includes('http'); else localroute">
+              <a
+                class="nav-link"
+                aria-describedby="{{'action-tooltip-' + i"
+                href="{{ link.route }}"
+                placement="left"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'action-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-container>
+            <ng-template #localroute>
+              <a
+                class="nav-link"
+                aria-describedby="{{'action-tooltip-' + i"
+                routerLink="{{ link.route }}"
+                routerLinkActive="active"
+                placement="left"
+                ngbTooltip="{{ link.tooltip }}"
+              >
+                <fa-icon [icon]="link.icon"></fa-icon>
+                <span>{{ link.label }}</span>
+                <span class="d-none" [id]="'action-tooltip-' + i">
+                  {{ link.tooltip }}
+                </span>
+              </a>
+            </ng-template>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
