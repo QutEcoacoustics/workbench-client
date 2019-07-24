@@ -30,101 +30,28 @@ export class ProjectsComponent implements OnInit {
   constructor(private api: BawApiService, private menus: MenusService) {}
 
   ngOnInit() {
-    this.projectList = List([
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1094'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277',
-          alt: 'Oxley Creek Common'
-        },
-        link: 'https://www.ecosounds.org/projects/1007'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1029'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1094'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277',
-          alt: 'Oxley Creek Common'
-        },
-        link: 'https://www.ecosounds.org/projects/1007'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1029'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1094'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277',
-          alt: 'Oxley Creek Common'
-        },
-        link: 'https://www.ecosounds.org/projects/1007'
-      },
-      {
-        title: 'Lorem ipsum',
-        image: {
-          url:
-            'https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186',
-          alt: 'Lorem ipsum'
-        },
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ',
-        link: 'https://www.ecosounds.org/projects/1029'
+    this.projectList = List();
+    this.api.getProjectList().subscribe(list => {
+      if (typeof list === 'string') {
+        console.error(list);
+      } else {
+        console.debug(list);
+        this.projectList = List(
+          list.data.map(function(project): Card {
+            return {
+              title: project.name,
+              image: {
+                url:
+                  'https://staging.ecosounds.org/images/project/project_span3.png',
+                alt: project.name
+              },
+              description: project.description,
+              link: `https://staging.ecosounds.org/projects/${project.id}`
+            };
+          })
+        );
       }
-    ]);
+    });
     this.secondaryLinks = this.menus.secondaryMenu();
     this.actionTitle = this.menus.actionTitle();
     this.actionLinks = this.menus.actionLinks();

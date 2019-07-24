@@ -11,6 +11,7 @@ export class HeaderComponent implements OnInit {
   activeLink: string;
   collapsed: boolean;
   loggedIn: boolean;
+  user_name: string;
 
   constructor(private router: Router, private api: BawApiService) {}
 
@@ -50,6 +51,9 @@ export class HeaderComponent implements OnInit {
    */
   checkAuthenticated() {
     this.loggedIn = this.api.loggedIn;
+    if (this.loggedIn) {
+      this.user_name = this.api.user_name;
+    }
   }
 
   /**
@@ -77,5 +81,6 @@ export class HeaderComponent implements OnInit {
    */
   logout() {
     this.api.logout();
+    this.checkAuthenticated();
   }
 }
