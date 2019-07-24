@@ -134,12 +134,14 @@
       {
         "route": "https://www.ecosounds.org/projects/new",
         "icon": ["fas", "plus"],
-        "label": "New project"
+        "label": "New project",
+        "tooltip": "Create a new project"
       },
       {
         "route": "https://www.ecosounds.org/projects/new_access_request",
         "icon": ["fas", "key"],
-        "label": "Request access"
+        "label": "Request access",
+        "tooltip": "Request access to a project not listed here"
       }
     ],
     "no_auth": []

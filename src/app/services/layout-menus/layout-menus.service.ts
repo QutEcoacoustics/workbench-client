@@ -77,6 +77,7 @@ export interface ActionLink {
   route: string;
   icon: [string, string];
   label: string;
+  tooltip: string;
 }
 export interface ActionTitle {
   icon: [string, string];
