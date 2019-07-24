@@ -1,7 +1,106 @@
 <div class="container p-0">
   <div class="d-flex flex-wrap col">
     <div class="secondary">
-      <p>Secondary</p>
+      <nav class="container navbar navbar-expand-lg navbar-light bg-light p-0">
+        <ul class="nav nav-pills mr-auto align-items-center m-auto">
+          <li class="nav-item">
+            <h6 class="nav-link disabled m-0">Menu</h6>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" routerLinkActive="active">
+              <fa-icon [icon]="['fas', 'home']"></fa-icon>
+              <span>Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">
+              <fa-icon [icon]="['fas', 'sign-in-alt']"></fa-icon>
+              <span>Log in</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/register"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'user-plus']"></fa-icon>
+              <span>Register</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/projects"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'globe-asia']"></fa-icon>
+              <span>Projects</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/audio_analysis"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'server']"></fa-icon>
+              <span>Audio Analysis</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/library" routerLinkActive="active">
+              <fa-icon [icon]="['fas', 'book']"></fa-icon>
+              <span>Library</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/data_request"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'table']"></fa-icon>
+              <span>Data Request</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/send_audio"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
+              <span>Send Audio</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/about/report"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'bug']"></fa-icon>
+              <span>Report Problem</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/statistics"
+              routerLinkActive="active"
+            >
+              <fa-icon [icon]="['fas', 'chart-line']"></fa-icon>
+              <span>Statistics</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
     <div class="page">
       <ng-content></ng-content>
