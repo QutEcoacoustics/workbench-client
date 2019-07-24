@@ -91,6 +91,15 @@
             </a>
             <a
               ngbDropdownItem
+              i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
+            >
+              <div class="icon-wrapper">
+                <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
+              </div>
+              Resources
+            </a>
+            <a
+              ngbDropdownItem
               i18n="Navbar Research People Link|Link to list of people working on the research articles@@navbarPeople"
             >
               <div class="icon-wrapper">
@@ -106,15 +115,6 @@
                 <fa-icon [icon]="['fas', 'globe-asia']"></fa-icon>
               </div>
               Publications
-            </a>
-            <a
-              ngbDropdownItem
-              i18n="Navbar Research Resources Link|Link to research resources@@navbarResources"
-            >
-              <div class="icon-wrapper">
-                <fa-icon [icon]="['fas', 'briefcase']"></fa-icon>
-              </div>
-              Resources
             </a>
           </div>
         </li>

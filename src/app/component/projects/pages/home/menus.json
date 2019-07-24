@@ -2,12 +2,6 @@
   "secondary": {
     "no_auth": [
       {
-        "route": "/",
-        "icon": ["fas", "home"],
-        "label": "Home",
-        "tooltip": "Home page"
-      },
-      {
         "route": "/login",
         "icon": ["fas", "sign-in-alt"],
         "label": "Log in",
@@ -63,12 +57,6 @@
       }
     ],
     "auth": [
-      {
-        "route": "/",
-        "icon": ["fas", "home"],
-        "label": "Home",
-        "tooltip": "Home page"
-      },
       {
         "route": "/profile",
         "icon": ["fas", "user"],

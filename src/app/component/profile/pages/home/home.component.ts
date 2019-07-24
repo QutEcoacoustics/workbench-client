@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
+import { MenusService } from './menus.service';
+import {
+  SecondaryLink,
+  ActionTitle,
+  ActionLink
+} from 'src/app/services/layout-menus/layout-menus.service';
 
 @Component({
   selector: 'app-profile-home',
@@ -13,8 +19,11 @@ export class ProfileComponent implements OnInit {
     icon: { style: string; name: string };
   }>;
   tags: List<{ tag: string; link: string; value: number }>;
+  secondaryLinks: SecondaryLink[];
+  actionTitle: ActionTitle;
+  actionLinks: ActionLink[];
 
-  constructor() {}
+  constructor(private menus: MenusService) {}
 
   ngOnInit() {
     this.stats = List([
@@ -54,5 +63,9 @@ export class ProfileComponent implements OnInit {
         value: 960
       }
     ]);
+
+    this.secondaryLinks = this.menus.secondaryMenu();
+    this.actionTitle = this.menus.actionTitle();
+    this.actionLinks = this.menus.actionLinks();
   }
 }

@@ -8,5 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class ResearchPublicationsComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    document.location.href =
+      'https://research.ecosounds.org/publications/publications.html';
+  }
 }

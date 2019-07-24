@@ -8,5 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class AudioAnalysisComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    document.location.href = 'https://staging.ecosounds.org/audio_analysis';
+  }
 }

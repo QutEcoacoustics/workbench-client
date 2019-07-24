@@ -5,7 +5,7 @@
         class="container navbar navbar-expand-lg navbar-light bg-light p-0"
         *ngIf="secondaryLinks"
       >
-        <ul class="nav nav-pills mr-auto align-items-center m-auto">
+        <ul class="nav nav-pills align-items-center">
           <li class="nav-item">
             <h6 class="nav-link disabled m-0">Menu</h6>
           </li>
@@ -52,11 +52,11 @@
       <ng-content></ng-content>
     </div>
     <div class="actions">
-      <nav class="container navbar navbar-expand-lg navbar-light bg-light p-0">
-        <ul
-          class="nav nav-pills mr-auto align-items-center m-auto"
-          *ngIf="actionTitle"
-        >
+      <nav
+        class="container navbar navbar-expand-lg navbar-light bg-light p-0"
+        *ngIf="actionTitle"
+      >
+        <ul class="nav nav-pills align-items-center">
           <li class="nav-item">
             <h6 class="nav-link disabled m-0">
               <fa-icon [icon]="actionTitle.icon"></fa-icon>

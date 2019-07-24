@@ -1,0 +1,100 @@
+{
+  "secondary": {
+    "no_auth": [],
+    "auth": [
+      {
+        "route": "/profile",
+        "icon": ["fas", "user"],
+        "label": "My Profile",
+        "tooltip": "View profile"
+      },
+      {
+        "route": "https://www.ecosounds.org/user_accounts/741/audio_events",
+        "icon": ["fas", "list"],
+        "label": "My Annotations",
+        "tooltip": "View my recent annotations"
+      },
+      {
+        "route": "/projects",
+        "icon": ["fas", "globe-asia"],
+        "label": "Projects",
+        "tooltip": "View projects I have access too"
+      },
+      {
+        "route": "/audio_analysis",
+        "icon": ["fas", "server"],
+        "label": "Audio Analysis",
+        "tooltip": "View audio analysis jobs"
+      },
+      {
+        "route": "/library",
+        "icon": ["fas", "book"],
+        "label": "Library",
+        "tooltip": "Annotation library"
+      },
+      {
+        "route": "/data_request",
+        "icon": ["fas", "table"],
+        "label": "Data Request",
+        "tooltip": "Request customized data from the website"
+      },
+      {
+        "route": "/send_audio",
+        "icon": ["fas", "envelope"],
+        "label": "Send Audio",
+        "tooltip": "Send us audio recordings to upload"
+      },
+      {
+        "route": "/about/report",
+        "icon": ["fas", "bug"],
+        "label": "Report Problem",
+        "tooltip": "Report a problem with the website"
+      },
+      {
+        "route": "/statistics",
+        "icon": ["fas", "chart-line"],
+        "label": "Statistics",
+        "tooltip": "Annotation and audio recording stats"
+      }
+    ]
+  },
+  "action": {
+    "title": {
+      "icon": { "style": "fas", "glyph": "user" },
+      "label": "My Profile"
+    },
+    "auth": [
+      {
+        "route": "https://www.ecosounds.org/my_account/edit",
+        "icon": ["fas", "edit"],
+        "label": "Edit my profile",
+        "tooltip": "Change the details for this profile"
+      },
+      {
+        "route": "https://staging.ecosounds.org/user_accounts/1/projects",
+        "icon": ["fas", "globe-asia"],
+        "label": "My Projects",
+        "tooltip": "Projects Admin can access"
+      },
+      {
+        "route": "https://www.ecosounds.org/user_accounts/741/sites",
+        "icon": ["fas", "map-marker-alt"],
+        "label": "My Sites",
+        "tooltip": "Sites Admin can access"
+      },
+      {
+        "route": "https://staging.ecosounds.org/user_accounts/1/bookmarks",
+        "icon": ["fas", "bookmark"],
+        "label": "My Bookmarks",
+        "tooltip": "Sites Admin can access"
+      },
+      {
+        "route": "https://staging.ecosounds.org/user_accounts/1/audio_events",
+        "icon": ["fas", "list"],
+        "label": "My Annotations",
+        "tooltip": "Sites Admin can access"
+      }
+    ],
+    "no_auth": []
+  }
+}

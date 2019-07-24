@@ -12,6 +12,10 @@ nav {
     text-transform: uppercase;
   }
 
+  ul {
+    width: 100%;
+  }
+
   li {
     font-size: 0.85rem;
     width: 100%;
@@ -33,7 +37,7 @@ nav {
 }
 
 .page {
-  @extend .order-md-2;
+  @extend .order-lg-2;
   @extend .order-3;
   @extend .col-lg-8;
   @extend .col-sm-12;
@@ -41,7 +45,7 @@ nav {
 }
 
 .actions {
-  @extend .order-md-3;
+  @extend .order-lg-3;
   @extend .order-2;
   @extend .col-lg-2;
   @extend .col-sm-12;
