@@ -25,3 +25,8 @@ export class AboutCreditsComponent implements OnInit {
     this.actionLinks = this.menus.actionLinks();
   }
 }
+
+/**
+ * Icon
+ */
+export const icon = ['fas', 'hands-helping'];

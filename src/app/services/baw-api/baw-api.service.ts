@@ -102,7 +102,7 @@ export class BawApiService {
             this._httpOptions = {
               headers: this._httpOptions.headers.append(
                 'Authorization',
-                `Token token "${this._auth_token}"`
+                `Token token="${this._auth_token}"`
               )
             };
             sessionStorage.setItem(

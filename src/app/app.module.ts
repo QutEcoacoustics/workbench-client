@@ -43,41 +43,44 @@ import { ResearchPublicationsComponent } from './component/research/pages/public
 import { AudioAnalysisComponent } from './component/audio-analysis/audio-analysis.component';
 import { WebStatisticsComponent } from './component/web-statistics/web-statistics.component';
 import { LayoutComponent } from './component/shared/layout/layout.component';
+import { LayoutMenusService } from './services/layout-menus/layout-menus.service';
+
+import { BawApiService } from './services/baw-api/baw-api.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    FooterComponent,
+    AboutContactComponent,
+    AboutCreditsComponent,
+    AboutDisclaimersComponent,
+    AboutEthicsComponent,
+    AboutReportComponent,
+    AudioAnalysisComponent,
     CardComponent,
     CardImageComponent,
     CardsComponent,
-    HomeComponent,
-    ProjectsComponent,
-    LoginComponent,
-    RegisterComponent,
-    SendAudioComponent,
     DataRequestComponent,
+    FooterComponent,
     FormlyEmailInput,
+    HeaderComponent,
+    HomeComponent,
+    LayoutComponent,
+    LibraryComponent,
     ListenComponent,
-    AboutContactComponent,
-    AboutReportComponent,
-    AboutEthicsComponent,
-    AboutCreditsComponent,
-    AboutDisclaimersComponent,
+    LoginComponent,
     ProfileComponent,
     ProfileIconComponent,
     ProfileStatisticsComponent,
     ProfileTagsComponent,
-    LibraryComponent,
+    ProjectsComponent,
+    RegisterComponent,
     ResearchAboutComponent,
     ResearchArticlesComponent,
-    ResearchResourcesComponent,
     ResearchPeopleComponent,
     ResearchPublicationsComponent,
-    AudioAnalysisComponent,
-    WebStatisticsComponent,
-    LayoutComponent
+    ResearchResourcesComponent,
+    SendAudioComponent,
+    WebStatisticsComponent
   ],
   imports: [
     NgbModule,
@@ -92,7 +95,7 @@ import { LayoutComponent } from './component/shared/layout/layout.component';
     }),
     FormlyBootstrapModule
   ],
-  providers: [],
+  providers: [BawApiService, LayoutMenusService],
   bootstrap: [AppComponent],
   exports: [HomeComponent]
 })

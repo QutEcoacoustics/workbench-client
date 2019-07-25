@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
 import { secondary } from './menus.json';
 
@@ -8,11 +8,13 @@ import { secondary } from './menus.json';
 export class LayoutMenusService {
   constructor(
     private _api: BawApiService,
-    private _actionLinksJson: any,
-    private _secondaryMenuJson?: any
+    @Inject('ACTION_LINKS_JSON') private _actionLinksJson: any,
+    @Inject('SECONDARY_LINKS_JSON') private _secondaryMenuJson?: any
   ) {
     // If no secondary menu items specified, use defaults
     if (!_secondaryMenuJson) {
+      this._secondaryMenuJson = { ...secondary, _secondaryMenuJson };
+    } else {
       this._secondaryMenuJson = secondary;
     }
   }

@@ -55,3 +55,8 @@ export class AboutContactComponent implements OnInit {
     console.log(model);
   }
 }
+
+/**
+ * Icon
+ */
+export const icon = ['fas', 'users'];
