@@ -1,0 +1,29 @@
+{
+  "action": {
+    "title": {
+      "icon": { "style": "fas", "glyph": "user" },
+      "label": "Accounts"
+    },
+    "auth": [],
+    "no_auth": [
+      {
+        "route": "https://www.ecosounds.org/my_account/password/new",
+        "icon": ["fas", "key"],
+        "label": "Reset password",
+        "tooltip": "Send an email to reset your password"
+      },
+      {
+        "route": "https://www.ecosounds.org/my_account/confirmation/new",
+        "icon": ["fas", "envelope"],
+        "label": "Confirm account",
+        "tooltip": "Resend the email to confirm your account"
+      },
+      {
+        "route": "https://www.ecosounds.org/my_account/unlock/new",
+        "icon": ["fas", "lock-open"],
+        "label": "Unlock account",
+        "tooltip": "Send an email to unlock your account"
+      }
+    ]
+  }
+}

@@ -5,6 +5,12 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router } from '@angular/router';
+import {
+  SecondaryLink,
+  ActionTitle,
+  ActionLink
+} from 'src/app/services/layout-menus/layout-menus.service';
+import { MenusService } from './menus.service';
 
 @Component({
   selector: 'app-authentication-login',
@@ -18,10 +24,15 @@ export class LoginComponent implements OnInit {
   fields: FormlyFieldConfig[];
   error: string;
 
+  secondaryLinks: SecondaryLink[];
+  actionTitle: ActionTitle;
+  actionLinks: ActionLink[];
+
   constructor(
     private http: HttpClient,
     private api: BawApiService,
-    private router: Router
+    private router: Router,
+    private menus: MenusService
   ) {}
 
   ngOnInit() {
@@ -30,6 +41,10 @@ export class LoginComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
+
+    this.secondaryLinks = this.menus.secondaryMenu();
+    this.actionTitle = this.menus.actionTitle();
+    this.actionLinks = this.menus.actionLinks();
   }
 
   /**

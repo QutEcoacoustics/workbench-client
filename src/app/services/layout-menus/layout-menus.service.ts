@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
+import { secondary } from './menus.json';
 
 @Injectable({
   providedIn: 'root'
@@ -7,9 +8,14 @@ import { BawApiService } from '../baw-api/baw-api.service';
 export class LayoutMenusService {
   constructor(
     private _api: BawApiService,
-    private _secondaryMenuJson: any,
-    private _actionLinksJson: any
-  ) {}
+    private _actionLinksJson: any,
+    private _secondaryMenuJson?: any
+  ) {
+    // If no secondary menu items specified, use defaults
+    if (!_secondaryMenuJson) {
+      this._secondaryMenuJson = secondary;
+    }
+  }
 
   /**
    * Returns the secondary menu links

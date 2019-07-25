@@ -1,8 +1,8 @@
 {
   "action": {
     "title": {
-      "icon": { "style": "fas", "glyph": "home" },
-      "label": "Home"
+      "icon": { "style": "fas", "glyph": "user" },
+      "label": "Accounts"
     },
     "auth": [],
     "no_auth": []
