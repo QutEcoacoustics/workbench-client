@@ -8,7 +8,7 @@ import {
   ActionTitle,
   ActionLink
 } from 'src/app/services/layout-menus/layout-menus.service';
-import { MenusService } from '../../../authentication/pages/login/menus.service';
+import { MenusService } from './menus.service';
 
 @Component({
   selector: 'app-about-report',
