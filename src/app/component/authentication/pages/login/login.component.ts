@@ -5,28 +5,24 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router } from '@angular/router';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
 import { MenusService } from './menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 
 @Component({
   selector: 'app-authentication-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class AuthenticationLoginComponent implements OnInit {
   private _jsonURL = 'assets/templates/login-form-template.json';
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
 
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(
     private http: HttpClient,

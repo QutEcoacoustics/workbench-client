@@ -3,11 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 import { MenusService } from './menus.service';
 
 @Component({
@@ -21,9 +17,9 @@ export class AboutContactComponent implements OnInit {
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(private http: HttpClient, private menus: MenusService) {}
 
@@ -55,8 +51,3 @@ export class AboutContactComponent implements OnInit {
     console.log(model);
   }
 }
-
-/**
- * Icon
- */
-export const icon = ['fas', 'users'];

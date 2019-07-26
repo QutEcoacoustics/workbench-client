@@ -1,10 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 import { MenusService } from './menus.service';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
 
 @Component({
   selector: 'app-about-credits',
@@ -13,9 +9,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutCreditsComponent implements OnInit {
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(private menus: MenusService) {}
 
@@ -25,8 +21,3 @@ export class AboutCreditsComponent implements OnInit {
     this.actionLinks = this.menus.actionLinks();
   }
 }
-
-/**
- * Icon
- */
-export const icon = ['fas', 'hands-helping'];

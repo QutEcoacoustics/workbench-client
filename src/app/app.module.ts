@@ -18,7 +18,7 @@ import { CardImageComponent } from './component/shared/cards/card-image/card-ima
 import { CardsComponent } from './component/shared/cards/cards.component';
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
-import { LoginComponent } from './component/authentication/pages/login/login.component';
+import { AuthenticationLoginComponent } from './component/authentication/pages/login/login.component';
 import { RegisterComponent } from './component/authentication/pages/register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SendAudioComponent } from './component/send-audio/send-audio.component';
@@ -34,7 +34,7 @@ import { ProfileComponent } from './component/profile/pages/home/home.component'
 import { ProfileIconComponent } from './component/profile/icon/icon.component';
 import { ProfileStatisticsComponent } from './component/profile/statistics/statistics.component';
 import { ProfileTagsComponent } from './component/profile/tags/tags.component';
-import { LibraryComponent } from './component/library/pages/library/home.component';
+import { LibraryComponent } from './component/library/pages/home/home.component';
 import { ResearchAboutComponent } from './component/research/pages/about/about.component';
 import { ResearchArticlesComponent } from './component/research/pages/articles/articles.component';
 import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
@@ -67,7 +67,7 @@ import { BawApiService } from './services/baw-api/baw-api.service';
     LayoutComponent,
     LibraryComponent,
     ListenComponent,
-    LoginComponent,
+    AuthenticationLoginComponent,
     ProfileComponent,
     ProfileIconComponent,
     ProfileStatisticsComponent,

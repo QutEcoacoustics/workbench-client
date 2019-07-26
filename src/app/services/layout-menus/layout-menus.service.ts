@@ -1,42 +1,42 @@
 import { Injectable, Inject } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
-import { secondary } from './menus.json';
+import { menus, ActionTitle, Link, Menus } from './menus';
 
+/**
+ * Manages the creation of links for the Secondary and Action menus
+ * in the page layout. Each component which utilises <app-layout> will
+ * use this class to generate the menus.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class LayoutMenusService {
   constructor(
     private _api: BawApiService,
-    @Inject('ACTION_LINKS_JSON') private _actionLinksJson: any,
-    @Inject('SECONDARY_LINKS_JSON') private _secondaryMenuJson?: any
-  ) {
-    // If no secondary menu items specified, use defaults
-    if (!_secondaryMenuJson) {
-      this._secondaryMenuJson = { ...secondary, _secondaryMenuJson };
-    } else {
-      this._secondaryMenuJson = secondary;
-    }
-  }
+    @Inject('MENU') private _menus?: Menus
+  ) {}
 
   /**
    * Returns the secondary menu links
    * @returns List of secondary links
    */
-  secondaryMenu(): SecondaryLink[] {
-    if (this._api.loggedIn) {
-      return this._secondaryMenuJson.auth.map(function(
-        link: SecondaryLink
-      ): SecondaryLink {
-        return link;
-      });
-    } else {
-      return this._secondaryMenuJson.no_auth.map(function(
-        link: SecondaryLink
-      ): SecondaryLink {
-        return link;
-      });
+  secondaryMenu(): Link[] {
+    const loggedIn = this._api.loggedIn;
+
+    // Combine links if required
+    let links: Link[] = menus.secondary.links;
+    if (this._menus && this._menus.secondary) {
+      links = { ...links, ...this._menus.secondary.links };
     }
+
+    // Loop through links and return all that pass their predicate function
+    return links.filter(link => {
+      // If link has a function, check it passes
+      if (link.predicate !== undefined) {
+        return link.predicate(loggedIn);
+      }
+      return true;
+    });
   }
 
   /**
@@ -44,50 +44,18 @@ export class LayoutMenusService {
    * @returns Action title and icon
    */
   actionTitle(): ActionTitle {
-    return {
-      label: this._actionLinksJson.title.label,
-      icon: [
-        this._actionLinksJson.title.icon.style,
-        this._actionLinksJson.title.icon.glyph
-      ]
-    };
+    return this._menus && this._menus.action.title
+      ? this._menus.action.title
+      : menus.action.title;
   }
 
   /**
    * Returns the action menu links
    * @returns List of action links
    */
-  actionLinks(): ActionLink[] {
-    if (this._api.loggedIn) {
-      return this._actionLinksJson.auth.map(function(
-        link: ActionLink
-      ): ActionLink {
-        return link;
-      });
-    } else {
-      return this._actionLinksJson.no_auth.map(function(
-        link: ActionLink
-      ): ActionLink {
-        return link;
-      });
-    }
+  actionLinks(): Link[] {
+    return this._menus && this._menus.action
+      ? this._menus.action.links
+      : menus.action.links;
   }
-}
-
-export interface SecondaryLink {
-  route: string;
-  icon: [string, string];
-  label: string;
-  tooltip: string;
-}
-
-export interface ActionLink {
-  route: string;
-  icon: [string, string];
-  label: string;
-  tooltip: string;
-}
-export interface ActionTitle {
-  icon: [string, string];
-  label: string;
 }

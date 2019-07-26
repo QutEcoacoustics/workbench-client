@@ -3,12 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
 import { MenusService } from './menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 
 @Component({
   selector: 'app-authentication-register',
@@ -21,9 +17,9 @@ export class RegisterComponent implements OnInit {
   model: {};
   fields: FormlyFieldConfig[];
 
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(private http: HttpClient, private menus: MenusService) {}
 

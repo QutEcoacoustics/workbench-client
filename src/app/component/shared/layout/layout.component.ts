@@ -4,11 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input
 } from '@angular/core';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 
 @Component({
   selector: 'app-layout',
@@ -17,9 +13,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent implements OnInit {
-  @Input() secondaryLinks: SecondaryLink[];
+  @Input() secondaryLinks: Link[];
+  @Input() actionLinks: Link[];
   @Input() actionTitle: ActionTitle;
-  @Input() actionLinks: ActionLink[];
 
   constructor() {}
 
