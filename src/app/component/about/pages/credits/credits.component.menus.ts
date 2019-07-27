@@ -1,1 +1,1 @@
-export const AboutCreditsIcon: [string, string] = ['fas', 'users'];
+export const AboutCreditsIcon: [string, string] = ['fas', 'hands-helping'];
