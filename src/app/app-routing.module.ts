@@ -12,8 +12,8 @@ import { ProfileComponent } from './component/profile/pages/home/home.component'
 import { AudioAnalysisComponent } from './component/audio-analysis/audio-analysis.component';
 import { WebStatisticsComponent } from './component/web-statistics/web-statistics.component';
 import { LibraryComponent } from './component/library/pages/home/home.component';
-import { aboutRoutes } from './component/about/routes';
-import { researchRoutes } from './component/research/routes';
+import { aboutRoutes } from './component/about/about.routes';
+import { researchRoutes } from './component/research/research.routes';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },

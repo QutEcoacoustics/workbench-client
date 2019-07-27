@@ -11,11 +11,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './component/shared/header/header.component';
-import { FooterComponent } from './component/shared/footer/footer.component';
-import { CardComponent } from './component/shared/cards/card/card.component';
-import { CardImageComponent } from './component/shared/cards/card-image/card-image.component';
-import { CardsComponent } from './component/shared/cards/cards.component';
 import { HomeComponent } from './component/home/home.component';
 import { ProjectsComponent } from './component/projects/pages/home/home.component';
 import { AuthenticationLoginComponent } from './component/authentication/pages/login/login.component';
@@ -25,61 +20,34 @@ import { SendAudioComponent } from './component/send-audio/send-audio.component'
 import { DataRequestComponent } from './component/data-request/data-request.component';
 import { FormlyEmailInput } from './component/shared/formly/email/email.component';
 import { ListenComponent } from './component/listen/pages/home/home.component';
-import { AboutContactComponent } from './component/about/pages/contact/contact.component';
-import { AboutReportComponent } from './component/about/pages/report/report.component';
-import { AboutEthicsComponent } from './component/about/pages/ethics/ethics.component';
-import { AboutCreditsComponent } from './component/about/pages/credits/credits.component';
-import { AboutDisclaimersComponent } from './component/about/pages/disclaimers/disclaimers.component';
-import { ProfileComponent } from './component/profile/pages/home/home.component';
-import { ProfileIconComponent } from './component/profile/icon/icon.component';
-import { ProfileStatisticsComponent } from './component/profile/statistics/statistics.component';
-import { ProfileTagsComponent } from './component/profile/tags/tags.component';
 import { LibraryComponent } from './component/library/pages/home/home.component';
-import { ResearchAboutComponent } from './component/research/pages/about/about.component';
-import { ResearchArticlesComponent } from './component/research/pages/articles/articles.component';
-import { ResearchResourcesComponent } from './component/research/pages/resources/resources.component';
-import { ResearchPeopleComponent } from './component/research/pages/people/people.component';
-import { ResearchPublicationsComponent } from './component/research/pages/publications/publications.component';
 import { AudioAnalysisComponent } from './component/audio-analysis/audio-analysis.component';
 import { WebStatisticsComponent } from './component/web-statistics/web-statistics.component';
-import { LayoutComponent } from './component/shared/layout/layout.component';
 import { LayoutMenusService } from './services/layout-menus/layout-menus.service';
 
 import { BawApiService } from './services/baw-api/baw-api.service';
+import { aboutComponents } from './component/about/about.components';
+import { researchComponents } from './component/research/research.components';
+import { profileComponents } from './component/profile/profile.components';
+import { sharedComponents } from './component/shared/shared.components';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutContactComponent,
-    AboutCreditsComponent,
-    AboutDisclaimersComponent,
-    AboutEthicsComponent,
-    AboutReportComponent,
+    aboutComponents,
     AudioAnalysisComponent,
-    CardComponent,
-    CardImageComponent,
-    CardsComponent,
     DataRequestComponent,
-    FooterComponent,
     FormlyEmailInput,
-    HeaderComponent,
     HomeComponent,
-    LayoutComponent,
     LibraryComponent,
     ListenComponent,
     AuthenticationLoginComponent,
-    ProfileComponent,
-    ProfileIconComponent,
-    ProfileStatisticsComponent,
-    ProfileTagsComponent,
+    profileComponents,
     ProjectsComponent,
     RegisterComponent,
-    ResearchAboutComponent,
-    ResearchArticlesComponent,
-    ResearchPeopleComponent,
-    ResearchPublicationsComponent,
-    ResearchResourcesComponent,
+    researchComponents,
     SendAudioComponent,
+    sharedComponents,
     WebStatisticsComponent
   ],
   imports: [
