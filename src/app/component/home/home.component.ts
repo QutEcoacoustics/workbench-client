@@ -1,13 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Card } from '../shared/cards/cards.component';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
+import {
+  ActionListTitle,
+  SecondaryLink,
+  Route,
+  SecondaryLinkInterface,
+  ActionListTitleInterface
+} from 'src/app/services/layout-menus/layout-menus.interface';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent
+  implements OnInit, HeaderItem, SecondaryLink, ActionListTitle {
   processList: List<Card>;
   projectList: List<Card>;
   postList: List<Card>;
@@ -66,5 +78,27 @@ export class HomeComponent implements OnInit {
         link: 'https://www.ecosounds.org/projects/1029'
       }
     ]);
+  }
+
+  getActionListTitle(): Readonly<ActionListTitleInterface> {
+    return Object.freeze({
+      icon: ['fas', 'home'],
+      label: 'Home'
+    });
+  }
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'home'],
+      label: 'Ecosounds',
+      uri: new Route('/')
+    });
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      uri: new Route('/home'),
+      icon: ['fas', 'home'],
+      label: 'Home',
+      tooltip: 'Home page'
+    });
   }
 }

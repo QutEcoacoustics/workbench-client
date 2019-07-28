@@ -5,30 +5,36 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router } from '@angular/router';
-import { MenusService } from './menus.service';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import {
+  SecondaryLink,
+  Route,
+  SecondaryLinkInterface,
+  LayoutMenus,
+  LayoutMenusInterface
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
+import { menus } from './login.component.menus';
 
 @Component({
   selector: 'app-authentication-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class AuthenticationLoginComponent implements OnInit {
+export class AuthenticationLoginComponent
+  implements OnInit, LayoutMenus, HeaderItem, SecondaryLink {
   private _jsonURL = 'assets/templates/login-form-template.json';
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
 
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
-
   constructor(
     private http: HttpClient,
     private api: BawApiService,
-    private router: Router,
-    private menus: MenusService
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -37,10 +43,6 @@ export class AuthenticationLoginComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
-
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
   }
 
   /**
@@ -75,6 +77,26 @@ export class AuthenticationLoginComponent implements OnInit {
       } else {
         this.router.navigate(['/']);
       }
+    });
+  }
+
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'sign-in-alt'],
+      label: 'Log in',
+      uri: new Route('/login')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return menus;
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      icon: ['fas', 'sign-in-alt'],
+      label: 'Log in',
+      uri: new Route('/login'),
+      tooltip: 'Log into the website',
+      predicate: loggedin => loggedin
     });
   }
 }

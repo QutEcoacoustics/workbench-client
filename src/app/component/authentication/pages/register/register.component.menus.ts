@@ -1,16 +1,9 @@
-import { Menus } from 'src/app/services/layout-menus/menus';
-import { ActionMenuIcon, ActionMenuTitle } from '../../authentication.menu';
+import { LayoutMenusInterface } from 'src/app/services/layout-menus/layout-menus.interface';
+import { AuthenticationCollection } from '../../authentication.menu';
 
-export const AuthenticationRegisterIcon: [string, string] = [
-  'fas',
-  'user-plus'
-];
-export const menus: Menus = {
+export const menus: LayoutMenusInterface = {
   action: {
-    title: {
-      icon: ActionMenuIcon,
-      label: ActionMenuTitle
-    },
+    list_title: AuthenticationCollection.prototype.getActionListTitle(),
     links: []
   }
 };

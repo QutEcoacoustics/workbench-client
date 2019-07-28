@@ -1,6 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
-import { MenusService } from './menus.service';
+import {
+  LayoutMenus,
+  LayoutMenusInterface,
+  Route
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
 
 @Component({
   selector: 'app-about-disclaimers',
@@ -8,16 +15,20 @@ import { MenusService } from './menus.service';
   styleUrls: ['./disclaimers.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AboutDisclaimersComponent implements OnInit {
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
+export class AboutDisclaimersComponent
+  implements OnInit, HeaderItem, LayoutMenus {
+  constructor() {}
 
-  constructor(private menus: MenusService) {}
+  ngOnInit() {}
 
-  ngOnInit() {
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'exclamation-circle'],
+      label: 'Disclaimers',
+      uri: new Route('/about/disclaimers')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return undefined;
   }
 }

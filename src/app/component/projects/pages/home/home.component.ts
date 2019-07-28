@@ -2,21 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Card } from 'src/app/component/shared/cards/cards.component';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { MenusService } from './menus.service';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import { menus } from './home.component.menu';
+import {
+  HeaderItemInterface,
+  HeaderItem
+} from 'src/app/component/shared/header/header.interface';
+import {
+  Route,
+  LayoutMenusInterface,
+  SecondaryLinkInterface,
+  SecondaryLink,
+  LayoutMenus
+} from 'src/app/services/layout-menus/layout-menus.interface';
 
 @Component({
   selector: 'app-projects',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent
+  implements OnInit, SecondaryLink, HeaderItem, LayoutMenus {
   projectList: List<Card>;
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
 
-  constructor(private api: BawApiService, private menus: MenusService) {}
+  constructor(private api: BawApiService) {}
 
   ngOnInit() {
     this.projectList = List();
@@ -41,9 +49,24 @@ export class ProjectsComponent implements OnInit {
         );
       }
     });
+  }
 
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'globe-asia'],
+      label: 'Projects',
+      uri: new Route('/projects')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return menus;
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      icon: ['fas', 'globe-asia'],
+      label: 'Projects',
+      uri: new Route('/projects'),
+      tooltip: 'View projects I have access too'
+    });
   }
 }

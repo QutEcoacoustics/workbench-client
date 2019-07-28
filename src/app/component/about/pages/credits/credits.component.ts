@@ -1,6 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
-import { MenusService } from './menus.service';
+import {
+  LayoutMenus,
+  LayoutMenusInterface,
+  Route
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
 
 @Component({
   selector: 'app-about-credits',
@@ -8,16 +15,19 @@ import { MenusService } from './menus.service';
   styleUrls: ['./credits.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AboutCreditsComponent implements OnInit {
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
+export class AboutCreditsComponent implements OnInit, LayoutMenus, HeaderItem {
+  constructor() {}
 
-  constructor(private menus: MenusService) {}
+  ngOnInit() {}
 
-  ngOnInit() {
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'hands-helping'],
+      label: 'Credits',
+      uri: new Route('/about/credits')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return undefined;
   }
 }

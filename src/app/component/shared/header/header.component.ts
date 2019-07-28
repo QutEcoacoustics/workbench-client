@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { ResearchAboutIcon } from '../../research/pages/about/about.component.menu';
-import { ResearchArticlesIcon } from '../../research/pages/articles/articles.component.menu';
-import { ResearchResourcesIcon } from '../../research/pages/resources/resources.component.menu';
-import { ResearchPeopleIcon } from '../../research/pages/people/people.component.menu';
-import { ResearchPublicationsIcon } from '../../research/pages/publications/publications.component.menu';
-import { AboutContactIcon } from '../../about/pages/contact/contact.component.menus';
-import { AboutCreditsIcon } from '../../about/pages/credits/credits.component.menus';
-import { AboutDisclaimersIcon } from '../../about/pages/disclaimers/disclaimers.component.menus';
-import { AboutEthicsIcon } from '../../about/pages/ethics/ethics.component.menus';
-import { AboutReportIcon } from '../../about/pages/report/report.component.menus';
+import { AboutContactComponent } from '../../about/pages/contact/contact.component';
+import { AboutCreditsComponent } from '../../about/pages/credits/credits.component';
+import { AboutDisclaimersComponent } from '../../about/pages/disclaimers/disclaimers.component';
+import { AboutEthicsComponent } from '../../about/pages/ethics/ethics.component';
+import { AboutReportComponent } from '../../about/pages/report/report.component';
+import { HeaderItemInterface } from './header.interface';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +19,13 @@ export class HeaderComponent implements OnInit {
   loggedIn: boolean;
   user_name: string;
   research: any;
-  about: any;
+  about: {
+    contact: HeaderItemInterface;
+    credits: HeaderItemInterface;
+    disclaimers: HeaderItemInterface;
+    ethics: HeaderItemInterface;
+    report: HeaderItemInterface;
+  };
 
   constructor(private router: Router, private api: BawApiService) {}
 
@@ -41,19 +43,19 @@ export class HeaderComponent implements OnInit {
     });
 
     this.research = {
-      about: ResearchAboutIcon,
-      articles: ResearchArticlesIcon,
-      resources: ResearchResourcesIcon,
-      people: ResearchPeopleIcon,
-      publications: ResearchPublicationsIcon
+      about: ['fas', 'users'],
+      articles: ['fas', 'newspaper'],
+      resources: ['fas', 'briefcase'],
+      people: ['fas', 'user-circle'],
+      publications: ['fas', 'globe-asia']
     };
 
     this.about = {
-      contact: AboutContactIcon,
-      credits: AboutCreditsIcon,
-      disclaimers: AboutDisclaimersIcon,
-      ethics: AboutEthicsIcon,
-      report: AboutReportIcon
+      contact: AboutContactComponent.prototype.getHeaderItem(),
+      credits: AboutCreditsComponent.prototype.getHeaderItem(),
+      disclaimers: AboutDisclaimersComponent.prototype.getHeaderItem(),
+      ethics: AboutEthicsComponent.prototype.getHeaderItem(),
+      report: AboutReportComponent.prototype.getHeaderItem()
     };
   }
 

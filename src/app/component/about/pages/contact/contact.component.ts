@@ -3,25 +3,29 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
-import { MenusService } from './menus.service';
+import {
+  LayoutMenus,
+  LayoutMenusInterface,
+  Route
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
 
 @Component({
   selector: 'app-about-home',
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class AboutContactComponent implements OnInit {
+export class AboutContactComponent implements OnInit, LayoutMenus, HeaderItem {
   private _jsonURL = 'assets/templates/contact-form-template.json';
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
 
-  constructor(private http: HttpClient, private menus: MenusService) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.form = new FormGroup({});
@@ -29,10 +33,6 @@ export class AboutContactComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
-
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
   }
 
   getJSON(): Observable<any> {
@@ -49,5 +49,16 @@ export class AboutContactComponent implements OnInit {
     }
 
     console.log(model);
+  }
+
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'users'],
+      label: 'Contact Us',
+      uri: new Route('/about/contact')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return undefined;
   }
 }

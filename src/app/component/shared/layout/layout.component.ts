@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input
-} from '@angular/core';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-layout',
@@ -13,10 +7,6 @@ import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent implements OnInit {
-  @Input() secondaryLinks: Link[];
-  @Input() actionLinks: Link[];
-  @Input() actionTitle: ActionTitle;
-
   constructor() {}
 
   ngOnInit() {}

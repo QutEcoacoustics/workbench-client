@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { BawApiService } from './services/baw-api/baw-api.service';
+import { LayoutMenusService } from './services/layout-menus/layout-menus.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-testbench';
+  menuLayout: boolean;
+
+  constructor(private _menus: LayoutMenusService) {
+    this.menuLayout = this._menus.isMenuLayout();
+  }
 }

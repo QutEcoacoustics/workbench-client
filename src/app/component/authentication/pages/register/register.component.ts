@@ -3,25 +3,32 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { MenusService } from './menus.service';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import {
+  SecondaryLink,
+  LayoutMenus,
+  Route,
+  LayoutMenusInterface,
+  SecondaryLinkInterface
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
+import { menus } from './register.component.menus';
 
 @Component({
   selector: 'app-authentication-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class AuthenticationRegisterComponent
+  implements OnInit, LayoutMenus, HeaderItem, SecondaryLink {
   private _jsonURL = 'assets/templates/register-form-template.json';
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
 
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
-
-  constructor(private http: HttpClient, private menus: MenusService) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.form = new FormGroup({});
@@ -29,9 +36,6 @@ export class RegisterComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
   }
 
   getJSON(): Observable<any> {
@@ -40,5 +44,25 @@ export class RegisterComponent implements OnInit {
 
   submit(model) {
     console.log(model);
+  }
+
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'user-plus'],
+      label: 'Register',
+      uri: new Route('/register')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return menus;
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      icon: ['fas', 'user-plus'],
+      label: 'Register',
+      uri: new Route('/register'),
+      tooltip: 'Create an account',
+      predicate: loggedin => loggedin
+    });
   }
 }

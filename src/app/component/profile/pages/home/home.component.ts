@@ -1,25 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
-import { MenusService } from './menus.service';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import {
+  SecondaryLink,
+  LayoutMenus,
+  Route,
+  LayoutMenusInterface,
+  SecondaryLinkInterface
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from 'src/app/component/shared/header/header.interface';
+import { menus } from './home.component.menus';
 
 @Component({
   selector: 'app-profile-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent
+  implements OnInit, SecondaryLink, HeaderItem, LayoutMenus {
   stats: List<{
     stat: string;
     value: number;
     icon: { style: string; name: string };
   }>;
   tags: List<{ tag: string; link: string; value: number }>;
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
 
-  constructor(private menus: MenusService) {}
+  constructor() {}
 
   ngOnInit() {
     this.stats = List([
@@ -59,9 +67,25 @@ export class ProfileComponent implements OnInit {
         value: 960
       }
     ]);
+  }
 
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'user'],
+      label: 'My Profile',
+      uri: new Route('/profile')
+    });
+  }
+  getMenus(): Readonly<LayoutMenusInterface> {
+    return menus;
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      icon: ['fas', 'user'],
+      label: 'My Profile',
+      uri: new Route('/profile'),
+      tooltip: 'View profile',
+      predicate: loggedin => loggedin
+    });
   }
 }

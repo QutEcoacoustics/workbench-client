@@ -147,9 +147,9 @@
               routerLinkActive="active"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="about.report"></fa-icon>
+                <fa-icon [icon]="about.report.icon"></fa-icon>
               </div>
-              Report Problem
+              {{ about.report.label }}
             </a>
             <a
               ngbDropdownItem
@@ -158,9 +158,9 @@
               i18n="Navbar Contact Us Link|Link to contact us page@@navbarContactUs"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="about.contact"></fa-icon>
+                <fa-icon [icon]="about.contact.icon"></fa-icon>
               </div>
-              Contact Us
+              {{ about.contact.label }}
             </a>
             <a
               ngbDropdownItem
@@ -168,9 +168,9 @@
               routerLinkActive="active"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="about.credits"></fa-icon>
+                <fa-icon [icon]="about.credits.icon"></fa-icon>
               </div>
-              Credits
+              {{ about.credits.label }}
             </a>
             <a
               ngbDropdownItem
@@ -178,9 +178,9 @@
               routerLinkActive="active"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="about.disclaimers"></fa-icon>
+                <fa-icon [icon]="about.disclaimers.icon"></fa-icon>
               </div>
-              Disclaimers
+              {{ about.disclaimers.label }}
             </a>
             <a
               ngbDropdownItem
@@ -188,9 +188,9 @@
               routerLinkActive="active"
             >
               <div class="icon-wrapper">
-                <fa-icon [icon]="about.ethics"></fa-icon>
+                <fa-icon [icon]="about.ethics.icon"></fa-icon>
               </div>
-              Ethics
+              {{ about.ethics.label }}
             </a>
           </div>
         </li>

@@ -1,6 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
-import { MenusService } from './menus.service';
+import {
+  SecondaryLink,
+  Route,
+  SecondaryLinkInterface
+} from 'src/app/services/layout-menus/layout-menus.interface';
+import {
+  HeaderItem,
+  HeaderItemInterface
+} from '../shared/header/header.interface';
 
 @Component({
   selector: 'app-data-request',
@@ -8,15 +15,24 @@ import { MenusService } from './menus.service';
   styleUrls: ['./data-request.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DataRequestComponent implements OnInit {
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
-  constructor(private menus: MenusService) {}
+export class DataRequestComponent implements OnInit, HeaderItem, SecondaryLink {
+  constructor() {}
 
-  ngOnInit() {
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+  ngOnInit() {}
+
+  getHeaderItem(): Readonly<HeaderItemInterface> {
+    return Object.freeze({
+      icon: ['fas', 'table'],
+      label: 'Data Request',
+      uri: new Route('/data_request')
+    });
+  }
+  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+    return Object.freeze({
+      icon: ['fas', 'table'],
+      label: 'Data Request',
+      uri: new Route('/data_request'),
+      tooltip: 'Request customized data from the website'
+    });
   }
 }
