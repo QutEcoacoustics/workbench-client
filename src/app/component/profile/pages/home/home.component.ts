@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { MenusService } from './menus.service';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 
 @Component({
   selector: 'app-profile-home',
@@ -19,9 +15,9 @@ export class ProfileComponent implements OnInit {
     icon: { style: string; name: string };
   }>;
   tags: List<{ tag: string; link: string; value: number }>;
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(private menus: MenusService) {}
 

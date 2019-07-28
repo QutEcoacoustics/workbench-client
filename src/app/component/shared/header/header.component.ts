@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
+import { ResearchAboutIcon } from '../../research/pages/about/about.component.menu';
+import { ResearchArticlesIcon } from '../../research/pages/articles/articles.component.menu';
+import { ResearchResourcesIcon } from '../../research/pages/resources/resources.component.menu';
+import { ResearchPeopleIcon } from '../../research/pages/people/people.component.menu';
+import { ResearchPublicationsIcon } from '../../research/pages/publications/publications.component.menu';
+import { AboutContactIcon } from '../../about/pages/contact/contact.component.menus';
+import { AboutCreditsIcon } from '../../about/pages/credits/credits.component.menus';
+import { AboutDisclaimersIcon } from '../../about/pages/disclaimers/disclaimers.component.menus';
+import { AboutEthicsIcon } from '../../about/pages/ethics/ethics.component.menus';
+import { AboutReportIcon } from '../../about/pages/report/report.component.menus';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +22,8 @@ export class HeaderComponent implements OnInit {
   collapsed: boolean;
   loggedIn: boolean;
   user_name: string;
+  research: any;
+  about: any;
 
   constructor(private router: Router, private api: BawApiService) {}
 
@@ -27,6 +39,22 @@ export class HeaderComponent implements OnInit {
         this.toggleCollapse(true);
       }
     });
+
+    this.research = {
+      about: ResearchAboutIcon,
+      articles: ResearchArticlesIcon,
+      resources: ResearchResourcesIcon,
+      people: ResearchPeopleIcon,
+      publications: ResearchPublicationsIcon
+    };
+
+    this.about = {
+      contact: AboutContactIcon,
+      credits: AboutCreditsIcon,
+      disclaimers: AboutDisclaimersIcon,
+      ethics: AboutEthicsIcon,
+      report: AboutReportIcon
+    };
   }
 
   /**

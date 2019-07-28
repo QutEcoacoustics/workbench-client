@@ -1,9 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 import { MenusService } from './menus.service';
 
 @Component({
@@ -13,9 +9,9 @@ import { MenusService } from './menus.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataRequestComponent implements OnInit {
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
   constructor(private menus: MenusService) {}
 
   ngOnInit() {

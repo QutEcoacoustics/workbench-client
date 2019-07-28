@@ -3,11 +3,7 @@ import { List } from 'immutable';
 import { Card } from 'src/app/component/shared/cards/cards.component';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { MenusService } from './menus.service';
-import {
-  SecondaryLink,
-  ActionTitle,
-  ActionLink
-} from 'src/app/services/layout-menus/layout-menus.service';
+import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
 
 @Component({
   selector: 'app-projects',
@@ -16,9 +12,9 @@ import {
 })
 export class ProjectsComponent implements OnInit {
   projectList: List<Card>;
-  secondaryLinks: SecondaryLink[];
+  secondaryLinks: Link[];
+  actionLinks: Link[];
   actionTitle: ActionTitle;
-  actionLinks: ActionLink[];
 
   constructor(private api: BawApiService, private menus: MenusService) {}
 
