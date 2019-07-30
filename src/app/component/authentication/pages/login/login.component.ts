@@ -4,27 +4,19 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { Router } from '@angular/router';
+import { Router, Routes } from '@angular/router';
 import {
-  SecondaryLink,
   Route,
-  SecondaryLinkInterface,
-  LayoutMenus,
-  LayoutMenusInterface
+  PageInfo
 } from 'src/app/services/layout-menus/layout-menus.interface';
-import {
-  HeaderItem,
-  HeaderItemInterface
-} from 'src/app/component/shared/header/header.interface';
-import { menus } from './login.component.menus';
+import { Category } from '../../authentication';
 
 @Component({
   selector: 'app-authentication-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class AuthenticationLoginComponent
-  implements OnInit, LayoutMenus, HeaderItem, SecondaryLink {
+export class LoginComponent implements OnInit {
   private _jsonURL = 'assets/templates/login-form-template.json';
   form: FormGroup;
   model: {};
@@ -79,24 +71,41 @@ export class AuthenticationLoginComponent
       }
     });
   }
-
-  getHeaderItem(): Readonly<HeaderItemInterface> {
-    return Object.freeze({
-      icon: ['fas', 'sign-in-alt'],
-      label: 'Log in',
-      uri: new Route('/login')
-    });
-  }
-  getMenus(): Readonly<LayoutMenusInterface> {
-    return menus;
-  }
-  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
-    return Object.freeze({
-      icon: ['fas', 'sign-in-alt'],
-      label: 'Log in',
-      uri: new Route('/login'),
-      tooltip: 'Log into the website',
-      predicate: loggedin => loggedin
-    });
-  }
 }
+
+// getHeaderItem(): Readonly<HeaderItemInterface> {
+//   return Object.freeze({
+//     icon: ['fas', 'sign-in-alt'],
+//     label: 'Log in',
+//     uri: new Route('/login')
+//   });
+// }
+// getMenus(): Readonly<LayoutMenusInterface> {
+//   return menus;
+// }
+// getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+//   return Object.freeze({
+//     icon: ['fas', 'sign-in-alt'],
+//     label: 'Log in',
+//     uri: new Route('/login'),
+//     tooltip: 'Log into the website',
+//     predicate: loggedin => loggedin
+//   });
+// }
+const pageInfo: PageInfo = {
+  icon: ['fas', 'sign-in-alt'],
+  label: 'Log in',
+  category: Category,
+  tooltip: () => 'Log into the website',
+  actions: null,
+  links: null,
+  uri: new Route('login')
+};
+
+export const loginRoutes: Routes = [
+  {
+    path: pageInfo.uri.uri,
+    component: LoginComponent,
+    data: pageInfo
+  }
+];

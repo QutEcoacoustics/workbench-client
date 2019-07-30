@@ -14,7 +14,7 @@ export interface LayoutMenusInterface {
  * Secondary menu interface. Defines a list of secondary menu links.
  */
 export interface SecondaryMenuInterface {
-  links: SecondaryLinkInterface[];
+  links: LinkInterface[];
 }
 
 /**
@@ -23,8 +23,8 @@ export interface SecondaryMenuInterface {
  * @param links Action links
  */
 export interface ActionMenuInterface {
-  list_title?: ActionListTitleInterface;
-  links: SecondaryLinkInterface[];
+  list_title?: NameAndIcon;
+  links: ActionInterface[];
 }
 
 // /**
@@ -37,8 +37,8 @@ export interface ActionMenuInterface {
 //   label: string;
 // }
 export interface NameAndIcon {
-  icon: Icon,
-  label: string,
+  icon: Icon;
+  label: string;
 }
 
 /**
@@ -66,7 +66,7 @@ export interface LinkInterface extends NameAndIcon {
  */
 export interface ActionInterface extends NameAndIcon {
   action: Function;
-  tooltip: string;
+  tooltip: (user?: User | null) => string;
   predicate?: (loggedin: boolean) => boolean;
 }
 
@@ -107,40 +107,6 @@ export class Href {
 }
 
 /**
- * Determine if an element is a Route class.
- * @param uri URI to evaluate
- */
-export function isRoute(uri: Route | Href): uri is Route {
-  return uri.type === 'Route';
-}
-
-/**
- * Determine if component extends SecondaryItem interface
- * @param component Component to evaluate
- */
-export function isSecondaryItem(component: any): component is SecondaryLink {
-  return (component as SecondaryLink).getSecondaryItem() !== null;
-}
-
-/**
- * Determine if component extends SecondaryMenu interface
- * @param component Component to evaluate
- */
-export function isSecondaryMenu(component: any): component is LayoutMenus {
-  return (component as LayoutMenus).getMenus() !== null;
-}
-
-/**
- * Determine if component extends ActionListTitle interface
- * @param component Component to evaluate
- */
-export function isActionListTitle(
-  component: any
-): component is ActionListTitle {
-  return (component as ActionListTitle).getActionListTitle() !== null;
-}
-
-/**
  * Secondary Item interface.
  * This is designed for components which may appear on the secondary menu
  */
@@ -149,7 +115,7 @@ export declare interface SecondaryLink {
    * Get secondary item details for component
    * @returns Secondary link item
    */
-  getSecondaryItem(): Readonly<SecondaryLinkInterface>;
+  getSecondaryItem(): Readonly<LinkInterface>;
 }
 
 /**
@@ -174,10 +140,10 @@ export declare interface ActionListTitle {
    * Group title to be used by the action menu for all children components.
    * @returns The group title
    */
-  getActionListTitle(): Readonly<ActionListTitleInterface>;
+  getActionListTitle(): Readonly<NameAndIcon>;
 }
 
-type Icon = [string, string]
+type Icon = [string, string];
 interface User {
   // todo
 }
@@ -189,8 +155,8 @@ export class PageInfo implements Data, LinkInterface {
   tooltip: (user?: User | null) => string;
   actions: ActionInterface[];
   links: LinkInterface[];
-  uri: Route
-  //route: Route
+  uri: Route;
+  // route: Route
   constructor() {}
-  //constructor(icon: Icon, label:string, tooltip: (user?: User | null) => string) {}
+  // constructor(icon: Icon, label:string, tooltip: (user?: User | null) => string) {}
 }

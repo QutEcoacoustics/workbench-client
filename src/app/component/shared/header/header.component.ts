@@ -1,18 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { AboutContactComponent } from '../../about/pages/contact/contact.component';
-import { AboutCreditsComponent } from '../../about/pages/credits/credits.component';
-import { AboutDisclaimersComponent } from '../../about/pages/disclaimers/disclaimers.component';
-import { AboutEthicsComponent } from '../../about/pages/ethics/ethics.component';
-import { AboutReportComponent } from '../../about/pages/report/report.component';
-import { HeaderItemInterface } from './header.interface';
-
-interface StringKeyValuePair<V> {
-  [key: string]: V;
-}
-type PageIcon = StringKeyValuePair<[string, string]>
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -23,14 +11,6 @@ export class HeaderComponent implements OnInit {
   collapsed: boolean;
   loggedIn: boolean;
   user_name: string;
-  research: any;
-  about: {
-    contact: HeaderItemInterface;
-    credits: HeaderItemInterface;
-    disclaimers: HeaderItemInterface;
-    ethics: HeaderItemInterface;
-    report: HeaderItemInterface;
-  };
 
   constructor(private router: Router, private api: BawApiService) {}
 
@@ -46,22 +26,6 @@ export class HeaderComponent implements OnInit {
         this.toggleCollapse(true);
       }
     });
-
-    this.research = {
-      about: ['fas', 'users'],
-      articles: ['fas', 'newspaper'],
-      resources: ['fas', 'briefcase'],
-      people: ['fas', 'user-circle'],
-      publications: ['fas', 'globe-asia']
-    };
-
-    this.about = {
-      contact: AboutContactComponent.prototype.getHeaderItem(),
-      credits: AboutCreditsComponent.prototype.getHeaderItem(),
-      disclaimers: AboutDisclaimersComponent.prototype.getHeaderItem(),
-      ethics: AboutEthicsComponent.prototype.getHeaderItem(),
-      report: AboutReportComponent.prototype.getHeaderItem()
-    };
   }
 
   /**

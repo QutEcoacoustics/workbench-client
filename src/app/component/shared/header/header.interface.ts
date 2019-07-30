@@ -2,6 +2,7 @@ import {
   Route,
   Href
 } from 'src/app/services/layout-menus/layout-menus.interface';
+import { Icon } from '@fortawesome/fontawesome-svg-core';
 
 /**
  * Action title interface. Defines an action menus icon and label.
@@ -27,5 +28,3 @@ export declare interface HeaderItem {
    */
   getHeaderItem(): Readonly<HeaderItemInterface>;
 }
-
-

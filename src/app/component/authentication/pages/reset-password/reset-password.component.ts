@@ -1,55 +1,47 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { Routes, RouterModule, ActivatedRoute, Data } from '@angular/router';
-import { PageInfo, Route } from '../../../../services/layout-menus/layout-menus.interface';
-import { Category } from '../../authentication'
+import {
+  PageInfo,
+  Route
+} from '../../../../services/layout-menus/layout-menus.interface';
+import { Category } from '../../authentication';
 
-export namespace Authentication {
+// @Routes({
 
+// })
+@Component({
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.scss']
+})
+export class ResetPasswordComponent implements OnInit {
+  output: string;
 
-  // @Routes({
+  constructor(private _route: ActivatedRoute) {}
 
-  // })
-
-  @Component({
-    selector: 'app-reset-password',
-    templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.scss']
-  })
-  export class ResetPasswordComponent implements OnInit {
-    output:string;
-
-    constructor(private _route: ActivatedRoute) { }
-
-    ngOnInit() {
-      console.debug(this._route.data);
-      this._route.data.subscribe(val => {
-        console.debug(val);
-        this.output = JSON.stringify(val);
-      })
-    }
-
+  ngOnInit() {
+    console.debug(this._route.data);
+    this._route.data.subscribe(val => {
+      console.debug(val);
+      this.output = JSON.stringify(val);
+    });
   }
-
-
-
-  
-  let pageInfo : PageInfo = {
-    icon: ["fas", "unlock"],
-    label: "Reset password",
-    category: Category,
-    tooltip: () => "Reset password because you're silly"
-    actions: null,
-    links: null,
-    uri: new Route("my_account/password/new")
-  }
-  let routes : Routes = [
-    {
-      path: 'my_account/password/new',
-      pathMatch: "full",
-      component: ResetPasswordComponent,
-      data: pageInfo
-    }
-  ]
-
-
 }
+
+const pageInfo: PageInfo = {
+  icon: ['fas', 'unlock'],
+  label: 'Reset password',
+  category: Category,
+  tooltip: () => 'Send an email to reset your password',
+  actions: null,
+  links: null,
+  uri: new Route('reset_password')
+};
+
+export const resetRoutes: Routes = [
+  {
+    path: pageInfo.uri.uri,
+    component: ResetPasswordComponent,
+    data: pageInfo
+  }
+];

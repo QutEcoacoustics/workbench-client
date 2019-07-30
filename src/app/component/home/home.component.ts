@@ -8,9 +8,7 @@ import {
 import {
   ActionListTitle,
   SecondaryLink,
-  Route,
-  SecondaryLinkInterface,
-  ActionListTitleInterface
+  Route
 } from 'src/app/services/layout-menus/layout-menus.interface';
 
 @Component({
@@ -18,8 +16,7 @@ import {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent
-  implements OnInit, HeaderItem, SecondaryLink, ActionListTitle {
+export class HomeComponent implements OnInit {
   processList: List<Card>;
   projectList: List<Card>;
   postList: List<Card>;
@@ -80,25 +77,25 @@ export class HomeComponent
     ]);
   }
 
-  getActionListTitle(): Readonly<ActionListTitleInterface> {
-    return Object.freeze({
-      icon: ['fas', 'home'],
-      label: 'Home'
-    });
-  }
-  getHeaderItem(): Readonly<HeaderItemInterface> {
-    return Object.freeze({
-      icon: ['fas', 'home'],
-      label: 'Ecosounds',
-      uri: new Route('/')
-    });
-  }
-  getSecondaryItem(): Readonly<SecondaryLinkInterface> {
-    return Object.freeze({
-      uri: new Route('/home'),
-      icon: ['fas', 'home'],
-      label: 'Home',
-      tooltip: 'Home page'
-    });
-  }
+  // getActionListTitle(): Readonly<ActionListTitleInterface> {
+  //   return Object.freeze({
+  //     icon: ['fas', 'home'],
+  //     label: 'Home'
+  //   });
+  // }
+  // getHeaderItem(): Readonly<HeaderItemInterface> {
+  //   return Object.freeze({
+  //     icon: ['fas', 'home'],
+  //     label: 'Ecosounds',
+  //     uri: new Route('/')
+  //   });
+  // }
+  // getSecondaryItem(): Readonly<SecondaryLinkInterface> {
+  //   return Object.freeze({
+  //     uri: new Route('/home'),
+  //     icon: ['fas', 'home'],
+  //     label: 'Home',
+  //     tooltip: 'Home page'
+  //   });
+  // }
 }
