@@ -2,7 +2,7 @@ import {
   resetRoutes,
   ResetPasswordComponent
 } from './pages/reset-password/reset-password.component';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import {
   registerRoutes,
@@ -10,10 +10,19 @@ import {
 } from './pages/register/register.component';
 import { loginRoutes, LoginComponent } from './pages/login/login.component';
 
-const children = [];
-children.concat(resetRoutes);
-children.concat(registerRoutes);
-children.concat(loginRoutes);
+let children = [];
+children = children.concat(resetRoutes);
+children = children.concat(registerRoutes);
+children = children.concat(loginRoutes);
+
+const routes: Routes = [
+  {
+    path: 'security',
+    children
+  }
+];
+
+console.log(children);
 
 export const AuthenticationComponents = [
   LoginComponent,
@@ -22,7 +31,7 @@ export const AuthenticationComponents = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(children)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class AuthenticationModule {}

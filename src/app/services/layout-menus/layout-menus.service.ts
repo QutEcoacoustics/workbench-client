@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
-import { ActivatedRoute } from '@angular/router';
 
 /**
  * Manages the creation of links for the Secondary and Action menus
@@ -11,5 +10,5 @@ import { ActivatedRoute } from '@angular/router';
   providedIn: 'root'
 })
 export class LayoutMenusService {
-  constructor(private _api: BawApiService, private _router: ActivatedRoute) {}
+  constructor(private _api: BawApiService) {}
 }

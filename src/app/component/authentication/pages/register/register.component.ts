@@ -3,12 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import {
-  Route,
-  PageInfo
-} from 'src/app/services/layout-menus/layout-menus.interface';
 import { Routes } from '@angular/router';
 import { Category } from '../../authentication';
+import { Route, PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
 
 @Component({
   selector: 'app-authentication-register',
@@ -67,12 +64,12 @@ const pageInfo: PageInfo = {
   tooltip: () => 'Create an account',
   actions: null,
   links: null,
-  uri: new Route('register')
+  uri: 'register' as Route
 };
 
 export const registerRoutes: Routes = [
   {
-    path: pageInfo.uri.uri,
+    path: pageInfo.uri,
     component: RegisterComponent,
     data: pageInfo
   }

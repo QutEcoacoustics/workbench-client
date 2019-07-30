@@ -1,10 +1,7 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { Routes, RouterModule, ActivatedRoute, Data } from '@angular/router';
-import {
-  PageInfo,
-  Route
-} from '../../../../services/layout-menus/layout-menus.interface';
+import { Component, OnInit } from '@angular/core';
+import { Routes, ActivatedRoute } from '@angular/router';
 import { Category } from '../../authentication';
+import { PageInfo, Route } from 'src/app/interfaces/layout-menus.interfaces';
 
 // @Routes({
 
@@ -35,12 +32,12 @@ const pageInfo: PageInfo = {
   tooltip: () => 'Send an email to reset your password',
   actions: null,
   links: null,
-  uri: new Route('reset_password')
+  uri: 'reset_password' as Route
 };
 
 export const resetRoutes: Routes = [
   {
-    path: pageInfo.uri.uri,
+    path: pageInfo.uri,
     component: ResetPasswordComponent,
     data: pageInfo
   }

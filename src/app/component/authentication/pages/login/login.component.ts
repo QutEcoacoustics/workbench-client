@@ -5,11 +5,8 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router, Routes } from '@angular/router';
-import {
-  Route,
-  PageInfo
-} from 'src/app/services/layout-menus/layout-menus.interface';
 import { Category } from '../../authentication';
+import { Route, PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
 
 @Component({
   selector: 'app-authentication-login',
@@ -99,12 +96,12 @@ const pageInfo: PageInfo = {
   tooltip: () => 'Log into the website',
   actions: null,
   links: null,
-  uri: new Route('login')
+  uri: 'login' as Route
 };
 
 export const loginRoutes: Routes = [
   {
-    path: pageInfo.uri.uri,
+    path: pageInfo.uri,
     component: LoginComponent,
     data: pageInfo
   }

@@ -2,24 +2,17 @@ import { Data } from '@angular/router';
 
 /**
  * Menu interface. Defines what secondary and action menu's should look like.
- * @param secondary Secondary menu
+ * @param links Secondary menu
  * @param action Action menu
  */
 export interface LayoutMenusInterface {
-  links?: SecondaryMenuInterface;
+  links?: LinkInterface[];
   action?: ActionMenuInterface;
 }
 
 /**
- * Secondary menu interface. Defines a list of secondary menu links.
- */
-export interface SecondaryMenuInterface {
-  links: LinkInterface[];
-}
-
-/**
  * Action menu interface. Defines an action menu title and links.
- * @param title Action title
+ * @param list_title Action title
  * @param links Action links
  */
 export interface ActionMenuInterface {
@@ -27,26 +20,19 @@ export interface ActionMenuInterface {
   links: ActionInterface[];
 }
 
-// /**
-//  * Action title interface. Defines an action menus icon and label.
-//  * @param icon Action icon eg. ['fas', 'home']
-//  * @param label Action label
-//  */
-// export interface ActionListTitleInterface {
-//   icon: [string, string];
-//   label: string;
-// }
+/**
+ * Component Name and Icon
+ * @param icon Component icon eg. ['fas', 'home']
+ * @param label Component label
+ */
 export interface NameAndIcon {
   icon: Icon;
   label: string;
 }
 
 /**
- * Secondary Link interface. Defines all the requirements of a link.
- * @param route Internal angular route
- * @param href External url route
- * @param icon Link icon eg. ['fas', 'home']
- * @param label Link label
+ * Link interface. Defines all the requirements of a link.
+ * @param uri: Internal angular route or external url
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
@@ -58,9 +44,7 @@ export interface LinkInterface extends NameAndIcon {
 
 /**
  * Action Link interface. Defines all the requirements of a link.
- * @param uri Internal angular route or external url
- * @param icon Link icon eg. ['fas', 'home']
- * @param label Link label
+ * @param action Function to run on click event
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
@@ -73,38 +57,17 @@ export interface ActionInterface extends NameAndIcon {
 /**
  * Internal angular route
  */
-export class Route {
-  /**
-   * Constructor
-   * @param uri Internal route
-   */
-  constructor(public uri: string) {}
-
-  /**
-   * Returns the class type
-   */
-  get type() {
-    return 'Route';
-  }
-}
+export type Route = string;
 
 /**
  * External URL
  */
-export class Href {
-  /**
-   * Constructor
-   * @param uri External URL route
-   */
-  constructor(public uri: string) {}
+export type Href = string;
 
-  /**
-   * Returns the class type
-   */
-  get type() {
-    return 'Href';
-  }
-}
+/**
+ * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
+ */
+export type Icon = readonly [string, string];
 
 /**
  * Secondary Item interface.
@@ -143,20 +106,33 @@ export declare interface ActionListTitle {
   getActionListTitle(): Readonly<NameAndIcon>;
 }
 
-type Icon = [string, string];
-interface User {
-  // todo
+/**
+ * User data
+ * @param loggedin Whether user is logged in
+ * @param user_name Username of user
+ */
+export interface User {
+  loggedIn?: boolean;
+  user_name?: string;
 }
 
+/**
+ * Page info class. This stores information required to generate the various menus of the page.
+ * @param icon Page icon eg. ['fas', 'home']
+ * @param label Page label
+ * @param category Page category
+ * @param uri Page route
+ * @param tooltip Link tooltip
+ * @param actions List of actions
+ * @param links List of secondary menu links
+ */
 export class PageInfo implements Data, LinkInterface {
   icon: Icon;
   label: string;
   category: NameAndIcon;
+  uri: Route;
   tooltip: (user?: User | null) => string;
   actions: ActionInterface[];
   links: LinkInterface[];
-  uri: Route;
-  // route: Route
   constructor() {}
-  // constructor(icon: Icon, label:string, tooltip: (user?: User | null) => string) {}
 }
