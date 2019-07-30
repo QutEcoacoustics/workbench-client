@@ -21,7 +21,10 @@ import { BawApiService } from './services/baw-api/baw-api.service';
 import { sharedComponents } from './component/shared/shared.components';
 import { SecondaryMenuComponent } from './component/shared/secondary-menu/secondary-menu.component';
 import { ActionMenuComponent } from './component/shared/action-menu/action-menu.component';
-import { AuthenticationModule } from './component/authentication/authentication.module';
+import {
+  AuthenticationModule,
+  AuthenticationComponents
+} from './component/authentication/authentication.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { AuthenticationModule } from './component/authentication/authentication.
     HomeComponent,
     sharedComponents,
     SecondaryMenuComponent,
-    ActionMenuComponent
+    ActionMenuComponent,
+    AuthenticationComponents
   ],
   imports: [
     NgbModule,

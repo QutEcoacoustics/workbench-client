@@ -11,6 +11,6 @@ export class AppComponent {
   menuLayout: boolean;
 
   constructor(private _menus: LayoutMenusService) {
-    this.menuLayout = this._menus.isMenuLayout();
+    this.menuLayout = false;
   }
 }

@@ -1,19 +1,24 @@
 <div class="app">
   <app-header></app-header>
   <div class="content">
-    <div class="container p-0">
-      <div class="d-flex flex-wrap col">
-        <div class="secondary">
-          <router-outlet name="secondary"></router-outlet>
-        </div>
-        <div class="page">
-          <router-outlet></router-outlet>
-        </div>
-        <div class="actions">
-          <router-outlet name="action"></router-outlet>
+    <ng-container *ngIf="menuLayout; else fullPage">
+      <div class="container p-0">
+        <div class="d-flex flex-wrap col">
+          <div class="secondary">
+            <router-outlet name="secondary"></router-outlet>
+          </div>
+          <div class="page">
+            <router-outlet></router-outlet>
+          </div>
+          <div class="actions">
+            <router-outlet name="action"></router-outlet>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #fullPage>
+      <router-outlet></router-outlet>
+    </ng-template>
   </div>
   <app-footer></app-footer>
 </div>

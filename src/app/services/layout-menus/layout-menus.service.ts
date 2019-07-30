@@ -12,15 +12,4 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LayoutMenusService {
   constructor(private _api: BawApiService, private _router: ActivatedRoute) {}
-
-  /**
-   * Returns true if page should utilise a layout containing secondary and action menus
-   */
-  isMenuLayout() {
-    if (typeof this._router.component === 'string') {
-      return false;
-    }
-
-    return !!this._router.component.prototype.getMenu;
-  }
 }
