@@ -10,7 +10,7 @@ import {
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
 export interface HeaderItemInterface {
-  icon: [string, string];
+  icon: Icon;
   label: string;
   uri: Route | Href;
   predicate?: (loggedin: boolean) => boolean;
@@ -27,3 +27,5 @@ export declare interface HeaderItem {
    */
   getHeaderItem(): Readonly<HeaderItemInterface>;
 }
+
+

@@ -1,4 +1,4 @@
-import { AuthenticationCollection } from '../../authentication.menu';
+import { AuthenticationCollection } from '../../authentication';
 import {
   LayoutMenusInterface,
   Href

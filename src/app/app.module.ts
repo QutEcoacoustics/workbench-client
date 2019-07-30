@@ -31,6 +31,7 @@ import { profileComponents } from './component/profile/profile.components';
 import { sharedComponents } from './component/shared/shared.components';
 import { SecondaryMenuComponent } from './component/shared/secondary-menu/secondary-menu.component';
 import { ActionMenuComponent } from './component/shared/action-menu/action-menu.component';
+import { Authentication } from './component/authentication/pages/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ActionMenuComponent } from './component/shared/action-menu/action-menu.
     WebStatisticsComponent,
     SecondaryMenuComponent,
     ActionMenuComponent
+    Authentication.ResetPasswordComponent
   ],
   imports: [
     NgbModule,
@@ -63,7 +65,8 @@ import { ActionMenuComponent } from './component/shared/action-menu/action-menu.
     FormlyModule.forRoot({
       types: [{ name: 'email', component: FormlyEmailInput }]
     }),
-    FormlyBootstrapModule
+    FormlyBootstrapModule,
+    Authentication.AuthenticationModule
   ],
   providers: [BawApiService, LayoutMenusService],
   bootstrap: [AppComponent],

@@ -8,6 +8,11 @@ import { AboutEthicsComponent } from '../../about/pages/ethics/ethics.component'
 import { AboutReportComponent } from '../../about/pages/report/report.component';
 import { HeaderItemInterface } from './header.interface';
 
+interface StringKeyValuePair<V> {
+  [key: string]: V;
+}
+type PageIcon = StringKeyValuePair<[string, string]>
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

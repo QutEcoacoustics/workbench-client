@@ -1,10 +1,12 @@
+import { Data } from '@angular/router';
+
 /**
  * Menu interface. Defines what secondary and action menu's should look like.
  * @param secondary Secondary menu
  * @param action Action menu
  */
 export interface LayoutMenusInterface {
-  secondary?: SecondaryMenuInterface;
+  links?: SecondaryMenuInterface;
   action?: ActionMenuInterface;
 }
 
@@ -25,14 +27,18 @@ export interface ActionMenuInterface {
   links: SecondaryLinkInterface[];
 }
 
-/**
- * Action title interface. Defines an action menus icon and label.
- * @param icon Action icon eg. ['fas', 'home']
- * @param label Action label
- */
-export interface ActionListTitleInterface {
-  icon: [string, string];
-  label: string;
+// /**
+//  * Action title interface. Defines an action menus icon and label.
+//  * @param icon Action icon eg. ['fas', 'home']
+//  * @param label Action label
+//  */
+// export interface ActionListTitleInterface {
+//   icon: [string, string];
+//   label: string;
+// }
+export interface NameAndIcon {
+  icon: Icon,
+  label: string,
 }
 
 /**
@@ -44,11 +50,9 @@ export interface ActionListTitleInterface {
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
-export interface SecondaryLinkInterface {
+export interface LinkInterface extends NameAndIcon {
   uri: Route | Href;
-  icon: [string, string];
-  label: string;
-  tooltip: string;
+  tooltip: (user?: User | null) => string;
   predicate?: (loggedin: boolean) => boolean;
 }
 
@@ -60,10 +64,8 @@ export interface SecondaryLinkInterface {
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
-export interface ActionLinkInterface {
-  uri: Route | Href;
-  icon: [string, string];
-  label: string;
+export interface ActionInterface extends NameAndIcon {
+  action: Function;
   tooltip: string;
   predicate?: (loggedin: boolean) => boolean;
 }
@@ -173,4 +175,22 @@ export declare interface ActionListTitle {
    * @returns The group title
    */
   getActionListTitle(): Readonly<ActionListTitleInterface>;
+}
+
+type Icon = [string, string]
+interface User {
+  // todo
+}
+
+export class PageInfo implements Data, LinkInterface {
+  icon: Icon;
+  label: string;
+  category: NameAndIcon;
+  tooltip: (user?: User | null) => string;
+  actions: ActionInterface[];
+  links: LinkInterface[];
+  uri: Route
+  //route: Route
+  constructor() {}
+  //constructor(icon: Icon, label:string, tooltip: (user?: User | null) => string) {}
 }
