@@ -7,7 +7,7 @@ import {
   ComponentInfoInterface,
   InternalRoute
 } from 'src/app/interfaces/layout-menus.interfaces';
-import { Category } from '../../authentication';
+import { securityCategory } from '../../authentication';
 
 @Component({
   selector: 'app-authentication-register',
@@ -42,7 +42,8 @@ export class RegisterComponent implements OnInit {
 export const registerComponentInfo: ComponentInfoInterface = {
   icon: ['fas', 'user-plus'],
   label: 'Register',
-  category: Category,
-  uri: 'register' as InternalRoute,
+  category: securityCategory,
+  uri: (securityCategory.route + '/register') as InternalRoute,
+  sub_route: 'register' as InternalRoute,
   tooltip: () => 'Create an account'
 };

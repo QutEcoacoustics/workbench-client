@@ -1,4 +1,7 @@
-import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
+import {
+  PageInfo,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 import { Routes } from '@angular/router';
 import { LoginComponent, loginComponentInfo } from './login.component';
@@ -35,7 +38,7 @@ export const loginPageInfo: PageInfo = {
 
 export const loginRoutes: Routes = [
   {
-    path: loginComponentInfo.uri,
+    path: loginComponentInfo.sub_route,
     children: [
       {
         path: '',

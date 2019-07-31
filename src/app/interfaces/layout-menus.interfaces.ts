@@ -69,6 +69,17 @@ export interface NameAndIcon {
 }
 
 /**
+ * Category interface
+ * @param icon Category icon
+ * @param label Category label
+ * @param route Local route of category Eg. 'security'
+ * @extends NameAndIcon
+ */
+export interface Category extends NameAndIcon {
+  route: string;
+}
+
+/**
  * Link interface. Defines all the requirements of a link.
  * @param icon Component icon
  * @param label Component label
@@ -99,15 +110,17 @@ export class PageInfo implements Data {
  * @param icon Page icon
  * @param label Page label
  * @param category Page category
- * @param uri Page route
+ * @param uri Page route from root '/security/login'
  * @param tooltip Link tooltip
  * @param predicate Link visibility
+ * @param sub_route Page route from parent location 'login'
  * @extends LinkInterface
  */
 export interface ComponentInfoInterface extends LinkInterface {
   icon: Icon;
   label: string;
   category: NameAndIcon;
+  sub_route: InternalRoute;
 }
 
 /**

@@ -9,7 +9,7 @@ import {
   ComponentInfoInterface,
   InternalRoute
 } from 'src/app/interfaces/layout-menus.interfaces';
-import { Category } from '../../authentication';
+import { securityCategory } from '../../authentication';
 
 @Component({
   selector: 'app-authentication-login',
@@ -76,7 +76,8 @@ export class LoginComponent implements OnInit {
 export const loginComponentInfo: ComponentInfoInterface = {
   icon: ['fas', 'sign-in-alt'],
   label: 'Log in',
-  category: Category,
-  uri: 'login' as InternalRoute,
+  category: securityCategory,
+  uri: (securityCategory.route + '/login') as InternalRoute,
+  sub_route: 'login' as InternalRoute,
   tooltip: () => 'Log into the website'
 };

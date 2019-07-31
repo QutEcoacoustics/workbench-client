@@ -1,3 +1,5 @@
+@import '../styles.scss';
+
 .app {
   min-height: 100vh;
   display: flex;
@@ -10,4 +12,35 @@
   &:last-child {
     min-height: 100%;
   }
+}
+
+div.container {
+  min-height: 100%;
+}
+
+.secondary {
+  @extend .order-1;
+  @extend .col-lg-2;
+  @extend .col-sm-12;
+  @extend .m-0;
+  @extend .p-0;
+  @extend .pt-2;
+}
+
+.page {
+  @extend .order-lg-2;
+  @extend .order-3;
+  @extend .col-lg-8;
+  @extend .col-sm-12;
+  @extend .pt-4;
+}
+
+.actions {
+  @extend .order-lg-3;
+  @extend .order-2;
+  @extend .col-lg-2;
+  @extend .col-sm-12;
+  @extend .m-0;
+  @extend .p-0;
+  @extend .pt-2;
 }

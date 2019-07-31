@@ -1,4 +1,7 @@
-import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
+import {
+  PageInfo,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
 import { Routes } from '@angular/router';
 import {
   ResetPasswordComponent,
@@ -16,7 +19,7 @@ export const resetPasswordPageInfo: PageInfo = {
 
 export const resetRoutes: Routes = [
   {
-    path: resetComponentInfo.uri,
+    path: resetComponentInfo.sub_route,
     children: [
       {
         path: '',

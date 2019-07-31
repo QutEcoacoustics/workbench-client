@@ -1,4 +1,7 @@
-import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
+import {
+  PageInfo,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
 import { Routes } from '@angular/router';
 import { RegisterComponent, registerComponentInfo } from './register.component';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
@@ -13,7 +16,7 @@ export const registerPageInfo: PageInfo = {
 
 export const registerRoutes: Routes = [
   {
-    path: registerComponentInfo.uri,
+    path: registerComponentInfo.sub_route,
     children: [
       {
         path: '',

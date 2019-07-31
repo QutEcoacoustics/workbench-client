@@ -1,6 +1,7 @@
-import { NameAndIcon } from 'src/app/interfaces/layout-menus.interfaces';
+import { Category } from 'src/app/interfaces/layout-menus.interfaces';
 
-export const Category: NameAndIcon = {
+export const securityCategory: Category = {
   icon: ['fas', 'user'],
-  label: 'Accounts'
+  label: 'Accounts',
+  route: 'security'
 };
