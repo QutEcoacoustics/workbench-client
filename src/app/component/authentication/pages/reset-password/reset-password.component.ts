@@ -21,10 +21,6 @@ export class ResetPasswordComponent implements OnInit {
       console.debug(val);
       this.output = JSON.stringify(val);
     });
-
-    this._router.navigate([{ outlets: { secondary: pageInfo.uri } }], {
-      relativeTo: this._route
-    });
   }
 }
 
@@ -41,13 +37,18 @@ const pageInfo: PageInfo = {
 export const resetRoutes: Routes = [
   {
     path: pageInfo.uri,
-    component: ResetPasswordComponent,
-    data: pageInfo
-  },
-  {
-    path: pageInfo.uri,
-    outlet: 'secondary',
-    component: SecondaryMenuComponent,
-    data: pageInfo
+    children: [
+      {
+        path: '',
+        component: ResetPasswordComponent,
+        data: pageInfo
+      },
+      {
+        path: '',
+        outlet: 'secondary',
+        component: SecondaryMenuComponent,
+        data: pageInfo
+      }
+    ]
   }
 ];

@@ -14,7 +14,7 @@ export class SecondaryMenuComponent implements OnInit {
   ngOnInit() {
     console.debug('Secondary Menu Component');
     console.debug(this._route);
-    this._route.snapshot.firstChild.data.subscribe(val => {
+    this._route.data.subscribe(val => {
       console.debug(val);
     });
   }
