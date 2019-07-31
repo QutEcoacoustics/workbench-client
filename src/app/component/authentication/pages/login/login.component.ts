@@ -7,6 +7,7 @@ import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router, Routes } from '@angular/router';
 import { Category } from '../../authentication';
 import { Route, PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
+import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 
 @Component({
   selector: 'app-authentication-login',
@@ -103,6 +104,12 @@ export const loginRoutes: Routes = [
   {
     path: pageInfo.uri,
     component: LoginComponent,
+    data: pageInfo
+  },
+  {
+    path: pageInfo.uri,
+    outlet: 'secondary',
+    component: SecondaryMenuComponent,
     data: pageInfo
   }
 ];

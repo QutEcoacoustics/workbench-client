@@ -1,15 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Card } from '../shared/cards/cards.component';
-import {
-  HeaderItem,
-  HeaderItemInterface
-} from 'src/app/component/shared/header/header.interface';
-import {
-  ActionListTitle,
-  SecondaryLink,
-  Route
-} from 'src/app/services/layout-menus/layout-menus.interface';
 
 @Component({
   selector: 'app-home',

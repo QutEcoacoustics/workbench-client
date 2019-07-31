@@ -1,4 +1,4 @@
-import { NameAndIcon } from 'src/app/services/layout-menus/layout-menus.interface';
+import { NameAndIcon } from 'src/app/interfaces/layout-menus.interfaces';
 
 export const Category: NameAndIcon = {
   icon: ['fas', 'user'],

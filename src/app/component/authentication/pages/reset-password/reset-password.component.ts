@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Routes, ActivatedRoute } from '@angular/router';
+import { Routes, ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../authentication';
 import { PageInfo, Route } from 'src/app/interfaces/layout-menus.interfaces';
+import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 
-// @Routes({
-
-// })
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -14,13 +12,18 @@ import { PageInfo, Route } from 'src/app/interfaces/layout-menus.interfaces';
 export class ResetPasswordComponent implements OnInit {
   output: string;
 
-  constructor(private _route: ActivatedRoute) {}
+  constructor(private _route: ActivatedRoute, private _router: Router) {}
 
   ngOnInit() {
-    console.debug(this._route.data);
+    console.debug('Reset Password Component');
+    console.debug(this._router);
     this._route.data.subscribe(val => {
       console.debug(val);
       this.output = JSON.stringify(val);
+    });
+
+    this._router.navigate([{ outlets: { secondary: pageInfo.uri } }], {
+      relativeTo: this._route
     });
   }
 }
@@ -39,6 +42,12 @@ export const resetRoutes: Routes = [
   {
     path: pageInfo.uri,
     component: ResetPasswordComponent,
+    data: pageInfo
+  },
+  {
+    path: pageInfo.uri,
+    outlet: 'secondary',
+    component: SecondaryMenuComponent,
     data: pageInfo
   }
 ];

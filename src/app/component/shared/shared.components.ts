@@ -3,13 +3,11 @@ import { CardImageComponent } from './cards/card-image/card-image.component';
 import { CardComponent } from './cards/card/card.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
-import { LayoutComponent } from './layout/layout.component';
 
 export const sharedComponents = [
   CardsComponent,
   CardComponent,
   CardImageComponent,
   FooterComponent,
-  HeaderComponent,
-  LayoutComponent
+  HeaderComponent
 ];

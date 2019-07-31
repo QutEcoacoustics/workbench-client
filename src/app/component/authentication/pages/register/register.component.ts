@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Routes } from '@angular/router';
 import { Category } from '../../authentication';
 import { Route, PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
+import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 
 @Component({
   selector: 'app-authentication-register',
@@ -71,6 +72,12 @@ export const registerRoutes: Routes = [
   {
     path: pageInfo.uri,
     component: RegisterComponent,
+    data: pageInfo
+  },
+  {
+    path: pageInfo.uri,
+    outlet: 'secondary',
+    component: SecondaryMenuComponent,
     data: pageInfo
   }
 ];

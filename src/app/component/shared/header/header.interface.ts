@@ -1,8 +1,4 @@
-import {
-  Route,
-  Href
-} from 'src/app/services/layout-menus/layout-menus.interface';
-import { Icon } from '@fortawesome/fontawesome-svg-core';
+import { Route, Href, Icon } from 'src/app/interfaces/layout-menus.interfaces';
 
 /**
  * Action title interface. Defines an action menus icon and label.
