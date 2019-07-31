@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import {
+  ComponentInfoInterface,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
+import { Category } from '../../authentication';
 
 @Component({
   selector: 'app-authentication-register',
@@ -33,3 +38,11 @@ export class RegisterComponent implements OnInit {
     console.log(model);
   }
 }
+
+export const registerComponentInfo: ComponentInfoInterface = {
+  icon: ['fas', 'user-plus'],
+  label: 'Register',
+  category: Category,
+  uri: 'register' as InternalRoute,
+  tooltip: () => 'Create an account'
+};

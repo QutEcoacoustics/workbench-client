@@ -5,6 +5,11 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
 import { Router } from '@angular/router';
+import {
+  ComponentInfoInterface,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
+import { Category } from '../../authentication';
 
 @Component({
   selector: 'app-authentication-login',
@@ -67,3 +72,11 @@ export class LoginComponent implements OnInit {
     });
   }
 }
+
+export const loginComponentInfo: ComponentInfoInterface = {
+  icon: ['fas', 'sign-in-alt'],
+  label: 'Log in',
+  category: Category,
+  uri: 'login' as InternalRoute,
+  tooltip: () => 'Log into the website'
+};

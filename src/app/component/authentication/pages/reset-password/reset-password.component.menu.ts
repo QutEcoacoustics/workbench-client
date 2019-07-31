@@ -1,25 +1,22 @@
-import {
-  PageInfo,
-  InternalRoute
-} from 'src/app/interfaces/layout-menus.interfaces';
-import { Category } from '../../authentication';
+import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
 import { Routes } from '@angular/router';
-import { ResetPasswordComponent } from './reset-password.component';
+import {
+  ResetPasswordComponent,
+  resetComponentInfo
+} from './reset-password.component';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 
 export const resetPasswordPageInfo: PageInfo = {
-  icon: ['fas', 'unlock'],
-  label: 'Reset password',
-  category: Category,
-  tooltip: () => 'Send an email to reset your password',
-  actions: null,
-  links: null,
-  uri: 'reset_password' as InternalRoute
+  component: resetComponentInfo,
+  menus: {
+    actions: null,
+    links: null
+  }
 };
 
 export const resetRoutes: Routes = [
   {
-    path: resetPasswordPageInfo.uri,
+    path: resetComponentInfo.uri,
     children: [
       {
         path: '',

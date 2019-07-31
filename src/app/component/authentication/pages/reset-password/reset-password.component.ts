@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ComponentInfoInterface,
+  InternalRoute
+} from 'src/app/interfaces/layout-menus.interfaces';
+import { Category } from '../../authentication';
 
 @Component({
   selector: 'app-reset-password',
@@ -20,3 +25,11 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 }
+
+export const resetComponentInfo: ComponentInfoInterface = {
+  icon: ['fas', 'unlock'],
+  label: 'Reset password',
+  category: Category,
+  uri: 'reset_password' as InternalRoute,
+  tooltip: () => 'Send an email to reset your password'
+};

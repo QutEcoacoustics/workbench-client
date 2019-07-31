@@ -1,25 +1,19 @@
-import {
-  PageInfo,
-  InternalRoute
-} from 'src/app/interfaces/layout-menus.interfaces';
-import { Category } from '../../authentication';
+import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
 import { Routes } from '@angular/router';
-import { RegisterComponent } from './register.component';
+import { RegisterComponent, registerComponentInfo } from './register.component';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 
 export const registerPageInfo: PageInfo = {
-  icon: ['fas', 'user-plus'],
-  label: 'Register',
-  category: Category,
-  tooltip: () => 'Create an account',
-  actions: null,
-  links: null,
-  uri: 'register' as InternalRoute
+  component: registerComponentInfo,
+  menus: {
+    actions: null,
+    links: null
+  }
 };
 
 export const registerRoutes: Routes = [
   {
-    path: registerPageInfo.uri,
+    path: registerComponentInfo.uri,
     children: [
       {
         path: '',
