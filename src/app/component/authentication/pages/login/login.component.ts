@@ -4,10 +4,7 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { Router, Routes } from '@angular/router';
-import { Category } from '../../authentication';
-import { Route, PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
-import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authentication-login',
@@ -70,46 +67,3 @@ export class LoginComponent implements OnInit {
     });
   }
 }
-
-// getHeaderItem(): Readonly<HeaderItemInterface> {
-//   return Object.freeze({
-//     icon: ['fas', 'sign-in-alt'],
-//     label: 'Log in',
-//     uri: new Route('/login')
-//   });
-// }
-// getMenus(): Readonly<LayoutMenusInterface> {
-//   return menus;
-// }
-// getSecondaryItem(): Readonly<SecondaryLinkInterface> {
-//   return Object.freeze({
-//     icon: ['fas', 'sign-in-alt'],
-//     label: 'Log in',
-//     uri: new Route('/login'),
-//     tooltip: 'Log into the website',
-//     predicate: loggedin => loggedin
-//   });
-// }
-const pageInfo: PageInfo = {
-  icon: ['fas', 'sign-in-alt'],
-  label: 'Log in',
-  category: Category,
-  tooltip: () => 'Log into the website',
-  actions: null,
-  links: null,
-  uri: 'login' as Route
-};
-
-export const loginRoutes: Routes = [
-  {
-    path: pageInfo.uri,
-    component: LoginComponent,
-    data: pageInfo
-  },
-  {
-    path: pageInfo.uri,
-    outlet: 'secondary',
-    component: SecondaryMenuComponent,
-    data: pageInfo
-  }
-];

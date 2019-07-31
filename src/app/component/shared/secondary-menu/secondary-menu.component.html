@@ -13,12 +13,12 @@
           aria-describedby="{{'secondary-tooltip-' + i"
           href="{{ link.uri }}"
           placement="right"
-          ngbTooltip="{{ link.tooltip }}"
+          ngbTooltip="{{ link.tooltip() }}"
         >
           <fa-icon [icon]="link.icon"></fa-icon>
           <span>{{ link.label }}</span>
           <span class="d-none" [id]="'secondary-tooltip-' + i">
-            {{ link.tooltip }}
+            {{ link.tooltip() }}
           </span>
         </a>
       </ng-container>
@@ -29,12 +29,12 @@
           routerLink="{{ link.uri }}"
           routerLinkActive="active"
           placement="right"
-          ngbTooltip="{{ link.tooltip }}"
+          ngbTooltip="{{ link.tooltip() }}"
         >
           <fa-icon [icon]="link.icon"></fa-icon>
           <span>{{ link.label }}</span>
           <span class="d-none" [id]="'secondary-tooltip-' + i">
-            {{ link.tooltip }}
+            {{ link.tooltip() }}
           </span>
         </a>
       </ng-template>

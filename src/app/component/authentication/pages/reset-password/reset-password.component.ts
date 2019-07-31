@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Routes, ActivatedRoute, Router } from '@angular/router';
-import { Category } from '../../authentication';
-import { PageInfo, Route } from 'src/app/interfaces/layout-menus.interfaces';
-import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -23,32 +20,3 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 }
-
-const pageInfo: PageInfo = {
-  icon: ['fas', 'unlock'],
-  label: 'Reset password',
-  category: Category,
-  tooltip: () => 'Send an email to reset your password',
-  actions: null,
-  links: null,
-  uri: 'reset_password' as Route
-};
-
-export const resetRoutes: Routes = [
-  {
-    path: pageInfo.uri,
-    children: [
-      {
-        path: '',
-        component: ResetPasswordComponent,
-        data: pageInfo
-      },
-      {
-        path: '',
-        outlet: 'secondary',
-        component: SecondaryMenuComponent,
-        data: pageInfo
-      }
-    ]
-  }
-];

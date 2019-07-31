@@ -1,4 +1,8 @@
-import { Route, Href, Icon } from 'src/app/interfaces/layout-menus.interfaces';
+import {
+  InternalRoute,
+  Href,
+  Icon
+} from 'src/app/interfaces/layout-menus.interfaces';
 
 /**
  * Action title interface. Defines an action menus icon and label.
@@ -9,7 +13,7 @@ import { Route, Href, Icon } from 'src/app/interfaces/layout-menus.interfaces';
 export interface HeaderItemInterface {
   icon: Icon;
   label: string;
-  uri: Route | Href;
+  uri: InternalRoute | Href;
   predicate?: (loggedin: boolean) => boolean;
 }
 

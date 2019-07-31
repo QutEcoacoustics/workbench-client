@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  NameAndIcon,
+  ActionInterface
+} from 'src/app/interfaces/layout-menus.interfaces';
 
 @Component({
   selector: 'app-action-menu',
@@ -6,10 +10,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./action-menu.component.scss']
 })
 export class ActionMenuComponent implements OnInit {
+  actionTitle: NameAndIcon;
+  actionLinks: ActionInterface[];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

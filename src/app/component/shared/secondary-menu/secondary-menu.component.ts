@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LinkInterface } from 'src/app/interfaces/layout-menus.interfaces';
+import { ActivatedRoute } from '@angular/router';
+import {
+  LinkInterface,
+  PageInfo
+} from 'src/app/interfaces/layout-menus.interfaces';
+import { LayoutMenusService } from 'src/app/services/layout-menus/layout-menus.service';
 
 @Component({
   selector: 'app-secondary-menu',
@@ -8,13 +12,18 @@ import { LinkInterface } from 'src/app/interfaces/layout-menus.interfaces';
   styleUrls: ['./secondary-menu.component.scss']
 })
 export class SecondaryMenuComponent implements OnInit {
-  secondaryLinks: LinkInterface[] = [];
-  constructor(private _route: ActivatedRoute, private _router: Router) {}
+  constructor(
+    private _route: ActivatedRoute,
+    private _layout: LayoutMenusService
+  ) {}
+
+  secondaryLinks: LinkInterface[] = this._layout.getSecondaryLinks();
 
   ngOnInit() {
     console.debug('Secondary Menu Component');
+    console.debug(this.secondaryLinks);
     console.debug(this._route);
-    this._route.data.subscribe(val => {
+    this._route.data.subscribe((val: PageInfo) => {
       console.debug(val);
     });
   }

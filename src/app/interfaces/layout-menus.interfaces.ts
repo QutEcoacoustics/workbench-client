@@ -37,7 +37,7 @@ export interface NameAndIcon {
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  */
 export interface LinkInterface extends NameAndIcon {
-  uri: Route | Href;
+  uri: InternalRoute | Href;
   tooltip: (user?: User | null) => string;
   predicate?: (loggedin: boolean) => boolean;
 }
@@ -47,6 +47,7 @@ export interface LinkInterface extends NameAndIcon {
  * @param action Function to run on click event
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
+ * @extends NameAndIcon
  */
 export interface ActionInterface extends NameAndIcon {
   action: Function;
@@ -57,7 +58,7 @@ export interface ActionInterface extends NameAndIcon {
 /**
  * Internal angular route
  */
-export type Route = string;
+export type InternalRoute = string;
 
 /**
  * External URL
@@ -68,43 +69,6 @@ export type Href = string;
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
  */
 export type Icon = readonly [string, string];
-
-/**
- * Secondary Item interface.
- * This is designed for components which may appear on the secondary menu
- */
-export declare interface SecondaryLink {
-  /**
-   * Get secondary item details for component
-   * @returns Secondary link item
-   */
-  getSecondaryItem(): Readonly<LinkInterface>;
-}
-
-/**
- * Secondary Menu interface.
- * This is designed for singular components which implement a seconday, page, action layout.
- */
-export declare interface LayoutMenus {
-  /**
-   * List of secondary meny links to append to the default menu links.
-   * Return undefined if defaults are fine.
-   * @returns The menu links to append, undefined for defaults.
-   */
-  getMenus(): Readonly<LayoutMenusInterface> | undefined;
-}
-
-/**
- * Action List Title interface. This is designed for a group of SecondaryMenu components.
- * This defines how the action menu title will appear for the children components.
- */
-export declare interface ActionListTitle {
-  /**
-   * Group title to be used by the action menu for all children components.
-   * @returns The group title
-   */
-  getActionListTitle(): Readonly<NameAndIcon>;
-}
 
 /**
  * User data
@@ -130,8 +94,9 @@ export class PageInfo implements Data, LinkInterface {
   icon: Icon;
   label: string;
   category: NameAndIcon;
-  uri: Route;
+  uri: InternalRoute;
   tooltip: (user?: User | null) => string;
+  predicate?: (loggedin: boolean) => boolean;
   actions: ActionInterface[];
   links: LinkInterface[];
   constructor() {}

@@ -10,37 +10,13 @@
       </h6>
     </li>
     <li class="nav-item" *ngFor="let link of actionLinks; let i = index">
-      <ng-container *ngIf="link.route.includes('http'); else localroute">
-        <a
-          class="nav-link"
-          aria-describedby="{{'action-tooltip-' + i"
-          href="{{ link.route }}"
-          placement="left"
-          ngbTooltip="{{ link.tooltip }}"
-        >
-          <fa-icon [icon]="link.icon"></fa-icon>
-          <span>{{ link.label }}</span>
-          <span class="d-none" [id]="'action-tooltip-' + i">
-            {{ link.tooltip }}
-          </span>
-        </a>
-      </ng-container>
-      <ng-template #localroute>
-        <a
-          class="nav-link"
-          aria-describedby="{{'action-tooltip-' + i"
-          routerLink="{{ link.route }}"
-          routerLinkActive="active"
-          placement="left"
-          ngbTooltip="{{ link.tooltip }}"
-        >
-          <fa-icon [icon]="link.icon"></fa-icon>
-          <span>{{ link.label }}</span>
-          <span class="d-none" [id]="'action-tooltip-' + i">
-            {{ link.tooltip }}
-          </span>
-        </a>
-      </ng-template>
+      <button class="btn" (click)="(link.action)">
+        <fa-icon [icon]="link.icon"></fa-icon>
+        <span>{{ link.label }}</span>
+        <span class="d-none" [id]="'action-tooltip-' + i">
+          {{ link.tooltip }}
+        </span>
+      </button>
     </li>
   </ul>
 </nav>
