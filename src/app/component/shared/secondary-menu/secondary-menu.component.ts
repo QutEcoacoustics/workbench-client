@@ -5,6 +5,7 @@ import {
   PageInfo
 } from 'src/app/interfaces/layout-menus.interfaces';
 import { LayoutMenusService } from 'src/app/services/layout-menus/layout-menus.service';
+import { List } from 'immutable';
 
 @Component({
   selector: 'app-secondary-menu',
@@ -17,14 +18,13 @@ export class SecondaryMenuComponent implements OnInit {
     private _layout: LayoutMenusService
   ) {}
 
-  secondaryLinks: LinkInterface[] = this._layout.getSecondaryLinks();
+  secondaryLinks: List<LinkInterface> = this._layout.getSecondaryLinks();
 
   ngOnInit() {
     console.debug('Secondary Menu Component');
-    console.debug(this.secondaryLinks);
-    console.debug(this._route);
     this._route.data.subscribe((val: PageInfo) => {
       console.debug(val);
+      this.secondaryLinks = this._layout.getSecondaryLinks(val.menus.links);
     });
   }
 }

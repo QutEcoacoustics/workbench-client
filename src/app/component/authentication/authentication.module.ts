@@ -22,8 +22,6 @@ const routes: Routes = [
   }
 ];
 
-console.log(childrenRoutes);
-
 export const AuthenticationComponents = [
   LoginComponent,
   RegisterComponent,

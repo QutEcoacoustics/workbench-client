@@ -1,15 +1,14 @@
-import {
-  PageInfo,
-  InternalRoute
-} from 'src/app/interfaces/layout-menus.interfaces';
+import { PageInfo } from 'src/app/interfaces/layout-menus.interfaces';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
 import { Routes } from '@angular/router';
 import { LoginComponent, loginComponentInfo } from './login.component';
+import { List } from 'immutable';
+import { resetComponentInfo } from '../reset-password/reset-password.component';
 
 export const loginPageInfo: PageInfo = {
   component: loginComponentInfo,
   menus: {
-    actions: [
+    actions: List([
       {
         icon: ['fas', 'key'],
         label: 'Reset password',
@@ -31,8 +30,8 @@ export const loginPageInfo: PageInfo = {
         action: () => console.log('Unlock account'),
         predicate: loggedin => !loggedin
       }
-    ],
-    links: null
+    ]),
+    links: List([resetComponentInfo])
   }
 };
 

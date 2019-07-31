@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
 import { LinkInterface } from 'src/app/interfaces/layout-menus.interfaces';
 import { secondaryLinks } from './default-menus';
+import { List } from 'immutable';
 
 /**
  * Manages the creation of links for the Secondary and Action menus
@@ -14,8 +15,13 @@ import { secondaryLinks } from './default-menus';
 export class LayoutMenusService {
   constructor(private _api: BawApiService) {}
 
-  getSecondaryLinks(): LinkInterface[] {
-    console.debug(secondaryLinks);
+  getSecondaryLinks(
+    additionalLinks?: List<LinkInterface>
+  ): List<LinkInterface> {
+    if (additionalLinks) {
+      return secondaryLinks.push(...additionalLinks);
+    }
+
     return secondaryLinks;
   }
 }

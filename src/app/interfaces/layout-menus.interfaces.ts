@@ -1,4 +1,5 @@
 import { Data } from '@angular/router';
+import { List } from 'immutable';
 
 /**
  * Menu interface. Defines what secondary and action menu's should look like.
@@ -130,6 +131,6 @@ export interface ComponentInfoInterface extends LinkInterface {
  * @param links List of secondary links
  */
 export interface MenusInfoInterface {
-  actions: ActionInterface[];
-  links: LinkInterface[];
+  actions: List<ActionInterface>;
+  links: List<LinkInterface>;
 }
