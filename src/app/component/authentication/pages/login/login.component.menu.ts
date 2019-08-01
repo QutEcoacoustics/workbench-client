@@ -14,25 +14,20 @@ export const loginPageInfo: PageInfo = {
       list_title: securityCategory,
       links: List([
         {
-          icon: resetPasswordComponentInfo.icon,
-          label: resetPasswordComponentInfo.label,
-          tooltip: resetPasswordComponentInfo.tooltip,
-          action: resetPasswordComponentInfo.uri,
-          predicate: loggedin => !loggedin
+          ...resetPasswordComponentInfo,
+          action: resetPasswordComponentInfo.uri
         },
         {
           icon: ['fas', 'envelope'],
           label: 'Confirm account',
           tooltip: () => 'Resend the email to confirm your account',
-          action: () => console.log('Confirm account'),
-          predicate: loggedin => !loggedin
+          action: () => console.log('Confirm account')
         },
         {
           icon: ['fas', 'lock-open'],
           label: 'Unlock account',
           tooltip: () => 'Send an email to unlock your account',
-          action: () => console.log('Unlock account'),
-          predicate: loggedin => !loggedin
+          action: () => console.log('Unlock account')
         }
       ])
     },

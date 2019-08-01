@@ -31,7 +31,7 @@ export interface ActionMenuInterface {
 export interface ActionInterface extends NameAndIcon {
   action: Function | InternalRoute | Href;
   tooltip: (user?: User | null) => string;
-  predicate?: (loggedin: boolean) => boolean;
+  predicate?: (user?: User | null) => boolean;
 }
 
 /**

@@ -79,5 +79,6 @@ export const loginComponentInfo: ComponentInfoInterface = {
   category: securityCategory,
   uri: (securityCategory.route + '/login') as InternalRoute,
   sub_route: 'login' as InternalRoute,
-  tooltip: () => 'Log into the website'
+  tooltip: () => 'Log into the website',
+  predicate: user => !user.loggedIn
 };

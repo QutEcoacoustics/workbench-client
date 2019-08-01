@@ -45,5 +45,6 @@ export const registerComponentInfo: ComponentInfoInterface = {
   category: securityCategory,
   uri: (securityCategory.route + '/register') as InternalRoute,
   sub_route: 'register' as InternalRoute,
-  tooltip: () => 'Create an account'
+  tooltip: () => 'Create an account',
+  predicate: user => !user.loggedIn
 };
