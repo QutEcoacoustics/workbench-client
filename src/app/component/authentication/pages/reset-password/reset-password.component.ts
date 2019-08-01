@@ -1,36 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
-  ComponentInfoInterface,
-  InternalRoute
-} from 'src/app/interfaces/layout-menus.interfaces';
-import { securityCategory } from '../../authentication';
+  RouteFragment, Icon
+} from "src/app/interfaces/layout-menus.interfaces";
+import { Page } from "src/app/interfaces/PageInfo";
+import { securityCategory } from "../../authentication";
 
+@Page({
+  icon: ["fas", "key"],
+  label: "Reset password",
+  category: securityCategory,
+  routeFragment: "reset_password",
+  tooltip: () => "Send an email to reset your password",
+  menus: {
+    actions: null,
+    links: null
+  }
+})
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+  selector: "app-reset-password",
+  templateUrl: "./reset-password.component.html",
+  styleUrls: ["./reset-password.component.scss"]
 })
 export class ResetPasswordComponent implements OnInit {
   output: string;
 
-  constructor(private _route: ActivatedRoute, private _router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    console.debug('Reset Password Component');
-    console.debug(this._router);
-    this._route.data.subscribe(val => {
+    console.debug("Reset Password Component");
+    console.debug(this.router);
+    this.route.data.subscribe(val => {
       console.debug(val);
       this.output = JSON.stringify(val);
     });
   }
 }
-
-export const resetPasswordComponentInfo: ComponentInfoInterface = {
-  icon: ['fas', 'key'],
-  label: 'Reset password',
-  category: securityCategory,
-  uri: (securityCategory.route + '/reset_password') as InternalRoute,
-  sub_route: 'reset_password' as InternalRoute,
-  tooltip: () => 'Send an email to reset your password'
-};

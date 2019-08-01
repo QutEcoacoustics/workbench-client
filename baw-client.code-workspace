@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "node_modules\\typescript\\lib",
+		"typescript.preferences.quoteStyle": "double",
+		"cSpell.words": [
+			"Formly",
+			"fontawesome",
+			"fortawesome"
+		  ],
+		  "cSpell.ignorePaths": [
+			"**/package-lock.json",
+			"**/node_modules/**",
+			"**/vscode-extension/**",
+			"**/.git/objects/**",
+			".vscode",
+			"tslint.json",
+			"tsconfig*.json",
+			"*.code-workspace",
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			"cyrilletuzi.angular-schematics",
+			"ms-vscode.vscode-typescript-tslint-plugin"
+		]
+	}
+}

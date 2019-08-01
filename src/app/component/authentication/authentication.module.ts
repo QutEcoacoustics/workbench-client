@@ -1,26 +1,15 @@
-import { RouterModule, Routes, Route } from '@angular/router';
-import { NgModule } from '@angular/core';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { BawPageModule as BawPageModule } from "src/app/component/shared/BawPageModule";
 
-import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
-import { RegisterComponent } from './pages/register/register.component';
-import { LoginComponent } from './pages/login/login.component';
-import { resetPasswordRoutes } from './pages/reset-password/reset-password.component.menu';
-import { registerRoutes } from './pages/register/register.component.menu';
-import { loginRoutes } from './pages/login/login.component.menu';
 
-const authenticationRoute = 'security';
 
-let childrenRoutes: Routes = [];
-childrenRoutes = childrenRoutes.concat(resetPasswordRoutes);
-childrenRoutes = childrenRoutes.concat(registerRoutes);
-childrenRoutes = childrenRoutes.concat(loginRoutes);
+import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
+import { RegisterComponent } from "./pages/register/register.component";
+import { LoginComponent } from "./pages/login/login.component";
+import { GetRoutesForPages } from "src/app/interfaces/Page";
 
-const routes: Routes = [
-  {
-    path: authenticationRoute,
-    children: childrenRoutes
-  }
-];
+const authenticationRoute = "security";
 
 export const AuthenticationComponents = [
   LoginComponent,
@@ -28,8 +17,21 @@ export const AuthenticationComponents = [
   ResetPasswordComponent
 ];
 
+const routes: Routes = [
+  {
+    path: authenticationRoute,
+    children: GetRoutesForPages(AuthenticationComponents)
+  }
+];
+
+
+
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  declarations: AuthenticationComponents,
+  imports: [
+    BawPageModule,
+    RouterModule.forChild(routes),
+  ],
+  exports: [RouterModule, ...AuthenticationComponents]
 })
-export class AuthenticationModule {}
+export class AuthenticationModule { }
