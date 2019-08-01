@@ -3,35 +3,40 @@ import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/
 import { Routes } from '@angular/router';
 import { LoginComponent, loginComponentInfo } from './login.component';
 import { List } from 'immutable';
-import { resetComponentInfo } from '../reset-password/reset-password.component';
+import { resetPasswordComponentInfo } from '../reset-password/reset-password.component';
+import { ActionMenuComponent } from 'src/app/component/shared/action-menu/action-menu.component';
+import { securityCategory } from '../../authentication';
 
 export const loginPageInfo: PageInfo = {
   component: loginComponentInfo,
   menus: {
-    actions: List([
-      {
-        icon: ['fas', 'key'],
-        label: 'Reset password',
-        tooltip: () => 'Send an email to reset your password',
-        action: () => console.log('Reset password'),
-        predicate: loggedin => !loggedin
-      },
-      {
-        icon: ['fas', 'envelope'],
-        label: 'Confirm account',
-        tooltip: () => 'Resend the email to confirm your account',
-        action: () => console.log('Confirm account'),
-        predicate: loggedin => !loggedin
-      },
-      {
-        icon: ['fas', 'lock-open'],
-        label: 'Unlock account',
-        tooltip: () => 'Send an email to unlock your account',
-        action: () => console.log('Unlock account'),
-        predicate: loggedin => !loggedin
-      }
-    ]),
-    links: List([resetComponentInfo])
+    actions: {
+      list_title: securityCategory,
+      links: List([
+        {
+          icon: resetPasswordComponentInfo.icon,
+          label: resetPasswordComponentInfo.label,
+          tooltip: resetPasswordComponentInfo.tooltip,
+          action: resetPasswordComponentInfo.uri,
+          predicate: loggedin => !loggedin
+        },
+        {
+          icon: ['fas', 'envelope'],
+          label: 'Confirm account',
+          tooltip: () => 'Resend the email to confirm your account',
+          action: () => console.log('Confirm account'),
+          predicate: loggedin => !loggedin
+        },
+        {
+          icon: ['fas', 'lock-open'],
+          label: 'Unlock account',
+          tooltip: () => 'Send an email to unlock your account',
+          action: () => console.log('Unlock account'),
+          predicate: loggedin => !loggedin
+        }
+      ])
+    },
+    links: null
   }
 };
 
@@ -48,6 +53,12 @@ export const loginRoutes: Routes = [
         path: '',
         outlet: 'secondary',
         component: SecondaryMenuComponent,
+        data: loginPageInfo
+      },
+      {
+        path: '',
+        outlet: 'action',
+        component: ActionMenuComponent,
         data: loginPageInfo
       }
     ]

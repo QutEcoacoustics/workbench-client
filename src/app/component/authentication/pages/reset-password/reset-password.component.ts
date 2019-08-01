@@ -26,8 +26,8 @@ export class ResetPasswordComponent implements OnInit {
   }
 }
 
-export const resetComponentInfo: ComponentInfoInterface = {
-  icon: ['fas', 'unlock'],
+export const resetPasswordComponentInfo: ComponentInfoInterface = {
+  icon: ['fas', 'key'],
   label: 'Reset password',
   category: securityCategory,
   uri: (securityCategory.route + '/reset_password') as InternalRoute,

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BawApiService } from '../baw-api/baw-api.service';
-import { LinkInterface } from 'src/app/interfaces/layout-menus.interfaces';
+import {
+  LinkInterface,
+  ActionMenuInterface
+} from 'src/app/interfaces/layout-menus.interfaces';
 import { secondaryLinks } from './default-menus';
 import { List } from 'immutable';
 
@@ -18,10 +21,12 @@ export class LayoutMenusService {
   getSecondaryLinks(
     additionalLinks?: List<LinkInterface>
   ): List<LinkInterface> {
-    if (additionalLinks) {
-      return secondaryLinks.push(...additionalLinks);
-    }
+    return additionalLinks
+      ? secondaryLinks.push(...additionalLinks)
+      : secondaryLinks;
+  }
 
-    return secondaryLinks;
+  getActionMenu(menuOptions?: ActionMenuInterface): ActionMenuInterface {
+    return menuOptions ? menuOptions : null;
   }
 }

@@ -16,8 +16,13 @@ nav {
     width: 100%;
   }
 
-  fa-icon {
-    margin-right: 3px;
-    color: black;
+  .icon {
+    width: 2rem;
+    margin: auto;
+
+    fa-icon {
+      margin-right: 3px;
+      color: black;
+    }
   }
 }

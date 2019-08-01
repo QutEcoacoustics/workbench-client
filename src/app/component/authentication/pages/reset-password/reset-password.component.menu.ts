@@ -5,21 +5,22 @@ import {
 import { Routes } from '@angular/router';
 import {
   ResetPasswordComponent,
-  resetComponentInfo
+  resetPasswordComponentInfo
 } from './reset-password.component';
 import { SecondaryMenuComponent } from 'src/app/component/shared/secondary-menu/secondary-menu.component';
+import { ActionMenuComponent } from 'src/app/component/shared/action-menu/action-menu.component';
 
 export const resetPasswordPageInfo: PageInfo = {
-  component: resetComponentInfo,
+  component: resetPasswordComponentInfo,
   menus: {
     actions: null,
     links: null
   }
 };
 
-export const resetRoutes: Routes = [
+export const resetPasswordRoutes: Routes = [
   {
-    path: resetComponentInfo.sub_route,
+    path: resetPasswordComponentInfo.sub_route,
     children: [
       {
         path: '',
@@ -35,7 +36,7 @@ export const resetRoutes: Routes = [
       {
         path: '',
         outlet: 'action',
-        component: SecondaryMenuComponent,
+        component: ActionMenuComponent,
         data: resetPasswordPageInfo
       }
     ]

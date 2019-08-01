@@ -15,7 +15,7 @@
           placement="right"
           ngbTooltip="{{ link.tooltip() }}"
         >
-          <fa-icon [icon]="link.icon"></fa-icon>
+          <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
           <span>{{ link.label }}</span>
           <span class="d-none" [id]="'secondary-tooltip-' + i">
             {{ link.tooltip() }}
@@ -31,7 +31,7 @@
           placement="right"
           ngbTooltip="{{ link.tooltip() }}"
         >
-          <fa-icon [icon]="link.icon"></fa-icon>
+          <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
           <span>{{ link.label }}</span>
           <span class="d-none" [id]="'secondary-tooltip-' + i">
             {{ link.tooltip() }}

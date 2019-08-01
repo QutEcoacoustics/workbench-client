@@ -10,13 +10,48 @@
       </h6>
     </li>
     <li class="nav-item" *ngFor="let link of actionLinks; let i = index">
-      <button class="btn" (click)="(link.action)">
-        <fa-icon [icon]="link.icon"></fa-icon>
-        <span>{{ link.label }}</span>
-        <span class="d-none" [id]="'action-tooltip-' + i">
-          {{ link.tooltip }}
-        </span>
-      </button>
+      <ng-container *ngIf="isButton(link); else elseLink">
+        <button class="btn" (click)="(link.action)">
+          <fa-icon [icon]="link.icon"></fa-icon>
+          <span>{{ link.label }}</span>
+          <span class="d-none" [id]="'action-tooltip-' + i">
+            {{ link.tooltip }}
+          </span>
+        </button>
+      </ng-container>
+      <ng-template #elseLink>
+        <ng-container *ngIf="isButton(link); else elseExternalLink">
+          <a
+            class="nav-link"
+            aria-describedby="{{'secondary-tooltip-' + i"
+            routerLink="/{{ link.uri }}"
+            routerLinkActive="active"
+            placement="left"
+            ngbTooltip="{{ link.tooltip() }}"
+          >
+            <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
+            <span>{{ link.label }}</span>
+            <span class="d-none" [id]="'secondary-tooltip-' + i">
+              {{ link.tooltip() }}
+            </span>
+          </a>
+        </ng-container>
+        <ng-template #elseExternalLink>
+          <a
+            class="nav-link"
+            aria-describedby="{{'secondary-tooltip-' + i"
+            href="{{ link.uri }}"
+            placement="left"
+            ngbTooltip="{{ link.tooltip() }}"
+          >
+            <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
+            <span>{{ link.label }}</span>
+            <span class="d-none" [id]="'secondary-tooltip-' + i">
+              {{ link.tooltip() }}
+            </span>
+          </a>
+        </ng-template>
+      </ng-template>
     </li>
   </ul>
 </nav>

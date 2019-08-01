@@ -7,7 +7,7 @@ import { List } from 'immutable';
  * @param action Action menu details
  */
 export interface LayoutMenusInterface {
-  links?: LinkInterface[];
+  links?: List<LinkInterface>;
   action?: ActionMenuInterface;
 }
 
@@ -18,18 +18,18 @@ export interface LayoutMenusInterface {
  */
 export interface ActionMenuInterface {
   list_title?: NameAndIcon;
-  links: ActionInterface[];
+  links: List<ActionInterface>;
 }
 
 /**
  * Action Link interface. Defines all the requirements of a link.
- * @param action Function to run on click event
+ * @param action Function to run on click event, or internal route link
  * @param tooltip Link tooltip to show on hover
  * @param predicate Function to determine if link should be shown. Input is whether user is logged in
  * @extends NameAndIcon
  */
 export interface ActionInterface extends NameAndIcon {
-  action: Function;
+  action: Function | InternalRoute | Href;
   tooltip: (user?: User | null) => string;
   predicate?: (loggedin: boolean) => boolean;
 }
@@ -97,8 +97,8 @@ export interface LinkInterface extends NameAndIcon {
 
 /**
  * Page info class. This stores information required to generate the various menus of the page.
- * @param actions List of actions
- * @param links List of secondary menu links
+ * @param component Component information
+ * @param menus Menu data
  */
 export class PageInfo implements Data {
   component: ComponentInfoInterface;
@@ -131,6 +131,6 @@ export interface ComponentInfoInterface extends LinkInterface {
  * @param links List of secondary links
  */
 export interface MenusInfoInterface {
-  actions: List<ActionInterface>;
+  actions: ActionMenuInterface;
   links: List<LinkInterface>;
 }
