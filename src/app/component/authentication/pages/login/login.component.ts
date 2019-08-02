@@ -4,13 +4,14 @@ import { Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
-import { Router } from "@angular/router";
+import { Router, Route } from "@angular/router";
 import { ActionItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 import { List } from "immutable";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 import { GetPageInfo } from "src/app/interfaces/Page";
+import { RegisterComponent } from "../register/register.component";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -49,6 +50,7 @@ export class LoginComponent implements OnInit {
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
+  registerRoute: Route;
 
   constructor(
     private http: HttpClient,
@@ -62,6 +64,8 @@ export class LoginComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
+
+    this.registerRoute = GetPageInfo(RegisterComponent).uri as Route;
   }
 
   /**

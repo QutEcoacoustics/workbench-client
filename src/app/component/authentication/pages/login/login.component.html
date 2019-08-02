@@ -34,7 +34,11 @@
 
     <div class="hint-text">
       Don't have an account?
-      <a routerLink="/register" routerLinkActive="active">Sign up here</a>
+      <a routerLink="{{ registerRoute }}" routerLinkActive="active">
+        Sign up here
+      </a>
     </div>
   </div>
+
+  <router-outlet></router-outlet>
 </div>

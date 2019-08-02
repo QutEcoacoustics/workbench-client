@@ -5,9 +5,10 @@ import {
   RouteFragment,
   Location,
   User,
-  LabelAndIcon,
-  Menus
+  Menus,
+  Category
 } from "./layout-menus.interfaces";
+import { Route } from "@angular/router";
 
 export interface ComponentWithPageInfo extends Type<any> {
   pageInfo: PageInfo;
@@ -21,13 +22,13 @@ export class PageInfo implements PageInfoInterface, MenuLink {
   icon: readonly [string, string];
   label: string;
   component: Type<any>;
-  category: LabelAndIcon;
+  category: Category;
   menus: Menus;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
     this.component = target;
-    this.uri = undefined;
+    this.uri = ("/" + this.category.route + "/" + this.routeFragment) as Route;
   }
 }
 

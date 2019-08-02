@@ -33,9 +33,7 @@
           <a
             class="nav-link"
             aria-describedby="{{type + '-tooltip-' + i"
-            routerLink="{{
-              '/' + link.category.route + '/' + link.routeFragment
-            }}"
+            routerLink="{{ link.uri }}"
             routerLinkActive="active"
             placement="{{ menuType === 'action' ? 'left' : 'right' }}"
             ngbTooltip="{{ link.tooltip() }}"

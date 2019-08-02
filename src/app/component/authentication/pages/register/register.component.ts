@@ -2,9 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core"
+import { FormlyFieldConfig } from "@ngx-formly/core";
 import { securityCategory } from "../../authentication";
 import { Page } from "src/app/interfaces/PageInfo";
+import { Route } from "@angular/router";
+import { GetPageInfo } from "src/app/interfaces/Page";
+import { LoginComponent } from "../login/login.component";
 
 @Page({
   icon: ["fas", "user-plus"],
@@ -25,6 +28,7 @@ export class RegisterComponent implements OnInit {
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
+  loginRoute: Route;
 
   constructor(private http: HttpClient) {}
 
@@ -34,6 +38,8 @@ export class RegisterComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
+
+    this.loginRoute = GetPageInfo(LoginComponent).uri as Route;
   }
 
   getJSON(): Observable<any> {
