@@ -1,7 +1,5 @@
 import { Data, Route } from "@angular/router";
 import { List } from "immutable";
-import { Type, Component } from "@angular/core";
-import { PageInfo } from "./PageInfo";
 
 /**
  * Part of an internal angular route
