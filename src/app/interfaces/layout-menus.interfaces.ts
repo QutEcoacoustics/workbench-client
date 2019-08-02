@@ -13,17 +13,19 @@ export type RouteFragment = string;
  */
 export type Href = string;
 
-export type Location = Route | Href;
-
 /**
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
  */
-export type Icon = readonly [string, string];
+export type Icon = [string, string] | readonly [string, string];
 
 /**
- * The user's name
+ * A user model.
  */
-export type User = string;
+export interface User {
+  username: string;
+  id: number;
+  role: "Admin" | "User";
+}
 
 /**
  * Component Name and Icon
@@ -50,19 +52,24 @@ export interface Category extends LabelAndIcon {
   route: Route;
 }
 
+export type MenuItemTypes = "MenuAction" | "MenuLink" | "MenuRoute";
+
+export type UserCallback<T> = null | ((user?: User) => T);
+
 /**
  * An item designed to be in a menu.
  * @extends LabelAndIcon
  */
 export interface MenuItem extends LabelAndIcon {
+  //kind: MenuItemTypes;
   /**
    * The tooltip that will be shown when context for this link is required.
    */
-  tooltip: (user?: User) => string;
+  tooltip: UserCallback<string>;
   /**
    * Whether or not to show this link.
    */
-  predicate?: (user?: User) => boolean;
+  predicate?: UserCallback<boolean>;
 }
 
 /**
@@ -70,21 +77,50 @@ export interface MenuItem extends LabelAndIcon {
  * @extends MenuItem
  */
 export interface MenuLink extends MenuItem {
+  kind: "MenuLink";
   /**
    * The URL or fragment this link points to
    */
-  uri: Location;
+  uri: Href;
+}
+
+/**
+ * MenuLink interface. Defines all the requirements of a link.
+ * @extends MenuItem
+ */
+export interface MenuRoute extends MenuItem {
+  kind: "MenuRoute";
+  /**
+   * The URL or fragment this link points to
+   */
+  route: Route;
 }
 
 /**
  * Action Link interface. Defines all the requirements of a link.
- * @extends LabelAndIcon
+ * @extends MenuItem
  */
 export interface MenuAction extends MenuItem {
-  action: () => {};
+  kind: "MenuAction";
+  action: () => any | void;
 }
 
-export type ActionItem = MenuAction | MenuLink;
+export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
+export type NavigableMenuItem = MenuLink | MenuRoute;
+
+
+export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
+  return menuItem.kind === "MenuAction";
+}
+export function isAnchor(menuItem: AnyMenuItem): menuItem is MenuLink | MenuRoute {
+  return menuItem.kind === "MenuLink" || menuItem.kind === "MenuRoute";
+}
+export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
+  return menuItem.kind === "MenuRoute";
+}
+export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
+  return menuItem.kind === "MenuLink";
+}
 
 /**
  * MenusInfo interface. This stores information required to generate the
@@ -93,8 +129,8 @@ export type ActionItem = MenuAction | MenuLink;
  * @param links List of secondary links
  */
 export interface Menus {
-  actions: List<ActionItem>;
-  links: List<MenuLink>;
+  actions: List<AnyMenuItem>;
+  links: List<NavigableMenuItem>;
 }
 
 /**

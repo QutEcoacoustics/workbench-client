@@ -17,10 +17,7 @@ import { FormlyEmailInput } from "./component/shared/formly/email/email.componen
 import { BawApiService } from "./services/baw-api/baw-api.service";
 
 import { sharedComponents } from "./component/shared/shared.components";
-import { SecondaryMenuComponent } from "./component/shared/secondary-menu/secondary-menu.component";
-import { ActionMenuComponent } from "./component/shared/action-menu/action-menu.component";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
-import { MenuComponent } from "./component/shared/menu/menu.component";
 
 @NgModule({
   declarations: [

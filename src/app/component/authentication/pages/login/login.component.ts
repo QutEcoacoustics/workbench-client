@@ -5,12 +5,11 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { Router } from "@angular/router";
-import { ActionItem } from "src/app/interfaces/layout-menus.interfaces";
-import { Page } from "src/app/interfaces/PageInfo";
+import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
+import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 import { List } from "immutable";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
-import { GetPageInfo } from "src/app/interfaces/Page";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -20,8 +19,8 @@ import { GetPageInfo } from "src/app/interfaces/Page";
   tooltip: () => "Log into the website",
   predicate: user => !user,
   menus: {
-    actions: List([
-      GetPageInfo(ResetPasswordComponent),
+    actions: List<AnyMenuItem>([
+      ResetPasswordComponent.pageInfo,
       {
         icon: ["fas", "envelope"],
         label: "Confirm account",
@@ -34,7 +33,7 @@ import { GetPageInfo } from "src/app/interfaces/Page";
         tooltip: () => "Send an email to unlock your account",
         action: () => console.log("Unlock account")
       }
-    ]) as List<ActionItem>,
+    ]),
     links: null
   }
 })
@@ -43,7 +42,7 @@ import { GetPageInfo } from "src/app/interfaces/Page";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends PageComponent implements OnInit {
   private formSchemaUrl = "assets/templates/login-form-template.json";
   form: FormGroup;
   model: {};
@@ -54,7 +53,9 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private api: BawApiService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({});

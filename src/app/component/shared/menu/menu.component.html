@@ -28,13 +28,14 @@
       </ng-container>
       <ng-template #elseLink>
         <ng-container
-          *ngIf="isInternalLink(link.routeFragment); else elseExternalLink"
+          *ngIf="isInternalLink(link); else elseExternalLink"
         >
+        <!-- FIXME: broken route logic below -->
           <a
             class="nav-link"
             aria-describedby="{{type + '-tooltip-' + i"
             routerLink="{{
-              '/' + link.category.route + '/' + link.routeFragment
+              '/' + (link.category || {}).route + '/' + link.routeFragment
             }}"
             routerLinkActive="active"
             placement="{{ menuType === 'action' ? 'left' : 'right' }}"

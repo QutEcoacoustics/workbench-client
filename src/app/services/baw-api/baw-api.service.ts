@@ -6,6 +6,7 @@ import {
 } from "@angular/common/http";
 import { throwError, Observable, Subject } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
+import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**
  * Interface with BAW Server Rest API
@@ -145,8 +146,14 @@ export class BawApiService {
   /**
    * Username of the logged in user
    */
-  get username() {
-    return this._username ? this._username : null;
+  get user(): User {
+    return this._username ? {
+      username: this._username,
+      // FIXME:
+      id: 123456,
+      // FIXME:
+      role: "User"
+    } : null;
   }
 
   /**

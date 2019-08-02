@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
   checkAuthenticated() {
     this.loggedIn = this.api.loggedIn;
     if (this.loggedIn) {
-      this.username = this.api.username;
+      this.username = this.api.user.username;
     }
   }
 

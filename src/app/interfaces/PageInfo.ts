@@ -3,22 +3,34 @@ import {
   PageInfoInterface,
   MenuLink,
   RouteFragment,
-  Location,
   User,
   LabelAndIcon,
-  Menus
+  Menus,
+  MenuRoute,
+  MenuItemTypes,
+  UserCallback,
+  Icon
 } from "./layout-menus.interfaces";
+import { Route } from "@angular/router";
 
-export interface ComponentWithPageInfo extends Type<any> {
-  pageInfo: PageInfo;
+export interface PageComponentStatic
+ extends Type<PageComponentInterface>, Type<any> {
+  readonly pageInfo: PageInfo;
 }
 
-export class PageInfo implements PageInfoInterface, MenuLink {
+export interface PageComponentInterface {
+  readonly pageInfo: PageInfo;
+}
+
+export class PageInfo implements PageInfoInterface, MenuRoute {
+  // discriminated union tag
+  kind: "MenuRoute";
+
   routeFragment: RouteFragment;
-  uri: Location;
-  tooltip: (user?: User) => string;
-  predicate?: (user?: User) => boolean;
-  icon: readonly [string, string];
+  route: Route;
+  tooltip: UserCallback<string>;
+  predicate: UserCallback<boolean>;
+  icon: Icon;
   label: string;
   component: Type<any>;
   category: LabelAndIcon;
@@ -27,16 +39,41 @@ export class PageInfo implements PageInfoInterface, MenuLink {
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
     this.component = target;
-    this.uri = undefined;
+    this.route = undefined;
   }
 }
 
-export function Page(info: PageInfoInterface) {
-  return (constructor: Type<any>): Type<any> => {
-    const staticInfo = new PageInfo(constructor, info);
-    const modified = constructor as ComponentWithPageInfo;
-    modified.pageInfo = staticInfo;
+type DecoratedPageComponent = Type<PageComponentInterface> & PageComponentStatic;
 
-    return modified;
+// this mixin is needed because typescript decorators
+// do not mutate the type signature they are applied to.
+// See https://github.com/Microsoft/TypeScript/issues/4881
+// If they did, then we wouldn't need this shim, which
+// currently needs to be extended from in every component!
+export class PageComponent implements PageComponentInterface {
+  static get pageInfo() { return null; }
+  get pageInfo() { return null; }
+}
+
+export function Page(info: PageInfoInterface):
+(constructor: Type<any>) => DecoratedPageComponent {
+  // tslint:disable-next-line: only-arrow-functions
+  return function PageDecorator(componentConstructor: Type<PageComponentInterface>):
+  DecoratedPageComponent {
+    const staticInfo = new PageInfo(componentConstructor, info);
+
+    // alternate implementation
+    // return class extends componentConstructor implements PageComponent
+    // {
+    //     static get pageInfo() { return staticInfo; }
+    //     get pageInfo() { return staticInfo; }
+    // }
+
+    Object.defineProperty(componentConstructor, "pageInfo",  { value: staticInfo });
+    Object.defineProperty(componentConstructor.prototype, "pageInfo", { value:  staticInfo });
+
+    // we know this conversion is correct
+    // tslint:disable-next-line: no-angle-bracket-type-assertion
+    return <DecoratedPageComponent> componentConstructor;
   };
 }

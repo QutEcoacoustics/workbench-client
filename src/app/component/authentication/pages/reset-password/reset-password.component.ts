@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Page } from "src/app/interfaces/PageInfo";
+import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 
 @Page({
@@ -9,20 +9,19 @@ import { securityCategory } from "../../authentication";
   category: securityCategory,
   routeFragment: "reset_password",
   tooltip: () => "Send an email to reset your password",
-  menus: {
-    actions: null,
-    links: null
-  }
+  menus: null
 })
 @Component({
   selector: "app-reset-password",
   templateUrl: "./reset-password.component.html",
   styleUrls: ["./reset-password.component.scss"]
 })
-export class ResetPasswordComponent implements OnInit {
+export class ResetPasswordComponent extends PageComponent implements OnInit {
   output: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) {
+    super();
+  }
 
   ngOnInit() {
     console.debug("Reset Password Component");

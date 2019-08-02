@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core"
 import { securityCategory } from "../../authentication";
-import { Page } from "src/app/interfaces/PageInfo";
+import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 
 @Page({
   icon: ["fas", "user-plus"],
@@ -20,13 +20,15 @@ import { Page } from "src/app/interfaces/PageInfo";
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent extends PageComponent implements OnInit {
   private formSchemaUrl = "assets/templates/register-form-template.json";
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({});
