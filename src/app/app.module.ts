@@ -14,15 +14,13 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./component/home/home.component";
 import { FormlyEmailInput } from "./component/shared/formly/email/email.component";
-import { DefaultMenu } from "./services/layout-menus/defaultMenus";
-import { LayoutMenusService } from "./services/layout-menus/layout-menus.service";
 import { BawApiService } from "./services/baw-api/baw-api.service";
 
 import { sharedComponents } from "./component/shared/shared.components";
 import { SecondaryMenuComponent } from "./component/shared/secondary-menu/secondary-menu.component";
 import { ActionMenuComponent } from "./component/shared/action-menu/action-menu.component";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
-import { MenuComponent } from './component/shared/menu/menu.component';
+import { MenuComponent } from "./component/shared/menu/menu.component";
 
 @NgModule({
   declarations: [
@@ -48,7 +46,7 @@ import { MenuComponent } from './component/shared/menu/menu.component';
     FormlyBootstrapModule,
     AuthenticationModule
   ],
-  providers: [BawApiService, DefaultMenu, LayoutMenusService],
+  providers: [BawApiService],
   bootstrap: [AppComponent],
   exports: [HomeComponent]
 })

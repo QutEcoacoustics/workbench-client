@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
+import { Component, OnInit } from "@angular/core";
+import { Router, NavigationEnd } from "@angular/router";
+import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
   activeLink: string;
   collapsed: boolean;
   loggedIn: boolean;
-  user_name: string;
+  username: string;
 
   constructor(private router: Router, private api: BawApiService) {}
 
   ngOnInit() {
     this.collapsed = true;
-    this.activeLink = 'projects';
+    this.activeLink = "projects";
     this.loggedIn = false;
 
     this.router.events.subscribe(val => {
@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
    * @param url Router url
    */
   updateActiveLink(url: string) {
-    this.activeLink = url.split('/')[1];
+    this.activeLink = url.split("/")[1];
   }
 
   /**
@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
   checkAuthenticated() {
     this.loggedIn = this.api.loggedIn;
     if (this.loggedIn) {
-      this.user_name = this.api.user_name;
+      this.username = this.api.username;
     }
   }
 
@@ -72,7 +72,7 @@ export class HeaderComponent implements OnInit {
    * @param el Dropdown element
    */
   toggleDropdown(el: HTMLAnchorElement) {
-    el.classList.toggle('show');
+    el.classList.toggle("show");
   }
 
   /**

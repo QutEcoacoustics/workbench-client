@@ -35,7 +35,7 @@ import { GetPageInfo } from "src/app/interfaces/Page";
         action: () => console.log("Unlock account")
       }
     ]) as List<ActionItem>,
-    links: List([GetPageInfo(LoginComponent)])
+    links: null
   }
 })
 @Component({

@@ -21,14 +21,9 @@ export type Location = Route | Href;
 export type Icon = readonly [string, string];
 
 /**
- * User model
+ * The user's name
  */
-export interface User {
-  /**
-   * The user's name
-   */
-  userName: string;
-}
+export type User = string;
 
 /**
  * Component Name and Icon

@@ -11,10 +11,15 @@
         </ng-template>
       </h6>
     </li>
-    <li class="nav-item" *ngFor="let link of links; let i = index">
-      <ng-container *ngIf="isButton(link); else elseLink">
-        <button class="btn" (click)="(link.action)">
-          <fa-icon [icon]="link.icon"></fa-icon>
+    <li class="nav-item" *ngFor="let link of filteredLinks; let i = index">
+      <ng-container *ngIf="isAction(link); else elseLink">
+        <button
+          class="btn text-left"
+          (click)="(link.action)"
+          ngbTooltip="{{ link.tooltip() }}"
+          placement="{{ menuType === 'action' ? 'left' : 'right' }}"
+        >
+          <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
           <span>{{ link.label }}</span>
           <span class="d-none" [id]="type + '-tooltip-' + i">
             {{ link.tooltip }}
@@ -22,7 +27,9 @@
         </button>
       </ng-container>
       <ng-template #elseLink>
-        <ng-container *ngIf="isInternalLink(link); else elseExternalLink">
+        <ng-container
+          *ngIf="isInternalLink(link.routeFragment); else elseExternalLink"
+        >
           <a
             class="nav-link"
             aria-describedby="{{type + '-tooltip-' + i"
@@ -30,10 +37,10 @@
               '/' + link.category.route + '/' + link.routeFragment
             }}"
             routerLinkActive="active"
-            placement="{{ type === 'secondary' ? 'left' : 'right' }}"
+            placement="{{ menuType === 'action' ? 'left' : 'right' }}"
             ngbTooltip="{{ link.tooltip() }}"
           >
-            <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
+            <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
             <span>{{ link.label }}</span>
             <span class="d-none" [id]="type + '-tooltip-' + i">
               {{ link.tooltip() }}
@@ -45,10 +52,10 @@
             class="nav-link"
             aria-describedby="{{type + '-tooltip-' + i"
             href="{{ link.routeFragment }}"
-            placement="{{ type === 'secondary' ? 'left' : 'right' }}"
+            placement="{{ menuType === 'action' ? 'left' : 'right' }}"
             ngbTooltip="{{ link.tooltip() }}"
           >
-            <span class="icon"><fa-icon [icon]="link.icon"></fa-icon></span>
+            <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
             <span>{{ link.label }}</span>
             <span class="d-none" [id]="type + '-tooltip-' + i">
               {{ link.tooltip() }}

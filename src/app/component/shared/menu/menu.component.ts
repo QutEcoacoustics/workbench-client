@@ -1,36 +1,61 @@
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  ChangeDetectionStrategy
+} from "@angular/core";
 import {
   LabelAndIcon,
   MenuLink,
-  Href,
-  MenuAction
+  MenuAction,
+  Location,
+  User
 } from "src/app/interfaces/layout-menus.interfaces";
 import { List } from "immutable";
 import { Route } from "@angular/router";
+import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 
 @Component({
   selector: "app-menu",
   templateUrl: "./menu.component.html",
-  styleUrls: ["./menu.component.scss"]
+  styleUrls: ["./menu.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnInit {
   @Input() title?: LabelAndIcon;
   @Input() links: List<MenuAction | MenuLink>;
-  @Input() type: "action" | "secondary";
+  @Input() menuType: "action" | "secondary";
 
-  constructor() {}
+  filteredLinks: List<MenuAction | MenuLink>;
 
-  ngOnInit() {}
+  constructor(private api: BawApiService) {}
 
-  isInternalLink(action: Function | Location): action is Route {
-    return typeof action === "object";
+  ngOnInit() {
+    // Get user details
+    const user: User = this.api.username;
+    this.filteredLinks = this.links.filter(link => this.filter(user, link));
   }
 
-  isExternalLink(action: Function | Location): action is Href {
-    return typeof action === "string";
+  isInternalLink(uri: Location): uri is Route {
+    return !uri.toString().includes("http");
   }
 
-  isButton(action: Function | Location): action is Function {
-    return typeof action === "function";
+  isAction(link: MenuAction | MenuLink): link is MenuAction {
+    return typeof (link as MenuAction).action === "function";
+  }
+
+  /**
+   * Filters a list of links / buttons used by the action and secondary menus.
+   * @param user User details
+   * @param link Link to display
+   */
+  private filter(user: User, link: MenuLink | MenuAction) {
+    // If link has predicate function, test if returns true
+    if (link.predicate) {
+      console.log("Link: ", link);
+      console.log("Predicate: ", link.predicate(user));
+      return link.predicate(user);
+    }
+    return true;
   }
 }
