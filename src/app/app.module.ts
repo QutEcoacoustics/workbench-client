@@ -27,10 +27,7 @@ import { MenuComponent } from "./component/shared/menu/menu.component";
     AppComponent,
     FormlyEmailInput,
     HomeComponent,
-    sharedComponents,
-    SecondaryMenuComponent,
-    ActionMenuComponent,
-    MenuComponent
+    sharedComponents
   ],
   imports: [
     NgbModule,

@@ -13,19 +13,22 @@ import { List } from "immutable";
   styleUrls: ["./action-menu.component.scss"]
 })
 export class ActionMenuComponent implements OnInit {
-  actionTitle: LabelAndIcon;
-  actionLinks: List<ActionItem>;
+  actionTitle: LabelAndIcon = {
+    label: "Home",
+    icon: ["fas", "home"]
+  };
+  actionLinks: List<ActionItem> = List<ActionItem>([]);
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.data.subscribe((val: PageInfo) => {
-      const actionMenu = val.menus.actions;
-
-      if (actionMenu) {
-        this.actionTitle = val.category;
-        this.actionLinks = actionMenu;
+      if (!val.menus || !val.menus.actions) {
+        return;
       }
+
+      this.actionTitle = val.category;
+      this.actionLinks = val.menus.actions;
     });
   }
 }

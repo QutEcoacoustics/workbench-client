@@ -23,10 +23,12 @@ export class SecondaryMenuComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((val: PageInfo) => {
-      if (val.menus.links) {
-        console.debug("Links to add: ", val.menus.links);
-        this.secondaryLinks = this.secondaryLinks.concat(val.menus.links);
+      if (!val.menus || !val.menus.links) {
+        return;
       }
+
+      console.log("Links to add: ", val.menus.links);
+      this.secondaryLinks = this.secondaryLinks.concat(val.menus.links);
     });
   }
 }

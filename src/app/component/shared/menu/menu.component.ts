@@ -52,8 +52,6 @@ export class MenuComponent implements OnInit {
   private filter(user: User, link: MenuLink | MenuAction) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
-      console.log("Link: ", link);
-      console.log("Predicate: ", link.predicate(user));
       return link.predicate(user);
     }
     return true;
