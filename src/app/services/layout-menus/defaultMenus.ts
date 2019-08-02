@@ -9,9 +9,7 @@ import { Injectable } from "@angular/core";
   providedIn: "root"
 })
 export class DefaultMenu {
-  constructor() {
-
-  }
+  constructor() {}
 
   secondaryLinks: List<MenuLink> = List([
     // GetPageInfo(LoginComponent),

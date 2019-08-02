@@ -3,12 +3,10 @@ import { List } from "immutable";
 import { Type, Component } from "@angular/core";
 import { PageInfo } from "./PageInfo";
 
-
 /**
  * Part of an internal angular route
  */
 export type RouteFragment = string;
-
 
 /**
  * External URL
@@ -16,7 +14,6 @@ export type RouteFragment = string;
 export type Href = string;
 
 export type Location = Route | Href;
-
 
 /**
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
@@ -92,7 +89,7 @@ export interface MenuAction extends MenuItem {
   action: () => {};
 }
 
-export type ActionItems = List<MenuAction | MenuLink>;
+export type ActionItem = MenuAction | MenuLink;
 
 /**
  * MenusInfo interface. This stores information required to generate the
@@ -101,11 +98,9 @@ export type ActionItems = List<MenuAction | MenuLink>;
  * @param links List of secondary links
  */
 export interface Menus {
-  actions: ActionItems;
+  actions: List<ActionItem>;
   links: List<MenuLink>;
 }
-
-
 
 /**
  * Page info interface.

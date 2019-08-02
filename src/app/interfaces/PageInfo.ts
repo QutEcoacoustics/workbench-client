@@ -14,7 +14,6 @@ export interface ComponentWithPageInfo extends Type<any> {
 }
 
 export class PageInfo implements PageInfoInterface, MenuLink {
-
   routeFragment: RouteFragment;
   uri: Location;
   tooltip: (user?: User) => string;

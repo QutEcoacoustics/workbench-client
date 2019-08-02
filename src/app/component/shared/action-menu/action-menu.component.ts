@@ -3,10 +3,11 @@ import {
   LabelAndIcon,
   MenuAction,
   Href,
+  Location,
   ActionItems
 } from "src/app/interfaces/layout-menus.interfaces";
 import { PageInfo } from "src/app/interfaces/PageInfo";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Route } from "@angular/router";
 import { LayoutMenusService } from "src/app/services/layout-menus/layout-menus.service";
 import { List } from "immutable";
 
@@ -28,9 +29,7 @@ export class ActionMenuComponent implements OnInit {
     console.debug("Action Menu Component");
     this.route.data.subscribe((val: PageInfo) => {
       console.debug(val);
-      const actionMenu = this.layout.getActionMenu(
-        val.menus
-      );
+      const actionMenu = this.layout.getActionMenu(val.menus);
 
       if (actionMenu) {
         console.log("Action menu links found");
@@ -42,17 +41,15 @@ export class ActionMenuComponent implements OnInit {
     });
   }
 
-  // isInternalLink(
-  //   action: Function | InternalRoute | Href
-  // ): action is InternalRoute {
-  //   return typeof action === "string" && action.substr(0, 1) === "/";
-  // }
+  isInternalLink(action: Function | Location): action is Route {
+    return typeof action === "object";
+  }
 
-  // isExternalLink(action: Function | InternalRoute | Href): action is Href {
-  //   return typeof action === "string" && action.substr(0, 1) !== "/";
-  // }
+  isExternalLink(action: Function | Location): action is Href {
+    return typeof action === "string";
+  }
 
-  // isButton(action: Function | InternalRoute | Href): action is Function {
-  //   return typeof action === "function";
-  // }
+  isButton(action: Function | Location): action is Function {
+    return typeof action === "function";
+  }
 }

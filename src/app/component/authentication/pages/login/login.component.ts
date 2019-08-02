@@ -5,7 +5,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { Router } from "@angular/router";
-import { ActionItems } from "src/app/interfaces/layout-menus.interfaces";
+import { ActionItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 import { List } from "immutable";
@@ -34,8 +34,8 @@ import { GetPageInfo } from "src/app/interfaces/Page";
         tooltip: () => "Send an email to unlock your account",
         action: () => console.log("Unlock account")
       }
-    ]) as ActionItems,
-    links: null
+    ]) as List<ActionItem>,
+    links: List([GetPageInfo(LoginComponent)])
   }
 })
 @Component({
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private api: BawApiService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.form = new FormGroup({});

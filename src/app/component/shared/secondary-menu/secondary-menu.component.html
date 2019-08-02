@@ -7,11 +7,13 @@
       <h6 class="nav-link disabled m-0">Menu</h6>
     </li>
     <li class="nav-item" *ngFor="let link of secondaryLinks; let i = index">
-      <ng-container *ngIf="link.uri.includes('http'); else localroute">
+      <ng-container
+        *ngIf="link.routeFragment.includes('http'); else localroute"
+      >
         <a
           class="nav-link"
           aria-describedby="{{'secondary-tooltip-' + i"
-          href="{{ link.uri }}"
+          href="{{ link.routeFragment }}"
           placement="right"
           ngbTooltip="{{ link.tooltip() }}"
         >
@@ -26,7 +28,9 @@
         <a
           class="nav-link"
           aria-describedby="{{'secondary-tooltip-' + i"
-          routerLink="/{{ link.uri }}"
+          routerLink="{{
+            '/' + link.category.route + '/' + link.routeFragment
+          }}"
           routerLinkActive="active"
           placement="right"
           ngbTooltip="{{ link.tooltip() }}"

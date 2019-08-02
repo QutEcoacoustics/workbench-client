@@ -5,12 +5,11 @@ import {
   User,
   MenuAction,
   ActionItems,
-  Menus,
+  Menus
 } from "src/app/interfaces/layout-menus.interfaces";
 
 import { List } from "immutable";
 import { DefaultMenu } from "./defaultMenus";
-import { ActivatedRoute } from "@angular/router";
 
 /**
  * Manages the creation of links for the Secondary and Action menus
@@ -21,30 +20,26 @@ import { ActivatedRoute } from "@angular/router";
   providedIn: "root"
 })
 export class LayoutMenusService {
-  private api;
-  private defaultMenu;
+  private api: BawApiService;
+  private defaultMenu: DefaultMenu;
 
-  constructor(
-    api: BawApiService,
-    defaultMenu: DefaultMenu,
-    route: ActivatedRoute) {
-      this.api = api;
-      this.defaultMenu = defaultMenu;
-    }
+  constructor(api: BawApiService, defaultMenu: DefaultMenu) {
+    this.api = api;
+    this.defaultMenu = defaultMenu;
+  }
 
   /**
    * Generates a list of links for the secondary menu
+   * @param menus List of additional menu items
    */
-  getSecondaryLinks(
-    menus: Menus
-  ): List<MenuLink> {
+  getSecondaryLinks(menus: Menus): List<MenuLink> {
     // Get user details
     const user: User = {
       userName: this.api.user_name
     };
 
     // Get links
-    let links = this.defaultMenu.secondaryLinks || List();
+    let links = this.defaultMenu.secondaryLinks || List<MenuLink>([]);
     if (menus && menus.links) {
       links = links.concat(menus.links);
     }
@@ -68,9 +63,7 @@ export class LayoutMenusService {
     };
 
     // Filter buttons/links
-    const menuOptions = menus.actions.filter(link =>
-      this.filter(user, link)
-    );
+    const menuOptions = menus.actions.filter(link => this.filter(user, link));
 
     return menuOptions;
   }
