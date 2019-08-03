@@ -1,32 +1,31 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 
-import { HomeComponent } from './component/home/home.component';
-import { SecondaryMenuComponent } from './component/shared/secondary-menu/secondary-menu.component';
+import { HomeComponent } from "./component/home/home.component";
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: HomeComponent },
-  { path: 'home', pathMatch: 'full', redirectTo: '' },
+  { path: "", pathMatch: "full", component: HomeComponent },
+  { path: "home", pathMatch: "full", redirectTo: "" },
   {
-    path: 'research',
+    path: "research",
     children: [
-      { path: 'about', redirectTo: 'https://research.ecosounds.org/' },
+      { path: "about", redirectTo: "https://research.ecosounds.org/" },
       {
-        path: 'articles',
-        redirectTo: 'https://research.ecosounds.org/articles.html'
+        path: "articles",
+        redirectTo: "https://research.ecosounds.org/articles.html"
       },
       {
-        path: 'resources',
-        redirectTo: 'https://research.ecosounds.org/resources.html'
+        path: "resources",
+        redirectTo: "https://research.ecosounds.org/resources.html"
       },
       {
-        path: 'people',
-        redirectTo: 'https://research.ecosounds.org/people/people.html'
+        path: "people",
+        redirectTo: "https://research.ecosounds.org/people/people.html"
       },
       {
-        path: 'publications',
+        path: "publications",
         redirectTo:
-          'https://research.ecosounds.org/publications/publications.html'
+          "https://research.ecosounds.org/publications/publications.html"
       }
     ]
   }

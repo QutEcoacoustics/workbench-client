@@ -59,7 +59,7 @@ export type UserCallback<T> = null | ((user?: User) => T);
  * @extends LabelAndIcon
  */
 export interface MenuItem extends LabelAndIcon {
-  //kind: MenuItemTypes;
+  // kind: MenuItemTypes;
   /**
    * The tooltip that will be shown when context for this link is required.
    */
@@ -106,11 +106,12 @@ export interface MenuAction extends MenuItem {
 export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
 export type NavigableMenuItem = MenuLink | MenuRoute;
 
-
 export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
   return menuItem.kind === "MenuAction";
 }
-export function isAnchor(menuItem: AnyMenuItem): menuItem is MenuLink | MenuRoute {
+export function isAnchor(
+  menuItem: AnyMenuItem
+): menuItem is MenuLink | MenuRoute {
   return menuItem.kind === "MenuLink" || menuItem.kind === "MenuRoute";
 }
 export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
