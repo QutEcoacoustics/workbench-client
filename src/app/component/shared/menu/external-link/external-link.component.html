@@ -1,0 +1,13 @@
+<a
+  class="nav-link"
+  aria-describedby="{{type + '-tooltip-' + i"
+  href="{{ link.uri }}"
+  placement="{{ menuType === 'action' ? 'left' : 'right' }}"
+  ngbTooltip="{{ link.tooltip() }}"
+>
+  <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
+  <span>{{ link.label }}</span>
+  <span class="d-none" [id]="type + '-tooltip-' + i">
+    {{ link.tooltip() }}
+  </span>
+</a>

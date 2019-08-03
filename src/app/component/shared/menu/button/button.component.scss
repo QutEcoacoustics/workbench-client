@@ -1,0 +1,26 @@
+@import '../../../../styles/variables.scss';
+
+button {
+  font-size: 0.85rem;
+  width: 100%;
+  padding: 0.5rem;
+  border: 0px;
+
+  span {
+    color: $primary;
+  }
+
+  &:hover span {
+    color: darken($primary, 15%);
+  }
+}
+
+.icon {
+  width: 1.3rem;
+  display: inline-flex;
+  justify-content: center;
+
+  fa-icon {
+    color: black;
+  }
+}

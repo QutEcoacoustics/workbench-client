@@ -1,10 +1,10 @@
 {
-  "name": "ecosounds",
+  "name": "baw-client",
   "author": {
     "name": "Charles Alleman",
     "email": "charles@alleman.com.au"
   },
-  "description": "Ecosounds website for online ecoacoustic analysis.",
+  "description": "Client-side website for online ecoacoustic analysis.",
   "version": "3.0.0",
   "scripts": {
     "ng": "ng",

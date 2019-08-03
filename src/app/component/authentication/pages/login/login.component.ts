@@ -1,35 +1,66 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { BawApiService } from 'src/app/services/baw-api/baw-api.service';
-import { Router } from '@angular/router';
-import { MenusService } from './menus.service';
-import { Link, ActionTitle } from 'src/app/services/layout-menus/menus';
+import { Component, OnInit } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { FormGroup } from "@angular/forms";
+import { List } from "immutable";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { BawApiService } from "src/app/services/baw-api/baw-api.service";
+import { Router } from "@angular/router";
+import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
+import { Page, PageComponent } from "src/app/interfaces/PageInfo";
+import { securityCategory } from "../../authentication";
+import { ResetPasswordComponent } from "../reset-password/reset-password.component";
+import { RegisterComponent } from "../register/register.component";
 
-@Component({
-  selector: 'app-authentication-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+@Page({
+  icon: ["fas", "sign-in-alt"],
+  label: "Log in",
+  category: securityCategory,
+  routeFragment: "login",
+  tooltip: () => "Log into the website",
+  predicate: user => !user,
+  order: 2,
+  menus: {
+    actions: List<AnyMenuItem>([
+      ResetPasswordComponent.pageInfo,
+      {
+        kind: "MenuAction",
+        icon: ["fas", "envelope"],
+        label: "Confirm account",
+        tooltip: () => "Resend the email to confirm your account",
+        action: () => console.log("Confirm account")
+      },
+      {
+        kind: "MenuAction",
+        icon: ["fas", "lock-open"],
+        label: "Unlock account",
+        tooltip: () => "Send an email to unlock your account",
+        action: () => console.log("Unlock account")
+      }
+    ]),
+    links: null
+  }
 })
-export class AuthenticationLoginComponent implements OnInit {
-  private _jsonURL = 'assets/templates/login-form-template.json';
+@Component({
+  selector: "app-authentication-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.scss"]
+})
+export class LoginComponent extends PageComponent implements OnInit {
+  private formSchemaUrl = "assets/templates/login-form-template.json";
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
-
-  secondaryLinks: Link[];
-  actionLinks: Link[];
-  actionTitle: ActionTitle;
+  registerRoute: string;
 
   constructor(
     private http: HttpClient,
     private api: BawApiService,
-    private router: Router,
-    private menus: MenusService
-  ) {}
+    private router: Router
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({});
@@ -38,9 +69,7 @@ export class AuthenticationLoginComponent implements OnInit {
       this.fields = data.fields;
     });
 
-    this.secondaryLinks = this.menus.secondaryMenu();
-    this.actionTitle = this.menus.actionTitle();
-    this.actionLinks = this.menus.actionLinks();
+    this.registerRoute = RegisterComponent.pageInfo.route;
   }
 
   /**
@@ -48,7 +77,7 @@ export class AuthenticationLoginComponent implements OnInit {
    * @returns Observable JSON containing form details
    */
   getJSON(): Observable<any> {
-    return this.http.get(this._jsonURL);
+    return this.http.get(this.formSchemaUrl);
   }
 
   /**
@@ -63,17 +92,17 @@ export class AuthenticationLoginComponent implements OnInit {
    * @param model Form response
    */
   submit(model: any) {
-    if (this.form.status === 'INVALID') {
+    if (this.form.status === "INVALID") {
       return;
     }
 
     console.log(model);
     this.api.login(model).subscribe(data => {
       console.log(data);
-      if (typeof data === 'string') {
+      if (typeof data === "string") {
         this.error = data;
       } else {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       }
     });
   }

@@ -3,12 +3,12 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   Input
-} from '@angular/core';
+} from "@angular/core";
 
 @Component({
-  selector: 'app-card-image',
-  templateUrl: './card-image.component.html',
-  styleUrls: ['./card-image.component.scss'],
+  selector: "app-card-image",
+  templateUrl: "./card-image.component.html",
+  styleUrls: ["./card-image.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardImageComponent implements OnInit {
@@ -20,8 +20,8 @@ export class CardImageComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.checkRequiredFields('title', this.title);
-    this.checkRequiredFields('image', this.image);
+    this.checkRequiredFields("title", this.title);
+    this.checkRequiredFields("image", this.image);
   }
 
   /**
@@ -31,7 +31,7 @@ export class CardImageComponent implements OnInit {
    */
   checkRequiredFields(name: string, input: any) {
     if (input === null || input === undefined) {
-      throw new Error('Attribute ' + name + ' is required');
+      throw new Error("Attribute " + name + " is required");
     }
   }
 }

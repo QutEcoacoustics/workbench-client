@@ -1,39 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   HttpClient,
   HttpHeaders,
   HttpErrorResponse
-} from '@angular/common/http';
-import { throwError, Observable, Subject } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+} from "@angular/common/http";
+import { throwError, Observable, Subject } from "rxjs";
+import { catchError, retry } from "rxjs/operators";
+import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**
  * Interface with BAW Server Rest API
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class BawApiService {
   constructor(private http: HttpClient) {
-    const auth_token = sessionStorage.getItem(this.SESSION_STORAGE.auth_token);
-    const user_name = sessionStorage.getItem(this.SESSION_STORAGE.user_name);
+    const authToken = sessionStorage.getItem(this.SESSION_STORAGE.auth_token);
+    const userName = sessionStorage.getItem(this.SESSION_STORAGE.user_name);
 
-    if (auth_token && user_name) {
-      this._auth_token = auth_token;
-      this._user_name = user_name;
+    if (authToken && userName) {
+      this.authToken = authToken;
+      this._username = userName;
 
-      console.debug(this._auth_token);
-      console.debug(this._user_name);
+      console.debug(this.authToken);
+      console.debug(this._username);
     }
   }
 
-  private _auth_token: string;
-  private _user_name: string;
-  private _bawClientUrl = 'https://staging.ecosounds.org';
-  private _httpOptions = {
+  private authToken: string;
+  private _username: string;
+  private bawClientUrl = "https://staging.ecosounds.org";
+  private httpOptions = {
     headers: new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+      Accept: "application/json",
+      "Content-Type": "application/json"
     })
   };
 
@@ -42,8 +43,8 @@ export class BawApiService {
     BAD_AUTHENTICATION: 401
   };
   private SESSION_STORAGE = {
-    auth_token: 'auth_token',
-    user_name: 'user_name'
+    auth_token: "auth_token",
+    user_name: "user_name"
   };
 
   /**
@@ -52,7 +53,7 @@ export class BawApiService {
    */
   getProjectList(): Observable<Projects | string> {
     return this.http
-      .get<Projects>(this._bawClientUrl + '/projects', this._httpOptions)
+      .get<Projects>(this.bawClientUrl + "/projects", this.httpOptions)
       .pipe(
         retry(3),
         catchError(this.handleError)
@@ -67,8 +68,8 @@ export class BawApiService {
       return;
     }
 
-    this._auth_token = null;
-    this._user_name = null;
+    this.authToken = null;
+    this._username = null;
     sessionStorage.removeItem(this.SESSION_STORAGE.auth_token);
     sessionStorage.removeItem(this.SESSION_STORAGE.user_name);
   }
@@ -84,48 +85,48 @@ export class BawApiService {
   login(details: {}): Observable<boolean | string> {
     const subject = new Subject<boolean | string>();
     if (this.loggedIn) {
-      subject.next('User already logged in');
+      subject.next("User already logged in");
     }
 
     this.http
       .post<AuthenticationLogin>(
-        this._bawClientUrl + '/security',
+        this.bawClientUrl + "/security",
         details,
-        this._httpOptions
+        this.httpOptions
       )
       .pipe(retry(3))
       .subscribe(
         data => {
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            this._auth_token = data.data.auth_token;
-            this._user_name = data.data.user_name;
-            this._httpOptions = {
-              headers: this._httpOptions.headers.append(
-                'Authorization',
-                `Token token="${this._auth_token}"`
+            this.authToken = data.data.auth_token;
+            this._username = data.data.user_name;
+            this.httpOptions = {
+              headers: this.httpOptions.headers.append(
+                "Authorization",
+                `Token token="${this.authToken}"`
               )
             };
             sessionStorage.setItem(
               this.SESSION_STORAGE.auth_token,
-              this._auth_token
+              this.authToken
             );
             sessionStorage.setItem(
               this.SESSION_STORAGE.user_name,
-              this._user_name
+              this._username
             );
             subject.next(true);
           } else {
-            console.error('Unknown error thrown by login rest api');
+            console.error("Unknown error thrown by login rest api");
             console.error(data);
             subject.next(false);
           }
         },
         error => {
           if (error.status === this.RETURN_CODE.BAD_AUTHENTICATION) {
-            subject.next('Invalid username/email or password.');
+            subject.next("Invalid username/email or password.");
           } else {
-            console.debug('Unknown error thrown by login rest api');
-            console.debug(error);
+            console.error("Unknown error thrown by login rest api");
+            console.error(error);
             subject.next(false);
           }
         }
@@ -139,14 +140,20 @@ export class BawApiService {
    * TODO Ping API to check token is still valid
    */
   get loggedIn() {
-    return !!this._auth_token;
+    return !!this.authToken;
   }
 
   /**
    * Username of the logged in user
    */
-  get user_name() {
-    return this._user_name ? this._user_name : 'NOT LOGGED IN';
+  get user(): User {
+    return this._username ? {
+      username: this._username,
+      // FIXME:
+      id: 123456,
+      // FIXME:
+      role: "User"
+    } : null;
   }
 
   /**
@@ -157,7 +164,7 @@ export class BawApiService {
   private handleError(error: HttpErrorResponse): Observable<string> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      console.error("An error occurred:", error.error.message);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
@@ -166,7 +173,7 @@ export class BawApiService {
       );
     }
     // return an observable with a user-facing error message
-    return throwError('Something bad happened; please try again later.');
+    return throwError("Something bad happened; please try again later.");
   }
 }
 

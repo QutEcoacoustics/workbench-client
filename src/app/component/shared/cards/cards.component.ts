@@ -4,13 +4,13 @@ import {
   ChangeDetectionStrategy,
   Input,
   OnChanges
-} from '@angular/core';
-import { List } from 'immutable';
+} from "@angular/core";
+import { List } from "immutable";
 
 @Component({
-  selector: 'app-cards',
-  templateUrl: './cards.component.html',
-  styleUrls: ['./cards.component.scss'],
+  selector: "app-cards",
+  templateUrl: "./cards.component.html",
+  styleUrls: ["./cards.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardsComponent implements OnChanges {
@@ -25,7 +25,7 @@ export class CardsComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges() {
-    this.checkRequiredFields('cards', this.cards);
+    this.checkRequiredFields("cards", this.cards);
 
     this.imageCards = false;
     this.cards.forEach(card => {
@@ -34,7 +34,7 @@ export class CardsComponent implements OnChanges {
       } else if (this.imageCards) {
         // If some cards have images but others do not, throw error
         throw new Error(
-          'If an image is given, all cards must have image component.'
+          "If an image is given, all cards must have image component."
         );
       }
     });
@@ -47,7 +47,7 @@ export class CardsComponent implements OnChanges {
    */
   checkRequiredFields(name: string, input: any) {
     if (input === null || input === undefined) {
-      throw new Error('Attribute ' + name + ' is required');
+      throw new Error("Attribute " + name + " is required");
     }
   }
 }

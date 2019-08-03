@@ -1,0 +1,33 @@
+nav {
+  h6 {
+    color: rgb(119, 119, 119);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  ul {
+    width: 100%;
+  }
+
+  li {
+    font-size: 0.85rem;
+    width: 100%;
+
+    button {
+      font-size: inherit;
+      width: inherit;
+    }
+  }
+
+  .icon {
+    width: 2rem;
+    margin: auto;
+
+    fa-icon {
+      margin-right: 3px;
+      color: black;
+    }
+  }
+}
