@@ -54,9 +54,7 @@ export class MenuComponent implements OnInit {
       return "0em";
     }
 
-    // Link order stores information about its padding in the decimal position
-    const paddingSize = (link.order - Math.floor(link.order)) * 10;
-    return `${paddingSize}em`;
+    return `${link.order.indentation}em`;
   }
 
   /**

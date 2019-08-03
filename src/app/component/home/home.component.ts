@@ -18,7 +18,7 @@ export const homeCategory: Category = {
   route: "/" + homeCategory.route,
   tooltip: () => "Home page",
   predicate: user => !user,
-  order: 1,
+  order: { priority: 1, indentation: 0 },
   menus: null,
   fullscreen: true
 })

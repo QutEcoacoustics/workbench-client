@@ -8,21 +8,21 @@ import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 
 @Page({
-  icon: ["fas", "key"],
-  label: "Reset password",
+  icon: ["fas", "envelope"],
+  label: "Confirm account",
   category: securityCategory,
-  routeFragment: "reset_password",
-  tooltip: () => "Send an email to reset your password",
+  routeFragment: "confirmation",
+  tooltip: () => "Resend the email to confirm your account",
   menus: null,
   order: { priority: 2, indentation: 1 }
 })
 @Component({
-  selector: "app-reset-password",
-  templateUrl: "./reset-password.component.html",
-  styleUrls: ["./reset-password.component.scss"]
+  selector: "app-confirm-account",
+  templateUrl: "./confirm-account.component.html",
+  styleUrls: ["./confirm-account.component.scss"]
 })
-export class ResetPasswordComponent extends PageComponent implements OnInit {
-  private formSchemaUrl = "assets/templates/forgot-password.json";
+export class ConfirmPasswordComponent extends PageComponent implements OnInit {
+  private formSchemaUrl = "assets/templates/confirm-account.json";
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];

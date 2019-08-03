@@ -15,7 +15,7 @@ import { securityCategory } from "../../authentication";
   tooltip: () => "Create an account",
   predicate: user => !user,
   menus: null,
-  order: 3
+  order: { priority: 3, indentation: 0 }
 })
 @Component({
   selector: "app-authentication-register",

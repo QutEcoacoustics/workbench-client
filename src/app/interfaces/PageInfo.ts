@@ -1,12 +1,13 @@
 import { Type } from "@angular/core";
 import {
+  Category,
+  Icon,
+  MenuRoute,
+  Menus,
+  Order,
   PageInfoInterface,
   RouteFragment,
-  Menus,
-  MenuRoute,
-  UserCallback,
-  Icon,
-  Category
+  UserCallback
 } from "./layout-menus.interfaces";
 
 export interface PageComponentStatic
@@ -36,7 +37,7 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   category: Category;
   menus: Menus;
   uri: RouteFragment;
-  order: number;
+  order: Order;
   fullscreen: boolean;
 
   constructor(target: Type<any>, args: PageInfoInterface) {

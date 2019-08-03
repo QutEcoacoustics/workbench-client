@@ -7,11 +7,13 @@ import { RegisterComponent } from "./pages/register/register.component";
 import { LoginComponent } from "./pages/login/login.component";
 import { GetRoutesForPages } from "src/app/interfaces/Page";
 import { securityCategory } from "./authentication";
+import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
 
 export const AuthenticationComponents = [
   LoginComponent,
   RegisterComponent,
-  ResetPasswordComponent
+  ResetPasswordComponent,
+  ConfirmPasswordComponent
 ];
 
 const authenticationRoute = securityCategory.route;

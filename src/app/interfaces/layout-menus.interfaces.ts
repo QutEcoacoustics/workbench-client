@@ -51,6 +51,21 @@ export interface Category extends LabelAndIcon {
 }
 
 /**
+ * Link order
+ */
+export interface Order {
+  /**
+   * Priority of link
+   */
+  priority: number;
+
+  /**
+   * Indentation of link
+   */
+  indentation: number;
+}
+
+/**
  * Menu item types
  */
 export type MenuItemTypes = "MenuAction" | "MenuLink" | "MenuRoute";
@@ -77,7 +92,7 @@ export interface MenuItem extends LabelAndIcon {
   /**
    * The order position of this link in comparison to others. The lower the value, the greater the importance.
    */
-  order?: number;
+  order?: Order;
 }
 
 /**

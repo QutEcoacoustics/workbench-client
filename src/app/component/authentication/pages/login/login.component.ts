@@ -11,6 +11,7 @@ import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { securityCategory } from "../../authentication";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
+import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -19,17 +20,11 @@ import { ResetPasswordComponent } from "../reset-password/reset-password.compone
   routeFragment: "login",
   tooltip: () => "Log into the website",
   predicate: user => !user,
-  order: 2,
+  order: { priority: 2, indentation: 0 },
   menus: {
     actions: List<AnyMenuItem>([
       ResetPasswordComponent.pageInfo,
-      {
-        kind: "MenuAction",
-        icon: ["fas", "envelope"],
-        label: "Confirm account",
-        tooltip: () => "Resend the email to confirm your account",
-        action: () => console.log("Confirm account")
-      },
+      ConfirmPasswordComponent.pageInfo,
       {
         kind: "MenuAction",
         icon: ["fas", "lock-open"],
