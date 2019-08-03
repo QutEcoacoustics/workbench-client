@@ -18,7 +18,6 @@ import { BawApiService } from "./services/baw-api/baw-api.service";
 
 import { sharedComponents } from "./component/shared/shared.components";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
-
 @NgModule({
   declarations: [
     AppComponent,

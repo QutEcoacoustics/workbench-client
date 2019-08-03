@@ -13,51 +13,20 @@
     </li>
     <li class="nav-item" *ngFor="let link of filteredLinks; let i = index">
       <ng-container *ngIf="isAction(link); else elseLink">
-        <button
-          class="btn text-left"
-          (click)="(link.action)"
-          ngbTooltip="{{ link.tooltip() }}"
-          placement="{{ menuType === 'action' ? 'left' : 'right' }}"
-        >
-          <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-          <span>{{ link.label }}</span>
-          <span class="d-none" [id]="type + '-tooltip-' + i">
-            {{ link.tooltip }}
-          </span>
-        </button>
+        <app-menu-button
+          [link]="link"
+          [placement]="placement"
+        ></app-menu-button>
       </ng-container>
       <ng-template #elseLink>
         <ng-container *ngIf="isInternalLink(link); else elseExternalLink">
-          <!-- FIXME: broken route logic below -->
-          <a
-            class="nav-link"
-            aria-describedby="{{type + '-tooltip-' + i"
-            routerLink="{{ link.uri }}"
-            routerLinkActive="active"
-            placement="{{ menuType === 'action' ? 'left' : 'right' }}"
-            ngbTooltip="{{ link.tooltip() }}"
-          >
-            <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-            <span>{{ link.label }}</span>
-            <span class="d-none" [id]="type + '-tooltip-' + i">
-              {{ link.tooltip() }}
-            </span>
-          </a>
+          <app-menu-internal-link [link]="link" [placement]="placement">
+          </app-menu-internal-link>
         </ng-container>
         <ng-template #elseExternalLink>
-          <a
-            class="nav-link"
-            aria-describedby="{{type + '-tooltip-' + i"
-            href="{{ link.routeFragment }}"
-            placement="{{ menuType === 'action' ? 'left' : 'right' }}"
-            ngbTooltip="{{ link.tooltip() }}"
-          >
-            <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-            <span>{{ link.label }}</span>
-            <span class="d-none" [id]="type + '-tooltip-' + i">
-              {{ link.tooltip() }}
-            </span>
-          </a>
+          <!-- FIXME: broken route logic below -->
+          <app-menu-external-link [link]="link" [placement]="placement">
+          </app-menu-external-link>
         </ng-template>
       </ng-template>
     </li>

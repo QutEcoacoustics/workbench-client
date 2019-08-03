@@ -14,25 +14,5 @@ nav {
   li {
     font-size: 0.85rem;
     width: 100%;
-
-    button {
-      font-size: inherit;
-      width: inherit;
-    }
-  }
-
-  button,
-  a {
-    padding: 0.5rem 0.5rem;
-  }
-
-  .icon {
-    width: 1.3rem;
-    display: inline-flex;
-    justify-content: center;
-
-    fa-icon {
-      color: black;
-    }
   }
 }

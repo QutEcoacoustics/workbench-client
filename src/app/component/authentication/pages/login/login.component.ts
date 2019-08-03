@@ -23,12 +23,14 @@ import { RegisterComponent } from "../register/register.component";
     actions: List<AnyMenuItem>([
       ResetPasswordComponent.pageInfo,
       {
+        kind: "MenuAction",
         icon: ["fas", "envelope"],
         label: "Confirm account",
         tooltip: () => "Resend the email to confirm your account",
         action: () => console.log("Confirm account")
       },
       {
+        kind: "MenuAction",
         icon: ["fas", "lock-open"],
         label: "Unlock account",
         tooltip: () => "Send an email to unlock your account",
