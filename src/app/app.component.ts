@@ -39,7 +39,9 @@ export class AppComponent {
           );
         }
 
-        this.menuLayout = !!(displayComponent.component as any).pageInfo;
+        // Check if component is a page info component and is not set to fullscreen
+        const pageInfo = (displayComponent.component as any).pageInfo;
+        this.menuLayout = !!pageInfo && !pageInfo.fullscreen;
       }
     });
   }

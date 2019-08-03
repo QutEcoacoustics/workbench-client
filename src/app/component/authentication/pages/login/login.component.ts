@@ -5,7 +5,7 @@ import { FormGroup } from "@angular/forms";
 import { List } from "immutable";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
-import { Router, Route } from "@angular/router";
+import { Router } from "@angular/router";
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";

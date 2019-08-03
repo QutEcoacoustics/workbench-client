@@ -186,4 +186,5 @@ export interface PageInfoInterface extends Data, MenuItem {
   routeFragment: RouteFragment;
   category: LabelAndIcon;
   menus: Menus;
+  fullscreen?: boolean;
 }

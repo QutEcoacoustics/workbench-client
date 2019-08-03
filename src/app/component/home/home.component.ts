@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Card } from "../shared/cards/cards.component";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
+import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 
 export const homeCategory: Category = {
   icon: ["fas", "home"],
@@ -9,18 +10,32 @@ export const homeCategory: Category = {
   route: "home"
 };
 
+@Page({
+  icon: ["fas", "home"],
+  label: "Home",
+  category: homeCategory,
+  routeFragment: "home",
+  route: "/" + homeCategory.route,
+  tooltip: () => "Home page",
+  predicate: user => !user,
+  order: 1,
+  menus: null,
+  fullscreen: true
+})
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent extends PageComponent implements OnInit {
   processList: List<Card>;
   projectList: List<Card>;
   postList: List<Card>;
   testing: string;
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
     this.processList = List([

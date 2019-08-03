@@ -37,12 +37,12 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   menus: Menus;
   uri: RouteFragment;
   order: number;
+  fullscreen: boolean;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
     this.kind = "MenuRoute";
     this.component = target;
-    this.route = undefined;
   }
 }
 

@@ -16,7 +16,7 @@
     },
     {
       "key": "email",
-      "type": "email",
+      "type": "input",
       "templateOptions": {
         "label": "Email",
         "required": true
