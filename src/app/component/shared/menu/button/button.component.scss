@@ -1,8 +1,19 @@
+@import '../../../../styles/variables.scss';
+
 button {
   font-size: 0.85rem;
   width: 100%;
   padding: 0.5rem;
+
+  span {
+    color: $primary;
+  }
+
+  &button.active span {
+    color: white;
+  }
 }
+
 .icon {
   width: 1.3rem;
   display: inline-flex;
