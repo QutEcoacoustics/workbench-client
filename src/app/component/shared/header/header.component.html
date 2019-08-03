@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Brand Logo -->
     <a class="navbar-brand" routerLink="/" routerLinkActive="active">
-      Ecosounds
+      {{ title }}
     </a>
 
     <!-- Toggle button for collapsable content -->
@@ -64,22 +64,22 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
             class="nav-link"
-            routerLink="{{ routes.login }}"
+            routerLink="{{ routes.login.route }}"
             routerLinkActive="active"
             i18n="Navbar Login Link|Link to account login page@@navbarLogin"
           >
-            Login
+            {{ routes.login.label }}
           </a>
           <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
           <a
             class="nav-link"
-            routerLink="{{ routes.register }}"
+            routerLink="{{ routes.register.route }}"
             routerLinkActive="active"
             i18n="Navbar Register Link|Link to account registration page@@navbarStatistics"
           >
-            Register
+            {{ routes.register.label }}
           </a>
           <span class="sr-only" *ngIf="isActive('Register')">(current)</span>
         </li>

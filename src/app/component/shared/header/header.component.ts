@@ -3,6 +3,8 @@ import { Router, NavigationEnd } from "@angular/router";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { LoginComponent } from "../../authentication/pages/login/login.component";
 import { RegisterComponent } from "../../authentication/pages/register/register.component";
+import { PageInfoInterface } from "src/app/interfaces/layout-menus.interfaces";
+import { HomeComponent } from "../../home/home.component";
 
 @Component({
   selector: "app-header",
@@ -14,10 +16,12 @@ export class HeaderComponent implements OnInit {
   collapsed: boolean;
   loggedIn: boolean;
   username: string;
+  title = "Ecosounds";
 
   routes: {
-    login: string;
-    register: string;
+    home: PageInfoInterface;
+    login: PageInfoInterface;
+    register: PageInfoInterface;
   };
 
   constructor(private router: Router, private api: BawApiService) {}
@@ -36,8 +40,9 @@ export class HeaderComponent implements OnInit {
     });
 
     this.routes = {
-      login: LoginComponent.pageInfo.route,
-      register: RegisterComponent.pageInfo.route
+      home: HomeComponent.pageInfo,
+      login: LoginComponent.pageInfo,
+      register: RegisterComponent.pageInfo
     };
   }
 
