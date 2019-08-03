@@ -5,7 +5,7 @@ import { BawPageModule } from "src/app/component/shared/BawPageModule";
 import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
 import { RegisterComponent } from "./pages/register/register.component";
 import { LoginComponent } from "./pages/login/login.component";
-import { GetRoutesForPages, GetUriForPages } from "src/app/interfaces/Page";
+import { GetRoutesForPages, UpdateUriForPages } from "src/app/interfaces/Page";
 import { securityCategory } from "./authentication";
 
 const authenticationRoute = securityCategory.route as string;
@@ -30,6 +30,6 @@ const routes: Routes = [
 })
 export class AuthenticationModule {
   constructor(private router: Router) {
-    GetUriForPages(this.router, AuthenticationComponents);
+    UpdateUriForPages(this.router, AuthenticationComponents);
   }
 }

@@ -1,8 +1,11 @@
-import { NavigableMenuItem, LabelAndIcon, MenuRoute } from "src/app/interfaces/layout-menus.interfaces";
+import {
+  NavigableMenuItem,
+  LabelAndIcon,
+  MenuRoute
+} from "src/app/interfaces/layout-menus.interfaces";
 import { LoginComponent } from "src/app/component/authentication/pages/login/login.component";
 import { RegisterComponent } from "src/app/component/authentication/pages/register/register.component";
 import { List } from "immutable";
-
 
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([

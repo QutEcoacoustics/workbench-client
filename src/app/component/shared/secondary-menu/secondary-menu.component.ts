@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  NavigableMenuItem} from "src/app/interfaces/layout-menus.interfaces";
+import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { PageInfo } from "src/app/interfaces/PageInfo";
 import { List } from "immutable";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
@@ -13,9 +12,7 @@ import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecondaryMenuComponent implements OnInit {
-  constructor(
-    private route: ActivatedRoute,
-  ) {  }
+  constructor(private route: ActivatedRoute) {}
 
   contextLinks: List<NavigableMenuItem>;
 
@@ -27,9 +24,9 @@ export class SecondaryMenuComponent implements OnInit {
       const current = val;
       // with any links from route
       const links =
-        val && val.menus && val.menus.links ?
-        val.menus.links :
-        List<NavigableMenuItem>();
+        val && val.menus && val.menus.links
+          ? val.menus.links
+          : List<NavigableMenuItem>();
 
       // and add it all together
       const allLinks = defaultLinks.concat(links, current);
@@ -43,6 +40,7 @@ export class SecondaryMenuComponent implements OnInit {
       }
 
       this.contextLinks = allLinks;
+      console.log(this.contextLinks);
     });
   }
 }

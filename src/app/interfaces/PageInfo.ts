@@ -1,13 +1,9 @@
 import { Type } from "@angular/core";
 import {
   PageInfoInterface,
-  MenuLink,
   RouteFragment,
-  User,
-  LabelAndIcon,
   Menus,
   MenuRoute,
-  MenuItemTypes,
   UserCallback,
   Icon,
   Category
@@ -15,7 +11,8 @@ import {
 import { Route } from "@angular/router";
 
 export interface PageComponentStatic
- extends Type<PageComponentInterface>, Type<any> {
+  extends Type<PageComponentInterface>,
+    Type<any> {
   readonly pageInfo: PageInfo;
 }
 
@@ -36,18 +33,21 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   component: Type<any>;
   category: Category;
   menus: Menus;
+  uri: RouteFragment;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
     this.component = target;
     this.route = undefined;
+    this.uri = undefined;
     // @allcharles: I reverted this because this is not
     // going to work. See notes in `Page.GetRoutesForPage`
-    //this.uri = ("/" + this.category.route + "/" + this.routeFragment) as Route;
+    // this.uri = ("/" + this.category.route + "/" + this.routeFragment) as Route;
   }
 }
 
-type DecoratedPageComponent = Type<PageComponentInterface> & PageComponentStatic;
+type DecoratedPageComponent = Type<PageComponentInterface> &
+  PageComponentStatic;
 
 // this mixin is needed because typescript decorators
 // do not mutate the type signature they are applied to.
@@ -55,15 +55,21 @@ type DecoratedPageComponent = Type<PageComponentInterface> & PageComponentStatic
 // If they did, then we wouldn't need this shim, which
 // currently needs to be extended from in every component!
 export class PageComponent implements PageComponentInterface {
-  static get pageInfo() { return null; }
-  get pageInfo() { return null; }
+  static get pageInfo() {
+    return null;
+  }
+  get pageInfo() {
+    return null;
+  }
 }
 
-export function Page(info: PageInfoInterface):
-(constructor: Type<any>) => DecoratedPageComponent {
+export function Page(
+  info: PageInfoInterface
+): (constructor: Type<any>) => DecoratedPageComponent {
   // tslint:disable-next-line: only-arrow-functions
-  return function PageDecorator(componentConstructor: Type<PageComponentInterface>):
-  DecoratedPageComponent {
+  return function PageDecorator(
+    componentConstructor: Type<PageComponentInterface>
+  ): DecoratedPageComponent {
     const staticInfo = new PageInfo(componentConstructor, info);
 
     // alternate implementation
@@ -73,8 +79,12 @@ export function Page(info: PageInfoInterface):
     //     get pageInfo() { return staticInfo; }
     // }
 
-    Object.defineProperty(componentConstructor, "pageInfo",  { value: staticInfo });
-    Object.defineProperty(componentConstructor.prototype, "pageInfo", { value:  staticInfo });
+    Object.defineProperty(componentConstructor, "pageInfo", {
+      value: staticInfo
+    });
+    Object.defineProperty(componentConstructor.prototype, "pageInfo", {
+      value: staticInfo
+    });
 
     // we know this conversion is correct
     // tslint:disable-next-line: no-angle-bracket-type-assertion

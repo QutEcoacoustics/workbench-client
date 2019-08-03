@@ -75,58 +75,68 @@ export function GetRoutesForPage(page: PageInfo): Routes {
   return [route];
 }
 
-export function GetUriForPages(router: Router, components: Type<any>[]) {
-  console.log("GetUriForPages");
-  console.log(router);
-  console.log(components);
-  return Array.from(GetUri(router, components));
-}
-
-function* GetUri(
-  router: Router,
-  components: Type<any>[]
-): IterableIterator<string> {
-  for (const component of components) {
+/**
+ * Update page info component uri values
+ * @param router Router
+ * @param components Page components to find
+ */
+export function UpdateUriForPages(router: Router, components: Type<any>[]) {
+  components.forEach(component => {
     const page = GetPageInfo(component);
+
     if (page) {
-      yield* GetUriForPage(router, page);
+      const uri = GetUriForPage(router, page);
+      page.uri = uri;
+      console.log(page);
     }
-  }
+  });
 }
 
+/**
+ * Get URI for a page component
+ * @param router Router
+ * @param page Page component to find
+ */
 function GetUriForPage(router: Router, page: PageInfo): string {
-  console.log("GetUriForPage: ", page);
-  console.log(searchRoutes(router.config, page));
+  const output = searchRoutes(router.config, page);
+  const routeOutput = "/" + output.map(route => route.path).join("/");
 
-  return "";
+  return routeOutput;
 }
 
-function searchRoutes(routes: Routes, page: PageInfo) {
-  let output = null;
+/**
+ * Search routes to find the page component full route
+ * @param routes Route Children
+ * @param page Page component to find
+ */
+function searchRoutes(routes: Routes, page: PageInfo): Routes {
+  let output: Routes = [];
   routes.forEach(route => {
-    if (output) {
+    if (output.length > 0) {
       return;
     }
 
     if (route.data && route.data === page) {
       // Route identified
-      console.log("Route identified");
-
-      output = route;
+      output = [route];
       return output;
     } else {
       if (route.children) {
         // Search route children
-        console.log("Searching children");
-
-        output = searchRoutes(route.children, page);
-      } else {
-        console.log("No Children");
+        const res = searchRoutes(route.children, page);
+        if (res.length > 0) {
+          output = [route];
+          output = output.concat(res);
+        }
       }
     }
   });
 
   // This branch is empty
-  console.log("Branch Completed");
+  if (!output) {
+    console.error("Failed to find component: ", page);
+    return null;
+  }
+
   return output;
 }

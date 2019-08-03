@@ -14,7 +14,6 @@ import {
   isButton
 } from "src/app/interfaces/layout-menus.interfaces";
 import { List } from "immutable";
-import { Route } from "@angular/router";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 
 @Component({
@@ -24,7 +23,6 @@ import { BawApiService } from "src/app/services/baw-api/baw-api.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnInit {
-
   constructor(private api: BawApiService) {}
   @Input() title?: LabelAndIcon;
   @Input() links: List<MenuAction | MenuLink>;
@@ -42,7 +40,6 @@ export class MenuComponent implements OnInit {
     const user: User = this.api.user;
     this.filteredLinks = this.links.filter(link => this.filter(user, link));
   }
-
 
   /**
    * Filters a list of links / buttons used by the action and secondary menus.
