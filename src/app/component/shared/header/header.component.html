@@ -61,17 +61,6 @@
 
       <!-- Right aligned unauthenticated links -->
       <ul class="navbar-nav" *ngIf="!loggedIn">
-        <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
-          <a
-            class="nav-link"
-            routerLink="{{ routes.login.route }}"
-            routerLinkActive="active"
-            i18n="Navbar Login Link|Link to account login page@@navbarLogin"
-          >
-            {{ routes.login.label }}
-          </a>
-          <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
-        </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
           <a
             class="nav-link"
@@ -82,6 +71,17 @@
             {{ routes.register.label }}
           </a>
           <span class="sr-only" *ngIf="isActive('Register')">(current)</span>
+        </li>
+        <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
+          <a
+            class="nav-link"
+            routerLink="{{ routes.login.route }}"
+            routerLinkActive="active"
+            i18n="Navbar Login Link|Link to account login page@@navbarLogin"
+          >
+            {{ routes.login.label }}
+          </a>
+          <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
         </li>
       </ul>
 

@@ -1,17 +1,12 @@
 <div class="pl-2 pr-2">
   <div class="login-form">
-    <h2 class="text-center">Member Login</h2>
+    <h2 class="text-center">Log in</h2>
 
     <ngb-alert [type]="'danger'" (close)="clearError()" *ngIf="error">{{
       error
     }}</ngb-alert>
 
-    <div class="form-background clearfix">
-      <!-- Icon at top of form -->
-      <div class="avatar d-flex justify-content-center align-content-center">
-        <fa-icon [icon]="['fa', 'user-circle']" class="form-icon"></fa-icon>
-      </div>
-
+    <div class="clearfix">
       <form [formGroup]="form" (ngSubmit)="submit(model)">
         <div class="d-flex justify-content-center" *ngIf="!fields">
           <div class="spinner-border text-success" role="status">
@@ -26,17 +21,10 @@
         ></formly-form>
         <div class="clearfix">
           <button type="submit" class="btn btn-success float-right">
-            Login
+            Log in
           </button>
         </div>
       </form>
-    </div>
-
-    <div class="hint-text">
-      Don't have an account?
-      <a routerLink="{{ registerRoute }}" routerLinkActive="active">
-        Sign up here
-      </a>
     </div>
   </div>
 

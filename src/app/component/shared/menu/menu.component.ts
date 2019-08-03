@@ -46,6 +46,20 @@ export class MenuComponent implements OnInit {
   }
 
   /**
+   * Calculate the left padding of a secondary link item
+   */
+  calculatePadding(link: AnyMenuItem) {
+    // Only the secondary menu implements this option
+    if (this.menuType !== "secondary") {
+      return "0em";
+    }
+
+    // Link order stores information about its padding in the decimal position
+    const paddingSize = (link.order - Math.floor(link.order)) * 10;
+    return `${paddingSize}em`;
+  }
+
+  /**
    * Filters a list of links / buttons used by the action and secondary menus.
    * @param user User details
    * @param link Link to display

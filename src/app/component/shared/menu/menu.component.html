@@ -11,7 +11,11 @@
         </ng-template>
       </h6>
     </li>
-    <li class="nav-item" *ngFor="let link of filteredLinks; let i = index">
+    <li
+      class="nav-item"
+      *ngFor="let link of filteredLinks; let i = index"
+      [ngStyle]="{ 'padding-left': calculatePadding(link) }"
+    >
       <ng-container *ngIf="isAction(link); else elseLink">
         <app-menu-button
           [link]="link"
@@ -24,7 +28,6 @@
           </app-menu-internal-link>
         </ng-container>
         <ng-template #elseExternalLink>
-          <!-- FIXME: broken route logic below -->
           <app-menu-external-link [link]="link" [placement]="placement">
           </app-menu-external-link>
         </ng-template>

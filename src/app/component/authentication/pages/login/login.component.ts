@@ -1,16 +1,16 @@
-import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { List } from "immutable";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { Router } from "@angular/router";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { List } from "immutable";
+import { Observable } from "rxjs";
+
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
+import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { securityCategory } from "../../authentication";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
-import { RegisterComponent } from "../register/register.component";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -47,12 +47,11 @@ import { RegisterComponent } from "../register/register.component";
   styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent extends PageComponent implements OnInit {
-  private formSchemaUrl = "assets/templates/login-form-template.json";
+  private formSchemaUrl = "assets/templates/login.json";
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
-  registerRoute: string;
 
   constructor(
     private http: HttpClient,
@@ -68,8 +67,6 @@ export class LoginComponent extends PageComponent implements OnInit {
       this.model = data.model;
       this.fields = data.fields;
     });
-
-    this.registerRoute = RegisterComponent.pageInfo.route;
   }
 
   /**

@@ -1,5 +1,9 @@
+import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormGroup } from "@angular/forms";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Observable } from "rxjs";
+
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
 
@@ -9,7 +13,8 @@ import { securityCategory } from "../../authentication";
   category: securityCategory,
   routeFragment: "reset_password",
   tooltip: () => "Send an email to reset your password",
-  menus: null
+  menus: null,
+  order: 2.1
 })
 @Component({
   selector: "app-reset-password",
@@ -17,15 +22,28 @@ import { securityCategory } from "../../authentication";
   styleUrls: ["./reset-password.component.scss"]
 })
 export class ResetPasswordComponent extends PageComponent implements OnInit {
-  output: string;
+  private formSchemaUrl = "assets/templates/forgot-password.json";
+  form: FormGroup;
+  model: {};
+  fields: FormlyFieldConfig[];
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private http: HttpClient) {
     super();
   }
 
   ngOnInit() {
-    this.route.data.subscribe(val => {
-      this.output = JSON.stringify(val);
+    this.form = new FormGroup({});
+    this.getJSON().subscribe(data => {
+      this.model = data.model;
+      this.fields = data.fields;
     });
+  }
+
+  getJSON(): Observable<any> {
+    return this.http.get(this.formSchemaUrl);
+  }
+
+  submit(model) {
+    console.log(model);
   }
 }
