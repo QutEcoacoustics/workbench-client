@@ -6,12 +6,11 @@ import {
 } from "@angular/core";
 import {
   LabelAndIcon,
-  MenuLink,
-  MenuAction,
   User,
   isInternalRoute,
   isExternalLink,
-  isButton
+  isButton,
+  AnyMenuItem
 } from "src/app/interfaces/layout-menus.interfaces";
 import { List } from "immutable";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
@@ -25,10 +24,10 @@ import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 export class MenuComponent implements OnInit {
   constructor(private api: BawApiService) {}
   @Input() title?: LabelAndIcon;
-  @Input() links: List<MenuAction | MenuLink>;
+  @Input() links: List<AnyMenuItem>;
   @Input() menuType: "action" | "secondary";
 
-  filteredLinks: List<MenuAction | MenuLink>;
+  filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
 
   isInternalLink = isInternalRoute;
@@ -40,19 +39,49 @@ export class MenuComponent implements OnInit {
     // Get user details
     const user: User = this.api.user;
     this.placement = this.menuType === "action" ? "left" : "right";
-    this.filteredLinks = this.links.filter(link => this.filter(user, link));
+
+    this.filteredLinks = this.removeDuplicates(
+      this.links.filter(link => this.filter(user, link))
+    );
   }
 
   /**
    * Filters a list of links / buttons used by the action and secondary menus.
    * @param user User details
    * @param link Link to display
+   * @returns True if filter is passed
    */
-  private filter(user: User, link: MenuLink | MenuAction) {
+  private filter(user: User, link: AnyMenuItem) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
       return link.predicate(user);
     }
     return true;
+  }
+
+  /**
+   * Remove duplicate links
+   * @param list List of links
+   * @returns Set of non-duplicate links
+   */
+  private removeDuplicates(list: List<AnyMenuItem>): Set<AnyMenuItem> {
+    const set: Set<AnyMenuItem> = new Set([]);
+
+    // List through each link and check if it matches the label of a link in the set
+    list.forEach(link => {
+      let match = false;
+      set.forEach(setLink => {
+        if (setLink.label === link.label) {
+          match = true;
+          return;
+        }
+      });
+
+      if (!match) {
+        set.add(link);
+      }
+    });
+
+    return set;
   }
 }

@@ -13,8 +13,10 @@ export class AppComponent {
   constructor(private router: Router, private route: ActivatedRoute) {
     this.menuLayout = true;
 
+    // Update page info component uri's
     UpdateUriForPages(this.router);
 
+    // Determine whether the currently shown component uses the menu layout or fullscreen
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
         // Find the primary router component
@@ -31,7 +33,12 @@ export class AppComponent {
           count++;
         }
 
-        console.log("Current component: ", displayComponent.component);
+        if (count === 50) {
+          console.error(
+            "Search for component layout type exceeded a depth of 50."
+          );
+        }
+
         this.menuLayout = !!(displayComponent.component as any).pageInfo;
       }
     });

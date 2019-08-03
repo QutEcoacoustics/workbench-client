@@ -68,6 +68,10 @@ export interface MenuItem extends LabelAndIcon {
    * Whether or not to show this link.
    */
   predicate?: UserCallback<boolean>;
+  /**
+   * The order position of this link in comparison to others. The lower the value, the greater the importance.
+   */
+  order?: number;
 }
 
 /**
@@ -103,23 +107,54 @@ export interface MenuAction extends MenuItem {
   action: () => any | void;
 }
 
+/**
+ * Any Meny Item interface. This is used to group together the variable menu item types
+ */
 export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
+
+/**
+ * Navigable Menu Item interface. This is used to report if a menu item is a link
+ */
 export type NavigableMenuItem = MenuLink | MenuRoute;
 
+/**
+ * Determines if a menu item is a button (MenuAction)
+ * @param menuItem Menu item
+ */
 export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
   return menuItem.kind === "MenuAction";
 }
+
+/**
+ * Determines if a menu item is a link (MenuLink | MenuRoute)
+ * @param menuItem Menu item
+ */
 export function isAnchor(
   menuItem: AnyMenuItem
 ): menuItem is MenuLink | MenuRoute {
   return menuItem.kind === "MenuLink" || menuItem.kind === "MenuRoute";
 }
+
+/**
+ * Determines if a menu item is part of the MenuItem interface
+ * @param menuItem Menu item
+ */
 export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
   return menuItem.kind === "MenuRoute";
 }
+
+/**
+ * Determines if a menu item is part of the MenuLink interface
+ * @param menuItem Menu item
+ */
 export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
   return menuItem.kind === "MenuLink";
 }
+
+/**
+ * Determine if a component contains pageInfo
+ * @param data Component data
+ */
 export function isPageInfo(data: any): data is PageInfoInterface {
   return data.kind === "MenuRoute";
 }

@@ -80,7 +80,6 @@ export function UpdateUriForPages(router: Router) {
 
       // If route contains pageData
       if (route.data && isPageInfo(route.data)) {
-        console.log("Page Component: " + subPath);
         route.data.uri = subPath;
       }
 

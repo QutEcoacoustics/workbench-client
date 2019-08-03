@@ -16,7 +16,8 @@ export const DefaultMenu = {
       icon: ["fas", "home"],
       tooltip: () => "Home page",
       route: "/home",
-      uri: "/home"
+      uri: "/home",
+      order: 1
     } as MenuRoute,
     LoginComponent.pageInfo,
     RegisterComponent.pageInfo

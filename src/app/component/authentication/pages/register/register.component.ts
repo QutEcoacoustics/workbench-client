@@ -16,7 +16,8 @@ import { LoginComponent } from "../login/login.component";
   routeFragment: "register",
   tooltip: () => "Create an account",
   predicate: user => !user,
-  menus: null
+  menus: null,
+  order: 3
 })
 @Component({
   selector: "app-authentication-register",

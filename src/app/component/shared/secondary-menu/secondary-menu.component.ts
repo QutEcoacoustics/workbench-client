@@ -29,10 +29,7 @@ export class SecondaryMenuComponent implements OnInit {
           : List<NavigableMenuItem>();
 
       // and add it all together
-      const allLinks = defaultLinks.concat(links, current);
-
-      // TODO: ordering
-      // TODO: check for duplicates
+      const allLinks = defaultLinks.concat(links, current).sort(this.compare);
 
       if (!links.isEmpty) {
         console.log("Links menu found");
@@ -40,7 +37,29 @@ export class SecondaryMenuComponent implements OnInit {
       }
 
       this.contextLinks = allLinks;
-      console.log(this.contextLinks);
     });
+  }
+
+  /**
+   * Sort function for list of
+   */
+  compare(a: NavigableMenuItem, b: NavigableMenuItem) {
+    // If a does not have an order number, select b
+    if (!a.order) {
+      return -1;
+    }
+
+    // If b does not have an order number, select a
+    if (!b.order) {
+      return 1;
+    }
+
+    // If both have the same order number, prioritise neither
+    if (a.order === b.order) {
+      return a.label < b.label ? -1 : 1;
+    }
+
+    // Return the menu item with the lower order value
+    return a.order < b.order ? -1 : 1;
   }
 }

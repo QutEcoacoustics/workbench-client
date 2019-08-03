@@ -19,6 +19,7 @@ import { RegisterComponent } from "../register/register.component";
   routeFragment: "login",
   tooltip: () => "Log into the website",
   predicate: user => !user,
+  order: 2,
   menus: {
     actions: List<AnyMenuItem>([
       ResetPasswordComponent.pageInfo,

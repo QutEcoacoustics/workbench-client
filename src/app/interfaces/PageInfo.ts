@@ -34,6 +34,7 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   category: Category;
   menus: Menus;
   uri: RouteFragment;
+  order: number;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
