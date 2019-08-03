@@ -64,7 +64,7 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
             class="nav-link"
-            routerLink="/security/login"
+            routerLink="{{ routes.login }}"
             routerLinkActive="active"
             i18n="Navbar Login Link|Link to account login page@@navbarLogin"
           >
@@ -75,7 +75,7 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
           <a
             class="nav-link"
-            routerLink="/security/register"
+            routerLink="{{ routes.register }}"
             routerLinkActive="active"
             i18n="Navbar Register Link|Link to account registration page@@navbarStatistics"
           >

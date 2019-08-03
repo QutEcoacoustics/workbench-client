@@ -52,7 +52,7 @@ export class LoginComponent extends PageComponent implements OnInit {
   model: {};
   fields: FormlyFieldConfig[];
   error: string;
-  registerRoute: Route;
+  registerRoute: string;
 
   constructor(
     private http: HttpClient,
@@ -69,7 +69,7 @@ export class LoginComponent extends PageComponent implements OnInit {
       this.fields = data.fields;
     });
 
-    this.registerRoute = RegisterComponent.pageInfo.route as Route;
+    this.registerRoute = RegisterComponent.pageInfo.route;
   }
 
   /**

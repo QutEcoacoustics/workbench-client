@@ -5,10 +5,8 @@ import { BawPageModule } from "src/app/component/shared/BawPageModule";
 import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
 import { RegisterComponent } from "./pages/register/register.component";
 import { LoginComponent } from "./pages/login/login.component";
-import { GetRoutesForPages, UpdateUriForPages } from "src/app/interfaces/Page";
+import { GetRoutesForPages } from "src/app/interfaces/Page";
 import { securityCategory } from "./authentication";
-
-const authenticationRoute = securityCategory.route as string;
 
 export const AuthenticationComponents = [
   LoginComponent,
@@ -16,6 +14,7 @@ export const AuthenticationComponents = [
   ResetPasswordComponent
 ];
 
+const authenticationRoute = securityCategory.route;
 const routes: Routes = [
   {
     path: authenticationRoute,

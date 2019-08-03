@@ -41,25 +41,27 @@ export class SecondaryMenuComponent implements OnInit {
   }
 
   /**
-   * Sort function for list of
+   * Sort function for list of menu items
+   * @param obj1 First menu item
+   * @param obg2 Second menu item
    */
-  compare(a: NavigableMenuItem, b: NavigableMenuItem) {
+  compare(obj1: NavigableMenuItem, obj2: NavigableMenuItem): number {
     // If a does not have an order number, select b
-    if (!a.order) {
-      return -1;
-    }
-
-    // If b does not have an order number, select a
-    if (!b.order) {
+    if (!obj1.order) {
       return 1;
     }
 
+    // If b does not have an order number, select a
+    if (!obj2.order) {
+      return -1;
+    }
+
     // If both have the same order number, prioritise neither
-    if (a.order === b.order) {
-      return a.label < b.label ? -1 : 1;
+    if (obj1.order === obj2.order) {
+      return obj1.label < obj2.label ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return a.order < b.order ? -1 : 1;
+    return obj1.order < obj2.order ? -1 : 1;
   }
 }

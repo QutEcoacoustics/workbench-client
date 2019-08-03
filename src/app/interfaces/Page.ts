@@ -80,7 +80,7 @@ export function UpdateUriForPages(router: Router) {
 
       // If route contains pageData
       if (route.data && isPageInfo(route.data)) {
-        route.data.uri = subPath;
+        route.data.route = subPath;
       }
 
       // If route contains children

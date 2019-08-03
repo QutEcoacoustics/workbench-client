@@ -19,15 +19,12 @@ import { securityCategory } from "../../authentication";
 export class ResetPasswordComponent extends PageComponent implements OnInit {
   output: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    console.debug("Reset Password Component");
-    console.debug(this.router);
     this.route.data.subscribe(val => {
-      console.debug(val);
       this.output = JSON.stringify(val);
     });
   }

@@ -8,7 +8,6 @@ import {
   Icon,
   Category
 } from "./layout-menus.interfaces";
-import { Route } from "@angular/router";
 
 export interface PageComponentStatic
   extends Type<PageComponentInterface>,
@@ -20,12 +19,15 @@ export interface PageComponentInterface {
   readonly pageInfo: PageInfo;
 }
 
+/**
+ * Page info class
+ */
 export class PageInfo implements PageInfoInterface, MenuRoute {
   // discriminated union tag
   kind: "MenuRoute";
 
   routeFragment: RouteFragment;
-  route: Route;
+  route: string;
   tooltip: UserCallback<string>;
   predicate: UserCallback<boolean>;
   icon: Icon;
@@ -41,7 +43,6 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
     this.kind = "MenuRoute";
     this.component = target;
     this.route = undefined;
-    this.uri = undefined;
   }
 }
 
@@ -62,6 +63,10 @@ export class PageComponent implements PageComponentInterface {
   }
 }
 
+/**
+ * Page info directive
+ * @param info Page info
+ */
 export function Page(
   info: PageInfoInterface
 ): (constructor: Type<any>) => DecoratedPageComponent {

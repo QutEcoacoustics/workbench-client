@@ -29,7 +29,7 @@ export class RegisterComponent extends PageComponent implements OnInit {
   form: FormGroup;
   model: {};
   fields: FormlyFieldConfig[];
-  loginRoute: Route;
+  loginRoute: string;
 
   constructor(private http: HttpClient) {
     super();
@@ -42,7 +42,7 @@ export class RegisterComponent extends PageComponent implements OnInit {
       this.fields = data.fields;
     });
 
-    this.loginRoute = LoginComponent.pageInfo.route as Route;
+    this.loginRoute = LoginComponent.pageInfo.route;
   }
 
   getJSON(): Observable<any> {

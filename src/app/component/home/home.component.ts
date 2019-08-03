@@ -1,6 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Card } from "../shared/cards/cards.component";
+import { Category } from "src/app/interfaces/layout-menus.interfaces";
+
+export const homeCategory: Category = {
+  icon: ["fas", "home"],
+  label: "Home",
+  route: "home"
+};
 
 @Component({
   selector: "app-home",

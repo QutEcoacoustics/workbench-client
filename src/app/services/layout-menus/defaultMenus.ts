@@ -6,6 +6,7 @@ import {
 import { LoginComponent } from "src/app/component/authentication/pages/login/login.component";
 import { RegisterComponent } from "src/app/component/authentication/pages/register/register.component";
 import { List } from "immutable";
+import { homeCategory } from "src/app/component/home/home.component";
 
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
@@ -23,8 +24,5 @@ export const DefaultMenu = {
     RegisterComponent.pageInfo
   ]),
   // TODO: reference this from the home module
-  defaultCategory: {
-    label: "Home",
-    icon: ["fas", "home"]
-  } as LabelAndIcon
+  defaultCategory: homeCategory
 };

@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { BrowserModule } from "@angular/platform-browser";
+import { CardsModule } from "./cards/cards.modules";
 
 @NgModule({
   declarations: [],

@@ -47,11 +47,17 @@ export interface Category extends LabelAndIcon {
   /**
    *  Local route of category Eg. 'security'
    */
-  route: Route;
+  route: string;
 }
 
+/**
+ * Menu item types
+ */
 export type MenuItemTypes = "MenuAction" | "MenuLink" | "MenuRoute";
 
+/**
+ * User callback function
+ */
 export type UserCallback<T> = null | ((user?: User) => T);
 
 /**
@@ -95,7 +101,7 @@ export interface MenuRoute extends MenuItem {
   /**
    * The URL or fragment this link points to
    */
-  route: Route;
+  route: string;
 }
 
 /**

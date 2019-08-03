@@ -11,20 +11,18 @@ import { HttpClientModule } from "@angular/common/http";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
-import { AppComponent } from "./app.component";
-import { HomeComponent } from "./component/home/home.component";
-import { FormlyEmailInput } from "./component/shared/formly/email/email.component";
 import { BawApiService } from "./services/baw-api/baw-api.service";
 
+import { AppComponent } from "./app.component";
+import { HomeComponent } from "./component/home/home.component";
 import { sharedComponents } from "./component/shared/shared.components";
+
 import { AuthenticationModule } from "./component/authentication/authentication.module";
+import { HomeModule } from "./component/home/home.module";
+import { CardsModule } from "./component/shared/cards/cards.modules";
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    FormlyEmailInput,
-    HomeComponent,
-    sharedComponents
-  ],
+  declarations: [AppComponent, sharedComponents],
   imports: [
     NgbModule,
     BrowserModule,
@@ -34,9 +32,11 @@ import { AuthenticationModule } from "./component/authentication/authentication.
     ReactiveFormsModule,
     HttpClientModule,
     FormlyModule.forRoot({
-      types: [{ name: "email", component: FormlyEmailInput }]
+      types: []
     }),
     FormlyBootstrapModule,
+    CardsModule,
+    HomeModule,
     AuthenticationModule
   ],
   providers: [BawApiService],

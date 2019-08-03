@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, NavigationEnd } from "@angular/router";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
+import { LoginComponent } from "../../authentication/pages/login/login.component";
+import { RegisterComponent } from "../../authentication/pages/register/register.component";
+
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
@@ -11,6 +14,11 @@ export class HeaderComponent implements OnInit {
   collapsed: boolean;
   loggedIn: boolean;
   username: string;
+
+  routes: {
+    login: string;
+    register: string;
+  };
 
   constructor(private router: Router, private api: BawApiService) {}
 
@@ -26,6 +34,11 @@ export class HeaderComponent implements OnInit {
         this.toggleCollapse(true);
       }
     });
+
+    this.routes = {
+      login: LoginComponent.pageInfo.route,
+      register: RegisterComponent.pageInfo.route
+    };
   }
 
   /**
