@@ -28,8 +28,4 @@ const routes: Routes = [
   imports: [BawPageModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...AuthenticationComponents]
 })
-export class AuthenticationModule {
-  constructor(private router: Router) {
-    UpdateUriForPages(this.router, AuthenticationComponents);
-  }
-}
+export class AuthenticationModule {}

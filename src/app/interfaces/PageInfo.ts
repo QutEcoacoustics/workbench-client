@@ -37,12 +37,10 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
+    this.kind = "MenuRoute";
     this.component = target;
     this.route = undefined;
     this.uri = undefined;
-    // @allcharles: I reverted this because this is not
-    // going to work. See notes in `Page.GetRoutesForPage`
-    // this.uri = ("/" + this.category.route + "/" + this.routeFragment) as Route;
   }
 }
 

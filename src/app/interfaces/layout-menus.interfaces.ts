@@ -120,6 +120,9 @@ export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
 export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
   return menuItem.kind === "MenuLink";
 }
+export function isPageInfo(data: any): data is PageInfoInterface {
+  return data.kind === "MenuRoute";
+}
 
 /**
  * MenusInfo interface. This stores information required to generate the

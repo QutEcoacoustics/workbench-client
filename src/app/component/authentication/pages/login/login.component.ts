@@ -2,13 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
+import { List } from "immutable";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { Router, Route } from "@angular/router";
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
-import { List } from "immutable";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 import { RegisterComponent } from "../register/register.component";
 

@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Router, NavigationEnd, ActivatedRoute } from "@angular/router";
+import { UpdateUriForPages } from "./interfaces/Page";
 
 @Component({
   selector: "app-root",
@@ -11,6 +12,8 @@ export class AppComponent {
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.menuLayout = true;
+
+    UpdateUriForPages(this.router);
 
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {

@@ -1,8 +1,9 @@
 import { Type } from "@angular/core";
-import { PageInfo, PageComponentStatic, PageComponent } from "./PageInfo";
+import { PageInfo, PageComponentStatic } from "./PageInfo";
 import { Routes, Route, Router } from "@angular/router";
 import { SecondaryMenuComponent } from "../component/shared/secondary-menu/secondary-menu.component";
 import { ActionMenuComponent } from "../component/shared/action-menu/action-menu.component";
+import { isPageInfo } from "./layout-menus.interfaces";
 
 /**
  * Get the page info interface of an angular component
@@ -42,7 +43,7 @@ export function GetRoutesForPages(components: Type<any>[]): Route[] {
  * @returns List of routes
  */
 export function GetRoutesForPage(page: PageInfo): Routes {
-  const route = {
+  const route: Route = {
     path: page.routeFragment,
     // data is inherited in child routes
     data: page,
@@ -64,79 +65,33 @@ export function GetRoutesForPage(page: PageInfo): Routes {
     ]
   };
 
-  // cross bind route object back to pageInfo
-  // NOTE: this doesn't work
-  // FIXME: need to somehow register for route
-  // configuration finish and then get back the
-  // url tree and assign it back to `route` - the
-  // name and type of route will probably have to change
-  page.route = route;
-
   return [route];
 }
 
 /**
- * Update page info component uri values
- * @param router Router
- * @param components Page components to find
+ * Recursively search the entire router tree to find all
+ * page info components and update their routes.
+ * @param router Router Service
  */
-export function UpdateUriForPages(router: Router, components: Type<any>[]) {
-  components.forEach(component => {
-    const page = GetPageInfo(component);
+export function UpdateUriForPages(router: Router) {
+  const searchRoutes = (routes: Routes, path: string) => {
+    routes.forEach((route: Route) => {
+      const subPath = path + "/" + route.path;
 
-    if (page) {
-      const uri = GetUriForPage(router, page);
-      page.uri = uri;
-      console.log(page);
-    }
-  });
-}
-
-/**
- * Get URI for a page component
- * @param router Router
- * @param page Page component to find
- */
-function GetUriForPage(router: Router, page: PageInfo): string {
-  const output = searchRoutes(router.config, page);
-  const routeOutput = "/" + output.map(route => route.path).join("/");
-
-  return routeOutput;
-}
-
-/**
- * Search routes to find the page component full route
- * @param routes Route Children
- * @param page Page component to find
- */
-function searchRoutes(routes: Routes, page: PageInfo): Routes {
-  let output: Routes = [];
-  routes.forEach(route => {
-    if (output.length > 0) {
-      return;
-    }
-
-    if (route.data && route.data === page) {
-      // Route identified
-      output = [route];
-      return output;
-    } else {
-      if (route.children) {
-        // Search route children
-        const res = searchRoutes(route.children, page);
-        if (res.length > 0) {
-          output = [route];
-          output = output.concat(res);
-        }
+      // If route contains pageData
+      if (route.data && isPageInfo(route.data)) {
+        console.log("Page Component: " + subPath);
+        route.data.uri = subPath;
       }
-    }
-  });
 
-  // This branch is empty
-  if (!output) {
-    console.error("Failed to find component: ", page);
-    return null;
-  }
+      // If route contains children
+      if (route.children) {
+        searchRoutes(route.children, subPath);
+      }
+    });
 
-  return output;
+    return path;
+  };
+
+  searchRoutes(router.config, "");
 }
