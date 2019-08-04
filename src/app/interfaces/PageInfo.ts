@@ -7,7 +7,8 @@ import {
   Order,
   PageInfoInterface,
   RouteFragment,
-  UserCallback
+  UserCallback,
+  InternalRoute
 } from "./layout-menus.interfaces";
 
 export interface PageComponentStatic
@@ -28,7 +29,7 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   kind: "MenuRoute";
 
   routeFragment: RouteFragment;
-  route: string;
+  route: InternalRoute;
   tooltip: UserCallback<string>;
   predicate: UserCallback<boolean>;
   icon: Icon;
@@ -36,19 +37,25 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
   component: Type<any>;
   category: Category;
   menus: Menus;
-  uri: RouteFragment;
   order: Order;
   fullscreen: boolean;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
-    this.kind = "MenuRoute";
+    // AT: this shouldn't be needed?
+    ///this.kind = "MenuRoute";
     this.component = target;
   }
 }
 
-type DecoratedPageComponent = Type<PageComponentInterface> &
-  PageComponentStatic;
+/**
+ * Determine if a component contains pageInfo
+ * @param data Component data
+ */
+export function isPageInfo(data: any): data is PageInfoInterface {
+  return data.kind === "MenuRoute";
+}
+
 
 // this mixin is needed because typescript decorators
 // do not mutate the type signature they are applied to.
@@ -65,8 +72,17 @@ export class PageComponent implements PageComponentInterface {
 }
 
 /**
- * Page info directive
- * @param info Page info
+ * Type alias for a component's constructor that will produce
+ * a new component that implements the `PageComponentInterface`
+ * interface.
+ */
+type DecoratedPageComponent = Type<PageComponentInterface> &
+PageComponentStatic;
+
+/**
+ * Page info decorator. Annotate an component class with this
+ * declaration to attach page info to the component.
+ * @param info the configuration for the `Page`.
  */
 export function Page(
   info: PageInfoInterface

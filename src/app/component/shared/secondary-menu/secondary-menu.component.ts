@@ -57,7 +57,7 @@ export class SecondaryMenuComponent implements OnInit {
     }
 
     // If both have the same order number,
-    // prioritise based on indentation and alphabetical order
+    // prioritize based on indentation and alphabetical order
     if (obj1.order.priority === obj2.order.priority) {
       if (obj1.order.indentation === obj2.order.indentation) {
         return obj1.label < obj2.label ? -1 : 1;

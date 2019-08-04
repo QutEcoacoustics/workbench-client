@@ -48,7 +48,7 @@ export class BawApiService {
   };
 
   /**
-   * Get list of projects avaiable to user
+   * Get list of projects available to user
    * @returns Observable list of projects
    */
   getProjectList(): Observable<Projects | string> {

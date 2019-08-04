@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
-import { MenuItemTypes } from "src/app/interfaces/layout-menus.interfaces";
+import { MenuRoute } from "src/app/interfaces/layout-menus.interfaces";
 
 @Component({
   selector: "app-menu-internal-link",
@@ -8,7 +8,7 @@ import { MenuItemTypes } from "src/app/interfaces/layout-menus.interfaces";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuInternalLinkComponent {
-  @Input() link: MenuItemTypes;
+  @Input() link: MenuRoute;
   @Input() placement: "left" | "right";
 
   constructor() {}

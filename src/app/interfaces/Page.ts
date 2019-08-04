@@ -1,9 +1,8 @@
 import { Type } from "@angular/core";
-import { PageInfo, PageComponentStatic } from "./PageInfo";
+import { PageInfo, PageComponentStatic, isPageInfo } from "./PageInfo";
 import { Routes, Route, Router } from "@angular/router";
 import { SecondaryMenuComponent } from "../component/shared/secondary-menu/secondary-menu.component";
 import { ActionMenuComponent } from "../component/shared/action-menu/action-menu.component";
-import { isPageInfo } from "./layout-menus.interfaces";
 
 /**
  * Get the page info interface of an angular component
@@ -39,7 +38,7 @@ export function GetRoutesForPages(components: Type<any>[]): Route[] {
 
 /**
  * Dynamically create routes for an angular component
- * @param page Angular compnent page info
+ * @param page Angular component page info
  * @returns List of routes
  */
 export function GetRoutesForPage(page: PageInfo): Routes {

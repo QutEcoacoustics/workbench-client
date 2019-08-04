@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
-import { MenuItemTypes } from "src/app/interfaces/layout-menus.interfaces";
+import { MenuLink } from "src/app/interfaces/layout-menus.interfaces";
 
 @Component({
   selector: "app-menu-external-link",
@@ -8,7 +8,7 @@ import { MenuItemTypes } from "src/app/interfaces/layout-menus.interfaces";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuExternalLinkComponent {
-  @Input() link: MenuItemTypes;
+  @Input() link: MenuLink;
   @Input() placement: "left" | "right";
 
   constructor() {}

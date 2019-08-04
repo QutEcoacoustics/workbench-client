@@ -2,9 +2,14 @@ import { Data, Route } from "@angular/router";
 import { List } from "immutable";
 
 /**
- * Part of an internal angular route
+ * Part of an (a single file/directory) internal angular route
  */
 export type RouteFragment = string;
+
+/**
+ * An angular style route string, or array of commands.
+ */
+export type InternalRoute = string | string[];
 
 /**
  * External URL
@@ -47,15 +52,16 @@ export interface Category extends LabelAndIcon {
   /**
    *  Local route of category Eg. 'security'
    */
-  route: string;
+  route: InternalRoute;
 }
 
 /**
- * Link order
+ * Defines order and indentation for `MenuItems`
  */
 export interface Order {
   /**
    * Priority of link
+   * The lower the value, the greater the importance.
    */
   priority: number;
 
@@ -66,9 +72,10 @@ export interface Order {
 }
 
 /**
- * Menu item types
+ * Literal string choice type (like an enum) used for the `kind`
+ * property in things derived from MenuItems.
  */
-export type MenuItemTypes = "MenuAction" | "MenuLink" | "MenuRoute";
+type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
 
 /**
  * User callback function
@@ -77,6 +84,7 @@ export type UserCallback<T> = null | ((user?: User) => T);
 
 /**
  * An item designed to be in a menu.
+ * Do not use this directly, see the derived interfaces.
  * @extends LabelAndIcon
  */
 export interface MenuItem extends LabelAndIcon {
@@ -90,13 +98,15 @@ export interface MenuItem extends LabelAndIcon {
    */
   predicate?: UserCallback<boolean>;
   /**
-   * The order position of this link in comparison to others. The lower the value, the greater the importance.
+   * The order position of this link in comparison to others.
    */
   order?: Order;
 }
 
 /**
- * MenuLink interface. Defines all the requirements of a link.
+ * MenuLink interface. Defines all the requirements of a href that points
+ * to an external location, but not an internal route or page.
+ * e.g. https://google.com.
  * @extends MenuItem
  */
 export interface MenuLink extends MenuItem {
@@ -108,7 +118,8 @@ export interface MenuLink extends MenuItem {
 }
 
 /**
- * MenuLink interface. Defines all the requirements of a link.
+ * MenuRoute interface. Defines an internal page/route within this application.
+ * Must be known to this angular app. e.g. /security/login
  * @extends MenuItem
  */
 export interface MenuRoute extends MenuItem {
@@ -116,11 +127,12 @@ export interface MenuRoute extends MenuItem {
   /**
    * The URL or fragment this link points to
    */
-  route: string;
+  route: InternalRoute;
 }
 
 /**
- * Action Link interface. Defines all the requirements of a link.
+ * Action Link interface. Defines all the requirements of an non-navigable menu
+ * item. A button.
  * @extends MenuItem
  */
 export interface MenuAction extends MenuItem {
@@ -129,12 +141,14 @@ export interface MenuAction extends MenuItem {
 }
 
 /**
- * Any Meny Item interface. This is used to group together the variable menu item types
+ * Any Menu Item discriminated union. This is used to store any of the
+ *  menu item types together in a collection.
  */
 export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
 
 /**
- * Navigable Menu Item interface. This is used to report if a menu item is a link
+ * Any Menu Item  discriminated union. This is used to store any menu item,
+ * that you can navigate to (i.e. not a button/action), together in a collection.
  */
 export type NavigableMenuItem = MenuLink | MenuRoute;
 
@@ -170,14 +184,6 @@ export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
  */
 export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
   return menuItem.kind === "MenuLink";
-}
-
-/**
- * Determine if a component contains pageInfo
- * @param data Component data
- */
-export function isPageInfo(data: any): data is PageInfoInterface {
-  return data.kind === "MenuRoute";
 }
 
 /**

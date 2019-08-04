@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router, NavigationEnd, ActivatedRoute } from "@angular/router";
-import { UpdateUriForPages } from "./interfaces/Page";
+import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/Page";
 
 @Component({
   selector: "app-root",
@@ -13,8 +13,8 @@ export class AppComponent {
   constructor(private router: Router, private route: ActivatedRoute) {
     this.menuLayout = true;
 
-    // Update page info component uri's
-    UpdateUriForPages(this.router);
+    // Update page info component routes
+    UpdateRouteForPages(this.router);
 
     // Determine whether the currently shown component uses the menu layout or fullscreen
     this.router.events.subscribe(val => {
