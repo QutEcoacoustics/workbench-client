@@ -7,9 +7,9 @@ import { List } from "immutable";
 export type RouteFragment = string;
 
 /**
- * An angular style route string, or array of commands.
+ * An angular style route string
  */
-export type InternalRoute = string | string[];
+export type InternalRoute = string;
 
 /**
  * External URL
