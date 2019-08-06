@@ -20,6 +20,7 @@ import { sharedComponents } from "./component/shared/shared.components";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { HomeModule } from "./component/home/home.module";
 import { CardsModule } from "./component/shared/cards/cards.modules";
+import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
 
 @NgModule({
   declarations: [AppComponent, sharedComponents],
@@ -37,7 +38,8 @@ import { CardsModule } from "./component/shared/cards/cards.modules";
     FormlyBootstrapModule,
     CardsModule,
     HomeModule,
-    AuthenticationModule
+    AuthenticationModule,
+    PageNotFoundModule
   ],
   providers: [BawApiService],
   bootstrap: [AppComponent],
