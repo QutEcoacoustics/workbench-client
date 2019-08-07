@@ -75,7 +75,7 @@ export interface Order {
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
-type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
+export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
 
 /**
  * User callback function
@@ -205,7 +205,7 @@ export interface Menus {
  */
 export interface PageInfoInterface extends Data, MenuItem {
   routeFragment: RouteFragment;
-  category: LabelAndIcon;
+  category: Category;
   menus: Menus;
   fullscreen?: boolean;
 }

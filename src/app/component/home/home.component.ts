@@ -52,7 +52,8 @@ export class HomeComponent extends PageComponent implements OnInit {
       {
         title: "Annotated Spectrogram",
         description:
-          "Practical identification of animal sounds by people and automated detectors. Ecologists use these to answer environmental questions."
+          "Practical identification of animal sounds by people and automated detectors. " +
+          "Ecologists use these to answer environmental questions."
       }
     ]);
     this.projectList = List([
@@ -89,26 +90,4 @@ export class HomeComponent extends PageComponent implements OnInit {
       }
     ]);
   }
-
-  // getActionListTitle(): Readonly<ActionListTitleInterface> {
-  //   return Object.freeze({
-  //     icon: ['fas', 'home'],
-  //     label: 'Home'
-  //   });
-  // }
-  // getHeaderItem(): Readonly<HeaderItemInterface> {
-  //   return Object.freeze({
-  //     icon: ['fas', 'home'],
-  //     label: 'Ecosounds',
-  //     uri: new Route('/')
-  //   });
-  // }
-  // getSecondaryItem(): Readonly<SecondaryLinkInterface> {
-  //   return Object.freeze({
-  //     uri: new Route('/home'),
-  //     icon: ['fas', 'home'],
-  //     label: 'Home',
-  //     tooltip: 'Home page'
-  //   });
-  // }
 }
