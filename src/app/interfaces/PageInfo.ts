@@ -42,8 +42,7 @@ export class PageInfo implements PageInfoInterface, MenuRoute {
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     Object.assign(this, args);
-    // AT: this shouldn't be needed?
-    ///this.kind = "MenuRoute";
+    this.kind = "MenuRoute";
     this.component = target;
   }
 }
