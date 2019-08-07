@@ -1,11 +1,11 @@
-import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
+import { List } from "immutable";
 import { LoginComponent } from "src/app/component/authentication/pages/login/login.component";
 import { RegisterComponent } from "src/app/component/authentication/pages/register/register.component";
-import { List } from "immutable";
 import {
   homeCategory,
   HomeComponent
 } from "src/app/component/home/home.component";
+import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([

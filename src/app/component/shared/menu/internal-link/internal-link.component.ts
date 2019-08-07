@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { MenuRoute } from "src/app/interfaces/layout-menus.interfaces";
 
 @Component({

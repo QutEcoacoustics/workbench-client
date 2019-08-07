@@ -1,8 +1,8 @@
-import { homeCategory, HomeComponent } from "./home.component";
-import { Routes, RouterModule } from "@angular/router";
-import { NgModule } from "@angular/core";
-import { CardsModule } from "../shared/cards/cards.modules";
 import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { CardsModule } from "../shared/cards/cards.modules";
+import { homeCategory, HomeComponent } from "./home.component";
 
 export const HomeComponents = [HomeComponent];
 

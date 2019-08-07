@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  LabelAndIcon,
-  AnyMenuItem
-} from "src/app/interfaces/layout-menus.interfaces";
-import { PageInfo } from "src/app/interfaces/PageInfo";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import {
+  AnyMenuItem,
+  LabelAndIcon
+} from "src/app/interfaces/layout-menus.interfaces";
+import { PageInfo } from "src/app/interfaces/PageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({

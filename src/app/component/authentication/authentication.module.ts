@@ -1,13 +1,13 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes, Router } from "@angular/router";
+import { Router, RouterModule, Routes } from "@angular/router";
 import { BawPageModule } from "src/app/component/shared/BawPageModule";
 
-import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
-import { RegisterComponent } from "./pages/register/register.component";
-import { LoginComponent } from "./pages/login/login.component";
 import { GetRoutesForPages } from "src/app/interfaces/Page";
 import { securityCategory } from "./authentication";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
+import { LoginComponent } from "./pages/login/login.component";
+import { RegisterComponent } from "./pages/register/register.component";
+import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
 
 export const AuthenticationComponents = [
   LoginComponent,

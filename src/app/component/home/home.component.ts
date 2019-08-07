@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Card } from "../shared/cards/cards.component";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
+import { Card } from "../shared/cards/cards.component";
 
 export const homeCategory: Category = {
   icon: ["fas", "home"],

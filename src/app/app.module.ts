@@ -1,15 +1,15 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { AppRoutingModule } from "./app-routing.module";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { FormsModule } from "@angular/forms";
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormlyModule } from "@ngx-formly/core";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { AppRoutingModule } from "./app-routing.module";
 
 import { BawApiService } from "./services/baw-api/baw-api.service";
 
@@ -20,10 +20,11 @@ import { sharedComponents } from "./component/shared/shared.components";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { HomeModule } from "./component/home/home.module";
 import { CardsModule } from "./component/shared/cards/cards.modules";
+import { FormComponent } from "./component/shared/form/form.component";
 import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
 
 @NgModule({
-  declarations: [AppComponent, sharedComponents],
+  declarations: [AppComponent, sharedComponents, FormComponent],
   imports: [
     NgbModule,
     BrowserModule,

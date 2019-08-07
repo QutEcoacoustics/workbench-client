@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Router, NavigationEnd, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/Page";
 
 @Component({

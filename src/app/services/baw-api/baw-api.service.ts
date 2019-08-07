@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
 import {
   HttpClient,
-  HttpHeaders,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpHeaders
 } from "@angular/common/http";
-import { throwError, Observable, Subject } from "rxjs";
+import { Injectable } from "@angular/core";
+import { Observable, Subject, throwError } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
@@ -19,12 +19,10 @@ export class BawApiService {
     const authToken = sessionStorage.getItem(this.SESSION_STORAGE.auth_token);
     const userName = sessionStorage.getItem(this.SESSION_STORAGE.user_name);
 
+    // TODO Read this from the session cookie provided by ruby
     if (authToken && userName) {
       this.authToken = authToken;
       this._username = userName;
-
-      console.debug(this.authToken);
-      console.debug(this._username);
     }
   }
 
@@ -147,13 +145,15 @@ export class BawApiService {
    * Username of the logged in user
    */
   get user(): User {
-    return this._username ? {
-      username: this._username,
-      // FIXME:
-      id: 123456,
-      // FIXME:
-      role: "User"
-    } : null;
+    return this._username
+      ? {
+          username: this._username,
+          // FIXME:
+          id: 123456,
+          // FIXME:
+          role: "User"
+        }
+      : null;
   }
 
   /**

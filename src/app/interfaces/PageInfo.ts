@@ -2,13 +2,13 @@ import { Type } from "@angular/core";
 import {
   Category,
   Icon,
+  InternalRoute,
   MenuRoute,
   Menus,
   Order,
   PageInfoInterface,
   RouteFragment,
-  UserCallback,
-  InternalRoute
+  UserCallback
 } from "./layout-menus.interfaces";
 
 export interface PageComponentStatic
@@ -55,7 +55,6 @@ export function isPageInfo(data: any): data is PageInfoInterface {
   return data.kind === "MenuRoute";
 }
 
-
 // this mixin is needed because typescript decorators
 // do not mutate the type signature they are applied to.
 // See https://github.com/Microsoft/TypeScript/issues/4881
@@ -76,7 +75,7 @@ export class PageComponent implements PageComponentInterface {
  * interface.
  */
 type DecoratedPageComponent = Type<PageComponentInterface> &
-PageComponentStatic;
+  PageComponentStatic;
 
 /**
  * Page info decorator. Annotate an component class with this
@@ -108,6 +107,6 @@ export function Page(
 
     // we know this conversion is correct
     // tslint:disable-next-line: no-angle-bracket-type-assertion
-    return <DecoratedPageComponent> componentConstructor;
+    return <DecoratedPageComponent>componentConstructor;
   };
 }

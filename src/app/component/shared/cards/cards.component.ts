@@ -1,9 +1,9 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
+  Component,
   Input,
-  OnChanges
+  OnChanges,
+  OnInit
 } from "@angular/core";
 import { List } from "immutable";
 

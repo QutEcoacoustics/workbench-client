@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { List } from "immutable";
 import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { PageInfo } from "src/app/interfaces/PageInfo";
-import { List } from "immutable";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({

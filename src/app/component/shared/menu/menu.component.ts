@@ -1,18 +1,18 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  OnInit,
   Input,
-  ChangeDetectionStrategy
+  OnInit
 } from "@angular/core";
-import {
-  LabelAndIcon,
-  User,
-  isInternalRoute,
-  isExternalLink,
-  isButton,
-  AnyMenuItem
-} from "src/app/interfaces/layout-menus.interfaces";
 import { List } from "immutable";
+import {
+  AnyMenuItem,
+  isButton,
+  isExternalLink,
+  isInternalRoute,
+  LabelAndIcon,
+  User
+} from "src/app/interfaces/layout-menus.interfaces";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 
 @Component({

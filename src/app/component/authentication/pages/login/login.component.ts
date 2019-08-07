@@ -10,8 +10,8 @@ import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { securityCategory } from "../../authentication";
-import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
+import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
