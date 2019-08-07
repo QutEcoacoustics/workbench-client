@@ -29,7 +29,7 @@
       "type": "input",
       "templateOptions": {
         "type": "date",
-        "label": "Date issue occured",
+        "label": "Date issue occurred",
         "required": true
       }
     },

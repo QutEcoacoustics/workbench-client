@@ -35,6 +35,16 @@ export class RegisterComponent extends PageComponent implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({});
     this.getJSON().subscribe(data => {
+      // Convert json string to function
+      const expression = new Function(
+        "control",
+        data.fields[0].validators.fieldMatch.expression
+      );
+
+      data.fields[0].validators.fieldMatch.expression = expression;
+
+      console.log(data);
+
       this.model = data.model;
       this.fields = data.fields;
     });

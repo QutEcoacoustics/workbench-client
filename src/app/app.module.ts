@@ -32,9 +32,7 @@ import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormlyModule.forRoot({
-      types: []
-    }),
+    FormlyModule.forRoot({ types: [] }),
     FormlyBootstrapModule,
     CardsModule,
     HomeModule,
