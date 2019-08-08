@@ -27,7 +27,11 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     this.form = new FormGroup({});
     this.http.get(this.schema).subscribe((data: any) => {
-      // Convert any validator functions to Function datatype
+      /**
+       * Convert any validator functions to Function datatype.
+       * This allows us to follow the format given by formly whilst also staying
+       * within the limitations of JSON (eg. Cannot transmit functions).
+       */
       data.fields.forEach(field => {
         const validator = field.validators;
 

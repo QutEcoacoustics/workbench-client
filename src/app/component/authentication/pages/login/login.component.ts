@@ -8,6 +8,7 @@ import { BawApiService } from "src/app/services/baw-api/baw-api.service";
 import { securityCategory } from "../../authentication";
 import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
+import { UnlockPasswordComponent } from "../unlock-account/unlock-account.component";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -21,13 +22,7 @@ import { ResetPasswordComponent } from "../reset-password/reset-password.compone
     actions: List<AnyMenuItem>([
       ResetPasswordComponent.pageInfo,
       ConfirmPasswordComponent.pageInfo,
-      {
-        kind: "MenuAction",
-        icon: ["fas", "lock-open"],
-        label: "Unlock account",
-        tooltip: () => "Send an email to unlock your account",
-        action: () => console.log("Unlock account")
-      }
+      UnlockPasswordComponent.pageInfo
     ]),
     links: null
   }
