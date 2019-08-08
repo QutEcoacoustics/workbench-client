@@ -15,16 +15,14 @@ import { BawApiService } from "./services/baw-api/baw-api.service";
 
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./component/home/home.component";
-import { sharedComponents } from "./component/shared/shared.components";
 
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { HomeModule } from "./component/home/home.module";
-import { CardsModule } from "./component/shared/cards/cards.modules";
-import { FormComponent } from "./component/shared/form/form.component";
 import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
+import { SharedModule } from "./component/shared/shared.module";
 
 @NgModule({
-  declarations: [AppComponent, sharedComponents, FormComponent],
+  declarations: [AppComponent],
   imports: [
     NgbModule,
     BrowserModule,
@@ -35,7 +33,7 @@ import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
     HttpClientModule,
     FormlyModule.forRoot({ types: [] }),
     FormlyBootstrapModule,
-    CardsModule,
+    SharedModule,
     HomeModule,
     AuthenticationModule,
     PageNotFoundModule

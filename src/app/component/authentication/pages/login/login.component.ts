@@ -1,10 +1,6 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 import { List } from "immutable";
-import { Observable } from "rxjs";
 
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
@@ -42,55 +38,22 @@ import { ResetPasswordComponent } from "../reset-password/reset-password.compone
   styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent extends PageComponent implements OnInit {
-  private formSchemaUrl = "assets/templates/login.json";
-  form: FormGroup;
-  model: {};
-  fields: FormlyFieldConfig[];
+  schemaUrl = "assets/templates/login.json";
   error: string;
 
-  constructor(
-    private http: HttpClient,
-    private api: BawApiService,
-    private router: Router
-  ) {
+  constructor(private api: BawApiService, private router: Router) {
     super();
   }
 
-  ngOnInit() {
-    this.form = new FormGroup({});
-    this.getJSON().subscribe(data => {
-      this.model = data.model;
-      this.fields = data.fields;
-    });
-  }
-
-  /**
-   * Retrieve the form template in JSON
-   * @returns Observable JSON containing form details
-   */
-  getJSON(): Observable<any> {
-    return this.http.get(this.formSchemaUrl);
-  }
-
-  /**
-   * Clear form error
-   */
-  clearError() {
-    this.error = null;
-  }
+  ngOnInit() {}
 
   /**
    * Form submission
-   * @param model Form response
+   * @param $event Form response
    */
-  submit(model: any) {
-    if (this.form.status === "INVALID") {
-      return;
-    }
-
-    console.log(model);
-    this.api.login(model).subscribe(data => {
-      console.log(data);
+  submit($event: any) {
+    console.debug("Submission Event", $event);
+    this.api.login($event).subscribe(data => {
       if (typeof data === "string") {
         this.error = data;
       } else {

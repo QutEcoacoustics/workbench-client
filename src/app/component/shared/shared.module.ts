@@ -1,23 +1,39 @@
+import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
+import { AppRoutingModule } from "src/app/app-routing.module";
 import { CardsModule } from "./cards/cards.modules";
+import { sharedComponents } from "./shared.components";
 
 @NgModule({
-  declarations: [],
-  exports: [
-    BrowserModule,
+  declarations: [sharedComponents],
+  imports: [
+    CommonModule,
+    AppRoutingModule,
+    NgbModule,
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule,
     FormlyModule,
-    FormlyBootstrapModule
+    FormlyBootstrapModule,
+    CardsModule
+  ],
+  exports: [
+    CommonModule,
+    AppRoutingModule,
+    NgbModule,
+    FontAwesomeModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule,
+    FormlyBootstrapModule,
+    CardsModule,
+    sharedComponents
   ]
 })
-export class BawPageModule {}
+export class SharedModule {}

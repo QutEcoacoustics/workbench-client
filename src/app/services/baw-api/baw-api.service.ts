@@ -38,7 +38,8 @@ export class BawApiService {
 
   private RETURN_CODE = {
     SUCCESS: 200,
-    BAD_AUTHENTICATION: 401
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401
   };
   private SESSION_STORAGE = {
     auth_token: "auth_token",
@@ -92,9 +93,10 @@ export class BawApiService {
         details,
         this.httpOptions
       )
-      .pipe(retry(3))
+      .pipe(retry(0))
       .subscribe(
         data => {
+          console.debug("Data", data);
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
             this.authToken = data.data.auth_token;
             this._username = data.data.user_name;
@@ -116,16 +118,21 @@ export class BawApiService {
           } else {
             console.error("Unknown error thrown by login rest api");
             console.error(data);
-            subject.next(false);
+            subject.next(
+              "An unknown error has occurred. Please refresh the browser or try again at a later date."
+            );
           }
         },
         error => {
-          if (error.status === this.RETURN_CODE.BAD_AUTHENTICATION) {
-            subject.next("Invalid username/email or password.");
+          console.debug("Error", error);
+          if (error.error.meta.error.details) {
+            subject.next(error.error.meta.error.details);
           } else {
             console.error("Unknown error thrown by login rest api");
             console.error(error);
-            subject.next(false);
+            subject.next(
+              "An unknown error has occurred. Please refresh the browser or try again at a later date."
+            );
           }
         }
       );

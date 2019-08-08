@@ -1,32 +1,10 @@
 <div class="pl-2 pr-2">
-  <div class="login-form">
-    <h2 class="text-center">Log in</h2>
-
-    <ngb-alert [type]="'danger'" (close)="clearError()" *ngIf="error">{{
-      error
-    }}</ngb-alert>
-
-    <div class="clearfix">
-      <form [formGroup]="form" (ngSubmit)="submit(model)">
-        <div class="d-flex justify-content-center" *ngIf="!fields">
-          <div class="spinner-border text-success" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </div>
-
-        <formly-form
-          [form]="form"
-          [fields]="fields"
-          [model]="model"
-        ></formly-form>
-        <div class="clearfix">
-          <button type="submit" class="btn btn-success float-right">
-            Log in
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <app-form
+    [schema]="schemaUrl"
+    [title]="'Log in'"
+    [error]="error"
+    (submit)="submit($event)"
+  ></app-form>
 
   <router-outlet></router-outlet>
 </div>

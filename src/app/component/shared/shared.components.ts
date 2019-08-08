@@ -1,5 +1,6 @@
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { FooterComponent } from "./footer/footer.component";
+import { FormComponent } from "./form/form.component";
 import { HeaderComponent } from "./header/header.component";
 import { MenuButtonComponent } from "./menu/button/button.component";
 import { MenuExternalLinkComponent } from "./menu/external-link/external-link.component";
@@ -15,5 +16,6 @@ export const sharedComponents = [
   MenuInternalLinkComponent,
   MenuExternalLinkComponent,
   ActionMenuComponent,
-  SecondaryMenuComponent
+  SecondaryMenuComponent,
+  FormComponent
 ];

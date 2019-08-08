@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { Router, RouterModule, Routes } from "@angular/router";
-import { BawPageModule } from "src/app/component/shared/BawPageModule";
+import { SharedModule } from "src/app/component/shared/shared.module";
 
 import { GetRoutesForPages } from "src/app/interfaces/Page";
 import { securityCategory } from "./authentication";
@@ -26,7 +26,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: AuthenticationComponents,
-  imports: [BawPageModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...AuthenticationComponents]
 })
 export class AuthenticationModule {}
