@@ -52,7 +52,6 @@ export class LoginComponent extends PageComponent implements OnInit {
    * @param $event Form response
    */
   submit($event: any) {
-    console.debug("Submission Event", $event);
     this.api.login($event).subscribe(data => {
       if (typeof data === "string") {
         this.error = data;

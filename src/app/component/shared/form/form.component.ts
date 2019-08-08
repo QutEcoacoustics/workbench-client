@@ -1,15 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable } from "rxjs";
 
 @Component({
   selector: "app-form",
@@ -21,7 +13,10 @@ export class FormComponent implements OnInit {
   @Input() title?: string;
   @Input() submitLabel: string;
   @Input() error?: string;
-  @Output() submit: EventEmitter<any> = new EventEmitter();
+
+  // Rename is required to stop formly from hijacking the variable
+  // tslint:disable-next-line: no-output-rename
+  @Output("onSubmit") submitFunction: EventEmitter<any> = new EventEmitter();
 
   form: FormGroup;
   fields: FormlyFieldConfig[];
@@ -31,7 +26,7 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({});
-    this.getJSON().subscribe(data => {
+    this.http.get(this.schema).subscribe((data: any) => {
       // Convert any validator functions to Function datatype
       data.fields.forEach(field => {
         const validator = field.validators;
@@ -54,14 +49,6 @@ export class FormComponent implements OnInit {
   }
 
   /**
-   * Retrieve the form template in JSON
-   * @returns Observable JSON containing form details
-   */
-  getJSON(): Observable<any> {
-    return this.http.get(this.schema);
-  }
-
-  /**
    * Clear form error
    */
   clearError() {
@@ -72,11 +59,11 @@ export class FormComponent implements OnInit {
    * Check form submission is valid, and if so emit output event
    * @param model Form response
    */
-  onSubmit(model: any) {
-    console.debug("Status: " + this.form.status);
+  submit(model: any) {
     if (this.form.status === "VALID") {
-      console.debug("Emitting model");
-      this.submit.emit(model);
+      this.submitFunction.emit(model);
+    } else {
+      this.error = "Please fill all required fields.";
     }
   }
 }

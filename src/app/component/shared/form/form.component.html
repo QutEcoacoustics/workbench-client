@@ -1,4 +1,4 @@
-<div class="login-form">
+<div class="login-form pb-3">
   <h2 class="text-center" *ngIf="title">{{ title }}</h2>
 
   <!-- Error msg -->
@@ -7,7 +7,7 @@
   </ngb-alert>
 
   <div class="clearfix">
-    <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
+    <form [formGroup]="form" (ngSubmit)="submit(model)">
       <!-- Loading spinner -->
       <div class="d-flex justify-content-center" *ngIf="!fields">
         <div class="spinner-border text-success" role="status">

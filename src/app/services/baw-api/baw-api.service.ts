@@ -96,7 +96,6 @@ export class BawApiService {
       .pipe(retry(0))
       .subscribe(
         data => {
-          console.debug("Data", data);
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
             this.authToken = data.data.auth_token;
             this._username = data.data.user_name;
@@ -124,7 +123,6 @@ export class BawApiService {
           }
         },
         error => {
-          console.debug("Error", error);
           if (error.error.meta.error.details) {
             subject.next(error.error.meta.error.details);
           } else {
