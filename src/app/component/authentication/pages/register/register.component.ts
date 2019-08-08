@@ -1,8 +1,4 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable } from "rxjs";
 
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
@@ -19,13 +15,19 @@ import { securityCategory } from "../../authentication";
 })
 @Component({
   selector: "app-authentication-register",
-  templateUrl: "./register.component.html",
-  styleUrls: ["./register.component.scss"]
+  template: `
+    <app-form
+      [schema]="schemaUrl"
+      [title]="'Register'"
+      [error]="error"
+      (onSubmit)="submit($event)"
+    ></app-form>
+  `
 })
 export class RegisterComponent extends PageComponent implements OnInit {
   schemaUrl = "assets/templates/register.json";
 
-  constructor(private http: HttpClient) {
+  constructor() {
     super();
   }
 

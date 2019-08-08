@@ -34,8 +34,14 @@ import { ResetPasswordComponent } from "../reset-password/reset-password.compone
 })
 @Component({
   selector: "app-authentication-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"]
+  template: `
+    <app-form
+      [schema]="schemaUrl"
+      [title]="'Log in'"
+      [error]="error"
+      (onSubmit)="submit($event)"
+    ></app-form>
+  `
 })
 export class LoginComponent extends PageComponent implements OnInit {
   schemaUrl = "assets/templates/login.json";

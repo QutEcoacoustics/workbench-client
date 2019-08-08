@@ -1,8 +1,4 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable } from "rxjs";
 
 import { Page, PageComponent } from "src/app/interfaces/PageInfo";
 import { securityCategory } from "../../authentication";
@@ -18,30 +14,25 @@ import { securityCategory } from "../../authentication";
 })
 @Component({
   selector: "app-confirm-account",
-  templateUrl: "./confirm-account.component.html",
-  styleUrls: ["./confirm-account.component.scss"]
+  template: `
+    <app-form
+      [schema]="schemaUrl"
+      [title]="'Resend confirmation instructions?'"
+      [submitLabel]="'Resend confirmation instructions'"
+      [error]="error"
+      (onSubmit)="submit($event)"
+    ></app-form>
+  `
 })
 export class ConfirmPasswordComponent extends PageComponent implements OnInit {
-  private formSchemaUrl = "assets/templates/confirm-account.json";
-  form: FormGroup;
-  model: {};
-  fields: FormlyFieldConfig[];
+  schemaUrl = "assets/templates/confirm-account.json";
+  error: string;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     super();
   }
 
-  ngOnInit() {
-    this.form = new FormGroup({});
-    this.getJSON().subscribe(data => {
-      this.model = data.model;
-      this.fields = data.fields;
-    });
-  }
-
-  getJSON(): Observable<any> {
-    return this.http.get(this.formSchemaUrl);
-  }
+  ngOnInit() {}
 
   submit(model) {
     console.log(model);
