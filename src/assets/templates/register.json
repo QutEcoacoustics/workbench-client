@@ -50,6 +50,9 @@
             "label": "Password Confirmation",
             "minLength": 6,
             "required": true
+          },
+          "expressionProperties": {
+            "templateOptions.disabled": "!model.password"
           }
         }
       ]

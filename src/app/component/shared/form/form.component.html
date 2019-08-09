@@ -24,7 +24,11 @@
 
       <!-- Right aligned submit button -->
       <div class="clearfix">
-        <button type="submit" class="btn btn-success float-right">
+        <button
+          type="submit"
+          class="btn btn-success float-right"
+          [disabled]="!fields || submitLoading"
+        >
           {{ submitLabel || title }}
         </button>
       </div>

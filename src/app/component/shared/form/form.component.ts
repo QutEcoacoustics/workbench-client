@@ -12,6 +12,7 @@ export class FormComponent implements OnInit {
   @Input() schema: string;
   @Input() title?: string;
   @Input() submitLabel: string;
+  @Input() submitLoading: boolean;
   @Input() error?: string;
 
   // Rename is required to stop formly from hijacking the variable
@@ -25,6 +26,7 @@ export class FormComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    this.submitLoading = false;
     this.form = new FormGroup({});
     this.http.get(this.schema).subscribe((data: any) => {
       /**

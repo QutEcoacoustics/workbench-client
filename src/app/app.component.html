@@ -1,5 +1,6 @@
 <div class="app">
   <app-header></app-header>
+  <ngx-loading-bar [value]="(delayedProgress$ | async) || 0"></ngx-loading-bar>
   <div class="content">
     <ng-container *ngIf="menuLayout; else fullPage">
       <div class="container p-0">

@@ -5,7 +5,7 @@ import {
   AnyMenuItem,
   LabelAndIcon
 } from "src/app/interfaces/layout-menus.interfaces";
-import { PageInfo } from "src/app/interfaces/PageInfo";
+import { PageInfo } from "src/app/interfaces/page.decorator";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({

@@ -2,7 +2,7 @@ import { Type } from "@angular/core";
 import { Route, Router, Routes } from "@angular/router";
 import { ActionMenuComponent } from "../component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "../component/shared/secondary-menu/secondary-menu.component";
-import { isPageInfo, PageComponentStatic, PageInfo } from "./PageInfo";
+import { isPageInfo, PageComponentStatic, PageInfo } from "./page.decorator";
 
 /**
  * Get the page info interface of an angular component

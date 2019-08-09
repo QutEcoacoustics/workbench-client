@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/Page";
+import { LoadingBarService } from "@ngx-loading-bar/core";
+import { delay, map, withLatestFrom } from "rxjs/operators";
+import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/page.interfaces";
 
 @Component({
   selector: "app-root",
@@ -10,7 +12,11 @@ import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/Page";
 export class AppComponent {
   menuLayout: boolean;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    public loader: LoadingBarService
+  ) {
     this.menuLayout = true;
 
     // Update page info component routes
@@ -45,4 +51,13 @@ export class AppComponent {
       }
     });
   }
+
+  /**
+   * Delay showing loading bar
+   */
+  delayedProgress$ = this.loader.progress$.pipe(
+    delay(3000),
+    withLatestFrom(this.loader.progress$),
+    map(v => v[1])
+  );
 }

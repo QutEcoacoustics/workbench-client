@@ -123,8 +123,9 @@ export class BawApiService {
           }
         },
         error => {
-          if (error.error.meta.error.details) {
-            subject.next(error.error.meta.error.details);
+          const data: ErrorResponse = error.error;
+          if (data.meta.error.details) {
+            subject.next(data.meta.error.details);
           } else {
             console.error("Unknown error thrown by login rest api");
             console.error(error);
@@ -180,6 +181,16 @@ export class BawApiService {
     // return an observable with a user-facing error message
     return throwError("Something bad happened; please try again later.");
   }
+}
+
+interface ErrorResponse {
+  meta: {
+    status: number;
+    message: string;
+    error: {
+      details: string;
+    };
+  };
 }
 
 /**

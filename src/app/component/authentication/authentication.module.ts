@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { Router, RouterModule, Routes } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 
-import { GetRoutesForPages } from "src/app/interfaces/Page";
+import { GetRoutesForPages } from "src/app/interfaces/page.interfaces";
 import { securityCategory } from "./authentication";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
 import { LoginComponent } from "./pages/login/login.component";
