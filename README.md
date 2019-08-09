@@ -1,6 +1,6 @@
 # Baw Client
 
-The Angular 8 client for the bioacoustic workbench
+The Angular 8 client for the ecoacoustic workbench
 
 ## Install instructions
 
@@ -54,7 +54,7 @@ This will run the entire test suite in both Mozilla Firefox and Google Chrome br
 To build the application in production mode:
 
 ```bash
-$ npm run build:prod
+$ npm run build
 ```
 
 Move the generated files from the `/dist` directory to the required location.
@@ -64,11 +64,11 @@ Move the generated files from the `/dist` directory to the required location.
 There are three environments supported by this application.
 
 - Development: Building the application with debugging tools
-  - `npm run build`
+  - `$ npm run build:dev`
 - Staging: Building the latest changes in production mode for testing before release
-  - `npm run build:staging`
+  - `$ npm run build:staging`
 - Production: Building the latest changes in production mode for release
-  - `npm run build:prod`
+  - `$ npm run build`
 
 ## Licence
 

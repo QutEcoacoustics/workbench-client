@@ -29,11 +29,32 @@
           },
           "configurations": {
             "fr": {
-              "aot": true,
-              "outputPath": "dist/under-construction-fr/",
+              "outputPath": "dist/angular-testbench-fr/",
               "i18nFile": "src/locale/messages.fr.xlf",
               "i18nLocale": "fr",
-              "i18nMissingTranslation": "error"
+              "i18nMissingTranslation": "error",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             },
             "production": {
               "fileReplacements": [

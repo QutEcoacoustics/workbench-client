@@ -9,7 +9,7 @@ export const HomeComponents = [HomeComponent];
 const homeRoute = homeCategory.route;
 const routes: Routes = [
   {
-    path: homeRoute as string,
+    path: homeRoute,
     component: HomeComponent
   }
 ];

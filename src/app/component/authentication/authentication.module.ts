@@ -21,7 +21,7 @@ export const AuthenticationComponents = [
 const authenticationRoute = securityCategory.route;
 const routes: Routes = [
   {
-    path: authenticationRoute as string,
+    path: authenticationRoute,
     children: GetRoutesForPages(AuthenticationComponents)
   }
 ];
