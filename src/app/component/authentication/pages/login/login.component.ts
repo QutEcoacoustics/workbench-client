@@ -4,7 +4,7 @@ import { List } from "immutable";
 
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { BawApiService } from "src/app/services/baw-api/baw-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { securityCategory } from "../../authentication";
 import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
@@ -44,7 +44,7 @@ export class LoginComponent extends PageComponent implements OnInit {
   error: string;
   loading: boolean;
 
-  constructor(private api: BawApiService, private router: Router) {
+  constructor(private api: SecurityService, private router: Router) {
     super();
   }
 

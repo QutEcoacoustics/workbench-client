@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 
-import { BawApiService } from "./baw-api.service";
+import { BawApiService } from "./base-api.service";
 
 describe("BawApiService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));

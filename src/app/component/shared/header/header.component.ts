@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { PageInfoInterface } from "src/app/interfaces/layout-menus.interfaces";
-import { BawApiService } from "src/app/services/baw-api/baw-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "../../authentication/pages/login/login.component";
 import { RegisterComponent } from "../../authentication/pages/register/register.component";
 import { HomeComponent } from "../../home/home.component";
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
     register: PageInfoInterface;
   };
 
-  constructor(private router: Router, private api: BawApiService) {}
+  constructor(private router: Router, private api: SecurityService) {}
 
   ngOnInit() {
     this.collapsed = true;

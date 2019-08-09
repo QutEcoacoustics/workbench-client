@@ -17,7 +17,7 @@ import { HomeModule } from "./component/home/home.module";
 import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
 import { SharedModule } from "./component/shared/shared.module";
 
-import { BawApiService } from "./services/baw-api/baw-api.service";
+import { BawApiService } from "./services/baw-api/base-api.service";
 
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./component/home/home.component";

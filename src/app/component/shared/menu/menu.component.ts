@@ -13,7 +13,7 @@ import {
   LabelAndIcon,
   User
 } from "src/app/interfaces/layout-menus.interfaces";
-import { BawApiService } from "src/app/services/baw-api/baw-api.service";
+import { BawApiService } from "src/app/services/baw-api/base-api.service";
 
 @Component({
   selector: "app-menu",
