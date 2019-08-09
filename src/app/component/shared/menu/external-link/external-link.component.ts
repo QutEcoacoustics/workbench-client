@@ -8,6 +8,7 @@ import { MenuLink } from "src/app/interfaces/layout-menus.interfaces";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuExternalLinkComponent {
+  @Input() id: string;
   @Input() link: MenuLink;
   @Input() placement: "left" | "right";
 

@@ -58,22 +58,22 @@ export class AppModule {
   }
 }
 
-function minLengthValidationMessage(err, field) {
+export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${
     field.templateOptions.minLength
   } characters`;
 }
 
-function maxLengthValidationMessage(err, field) {
+export function maxLengthValidationMessage(err, field) {
   return `This value should be less than ${
     field.templateOptions.maxLength
   } characters`;
 }
 
-function minValidationMessage(err, field) {
+export function minValidationMessage(err, field) {
   return `This value should be more than ${field.templateOptions.min}`;
 }
 
-function maxValidationMessage(err, field) {
+export function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }

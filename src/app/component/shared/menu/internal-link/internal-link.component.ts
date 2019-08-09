@@ -8,6 +8,7 @@ import { MenuRoute } from "src/app/interfaces/layout-menus.interfaces";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuInternalLinkComponent {
+  @Input() id: string;
   @Input() link: MenuRoute;
   @Input() placement: "left" | "right";
 

@@ -18,17 +18,26 @@
     >
       <ng-container *ngIf="isAction(link); else elseLink">
         <app-menu-button
+          [id]="menuType + '-tooltip-' + i"
           [link]="link"
           [placement]="placement"
         ></app-menu-button>
       </ng-container>
       <ng-template #elseLink>
         <ng-container *ngIf="isInternalLink(link); else elseExternalLink">
-          <app-menu-internal-link [link]="link" [placement]="placement">
+          <app-menu-internal-link
+            [id]="menuType + '-tooltip-' + i"
+            [link]="link"
+            [placement]="placement"
+          >
           </app-menu-internal-link>
         </ng-container>
         <ng-template #elseExternalLink>
-          <app-menu-external-link [link]="link" [placement]="placement">
+          <app-menu-external-link
+            [id]="menuType + '-tooltip-' + i"
+            [link]="link"
+            [placement]="placement"
+          >
           </app-menu-external-link>
         </ng-template>
       </ng-template>

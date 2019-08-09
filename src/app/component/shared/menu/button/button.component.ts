@@ -8,6 +8,7 @@ import { MenuAction } from "src/app/interfaces/layout-menus.interfaces";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuButtonComponent {
+  @Input() id: string;
   @Input() link: MenuAction;
   @Input() placement: "left" | "right";
 
