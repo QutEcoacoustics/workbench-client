@@ -1,27 +1,75 @@
-# AngularTestbench
+# Baw Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.1.0.
+The Angular 8 client for the bioacoustic workbench
 
-## Development server
+## Install instructions
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Requirements
 
-## Code scaffolding
+- Node v12.8.0 or greater
+- NPM v6.10.0 or greater
+- Google Chrome
+- Mozilla Firefox
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Installation
 
-## Build
+To install project dependencies run:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+$ npm install
+```
 
-## Running unit tests
+## To develop:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+$ npm start
+```
 
-## Running end-to-end tests
+Then open a web browser to `localhost:4200`.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+### Testing
 
-## Further help
+#### End to End Testing
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To run the application end to end test suite:
+
+```bash
+$ npm run e2e
+```
+
+This will run the entire test suite in both Mozilla Firefox and Google Chrome browsers. End to end tests are used to determine if an application is working across multiple user actions over multiple pages.
+
+#### Unit tests
+
+To run the application unit test suite:
+
+```bash
+$ npm test
+```
+
+This will run the entire test suite in both Mozilla Firefox and Google Chrome browsers. Unit tests are used to determine if singular segments of the application are functioning correctly.
+
+## To build
+
+To build the application in production mode:
+
+```bash
+$ npm run build:prod
+```
+
+Move the generated files from the `/dist` directory to the required location.
+
+### Environments
+
+There are three environments supported by this application.
+
+- Development: Building the application with debugging tools
+  - `npm run build`
+- Staging: Building the latest changes in production mode for testing before release
+  - `npm run build:staging`
+- Production: Building the latest changes in production mode for release
+  - `npm run build:prod`
+
+## Licence
+
+MIT License
