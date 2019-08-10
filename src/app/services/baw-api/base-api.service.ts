@@ -4,7 +4,7 @@ import {
   HttpHeaders
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**
@@ -69,7 +69,6 @@ export class BawApiService {
    * Get the header options for a http request
    */
   protected getHeaderOptions() {
-    // TODO Read this from the session cookie provided by ruby
     const authToken = this.getSessionToken();
     let options = {
       headers: new HttpHeaders({

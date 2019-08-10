@@ -51,7 +51,6 @@ export class HeaderComponent implements OnInit {
     }
 
     this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      console.debug("Header Component Logged in state: ", loggedIn);
       this.username = loggedIn ? this.api.user.username : null;
       this.ref.detectChanges();
     });

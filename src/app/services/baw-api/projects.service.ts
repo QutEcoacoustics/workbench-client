@@ -57,12 +57,17 @@ export class ProjectsService extends BawApiService {
       );
   }
 
+  /**
+   * Get list of filtered projects available to the user
+   * @returns Observable list of projects
+   */
   getFilteredList(options: {
     direction?: "asc" | "desc";
     items?: number;
     orderBy?: "id" | "name" | "description" | "creator_id";
     page?: number;
   }): Observable<Projects | string> {
+    // Convert JS labels to JSON labels
     const filters = {
       direction: options.direction,
       items: options.items,
