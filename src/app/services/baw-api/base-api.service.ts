@@ -23,6 +23,7 @@ export class BawApiService {
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401
   };
+  // TODO Change this to only store a User data type
   protected SESSION_STORAGE = {
     authToken: "authToken",
     username: "username",
@@ -176,11 +177,13 @@ export interface MetaError {
  * Api error response
  */
 export interface ErrorResponse {
-  meta: {
-    status: number;
-    message: string;
-    error: {
-      details: string;
+  error: {
+    meta: {
+      status: number;
+      message: string;
+      error: {
+        details: string;
+      };
     };
   };
 }

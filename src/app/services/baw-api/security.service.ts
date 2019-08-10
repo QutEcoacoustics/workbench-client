@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { retry } from "rxjs/operators";
+import { map, retry } from "rxjs/operators";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
 
@@ -57,17 +57,20 @@ export class SecurityService extends BawApiService {
         details,
         this.getHeaderOptions()
       )
-      .pipe(retry(0))
+      .pipe(
+        retry(0),
+        map(data => this.convertJsonToJS(data))
+      )
       .subscribe(
-        data => {
+        (data: AuthenticationLogin) => {
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            this.setSessionToken(data.data.auth_token);
+            this.setSessionToken(data.data.authToken);
 
             // TODO Read id and role from api
             this.setSessionUser({
               id: 12345,
               role: "User",
-              username: data.data.user_name
+              username: data.data.userName
             });
 
             // Trigger login trackers
@@ -84,13 +87,13 @@ export class SecurityService extends BawApiService {
             this.loggedInTrigger.next(false);
           }
         },
-        error => {
-          const data: ErrorResponse = error.error;
+        (err: ErrorResponse) => {
+          const data = err.error;
           if (data.meta.error.details) {
             subject.next(data.meta.error.details);
           } else {
             console.error("Unknown error thrown by login rest api");
-            console.error(error);
+            console.error(err);
             subject.next(
               "An unknown error has occurred. Please refresh the browser or try again at a later date."
             );
@@ -155,8 +158,8 @@ interface AuthenticationLogin {
     status: number;
   };
   data: {
-    auth_token: string;
+    authToken: string;
     message: string;
-    user_name: string;
+    userName: string;
   };
 }

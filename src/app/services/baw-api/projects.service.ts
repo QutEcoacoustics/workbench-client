@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { catchError, retry } from "rxjs/operators";
+import { catchError, map, retry } from "rxjs/operators";
 import { BawApiService, MetaError, Paths } from "./base-api.service";
 
 /**
@@ -37,6 +37,7 @@ export class ProjectsService extends BawApiService {
       )
       .pipe(
         retry(3),
+        map(data => this.convertJsonToJS(data)),
         catchError(this.handleError)
       );
   }
@@ -53,6 +54,7 @@ export class ProjectsService extends BawApiService {
       )
       .pipe(
         retry(3),
+        map(data => this.convertJsonToJS(data)),
         catchError(this.handleError)
       );
   }
@@ -66,9 +68,7 @@ export class ProjectsService extends BawApiService {
     items?: number;
     orderBy?: "id" | "name" | "description" | "creatorId";
     page?: number;
-  }): Observable<Projects | string> {
-    console.debug(this.convertJSToJson(filters));
-
+  }): Observable<Projects> {
     return this.http
       .get<Projects>(
         this.getPath(this.paths.projects.list, {
@@ -78,6 +78,7 @@ export class ProjectsService extends BawApiService {
       )
       .pipe(
         retry(3),
+        map(data => this.convertJsonToJS(data)),
         catchError(this.handleError)
       );
   }
