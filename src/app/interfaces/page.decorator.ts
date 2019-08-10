@@ -24,7 +24,7 @@ export interface PageComponentInterface {
 /**
  * Page info class
  */
-export class PageInfo implements PageInfoInterface, MenuRoute {
+export class PageInfo implements PageInfoInterface {
   // discriminated union tag
   kind: "MenuRoute";
 

@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { List } from "immutable";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import {
+  Projects,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { Card } from "../shared/cards/cards.component";
 
 export const homeCategory: Category = {
@@ -27,14 +31,18 @@ export const homeCategory: Category = {
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent implements OnInit {
+export class HomeComponent extends PageComponent implements OnInit, OnChanges {
   processList: List<Card>;
-  projectList: List<Card>;
+  projectList: List<Card> = List([]);
   postList: List<Card>;
   testing: string;
 
-  constructor() {
+  constructor(private api: ProjectsService) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.updateProjectList();
   }
 
   ngOnInit() {
@@ -56,38 +64,31 @@ export class HomeComponent extends PageComponent implements OnInit {
           "Ecologists use these to answer environmental questions."
       }
     ]);
-    this.projectList = List([
-      {
-        title: "Lorem ipsum",
-        image: {
-          url:
-            "https://www.ecosounds.org/system/projects/images/000/001/094/span3/5616960887_cf01ca55d2_b.jpg?1516664306",
-          alt: "Lorem ipsum"
-        },
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ",
-        link: "https://www.ecosounds.org/projects/1094"
-      },
-      {
-        title: "Lorem ipsum",
-        image: {
-          url:
-            "https://www.ecosounds.org/system/projects/images/000/001/007/span3/IMG_20140529_111723_1_.jpg?1401329277",
-          alt: "Oxley Creek Common"
-        },
-        link: "https://www.ecosounds.org/projects/1007"
-      },
-      {
-        title: "Lorem ipsum",
-        image: {
-          url:
-            "https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
-          alt: "Lorem ipsum"
-        },
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ",
-        link: "https://www.ecosounds.org/projects/1029"
-      }
-    ]);
+
+    this.updateProjectList();
+  }
+
+  /**
+   * Update project list array
+   */
+  updateProjectList() {
+    this.api.getFilteredList({ items: 3 }).subscribe({
+      next: (data: Projects) =>
+        (this.projectList = List(
+          data.data.map(project => {
+            return {
+              title: project.name,
+              image: {
+                url:
+                  "https://staging.ecosounds.org/images/project/project_span3.png",
+                alt: project.name
+              },
+              link: "https://staging.ecosounds.org/projects/" + project.id
+            };
+          })
+        )),
+      complete: () => console.log("complete"),
+      error: err => console.error("Error: ", err)
+    });
   }
 }

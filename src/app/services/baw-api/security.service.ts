@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { retry } from "rxjs/operators";
+import { User } from "src/app/interfaces/layout-menus.interfaces";
 import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
 
 /**
@@ -43,28 +44,20 @@ export class SecurityService extends BawApiService {
       .post<AuthenticationLogin>(
         this.getPath(this.paths.security.signIn),
         details,
-        this.httpOptions
+        this.getHeaderOptions()
       )
       .pipe(retry(0))
       .subscribe(
         data => {
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            this.authToken = data.data.auth_token;
-            this._username = data.data.user_name;
-            this.httpOptions = {
-              headers: this.httpOptions.headers.append(
-                "Authorization",
-                `Token token="${this.authToken}"`
-              )
-            };
-            sessionStorage.setItem(
-              this.SESSION_STORAGE.auth_token,
-              this.authToken
-            );
-            sessionStorage.setItem(
-              this.SESSION_STORAGE.user_name,
-              this._username
-            );
+            this.setSessionToken(data.data.auth_token);
+
+            // TODO Read id and role from api
+            this.setSessionUser({
+              id: 12345,
+              role: "User",
+              username: data.data.user_name
+            });
             subject.next(true);
           } else {
             console.error("Unknown error thrown by login rest api");
@@ -99,10 +92,34 @@ export class SecurityService extends BawApiService {
       return;
     }
 
-    this.authToken = null;
-    this._username = null;
-    sessionStorage.removeItem(this.SESSION_STORAGE.auth_token);
-    sessionStorage.removeItem(this.SESSION_STORAGE.user_name);
+    this.clearSessionStorage();
+  }
+
+  /**
+   * Add user token to the session storage
+   * @param token User token
+   */
+  private setSessionToken(token: string) {
+    sessionStorage.setItem(this.SESSION_STORAGE.authToken, token);
+  }
+
+  /**
+   * Add user details to the session storage
+   * @param user User details
+   */
+  private setSessionUser(user: User) {
+    for (const key in user) {
+      sessionStorage.setItem(this.SESSION_STORAGE[key], user[key]);
+    }
+  }
+
+  /**
+   * Clear session storage
+   */
+  private clearSessionStorage() {
+    for (const key in this.SESSION_STORAGE) {
+      sessionStorage.removeItem(this.SESSION_STORAGE[key]);
+    }
   }
 }
 

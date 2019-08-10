@@ -99,5 +99,6 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.api.logout();
     this.checkAuthenticated();
+    this.router.navigateByUrl(this.routes.home.route);
   }
 }

@@ -1,4 +1,4 @@
-import { Data, Route } from "@angular/router";
+import { Data } from "@angular/router";
 import { List } from "immutable";
 
 /**
@@ -202,6 +202,8 @@ export interface Menus {
  * This stores information required to generate the various menus of the page.
  * Also stores metadata about the page, like the icon to use, and the route
  * for that page.
+ * @extends MenuItem
+ * @extends Data
  */
 export interface PageInfoInterface extends Data, MenuItem {
   routeFragment: RouteFragment;

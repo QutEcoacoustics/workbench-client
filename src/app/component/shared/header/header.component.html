@@ -1,7 +1,11 @@
 <nav class="container-fluid navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
     <!-- Brand Logo -->
-    <a class="navbar-brand" routerLink="/" routerLinkActive="active">
+    <a
+      class="navbar-brand"
+      routerLink="{{ routes.home.route }}"
+      routerLinkActive="active"
+    >
       {{ title }}
     </a>
 
@@ -102,14 +106,9 @@
           <span class="sr-only" *ngIf="isActive('Profile')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
-          <a
-            class="nav-link"
-            (click)="logout()"
-            routerLink="/"
-            routerLinkActive="active"
-          >
+          <button class="nav-link btn" (click)="logout()">
             Logout
-          </a>
+          </button>
           <span class="sr-only" *ngIf="isActive('Logout')">(current)</span>
         </li>
       </ul>
