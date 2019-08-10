@@ -23,16 +23,12 @@ export class BawApiService {
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401
   };
-  // TODO Change this to only store a User data type
   protected SESSION_STORAGE = {
-    authToken: "authToken",
-    username: "username",
-    id: "id",
-    role: "role"
+    user: "user"
   };
 
   isLoggedIn(): boolean {
-    return !!this.getSessionToken();
+    return !!this.getSessionUser();
   }
 
   /**
@@ -46,32 +42,23 @@ export class BawApiService {
    * Retrieve user details from session cookie. Null if no user exists.
    */
   protected getSessionUser(): User | null {
-    if (this.getSessionToken()) {
-      return {
-        username: sessionStorage.getItem(this.SESSION_STORAGE.username),
-        id: parseInt(sessionStorage.getItem(this.SESSION_STORAGE.id), 10),
-        role:
-          sessionStorage.getItem(this.SESSION_STORAGE.role) === "Admin"
-            ? "Admin"
-            : "User"
-      };
-    } else {
-      return null;
+    let user: User;
+    try {
+      user = JSON.parse(
+        sessionStorage.getItem(this.SESSION_STORAGE.user)
+      ) as User;
+    } catch (Exception) {
+      user = null;
     }
-  }
 
-  /**
-   * Retrieve session token. Null is no user exists
-   */
-  protected getSessionToken(): string | null {
-    return sessionStorage.getItem(this.SESSION_STORAGE.authToken);
+    return user;
   }
 
   /**
    * Get the header options for a http request
    */
   protected getHeaderOptions() {
-    const authToken = this.getSessionToken();
+    const user = this.getSessionUser();
     let options = {
       headers: new HttpHeaders({
         Accept: "application/json",
@@ -80,11 +67,11 @@ export class BawApiService {
     };
 
     // Add token if it exists
-    if (authToken) {
+    if (user) {
       options = {
         headers: options.headers.append(
           "Authorization",
-          `Token token="${authToken}"`
+          `Token token="${user.authToken}"`
         )
       };
     }

@@ -18,7 +18,7 @@ export class SecurityService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
-    this.loggedInTrigger.next(!!this.getSessionToken());
+    this.loggedInTrigger.next(this.isLoggedIn());
 
     this.paths = {
       security: {
@@ -64,12 +64,11 @@ export class SecurityService extends BawApiService {
       .subscribe(
         (data: AuthenticationLogin) => {
           if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            this.setSessionToken(data.data.authToken);
-
             // TODO Read id and role from api
             this.setSessionUser({
               id: 12345,
               role: "User",
+              authToken: data.data.authToken,
               username: data.data.userName
             });
 
@@ -122,21 +121,11 @@ export class SecurityService extends BawApiService {
   }
 
   /**
-   * Add user token to the session storage
-   * @param token User token
-   */
-  private setSessionToken(token: string) {
-    sessionStorage.setItem(this.SESSION_STORAGE.authToken, token);
-  }
-
-  /**
    * Add user details to the session storage
    * @param user User details
    */
   private setSessionUser(user: User) {
-    for (const key in user) {
-      sessionStorage.setItem(this.SESSION_STORAGE[key], user[key]);
-    }
+    sessionStorage.setItem(this.SESSION_STORAGE.user, JSON.stringify(user));
   }
 
   /**

@@ -25,6 +25,7 @@ export type Icon = [string, string] | readonly [string, string];
  * A user model.
  */
 export interface User {
+  authToken: string;
   username: string;
   id: number;
   role: "Admin" | "User";
