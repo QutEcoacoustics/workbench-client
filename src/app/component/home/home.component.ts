@@ -1,11 +1,13 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { Subscription } from "rxjs";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import {
   Projects,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { Card } from "../shared/cards/cards.component";
 
 export const homeCategory: Category = {
@@ -31,18 +33,19 @@ export const homeCategory: Category = {
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent implements OnInit, OnChanges {
+export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   processList: List<Card>;
   projectList: List<Card> = List([]);
   postList: List<Card>;
   testing: string;
+  loggedInSubscription: Subscription;
 
-  constructor(private api: ProjectsService) {
+  constructor(
+    private projectsApi: ProjectsService,
+    private securityApi: SecurityService,
+    private ref: ChangeDetectorRef
+  ) {
     super();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.updateProjectList();
   }
 
   ngOnInit() {
@@ -66,15 +69,29 @@ export class HomeComponent extends PageComponent implements OnInit, OnChanges {
     ]);
 
     this.updateProjectList();
+
+    this.loggedInSubscription = this.securityApi
+      .getLoggedInTrigger()
+      .subscribe(loggedIn => {
+        console.debug("Home Component Logged in state: ", loggedIn);
+        this.updateProjectList();
+      });
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from logged in changes after destruction
+    if (this.loggedInSubscription) {
+      this.loggedInSubscription.unsubscribe();
+    }
   }
 
   /**
    * Update project list array
    */
   updateProjectList() {
-    this.api.getFilteredList({ items: 3 }).subscribe({
-      next: (data: Projects) =>
-        (this.projectList = List(
+    this.projectsApi.getFilteredList({ items: 3 }).subscribe({
+      next: (data: Projects) => {
+        this.projectList = List(
           data.data.map(project => {
             return {
               title: project.name,
@@ -86,8 +103,11 @@ export class HomeComponent extends PageComponent implements OnInit, OnChanges {
               link: "https://staging.ecosounds.org/projects/" + project.id
             };
           })
-        )),
-      complete: () => console.log("complete"),
+        );
+      },
+      complete: () => {
+        this.ref.detectChanges();
+      },
       error: err => console.error("Error: ", err)
     });
   }

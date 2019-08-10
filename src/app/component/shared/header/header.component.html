@@ -24,7 +24,7 @@
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav mr-auto">
         <!-- Projects Link -->
-        <li class="nav-item" [ngClass]="{ active: isActive('Projects') }">
+        <li class="nav-item">
           <a
             class="nav-link"
             routerLink="/projects"
@@ -32,12 +32,11 @@
             i18n="Navbar Projects Link|Link to Projects page@@navbarProjects"
           >
             Projects
-            <span class="sr-only" *ngIf="isActive('Projects')">(current)</span>
           </a>
         </li>
 
         <!-- Listen link -->
-        <li class="nav-item" [ngClass]="{ active: isActive('Listen') }">
+        <li class="nav-item">
           <a
             class="nav-link"
             routerLink="/listen"
@@ -46,11 +45,10 @@
           >
             Listen
           </a>
-          <span class="sr-only" *ngIf="isActive('Listen')">(current)</span>
         </li>
 
         <!-- Library link -->
-        <li class="nav-item" [ngClass]="{ active: isActive('Library') }">
+        <li class="nav-item">
           <a
             class="nav-link"
             i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
@@ -59,13 +57,12 @@
           >
             Library
           </a>
-          <span class="sr-only" *ngIf="isActive('Library')">(current)</span>
         </li>
       </ul>
 
       <!-- Right aligned unauthenticated links -->
-      <ul class="navbar-nav" *ngIf="!loggedIn">
-        <li class="nav-item" [ngClass]="{ active: isActive('Register') }">
+      <ul class="navbar-nav" *ngIf="!username">
+        <li class="nav-item">
           <a
             class="nav-link"
             routerLink="{{ routes.register.route }}"
@@ -74,7 +71,6 @@
           >
             {{ routes.register.label }}
           </a>
-          <span class="sr-only" *ngIf="isActive('Register')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
@@ -85,13 +81,12 @@
           >
             {{ routes.login.label }}
           </a>
-          <span class="sr-only" *ngIf="isActive('Login')">(current)</span>
         </li>
       </ul>
 
       <!-- Right aligned authenticated links -->
-      <ul class="navbar-nav" *ngIf="loggedIn">
-        <li class="nav-item" [ngClass]="{ active: isActive('Profile') }">
+      <ul class="navbar-nav" *ngIf="username">
+        <li class="nav-item">
           <a
             class="nav-link login-widget"
             routerLink="/profile"
@@ -103,13 +98,11 @@
               alt="Profile Icon"
             />
           </a>
-          <span class="sr-only" *ngIf="isActive('Profile')">(current)</span>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
           <button class="nav-link btn" (click)="logout()">
             Logout
           </button>
-          <span class="sr-only" *ngIf="isActive('Logout')">(current)</span>
         </li>
       </ul>
     </div>

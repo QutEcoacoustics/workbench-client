@@ -10,7 +10,7 @@ const homeRoute = homeCategory.route;
 const routes: Routes = [
   {
     path: homeRoute,
-    component: HomeComponent
+    redirectTo: ""
   }
 ];
 

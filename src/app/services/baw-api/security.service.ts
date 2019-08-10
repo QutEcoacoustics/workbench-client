@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { retry } from "rxjs/operators";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
@@ -13,9 +13,12 @@ import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
 })
 export class SecurityService extends BawApiService {
   protected paths: Paths;
+  protected loggedInTrigger = new BehaviorSubject<boolean>(false);
 
   constructor(http: HttpClient) {
     super(http);
+
+    this.loggedInTrigger.next(!!this.getSessionToken());
 
     this.paths = {
       security: {
@@ -24,6 +27,13 @@ export class SecurityService extends BawApiService {
         signOut: "/security"
       }
     };
+  }
+
+  /**
+   * Returns an observable which tracks the change in loggedIn status
+   */
+  getLoggedInTrigger(): BehaviorSubject<boolean> {
+    return this.loggedInTrigger;
   }
 
   /**
@@ -36,7 +46,8 @@ export class SecurityService extends BawApiService {
    */
   login(details: any): Observable<boolean | string> {
     const subject = new Subject<boolean | string>();
-    if (this.loggedIn) {
+
+    if (this.isLoggedIn()) {
       subject.next("User already logged in");
     }
 
@@ -58,6 +69,9 @@ export class SecurityService extends BawApiService {
               role: "User",
               username: data.data.user_name
             });
+
+            // Trigger login trackers
+            this.loggedInTrigger.next(true);
             subject.next(true);
           } else {
             console.error("Unknown error thrown by login rest api");
@@ -65,6 +79,9 @@ export class SecurityService extends BawApiService {
             subject.next(
               "An unknown error has occurred. Please refresh the browser or try again at a later date."
             );
+
+            // Trigger login trackers
+            this.loggedInTrigger.next(false);
           }
         },
         error => {
@@ -78,6 +95,9 @@ export class SecurityService extends BawApiService {
               "An unknown error has occurred. Please refresh the browser or try again at a later date."
             );
           }
+
+          // Trigger login trackers
+          this.loggedInTrigger.next(false);
         }
       );
 
@@ -88,11 +108,14 @@ export class SecurityService extends BawApiService {
    * Logout user and clear session storage values
    */
   logout() {
-    if (!this.loggedIn) {
+    if (!this.isLoggedIn()) {
       return;
     }
 
     this.clearSessionStorage();
+
+    // Trigger login trackers
+    this.loggedInTrigger.next(false);
   }
 
   /**

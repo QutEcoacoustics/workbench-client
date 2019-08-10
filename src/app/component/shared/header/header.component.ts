@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { PageInfoInterface } from "src/app/interfaces/layout-menus.interfaces";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -24,17 +24,18 @@ export class HeaderComponent implements OnInit {
     register: PageInfoInterface;
   };
 
-  constructor(private router: Router, private api: SecurityService) {}
+  constructor(
+    private router: Router,
+    private api: SecurityService,
+    private ref: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.loggedIn = false;
 
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
-        this.updateActiveLink(val.url);
-        this.checkAuthenticated();
         this.toggleCollapse(true);
       }
     });
@@ -44,6 +45,16 @@ export class HeaderComponent implements OnInit {
       login: LoginComponent.pageInfo,
       register: RegisterComponent.pageInfo
     };
+
+    if (this.api.isLoggedIn()) {
+      this.username = this.api.user.username;
+    }
+
+    this.api.getLoggedInTrigger().subscribe(loggedIn => {
+      console.debug("Header Component Logged in state: ", loggedIn);
+      this.username = loggedIn ? this.api.user.username : null;
+      this.ref.detectChanges();
+    });
   }
 
   /**
@@ -53,24 +64,6 @@ export class HeaderComponent implements OnInit {
    */
   isActive(link: string): boolean {
     return this.activeLink.toLowerCase() === link.toLowerCase();
-  }
-
-  /**
-   * Update the active link variable using the router url
-   * @param url Router url
-   */
-  updateActiveLink(url: string) {
-    this.activeLink = url.split("/")[1];
-  }
-
-  /**
-   * Check if user is authenticated
-   */
-  checkAuthenticated() {
-    this.loggedIn = this.api.loggedIn;
-    if (this.loggedIn) {
-      this.username = this.api.user.username;
-    }
   }
 
   /**
@@ -98,7 +91,5 @@ export class HeaderComponent implements OnInit {
    */
   logout() {
     this.api.logout();
-    this.checkAuthenticated();
-    this.router.navigateByUrl(this.routes.home.route);
   }
 }

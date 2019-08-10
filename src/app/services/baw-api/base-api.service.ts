@@ -4,7 +4,7 @@ import {
   HttpHeaders
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject, throwError } from "rxjs";
+import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**
@@ -29,11 +29,7 @@ export class BawApiService {
     role: "role"
   };
 
-  /**
-   * Check if user is logged in
-   * TODO Ping API to check token is still valid
-   */
-  get loggedIn() {
+  isLoggedIn(): boolean {
     return !!this.getSessionToken();
   }
 
@@ -128,7 +124,6 @@ export class BawApiService {
       }
     }
 
-    console.debug(this.url + path);
     return this.url + path;
   }
 
