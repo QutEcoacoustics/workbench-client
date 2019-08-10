@@ -5,6 +5,7 @@ import {
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
+import { toCamelCase, toSnakeCase } from "src/app/helpers/case-converter";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**
@@ -124,6 +125,24 @@ export class BawApiService {
     }
 
     return this.url + path;
+  }
+
+  /**
+   * Convert json object to javascript object
+   * @param obj Object to convert
+   */
+  protected convertJsonToJS(obj: any): any {
+    // Convert from snake_case to camelCase
+    return toCamelCase(obj);
+  }
+
+  /**
+   * Convert javascript object to json object
+   * @param obj Object to convert
+   */
+  protected convertJSToJson(obj: any): any {
+    // Convert from camelCase to snake_case
+    return toSnakeCase(obj);
   }
 
   /**

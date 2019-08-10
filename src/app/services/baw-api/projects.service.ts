@@ -61,23 +61,19 @@ export class ProjectsService extends BawApiService {
    * Get list of filtered projects available to the user
    * @returns Observable list of projects
    */
-  getFilteredList(options: {
+  getFilteredList(filters: {
     direction?: "asc" | "desc";
     items?: number;
     orderBy?: "id" | "name" | "description" | "creator_id";
     page?: number;
   }): Observable<Projects | string> {
-    // Convert JS labels to JSON labels
-    const filters = {
-      direction: options.direction,
-      items: options.items,
-      order_by: options.orderBy,
-      page: options.page
-    };
+    console.debug(this.convertJSToJson(filters));
 
     return this.http
       .get<Projects>(
-        this.getPath(this.paths.projects.list, { filters }),
+        this.getPath(this.paths.projects.list, {
+          filters: this.convertJSToJson(filters)
+        }),
         this.getHeaderOptions()
       )
       .pipe(
@@ -94,9 +90,8 @@ export interface ProjectData {
   id: number;
   name: string;
   description: string;
-  creator_id: number;
-  site_ids: number[];
-  description_html: string;
+  creatorId: number;
+  siteIds: number[];
 }
 
 /**
@@ -120,14 +115,14 @@ export interface Projects {
     message: string;
     error?: MetaError;
     sorting: {
-      order_by: string;
+      orderBy: string;
       direction: string;
     };
     paging: {
       page: number;
       items: number;
       total: number;
-      max_page: number;
+      maxPage: number;
       current: string;
       previous: string;
       next: string;

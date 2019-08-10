@@ -24,6 +24,7 @@ const convertCase = (
     typeof oldObject !== "object" ||
     !Object.keys(oldObject).length
   ) {
+    // Change object value
     return oldObject;
   }
 
@@ -33,6 +34,8 @@ const convertCase = (
     );
   } else {
     newObject = {};
+
+    // Change object keys
     Object.keys(oldObject).forEach(oldKey => {
       const newKey = converterFunction(oldKey);
       newObject[newKey] = convertCase(oldObject[oldKey], converterFunction);
@@ -42,9 +45,28 @@ const convertCase = (
   return newObject;
 };
 
+/**
+ * Convert object to camelCase
+ * @param obj Object to convert
+ */
 export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
+
+/**
+ * Convert object to snake_case
+ * @param obj Object to convert
+ */
 export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);
+
+/**
+ * Convert object to kebab-case
+ * @param obj Object to convert
+ */
 export const toKebabCase = (obj: any) => convertCase(obj, kebabCase);
+
+/**
+ * Convert object to PascalCase
+ * @param obj Object to convert
+ */
 export const toPascalCase = (obj: any) =>
   convertCase(
     obj,

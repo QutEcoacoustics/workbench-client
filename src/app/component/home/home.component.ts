@@ -72,7 +72,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
 
     this.loggedInSubscription = this.securityApi
       .getLoggedInTrigger()
-      .subscribe(loggedIn => {
+      .subscribe(() => {
         this.updateProjectList();
       });
   }
