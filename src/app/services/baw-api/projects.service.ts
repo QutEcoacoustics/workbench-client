@@ -64,7 +64,7 @@ export class ProjectsService extends BawApiService {
   getFilteredList(filters: {
     direction?: "asc" | "desc";
     items?: number;
-    orderBy?: "id" | "name" | "description" | "creator_id";
+    orderBy?: "id" | "name" | "description" | "creatorId";
     page?: number;
   }): Observable<Projects | string> {
     console.debug(this.convertJSToJson(filters));

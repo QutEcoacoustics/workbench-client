@@ -3,6 +3,7 @@ import flow from "lodash.flow";
 import kebabCase from "lodash.kebabcase";
 import snakeCase from "lodash.snakecase";
 import upperFirst from "lodash.upperfirst";
+import * as whitelist from "./whitelist.json";
 
 /**
  * Deeply converts keys of an object from one case to another.
@@ -15,7 +16,8 @@ import upperFirst from "lodash.upperfirst";
  */
 const convertCase = (
   oldObject: any,
-  converterFunction: (string?: string) => string
+  converterFunction: (string?: string) => string,
+  convertValue?: boolean
 ): any => {
   let newObject: any;
 
@@ -25,7 +27,7 @@ const convertCase = (
     !Object.keys(oldObject).length
   ) {
     // Change object value
-    return oldObject;
+    return convertValue ? converterFunction(oldObject) : oldObject;
   }
 
   if (Array.isArray(oldObject)) {
@@ -38,7 +40,19 @@ const convertCase = (
     // Change object keys
     Object.keys(oldObject).forEach(oldKey => {
       const newKey = converterFunction(oldKey);
-      newObject[newKey] = convertCase(oldObject[oldKey], converterFunction);
+      let whitelisted = false;
+
+      whitelist.keys.map(key => {
+        if (newKey === key || oldKey === key) {
+          whitelisted = true;
+        }
+      });
+
+      newObject[newKey] = convertCase(
+        oldObject[oldKey],
+        converterFunction,
+        whitelisted
+      );
     });
   }
 
