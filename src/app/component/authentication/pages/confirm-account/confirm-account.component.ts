@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { securityCategory } from "../../authentication";
 import { MakeRoute } from "src/app/interfaces/Routing";
+import { securityCategory } from "../../authentication";
 
 @Page({
   icon: ["fas", "envelope"],
