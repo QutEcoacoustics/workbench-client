@@ -9,8 +9,8 @@ export const HomeComponents = [HomeComponent];
 const homeRoute = homeCategory.route;
 const routes: Routes = [
   {
-    path: homeRoute,
-    redirectTo: ""
+    path: homeRoute.ngStringRoute,
+    component: HomeComponent
   }
 ];
 

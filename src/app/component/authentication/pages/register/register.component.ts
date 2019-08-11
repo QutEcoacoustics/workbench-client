@@ -1,13 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { MakeRoute } from "src/app/interfaces/Routing";
 import { securityCategory } from "../../authentication";
 
 @Page({
   icon: ["fas", "user-plus"],
   label: "Register",
   category: securityCategory,
-  routeFragment: "register",
+  route: MakeRoute("security", "register"),
   tooltip: () => "Create an account",
   predicate: user => !user,
   menus: null,

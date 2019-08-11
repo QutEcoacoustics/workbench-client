@@ -2,14 +2,12 @@ import { Type } from "@angular/core";
 import {
   Category,
   Icon,
-  InternalRoute,
-  MenuRoute,
   Menus,
   Order,
   PageInfoInterface,
-  RouteFragment,
   UserCallback
 } from "./layout-menus.interfaces";
+import { StrongRoute } from "./Routing";
 
 export interface PageComponentStatic
   extends Type<PageComponentInterface>,
@@ -28,8 +26,7 @@ export class PageInfo implements PageInfoInterface {
   // discriminated union tag
   kind: "MenuRoute";
 
-  routeFragment: RouteFragment;
-  route: InternalRoute;
+  route: StrongRoute;
   tooltip: UserCallback<string>;
   predicate: UserCallback<boolean>;
   icon: Icon;
@@ -45,14 +42,6 @@ export class PageInfo implements PageInfoInterface {
     this.kind = "MenuRoute";
     this.component = target;
   }
-}
-
-/**
- * Determine if a component contains pageInfo
- * @param data Component data
- */
-export function isPageInfo(data: any): data is PageInfoInterface {
-  return data.kind === "MenuRoute";
 }
 
 // this mixin is needed because typescript decorators

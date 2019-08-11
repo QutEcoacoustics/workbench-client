@@ -1,15 +1,12 @@
 import { Data } from "@angular/router";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
+import { StrongRoute } from "./Routing";
 
 /**
  * Part of an (a single file/directory) internal angular route
  */
 export type RouteFragment = string;
-
-/**
- * An angular style route string
- */
-export type InternalRoute = string;
 
 /**
  * External URL
@@ -19,7 +16,7 @@ export type Href = string;
 /**
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
  */
-export type Icon = [string, string] | readonly [string, string];
+export type Icon = IconProp;
 
 /**
  * A user model.
@@ -53,7 +50,7 @@ export interface Category extends LabelAndIcon {
   /**
    *  Local route of category Eg. 'security'
    */
-  route: InternalRoute;
+  route: StrongRoute;
 }
 
 /**
@@ -126,9 +123,9 @@ export interface MenuLink extends MenuItem {
 export interface MenuRoute extends MenuItem {
   kind: "MenuRoute";
   /**
-   * The URL or fragment this link points to
+   * The internal route this menu item points to
    */
-  route: InternalRoute;
+  route: StrongRoute;
 }
 
 /**
@@ -207,7 +204,7 @@ export interface Menus {
  * @extends Data
  */
 export interface PageInfoInterface extends Data, MenuItem {
-  routeFragment: RouteFragment;
+  route: StrongRoute;
   category: Category;
   menus: Menus;
   fullscreen?: boolean;

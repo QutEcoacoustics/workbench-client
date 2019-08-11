@@ -2,13 +2,14 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { MakeRoute } from "src/app/interfaces/Routing";
 import { securityCategory } from "../../authentication";
 
 @Page({
   icon: ["fas", "key"],
   label: "Reset password",
   category: securityCategory,
-  routeFragment: "reset_password",
+  route: MakeRoute("security", "reset_password"),
   tooltip: () => "Send an email to reset your password",
   menus: null,
   order: { priority: 2, indentation: 1 }

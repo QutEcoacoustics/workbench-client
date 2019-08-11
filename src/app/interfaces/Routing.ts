@@ -1,28 +1,70 @@
 
+export interface RouteParameter {
+    name: string;
+    default?: any;
+}
 
+function isRouteParameter(fragment: any): fragment is RouteParameter {
+    return "name" in fragment;
+}
 
-// function functionGenerator<T extends string, U = { [K in T]?: string }>(keys: T[]): (p: U) => U {
-//     return (p: U) => p;
-// }
-// function pluck<T, K extends keyof T>(o: T, propertyNames: K[]): T[K][] {
-//     return propertyNames.map(n => o[n]);
-// }
+export type RouteSet = (string | RouteParameter)[];
 
-// const myArray = ["foo", "bar"] as const;
-// type MyArray = typeof myArray[number];
+export class StrongRoute {
+    private fullRoute: string;
+    private parameters: RouteParameter[];
+    private fragments: (string | RouteParameter)[];
 
-// type ArgumentTypes<T> = T extends (... args: infer U ) => infer R ? U: never;
-// function Route<S extends string, T extends S[], K extends T[number], U extends (...args: infer K ? U: never) => string>(keys: T): [U, string] {
-//     return [null, null];
-// }
+    constructor(fragments: RouteSet) {
+        let route = "";
+        const parameters = [];
+        for (let i = 0; i < fragments.length; i++) {
+            const delimiter = i === fragments.length - 2 ? "" : "/";
+            const current = fragments[i];
+            if (isRouteParameter(current)) {
+                route += current.name + delimiter;
+            } else {
+                route += current + delimiter;
+            }
+        }
+        this.fullRoute = route;
+        this.parameters = parameters;
+        this.fragments = fragments;
+    }
 
-// let route = ["a", "b", "c"] as const;
+    format(...args: string[]): string[] {
+        if (args.length !== this.parameters.length) {
+            throw new Error(`Got ${args.length} route arguments but expected ${this.parameters.length}`);
+        }
 
-// // function Route(...components: string[]) {
+        const params = args;
+        const prepareParam = (x: string) => {
+            if (isRouteParameter(x)) {
+                const param = params.shift() || x.default;
+                if (param) {
+                    return param;
+                } else {
+                    throw new Error(`Parameter named ${x.name} was not supplied a value and a default value was not given`);
+                }
+            } else {
+                return x;
+            }
+        };
 
-// // }
-// const testFun = functionGenerator(["a", "b", "c"]);
+        return this.fragments.map(prepareParam);
+    }
 
+    toString(): string {
+        return this.fullRoute;
+    }
 
+    get ngStringRoute() {
+        return this.fullRoute;
+    }
+}
 
-// let [a, b] = Route(route)
+export function MakeRoute(...fragments: RouteSet) {
+    return new StrongRoute(fragments);
+}
+
+export const BaseRoute = new StrongRoute([]);

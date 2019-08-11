@@ -3,6 +3,7 @@ import { List } from "immutable";
 import { Subscription } from "rxjs";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { BaseRoute, MakeRoute } from "src/app/interfaces/Routing";
 import {
   Projects,
   ProjectsService
@@ -13,15 +14,14 @@ import { Card } from "../shared/cards/cards.component";
 export const homeCategory: Category = {
   icon: ["fas", "home"],
   label: "Home",
-  route: "home"
+  route: BaseRoute
 };
 
 @Page({
   icon: ["fas", "home"],
   label: "Home",
   category: homeCategory,
-  routeFragment: "home",
-  route: "/" + homeCategory.route,
+  route: BaseRoute,
   tooltip: () => "Home page",
   predicate: user => !user,
   order: { priority: 1, indentation: 0 },

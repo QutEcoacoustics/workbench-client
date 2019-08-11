@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { delay, map, withLatestFrom } from "rxjs/operators";
-import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/page.interfaces";
 
 @Component({
   selector: "app-root",
@@ -18,9 +17,6 @@ export class AppComponent {
     public loader: LoadingBarService
   ) {
     this.menuLayout = true;
-
-    // Update page info component routes
-    UpdateRouteForPages(this.router);
 
     // Determine whether the currently shown component uses the menu layout or fullscreen
     this.router.events.subscribe(val => {
