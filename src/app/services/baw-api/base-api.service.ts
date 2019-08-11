@@ -1,10 +1,12 @@
 import {
   HttpClient,
   HttpErrorResponse,
-  HttpHeaders
+  HttpHeaders,
+  HttpParams
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { toCamelCase, toSnakeCase } from "src/app/helpers/case-converter";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
@@ -36,6 +38,51 @@ export class BawApiService {
    */
   get user(): User {
     return this.getSessionUser();
+  }
+
+  /**
+   * Constructs a `GET` request
+   * @param path API path
+   */
+  protected get<T>(path: string, args?: PathArg): Observable<T | string> {
+    return this.http
+      .get(this.getPath(path, args), this.getHeaderOptions())
+      .pipe(
+        map(data => this.convertJsonToJS(data)),
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Constructs a `POST` request
+   * @param path API path
+   */
+  protected post<T>(
+    path: string,
+    args?: PathArg,
+    options?: {
+      headers?:
+        | HttpHeaders
+        | {
+            [header: string]: string | string[];
+          };
+      observe?: "body";
+      params?:
+        | HttpParams
+        | {
+            [param: string]: string | string[];
+          };
+      reportProgress?: boolean;
+      responseType?: "json";
+      withCredentials?: boolean;
+    }
+  ): Observable<T | string> {
+    return this.http
+      .post(this.getPath(path, args), options, this.getHeaderOptions())
+      .pipe(
+        map(data => this.convertJsonToJS(data)),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -84,7 +131,7 @@ export class BawApiService {
    * @param path Path fragment
    * @param args Args to modify path fragment
    */
-  protected getPath(path: string, args?: PathArg) {
+  protected getPath(path: string, args?: PathArg): string {
     // If arguments are given
     if (args) {
       // Replace fragment inputs
@@ -100,8 +147,11 @@ export class BawApiService {
         // Append filters to end of path
         path += "?";
 
-        for (const key in args.filters) {
-          const value = args.filters[key];
+        // Convert filter
+        const convertedFilters = this.convertJSToJson(args.filters);
+
+        for (const key in convertedFilters) {
+          const value = convertedFilters[key];
           if (value) {
             path += key + "=" + (value as string) + "&";
           }

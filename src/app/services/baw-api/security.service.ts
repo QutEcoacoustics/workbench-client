@@ -36,6 +36,12 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
+  // TODO Automatically refresh user token using login details
+  ping() {}
+
+  // TODO Register account
+  register() {}
+
   /**
    * Login the user, this function can only be called if user
    * is not logged in. Details are retrieved directly from the
@@ -48,60 +54,55 @@ export class SecurityService extends BawApiService {
     const subject = new Subject<boolean | string>();
 
     if (this.isLoggedIn()) {
-      subject.next("User already logged in");
+      subject.next("You are already logged in, try logging out first.");
     }
 
-    this.http
-      .post<AuthenticationLogin>(
-        this.getPath(this.paths.security.signIn),
-        details,
-        this.getHeaderOptions()
-      )
-      .pipe(
-        retry(0),
-        map(data => this.convertJsonToJS(data))
-      )
-      .subscribe(
-        (data: AuthenticationLogin) => {
-          if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-            // TODO Read id and role from api
-            this.setSessionUser({
-              id: 12345,
-              role: "User",
-              authToken: data.data.authToken,
-              username: data.data.userName
-            });
+    /**
+     * Log unknown error message
+     * @param err Error
+     */
+    function logUnknownError(err: any) {
+      console.error("Unknown error thrown by login rest api");
+      console.error(err);
+      subject.next(
+        "An unknown error has occurred. Please refresh the browser or try again at a later date."
+      );
 
-            // Trigger login trackers
-            this.loggedInTrigger.next(true);
-            subject.next(true);
-          } else {
-            console.error("Unknown error thrown by login rest api");
-            console.error(data);
-            subject.next(
-              "An unknown error has occurred. Please refresh the browser or try again at a later date."
-            );
+      this.loggedInTrigger.next(false);
+    }
 
-            // Trigger login trackers
-            this.loggedInTrigger.next(false);
-          }
-        },
-        (err: ErrorResponse) => {
-          const data = err.error;
-          if (data.meta.error.details) {
-            subject.next(data.meta.error.details);
-          } else {
-            console.error("Unknown error thrown by login rest api");
-            console.error(err);
-            subject.next(
-              "An unknown error has occurred. Please refresh the browser or try again at a later date."
-            );
-          }
+    this.post<AuthenticationLogin>(
+      this.paths.security.signIn,
+      undefined,
+      details
+    ).subscribe(
+      (data: AuthenticationLogin) => {
+        if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+          // TODO Read id and role from api
+          this.setSessionUser({
+            id: 12345,
+            role: "User",
+            authToken: data.data.authToken,
+            username: data.data.userName
+          });
 
           // Trigger login trackers
-          this.loggedInTrigger.next(false);
+          this.loggedInTrigger.next(true);
+          subject.next(true);
+        } else {
+          logUnknownError(data);
         }
-      );
+      },
+      (err: ErrorResponse) => {
+        const data = err.error;
+        if (data.meta.error.details) {
+          subject.next(data.meta.error.details);
+          this.loggedInTrigger.next(false);
+        } else {
+          logUnknownError(err);
+        }
+      }
+    );
 
     return subject.asObservable();
   }

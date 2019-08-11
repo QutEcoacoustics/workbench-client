@@ -30,16 +30,9 @@ export class ProjectsService extends BawApiService {
    * @param id Project ID
    */
   getProject(id: number): Observable<Project | string> {
-    return this.http
-      .get<Project>(
-        this.getPath(this.paths.projects.show, { args: { projectId: id } }),
-        this.getHeaderOptions()
-      )
-      .pipe(
-        retry(3),
-        map(data => this.convertJsonToJS(data)),
-        catchError(this.handleError)
-      );
+    return this.get<Project>(this.paths.projects.show, {
+      args: { projectId: id }
+    });
   }
 
   /**
@@ -47,16 +40,7 @@ export class ProjectsService extends BawApiService {
    * @returns Observable list of projects
    */
   getList(): Observable<Projects | string> {
-    return this.http
-      .get<Projects>(
-        this.getPath(this.paths.projects.list),
-        this.getHeaderOptions()
-      )
-      .pipe(
-        retry(3),
-        map(data => this.convertJsonToJS(data)),
-        catchError(this.handleError)
-      );
+    return this.get<Projects>(this.paths.projects.list);
   }
 
   /**
@@ -68,19 +52,8 @@ export class ProjectsService extends BawApiService {
     items?: number;
     orderBy?: "id" | "name" | "description" | "creatorId";
     page?: number;
-  }): Observable<Projects> {
-    return this.http
-      .get<Projects>(
-        this.getPath(this.paths.projects.list, {
-          filters: this.convertJSToJson(filters)
-        }),
-        this.getHeaderOptions()
-      )
-      .pipe(
-        retry(3),
-        map(data => this.convertJsonToJS(data)),
-        catchError(this.handleError)
-      );
+  }): Observable<Projects | string> {
+    return this.get<Projects>(this.paths.projects.list, { filters });
   }
 }
 
