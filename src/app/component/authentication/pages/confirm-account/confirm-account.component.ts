@@ -1,14 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { MakeRoute } from "src/app/interfaces/Routing";
-import { securityCategory } from "../../authentication";
+import { securityCategory, securityRoute } from "../../authentication";
 
 @Page({
   icon: ["fas", "envelope"],
   label: "Confirm account",
   category: securityCategory,
-  route: MakeRoute("security", "confirmation"),
+  route: securityRoute.add("confirmation"),
   tooltip: () => "Resend the email to confirm your account",
   menus: null,
   order: { priority: 2, indentation: 1 }

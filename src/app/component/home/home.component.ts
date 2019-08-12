@@ -3,7 +3,7 @@ import { List } from "immutable";
 import { Subscription } from "rxjs";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { BaseRoute, MakeRoute } from "src/app/interfaces/Routing";
+import { StrongRoute } from "src/app/interfaces/routing";
 import {
   Projects,
   ProjectsService
@@ -11,17 +11,18 @@ import {
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { Card } from "../shared/cards/cards.component";
 
+export const homeRoute = StrongRoute.Base.add("home", { redirectTo: ""});
 export const homeCategory: Category = {
   icon: ["fas", "home"],
   label: "Home",
-  route: BaseRoute
+  route: homeRoute
 };
 
 @Page({
   icon: ["fas", "home"],
   label: "Home",
   category: homeCategory,
-  route: BaseRoute,
+  route: homeRoute,
   tooltip: () => "Home page",
   predicate: user => !user,
   order: { priority: 1, indentation: 0 },

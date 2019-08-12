@@ -23,9 +23,14 @@ export class AppComponent {
       if (val instanceof NavigationEnd) {
         // Find the primary router component
         let displayComponent = this.route.snapshot.firstChild;
+
         let search = true;
         let count = 0;
         while (search && count < 50) {
+          if (!displayComponent) {
+            return;
+          }
+
           if (!!displayComponent.component) {
             search = false;
           } else {

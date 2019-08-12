@@ -4,9 +4,8 @@ import { List } from "immutable";
 
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { MakeRoute } from "src/app/interfaces/Routing";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { securityCategory } from "../../authentication";
+import { securityCategory, securityRoute } from "../../authentication";
 import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 import { UnlockPasswordComponent } from "../unlock-account/unlock-account.component";
@@ -15,7 +14,7 @@ import { UnlockPasswordComponent } from "../unlock-account/unlock-account.compon
   icon: ["fas", "sign-in-alt"],
   label: "Log in",
   category: securityCategory,
-  route: MakeRoute("security", "login"),
+  route: securityRoute.add("login"),
   tooltip: () => "Log into the website",
   predicate: user => !user,
   order: { priority: 2, indentation: 0 },

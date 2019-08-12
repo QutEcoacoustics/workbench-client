@@ -32,7 +32,6 @@ export class MenuComponent implements OnInit {
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
-  isButton = isButton;
   isAction = isButton;
 
   ngOnInit() {

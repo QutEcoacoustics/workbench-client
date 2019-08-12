@@ -8,13 +8,13 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 
-import { AppRoutingModule } from "src/app/app-routing.module";
+import { AppRoutingModule } from "src/app/appRouting.module";
 
 import { CardsModule } from "./cards/cards.modules";
 import { sharedComponents } from "./shared.components";
 
 @NgModule({
-  declarations: [sharedComponents],
+  declarations: sharedComponents,
   imports: [
     CommonModule,
     AppRoutingModule,

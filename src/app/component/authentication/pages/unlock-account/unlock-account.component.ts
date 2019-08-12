@@ -1,14 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { MakeRoute } from "src/app/interfaces/Routing";
-import { securityCategory } from "../../authentication";
+import { securityCategory, securityRoute } from "../../authentication";
 
 @Page({
   icon: ["fas", "lock-open"],
   label: "Unlock account",
   category: securityCategory,
-  route: MakeRoute("security", "unlock"),
+  route: securityRoute.add("unlock"),
   tooltip: () => "Send an email to unlock your account",
   menus: null,
   order: { priority: 2, indentation: 1 }

@@ -1,7 +1,7 @@
 import { Data } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { StrongRoute } from "./Routing";
+import { StrongRoute } from "./routing";
 
 /**
  * Part of an (a single file/directory) internal angular route

@@ -2,12 +2,13 @@ import { Type } from "@angular/core";
 import {
   Category,
   Icon,
+  MenuRoute,
   Menus,
   Order,
   PageInfoInterface,
   UserCallback
 } from "./layout-menus.interfaces";
-import { StrongRoute } from "./Routing";
+import { StrongRoute } from "./routing";
 
 export interface PageComponentStatic
   extends Type<PageComponentInterface>,
@@ -22,7 +23,7 @@ export interface PageComponentInterface {
 /**
  * Page info class
  */
-export class PageInfo implements PageInfoInterface {
+export class PageInfo implements PageInfoInterface, MenuRoute {
   // discriminated union tag
   kind: "MenuRoute";
 
@@ -41,6 +42,7 @@ export class PageInfo implements PageInfoInterface {
     Object.assign(this, args);
     this.kind = "MenuRoute";
     this.component = target;
+    this.route.pageComponent = target;
   }
 }
 

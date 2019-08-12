@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { Route, Routes } from "@angular/router";
+import { Route } from "@angular/router";
 import { ActionMenuComponent } from "../component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "../component/shared/secondary-menu/secondary-menu.component";
 import { PageComponentStatic, PageInfo } from "./page.decorator";
@@ -13,37 +13,43 @@ export function GetPageInfo(component: Type<any>) {
   return pageComponent ? pageComponent.pageInfo : null;
 }
 
-/**
- * Get pageInfo from each component
- * @param components List of angular component
- * @returns Iterator containing a list of routes
- */
-function* GetRoutes(components: Type<any>[]): IterableIterator<Route> {
-  for (const component of components) {
-    const page = GetPageInfo(component);
-    if (page) {
-      yield* GetRoutesForPage(page);
-    }
-  }
-}
+// /**
+//  * Get pageInfo from each component
+//  * @param components List of angular component
+//  * @returns Iterator containing a list of routes
+//  */
+// function* GetRoutes(components: Type<any>[]): IterableIterator<Route> {
+//   for (const component of components) {
+//     const page = GetPageInfo(component);
+//     if (page) {
+//       yield* GetRoutesForPage(page);
+//     }
+//   }
+// }
 
-/**
- * Iterate through all components and generate a list of routes
- * @param components List of angular components
- * @returns List of routes
- */
-export function GetRoutesForPages(components: Type<any>[]): Route[] {
-  return Array.from(GetRoutes(components));
-}
+// /**
+//  * Iterate through all components and generate a list of routes
+//  * @param components List of angular components
+//  * @returns List of routes
+//  */
+// export function GetRoutesForPages(components: Type<any>[]): Route[] {
+//   return Array.from(GetRoutes(components));
+// }
 
 /**
  * Dynamically create routes for an angular component
  * @param page Angular component page info
  * @returns List of routes
  */
-export function GetRoutesForPage(page: PageInfo): Routes {
-  const route: Route = {
-    path: page.route.ngStringRoute,
+export function GetRouteConfigForPage(component: Type<any>, config: Partial<Route>) {
+
+  const page = GetPageInfo(component);
+
+  if (!page) {
+    return;
+  }
+
+  Object.assign(config, {
     // data is inherited in child routes
     data: page,
     children: [
@@ -61,8 +67,6 @@ export function GetRoutesForPage(page: PageInfo): Routes {
         outlet: "action",
         component: ActionMenuComponent
       }
-    ]
-  };
-
-  return [route];
+    ],
+  });
 }
