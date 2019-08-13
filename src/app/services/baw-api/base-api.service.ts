@@ -29,14 +29,14 @@ export class BawApiService {
     user: "user"
   };
 
-  isLoggedIn(): boolean {
+  public isLoggedIn(): boolean {
     return !!this.getSessionUser();
   }
 
   /**
    * Username of the logged in user
    */
-  get user(): User {
+  public get user(): User | null {
     return this.getSessionUser();
   }
 
@@ -104,7 +104,7 @@ export class BawApiService {
   /**
    * Get the header options for a http request
    */
-  protected getHeaderOptions() {
+  private getHeaderOptions() {
     const user = this.getSessionUser();
     let options = {
       headers: new HttpHeaders({
@@ -131,7 +131,7 @@ export class BawApiService {
    * @param path Path fragment
    * @param args Args to modify path fragment
    */
-  protected getPath(path: string, args?: PathArg): string {
+  private getPath(path: string, args?: PathArg): string {
     // If arguments are given
     if (args) {
       // Replace fragment inputs
@@ -169,7 +169,7 @@ export class BawApiService {
    * Convert json object to javascript object
    * @param obj Object to convert
    */
-  protected convertJsonToJS(obj: any): any {
+  private convertJsonToJS(obj: any): any {
     // Convert from snake_case to camelCase
     return toCamelCase(obj);
   }
@@ -178,7 +178,7 @@ export class BawApiService {
    * Convert javascript object to json object
    * @param obj Object to convert
    */
-  protected convertJSToJson(obj: any): any {
+  private convertJSToJson(obj: any): any {
     // Convert from camelCase to snake_case
     return toSnakeCase(obj);
   }
@@ -188,7 +188,7 @@ export class BawApiService {
    * @param error HTTP Error
    * @throws Observable<never>
    */
-  protected handleError(error: HttpErrorResponse): Observable<string> {
+  private handleError(error: HttpErrorResponse): Observable<string> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error("An error occurred:", error.error.message);
@@ -240,4 +240,39 @@ export interface Paths {
   [key: string]: {
     [key: string]: string;
   };
+}
+
+/**
+ * Default filter for routes
+ */
+export interface Filter {
+  direction?: "asc" | "desc";
+  items?: number;
+  orderBy?: string;
+  page?: number;
+}
+
+/**
+ * List of items from route
+ */
+export interface List {
+  meta: {
+    status: number;
+    message: string;
+    error?: MetaError;
+    sorting: {
+      orderBy: string;
+      direction: string;
+    };
+    paging: {
+      page: number;
+      items: number;
+      total: number;
+      maxPage: number;
+      current: string;
+      previous: string;
+      next: string;
+    };
+  };
+  data: any[];
 }

@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { map, retry } from "rxjs/operators";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
 
@@ -22,7 +21,7 @@ export class SecurityService extends BawApiService {
 
     this.paths = {
       security: {
-        ping: "/security",
+        register: "/security",
         signIn: "/security",
         signOut: "/security"
       }
@@ -36,11 +35,29 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
-  // TODO Automatically refresh user token using login details
-  ping() {}
+  // TODO Register account. Path needs to be checked and inputs ascertained.
+  register(details: any): Observable<boolean | string> {
+    const subject = new Subject<boolean | string>();
 
-  // TODO Register account
-  register() {}
+    if (this.isLoggedIn()) {
+      subject.next("You are already logged in, try logging out first.");
+    }
+
+    this.post<AuthenticationLogin>(
+      this.paths.security.register,
+      undefined,
+      details
+    ).subscribe(
+      (data: AuthenticationLogin) => {
+        this.handleLoginResponse(subject, data);
+      },
+      (err: ErrorResponse) => {
+        this.handleLoginError(subject, err);
+      }
+    );
+
+    return subject.asObservable();
+  }
 
   /**
    * Login the user, this function can only be called if user
@@ -57,54 +74,80 @@ export class SecurityService extends BawApiService {
       subject.next("You are already logged in, try logging out first.");
     }
 
-    /**
-     * Log unknown error message
-     * @param err Error
-     */
-    function logUnknownError(err: any) {
-      console.error("Unknown error thrown by login rest api");
-      console.error(err);
-      subject.next(
-        "An unknown error has occurred. Please refresh the browser or try again at a later date."
-      );
-
-      this.loggedInTrigger.next(false);
-    }
-
     this.post<AuthenticationLogin>(
       this.paths.security.signIn,
       undefined,
       details
     ).subscribe(
       (data: AuthenticationLogin) => {
-        if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-          // TODO Read id and role from api
-          this.setSessionUser({
-            id: 12345,
-            role: "User",
-            authToken: data.data.authToken,
-            username: data.data.userName
-          });
-
-          // Trigger login trackers
-          this.loggedInTrigger.next(true);
-          subject.next(true);
-        } else {
-          logUnknownError(data);
-        }
+        this.handleLoginResponse(subject, data);
       },
       (err: ErrorResponse) => {
-        const data = err.error;
-        if (data.meta.error.details) {
-          subject.next(data.meta.error.details);
-          this.loggedInTrigger.next(false);
-        } else {
-          logUnknownError(err);
-        }
+        this.handleLoginError(subject, err);
       }
     );
 
     return subject.asObservable();
+  }
+
+  /**
+   * Handle failed API response
+   * TODO Check subject is updated in caller
+   * @param subject Observable subject
+   * @param err API response
+   */
+  private handleLoginError(
+    subject: Subject<boolean | string>,
+    err: ErrorResponse
+  ) {
+    const data = err.error;
+    if (data.meta.error.details) {
+      subject.next(data.meta.error.details);
+      this.loggedInTrigger.next(false);
+    } else {
+      this.logUnknownError(subject, err);
+    }
+  }
+
+  /**
+   * Handle successful API response
+   * TODO Check subject is updated in caller
+   * @param subject Observable subject
+   * @param data API response
+   */
+  private handleLoginResponse(
+    subject: Subject<boolean | string>,
+    data: AuthenticationLogin
+  ) {
+    if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+      // TODO Read id and role from api
+      this.setSessionUser({
+        id: 12345,
+        role: "User",
+        authToken: data.data.authToken,
+        username: data.data.userName
+      });
+
+      // Trigger login trackers
+      this.loggedInTrigger.next(true);
+      subject.next(true);
+    } else {
+      this.logUnknownError(subject, data);
+    }
+  }
+
+  /**
+   * Log unknown error message
+   * @param err Error
+   */
+  private logUnknownError(subject: Subject<boolean | string>, err: any) {
+    console.error("Unknown error thrown by login rest api");
+    console.error(err);
+    subject.next(
+      "An unknown error has occurred. Please refresh the browser or try again at a later date."
+    );
+
+    this.loggedInTrigger.next(false);
   }
 
   /**

@@ -8,6 +8,7 @@ import {
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { Card } from "../shared/cards/cards.component";
 
 export const homeCategory: Category = {
@@ -86,7 +87,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
    * Update project list array
    */
   updateProjectList() {
-    this.projectsApi.getFilteredList({ items: 3 }).subscribe({
+    this.projectsApi.getFilteredProjects({ items: 3 }).subscribe({
       next: (data: Projects) => {
         this.projectList = List(
           data.data.map(project => {
