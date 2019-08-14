@@ -26,7 +26,6 @@ export class FormComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.submitLoading = false;
     this.form = new FormGroup({});
     this.http.get(this.schema).subscribe((data: any) => {
       /**

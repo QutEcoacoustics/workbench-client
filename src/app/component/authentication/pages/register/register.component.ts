@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { securityCategory } from "../../authentication";
 
 @Page({
@@ -30,12 +31,22 @@ export class RegisterComponent extends PageComponent implements OnInit {
   error: string;
   loading: boolean;
 
-  constructor() {
+  constructor(private api: SecurityService) {
     super();
   }
 
   ngOnInit() {
-    this.loading = false;
+    this.loading = true;
+
+    this.api.getLoggedInTrigger().subscribe(loggedIn => {
+      if (loggedIn) {
+        this.loading = true;
+        this.error = "You are already logged in";
+      } else {
+        this.loading = false;
+        this.error = null;
+      }
+    });
   }
 
   submit(model) {

@@ -49,7 +49,17 @@ export class LoginComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = false;
+    this.loading = true;
+
+    this.api.getLoggedInTrigger().subscribe(loggedIn => {
+      if (loggedIn) {
+        this.loading = true;
+        this.error = "You are already logged in";
+      } else {
+        this.loading = false;
+        this.error = null;
+      }
+    });
   }
 
   /**
