@@ -61,7 +61,7 @@ export class ProjectsService extends BawApiService {
    */
   getFilteredProjects(filters: ProjectFilter): Subject<Projects> {
     return this.security.onLoginChange<Projects>(
-      this.get<Projects>(this.paths.projects.list, { filters })
+      this.get<Projects>(this.paths.projects.filter, { filters })
     );
   }
 }

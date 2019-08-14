@@ -39,7 +39,7 @@ export class BawApiService {
   /**
    * Username of the logged in user
    */
-  public get user(): User | null {
+  public getUser(): User | null {
     return this.getSessionUser();
   }
 
@@ -91,7 +91,7 @@ export class BawApiService {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  protected getSessionUser(): User | null {
+  private getSessionUser(): User | null {
     let user: User;
     try {
       user = JSON.parse(

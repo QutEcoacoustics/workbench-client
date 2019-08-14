@@ -1,9 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, observable, of, Subject } from "rxjs";
-import { AnonymousSubject } from "rxjs/internal/Subject";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
-import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
+import { BawApiService, Paths } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
