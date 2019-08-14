@@ -47,7 +47,7 @@ export class BawApiService {
    * Constructs a `GET` request
    * @param path API path
    */
-  protected get<T>(path: string, args?: PathArg): Observable<T | string> {
+  protected get<T>(path: string, args?: PathArg): Observable<T> {
     return this.http
       .get(this.getPath(path, args), this.getHeaderOptions())
       .pipe(
@@ -79,7 +79,7 @@ export class BawApiService {
       responseType?: "json";
       withCredentials?: boolean;
     }
-  ): Observable<T | string> {
+  ): Observable<T> {
     return this.http
       .post(this.getPath(path, args), options, this.getHeaderOptions())
       .pipe(

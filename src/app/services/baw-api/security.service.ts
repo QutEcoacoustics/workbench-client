@@ -36,6 +36,25 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
+  /**
+   * Trigger a subject when user login state changes
+   * @param triggerUpdate Observable to trigger on update
+   * @returns Subject which updates on login state change
+   */
+  onLoginChange<T>(triggerUpdate: Observable<T>): Subject<T> {
+    const subject = new Subject<T>();
+
+    // Determine list of projects whenever logged in state changes
+    this.getLoggedInTrigger().subscribe(() => {
+      triggerUpdate.subscribe(
+        data => subject.next(data),
+        err => subject.error(err)
+      );
+    });
+
+    return subject;
+  }
+
   // TODO Register account. Path needs to be checked and inputs ascertained.
   register(details: any): Observable<boolean | string> {
     return this.authenticateUser(this.paths.security.register, details);

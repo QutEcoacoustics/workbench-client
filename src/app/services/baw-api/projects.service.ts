@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Subject } from "rxjs";
 import {
   BawApiService,
   Filter,
@@ -8,6 +8,7 @@ import {
   MetaError,
   Paths
 } from "./base-api.service";
+import { SecurityService } from "./security.service";
 
 /**
  * Interacts with projects route in baw api
@@ -18,7 +19,7 @@ import {
 export class ProjectsService extends BawApiService {
   protected paths: Paths;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private security: SecurityService) {
     super(http);
 
     this.paths = {
@@ -33,20 +34,24 @@ export class ProjectsService extends BawApiService {
   /**
    * Get a project available to the user
    * @param id Project ID
-   * @returns Observable returning singular site
+   * @returns Observable returning singular project
    */
-  getProject(id: number): Observable<Project | string> {
-    return this.get<Project>(this.paths.projects.show, {
-      args: { projectId: id }
-    });
+  getProject(id: number): Subject<Project> {
+    return this.security.onLoginChange<Project>(
+      this.get<Project>(this.paths.projects.show, {
+        args: { projectId: id }
+      })
+    );
   }
 
   /**
    * Get list of projects available to the user
    * @returns Observable list of projects
    */
-  getProjects(): Observable<Projects | string> {
-    return this.get<Projects>(this.paths.projects.list);
+  getProjects(): Subject<Projects> {
+    return this.security.onLoginChange<Projects>(
+      this.get<Projects>(this.paths.projects.list)
+    );
   }
 
   /**
@@ -54,12 +59,14 @@ export class ProjectsService extends BawApiService {
    * @param filters Filters
    * @returns Observable list of projects
    */
-  getFilteredProjects(filters: ProjectFiler): Observable<Projects | string> {
-    return this.get<Projects>(this.paths.projects.list, { filters });
+  getFilteredProjects(filters: ProjectFilter): Subject<Projects> {
+    return this.security.onLoginChange<Projects>(
+      this.get<Projects>(this.paths.projects.list, { filters })
+    );
   }
 }
 
-export interface ProjectFiler extends Filter {
+export interface ProjectFilter extends Filter {
   orderBy?: "id" | "name" | "description" | "creatorId";
 }
 

@@ -7,6 +7,7 @@ import {
   MetaError,
   Paths
 } from "./base-api.service";
+import { SecurityService } from "./security.service";
 
 @Injectable({
   providedIn: "root"
@@ -14,7 +15,7 @@ import {
 export class SitesService extends BawApiService {
   protected paths: Paths;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private security: SecurityService) {
     super(http);
 
     this.paths = {
@@ -28,13 +29,16 @@ export class SitesService extends BawApiService {
   }
 
   /**
-   * Get site data
+   * Get site data available to the user
    * @param id Site ID
+   * @returns Observable returning singular site
    */
   public getSite(id: number) {
-    return this.get<Site>(this.paths.sites.flattened, {
-      args: { siteId: id }
-    });
+    return this.security.onLoginChange<Site>(
+      this.get<Site>(this.paths.sites.flattened, {
+        args: { siteId: id }
+      })
+    );
   }
 
   /**
@@ -46,15 +50,17 @@ export class SitesService extends BawApiService {
   }
 
   /**
-   * Get site data
+   * Get site data available to the user
    * @param projectId Project ID
    * @param siteId Site ID
    * @returns Observable returning singular site
    */
   public getProjectSite(projectId: number, siteId: number) {
-    return this.get<Site>(this.paths.sites.nested, {
-      args: { projectId, siteId }
-    });
+    return this.security.onLoginChange<Site>(
+      this.get<Site>(this.paths.sites.nested, {
+        args: { projectId, siteId }
+      })
+    );
   }
 
   /**
@@ -64,9 +70,11 @@ export class SitesService extends BawApiService {
    * @returns Observable list of sites for a project
    */
   public getProjectSites(id: number) {
-    return this.get<Sites>(this.paths.sites.list, {
-      args: { projectId: id }
-    });
+    return this.security.onLoginChange<Sites>(
+      this.get<Sites>(this.paths.sites.list, {
+        args: { projectId: id }
+      })
+    );
   }
 
   /**
@@ -75,7 +83,9 @@ export class SitesService extends BawApiService {
    * @returns Observable list of sites
    */
   public getFilteredSites(filters: SiteFiler) {
-    return this.get<Sites>(this.paths.sites.filter, { filters });
+    return this.security.onLoginChange<Sites>(
+      this.get<Sites>(this.paths.sites.filter, { filters })
+    );
   }
 }
 
