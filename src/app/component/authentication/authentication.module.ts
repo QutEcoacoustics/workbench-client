@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { Router, RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 
 import { GetRoutesForPages } from "src/app/interfaces/page.interfaces";

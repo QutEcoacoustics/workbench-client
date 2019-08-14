@@ -1,4 +1,3 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subscription } from "rxjs";
+import { Observable, Subscription } from "rxjs";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import {
@@ -35,6 +36,7 @@ export const homeCategory: Category = {
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+  private subs = new SubSink();
   processList: List<Card>;
   projectList: List<Card> = List([]);
   postList: List<Card>;
@@ -69,44 +71,41 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
       }
     ]);
 
-    this.loggedInSubscription = this.securityApi
-      .getLoggedInTrigger()
-      .subscribe(() => {
-        this.updateProjectList();
-      });
+    this.subs.sink = this.securityApi.getLoggedInTrigger().subscribe(() => {
+      this.updateProjectList();
+    });
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe from logged in changes after destruction
-    if (this.loggedInSubscription) {
-      this.loggedInSubscription.unsubscribe();
-    }
+    this.subs.unsubscribe();
   }
 
   /**
    * Update project list array
    */
   updateProjectList() {
-    this.projectsApi.getFilteredProjects({ items: 3 }).subscribe({
-      next: (data: Projects) => {
-        this.projectList = List(
-          data.data.map(project => {
-            return {
-              title: project.name,
-              image: {
-                url:
-                  "https://staging.ecosounds.org/images/project/project_span3.png",
-                alt: project.name
-              },
-              link: "https://staging.ecosounds.org/projects/" + project.id
-            };
-          })
-        );
-      },
-      complete: () => {
-        this.ref.detectChanges();
-      },
-      error: err => console.error("Error: ", err)
-    });
+    this.subs.add(
+      this.projectsApi.getFilteredProjects({ items: 3 }).subscribe({
+        next: (data: Projects) => {
+          this.projectList = List(
+            data.data.map(project => {
+              return {
+                title: project.name,
+                image: {
+                  url:
+                    "https://staging.ecosounds.org/images/project/project_span3.png",
+                  alt: project.name
+                },
+                link: "https://staging.ecosounds.org/projects/" + project.id
+              };
+            })
+          );
+        },
+        complete: () => {
+          this.ref.detectChanges();
+        },
+        error: err => console.error("Error: ", err)
+      })
+    );
   }
 }

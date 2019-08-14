@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ActionMenuComponent } from "./action-menu.component";
+import { UnlockPasswordComponent } from "./unlock-account.component";
 
-describe("ActionMenuComponent", () => {
-  let component: ActionMenuComponent;
-  let fixture: ComponentFixture<ActionMenuComponent>;
+describe("UnlockPasswordComponent", () => {
+  let component: UnlockPasswordComponent;
+  let fixture: ComponentFixture<UnlockPasswordComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ActionMenuComponent]
+      declarations: [UnlockPasswordComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ActionMenuComponent);
+    fixture = TestBed.createComponent(UnlockPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

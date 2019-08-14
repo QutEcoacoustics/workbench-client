@@ -62,12 +62,14 @@ export class SecurityService extends BawApiService {
     path: string,
     details: any
   ): Observable<boolean | string> {
+    const subject = new Subject<boolean>();
+
+    // Return early if logged in
     if (this.isLoggedIn()) {
       this.loggedInTrigger.next(true);
-      return of("You are already logged in, try logging out first.");
+      subject.error("You are already logged in, try logging out first.");
+      return subject.asObservable();
     }
-
-    const subject = new Subject<boolean | string>();
 
     this.post<AuthenticationLogin>(path, undefined, details).subscribe(
       (data: AuthenticationLogin) => {
@@ -86,12 +88,12 @@ export class SecurityService extends BawApiService {
         } else {
           console.error("Unknown error thrown by login rest api");
           console.error(data);
-          subject.next("Something bad happened; please try again later.");
+          subject.error("Something bad happened; please try again later.");
           this.loggedInTrigger.next(false);
         }
       },
       (err: string) => {
-        subject.next(err);
+        subject.error(err);
         this.loggedInTrigger.next(false);
       }
     );

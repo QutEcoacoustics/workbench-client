@@ -7,7 +7,10 @@ import {
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { toCamelCase, toSnakeCase } from "src/app/helpers/case-converter";
+import {
+  toCamelCase,
+  toSnakeCase
+} from "src/app/helpers/case-converter/case-converter";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
 
 /**

@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { securityCategory } from "../../authentication";
@@ -26,7 +27,9 @@ import { securityCategory } from "../../authentication";
     ></app-form>
   `
 })
-export class RegisterComponent extends PageComponent implements OnInit {
+export class RegisterComponent extends PageComponent
+  implements OnInit, OnDestroy {
+  private subs = new SubSink();
   schemaUrl = "assets/templates/register.json";
   error: string;
   loading: boolean;
@@ -38,7 +41,7 @@ export class RegisterComponent extends PageComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.api.getLoggedInTrigger().subscribe(loggedIn => {
+    this.subs.sink = this.api.getLoggedInTrigger().subscribe(loggedIn => {
       if (loggedIn) {
         this.loading = true;
         this.error = "You are already logged in";
@@ -47,6 +50,10 @@ export class RegisterComponent extends PageComponent implements OnInit {
         this.error = null;
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
   submit(model) {

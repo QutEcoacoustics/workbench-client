@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { List } from "immutable";
 
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -39,7 +40,8 @@ import { UnlockPasswordComponent } from "../unlock-account/unlock-account.compon
     ></app-form>
   `
 })
-export class LoginComponent extends PageComponent implements OnInit {
+export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
+  private subs = new SubSink();
   schemaUrl = "assets/templates/login.json";
   error: string;
   loading: boolean;
@@ -51,15 +53,24 @@ export class LoginComponent extends PageComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    this.api.getLoggedInTrigger().subscribe(loggedIn => {
+    this.subs.sink = this.api.getLoggedInTrigger().subscribe(loggedIn => {
+      const msg = "You are already logged in";
+
       if (loggedIn) {
         this.loading = true;
-        this.error = "You are already logged in";
+        this.error = msg;
       } else {
         this.loading = false;
-        this.error = null;
+
+        if (this.error === msg) {
+          this.error = null;
+        }
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
   /**
@@ -69,14 +80,15 @@ export class LoginComponent extends PageComponent implements OnInit {
   submit($event: any) {
     this.loading = true;
 
-    this.api.login($event).subscribe(data => {
-      if (typeof data === "string") {
-        this.error = data;
-      } else {
+    this.api.login($event).subscribe(
+      () => {
         this.router.navigate(["/"]);
+        this.loading = false;
+      },
+      err => {
+        this.error = err;
+        this.loading = false;
       }
-
-      this.loading = false;
-    });
+    );
   }
 }
