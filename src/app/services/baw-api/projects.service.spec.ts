@@ -4,9 +4,11 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ProjectsService } from "./projects.service";
+import { SecurityService } from "./security.service";
 
 describe("ProjectsService", () => {
   let service: ProjectsService;
+  let securityService: SecurityService;
   let httpMock: HttpTestingController;
   const url = "https://staging.ecosounds.org";
 
@@ -193,9 +195,10 @@ describe("ProjectsService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProjectsService]
+      providers: [ProjectsService, SecurityService]
     });
     service = TestBed.get(ProjectsService);
+    securityService = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
 
     const mockSessionStorage = (() => {
@@ -760,5 +763,77 @@ describe("ProjectsService", () => {
     req.flush({ meta: { status: 404 } });
   });
 
-  // TODO Add authenticated checks
+  // TODO Ensure authenticated tests are not interfering with each other
+  it("authenticated getProjects should return data", () => {
+    securityService
+      .login({ email: "email", password: "password" })
+      .subscribe(() => {
+        service.getProjects().subscribe(res => {
+          expect(res).toEqual(projectsValidConvertedResponse);
+        });
+
+        const projects = httpMock.expectOne(url + "/projects");
+        expect(projects.request.method).toBe("GET");
+        expect(projects.request.headers.has("Authorization")).toBeTruthy();
+        expect(projects.request.headers.has("Accept")).toBeTruthy();
+        expect(projects.request.headers.get("Accept")).toBeTruthy(
+          "application/json"
+        );
+        expect(projects.request.headers.has("Content-Type")).toBeTruthy();
+        expect(projects.request.headers.get("Content-Type")).toBeTruthy(
+          "application/json"
+        );
+        projects.flush(projectsValidResponse);
+      });
+
+    const login = httpMock.expectOne(url + "/security");
+    login.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "pUqyq5KDvZq24qSm8sy1",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+  });
+
+  // TODO Ensure authenticated tests are not interfering with each other
+  it("authenticated getProject should return data", () => {
+    securityService
+      .login({ email: "email", password: "password" })
+      .subscribe(() => {
+        service.getProject(512).subscribe(res => {
+          expect(res).toEqual(projectValidConvertedResponse);
+        });
+
+        const project = httpMock.expectOne(url + "/projects/512");
+        expect(project.request.method).toBe("GET");
+        expect(project.request.headers.has("Authorization")).toBeTruthy();
+        expect(project.request.headers.has("Accept")).toBeTruthy();
+        expect(project.request.headers.get("Accept")).toBeTruthy(
+          "application/json"
+        );
+        expect(project.request.headers.has("Content-Type")).toBeTruthy();
+        expect(project.request.headers.get("Content-Type")).toBeTruthy(
+          "application/json"
+        );
+        project.flush(projectValidResponse);
+      });
+
+    const login = httpMock.expectOne(url + "/security");
+    login.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "pUqyq5KDvZq24qSm8sy1",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+  });
 });
