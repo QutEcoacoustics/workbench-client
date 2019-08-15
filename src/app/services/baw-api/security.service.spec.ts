@@ -18,29 +18,27 @@ describe("SecurityService", () => {
 
     service = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
-  });
 
-  beforeEach(() => {
-    let store = {};
+    const mockSessionStorage = (() => {
+      let storage = {};
+      return {
+        getItem(key) {
+          return storage[key];
+        },
+        setItem(key, value) {
+          storage[key] = value.toString();
+        },
+        clear() {
+          storage = {};
+        },
+        get length() {
+          return Object.keys(storage).length;
+        }
+      };
+    })();
 
-    spyOn(sessionStorage, "getItem").and.callFake(
-      (key: string): string => {
-        console.log("getItem Test");
-        return store[key] || null;
-      }
-    );
-    spyOn(sessionStorage, "removeItem").and.callFake(
-      (key: string): void => {
-        delete store[key];
-      }
-    );
-    spyOn(sessionStorage, "setItem").and.callFake(
-      (key: string, value: string): string => {
-        return (store[key] = value as string);
-      }
-    );
-    spyOn(sessionStorage, "clear").and.callFake(() => {
-      store = {};
+    Object.defineProperty(window, "sessionStorage", {
+      value: mockSessionStorage
     });
   });
 
