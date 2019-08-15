@@ -63,22 +63,7 @@ export class BawApiService {
   protected post<T>(
     path: string,
     args?: PathArg,
-    options?: {
-      headers?:
-        | HttpHeaders
-        | {
-            [header: string]: string | string[];
-          };
-      observe?: "body";
-      params?:
-        | HttpParams
-        | {
-            [param: string]: string | string[];
-          };
-      reportProgress?: boolean;
-      responseType?: "json";
-      withCredentials?: boolean;
-    }
+    options?: any
   ): Observable<T> {
     return this.http
       .post(this.getPath(path, args), options, this.getHeaderOptions())
@@ -101,6 +86,7 @@ export class BawApiService {
       user = null;
     }
 
+    console.debug(user);
     return user;
   }
 

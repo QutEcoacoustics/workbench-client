@@ -17,6 +17,7 @@ export class SecurityService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
+    console.debug("Constructor: " + this.isLoggedIn());
     this.loggedInTrigger.next(this.isLoggedIn());
 
     this.paths = {
@@ -94,7 +95,7 @@ export class SecurityService extends BawApiService {
    */
   private authenticateUser(
     path: string,
-    details: any
+    details: { email: string; password: string }
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
 
@@ -117,18 +118,18 @@ export class SecurityService extends BawApiService {
           });
 
           // Trigger login trackers
-          subject.next(true);
           this.loggedInTrigger.next(true);
+          subject.next(true);
         } else {
           console.error("Unknown error thrown by login rest api");
           console.error(data);
-          subject.error("Something bad happened; please try again later.");
           this.loggedInTrigger.next(false);
+          subject.error("Something bad happened; please try again later.");
         }
       },
       (err: string) => {
-        subject.error(err);
         this.loggedInTrigger.next(false);
+        subject.error(err);
       }
     );
 
