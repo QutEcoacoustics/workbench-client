@@ -18,42 +18,34 @@ describe("SecurityService", () => {
 
     service = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
+  });
 
-    // Mock session storage
-    const storageMock = () => {
-      const storage = {};
+  beforeEach(() => {
+    let store = {};
 
-      return {
-        setItem(key: string | number, value: string) {
-          storage[key] = value || "";
-        },
-        getItem(key: string) {
-          return key in storage ? storage[key] : null;
-        },
-        removeItem(key: string | number) {
-          delete storage[key];
-        },
-        get length() {
-          return Object.keys(storage).length;
-        },
-        key(i: string | number) {
-          const keys = Object.keys(storage);
-          return keys[i] || null;
-        }
-      };
-    };
-
-    Object.defineProperty(window, "sessionStorage", {
-      value: storageMock
+    spyOn(sessionStorage, "getItem").and.callFake(
+      (key: string): string => {
+        console.log("getItem Test");
+        return store[key] || null;
+      }
+    );
+    spyOn(sessionStorage, "removeItem").and.callFake(
+      (key: string): void => {
+        delete store[key];
+      }
+    );
+    spyOn(sessionStorage, "setItem").and.callFake(
+      (key: string, value: string): string => {
+        return (store[key] = value as string);
+      }
+    );
+    spyOn(sessionStorage, "clear").and.callFake(() => {
+      store = {};
     });
   });
 
   it("should be created", () => {
     expect(service).toBeTruthy();
-  });
-
-  it("session should be clear initially", () => {
-    expect(sessionStorage.length).toBe(0);
   });
 
   it("isLoggedIn should return false initially", () => {
