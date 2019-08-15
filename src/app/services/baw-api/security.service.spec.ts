@@ -1,31 +1,42 @@
-import { HttpClientModule } from "@angular/common/http";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
+  let service: SecurityService;
+  let httpMock: HttpTestingController;
+  const url = "https://staging.ecosounds.org";
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule]
+      imports: [HttpClientTestingModule],
+      providers: [SecurityService]
     });
+
+    service = TestBed.get(SecurityService);
+    httpMock = TestBed.get(HttpTestingController);
 
     // Mock session storage
     const storageMock = () => {
       const storage = {};
 
       return {
-        setItem(key, value) {
+        setItem(key: string | number, value: string) {
           storage[key] = value || "";
         },
-        getItem(key) {
+        getItem(key: string) {
           return key in storage ? storage[key] : null;
         },
-        removeItem(key) {
+        removeItem(key: string | number) {
           delete storage[key];
         },
         get length() {
           return Object.keys(storage).length;
         },
-        key(i) {
+        key(i: string | number) {
           const keys = Object.keys(storage);
           return keys[i] || null;
         }
@@ -38,19 +49,58 @@ describe("SecurityService", () => {
   });
 
   it("should be created", () => {
-    const service: SecurityService = TestBed.get(SecurityService);
     expect(service).toBeTruthy();
   });
 
-  it("should not be logged in initially", () => {});
+  it("session should be clear initially", () => {
+    expect(sessionStorage.length).toBe(0);
+  });
 
-  it("isLoggedIn should return false initially", () => {});
+  it("isLoggedIn should return false initially", () => {
+    expect(service.isLoggedIn()).toBeFalsy();
+  });
 
-  it("getUser should return null initially", () => {});
+  it("getUser should return null initially", () => {
+    expect(service.getUser()).toBe(null);
+  });
 
-  it("getLoggedInTrigger should return false initially", () => {});
+  it("getLoggedInTrigger should return false initially", () => {
+    expect(service.getLoggedInTrigger().getValue()).toBeFalsy();
+  });
 
-  it("login should set session cookie", () => {});
+  it("login should set session cookie", () => {
+    service.login({ email: "email", password: "password" }).subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(sessionStorage.getItem("user")).toBeTruthy();
+      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
+        id: 12345,
+        role: "User",
+        authToken: "pUqyq5KDvZq24qSm8sy1",
+        username: "Test"
+      });
+    });
+
+    const req = httpMock.expectOne(url + "/security");
+    expect(req.request.method).toBe("POST");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "pUqyq5KDvZq24qSm8sy1",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+  });
 
   it("login should receive token", () => {});
 
