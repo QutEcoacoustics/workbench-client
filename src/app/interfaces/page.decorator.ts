@@ -8,7 +8,7 @@ import {
   PageInfoInterface,
   UserCallback
 } from "./layout-menus.interfaces";
-import { StrongRoute } from "./routing";
+import { StrongRoute } from "./Routing";
 
 export interface PageComponentStatic
   extends Type<PageComponentInterface>,

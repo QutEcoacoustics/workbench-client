@@ -6,6 +6,7 @@
     "deprecation": {
       "severity": "warning"
     },
+    "indent": [true, "spaces", 2],
     "semicolon": [true, "always"],
     "component-class-suffix": true,
     "contextual-lifecycle": true,
