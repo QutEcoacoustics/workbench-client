@@ -713,4 +713,56 @@ describe("ProjectsService", () => {
     expect(req.request.method).toBe("GET");
     req.flush(dummyApiResponse);
   });
+
+  it("getProject empty response should return error msg", () => {
+    service.getProject(512).subscribe(
+      res => {
+        expect(res).toBeFalsy();
+      },
+      err => {
+        expect(err).toBeTruthy();
+        expect(typeof err).toBe("string");
+      }
+    );
+
+    const req = httpMock.expectOne(url + "/projects/512");
+    expect(req.request.method).toBe("GET");
+    req.flush({ meta: { status: 404 } });
+  });
+
+  it("getProjects empty response should return error msg", () => {
+    service.getProjects().subscribe(
+      res => {
+        expect(res).toBeFalsy();
+      },
+      err => {
+        expect(err).toBeTruthy();
+        expect(typeof err).toBe("string");
+      }
+    );
+
+    const req = httpMock.expectOne(url + "/projects");
+    expect(req.request.method).toBe("GET");
+    req.flush({ meta: { status: 404 } });
+  });
+
+  it("getFilteredProjects empty response should return error msg", () => {
+    service
+      .getFilteredProjects({
+        items: 3
+      })
+      .subscribe(
+        res => {
+          expect(res).toBeFalsy();
+        },
+        err => {
+          expect(err).toBeTruthy();
+          expect(typeof err).toBe("string");
+        }
+      );
+
+    const req = httpMock.expectOne(url + "/projects/filter?items=3");
+    expect(req.request.method).toBe("GET");
+    req.flush({ meta: { status: 404 } });
+  });
 });

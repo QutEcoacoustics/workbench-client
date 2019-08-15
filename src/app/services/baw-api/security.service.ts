@@ -47,18 +47,23 @@ export class SecurityService extends BawApiService {
     this.getLoggedInTrigger().subscribe(() => {
       triggerUpdate.subscribe(
         (data: any) => {
-          if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+          if (data.meta && data.meta.status === this.RETURN_CODE.SUCCESS) {
             subject.next(data);
           } else {
-            subject.error(
-              data.meta.error.details || "An unknown error has occurred."
-            );
+            if (data.meta && data.meta.error && data.meta.error.details) {
+              subject.error(data.meta.error.details);
+            } else {
+              subject.error("An unknown error has occurred.");
+            }
           }
         },
-        err =>
-          subject.error(
-            err.meta.error.details || "An unknown error has occurred."
-          )
+        err => {
+          if (err.meta && err.meta.error && err.meta.error.details) {
+            subject.error(err.meta.error.details);
+          } else {
+            subject.error("An unknown error has occurred.");
+          }
+        }
       );
     });
 
