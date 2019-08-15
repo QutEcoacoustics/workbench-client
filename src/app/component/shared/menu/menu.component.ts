@@ -41,7 +41,9 @@ export class MenuComponent implements OnInit {
     this.placement = this.menuType === "action" ? "left" : "right";
 
     this.filteredLinks = this.removeDuplicates(
-      this.links.filter(link => this.filter(user, link))
+      this.links
+        ? this.links.filter(link => this.filter(user, link))
+        : List<AnyMenuItem>([])
     );
   }
 

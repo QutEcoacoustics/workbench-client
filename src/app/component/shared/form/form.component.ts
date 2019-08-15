@@ -27,6 +27,11 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({});
+
+    if (!this.schema) {
+      return;
+    }
+
     this.http.get(this.schema).subscribe((data: any) => {
       /**
        * Convert any validator functions to Function datatype.

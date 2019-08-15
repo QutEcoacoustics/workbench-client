@@ -10,17 +10,14 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
-
 import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
+import { HomeComponent } from "./component/home/home.component";
 import { HomeModule } from "./component/home/home.module";
 import { PageNotFoundModule } from "./component/shared/PageNotFoundModule";
 import { SharedModule } from "./component/shared/shared.module";
-
 import { BawApiService } from "./services/baw-api/base-api.service";
-
-import { AppComponent } from "./app.component";
-import { HomeComponent } from "./component/home/home.component";
 
 @NgModule({
   declarations: [AppComponent],
