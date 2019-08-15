@@ -11,7 +11,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 
-import { AppRoutingModule } from "./appRouting.module";
+import { AppRoutingModule } from "./app-routing.module";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { HomeModule } from "./component/home/home.module";
 import { SharedModule } from "./component/shared/shared.module";
@@ -20,7 +20,6 @@ import { BawApiService } from "./services/baw-api/base-api.service";
 
 import { AppComponent } from "./app.component";
 import { ErrorModule } from "./component/error/errorModule";
-import { HomeComponent } from "./component/home/home.component";
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,7 +50,7 @@ import { HomeComponent } from "./component/home/home.component";
   ],
   providers: [BawApiService],
   bootstrap: [AppComponent],
-  exports: [HomeComponent]
+  exports: []
 })
 export class AppModule {
   constructor() {

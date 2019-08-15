@@ -8,7 +8,7 @@ export type ConfigCallback = (
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
- * angular Routes class. This class is utilised by the PageInfo decorator to
+ * angular Routes class. This class is utilized by the PageInfo decorator to
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
@@ -69,7 +69,9 @@ export class StrongRoute {
   }
 
   /**
-   * DEPRECATED
+   * Method used for templating a route with parameters.
+   * Use this in a template like so:
+   * <a [routerlink]="route.Format(project.id, site,id)" />
    */
   format(...args: string[]): string[] {
     if (args.length !== this.parameters.length) {

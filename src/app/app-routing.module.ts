@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes, PreloadAllModules, ROUTES } from "@angular/router";
 
+import { environment } from "src/environments/environment";
 import { HomeComponent } from "./component/home/home.component";
 
 const routes: Routes = [
@@ -30,8 +31,23 @@ const routes: Routes = [
   }
 ];
 
+export function getConfigRoutes() {
+  return routes;
+}
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    enableTracing: environment.routerEnableTracing,
+
+  })],
+  providers: [
+    {
+        provide: ROUTES,
+        multi: true,
+        useFactory: getConfigRoutes,
+        useValue: {}
+    },
+],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

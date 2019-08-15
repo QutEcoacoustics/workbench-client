@@ -65,7 +65,7 @@ export class PageComponent implements PageComponentInterface {
  * a new component that implements the `PageComponentInterface`
  * interface.
  */
-type DecoratedPageComponent = Type<PageComponentInterface> &
+export type DecoratedPageComponent = Type<PageComponentInterface> &
   PageComponentStatic;
 
 /**

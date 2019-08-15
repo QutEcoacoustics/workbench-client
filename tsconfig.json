@@ -15,11 +15,12 @@
     "target": "es2015",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
-    "plugins": [{ "transform": "typescript-transform-macros" }]
+    "alwaysStrict": true,
+    "pretty": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "enableIvy": true
+    "enableIvy": false
   }
 }

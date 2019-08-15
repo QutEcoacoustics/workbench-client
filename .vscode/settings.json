@@ -5,7 +5,8 @@
     "Formly",
     "dropdown",
     "fontawesome",
-    "fortawesome"
+    "fortawesome",
+    "templating"
   ],
   "cSpell.ignorePaths": [
     "**/package-lock.json",
