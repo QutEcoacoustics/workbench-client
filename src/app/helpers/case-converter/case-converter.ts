@@ -71,23 +71,4 @@ export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
  */
 export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);
 
-/**
- * Convert object to kebab-case
- * @param obj Object to convert
- */
-export const toKebabCase = (obj: any) => convertCase(obj, kebabCase);
-
-/**
- * Convert object to PascalCase
- * @param obj Object to convert
- */
-export const toPascalCase = (obj: any) =>
-  convertCase(
-    obj,
-    flow(
-      camelCase,
-      upperFirst
-    )
-  );
-
-export default { toCamelCase, toSnakeCase, toKebabCase, toPascalCase };
+export default { toCamelCase, toSnakeCase };

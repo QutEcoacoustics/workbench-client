@@ -214,6 +214,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(projectsValidResponse);
   });
 
@@ -224,6 +231,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/512");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(projectValidResponse);
   });
 
@@ -240,6 +254,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/-1");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(itemNotFoundResponse);
   });
 
@@ -256,6 +277,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/-1");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(pageNotFoundResponse);
   });
 
@@ -272,6 +300,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/-1");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(projectUnauthorizedResponse);
   });
 
@@ -380,6 +415,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/filter?items=3");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(dummyApiResponse);
   });
 
@@ -490,114 +532,13 @@ describe("ProjectsService", () => {
       url + "/projects/filter?order_by=creator_id"
     );
     expect(req.request.method).toBe("GET");
-    req.flush(dummyApiResponse);
-  });
-
-  it("getFilteredProjects should get descending order direction", () => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "id",
-          direction: "desc"
-        },
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          max_page: 1,
-          current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: [513, 514, 519],
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: [513, 514, 519],
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: [513, 514, 519],
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          orderBy: "id",
-          direction: "desc"
-        },
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          maxPage: 1,
-          current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    service
-      .getFilteredProjects({
-        direction: "desc"
-      })
-      .subscribe(res => {
-        expect(res).toEqual(dummyApiConvertedResponse);
-      });
-
-    const req = httpMock.expectOne(url + "/projects/filter?direction=desc");
-    expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(dummyApiResponse);
   });
 
@@ -711,6 +652,13 @@ describe("ProjectsService", () => {
       url + "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
     );
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush(dummyApiResponse);
   });
 
@@ -727,6 +675,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/512");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -743,6 +698,13 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -763,6 +725,15 @@ describe("ProjectsService", () => {
 
     const req = httpMock.expectOne(url + "/projects/filter?items=3");
     expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBeTruthy(
+      "application/json"
+    );
     req.flush({ meta: { status: 404 } });
   });
+
+  // TODO Add authenticated checks
 });

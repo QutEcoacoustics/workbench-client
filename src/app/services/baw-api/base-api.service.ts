@@ -141,9 +141,7 @@ export class BawApiService {
       if (args.args) {
         for (const key in args.args) {
           const value = args.args[key];
-          if (value) {
-            path = path.replace("{" + key + "}", value as string);
-          }
+          path = path.replace("{" + key + "}", value as string);
         }
       }
       if (args.filters) {
@@ -155,9 +153,7 @@ export class BawApiService {
 
         for (const key in convertedFilters) {
           const value = convertedFilters[key];
-          if (value) {
-            path += key + "=" + (value as string) + "&";
-          }
+          path += key + "=" + (value as string) + "&";
         }
 
         // Remove last &
