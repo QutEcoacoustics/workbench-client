@@ -3,7 +3,7 @@ import { List } from "immutable";
 import { Subscription } from "rxjs";
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { StrongRoute } from "src/app/interfaces/Routing";
+import { StrongRoute } from "src/app/interfaces/routing";
 import {
   Projects,
   ProjectsService

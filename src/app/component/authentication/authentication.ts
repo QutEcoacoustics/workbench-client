@@ -1,5 +1,5 @@
 import { Category } from "src/app/interfaces/layout-menus.interfaces";
-import { StrongRoute } from "src/app/interfaces/Routing";
+import { StrongRoute } from "src/app/interfaces/routing";
 
 export const securityRoute = StrongRoute.Base.add("security");
 

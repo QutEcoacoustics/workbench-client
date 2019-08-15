@@ -41,8 +41,10 @@ export function GetPageInfo(component: Type<any>) {
  * @param page Angular component page info
  * @returns List of routes
  */
-export function GetRouteConfigForPage(component: Type<any>, config: Partial<Route>) {
-
+export function GetRouteConfigForPage(
+  component: Type<any>,
+  config: Partial<Route>
+) {
   const page = GetPageInfo(component);
 
   if (!page) {
@@ -67,6 +69,6 @@ export function GetRouteConfigForPage(component: Type<any>, config: Partial<Rout
         outlet: "action",
         component: ActionMenuComponent
       }
-    ],
+    ]
   });
 }

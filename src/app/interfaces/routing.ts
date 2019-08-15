@@ -71,7 +71,9 @@ export class StrongRoute {
   /**
    * Method used for templating a route with parameters.
    * Use this in a template like so:
+   * ``` html
    * <a [routerlink]="route.Format(project.id, site,id)" />
+   * ```
    */
   format(...args: string[]): string[] {
     if (args.length !== this.parameters.length) {
