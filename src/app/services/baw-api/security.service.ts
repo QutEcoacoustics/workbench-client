@@ -46,8 +46,19 @@ export class SecurityService extends BawApiService {
     // Determine list of projects whenever logged in state changes
     this.getLoggedInTrigger().subscribe(() => {
       triggerUpdate.subscribe(
-        data => subject.next(data),
-        err => subject.error(err)
+        (data: any) => {
+          if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+            subject.next(data);
+          } else {
+            subject.error(
+              data.meta.error.details || "An unknown error has occurred."
+            );
+          }
+        },
+        err =>
+          subject.error(
+            err.meta.error.details || "An unknown error has occurred."
+          )
       );
     });
 
