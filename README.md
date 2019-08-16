@@ -49,6 +49,14 @@ $ npm test
 
 This will run the entire test suite in both Mozilla Firefox and Google Chrome browsers. Unit tests are used to determine if singular segments of the application are functioning correctly.
 
+#### Code Coverage
+
+On the completion of the unit tests, the system will automatically generate a code coverage report. To open this, run the following command:
+
+```bash
+$ npm run code-coverage
+```
+
 ## To build
 
 To build the application in production mode:
@@ -72,4 +80,4 @@ There are three environments supported by this application.
 
 ## Licence
 
-MIT License
+Apache License, Version 2.0
