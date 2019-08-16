@@ -3,6 +3,7 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { environment } from "src/environments/environment";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
@@ -10,7 +11,7 @@ describe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
-  const url = "https://staging.ecosounds.org";
+  const url = environment.baw_api_url;
 
   const pageNotFoundResponse = {
     meta: {

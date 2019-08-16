@@ -12,6 +12,7 @@ import {
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
 import { User } from "src/app/interfaces/layout-menus.interfaces";
+import { environment } from "src/environments/environment";
 
 /**
  * Interface with BAW Server Rest API
@@ -22,7 +23,7 @@ import { User } from "src/app/interfaces/layout-menus.interfaces";
 export class BawApiService {
   constructor(protected http: HttpClient) {}
 
-  private url = "https://staging.ecosounds.org";
+  private url = environment.baw_api_url;
   protected RETURN_CODE = {
     SUCCESS: 200,
     BAD_REQUEST: 400,

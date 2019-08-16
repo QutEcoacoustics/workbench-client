@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { securityCategory } from "../../authentication";
 

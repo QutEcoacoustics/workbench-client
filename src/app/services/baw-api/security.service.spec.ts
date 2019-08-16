@@ -3,12 +3,13 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { environment } from "src/environments/environment";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
-  const url = "https://staging.ecosounds.org";
+  const url = environment.baw_api_url;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

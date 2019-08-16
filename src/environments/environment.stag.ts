@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baw_api_url: "https://ecosounds.org"
+  baw_api_url: "https://staging.ecosounds.org"
 };

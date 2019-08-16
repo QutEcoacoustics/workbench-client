@@ -9,7 +9,7 @@
   "scripts": {
     "build:dev": "ng build",
     "build:fr": "ng build --configuration=fr",
-    "build:staging": "ng build --prod",
+    "build:staging": "ng build --prod --configuration=staging",
     "build": "ng build --prod",
     "code-coverage": "http-server -c-1 -o -p 9875 ./coverage/workbench-client",
     "e2e": "ng e2e",
