@@ -11,7 +11,7 @@ describe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
-  const url = environment.baw_api_url;
+  const url = environment.bawApiUrl;
 
   const pageNotFoundResponse = {
     meta: {

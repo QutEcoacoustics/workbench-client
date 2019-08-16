@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { securityCategory } from "../../authentication";
+import data from "./confirm-account.json";
 
 @Page({
   icon: ["fas", "envelope"],
@@ -15,7 +16,7 @@ import { securityCategory } from "../../authentication";
   selector: "app-confirm-account",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Resend confirmation instructions?'"
       [submitLabel]="'Resend confirmation instructions'"
       [submitLoading]="loading"
@@ -25,7 +26,7 @@ import { securityCategory } from "../../authentication";
   `
 })
 export class ConfirmPasswordComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/confirm-account.json";
+  schema = data;
   error: string;
   loading: boolean;
 
@@ -37,9 +38,9 @@ export class ConfirmPasswordComponent extends PageComponent implements OnInit {
     this.loading = false;
   }
 
-  submit(model) {
+  submit($event: any) {
     this.loading = true;
-    console.log(model);
+    console.log($event);
     this.loading = false;
   }
 }

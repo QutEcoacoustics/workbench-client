@@ -23,7 +23,7 @@ import { environment } from "src/environments/environment";
 export class BawApiService {
   constructor(protected http: HttpClient) {}
 
-  private url = environment.baw_api_url;
+  private url = environment.bawApiUrl;
   protected RETURN_CODE = {
     SUCCESS: 200,
     BAD_REQUEST: 400,

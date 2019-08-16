@@ -12,6 +12,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { validationMessages } from "./app.helper";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { HomeComponent } from "./component/home/home.component";
 import { HomeModule } from "./component/home/home.module";
@@ -30,13 +31,7 @@ import { BawApiService } from "./services/baw-api/base-api.service";
     ReactiveFormsModule,
     HttpClientModule,
     FormlyModule.forRoot({
-      validationMessages: [
-        { name: "required", message: "This field is required" },
-        { name: "minlength", message: minLengthValidationMessage },
-        { name: "maxlength", message: maxLengthValidationMessage },
-        { name: "min", message: minValidationMessage },
-        { name: "max", message: maxValidationMessage }
-      ]
+      validationMessages
     }),
     FormlyBootstrapModule,
     LoadingBarHttpClientModule,
@@ -53,24 +48,4 @@ export class AppModule {
   constructor() {
     library.add(fas);
   }
-}
-
-export function minLengthValidationMessage(err, field) {
-  return `Input should have at least ${
-    field.templateOptions.minLength
-  } characters`;
-}
-
-export function maxLengthValidationMessage(err, field) {
-  return `This value should be less than ${
-    field.templateOptions.maxLength
-  } characters`;
-}
-
-export function minValidationMessage(err, field) {
-  return `This value should be more than ${field.templateOptions.min}`;
-}
-
-export function maxValidationMessage(err, field) {
-  return `This value should be less than ${field.templateOptions.max}`;
 }

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baw_api_url: "https://staging.ecosounds.org"
+  bawApiUrl: "https://staging.ecosounds.org"
 };
 
 /*

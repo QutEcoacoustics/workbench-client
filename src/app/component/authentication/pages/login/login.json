@@ -1,0 +1,25 @@
+{
+  "model": {
+    "email": "",
+    "password": ""
+  },
+  "fields": [
+    {
+      "key": "email",
+      "type": "input",
+      "templateOptions": {
+        "label": "Username or Email Address",
+        "required": true
+      }
+    },
+    {
+      "key": "password",
+      "type": "input",
+      "templateOptions": {
+        "type": "password",
+        "label": "Password",
+        "required": true
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import { SecurityService } from "./security.service";
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
-  const url = environment.baw_api_url;
+  const url = environment.bawApiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

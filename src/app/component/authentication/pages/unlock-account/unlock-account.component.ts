@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { securityCategory } from "../../authentication";
+import data from "./unlock-account.json";
 
 @Page({
   icon: ["fas", "lock-open"],
@@ -16,7 +16,7 @@ import { securityCategory } from "../../authentication";
   selector: "app-confirm-account",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Resend unlock instructions'"
       [submitLabel]="'Resend unlock instructions'"
       [submitLoading]="loading"
@@ -26,7 +26,7 @@ import { securityCategory } from "../../authentication";
   `
 })
 export class UnlockPasswordComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/unlock-account.json";
+  schema = data;
   error: string;
   loading: boolean;
 

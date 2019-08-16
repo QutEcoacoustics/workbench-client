@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
+import { validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { UnlockPasswordComponent } from "./unlock-account.component";
@@ -13,13 +14,7 @@ describe("UnlockPasswordComponent", () => {
       imports: [
         SharedModule,
         FormlyModule.forRoot({
-          validationMessages: [
-            { name: "required", message: "This field is required" },
-            { name: "minlength", message: minLengthValidationMessage },
-            { name: "maxlength", message: maxLengthValidationMessage },
-            { name: "min", message: minValidationMessage },
-            { name: "max", message: maxValidationMessage }
-          ]
+          validationMessages
         })
       ],
       declarations: [UnlockPasswordComponent, HomeComponent]
@@ -36,27 +31,22 @@ describe("UnlockPasswordComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should have tests", () => {
-    expect(false).toBeTruthy();
+  it("should eventually load form", () => {
+    expect(fixture.nativeElement.querySelector("button")).toBeTruthy();
+    expect(fixture.nativeElement.querySelector("button").disabled).toBeFalsy();
   });
+
+  it("should only contain one input", () => {
+    expect(fixture.nativeElement.querySelectorAll("input").length).toBe(1);
+  });
+
+  it("should contain username/email input", () => {
+    expect(fixture.nativeElement.querySelector("input")).toBeTruthy();
+    expect(fixture.nativeElement.querySelector("input").id).toContain("email");
+
+    // API route expects email as id
+    expect(fixture.nativeElement.querySelector("input").id).toContain("email");
+  });
+
+  xit("should unlock account on submit", () => {});
 });
-
-export function minLengthValidationMessage(err, field) {
-  return `Input should have at least ${
-    field.templateOptions.minLength
-  } characters`;
-}
-
-export function maxLengthValidationMessage(err, field) {
-  return `This value should be less than ${
-    field.templateOptions.maxLength
-  } characters`;
-}
-
-export function minValidationMessage(err, field) {
-  return `This value should be more than ${field.templateOptions.min}`;
-}
-
-export function maxValidationMessage(err, field) {
-  return `This value should be less than ${field.templateOptions.max}`;
-}

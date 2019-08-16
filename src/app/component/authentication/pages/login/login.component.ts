@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { List } from "immutable";
-
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
@@ -10,6 +9,7 @@ import { securityCategory } from "../../authentication";
 import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
 import { ResetPasswordComponent } from "../reset-password/reset-password.component";
 import { UnlockPasswordComponent } from "../unlock-account/unlock-account.component";
+import data from "./login.json";
 
 @Page({
   icon: ["fas", "sign-in-alt"],
@@ -32,7 +32,7 @@ import { UnlockPasswordComponent } from "../unlock-account/unlock-account.compon
   selector: "app-authentication-login",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Log in'"
       [error]="error"
       [submitLoading]="loading"
@@ -42,7 +42,7 @@ import { UnlockPasswordComponent } from "../unlock-account/unlock-account.compon
 })
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
-  schemaUrl = "assets/templates/login.json";
+  schema = data;
   error: string;
   loading: boolean;
 

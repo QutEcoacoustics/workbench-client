@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { Page, PageComponent } from "src/app/interfaces/page.decorator";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { securityCategory } from "../../authentication";
+import data from "./register.json";
 
 @Page({
   icon: ["fas", "user-plus"],
@@ -19,7 +19,7 @@ import { securityCategory } from "../../authentication";
   selector: "app-authentication-register",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Register'"
       [submitLoading]="loading"
       [error]="error"
@@ -30,7 +30,7 @@ import { securityCategory } from "../../authentication";
 export class RegisterComponent extends PageComponent
   implements OnInit, OnDestroy {
   private subs = new SubSink();
-  schemaUrl = "assets/templates/register.json";
+  schema = data;
   error: string;
   loading: boolean;
 
