@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
-import { PageInfo } from "src/app/interfaces/page.decorator";
+import { NavigableMenuItem } from "src/app/interfaces/menus.interfaces";
+import { PageInfo } from "src/app/interfaces/PageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({
@@ -17,15 +17,15 @@ export class SecondaryMenuComponent implements OnInit {
   contextLinks: List<NavigableMenuItem>;
 
   ngOnInit() {
-    this.route.data.subscribe((val: PageInfo) => {
+    this.route.data.subscribe((page: PageInfo) => {
       // get default links
       const defaultLinks = DefaultMenu.contextLinks;
       // and current page
-      const current = val;
+      const current = page.self;
       // with any links from route
       const links =
-        val && val.menus && val.menus.links
-          ? val.menus.links
+        page && page.menus && page.menus.links
+          ? page.menus.links
           : List<NavigableMenuItem>();
 
       // and add it all together

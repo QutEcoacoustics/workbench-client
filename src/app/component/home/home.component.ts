@@ -1,33 +1,24 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subscription } from "rxjs";
-import { Category } from "src/app/interfaces/layout-menus.interfaces";
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { StrongRoute } from "src/app/interfaces/routing";
+import { Category } from "src/app/interfaces/menus.interfaces";
+import { MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
+import { StrongRoute } from "src/app/interfaces/strongRoute";
 import {
   Projects,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { Card } from "../shared/cards/cards.component";
-
-export const homeRoute = StrongRoute.Base.add("home", { redirectTo: "" });
-export const homeCategory: Category = {
-  icon: ["fas", "home"],
-  label: "Home",
-  route: homeRoute
-};
+import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Page({
-  icon: ["fas", "home"],
-  label: "Home",
   category: homeCategory,
-  route: homeRoute,
-  tooltip: () => "Home page",
-  predicate: user => !user,
-  order: { priority: 1, indentation: 0 },
+  fullscreen: true,
   menus: null,
-  fullscreen: true
+  self: homeMenuItem
 })
 @Component({
   selector: "app-home",

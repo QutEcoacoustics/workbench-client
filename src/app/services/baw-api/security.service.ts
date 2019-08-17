@@ -1,8 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { map, retry } from "rxjs/operators";
-import { User } from "src/app/interfaces/layout-menus.interfaces";
+import { User } from "src/app/models/User";
 import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
 
 /**

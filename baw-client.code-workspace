@@ -6,7 +6,10 @@
 	],
 	"settings": {
 		"typescript.tsdk": "node_modules\\typescript\\lib",
-		"typescript.preferences.quoteStyle": "double",
+    "typescript.preferences.quoteStyle": "double",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.tslint": true
+    },
 		"cSpell.words": [
 			"Formly",
 			"fontawesome",
@@ -17,10 +20,11 @@
 			"**/node_modules/**",
 			"**/vscode-extension/**",
 			"**/.git/objects/**",
-			".vscode",
-			"tslint.json",
-			"tsconfig*.json",
-			"*.code-workspace",
+			"**/.vscode/**",
+			"**/tslint.json",
+			"**/baw-client.code-workspace",
+			"**/tsconfig*.json",
+			"**/tsconfig.json",
 		],
 	},
 	"extensions": {

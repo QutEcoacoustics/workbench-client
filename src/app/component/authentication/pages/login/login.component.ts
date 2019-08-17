@@ -2,30 +2,25 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { List } from "immutable";
 
-import { AnyMenuItem } from "src/app/interfaces/layout-menus.interfaces";
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { AnyMenuItem, MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { securityCategory, securityRoute } from "../../authentication";
-import { ConfirmPasswordComponent } from "../confirm-account/confirm-account.component";
-import { ResetPasswordComponent } from "../reset-password/reset-password.component";
-import { UnlockPasswordComponent } from "../unlock-account/unlock-account.component";
+import {
+  confirmAccountMenuItem, loginMenuItem, resetPasswordMenuItem, securityCategory, unlockAccountMenuItem } from "../../authentication.menus";
 
 @Page({
-  icon: ["fas", "sign-in-alt"],
-  label: "Log in",
   category: securityCategory,
-  route: securityRoute.add("login"),
-  tooltip: () => "Log into the website",
-  predicate: user => !user,
-  order: { priority: 2, indentation: 0 },
   menus: {
     actions: List<AnyMenuItem>([
-      ResetPasswordComponent.pageInfo,
-      ConfirmPasswordComponent.pageInfo,
-      UnlockPasswordComponent.pageInfo
+      resetPasswordMenuItem,
+      confirmAccountMenuItem,
+      unlockAccountMenuItem,
+      loginMenuItem
     ]),
-    links: null
-  }
+    links: List()
+  },
+  self: loginMenuItem
 })
 @Component({
   selector: "app-authentication-login",

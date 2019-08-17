@@ -4,8 +4,8 @@ import { List } from "immutable";
 import {
   AnyMenuItem,
   LabelAndIcon
-} from "src/app/interfaces/layout-menus.interfaces";
-import { PageInfo } from "src/app/interfaces/page.decorator";
+} from "src/app/interfaces/menus.interfaces";
+import { PageInfo } from "src/app/interfaces/PageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({
@@ -20,14 +20,14 @@ export class ActionMenuComponent implements OnInit {
   actionLinks: List<AnyMenuItem>;
 
   ngOnInit() {
-    this.route.data.subscribe((val: PageInfo) => {
+    this.route.data.subscribe((page: PageInfo) => {
       const actionMenu =
-        val && val.menus && val.menus.actions
-          ? val.menus.actions
+        page && page.menus && page.menus.actions
+          ? page.menus.actions
           : List<AnyMenuItem>();
 
       this.actionTitle =
-        val && val.category ? val.category : DefaultMenu.defaultCategory;
+        page && page.category ? page.category : DefaultMenu.defaultCategory;
       this.actionLinks = actionMenu;
     });
   }

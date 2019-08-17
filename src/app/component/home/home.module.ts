@@ -1,12 +1,13 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { GetRouteConfigForPage } from "src/app/interfaces/page.interfaces";
+import { RouterModule } from "@angular/router";
+import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
 import { SharedModule } from "../shared/shared.module";
-import { HomeComponent, homeRoute } from "./home.component";
+import { HomeComponent } from "./home.component";
+import { homeRoute } from "./home.menus";
 
 export const HomeComponents = [HomeComponent];
 
-const routes: Routes = homeRoute.compileRoutes(GetRouteConfigForPage);
+const routes = homeRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: [HomeComponents],

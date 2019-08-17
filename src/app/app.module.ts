@@ -18,13 +18,15 @@ import { SharedModule } from "./component/shared/shared.module";
 
 import { BawApiService } from "./services/baw-api/base-api.service";
 
+import { RouterModule } from "@angular/router";
 import { AppComponent } from "./app.component";
-import { ErrorModule } from "./component/error/errorModule";
+import { ErrorModule } from "./component/error/error.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    RouterModule,
     AppRoutingModule,
     NgbModule,
     FontAwesomeModule,

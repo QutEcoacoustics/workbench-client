@@ -1,7 +1,7 @@
 import { Type } from "@angular/core";
-import { Route } from "@angular/router";
+import { Route, Routes } from "@angular/router";
 
-export type ConfigCallback = (
+export type RouteConfigCallback = (
   component: Type<any> | null,
   config: Partial<Route>
 ) => void;
@@ -71,9 +71,7 @@ export class StrongRoute {
   /**
    * Method used for templating a route with parameters.
    * Use this in a template like so:
-   * ``` html
    * <a [routerlink]="route.Format(project.id, site,id)" />
-   * ```
    */
   format(...args: string[]): string[] {
     if (args.length !== this.parameters.length) {
@@ -109,9 +107,8 @@ export class StrongRoute {
    * Compile the list of routes for a module
    * @param callback Callback function (usually: GetRouteConfigForPage)
    */
-  compileRoutes(callback: ConfigCallback) {
+  compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
-
     const recursiveAdd = (current: StrongRoute): Route => {
       // provide an opportunity to modify the route config just before we
       // generate it.

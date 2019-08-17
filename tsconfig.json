@@ -16,11 +16,11 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
     "alwaysStrict": true,
-    "pretty": true
+    "pretty": true,
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "enableIvy": false
+    "enableIvy": true
   }
 }

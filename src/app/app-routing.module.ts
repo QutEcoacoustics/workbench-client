@@ -31,24 +31,10 @@ const routes: Routes = [
   }
 ];
 
-export function getConfigRoutes() {
-  return routes;
-}
-
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      enableTracing: environment.routerEnableTracing
-    })
-  ],
-  providers: [
-    {
-      provide: ROUTES,
-      multi: true,
-      useFactory: getConfigRoutes,
-      useValue: {}
-    }
-  ],
+  imports: [RouterModule.forRoot(routes, {
+    enableTracing: environment.routerEnableTracing,
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

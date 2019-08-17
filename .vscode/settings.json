@@ -6,7 +6,9 @@
     "dropdown",
     "fontawesome",
     "fortawesome",
-    "templating"
+    "routerlink",
+    "templating",
+    "vocalisations"
   ],
   "cSpell.ignorePaths": [
     "**/package-lock.json",

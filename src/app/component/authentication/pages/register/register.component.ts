@@ -1,17 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { securityCategory, securityRoute } from "../../authentication";
+import { MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
+import { registerMenuItem, securityCategory, securityRoute } from "../../authentication.menus";
 
 @Page({
-  icon: ["fas", "user-plus"],
-  label: "Register",
   category: securityCategory,
-  route: securityRoute.add("register"),
-  tooltip: () => "Create an account",
-  predicate: user => !user,
   menus: null,
-  order: { priority: 3, indentation: 0 }
+  self: registerMenuItem
 })
 @Component({
   selector: "app-authentication-register",

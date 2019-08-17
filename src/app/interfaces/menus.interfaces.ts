@@ -1,7 +1,7 @@
-import { Data } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { StrongRoute } from "./routing";
+import { User } from "../models/User";
+import { StrongRoute } from "./strongRoute";
 
 /**
  * Part of an (a single file/directory) internal angular route
@@ -17,16 +17,6 @@ export type Href = string;
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
  */
 export type Icon = IconProp;
-
-/**
- * A user model.
- */
-export interface User {
-  authToken: string;
-  username: string;
-  id: number;
-  role: "Admin" | "User";
-}
 
 /**
  * Component Name and Icon
@@ -86,7 +76,8 @@ export type UserCallback<T> = null | ((user?: User) => T);
  * @extends LabelAndIcon
  */
 export interface MenuItem extends LabelAndIcon {
-  // kind: MenuItemTypes;
+  kind: MenuItemKinds;
+
   /**
    * The tooltip that will be shown when context for this link is required.
    */
@@ -115,6 +106,11 @@ export interface MenuLink extends MenuItem {
   uri: Href;
 }
 
+export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
+  return Object.assign(item, {kind: "MenuLink" as "MenuLink"});
+}
+
+
 /**
  * MenuRoute interface. Defines an internal page/route within this application.
  * Must be known to this angular app. e.g. /security/login
@@ -128,6 +124,10 @@ export interface MenuRoute extends MenuItem {
   route: StrongRoute;
 }
 
+export function MenuRoute<T extends Omit<MenuRoute, "kind">>(item: T): MenuRoute {
+  return Object.assign(item, {kind: "MenuRoute" as "MenuRoute"});
+}
+
 /**
  * Action Link interface. Defines all the requirements of an non-navigable menu
  * item. A button.
@@ -136,6 +136,10 @@ export interface MenuRoute extends MenuItem {
 export interface MenuAction extends MenuItem {
   kind: "MenuAction";
   action: () => any | void;
+}
+
+export function MenuAction<T extends Omit<MenuAction, "kind">>(item: T): MenuAction {
+  return Object.assign(item, {kind: "MenuAction" as "MenuAction"});
 }
 
 /**
@@ -193,19 +197,4 @@ export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
 export interface Menus {
   actions: List<AnyMenuItem>;
   links: List<NavigableMenuItem>;
-}
-
-/**
- * Page info interface.
- * This stores information required to generate the various menus of the page.
- * Also stores metadata about the page, like the icon to use, and the route
- * for that page.
- * @extends MenuItem
- * @extends Data
- */
-export interface PageInfoInterface extends Data, MenuItem {
-  route: StrongRoute;
-  category: Category;
-  menus: Menus;
-  fullscreen?: boolean;
 }

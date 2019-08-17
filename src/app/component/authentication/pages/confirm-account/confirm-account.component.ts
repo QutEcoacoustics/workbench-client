@@ -1,16 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { securityCategory, securityRoute } from "../../authentication";
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
+import { confirmAccountMenuItem, securityCategory } from "../../authentication.menus";
 
 @Page({
-  icon: ["fas", "envelope"],
-  label: "Confirm account",
   category: securityCategory,
-  route: securityRoute.add("confirmation"),
-  tooltip: () => "Resend the email to confirm your account",
   menus: null,
-  order: { priority: 2, indentation: 1 }
+  self: confirmAccountMenuItem,
 })
 @Component({
   selector: "app-confirm-account",

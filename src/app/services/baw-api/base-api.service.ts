@@ -8,7 +8,7 @@ import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { toCamelCase, toSnakeCase } from "src/app/helpers/case-converter";
-import { User } from "src/app/interfaces/layout-menus.interfaces";
+import { User } from "src/app/models/User";
 
 /**
  * Interface with BAW Server Rest API
