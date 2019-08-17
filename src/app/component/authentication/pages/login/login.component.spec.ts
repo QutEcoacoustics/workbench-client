@@ -23,6 +23,8 @@ describe("LoginComponent", () => {
   let fixture: ComponentFixture<LoginComponent>;
 
   class MockSecurityService {
+    private trigger = new BehaviorSubject<boolean>(false);
+
     public login(details: {
       email: string;
       password: string;
@@ -32,8 +34,34 @@ describe("LoginComponent", () => {
       setTimeout(() => {
         if (details.email === "email" && details.password === "password") {
           subject.next(true);
+          this.trigger.next(true);
         } else {
           subject.error("Error MSG");
+          this.trigger.next(false);
+        }
+      }, 1000);
+
+      return subject.asObservable();
+    }
+
+    public register(details: {
+      username: string;
+      email: string;
+      password: string;
+    }): Observable<boolean | string> {
+      const subject = new Subject<boolean | string>();
+
+      setTimeout(() => {
+        if (
+          details.username === "username" &&
+          details.email === "email" &&
+          details.password === "password"
+        ) {
+          subject.next(true);
+          this.trigger.next(true);
+        } else {
+          subject.error("Error MSG");
+          this.trigger.next(false);
         }
       }, 1000);
 
@@ -41,7 +69,7 @@ describe("LoginComponent", () => {
     }
 
     public getLoggedInTrigger() {
-      return new BehaviorSubject<boolean>(false);
+      return this.trigger;
     }
   }
 
@@ -75,8 +103,12 @@ describe("LoginComponent", () => {
   });
 
   it("should eventually load form", () => {
-    expect(fixture.nativeElement.querySelector("button")).toBeTruthy();
-    expect(fixture.nativeElement.querySelector("button").disabled).toBeFalsy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']")
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']").disabled
+    ).toBeFalsy();
   });
 
   it("should contain two inputs", () => {
@@ -130,7 +162,9 @@ describe("LoginComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -147,7 +181,9 @@ describe("LoginComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -167,7 +203,9 @@ describe("LoginComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -182,7 +220,9 @@ describe("LoginComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -208,7 +248,9 @@ describe("LoginComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -229,7 +271,9 @@ describe("LoginComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -255,7 +299,9 @@ describe("LoginComponent", () => {
     password.value = "12345";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -278,7 +324,9 @@ describe("LoginComponent", () => {
     password.value = "12345";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -305,7 +353,9 @@ describe("LoginComponent", () => {
     password.value = "password";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -334,7 +384,9 @@ describe("LoginComponent", () => {
     password.value = "password";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick(5000);
@@ -360,7 +412,9 @@ describe("LoginComponent", () => {
     password.value = "password";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick(5000);
@@ -397,7 +451,9 @@ describe("LoginComponent", () => {
     password.value = "bad password";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick(5000);
@@ -434,7 +490,9 @@ describe("LoginComponent", () => {
     password.value = "bad password";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick(5000);
@@ -453,5 +511,59 @@ describe("LoginComponent", () => {
     const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should show error for authenticated user", fakeAsync(() => {
+    securityService.login({ email: "email", password: "password" });
+
+    tick(5000);
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should disable submit button for authenticated user", fakeAsync(() => {
+    securityService.login({ email: "email", password: "password" });
+
+    tick(5000);
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
+    expect(button).toBeTruthy();
+    expect(button.disabled).toBeTruthy();
+  }));
+
+  it("should disable submit button during submission", fakeAsync(() => {
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
+
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "login").and.callFake(() => {
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeTruthy();
+
+      return new BehaviorSubject<boolean>(true);
+    });
+
+    expect(button).toBeTruthy();
+    expect(button.disabled).toBeFalsy();
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    button.click();
+
+    tick();
+    fixture.detectChanges();
   }));
 });

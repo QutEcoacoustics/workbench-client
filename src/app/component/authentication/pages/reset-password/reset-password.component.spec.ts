@@ -38,8 +38,12 @@ describe("ResetPasswordComponent", () => {
   });
 
   it("should load form", () => {
-    expect(fixture.nativeElement.querySelector("button")).toBeTruthy();
-    expect(fixture.nativeElement.querySelector("button").disabled).toBeFalsy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']")
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']").disabled
+    ).toBeFalsy();
   });
 
   it("should only contain one input", () => {
@@ -70,7 +74,9 @@ describe("ResetPasswordComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -85,7 +91,9 @@ describe("ResetPasswordComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -103,7 +111,9 @@ describe("ResetPasswordComponent", () => {
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -118,7 +128,9 @@ describe("ResetPasswordComponent", () => {
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();

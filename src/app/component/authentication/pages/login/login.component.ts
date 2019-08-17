@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { List } from "immutable";
 import { SubSink } from "src/app/helpers/subsink/subsink";
@@ -46,7 +46,11 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
   loading: boolean;
 
-  constructor(private api: SecurityService, private router: Router) {
+  constructor(
+    private api: SecurityService,
+    private router: Router,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -79,9 +83,10 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
    */
   submit($event: any) {
     this.loading = true;
+    this.ref.detectChanges();
 
     this.api.login($event).subscribe(
-      val => {
+      () => {
         this.router.navigate(["/"]);
         this.loading = false;
       },

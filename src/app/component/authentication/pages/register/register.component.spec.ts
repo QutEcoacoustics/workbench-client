@@ -22,7 +22,9 @@ describe("RegisterComponent", () => {
   let fixture: ComponentFixture<RegisterComponent>;
 
   class MockSecurityService {
-    public register(details: {
+    private trigger = new BehaviorSubject<boolean>(false);
+
+    public login(details: {
       email: string;
       password: string;
     }): Observable<boolean | string> {
@@ -31,8 +33,34 @@ describe("RegisterComponent", () => {
       setTimeout(() => {
         if (details.email === "email" && details.password === "password") {
           subject.next(true);
+          this.trigger.next(true);
         } else {
           subject.error("Error MSG");
+          this.trigger.next(false);
+        }
+      }, 1000);
+
+      return subject.asObservable();
+    }
+
+    public register(details: {
+      username: string;
+      email: string;
+      password: string;
+    }): Observable<boolean | string> {
+      const subject = new Subject<boolean | string>();
+
+      setTimeout(() => {
+        if (
+          details.username === "username" &&
+          details.email === "email" &&
+          details.password === "password"
+        ) {
+          subject.next(true);
+          this.trigger.next(true);
+        } else {
+          subject.error("Error MSG");
+          this.trigger.next(false);
         }
       }, 1000);
 
@@ -40,7 +68,7 @@ describe("RegisterComponent", () => {
     }
 
     public getLoggedInTrigger() {
-      return new BehaviorSubject<boolean>(false);
+      return this.trigger;
     }
   }
 
@@ -74,8 +102,12 @@ describe("RegisterComponent", () => {
   });
 
   it("should eventually load form", () => {
-    expect(fixture.nativeElement.querySelector("button")).toBeTruthy();
-    expect(fixture.nativeElement.querySelector("button").disabled).toBeFalsy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']")
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector("button[type='submit']").disabled
+    ).toBeFalsy();
   });
 
   it("should contain four inputs", () => {
@@ -167,7 +199,9 @@ describe("RegisterComponent", () => {
     username.value = "";
     username.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -184,7 +218,9 @@ describe("RegisterComponent", () => {
     username.value = "";
     username.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -204,7 +240,9 @@ describe("RegisterComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -221,7 +259,9 @@ describe("RegisterComponent", () => {
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -241,7 +281,9 @@ describe("RegisterComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -258,7 +300,9 @@ describe("RegisterComponent", () => {
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -278,7 +322,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -295,7 +341,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -333,7 +381,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "bad password";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -368,7 +418,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "bad password";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -406,7 +458,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "12345";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -441,7 +495,9 @@ describe("RegisterComponent", () => {
     passwordConf.value = "12345";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
     button.click();
 
     tick();
@@ -450,6 +506,28 @@ describe("RegisterComponent", () => {
     const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should show error for authenticated user", fakeAsync(() => {
+    securityService.login({ email: "email", password: "password" });
+
+    tick(5000);
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should disable submit button for authenticated user", fakeAsync(() => {
+    securityService.login({ email: "email", password: "password" });
+
+    tick(5000);
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
+    expect(button).toBeTruthy();
+    expect(button.disabled).toBeTruthy();
   }));
 
   xit("should register account on submit", () => {});
