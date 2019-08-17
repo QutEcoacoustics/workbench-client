@@ -1,80 +1,13 @@
 import { Type } from "@angular/core";
-import {
-  Category,
-  Icon,
-  InternalRoute,
-  MenuRoute,
-  Menus,
-  Order,
-  PageInfoInterface,
-  RouteFragment,
-  UserCallback
-} from "./layout-menus.interfaces";
-
-export interface PageComponentStatic
-  extends Type<PageComponentInterface>,
-    Type<any> {
-  readonly pageInfo: PageInfo;
-}
-
-export interface PageComponentInterface {
-  readonly pageInfo: PageInfo;
-}
-
-/**
- * Page info class
- */
-export class PageInfo implements PageInfoInterface {
-  // discriminated union tag
-  kind: "MenuRoute";
-
-  routeFragment: RouteFragment;
-  route: InternalRoute;
-  tooltip: UserCallback<string>;
-  predicate: UserCallback<boolean>;
-  icon: Icon;
-  label: string;
-  component: Type<any>;
-  category: Category;
-  menus: Menus;
-  order: Order;
-  fullscreen: boolean;
-
-  constructor(target: Type<any>, args: PageInfoInterface) {
-    Object.assign(this, args);
-    this.kind = "MenuRoute";
-    this.component = target;
-  }
-}
-
-/**
- * Determine if a component contains pageInfo
- * @param data Component data
- */
-export function isPageInfo(data: any): data is PageInfoInterface {
-  return data.kind === "MenuRoute";
-}
-
-// this mixin is needed because typescript decorators
-// do not mutate the type signature they are applied to.
-// See https://github.com/Microsoft/TypeScript/issues/4881
-// If they did, then we wouldn't need this shim, which
-// currently needs to be extended from in every component!
-export class PageComponent implements PageComponentInterface {
-  static get pageInfo() {
-    return null;
-  }
-  get pageInfo() {
-    return null;
-  }
-}
+import { PageComponentInterface, PageComponentStatic } from "./pageComponent";
+import { PageInfo, PageInfoInterface } from "./pageInfo";
 
 /**
  * Type alias for a component's constructor that will produce
  * a new component that implements the `PageComponentInterface`
  * interface.
  */
-type DecoratedPageComponent = Type<PageComponentInterface> &
+export type DecoratedPageComponent = Type<PageComponentInterface> &
   PageComponentStatic;
 
 /**

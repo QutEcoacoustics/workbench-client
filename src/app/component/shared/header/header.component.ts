@@ -1,10 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
-import { PageInfoInterface } from "src/app/interfaces/layout-menus.interfaces";
+import { MenuRoute } from "src/app/interfaces/menus.interfaces";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { LoginComponent } from "../../authentication/pages/login/login.component";
-import { RegisterComponent } from "../../authentication/pages/register/register.component";
-import { HomeComponent } from "../../home/home.component";
+import { loginMenuItem, registerMenuItem } from "../../authentication/authentication.menus";
+import { homeMenuItem } from "../../home/home.menus";
 
 @Component({
   selector: "app-header",
@@ -19,9 +18,9 @@ export class HeaderComponent implements OnInit {
   title = "Ecosounds";
 
   routes: {
-    home: PageInfoInterface;
-    login: PageInfoInterface;
-    register: PageInfoInterface;
+    home: MenuRoute;
+    login: MenuRoute;
+    register: MenuRoute;
   };
 
   constructor(
@@ -41,9 +40,9 @@ export class HeaderComponent implements OnInit {
     });
 
     this.routes = {
-      home: HomeComponent.pageInfo,
-      login: LoginComponent.pageInfo,
-      register: RegisterComponent.pageInfo
+      home: homeMenuItem,
+      login: loginMenuItem,
+      register: registerMenuItem
     };
 
     if (this.api.isLoggedIn()) {

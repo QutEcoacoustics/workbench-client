@@ -1,22 +1,17 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { CardsModule } from "../shared/cards/cards.modules";
-import { homeCategory, HomeComponent } from "./home.component";
+import { RouterModule } from "@angular/router";
+import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
+import { SharedModule } from "../shared/shared.module";
+import { HomeComponent } from "./home.component";
+import { homeRoute } from "./home.menus";
 
 export const HomeComponents = [HomeComponent];
 
-const homeRoute = homeCategory.route;
-const routes: Routes = [
-  {
-    path: homeRoute,
-    redirectTo: ""
-  }
-];
+const routes = homeRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: [HomeComponents],
-  imports: [CommonModule, CardsModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...HomeComponents]
 })
 export class HomeModule {}

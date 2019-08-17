@@ -11,7 +11,7 @@ import {
   toCamelCase,
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
-import { User } from "src/app/interfaces/layout-menus.interfaces";
+import { User } from "src/app/models/User";
 import { environment } from "src/environments/environment";
 
 /**

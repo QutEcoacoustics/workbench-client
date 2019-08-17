@@ -1,16 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
-import { securityCategory } from "../../authentication";
+
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
+import { resetPasswordMenuItem, securityCategory } from "../../authentication.menus";
 import data from "./reset-password.json";
 
 @Page({
-  icon: ["fas", "key"],
-  label: "Reset password",
   category: securityCategory,
-  routeFragment: "reset_password",
-  tooltip: () => "Send an email to reset your password",
   menus: null,
-  order: { priority: 2, indentation: 1 }
+  self: resetPasswordMenuItem
 })
 @Component({
   selector: "app-reset-password",

@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  routerEnableTracing: true,
   bawApiUrl: "https://staging.ecosounds.org"
 };
 

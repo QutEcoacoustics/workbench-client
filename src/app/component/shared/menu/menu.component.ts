@@ -10,9 +10,9 @@ import {
   isButton,
   isExternalLink,
   isInternalRoute,
-  LabelAndIcon,
-  User
-} from "src/app/interfaces/layout-menus.interfaces";
+  LabelAndIcon
+} from "src/app/interfaces/menus.interfaces";
+import { User } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 
 @Component({
@@ -32,7 +32,6 @@ export class MenuComponent implements OnInit {
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
-  isButton = isButton;
   isAction = isButton;
 
   ngOnInit() {

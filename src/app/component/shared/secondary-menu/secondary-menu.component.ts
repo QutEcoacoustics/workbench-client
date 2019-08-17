@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { NavigableMenuItem } from "src/app/interfaces/layout-menus.interfaces";
-import { PageInfo } from "src/app/interfaces/page.decorator";
+import { NavigableMenuItem } from "src/app/interfaces/menus.interfaces";
+import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({
@@ -17,15 +17,15 @@ export class SecondaryMenuComponent implements OnInit {
   contextLinks: List<NavigableMenuItem>;
 
   ngOnInit() {
-    this.route.data.subscribe((val: PageInfo) => {
+    this.route.data.subscribe((page: PageInfo) => {
       // get default links
       const defaultLinks = DefaultMenu.contextLinks;
       // and current page
-      const current = val;
+      const current = page.self;
       // with any links from route
       const links =
-        val && val.menus && val.menus.links
-          ? val.menus.links
+        page && page.menus && page.menus.links
+          ? page.menus.links
           : List<NavigableMenuItem>();
 
       // and add it all together
@@ -42,31 +42,31 @@ export class SecondaryMenuComponent implements OnInit {
 
   /**
    * Sort function for list of menu items
-   * @param obj1 First menu item
-   * @param obg2 Second menu item
+   * @param a First menu item
+   * @param b Second menu item
    */
-  compare(obj1: NavigableMenuItem, obj2: NavigableMenuItem): number {
+  compare(a: NavigableMenuItem, b: NavigableMenuItem): number {
     // If a does not have an order number, select b
-    if (!obj1.order.priority) {
+    if (!a.order.priority) {
       return 1;
     }
 
     // If b does not have an order number, select a
-    if (!obj2.order.priority) {
+    if (!b.order.priority) {
       return -1;
     }
 
     // If both have the same order number,
     // prioritize based on indentation and alphabetical order
-    if (obj1.order.priority === obj2.order.priority) {
-      if (obj1.order.indentation === obj2.order.indentation) {
-        return obj1.label < obj2.label ? -1 : 1;
+    if (a.order.priority === b.order.priority) {
+      if (a.order.indentation === b.order.indentation) {
+        return a.label < b.label ? -1 : 1;
       }
 
-      return obj1.order.indentation < obj2.order.indentation ? -1 : 1;
+      return a.order.indentation < b.order.indentation ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return obj1.order.priority < obj2.order.priority ? -1 : 1;
+    return a.order.priority < b.order.priority ? -1 : 1;
   }
 }

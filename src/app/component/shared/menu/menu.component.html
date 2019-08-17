@@ -24,7 +24,7 @@
         ></app-menu-button>
       </ng-container>
       <ng-template #elseLink>
-        <ng-container *ngIf="isInternalLink(link); else elseExternalLink">
+        <ng-container *ngIf="isInternalLink(link)">
           <app-menu-internal-link
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
@@ -32,14 +32,14 @@
           >
           </app-menu-internal-link>
         </ng-container>
-        <ng-template #elseExternalLink>
+        <ng-container *ngIf="isExternalLink(link)">
           <app-menu-external-link
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
             [placement]="placement"
           >
           </app-menu-external-link>
-        </ng-template>
+        </ng-container>
       </ng-template>
     </li>
   </ul>

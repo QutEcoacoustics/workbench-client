@@ -1,32 +1,22 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { Category } from "src/app/interfaces/layout-menus.interfaces";
-import { Page, PageComponent } from "src/app/interfaces/page.decorator";
+import { Page } from "src/app/interfaces/page.decorator";
+import { PageComponent } from "src/app/interfaces/pageComponent";
+
 import {
   Projects,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
 import { Card } from "../shared/cards/cards.component";
-
-export const homeCategory: Category = {
-  icon: ["fas", "home"],
-  label: "Home",
-  route: "home"
-};
+import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Page({
-  icon: ["fas", "home"],
-  label: "Home",
   category: homeCategory,
-  routeFragment: "home",
-  route: "/" + homeCategory.route,
-  tooltip: () => "Home page",
-  predicate: user => !user,
-  order: { priority: 1, indentation: 0 },
+  fullscreen: true,
   menus: null,
-  fullscreen: true
+  self: homeMenuItem
 })
 @Component({
   selector: "app-home",

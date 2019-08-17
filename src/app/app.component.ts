@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { delay, map, withLatestFrom } from "rxjs/operators";
-import { UpdateUriForPages as UpdateRouteForPages } from "./interfaces/page.interfaces";
 
 @Component({
   selector: "app-root",
@@ -19,17 +18,19 @@ export class AppComponent {
   ) {
     this.menuLayout = true;
 
-    // Update page info component routes
-    UpdateRouteForPages(this.router);
-
     // Determine whether the currently shown component uses the menu layout or fullscreen
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
         // Find the primary router component
         let displayComponent = this.route.snapshot.firstChild;
+
         let search = true;
         let count = 0;
         while (search && count < 50) {
+          if (!displayComponent) {
+            return;
+          }
+
           if (!!displayComponent.component) {
             search = false;
           } else {

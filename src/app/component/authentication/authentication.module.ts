@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 
-import { GetRoutesForPages } from "src/app/interfaces/page.interfaces";
-import { securityCategory } from "./authentication";
+import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
+import { securityRoute } from "./authentication.menus";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
 import { LoginComponent } from "./pages/login/login.component";
 import { RegisterComponent } from "./pages/register/register.component";
@@ -18,13 +18,7 @@ export const AuthenticationComponents = [
   UnlockPasswordComponent
 ];
 
-const authenticationRoute = securityCategory.route;
-const routes: Routes = [
-  {
-    path: authenticationRoute,
-    children: GetRoutesForPages(AuthenticationComponents)
-  }
-];
+const routes = securityRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: AuthenticationComponents,
