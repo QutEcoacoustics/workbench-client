@@ -46,11 +46,11 @@ export class HeaderComponent implements OnInit {
     };
 
     if (this.api.isLoggedIn()) {
-      this.username = this.api.user.username;
+      this.username = this.api.getUser().username;
     }
 
     this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      this.username = loggedIn ? this.api.user.username : null;
+      this.username = loggedIn ? this.api.getUser().username : null;
       this.ref.detectChanges();
     });
   }

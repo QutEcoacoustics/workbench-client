@@ -1,9 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 
-import { MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
-import { registerMenuItem, securityCategory, securityRoute } from "../../authentication.menus";
+import { SecurityService } from "src/app/services/baw-api/security.service";
+import { registerMenuItem, securityCategory } from "../../authentication.menus";
+import data from "./register.json";
 
 @Page({
   category: securityCategory,
@@ -14,7 +16,7 @@ import { registerMenuItem, securityCategory, securityRoute } from "../../authent
   selector: "app-authentication-register",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Register'"
       [submitLoading]="loading"
       [error]="error"
@@ -22,17 +24,33 @@ import { registerMenuItem, securityCategory, securityRoute } from "../../authent
     ></app-form>
   `
 })
-export class RegisterComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/register.json";
+export class RegisterComponent extends PageComponent
+  implements OnInit, OnDestroy {
+  private subs = new SubSink();
+  schema = data;
   error: string;
   loading: boolean;
 
-  constructor() {
+  constructor(private api: SecurityService) {
     super();
   }
 
   ngOnInit() {
-    this.loading = false;
+    this.loading = true;
+
+    this.subs.sink = this.api.getLoggedInTrigger().subscribe(loggedIn => {
+      if (loggedIn) {
+        this.loading = true;
+        this.error = "You are already logged in";
+      } else {
+        this.loading = false;
+        this.error = null;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
   submit(model) {

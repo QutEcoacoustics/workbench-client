@@ -36,11 +36,13 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // Get user details
-    const user: User = this.api.user;
+    const user: User = this.api.getUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     this.filteredLinks = this.removeDuplicates(
-      this.links.filter(link => this.filter(user, link))
+      this.links
+        ? this.links.filter(link => this.filter(user, link))
+        : List<AnyMenuItem>([])
     );
   }
 

@@ -1,0 +1,15 @@
+{
+  "model": {
+    "email": ""
+  },
+  "fields": [
+    {
+      "key": "email",
+      "type": "input",
+      "templateOptions": {
+        "label": "Username or Email Address",
+        "required": true
+      }
+    }
+  ]
+}

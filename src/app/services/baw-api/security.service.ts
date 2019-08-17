@@ -17,11 +17,12 @@ export class SecurityService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
+    console.debug("Constructor: " + this.isLoggedIn());
     this.loggedInTrigger.next(this.isLoggedIn());
 
     this.paths = {
       security: {
-        ping: "/security",
+        register: "/security",
         signIn: "/security",
         signOut: "/security"
       }
@@ -35,11 +36,45 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
-  // TODO Automatically refresh user token using login details
-  ping() {}
+  /**
+   * Trigger a subject when user login state changes
+   * @param triggerUpdate Observable to trigger on update
+   * @returns Subject which updates on login state change
+   */
+  onLoginChange<T>(triggerUpdate: Observable<T>): Subject<T> {
+    const subject = new Subject<T>();
 
-  // TODO Register account
-  register() {}
+    // Determine list of projects whenever logged in state changes
+    this.getLoggedInTrigger().subscribe(() => {
+      triggerUpdate.subscribe(
+        (data: any) => {
+          if (data.meta && data.meta.status === this.RETURN_CODE.SUCCESS) {
+            subject.next(data);
+          } else {
+            if (data.meta && data.meta.error && data.meta.error.details) {
+              subject.error(data.meta.error.details);
+            } else {
+              subject.error("An unknown error has occurred.");
+            }
+          }
+        },
+        err => {
+          if (err.meta && err.meta.error && err.meta.error.details) {
+            subject.error(err.meta.error.details);
+          } else {
+            subject.error("An unknown error has occurred.");
+          }
+        }
+      );
+    });
+
+    return subject;
+  }
+
+  // TODO Register account. Path needs to be checked and inputs ascertained.
+  register(details: any): Observable<boolean | string> {
+    return this.authenticateUser(this.paths.security.register, details);
+  }
 
   /**
    * Login the user, this function can only be called if user
@@ -50,31 +85,28 @@ export class SecurityService extends BawApiService {
    * @returns Observable (true if success, error string if failure)
    */
   login(details: any): Observable<boolean | string> {
-    const subject = new Subject<boolean | string>();
+    return this.authenticateUser(this.paths.security.signIn, details);
+  }
 
+  /**
+   * Authenticate a user
+   * @param path API Route
+   * @param details Form details to pass to API
+   */
+  private authenticateUser(
+    path: string,
+    details: { email: string; password: string }
+  ): Observable<boolean | string> {
+    const subject = new Subject<boolean>();
+
+    // Return early if logged in
     if (this.isLoggedIn()) {
-      subject.next("You are already logged in, try logging out first.");
+      this.loggedInTrigger.next(true);
+      subject.error("You are already logged in, try logging out first.");
+      return subject.asObservable();
     }
 
-    /**
-     * Log unknown error message
-     * @param err Error
-     */
-    function logUnknownError(err: any) {
-      console.error("Unknown error thrown by login rest api");
-      console.error(err);
-      subject.next(
-        "An unknown error has occurred. Please refresh the browser or try again at a later date."
-      );
-
-      this.loggedInTrigger.next(false);
-    }
-
-    this.post<AuthenticationLogin>(
-      this.paths.security.signIn,
-      undefined,
-      details
-    ).subscribe(
+    this.post<AuthenticationLogin>(path, undefined, details).subscribe(
       (data: AuthenticationLogin) => {
         if (data.meta.status === this.RETURN_CODE.SUCCESS) {
           // TODO Read id and role from api
@@ -89,17 +121,15 @@ export class SecurityService extends BawApiService {
           this.loggedInTrigger.next(true);
           subject.next(true);
         } else {
-          logUnknownError(data);
+          console.error("Unknown error thrown by login rest api");
+          console.error(data);
+          this.loggedInTrigger.next(false);
+          subject.error("Something bad happened; please try again later.");
         }
       },
-      (err: ErrorResponse) => {
-        const data = err.error;
-        if (data.meta.error.details) {
-          subject.next(data.meta.error.details);
-          this.loggedInTrigger.next(false);
-        } else {
-          logUnknownError(err);
-        }
+      (err: string) => {
+        this.loggedInTrigger.next(false);
+        subject.error(err);
       }
     );
 

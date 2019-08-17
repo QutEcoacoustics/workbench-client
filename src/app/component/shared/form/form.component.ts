@@ -9,7 +9,11 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
   styleUrls: ["./form.component.scss"]
 })
 export class FormComponent implements OnInit {
-  @Input() schema: string;
+  @Input() schema: {
+    model: {};
+    fields: FormlyFieldConfig[];
+  };
+  @Input() schemaUrl: string;
   @Input() title?: string;
   @Input() submitLabel: string;
   @Input() submitLoading: boolean;
@@ -26,31 +30,44 @@ export class FormComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.submitLoading = false;
     this.form = new FormGroup({});
-    this.http.get(this.schema).subscribe((data: any) => {
-      /**
-       * Convert any validator functions to Function datatype.
-       * This allows us to follow the format given by formly whilst also staying
-       * within the limitations of JSON (eg. Cannot transmit functions).
-       */
-      data.fields.forEach(field => {
-        const validator = field.validators;
 
-        if (
-          validator &&
-          validator.fieldMatch &&
-          validator.fieldMatch.expression
-        ) {
-          validator.fieldMatch.expression = new Function(
-            "control",
-            validator.fieldMatch.expression
-          );
-        }
+    // If schema
+    if (this.schema) {
+      this.convertFunctions(this.schema.fields);
+
+      this.model = this.schema.model;
+      this.fields = this.schema.fields;
+    } else if (this.schemaUrl) {
+      this.http.get(this.schemaUrl).subscribe((data: any) => {
+        this.convertFunctions(data.fields);
+
+        this.model = data.model;
+        this.fields = data.fields;
       });
+    }
+  }
 
-      this.model = data.model;
-      this.fields = data.fields;
+  /**
+   * Convert any validator functions to Function datatype.
+   * This allows us to follow the format given by formly whilst also staying
+   * within the limitations of JSON (eg. Cannot transmit functions).
+   * @param fields Form fields
+   */
+  convertFunctions(fields: any) {
+    fields.forEach(field => {
+      const validator = field.validators;
+
+      if (
+        validator &&
+        validator.fieldMatch &&
+        validator.fieldMatch.expression
+      ) {
+        validator.fieldMatch.expression = new Function(
+          "control",
+          validator.fieldMatch.expression
+        );
+      }
     });
   }
 

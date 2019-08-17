@@ -21,4 +21,8 @@ describe("FooterComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should have tests", () => {
+    expect(false).toBeTruthy();
+  });
 });

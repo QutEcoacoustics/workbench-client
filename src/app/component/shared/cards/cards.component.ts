@@ -14,18 +14,15 @@ import { List } from "immutable";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardsComponent implements OnChanges {
-  @Input() cards: List<{
-    title: string;
-    image?: { url: string; alt: string };
-    description?: string;
-    link?: string;
-  }>;
+  @Input() cards: List<Card>;
   imageCards: boolean;
 
   constructor() {}
 
   ngOnChanges() {
-    this.checkRequiredFields("cards", this.cards);
+    if (!this.cards) {
+      this.cards = List<Card>([]);
+    }
 
     this.imageCards = false;
     this.cards.forEach(card => {
@@ -38,17 +35,6 @@ export class CardsComponent implements OnChanges {
         );
       }
     });
-  }
-
-  /**
-   * Check input field is provided
-   * @param name Input variable name
-   * @param input Input variable
-   */
-  checkRequiredFields(name: string, input: any) {
-    if (input === null || input === undefined) {
-      throw new Error("Attribute " + name + " is required");
-    }
   }
 }
 

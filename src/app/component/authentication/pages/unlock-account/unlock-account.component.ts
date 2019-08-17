@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { securityCategory, unlockAccountMenuItem } from "../../authentication.menus";
+import data from "./unlock-account.json";
 
 @Page({
   category: securityCategory,
@@ -13,7 +14,7 @@ import { securityCategory, unlockAccountMenuItem } from "../../authentication.me
   selector: "app-confirm-account",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Resend unlock instructions'"
       [submitLabel]="'Resend unlock instructions'"
       [submitLoading]="loading"
@@ -23,7 +24,7 @@ import { securityCategory, unlockAccountMenuItem } from "../../authentication.me
   `
 })
 export class UnlockPasswordComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/unlock-account.json";
+  schema = data;
   error: string;
   loading: boolean;
 

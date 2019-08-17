@@ -1,16 +1,14 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subscription } from "rxjs";
-import { Category } from "src/app/interfaces/menus.interfaces";
-import { MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
+
 import {
   Projects,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -25,18 +23,29 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+export class HomeComponent extends PageComponent implements OnInit {
   processList: List<Card>;
-  projectList: List<Card> = List([]);
-  postList: List<Card>;
-  testing: string;
-  loggedInSubscription: Subscription;
+  updateProjectList$: Observable<any> = this.api
+    .getFilteredProjects({ items: 3 })
+    .pipe(
+      map((data: Projects) => {
+        return List(
+          data.data.map(project => {
+            return {
+              title: project.name,
+              image: {
+                url:
+                  "https://staging.ecosounds.org/images/project/project_span3.png",
+                alt: project.name
+              },
+              link: "https://staging.ecosounds.org/projects/" + project.id
+            };
+          })
+        );
+      })
+    );
 
-  constructor(
-    private projectsApi: ProjectsService,
-    private securityApi: SecurityService,
-    private ref: ChangeDetectorRef
-  ) {
+  constructor(private api: ProjectsService) {
     super();
   }
 
@@ -59,45 +68,5 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
           "Ecologists use these to answer environmental questions."
       }
     ]);
-
-    this.loggedInSubscription = this.securityApi
-      .getLoggedInTrigger()
-      .subscribe(() => {
-        this.updateProjectList();
-      });
-  }
-
-  ngOnDestroy(): void {
-    // Unsubscribe from logged in changes after destruction
-    if (this.loggedInSubscription) {
-      this.loggedInSubscription.unsubscribe();
-    }
-  }
-
-  /**
-   * Update project list array
-   */
-  updateProjectList() {
-    this.projectsApi.getFilteredList({ items: 3 }).subscribe({
-      next: (data: Projects) => {
-        this.projectList = List(
-          data.data.map(project => {
-            return {
-              title: project.name,
-              image: {
-                url:
-                  "https://staging.ecosounds.org/images/project/project_span3.png",
-                alt: project.name
-              },
-              link: "https://staging.ecosounds.org/projects/" + project.id
-            };
-          })
-        );
-      },
-      complete: () => {
-        this.ref.detectChanges();
-      },
-      error: err => console.error("Error: ", err)
-    });
   }
 }

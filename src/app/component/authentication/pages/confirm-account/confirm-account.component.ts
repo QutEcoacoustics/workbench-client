@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { confirmAccountMenuItem, securityCategory } from "../../authentication.menus";
+import data from "./confirm-account.json";
 
 @Page({
   category: securityCategory,
@@ -13,7 +14,7 @@ import { confirmAccountMenuItem, securityCategory } from "../../authentication.m
   selector: "app-confirm-account",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Resend confirmation instructions?'"
       [submitLabel]="'Resend confirmation instructions'"
       [submitLoading]="loading"
@@ -23,7 +24,7 @@ import { confirmAccountMenuItem, securityCategory } from "../../authentication.m
   `
 })
 export class ConfirmPasswordComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/confirm-account.json";
+  schema = data;
   error: string;
   loading: boolean;
 
@@ -35,9 +36,9 @@ export class ConfirmPasswordComponent extends PageComponent implements OnInit {
     this.loading = false;
   }
 
-  submit(model) {
+  submit($event: any) {
     this.loading = true;
-    console.log(model);
+    console.log($event);
     this.loading = false;
   }
 }

@@ -1,8 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { catchError, map, retry } from "rxjs/operators";
-import { BawApiService, MetaError, Paths } from "./base-api.service";
+import { Subject } from "rxjs";
+import {
+  BawApiService,
+  Filter,
+  List,
+  MetaError,
+  Paths
+} from "./base-api.service";
+import { SecurityService } from "./security.service";
 
 /**
  * Interacts with projects route in baw api
@@ -13,7 +19,7 @@ import { BawApiService, MetaError, Paths } from "./base-api.service";
 export class ProjectsService extends BawApiService {
   protected paths: Paths;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private security: SecurityService) {
     super(http);
 
     this.paths = {
@@ -28,43 +34,50 @@ export class ProjectsService extends BawApiService {
   /**
    * Get a project available to the user
    * @param id Project ID
+   * @returns Observable returning singular project
    */
-  getProject(id: number): Observable<Project | string> {
-    return this.get<Project>(this.paths.projects.show, {
-      args: { projectId: id }
-    });
+  getProject(id: number): Subject<Project> {
+    return this.security.onLoginChange<Project>(
+      this.get<Project>(this.paths.projects.show, {
+        args: { projectId: id }
+      })
+    );
   }
 
   /**
    * Get list of projects available to the user
    * @returns Observable list of projects
    */
-  getList(): Observable<Projects | string> {
-    return this.get<Projects>(this.paths.projects.list);
+  getProjects(): Subject<Projects> {
+    return this.security.onLoginChange<Projects>(
+      this.get<Projects>(this.paths.projects.list)
+    );
   }
 
   /**
    * Get list of filtered projects available to the user
+   * @param filters Filters
    * @returns Observable list of projects
    */
-  getFilteredList(filters: {
-    direction?: "asc" | "desc";
-    items?: number;
-    orderBy?: "id" | "name" | "description" | "creatorId";
-    page?: number;
-  }): Observable<Projects | string> {
-    return this.get<Projects>(this.paths.projects.list, { filters });
+  getFilteredProjects(filters: ProjectFilter): Subject<Projects> {
+    return this.security.onLoginChange<Projects>(
+      this.get<Projects>(this.paths.projects.filter, { filters })
+    );
   }
+}
+
+export interface ProjectFilter extends Filter {
+  orderBy?: "id" | "name" | "description" | "creatorId";
 }
 
 /**
  * Project data interface
  */
 export interface ProjectData {
+  creatorId: number;
+  description: string;
   id: number;
   name: string;
-  description: string;
-  creatorId: number;
   siteIds: number[];
 }
 
@@ -73,7 +86,7 @@ export interface ProjectData {
  */
 export interface Project {
   meta: {
-    status: string;
+    status: number;
     message: string;
     error?: MetaError;
   };
@@ -83,24 +96,6 @@ export interface Project {
 /**
  * Projects interface
  */
-export interface Projects {
-  meta: {
-    status: number;
-    message: string;
-    error?: MetaError;
-    sorting: {
-      orderBy: string;
-      direction: string;
-    };
-    paging: {
-      page: number;
-      items: number;
-      total: number;
-      maxPage: number;
-      current: string;
-      previous: string;
-      next: string;
-    };
-  };
+export interface Projects extends List {
   data: ProjectData[];
 }

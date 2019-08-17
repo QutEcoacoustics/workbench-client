@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { resetPasswordMenuItem, securityCategory } from "../../authentication.menus";
+import data from "./reset-password.json";
 
 @Page({
   category: securityCategory,
@@ -13,7 +14,7 @@ import { resetPasswordMenuItem, securityCategory } from "../../authentication.me
   selector: "app-reset-password",
   template: `
     <app-form
-      [schema]="schemaUrl"
+      [schema]="schema"
       [title]="'Forgot your password?'"
       [submitLabel]="'Send me reset password instructions'"
       [submitLoading]="loading"
@@ -23,7 +24,7 @@ import { resetPasswordMenuItem, securityCategory } from "../../authentication.me
   `
 })
 export class ResetPasswordComponent extends PageComponent implements OnInit {
-  schemaUrl = "assets/templates/forgot-password.json";
+  schema = data;
   error: string;
   loading: boolean;
 

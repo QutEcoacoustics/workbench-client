@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  routerEnableTracing: false
+  routerEnableTracing: false,
+  bawApiUrl: "https://ecosounds.org"
 };

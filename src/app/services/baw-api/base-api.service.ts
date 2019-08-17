@@ -7,8 +7,12 @@ import {
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { toCamelCase, toSnakeCase } from "src/app/helpers/case-converter";
+import {
+  toCamelCase,
+  toSnakeCase
+} from "src/app/helpers/case-converter/case-converter";
 import { User } from "src/app/models/User";
+import { environment } from "src/environments/environment";
 
 /**
  * Interface with BAW Server Rest API
@@ -19,7 +23,7 @@ import { User } from "src/app/models/User";
 export class BawApiService {
   constructor(protected http: HttpClient) {}
 
-  private url = "https://staging.ecosounds.org";
+  private url = environment.bawApiUrl;
   protected RETURN_CODE = {
     SUCCESS: 200,
     BAD_REQUEST: 400,
@@ -29,14 +33,14 @@ export class BawApiService {
     user: "user"
   };
 
-  isLoggedIn(): boolean {
+  public isLoggedIn(): boolean {
     return !!this.getSessionUser();
   }
 
   /**
    * Username of the logged in user
    */
-  get user(): User {
+  public getUser(): User | null {
     return this.getSessionUser();
   }
 
@@ -44,7 +48,7 @@ export class BawApiService {
    * Constructs a `GET` request
    * @param path API path
    */
-  protected get<T>(path: string, args?: PathArg): Observable<T | string> {
+  protected get<T>(path: string, args?: PathArg): Observable<T> {
     return this.http
       .get(this.getPath(path, args), this.getHeaderOptions())
       .pipe(
@@ -60,23 +64,8 @@ export class BawApiService {
   protected post<T>(
     path: string,
     args?: PathArg,
-    options?: {
-      headers?:
-        | HttpHeaders
-        | {
-            [header: string]: string | string[];
-          };
-      observe?: "body";
-      params?:
-        | HttpParams
-        | {
-            [param: string]: string | string[];
-          };
-      reportProgress?: boolean;
-      responseType?: "json";
-      withCredentials?: boolean;
-    }
-  ): Observable<T | string> {
+    options?: any
+  ): Observable<T> {
     return this.http
       .post(this.getPath(path, args), options, this.getHeaderOptions())
       .pipe(
@@ -88,7 +77,7 @@ export class BawApiService {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  protected getSessionUser(): User | null {
+  private getSessionUser(): User | null {
     let user: User;
     try {
       user = JSON.parse(
@@ -98,13 +87,14 @@ export class BawApiService {
       user = null;
     }
 
+    console.debug(user);
     return user;
   }
 
   /**
    * Get the header options for a http request
    */
-  protected getHeaderOptions() {
+  private getHeaderOptions() {
     const user = this.getSessionUser();
     let options = {
       headers: new HttpHeaders({
@@ -131,16 +121,14 @@ export class BawApiService {
    * @param path Path fragment
    * @param args Args to modify path fragment
    */
-  protected getPath(path: string, args?: PathArg): string {
+  private getPath(path: string, args?: PathArg): string {
     // If arguments are given
     if (args) {
       // Replace fragment inputs
       if (args.args) {
         for (const key in args.args) {
           const value = args.args[key];
-          if (value) {
-            path = path.replace("{" + key + "}", value as string);
-          }
+          path = path.replace("{" + key + "}", value as string);
         }
       }
       if (args.filters) {
@@ -152,9 +140,7 @@ export class BawApiService {
 
         for (const key in convertedFilters) {
           const value = convertedFilters[key];
-          if (value) {
-            path += key + "=" + (value as string) + "&";
-          }
+          path += key + "=" + (value as string) + "&";
         }
 
         // Remove last &
@@ -169,7 +155,7 @@ export class BawApiService {
    * Convert json object to javascript object
    * @param obj Object to convert
    */
-  protected convertJsonToJS(obj: any): any {
+  private convertJsonToJS(obj: any): any {
     // Convert from snake_case to camelCase
     return toCamelCase(obj);
   }
@@ -178,7 +164,7 @@ export class BawApiService {
    * Convert javascript object to json object
    * @param obj Object to convert
    */
-  protected convertJSToJson(obj: any): any {
+  private convertJSToJson(obj: any): any {
     // Convert from camelCase to snake_case
     return toSnakeCase(obj);
   }
@@ -188,17 +174,17 @@ export class BawApiService {
    * @param error HTTP Error
    * @throws Observable<never>
    */
-  protected handleError(error: HttpErrorResponse): Observable<string> {
+  private handleError(error: HttpErrorResponse): Observable<string> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error("An error occurred:", error.error.message);
+      return throwError("Something bad happened; please try again later.");
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       console.error(`Backend returned code ${error.status}: `, error);
+      return throwError(error.error.meta.error.details);
     }
-    // return an observable with a user-facing error message
-    return throwError("Something bad happened; please try again later.");
   }
 }
 
@@ -240,4 +226,39 @@ export interface Paths {
   [key: string]: {
     [key: string]: string;
   };
+}
+
+/**
+ * Default filter for routes
+ */
+export interface Filter {
+  direction?: "asc" | "desc";
+  items?: number;
+  orderBy?: string;
+  page?: number;
+}
+
+/**
+ * List of items from route
+ */
+export interface List {
+  meta: {
+    status: number;
+    message: string;
+    error?: MetaError;
+    sorting: {
+      orderBy: string;
+      direction: string;
+    };
+    paging: {
+      page: number;
+      items: number;
+      total: number;
+      maxPage: number;
+      current: string;
+      previous: string;
+      next: string;
+    };
+  };
+  data: any[];
 }
