@@ -1,13 +1,15 @@
 import {
   async,
   ComponentFixture,
+  fakeAsync,
   inject,
-  TestBed
+  TestBed,
+  tick
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
@@ -16,11 +18,26 @@ import { LoginComponent } from "./login.component";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
+  let securityService: SecurityService;
+  let router: Router;
   let fixture: ComponentFixture<LoginComponent>;
 
   class MockSecurityService {
-    public login(details: { email: string; password: string }) {
-      return details.email === "email" && details.password === "password";
+    public login(details: {
+      email: string;
+      password: string;
+    }): Observable<boolean | string> {
+      const subject = new Subject<boolean | string>();
+
+      setTimeout(() => {
+        if (details.email === "email" && details.password === "password") {
+          subject.next(true);
+        } else {
+          subject.error("Error MSG");
+        }
+      }, 1000);
+
+      return subject.asObservable();
     }
 
     public getLoggedInTrigger() {
@@ -31,7 +48,10 @@ describe("LoginComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([
+          { path: "", component: HomeComponent },
+          { path: "security/login", component: LoginComponent }
+        ]),
         SharedModule,
         FormlyModule.forRoot({
           validationMessages
@@ -45,6 +65,8 @@ describe("LoginComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+    securityService = TestBed.get(SecurityService);
+    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -57,7 +79,7 @@ describe("LoginComponent", () => {
     expect(fixture.nativeElement.querySelector("button").disabled).toBeFalsy();
   });
 
-  it("should only contain two inputs", () => {
+  it("should contain two inputs", () => {
     expect(fixture.nativeElement.querySelectorAll("input").length).toBe(2);
   });
 
@@ -66,10 +88,17 @@ describe("LoginComponent", () => {
     expect(fixture.nativeElement.querySelectorAll("input")[0].type).toBe(
       "text"
     );
+  });
 
-    // API route expects email as id
+  it("username/email input should be required field", () => {
+    expect(
+      fixture.nativeElement.querySelectorAll("input")[0].required
+    ).toBeTruthy();
+  });
+
+  it("username/email input should have email id", () => {
     expect(fixture.nativeElement.querySelectorAll("input")[0].id).toContain(
-      "email"
+      "_input_email_"
     );
   });
 
@@ -78,30 +107,351 @@ describe("LoginComponent", () => {
     expect(fixture.nativeElement.querySelectorAll("input")[1].type).toBe(
       "password"
     );
+  });
 
-    // API route expects email as id
+  it("password input should be required field", () => {
+    expect(
+      fixture.nativeElement.querySelectorAll("input")[1].required
+    ).toBeTruthy();
+  });
+
+  it("password input should have password id", () => {
     expect(fixture.nativeElement.querySelectorAll("input")[1].id).toContain(
-      "password"
+      "_input_password_"
     );
   });
 
-  it("should login account on submit", async(
-    inject([Router, SecurityService], (router, securityService) => {
-      spyOn(component, "submit");
-      spyOn(router, "navigate");
-      spyOn(securityService, "login");
+  it("should not call submit function with missing email", fakeAsync(() => {
+    spyOn(component, "submit");
 
-      fixture.nativeElement.querySelectorAll("input")[0].value = "email";
-      fixture.nativeElement.querySelectorAll("input")[1].value = "password";
-      fixture.nativeElement.querySelector("button").click();
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "";
+    email.dispatchEvent(new Event("input"));
 
-      fixture.whenStable().then(() => {
-        expect(component.submit).toHaveBeenCalled();
-        expect(securityService.login).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalled();
-      });
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
 
-      // expect(router.navigate).toHaveBeenCalledWith(["/"]);
-    })
-  ));
+    tick();
+    fixture.detectChanges();
+    expect(component.submit).not.toHaveBeenCalled();
+  }));
+
+  it("should show error message with missing email", fakeAsync(() => {
+    spyOn(component, "submit");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "";
+    email.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should not call submit function with missing password", fakeAsync(() => {
+    spyOn(component, "submit");
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+    expect(component.submit).not.toHaveBeenCalled();
+  }));
+
+  it("should show error message with missing password", fakeAsync(() => {
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should not call submit function with missing fields", fakeAsync(() => {
+    spyOn(component, "submit");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+    expect(component.submit).not.toHaveBeenCalled();
+  }));
+
+  it("should show error message with missing fields", fakeAsync(() => {
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should not call submit function with password less than 6 characters long", fakeAsync(() => {
+    spyOn(component, "submit");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "12345";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+    expect(component.submit).not.toHaveBeenCalled();
+  }));
+
+  it("should show error message with password less than 6 characters long", fakeAsync(() => {
+    spyOn(component, "submit");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "12345";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should login account on submit", fakeAsync(() => {
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "login");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick();
+    fixture.detectChanges();
+
+    expect(component.submit).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalledWith({
+      email: "email",
+      password: "password"
+    });
+  }));
+
+  it("should redirect user to home on successful submit", fakeAsync(() => {
+    spyOn(router, "navigate");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(["/"]);
+  }));
+
+  it("should show error on bad email", fakeAsync(() => {
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "login").and.callThrough();
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "bad email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(component.submit).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalledWith({
+      email: "bad email",
+      password: "password"
+    });
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should show error on bad password", fakeAsync(() => {
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "login").and.callThrough();
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "bad password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(component.submit).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalledWith({
+      email: "email",
+      password: "bad password"
+    });
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
+
+  it("should show error on bad credentials", fakeAsync(() => {
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "login").and.callThrough();
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "bad email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "bad password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(component.submit).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalled();
+    expect(securityService.login).toHaveBeenCalledWith({
+      email: "bad email",
+      password: "bad password"
+    });
+
+    tick();
+    fixture.detectChanges();
+
+    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(msg).toBeTruthy();
+    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+  }));
 });

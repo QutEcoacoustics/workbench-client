@@ -28,6 +28,7 @@
           "key": "email",
           "type": "input",
           "templateOptions": {
+            "type": "email",
             "label": "Email",
             "required": true
           }
