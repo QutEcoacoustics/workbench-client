@@ -2,7 +2,6 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
-  inject,
   TestBed,
   tick
 } from "@angular/core/testing";

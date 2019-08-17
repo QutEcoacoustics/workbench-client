@@ -17,6 +17,7 @@
     "lib": ["es2018", "dom"],
     "alwaysStrict": true,
     "pretty": true,
+    "types": ["karma-viewport", "jasmine"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
