@@ -4,9 +4,10 @@
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular', 'viewport'],
     plugins: [
       require('karma-jasmine'),
+      require('karma-viewport'),
       require('karma-edge-launcher'),
       require('karma-chrome-launcher'),
       require('karma-firefox-launcher'),
@@ -29,6 +30,45 @@ module.exports = function(config) {
     autoWatch: true,
     browsers: ['Chrome', 'Firefox'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    viewport: {
+      breakpoints: [
+        {
+          name: 'extra-small',
+          size: {
+            width: 320,
+            height: 480
+          }
+        },
+        {
+          name: 'small',
+          size: {
+            width: 480,
+            height: 720
+          }
+        },
+        {
+          name: 'medium',
+          size: {
+            width: 768,
+            height: 1024
+          }
+        },
+        {
+          name: 'large',
+          size: {
+            width: 992,
+            height: 1024
+          }
+        },
+        {
+          name: 'extra-large',
+          size: {
+            width: 1200,
+            height: 900
+          }
+        }
+      ]
+    }
   });
 };
