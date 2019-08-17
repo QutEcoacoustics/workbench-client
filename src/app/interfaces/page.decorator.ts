@@ -1,7 +1,6 @@
 import { Type } from "@angular/core";
 import { PageComponentInterface, PageComponentStatic } from "./pageComponent";
-import { PageInfoInterface, PageInfo } from "./PageInfo";
-
+import { PageInfo, PageInfoInterface } from "./pageInfo";
 
 /**
  * Type alias for a component's constructor that will produce

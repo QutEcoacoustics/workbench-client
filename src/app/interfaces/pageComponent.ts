@@ -1,5 +1,5 @@
-import { PageInfo } from "./PageInfo";
 import { Type } from "@angular/core";
+import { PageInfo } from "./pageInfo";
 
 export interface PageComponentStatic
   extends
@@ -31,6 +31,6 @@ export class PageComponent implements PageComponentInterface {
  * @param component Angular component
  */
 export function getPageInfo(component: Type<any>): (PageInfo | null) {
-  let pageComponent = component as PageComponentStatic;
+  const pageComponent = component as PageComponentStatic;
   return pageComponent ? pageComponent.pageInfo : null;
 }
