@@ -30,7 +30,7 @@ export class FormComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.form = new FormGroup({});
+    /*this.form = new FormGroup({});
 
     // If schema
     if (this.schema) {
@@ -45,7 +45,7 @@ export class FormComponent implements OnInit {
         this.model = data.model;
         this.fields = data.fields;
       });
-    }
+    }*/
   }
 
   /**

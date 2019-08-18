@@ -1,17 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import {
-  AnyMenuItem,
-  LabelAndIcon
-} from "src/app/interfaces/menus.interfaces";
+import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menus.interfaces";
 import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({
   selector: "app-action-menu",
-  templateUrl: "./action-menu.component.html",
-  styleUrls: ["./action-menu.component.scss"]
+  template: `
+    <app-menu [title]="actionTitle" [links]="actionLinks" [menuType]="'action'">
+    </app-menu>
+  `
 })
 export class ActionMenuComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}

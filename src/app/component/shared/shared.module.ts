@@ -13,8 +13,8 @@ import { sharedComponents } from "./shared.components";
 @NgModule({
   declarations: sharedComponents,
   imports: [
-    RouterModule,
     CommonModule,
+    RouterModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,
@@ -25,8 +25,8 @@ import { sharedComponents } from "./shared.components";
     CardsModule
   ],
   exports: [
-    RouterModule,
     CommonModule,
+    RouterModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,

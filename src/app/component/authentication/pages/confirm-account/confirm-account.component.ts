@@ -1,14 +1,29 @@
 import { Component, OnInit } from "@angular/core";
-
+import { List } from "immutable";
+import { AnyMenuItem } from "src/app/interfaces/menus.interfaces";
 import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
-import { confirmAccountMenuItem, securityCategory } from "../../authentication.menus";
+import {
+  confirmAccountMenuItem,
+  loginMenuItem,
+  resetPasswordMenuItem,
+  securityCategory,
+  unlockAccountMenuItem
+} from "../../authentication.menus";
 import data from "./confirm-account.json";
 
 @Page({
   category: securityCategory,
-  menus: null,
-  self: confirmAccountMenuItem,
+  menus: {
+    actions: List<AnyMenuItem>([
+      resetPasswordMenuItem,
+      confirmAccountMenuItem,
+      unlockAccountMenuItem,
+      loginMenuItem
+    ]),
+    links: List()
+  },
+  self: confirmAccountMenuItem
 })
 @Component({
   selector: "app-confirm-account",

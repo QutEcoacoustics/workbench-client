@@ -8,7 +8,12 @@ import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import {
-  confirmAccountMenuItem, loginMenuItem, resetPasswordMenuItem, securityCategory, unlockAccountMenuItem } from "../../authentication.menus";
+  confirmAccountMenuItem,
+  loginMenuItem,
+  resetPasswordMenuItem,
+  securityCategory,
+  unlockAccountMenuItem
+} from "../../authentication.menus";
 import data from "./login.json";
 
 @Page({

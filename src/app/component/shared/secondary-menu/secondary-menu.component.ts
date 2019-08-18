@@ -7,8 +7,9 @@ import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 
 @Component({
   selector: "app-secondary-menu",
-  templateUrl: "./secondary-menu.component.html",
-  styleUrls: ["./secondary-menu.component.scss"],
+  template: `
+    <app-menu [links]="contextLinks" [menuType]="'secondary'"> </app-menu>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecondaryMenuComponent implements OnInit {
