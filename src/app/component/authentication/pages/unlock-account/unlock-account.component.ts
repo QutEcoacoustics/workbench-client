@@ -16,10 +16,10 @@ import data from "./unlock-account.json";
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      resetPasswordMenuItem,
+      loginMenuItem,
       confirmAccountMenuItem,
-      unlockAccountMenuItem,
-      loginMenuItem
+      resetPasswordMenuItem,
+      unlockAccountMenuItem
     ]),
     links: List()
   },
