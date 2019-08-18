@@ -338,7 +338,7 @@ describe("LoginComponent", () => {
 
   it("should login account on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(securityService, "login");
+    spyOn(securityService, "signIn");
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -361,8 +361,8 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalledWith({
+    expect(securityService.signIn).toHaveBeenCalled();
+    expect(securityService.signIn).toHaveBeenCalledWith({
       email: "email",
       password: "password"
     });
@@ -397,7 +397,7 @@ describe("LoginComponent", () => {
 
   it("should show error on bad email", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(securityService, "login").and.callThrough();
+    spyOn(securityService, "signIn").and.callThrough();
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -420,8 +420,8 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalledWith({
+    expect(securityService.signIn).toHaveBeenCalled();
+    expect(securityService.signIn).toHaveBeenCalledWith({
       email: "bad email",
       password: "password"
     });
@@ -436,7 +436,7 @@ describe("LoginComponent", () => {
 
   it("should show error on bad password", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(securityService, "login").and.callThrough();
+    spyOn(securityService, "signIn").and.callThrough();
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -459,8 +459,8 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalledWith({
+    expect(securityService.signIn).toHaveBeenCalled();
+    expect(securityService.signIn).toHaveBeenCalledWith({
       email: "email",
       password: "bad password"
     });
@@ -475,7 +475,7 @@ describe("LoginComponent", () => {
 
   it("should show error on bad credentials", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(securityService, "login").and.callThrough();
+    spyOn(securityService, "signIn").and.callThrough();
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -498,8 +498,8 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalled();
-    expect(securityService.login).toHaveBeenCalledWith({
+    expect(securityService.signIn).toHaveBeenCalled();
+    expect(securityService.signIn).toHaveBeenCalledWith({
       email: "bad email",
       password: "bad password"
     });
@@ -513,7 +513,7 @@ describe("LoginComponent", () => {
   }));
 
   it("should show error for authenticated user", fakeAsync(() => {
-    securityService.login({ email: "email", password: "password" });
+    securityService.signIn({ email: "email", password: "password" });
 
     tick(5000);
     fixture.detectChanges();
@@ -524,7 +524,7 @@ describe("LoginComponent", () => {
   }));
 
   it("should disable submit button for authenticated user", fakeAsync(() => {
-    securityService.login({ email: "email", password: "password" });
+    securityService.signIn({ email: "email", password: "password" });
 
     tick(5000);
     fixture.detectChanges();
@@ -538,7 +538,7 @@ describe("LoginComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(securityService, "login").and.callFake(() => {
+    spyOn(securityService, "signIn").and.callFake(() => {
       expect(button).toBeTruthy();
       expect(button.disabled).toBeTruthy();
 

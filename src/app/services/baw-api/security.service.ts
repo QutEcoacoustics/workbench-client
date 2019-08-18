@@ -46,8 +46,23 @@ export class SecurityService extends BawApiService {
    * @param details Details provided by login form
    * @returns Observable (true if success, error string if failure)
    */
-  login(details: any): Observable<boolean | string> {
+  signIn(details: any): Observable<boolean | string> {
     return this.authenticateUser(this.paths.signIn, details);
+  }
+
+  /**
+   * Logout user and clear session storage values
+   */
+  signOut() {
+    if (!this.isLoggedIn()) {
+      this.loggedInTrigger.next(false);
+      return;
+    }
+
+    this.delete(this.paths.signOut);
+
+    this.clearSessionStorage();
+    this.loggedInTrigger.next(false);
   }
 
   /**
@@ -97,20 +112,6 @@ export class SecurityService extends BawApiService {
     );
 
     return subject.asObservable();
-  }
-
-  /**
-   * Logout user and clear session storage values
-   */
-  logout() {
-    if (!this.isLoggedIn()) {
-      return;
-    }
-
-    this.clearSessionStorage();
-
-    // Trigger login trackers
-    this.loggedInTrigger.next(false);
   }
 
   /**

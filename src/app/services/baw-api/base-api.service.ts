@@ -1,7 +1,6 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { User } from "src/app/models/User";
 import { environment } from "src/environments/environment";
 
@@ -52,6 +51,15 @@ export class BawApiService {
    */
   protected get<T>(path: string, args?: PathArg): Observable<T> {
     return this.http.get<T>(this.getPath(path, args));
+  }
+
+  /**
+   * Constructs a `GET` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   */
+  protected delete<T>(path: string, args?: PathArg): Observable<T> {
+    return this.http.delete<T>(this.getPath(path, args));
   }
 
   /**

@@ -3,6 +3,7 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { Project } from "src/app/models/Project";
 import { environment } from "src/environments/environment";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
@@ -69,34 +70,13 @@ describe("ProjectsService", () => {
     }
   };
 
-  const projectValidConvertedResponse = {
-    meta: {
-      status: 200,
-      message: "OK",
-      sorting: {
-        orderBy: "creatorId",
-        direction: "asc"
-      },
-      paging: {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1,
-        current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    },
-    data: {
-      id: 512,
-      name: "512 Name",
-      description: "512 Description.",
-      creatorId: 138,
-      siteIds: [513, 514, 519],
-      descriptionHtml: "<p>512 Description.</p>\n"
-    }
-  };
+  const projectValidConvertedResponse = new Project({
+    id: 512,
+    name: "512 Name",
+    description: "512 Description.",
+    creatorId: 138,
+    siteIds: [513, 514, 519]
+  });
 
   const projectUnauthorizedResponse = {
     meta: {
@@ -154,44 +134,22 @@ describe("ProjectsService", () => {
     ]
   };
 
-  const projectsValidConvertedResponse = {
-    meta: {
-      status: 200,
-      message: "OK",
-      sorting: {
-        orderBy: "creatorId",
-        direction: "asc"
-      },
-      paging: {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1,
-        current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    },
-    data: [
-      {
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: [513, 514, 519],
-        descriptionHtml: "<p>512 Description.</p>\n"
-      },
-      {
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: [513, 514, 519],
-        descriptionHtml: "<p>513 Description.</p>\n"
-      }
-    ]
-  };
+  const projectsValidConvertedResponse = [
+    new Project({
+      id: 512,
+      name: "512 Name",
+      description: "512 Description.",
+      creatorId: 138,
+      siteIds: [513, 514, 519]
+    }),
+    new Project({
+      id: 513,
+      name: "513 Name",
+      description: "513 Description.",
+      creatorId: 138,
+      siteIds: [513, 514, 519]
+    })
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -387,52 +345,29 @@ describe("ProjectsService", () => {
       ]
     };
 
-    const dummyApiConvertedResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          orderBy: "name",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 3,
-          total: 1,
-          maxPage: 1,
-          current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
+    const dummyApiConvertedResponse = [
+      new Project({
+        id: 512,
+        name: "512 Name",
+        description: "512 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 513,
+        name: "513 Name",
+        description: "513 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 514,
+        name: "514 Name",
+        description: "514 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      })
+    ];
 
     service
       .getFilteredProjects({
@@ -502,52 +437,29 @@ describe("ProjectsService", () => {
       ]
     };
 
-    const dummyApiConvertedResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          orderBy: "creatorId",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          maxPage: 1,
-          current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
+    const dummyApiConvertedResponse = [
+      new Project({
+        id: 512,
+        name: "512 Name",
+        description: "512 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 513,
+        name: "513 Name",
+        description: "513 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 514,
+        name: "514 Name",
+        description: "514 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      })
+    ];
 
     service
       .getFilteredProjects({
@@ -619,52 +531,29 @@ describe("ProjectsService", () => {
       ]
     };
 
-    const dummyApiConvertedResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          orderBy: "creatorId",
-          direction: "desc"
-        },
-        paging: {
-          page: 2,
-          items: 5,
-          total: 1,
-          maxPage: 2,
-          current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creatorId: 138,
-          siteIds: [513, 514, 519],
-          descriptionHtml: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
+    const dummyApiConvertedResponse = [
+      new Project({
+        id: 512,
+        name: "512 Name",
+        description: "512 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 513,
+        name: "513 Name",
+        description: "513 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      }),
+      new Project({
+        id: 514,
+        name: "514 Name",
+        description: "514 Description.",
+        creatorId: 138,
+        siteIds: [513, 514, 519]
+      })
+    ];
 
     service
       .getFilteredProjects({
@@ -767,7 +656,7 @@ describe("ProjectsService", () => {
   // TODO Ensure authenticated tests are not interfering with each other
   it("authenticated getProjects should return data", () => {
     securityService
-      .login({ email: "email", password: "password" })
+      .signIn({ email: "email", password: "password" })
       .subscribe(() => {
         service.getProjects().subscribe(res => {
           expect(res).toEqual(projectsValidConvertedResponse);
@@ -804,7 +693,7 @@ describe("ProjectsService", () => {
   // TODO Ensure authenticated tests are not interfering with each other
   it("authenticated getProject should return data", () => {
     securityService
-      .login({ email: "email", password: "password" })
+      .signIn({ email: "email", password: "password" })
       .subscribe(() => {
         service.getProject(512).subscribe(res => {
           expect(res).toEqual(projectValidConvertedResponse);

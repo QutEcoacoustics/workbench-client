@@ -91,6 +91,6 @@ export class HeaderComponent implements OnInit {
    * Logout user
    */
   logout() {
-    this.api.logout();
+    this.api.signOut();
   }
 }

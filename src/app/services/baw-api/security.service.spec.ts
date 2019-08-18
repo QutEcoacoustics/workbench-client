@@ -58,7 +58,7 @@ describe("SecurityService", () => {
     expect(service.getUser()).toBe(null);
   });
 
-  // TODO FIXME Because this test runs asychronously, the other tests can affects the results
+  // TODO FIXME Because this test runs asynchronously, the other tests can affects the results
   it("getLoggedInTrigger should return false initially", () => {
     service.getLoggedInTrigger().subscribe(loggedIn => {
       expect(loggedIn).toBeFalsy();
@@ -66,7 +66,7 @@ describe("SecurityService", () => {
   });
 
   it("login should set session cookie", () => {
-    service.login({ email: "email", password: "password" }).subscribe(res => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -101,7 +101,7 @@ describe("SecurityService", () => {
   });
 
   it("login should return error msg when already logged in", () => {
-    service.login({ email: "email", password: "password" }).subscribe(res => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -126,7 +126,7 @@ describe("SecurityService", () => {
       }
     });
 
-    service.login({ email: "email", password: "password" }).subscribe(
+    service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
         expect(res).toBeFalsy();
       },
@@ -140,7 +140,7 @@ describe("SecurityService", () => {
   });
 
   it("login should return error on bad credentials", () => {
-    service.login({ email: "email", password: "password" }).subscribe(
+    service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
         expect(res).toBeFalsy();
       },
@@ -180,7 +180,7 @@ describe("SecurityService", () => {
   });
 
   it("login should return error on missing credentials", () => {
-    service.login({ email: "email", password: "password" }).subscribe(
+    service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
         expect(res).toBeFalsy();
       },
@@ -243,7 +243,7 @@ describe("SecurityService", () => {
   });
 
   it("logout should clear session cookie", () => {
-    service.login({ email: "email", password: "password" }).subscribe(res => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -267,12 +267,12 @@ describe("SecurityService", () => {
       }
     });
 
-    service.logout();
+    service.signOut();
     expect(service.getUser()).toBeFalsy();
   });
 
   it("logout should set isLoggedIn to false", () => {
-    service.login({ email: "email", password: "password" }).subscribe(res => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -296,12 +296,12 @@ describe("SecurityService", () => {
       }
     });
 
-    service.logout();
+    service.signOut();
     expect(service.isLoggedIn()).toBeFalsy();
   });
 
   it("logout should not crash when already logged out", () => {
-    service.login({ email: "email", password: "password" }).subscribe(res => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -325,8 +325,8 @@ describe("SecurityService", () => {
       }
     });
 
-    service.logout();
-    service.logout();
+    service.signOut();
+    service.signOut();
     expect(service.isLoggedIn()).toBeFalsy();
   });
 

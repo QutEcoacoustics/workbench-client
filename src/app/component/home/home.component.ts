@@ -6,8 +6,6 @@ import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
