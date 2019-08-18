@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { User } from "src/app/models/User";
-import { BawApiService, ErrorResponse, Paths } from "./base-api.service";
+import { BawApiService, Paths } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -17,7 +17,6 @@ export class SecurityService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
-    console.debug("Constructor: " + this.isLoggedIn());
     this.loggedInTrigger.next(this.isLoggedIn());
 
     this.paths = {
@@ -128,6 +127,7 @@ export class SecurityService extends BawApiService {
         }
       },
       (err: string) => {
+        console.error(err);
         this.loggedInTrigger.next(false);
         subject.error(err);
       }

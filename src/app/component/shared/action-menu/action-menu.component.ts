@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menus.interfaces";
+import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
 import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 

@@ -46,19 +46,16 @@ export class BawApiService {
 
   /**
    * Constructs a `GET` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
   protected get<T>(path: string, args?: PathArg): Observable<T> {
-    return this.http
-      .get(this.getPath(path, args), this.getHeaderOptions())
-      .pipe(
-        map(data => this.convertJsonToJS(data)),
-        catchError(this.handleError)
-      );
+    return this.http.get<T>(this.getPath(path, args));
   }
 
   /**
    * Constructs a `POST` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
   protected post<T>(
@@ -66,12 +63,7 @@ export class BawApiService {
     args?: PathArg,
     options?: any
   ): Observable<T> {
-    return this.http
-      .post(this.getPath(path, args), options, this.getHeaderOptions())
-      .pipe(
-        map(data => this.convertJsonToJS(data)),
-        catchError(this.handleError)
-      );
+    return this.http.post<T>(this.getPath(path, args), options);
   }
 
   /**
@@ -87,33 +79,7 @@ export class BawApiService {
       user = null;
     }
 
-    console.debug(user);
     return user;
-  }
-
-  /**
-   * Get the header options for a http request
-   */
-  private getHeaderOptions() {
-    const user = this.getSessionUser();
-    let options = {
-      headers: new HttpHeaders({
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      })
-    };
-
-    // Add token if it exists
-    if (user) {
-      options = {
-        headers: options.headers.append(
-          "Authorization",
-          `Token token="${user.authToken}"`
-        )
-      };
-    }
-
-    return options;
   }
 
   /**
@@ -135,11 +101,8 @@ export class BawApiService {
         // Append filters to end of path
         path += "?";
 
-        // Convert filter
-        const convertedFilters = this.convertJSToJson(args.filters);
-
-        for (const key in convertedFilters) {
-          const value = convertedFilters[key];
+        for (const key in args.filters) {
+          const value = args.filters[key];
           path += key + "=" + (value as string) + "&";
         }
 
@@ -149,42 +112,6 @@ export class BawApiService {
     }
 
     return this.url + path;
-  }
-
-  /**
-   * Convert json object to javascript object
-   * @param obj Object to convert
-   */
-  private convertJsonToJS(obj: any): any {
-    // Convert from snake_case to camelCase
-    return toCamelCase(obj);
-  }
-
-  /**
-   * Convert javascript object to json object
-   * @param obj Object to convert
-   */
-  private convertJSToJson(obj: any): any {
-    // Convert from camelCase to snake_case
-    return toSnakeCase(obj);
-  }
-
-  /**
-   * Writes error to console and throws error
-   * @param error HTTP Error
-   * @throws Observable<never>
-   */
-  private handleError(error: HttpErrorResponse): Observable<string> {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error("An error occurred:", error.error.message);
-      return throwError("Something bad happened; please try again later.");
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(`Backend returned code ${error.status}: `, error);
-      return throwError(error.error.meta.error.details);
-    }
   }
 }
 

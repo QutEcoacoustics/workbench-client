@@ -11,7 +11,7 @@ import {
   isExternalLink,
   isInternalRoute,
   LabelAndIcon
-} from "src/app/interfaces/menus.interfaces";
+} from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 

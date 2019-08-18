@@ -1,7 +1,7 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -18,6 +18,7 @@ import { AuthenticationModule } from "./component/authentication/authentication.
 import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
 import { SharedModule } from "./component/shared/shared.module";
+import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 import { BawApiService } from "./services/baw-api/base-api.service";
 
 @NgModule({
@@ -42,7 +43,14 @@ import { BawApiService } from "./services/baw-api/base-api.service";
     HomeModule,
     ErrorModule
   ],
-  providers: [BawApiService],
+  providers: [
+    BawApiService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: BawApiInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
   exports: []
 })

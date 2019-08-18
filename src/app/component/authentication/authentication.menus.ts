@@ -1,6 +1,6 @@
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
-import { Category, MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 
 export const securityRoute = StrongRoute.Base.add("security");
 
@@ -15,16 +15,16 @@ export const confirmAccountMenuItem = MenuRoute({
   label: "Confirm account",
   route: securityRoute.add("confirmation"),
   tooltip: () => "Resend the email to confirm your account",
-  order: { priority: 2, indentation: 1 },
+  order: { priority: 2, indentation: 1 }
 });
 
-export const loginMenuItem =  MenuRoute({
+export const loginMenuItem = MenuRoute({
   icon: ["fas", "sign-in-alt"],
   label: "Log in",
   tooltip: () => "Log into the website",
   route: securityRoute.add("login"),
   predicate: user => !user,
-  order: { priority: 2, indentation: 0 },
+  order: { priority: 2, indentation: 0 }
 });
 
 export const registerMenuItem = MenuRoute({

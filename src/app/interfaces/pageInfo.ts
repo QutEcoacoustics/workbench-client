@@ -1,7 +1,6 @@
 import { Type } from "@angular/core";
-import { MenuRoute, Category, Menus } from "./menus.interfaces";
 import { Data } from "@angular/router";
-
+import { Category, MenuRoute, Menus } from "./menusInterfaces";
 
 /**
  * Page info interface.
@@ -18,12 +17,11 @@ export interface PageInfoInterface extends Data {
   fullscreen?: boolean;
 }
 
-
 /**
  * Page info class
  */
 export class PageInfo implements PageInfoInterface {
-  self: MenuRoute
+  self: MenuRoute;
   component: Type<any>;
   category: Category;
   menus: Menus;

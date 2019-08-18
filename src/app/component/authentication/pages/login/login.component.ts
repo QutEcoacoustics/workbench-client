@@ -3,9 +3,9 @@ import { Router } from "@angular/router";
 import { List } from "immutable";
 
 import { SubSink } from "src/app/helpers/subsink/subsink";
-import { AnyMenuItem } from "src/app/interfaces/menus.interfaces";
-import { Page } from "src/app/interfaces/page.decorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
+import { Page } from "src/app/interfaces/pageDecorator";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import {
   confirmAccountMenuItem,

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { MenuRoute } from "src/app/interfaces/menus.interfaces";
+import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
 @Component({
   selector: "app-menu-internal-link",

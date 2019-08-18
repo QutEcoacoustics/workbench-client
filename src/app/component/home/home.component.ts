@@ -2,13 +2,14 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { Page } from "src/app/interfaces/page.decorator";
 import { PageComponent } from "src/app/interfaces/pageComponent";
+import { Page } from "src/app/interfaces/pageDecorator";
 
 import {
   Projects,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -45,7 +46,7 @@ export class HomeComponent extends PageComponent implements OnInit {
       })
     );
 
-  constructor(private api: ProjectsService) {
+  constructor(private api: ProjectsService, private temp: SecurityService) {
     super();
   }
 
