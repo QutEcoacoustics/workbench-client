@@ -1,11 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { Site, SiteInterface } from "src/app/models/Site";
 import {
   BawApiService,
+  ErrorResponse,
   Filter,
-  List,
-  MetaError,
-  Paths
+  Paths,
+  ResponseList
 } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
@@ -19,12 +21,10 @@ export class SitesService extends BawApiService {
     super(http);
 
     this.paths = {
-      sites: {
-        list: "/projects/{projectId}/sites/",
-        flattened: "/sites/{siteId}",
-        nested: "/projects/{projectId}/sites/{siteId}",
-        filter: "/sites/filter"
-      }
+      list: "/projects/{projectId}/sites/",
+      flattened: "/sites/{siteId}",
+      nested: "/projects/{projectId}/sites/{siteId}",
+      filter: "/sites/filter"
     };
   }
 
@@ -33,20 +33,23 @@ export class SitesService extends BawApiService {
    * @param id Site ID
    * @returns Observable returning singular site
    */
-  public getSite(id: number) {
-    return this.security.onLoginChange<Site>(
-      this.get<Site>(this.paths.sites.flattened, {
-        args: { siteId: id }
-      })
-    );
-  }
+  public getSite(id: number): Subject<Site> {
+    const subject = new Subject<Site>();
 
-  /**
-   * Get list of sites accessible by user
-   * @returns Observable list of all sites
-   */
-  public getSites() {
-    return this.getFilteredSites(undefined);
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<SiteResponse>(this.paths.flattened, {
+        args: { siteId: id }
+      }).subscribe(
+        (data: SiteResponse) => {
+          subject.next(new Site(data.data));
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 
   /**
@@ -55,12 +58,23 @@ export class SitesService extends BawApiService {
    * @param siteId Site ID
    * @returns Observable returning singular site
    */
-  public getProjectSite(projectId: number, siteId: number) {
-    return this.security.onLoginChange<Site>(
-      this.get<Site>(this.paths.sites.nested, {
+  public getProjectSite(projectId: number, siteId: number): Subject<Site> {
+    const subject = new Subject<Site>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<SiteResponse>(this.paths.nested, {
         args: { projectId, siteId }
-      })
-    );
+      }).subscribe(
+        (data: SiteResponse) => {
+          subject.next(new Site(data.data));
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 
   /**
@@ -69,12 +83,27 @@ export class SitesService extends BawApiService {
    * @param id Project ID
    * @returns Observable list of sites for a project
    */
-  public getProjectSites(id: number) {
-    return this.security.onLoginChange<Sites>(
-      this.get<Sites>(this.paths.sites.list, {
+  public getProjectSites(id: number): Subject<Site[]> {
+    const subject = new Subject<Site[]>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<SitesResponse>(this.paths.list, {
         args: { projectId: id }
-      })
-    );
+      }).subscribe(
+        (data: SitesResponse) => {
+          subject.next(
+            data.data.map(projectData => {
+              return new Site(projectData);
+            })
+          );
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 
   /**
@@ -82,10 +111,25 @@ export class SitesService extends BawApiService {
    * @param filters Filters
    * @returns Observable list of sites
    */
-  public getFilteredSites(filters: SiteFiler) {
-    return this.security.onLoginChange<Sites>(
-      this.get<Sites>(this.paths.sites.filter, { filters })
-    );
+  public getFilteredSites(filters: SiteFiler): Subject<Site[]> {
+    const subject = new Subject<Site[]>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<SitesResponse>(this.paths.filter, { filters }).subscribe(
+        (data: SitesResponse) => {
+          subject.next(
+            data.data.map(projectData => {
+              return new Site(projectData);
+            })
+          );
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 }
 
@@ -94,40 +138,15 @@ export interface SiteFiler extends Filter {
 }
 
 /**
- * Site data interface
- */
-export interface SiteData {
-  customLatitude?: number;
-  customLongitude?: number;
-  description: string;
-  id: number;
-  locationObfuscated: boolean;
-  name: string;
-  projectIds: number[];
-  timezoneInformation?: {
-    friendlyIdentifier: string;
-    identifier: string;
-    identifierAlt: string;
-    utcOffset: number;
-    utcTotalOffset: number;
-  };
-}
-
-/**
  * Site interface
  */
-export interface Site {
-  meta: {
-    status: number;
-    message: string;
-    error?: MetaError;
-  };
-  data: SiteData;
+export interface SiteResponse extends Response {
+  data: SiteInterface;
 }
 
 /**
  * Sites interface
  */
-export interface Sites extends List {
-  data: SiteData[];
+export interface SitesResponse extends ResponseList {
+  data: SiteInterface[];
 }

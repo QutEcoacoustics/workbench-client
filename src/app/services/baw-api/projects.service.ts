@@ -1,12 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { map } from "rxjs/operators";
+import { Project, ProjectInterface } from "src/app/models/Project";
 import {
   BawApiService,
+  ErrorResponse,
   Filter,
-  List,
   MetaError,
-  Paths
+  Paths,
+  ResponseList
 } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
@@ -23,11 +26,9 @@ export class ProjectsService extends BawApiService {
     super(http);
 
     this.paths = {
-      projects: {
-        list: "/projects",
-        show: "/projects/{projectId}",
-        filter: "/projects/filter"
-      }
+      list: "/projects",
+      show: "/projects/{projectId}",
+      filter: "/projects/filter"
     };
   }
 
@@ -37,21 +38,47 @@ export class ProjectsService extends BawApiService {
    * @returns Observable returning singular project
    */
   getProject(id: number): Subject<Project> {
-    return this.security.onLoginChange<Project>(
-      this.get<Project>(this.paths.projects.show, {
+    const subject = new Subject<Project>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<ProjectResponse>(this.paths.show, {
         args: { projectId: id }
-      })
-    );
+      }).subscribe(
+        (data: ProjectResponse) => {
+          subject.next(new Project(data.data));
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 
   /**
    * Get list of projects available to the user
    * @returns Observable list of projects
    */
-  getProjects(): Subject<Projects> {
-    return this.security.onLoginChange<Projects>(
-      this.get<Projects>(this.paths.projects.list)
-    );
+  getProjects(): Subject<Project[]> {
+    const subject = new Subject<Project[]>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<ProjectsResponse>(this.paths.list).subscribe(
+        (data: ProjectsResponse) => {
+          subject.next(
+            data.data.map(projectData => {
+              return new Project(projectData);
+            })
+          );
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 
   /**
@@ -59,10 +86,27 @@ export class ProjectsService extends BawApiService {
    * @param filters Filters
    * @returns Observable list of projects
    */
-  getFilteredProjects(filters: ProjectFilter): Subject<Projects> {
-    return this.security.onLoginChange<Projects>(
-      this.get<Projects>(this.paths.projects.filter, { filters })
-    );
+  getFilteredProjects(filters: ProjectFilter): Subject<Project[]> {
+    const subject = new Subject<Project[]>();
+
+    this.security.getLoggedInTrigger().subscribe(() => {
+      this.get<ProjectsResponse>(this.paths.filter, {
+        filters
+      }).subscribe(
+        (data: ProjectsResponse) => {
+          subject.next(
+            data.data.map(projectData => {
+              return new Project(projectData);
+            })
+          );
+        },
+        (err: ErrorResponse) => {
+          subject.error(err);
+        }
+      );
+    });
+
+    return subject;
   }
 }
 
@@ -71,31 +115,15 @@ export interface ProjectFilter extends Filter {
 }
 
 /**
- * Project data interface
- */
-export interface ProjectData {
-  creatorId: number;
-  description: string;
-  id: number;
-  name: string;
-  siteIds: number[];
-}
-
-/**
  * Project interface
  */
-export interface Project {
-  meta: {
-    status: number;
-    message: string;
-    error?: MetaError;
-  };
-  data: ProjectData;
+export interface ProjectResponse extends Response {
+  data: ProjectInterface;
 }
 
 /**
  * Projects interface
  */
-export interface Projects extends List {
-  data: ProjectData[];
+export interface ProjectsResponse extends ResponseList {
+  data: ProjectInterface[];
 }

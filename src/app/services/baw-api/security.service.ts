@@ -20,11 +20,9 @@ export class SecurityService extends BawApiService {
     this.loggedInTrigger.next(this.isLoggedIn());
 
     this.paths = {
-      security: {
-        register: "/security",
-        signIn: "/security",
-        signOut: "/security"
-      }
+      register: "/security",
+      signIn: "/security",
+      signOut: "/security"
     };
   }
 
@@ -35,44 +33,9 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
-  /**
-   * Trigger a subject when user login state changes
-   * @param triggerUpdate Observable to trigger on update
-   * @returns Subject which updates on login state change
-   */
-  onLoginChange<T>(triggerUpdate: Observable<T>): Subject<T> {
-    const subject = new Subject<T>();
-
-    // Determine list of projects whenever logged in state changes
-    this.getLoggedInTrigger().subscribe(() => {
-      triggerUpdate.subscribe(
-        (data: any) => {
-          if (data.meta && data.meta.status === this.RETURN_CODE.SUCCESS) {
-            subject.next(data);
-          } else {
-            if (data.meta && data.meta.error && data.meta.error.details) {
-              subject.error(data.meta.error.details);
-            } else {
-              subject.error("An unknown error has occurred.");
-            }
-          }
-        },
-        err => {
-          if (err.meta && err.meta.error && err.meta.error.details) {
-            subject.error(err.meta.error.details);
-          } else {
-            subject.error("An unknown error has occurred.");
-          }
-        }
-      );
-    });
-
-    return subject;
-  }
-
   // TODO Register account. Path needs to be checked and inputs ascertained.
   register(details: any): Observable<boolean | string> {
-    return this.authenticateUser(this.paths.security.register, details);
+    return this.authenticateUser(this.paths.register, details);
   }
 
   /**
@@ -84,7 +47,7 @@ export class SecurityService extends BawApiService {
    * @returns Observable (true if success, error string if failure)
    */
   login(details: any): Observable<boolean | string> {
-    return this.authenticateUser(this.paths.security.signIn, details);
+    return this.authenticateUser(this.paths.signIn, details);
   }
 
   /**

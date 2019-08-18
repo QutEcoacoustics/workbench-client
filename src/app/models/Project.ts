@@ -13,19 +13,17 @@ export interface ProjectInterface {
  * A project model.
  */
 export class Project implements ProjectInterface {
-  /**
-   * Constructor
-   * @param id Project ID
-   * @param name Project name
-   * @param creatorId Project creator user ID
-   * @param description Project description
-   * @param siteIds List of associated site ID's
-   */
-  constructor(
-    public readonly id: number,
-    public readonly name: string,
-    public readonly creatorId: number,
-    public readonly description: string,
-    public readonly siteIds: number[]
-  ) {}
+  public readonly id: number;
+  public readonly name: string;
+  public readonly creatorId: number;
+  public readonly description: string;
+  public readonly siteIds: number[];
+
+  constructor(project: ProjectInterface) {
+    this.id = project.id;
+    this.name = project.name;
+    this.creatorId = project.creatorId;
+    this.description = project.description;
+    this.siteIds = project.siteIds;
+  }
 }

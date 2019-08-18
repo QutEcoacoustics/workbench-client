@@ -22,31 +22,29 @@ export interface SiteInterface {
  * A site model.
  */
 export class Site implements SiteInterface {
-  /**
-   * Constructor
-   * @param id Site ID
-   * @param name Site name
-   * @param description Site description
-   * @param locationObfuscated Is site location obfuscated
-   * @param projectIds Project ID's associated with site
-   * @param customLatitude Site custom latitude
-   * @param customLongitude Site custom longitude
-   * @param timezoneInformation Site timezone information
-   */
-  constructor(
-    public readonly id: number,
-    public readonly name: string,
-    public readonly description: string,
-    public readonly locationObfuscated: boolean,
-    public readonly projectIds: number[],
-    public readonly customLatitude?: number,
-    public readonly customLongitude?: number,
-    public readonly timezoneInformation?: {
-      friendlyIdentifier: string;
-      identifier: string;
-      identifierAlt: string;
-      utcOffset: number;
-      utcTotalOffset: number;
-    }
-  ) {}
+  public readonly id: number;
+  public readonly name: string;
+  public readonly description: string;
+  public readonly locationObfuscated: boolean;
+  public readonly projectIds: number[];
+  public readonly customLatitude?: number;
+  public readonly customLongitude?: number;
+  public readonly timezoneInformation?: {
+    friendlyIdentifier: string;
+    identifier: string;
+    identifierAlt: string;
+    utcOffset: number;
+    utcTotalOffset: number;
+  };
+
+  constructor(site: SiteInterface) {
+    this.id = site.id;
+    this.name = site.name;
+    this.description = site.description;
+    this.locationObfuscated = site.locationObfuscated;
+    this.projectIds = site.projectIds;
+    this.customLatitude = site.customLatitude;
+    this.customLongitude = site.customLongitude;
+    this.timezoneInformation = site.timezoneInformation;
+  }
 }

@@ -1,16 +1,7 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-  HttpParams
-} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import {
-  toCamelCase,
-  toSnakeCase
-} from "src/app/helpers/case-converter/case-converter";
+import { catchError } from "rxjs/operators";
 import { User } from "src/app/models/User";
 import { environment } from "src/environments/environment";
 
@@ -21,6 +12,16 @@ import { environment } from "src/environments/environment";
   providedIn: "root"
 })
 export class BawApiService {
+  /*
+  Paths:
+    details -> GET
+    show -> GET with id
+    create -> PUT/POST
+    update -> PATCH with id
+    destroy -> DELETE with ID
+    filter -> POST with filter body
+  */
+
   constructor(protected http: HttpClient) {}
 
   private url = environment.bawApiUrl;
@@ -150,9 +151,7 @@ export interface PathArg {
  * Api path fragment
  */
 export interface Paths {
-  [key: string]: {
-    [key: string]: string;
-  };
+  [key: string]: string;
 }
 
 /**
@@ -166,9 +165,21 @@ export interface Filter {
 }
 
 /**
- * List of items from route
+ * API response
  */
-export interface List {
+export interface Response {
+  meta: {
+    status: number;
+    message: string;
+    error?: MetaError;
+  };
+  data: any;
+}
+
+/**
+ * API response containing a list of data
+ */
+export interface ResponseList extends Response {
   meta: {
     status: number;
     message: string;

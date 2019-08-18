@@ -4,12 +4,10 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
-
-import {
-  Projects,
-  ProjectsService
-} from "src/app/services/baw-api/projects.service";
+import { Project } from "src/app/models/Project";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -29,9 +27,9 @@ export class HomeComponent extends PageComponent implements OnInit {
   updateProjectList$: Observable<any> = this.api
     .getFilteredProjects({ items: 3 })
     .pipe(
-      map((data: Projects) => {
+      map((data: Project[]) => {
         return List(
-          data.data.map(project => {
+          data.map(project => {
             return {
               title: project.name,
               image: {
@@ -46,7 +44,7 @@ export class HomeComponent extends PageComponent implements OnInit {
       })
     );
 
-  constructor(private api: ProjectsService, private temp: SecurityService) {
+  constructor(private api: ProjectsService) {
     super();
   }
 
