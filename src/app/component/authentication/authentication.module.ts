@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
-
 import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
 import { securityRoute } from "./authentication.menus";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";

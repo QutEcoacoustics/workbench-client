@@ -48,12 +48,12 @@ export class SecondaryMenuComponent implements OnInit {
    */
   compare(a: NavigableMenuItem, b: NavigableMenuItem): number {
     // If a does not have an order number, select b
-    if (!a.order.priority) {
+    if (!a.order || !a.order.priority) {
       return 1;
     }
 
     // If b does not have an order number, select a
-    if (!b.order.priority) {
+    if (!b.order || !b.order.priority) {
       return -1;
     }
 

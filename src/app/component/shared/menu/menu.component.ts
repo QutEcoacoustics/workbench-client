@@ -51,7 +51,11 @@ export class MenuComponent implements OnInit {
    */
   calculatePadding(link: AnyMenuItem) {
     // Only the secondary menu implements this option
-    if (this.menuType !== "secondary") {
+    if (
+      this.menuType !== "secondary" ||
+      !link.order ||
+      !link.order.indentation
+    ) {
       return "0em";
     }
 

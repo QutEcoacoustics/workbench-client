@@ -72,7 +72,6 @@ export class SecurityService extends BawApiService {
     }
 
     this.delete(this.paths.signOut);
-
     this.clearSessionStorage();
     this.loggedInTrigger.next(false);
   }

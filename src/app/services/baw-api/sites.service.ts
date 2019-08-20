@@ -2,13 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { Site, SiteInterface } from "src/app/models/Site";
-import {
-  APIResponseList,
-  BawApiService,
-  ErrorResponse,
-  Filter,
-  Paths
-} from "./base-api.service";
+import { APIResponseList, Filter, Paths } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
 @Injectable({

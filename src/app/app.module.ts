@@ -14,6 +14,7 @@ import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { validationMessages } from "./app.helper";
+import { AboutModule } from "./component/about/about.module";
 import { AuthenticationModule } from "./component/authentication/authentication.module";
 import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
@@ -38,6 +39,7 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
     LoadingBarHttpClientModule,
     SharedModule,
     AuthenticationModule,
+    AboutModule,
     // these last two must be last!
     HomeModule,
     ErrorModule

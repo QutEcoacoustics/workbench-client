@@ -13,6 +13,7 @@ import {
   toCamelCase,
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
+import { environment } from "src/environments/environment";
 import { BawApiService } from "./base-api.service";
 
 @Injectable()
@@ -23,6 +24,10 @@ export class BawApiInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    if (!request.url.includes(environment.bawApiUrl)) {
+      return;
+    }
+
     request = request.clone({
       setHeaders: {
         Accept: "application/json",
