@@ -1,6 +1,8 @@
-# Baw Client
+# Workbench Client
 
-The Angular 8 client for the ecoacoustic workbench
+The Angular 8 client for an acoustic workbench application.
+
+[![Build Status](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_apis/build/status/QutEcoacoustics.workbench-client?branchName=master)](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_build/latest?definitionId=4&branchName=master)
 
 ## Install instructions
 
