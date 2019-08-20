@@ -65,5 +65,7 @@ export class HomeComponent extends PageComponent implements OnInit {
           "Ecologists use these to answer environmental questions."
       }
     ]);
+
+    this.api.getProject(512).subscribe(data => console.debug(data));
   }
 }

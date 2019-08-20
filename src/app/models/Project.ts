@@ -6,7 +6,7 @@ export interface ProjectInterface {
   description: string;
   id: number;
   name: string;
-  siteIds: number[];
+  siteIds: Set<number>;
 }
 
 /**
@@ -17,13 +17,13 @@ export class Project implements ProjectInterface {
   public readonly name: string;
   public readonly creatorId: number;
   public readonly description: string;
-  public readonly siteIds: number[];
+  public readonly siteIds: Set<number>;
 
   constructor(project: ProjectInterface) {
     this.id = project.id;
     this.name = project.name;
     this.creatorId = project.creatorId;
     this.description = project.description;
-    this.siteIds = project.siteIds;
+    this.siteIds = new Set(project.siteIds);
   }
 }

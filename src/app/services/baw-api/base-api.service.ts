@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { User } from "src/app/models/User";
 import { environment } from "src/environments/environment";
 
@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment";
 @Injectable({
   providedIn: "root"
 })
-export class BawApiService {
+export abstract class BawApiService {
   /*
   Paths:
     details -> GET
@@ -24,6 +24,8 @@ export class BawApiService {
   constructor(protected http: HttpClient) {}
 
   private url = environment.bawApiUrl;
+
+  protected paths: Paths;
   protected RETURN_CODE = {
     SUCCESS: 200,
     BAD_REQUEST: 400,
@@ -42,6 +44,29 @@ export class BawApiService {
    */
   public getUser(): User | null {
     return this.getSessionUser();
+  }
+
+  /**
+   * Get response from details route
+   * @param subject Subject to update
+   * @param callback Callback function which generates the model
+   * @param path API path
+   * @param args API arguments
+   */
+  protected getDetails(
+    subject: Subject<any>,
+    callback: (data: any) => any,
+    path: string,
+    args?: any
+  ) {
+    this.get<Response>(path, args).subscribe(
+      (data: Response) => {
+        subject.next(callback(data.data));
+      },
+      (err: ErrorResponse) => {
+        subject.error(err);
+      }
+    );
   }
 
   /**
@@ -96,7 +121,7 @@ export class BawApiService {
    * @param path Path fragment
    * @param args Args to modify path fragment
    */
-  private getPath(path: string, args?: PathArg): string {
+  protected getPath(path: string, args?: PathArg): string {
     // If arguments are given
     if (args) {
       // Replace fragment inputs

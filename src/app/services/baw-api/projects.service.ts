@@ -26,7 +26,7 @@ export class ProjectsService extends BawApiService {
     super(http);
 
     this.paths = {
-      list: "/projects",
+      details: "/projects",
       show: "/projects/{projectId}",
       filter: "/projects/filter"
     };
@@ -37,20 +37,14 @@ export class ProjectsService extends BawApiService {
    * @param id Project ID
    * @returns Observable returning singular project
    */
-  getProject(id: number): Subject<Project> {
+  public getProject(id: number): Subject<Project> {
     const subject = new Subject<Project>();
+    const callback = (project: ProjectInterface) => new Project(project);
 
     this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<ProjectResponse>(this.paths.show, {
+      this.getDetails(subject, callback, this.paths.show, {
         args: { projectId: id }
-      }).subscribe(
-        (data: ProjectResponse) => {
-          subject.next(new Project(data.data));
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+      });
     });
 
     return subject;
@@ -60,22 +54,13 @@ export class ProjectsService extends BawApiService {
    * Get list of projects available to the user
    * @returns Observable list of projects
    */
-  getProjects(): Subject<Project[]> {
+  public getProjects(): Subject<Project[]> {
     const subject = new Subject<Project[]>();
+    const callback = (projects: ProjectInterface[]) =>
+      projects.map((project: ProjectInterface) => new Project(project));
 
     this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<ProjectsResponse>(this.paths.list).subscribe(
-        (data: ProjectsResponse) => {
-          subject.next(
-            data.data.map(projectData => {
-              return new Project(projectData);
-            })
-          );
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+      this.getDetails(subject, callback, this.paths.details);
     });
 
     return subject;
@@ -86,44 +71,21 @@ export class ProjectsService extends BawApiService {
    * @param filters Filters
    * @returns Observable list of projects
    */
-  getFilteredProjects(filters: ProjectFilter): Subject<Project[]> {
+  public getFilteredProjects(filters: ProjectFilter): Subject<Project[]> {
     const subject = new Subject<Project[]>();
+    const callback = (projects: ProjectInterface[]) =>
+      projects.map((project: ProjectInterface) => new Project(project));
 
     this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<ProjectsResponse>(this.paths.filter, {
+      this.getDetails(subject, callback, this.paths.filter, {
         filters
-      }).subscribe(
-        (data: ProjectsResponse) => {
-          subject.next(
-            data.data.map(projectData => {
-              return new Project(projectData);
-            })
-          );
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+      });
     });
 
     return subject;
   }
 }
 
-export interface ProjectFilter extends Filter {
+interface ProjectFilter extends Filter {
   orderBy?: "id" | "name" | "description" | "creatorId";
-}
-
-/**
- * Project interface
- */
-export interface ProjectResponse extends Response {
-  data: ProjectInterface;
-}
-
-/**
- * Projects interface
- */
-export interface ProjectsResponse extends ResponseList {
-  data: ProjectInterface[];
 }

@@ -83,8 +83,8 @@ export class SecurityService extends BawApiService {
       return subject.asObservable();
     }
 
-    this.post<AuthenticationLogin>(path, undefined, details).subscribe(
-      (data: AuthenticationLogin) => {
+    this.post<AuthenticationResponse>(path, undefined, details).subscribe(
+      (data: AuthenticationResponse) => {
         if (data.meta.status === this.RETURN_CODE.SUCCESS) {
           // TODO Read id and role from api
           this.setSessionUser({
@@ -135,14 +135,12 @@ export class SecurityService extends BawApiService {
 /**
  * Login interface
  */
-interface AuthenticationLogin {
-  meta: {
-    message: string;
-    status: number;
-  };
-  data: {
-    authToken: string;
-    message: string;
-    userName: string;
-  };
+interface Authentication {
+  authToken: string;
+  message: string;
+  userName: string;
+}
+
+interface AuthenticationResponse extends Response {
+  data: Authentication;
 }
