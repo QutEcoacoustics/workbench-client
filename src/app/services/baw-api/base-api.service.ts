@@ -59,14 +59,14 @@ export abstract class BawApiService {
     path: string,
     args?: any
   ) {
-    this.get<Response>(path, args).subscribe(
-      (data: Response) => {
+    this.get<APIResponse>(path, args).subscribe({
+      next: (data: APIResponse) => {
         subject.next(callback(data.data));
       },
-      (err: ErrorResponse) => {
+      error: (err: ErrorResponse) => {
         subject.error(err);
       }
-    );
+    });
   }
 
   /**
@@ -200,7 +200,7 @@ export interface Filter {
 /**
  * API response
  */
-export interface Response {
+export interface APIResponse {
   meta: {
     status: number;
     message: string;
@@ -212,7 +212,7 @@ export interface Response {
 /**
  * API response containing a list of data
  */
-export interface ResponseList extends Response {
+export interface APIResponseList extends APIResponse {
   meta: {
     status: number;
     message: string;

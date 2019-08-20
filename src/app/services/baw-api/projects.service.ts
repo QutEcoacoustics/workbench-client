@@ -1,16 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { map } from "rxjs/operators";
 import { Project, ProjectInterface } from "src/app/models/Project";
-import {
-  BawApiService,
-  ErrorResponse,
-  Filter,
-  MetaError,
-  Paths,
-  ResponseList
-} from "./base-api.service";
+import { Filter, Paths } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
 /**
@@ -19,10 +11,10 @@ import { SecurityService } from "./security.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends BawApiService {
+export class ProjectsService extends SecurityService {
   protected paths: Paths;
 
-  constructor(http: HttpClient, private security: SecurityService) {
+  constructor(http: HttpClient) {
     super(http);
 
     this.paths = {
@@ -41,10 +33,8 @@ export class ProjectsService extends BawApiService {
     const subject = new Subject<Project>();
     const callback = (project: ProjectInterface) => new Project(project);
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.getDetails(subject, callback, this.paths.show, {
-        args: { projectId: id }
-      });
+    this.getDetails(subject, callback, this.paths.show, {
+      args: { projectId: id }
     });
 
     return subject;
@@ -59,9 +49,7 @@ export class ProjectsService extends BawApiService {
     const callback = (projects: ProjectInterface[]) =>
       projects.map((project: ProjectInterface) => new Project(project));
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.getDetails(subject, callback, this.paths.details);
-    });
+    this.getDetails(subject, callback, this.paths.details);
 
     return subject;
   }
@@ -76,10 +64,8 @@ export class ProjectsService extends BawApiService {
     const callback = (projects: ProjectInterface[]) =>
       projects.map((project: ProjectInterface) => new Project(project));
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.getDetails(subject, callback, this.paths.filter, {
-        filters
-      });
+    this.getDetails(subject, callback, this.paths.filter, {
+      filters
     });
 
     return subject;

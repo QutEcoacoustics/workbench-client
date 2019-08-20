@@ -3,21 +3,21 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { Site, SiteInterface } from "src/app/models/Site";
 import {
+  APIResponseList,
   BawApiService,
   ErrorResponse,
   Filter,
-  Paths,
-  ResponseList
+  Paths
 } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends BawApiService {
+export class SitesService extends SecurityService {
   protected paths: Paths;
 
-  constructor(http: HttpClient, private security: SecurityService) {
+  constructor(http: HttpClient) {
     super(http);
 
     this.paths = {
@@ -35,18 +35,10 @@ export class SitesService extends BawApiService {
    */
   public getSite(id: number): Subject<Site> {
     const subject = new Subject<Site>();
+    const callback = (data: SiteResponse) => new Site(data.data);
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<SiteResponse>(this.paths.flattened, {
-        args: { siteId: id }
-      }).subscribe(
-        (data: SiteResponse) => {
-          subject.next(new Site(data.data));
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+    this.getDetails(subject, callback, this.paths.flattened, {
+      args: { siteId: id }
     });
 
     return subject;
@@ -60,18 +52,10 @@ export class SitesService extends BawApiService {
    */
   public getProjectSite(projectId: number, siteId: number): Subject<Site> {
     const subject = new Subject<Site>();
+    const callback = (data: SiteResponse) => new Site(data.data);
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<SiteResponse>(this.paths.nested, {
-        args: { projectId, siteId }
-      }).subscribe(
-        (data: SiteResponse) => {
-          subject.next(new Site(data.data));
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+    this.getDetails(subject, callback, this.paths.nested, {
+      args: { projectId, siteId }
     });
 
     return subject;
@@ -85,22 +69,13 @@ export class SitesService extends BawApiService {
    */
   public getProjectSites(id: number): Subject<Site[]> {
     const subject = new Subject<Site[]>();
+    const callback = (data: SitesResponse) =>
+      data.data.map(projectData => {
+        return new Site(projectData);
+      });
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<SitesResponse>(this.paths.list, {
-        args: { projectId: id }
-      }).subscribe(
-        (data: SitesResponse) => {
-          subject.next(
-            data.data.map(projectData => {
-              return new Site(projectData);
-            })
-          );
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
+    this.getDetails(subject, callback, this.paths.list, {
+      args: { projectId: id }
     });
 
     return subject;
@@ -113,21 +88,12 @@ export class SitesService extends BawApiService {
    */
   public getFilteredSites(filters: SiteFiler): Subject<Site[]> {
     const subject = new Subject<Site[]>();
+    const callback = (data: SitesResponse) =>
+      data.data.map(projectData => {
+        return new Site(projectData);
+      });
 
-    this.security.getLoggedInTrigger().subscribe(() => {
-      this.get<SitesResponse>(this.paths.filter, { filters }).subscribe(
-        (data: SitesResponse) => {
-          subject.next(
-            data.data.map(projectData => {
-              return new Site(projectData);
-            })
-          );
-        },
-        (err: ErrorResponse) => {
-          subject.error(err);
-        }
-      );
-    });
+    this.getDetails(subject, callback, this.paths.filter, { filters });
 
     return subject;
   }
@@ -147,6 +113,6 @@ export interface SiteResponse extends Response {
 /**
  * Sites interface
  */
-export interface SitesResponse extends ResponseList {
+export interface SitesResponse extends APIResponseList {
   data: SiteInterface[];
 }

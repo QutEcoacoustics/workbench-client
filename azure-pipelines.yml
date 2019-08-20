@@ -20,3 +20,7 @@ steps:
     npm install
     ng build --prod
   displayName: 'npm install and build'
+- script: |
+  npm test
+  npm run e2e
+  displayName: 'Test suite'

@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes, ROUTES } from "@angular/router";
-
+import { RouterModule, Routes } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { HomeComponent } from "./component/home/home.component";
 
@@ -32,9 +31,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    enableTracing: environment.routerEnableTracing,
-  })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      enableTracing: environment.routerEnableTracing
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

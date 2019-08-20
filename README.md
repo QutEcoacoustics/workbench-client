@@ -18,6 +18,7 @@ The Angular 8 client for an acoustic workbench application.
 To install project dependencies run:
 
 ```bash
+$ npm install -g @angular/cli
 $ npm install
 ```
 

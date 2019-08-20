@@ -7,24 +7,22 @@
   </ngb-alert>
 
   <div class="clearfix">
-    <h4 class="text-center text-danger">In Development</h4>
-
-    <!-- <form [formGroup]="form" (ngSubmit)="submit(model)">
-      < !-- Loading spinner -- >
+    <form [formGroup]="form" (ngSubmit)="submit(model)">
+      <!-- Loading spinner -->
       <div class="d-flex justify-content-center" *ngIf="!fields">
         <div class="spinner-border text-success" role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
 
-      < !-- Form -- >
+      <!-- Form -->
       <formly-form
         [form]="form"
         [fields]="fields"
         [model]="model"
       ></formly-form>
 
-      < !-- Right aligned submit button -- >
+      <!-- Right aligned submit button -->
       <div class="clearfix">
         <button
           type="submit"
@@ -34,6 +32,6 @@
           {{ submitLabel || title }}
         </button>
       </div>
-    </form> -->
+    </form>
   </div>
 </div>

@@ -19,7 +19,6 @@ import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
 import { SharedModule } from "./component/shared/shared.module";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
-import { BawApiService } from "./services/baw-api/base-api.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,7 +43,6 @@ import { BawApiService } from "./services/baw-api/base-api.service";
     ErrorModule
   ],
   providers: [
-    BawApiService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: BawApiInterceptor,

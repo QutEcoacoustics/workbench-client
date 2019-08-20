@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { User } from "src/app/models/User";
-import { BawApiService, Paths } from "./base-api.service";
+import { APIResponse, BawApiService, Paths } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -31,6 +31,18 @@ export class SecurityService extends BawApiService {
    */
   getLoggedInTrigger(): BehaviorSubject<boolean> {
     return this.loggedInTrigger;
+  }
+
+  getDetails(
+    subject: Subject<any>,
+    callback: (data: any) => any,
+    path: string,
+    args?: any
+  ) {
+    this.getLoggedInTrigger().subscribe({
+      next: () => super.getDetails(subject, callback, path, args),
+      error: err => subject.error(err)
+    });
   }
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
@@ -141,6 +153,6 @@ interface Authentication {
   userName: string;
 }
 
-interface AuthenticationResponse extends Response {
+interface AuthenticationResponse extends APIResponse {
   data: Authentication;
 }
