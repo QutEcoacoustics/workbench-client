@@ -1,132 +1,44 @@
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { CardImageComponent } from "src/app/component/shared/cards/card-image/card-image.component";
 import { CardComponent } from "src/app/component/shared/cards/card/card.component";
 import { CardsComponent } from "src/app/component/shared/cards/cards.component";
-import {
-  Projects,
-  ProjectsService
-} from "src/app/services/baw-api/projects.service";
-import { environment } from "src/environments/environment";
+import { Project } from "src/app/models/Project";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  const projects = {
-    meta: {
-      status: 200,
-      message: "OK",
-      sorting: {
-        orderBy: "name",
-        direction: "asc"
-      },
-      paging: {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1,
-        current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=25&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    },
-    data: [
-      {
-        id: 512,
-        name: "eScience Acoustic Study",
-        description:
-          "Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.",
-        creatorId: 138,
-        siteIds: [
-          513,
-          514,
-          519,
-          518,
-          522,
-          520,
-          526,
-          521,
-          517,
-          525,
-          516,
-          524,
-          523,
-          515,
-          527
-        ],
-        description_html:
-          "<p>Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.</p>\n"
-      },
-      {
-        id: 512,
-        name: "eScience Acoustic Study",
-        description:
-          "Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.",
-        creatorId: 138,
-        siteIds: [
-          513,
-          514,
-          519,
-          518,
-          522,
-          520,
-          526,
-          521,
-          517,
-          525,
-          516,
-          524,
-          523,
-          515,
-          527
-        ],
-        description_html:
-          "<p>Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.</p>\n"
-      },
-      {
-        id: 512,
-        name: "eScience Acoustic Study",
-        description:
-          "Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.",
-        creatorId: 138,
-        siteIds: [
-          513,
-          514,
-          519,
-          518,
-          522,
-          520,
-          526,
-          521,
-          517,
-          525,
-          516,
-          524,
-          523,
-          515,
-          527
-        ],
-        description_html:
-          "<p>Experiment to assess the use of reputation models and productivity tools on citizen scientists with unknown species identification skills.</p>\n"
-      }
-    ]
-  };
-
   class MockProjectsService {
-    public getFilteredProjects(filters: any): Subject<Projects> {
-      const subject = new Subject<Projects>();
+    public getFilteredProjects(filters: any): Subject<Project[]> {
+      const subject = new Subject<Project[]>();
 
       setTimeout(() => {
-        subject.next(projects);
+        subject.next([
+          new Project({
+            id: 1,
+            name: "Name 1",
+            description: "Description 1",
+            creatorId: 1,
+            siteIds: new Set([1, 2, 3, 4, 5])
+          }),
+          new Project({
+            id: 2,
+            name: "Name 2",
+            description: "Description 2",
+            creatorId: 2,
+            siteIds: new Set([6, 7, 8, 9, 10])
+          }),
+          new Project({
+            id: 3,
+            name: "Name 3",
+            description: "Description 3",
+            creatorId: 3,
+            siteIds: new Set([1, 3, 5, 7, 9])
+          })
+        ]);
       }, 500);
 
       return subject;
