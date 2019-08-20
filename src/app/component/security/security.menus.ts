@@ -46,7 +46,7 @@ export const resetPasswordMenuItem = MenuRoute({
 export const unlockAccountMenuItem = MenuRoute({
   icon: ["fas", "lock-open"],
   label: "Unlock account",
-  route: securityRoute.add("unlock"),
+  route: securityRoute.add("unlock_account"),
   tooltip: () => "Send an email to unlock your account",
   order: { priority: 2, indentation: 1 }
 });

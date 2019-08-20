@@ -12,7 +12,7 @@ import {
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem
-} from "../../authentication.menus";
+} from "../../security.menus";
 import data from "./login.json";
 
 @Page({

@@ -9,7 +9,7 @@ import {
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem
-} from "../../authentication.menus";
+} from "../../security.menus";
 import data from "./unlock-account.json";
 
 @Page({

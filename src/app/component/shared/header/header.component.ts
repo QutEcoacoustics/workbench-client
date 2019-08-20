@@ -2,11 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import {
-  loginMenuItem,
-  registerMenuItem
-} from "../../authentication/authentication.menus";
 import { homeMenuItem } from "../../home/home.menus";
+import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
 @Component({
   selector: "app-header",
