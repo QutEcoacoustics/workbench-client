@@ -27,5 +27,12 @@ steps:
     displayName: 'npm install and build'
   - script: |
       npm test
-      npm run e2e
     displayName: 'Test suite'
+  # Publish Test Results
+  # Publish test results to Azure Pipelines
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TESTS-*.xml'
+      mergeTestResults: true
+      publishRunAttachments: true

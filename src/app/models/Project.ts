@@ -43,6 +43,7 @@ export class Project implements ProjectInterface {
   get card(): Card {
     return {
       title: this.name,
+      description: this.description,
       image: {
         url: this.imageUrl,
         alt: this.name

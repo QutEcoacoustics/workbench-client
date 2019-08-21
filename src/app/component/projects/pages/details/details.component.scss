@@ -8,6 +8,7 @@
   line-height: 1.428571429;
   margin-bottom: 20px;
   padding: 4px;
+  padding-right: 10px;
   transition: border 0.2s ease-in-out;
 
   img {
@@ -33,6 +34,23 @@
     .heading {
       margin-top: 0px;
       margin-bottom: 5px;
+    }
+
+    ul {
+      margin-bottom: 0px;
+    }
+
+    .nav > li > a:hover {
+      text-decoration: none;
+      background-color: #eee;
+      &.active {
+        text-decoration: none;
+        background-color: #007bff;
+      }
+    }
+    .nav-pills > li > a {
+      font-size: 0.9rem;
+      border-radius: 4px;
     }
   }
 }

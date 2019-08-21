@@ -1,3 +1,5 @@
+import { Project } from "./Project";
+
 /**
  * A site model.
  */
@@ -49,5 +51,11 @@ export class Site implements SiteInterface {
     this.customLatitude = site.customLatitude;
     this.customLongitude = site.customLongitude;
     this.timezoneInformation = site.timezoneInformation;
+  }
+
+  getSiteUrl(project: Project): string {
+    return "not_developed/:projectId/:siteId"
+      .replace(":projectId", project.id.toString())
+      .replace(":siteId", this.id.toString());
   }
 }

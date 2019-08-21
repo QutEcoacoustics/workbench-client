@@ -2,8 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnChanges,
-  OnInit
+  OnChanges
 } from "@angular/core";
 import { List } from "immutable";
 
@@ -46,5 +45,5 @@ export interface Card {
   image?: { url: string; alt: string };
   description?: string;
   link?: string;
-  route?: string;
+  route?: string | [string, string];
 }
