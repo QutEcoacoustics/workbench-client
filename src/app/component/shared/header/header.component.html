@@ -9,13 +9,13 @@
       {{ title }}
     </a>
 
-    <!-- Toggle button for collapsable content -->
+    <!-- Toggle button for collapsible content -->
     <button class="navbar-toggler" type="button" (click)="toggleCollapse()">
       <span class="sr-only">Toggle Navigation</span>
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Collapsable content -->
+    <!-- Collapsible content -->
     <div
       class="collapse navbar-collapse"
       id="navbarNavDropdown"
@@ -27,7 +27,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            routerLink="/projects/all"
+            routerLink="{{ routes.projects.route }}"
             routerLinkActive="active"
             i18n="Navbar Projects Link|Link to Projects page@@navbarProjects"
           >
@@ -61,7 +61,7 @@
       </ul>
 
       <!-- Right aligned unauthenticated links -->
-      <ul class="navbar-nav" *ngIf="!username">
+      <ul class="navbar-nav" *ngIf="!user">
         <li class="nav-item">
           <a
             class="nav-link"
@@ -85,15 +85,15 @@
       </ul>
 
       <!-- Right aligned authenticated links -->
-      <ul class="navbar-nav" *ngIf="username">
+      <ul class="navbar-nav" *ngIf="user">
         <li class="nav-item">
           <a
             class="nav-link login-widget"
             routerLink="/profile"
             routerLinkActive="active"
           >
-            <span>{{ username }}</span>
-            <img src="/assets/images/user/user_span4.png" alt="Profile Icon" />
+            <span>{{ user.username }}</span>
+            <img alt="Profile Icon" [src]="user.iconUrl" />
           </a>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">

@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
-import { MenuRoute } from "src/app/interfaces/menusInterfaces";
+import { User } from "src/app/models/User";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { homeMenuItem } from "../../home/home.menus";
+import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
 @Component({
@@ -14,13 +15,14 @@ export class HeaderComponent implements OnInit {
   activeLink: string;
   collapsed: boolean;
   loggedIn: boolean;
-  username: string;
+  user: User;
   title = "Ecosounds";
 
-  routes: {
-    home: MenuRoute;
-    login: MenuRoute;
-    register: MenuRoute;
+  routes = {
+    home: homeMenuItem,
+    projects: projectsMenuItem,
+    login: loginMenuItem,
+    register: registerMenuItem
   };
 
   constructor(
@@ -39,18 +41,12 @@ export class HeaderComponent implements OnInit {
       }
     });
 
-    this.routes = {
-      home: homeMenuItem,
-      login: loginMenuItem,
-      register: registerMenuItem
-    };
-
     if (this.api.isLoggedIn()) {
-      this.username = this.api.getUser().username;
+      this.user = this.api.getUser();
     }
 
     this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      this.username = loggedIn ? this.api.getUser().username : null;
+      this.user = loggedIn ? this.api.getUser() : null;
       this.ref.detectChanges();
     });
   }

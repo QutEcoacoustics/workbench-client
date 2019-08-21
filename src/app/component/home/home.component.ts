@@ -6,6 +6,7 @@ import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { projectMenuItem, projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -21,23 +22,13 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit {
+  moreProjectsLink = projectsMenuItem;
   processList: List<Card>;
   projectList$: Observable<any> = this.api
     .getFilteredProjects({ items: 3 })
     .pipe(
       map((data: Project[]) => {
-        return List(
-          data.map(project => {
-            return {
-              title: project.name,
-              image: {
-                url: "/assets/images/project/project_span4.png",
-                alt: project.name
-              },
-              route: "projects/" + project.id
-            };
-          })
-        );
+        return List(data.map(project => project.card));
       })
     );
 

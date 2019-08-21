@@ -1,3 +1,6 @@
+import { projectMenuItem } from "../component/projects/projects.menus";
+import { Card } from "../component/shared/cards/cards.component";
+
 /**
  * A project model.
  */
@@ -7,6 +10,7 @@ export interface ProjectInterface {
   id: number;
   name: string;
   siteIds: Set<number>;
+  imageUrl?: string;
 }
 
 /**
@@ -15,6 +19,7 @@ export interface ProjectInterface {
 export class Project implements ProjectInterface {
   public readonly id: number;
   public readonly name: string;
+  public readonly imageUrl: string;
   public readonly creatorId: number;
   public readonly description: string;
   public readonly siteIds: Set<number>;
@@ -22,8 +27,27 @@ export class Project implements ProjectInterface {
   constructor(project: ProjectInterface) {
     this.id = project.id;
     this.name = project.name;
+    this.imageUrl =
+      project.imageUrl || "/assets/images/project/project_span4.png";
     this.creatorId = project.creatorId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
+  }
+
+  get projectUrl(): string {
+    return projectMenuItem.route
+      .toString()
+      .replace(":projectId", this.id.toString());
+  }
+
+  get card(): Card {
+    return {
+      title: this.name,
+      image: {
+        url: this.imageUrl,
+        alt: this.name
+      },
+      route: this.projectUrl
+    };
   }
 }

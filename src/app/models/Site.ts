@@ -4,6 +4,7 @@
 export interface SiteInterface {
   description: string;
   id: number;
+  imageUrl?: string;
   locationObfuscated: boolean;
   name: string;
   projectIds: number[];
@@ -24,6 +25,7 @@ export interface SiteInterface {
 export class Site implements SiteInterface {
   public readonly id: number;
   public readonly name: string;
+  public readonly imageUrl: string;
   public readonly description: string;
   public readonly locationObfuscated: boolean;
   public readonly projectIds: number[];
@@ -40,6 +42,7 @@ export class Site implements SiteInterface {
   constructor(site: SiteInterface) {
     this.id = site.id;
     this.name = site.name;
+    this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.description = site.description;
     this.locationObfuscated = site.locationObfuscated;
     this.projectIds = site.projectIds;

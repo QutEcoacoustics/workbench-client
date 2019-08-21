@@ -27,19 +27,7 @@ import { projectsCategory, projectsMenuItem } from "../../projects.menus";
 export class ListComponent extends PageComponent implements OnInit {
   projectList$: Observable<any> = this.api.getProjects().pipe(
     map((data: Project[]) => {
-      return List(
-        data.map(project => {
-          return {
-            title: project.name,
-            image: {
-              url:
-                "https://staging.ecosounds.org/images/project/project_span3.png",
-              alt: project.name
-            },
-            route: "/projects/" + project.id
-          };
-        })
-      );
+      return List(data.map(project => project.card));
     })
   );
 

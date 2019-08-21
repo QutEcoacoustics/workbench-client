@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { version } from "package.json";
+import { contactUsMenuItem } from "../../about/about.menus";
 
 @Component({
   selector: "app-footer",
@@ -9,6 +10,9 @@ import { version } from "package.json";
 })
 export class FooterComponent implements OnInit {
   public version: string = version;
+  routes = {
+    contactUs: contactUsMenuItem
+  };
 
   constructor() {}
 

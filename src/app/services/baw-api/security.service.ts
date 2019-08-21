@@ -126,6 +126,7 @@ export class SecurityService extends BawApiService {
           this.setSessionUser({
             id: 12345,
             role: "User",
+            iconUrl: "/assets/images/user/user_span4.png",
             authToken: data.data.authToken,
             username: data.data.userName
           });

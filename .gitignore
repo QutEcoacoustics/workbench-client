@@ -65,3 +65,6 @@ dist
 
 # Temporary files
 website tree
+
+# Test output
+TESTS-*.xml
