@@ -24,7 +24,6 @@ div.container {
   @extend .col-sm-12;
   @extend .m-0;
   @extend .p-0;
-  @extend .pt-2;
 }
 
 .page {
@@ -32,15 +31,21 @@ div.container {
   @extend .order-3;
   @extend .col-lg-8;
   @extend .col-sm-12;
-  @extend .pt-4;
 }
 
-.actions {
+.action {
   @extend .order-lg-3;
   @extend .order-2;
   @extend .col-lg-2;
   @extend .col-sm-12;
   @extend .m-0;
   @extend .p-0;
-  @extend .pt-2;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
 }

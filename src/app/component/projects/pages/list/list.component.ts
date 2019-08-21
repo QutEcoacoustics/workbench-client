@@ -18,7 +18,9 @@ import { projectsCategory, projectsMenuItem } from "../../projects.menus";
 @Component({
   selector: "app-projects-list",
   template: `
-    <app-cards [cards]="projectList$ | async"> </app-cards>
+    <div class="mt-4">
+      <app-cards [cards]="projectList$ | async"></app-cards>
+    </div>
   `
 })
 export class ListComponent implements OnInit {

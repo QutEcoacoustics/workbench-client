@@ -2,24 +2,22 @@
   <app-header></app-header>
   <ngx-loading-bar [value]="(delayedProgress$ | async) || 0"></ngx-loading-bar>
   <div class="content">
-    <ng-container *ngIf="menuLayout; else fullPage">
-      <div class="container p-0">
-        <div class="d-flex flex-wrap col">
-          <div class="secondary">
-            <router-outlet name="secondary"></router-outlet>
-          </div>
-          <div class="page">
-            <router-outlet></router-outlet>
-          </div>
-          <div class="actions">
-            <router-outlet name="action"></router-outlet>
-          </div>
+    <div
+      class="p-0"
+      [ngClass]="{ container: menuLayout, 'container-fluid': !menuLayout }"
+    >
+      <div class="d-flex flex-wrap col p-0">
+        <div [ngClass]="{ secondary: menuLayout, hidden: !menuLayout }">
+          <router-outlet name="secondary"></router-outlet>
+        </div>
+        <div [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }">
+          <router-outlet></router-outlet>
+        </div>
+        <div [ngClass]="{ action: menuLayout, hidden: !menuLayout }">
+          <router-outlet name="action"></router-outlet>
         </div>
       </div>
-    </ng-container>
-    <ng-template #fullPage>
-      <router-outlet></router-outlet>
-    </ng-template>
+    </div>
   </div>
   <app-footer></app-footer>
 </div>
