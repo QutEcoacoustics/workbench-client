@@ -27,7 +27,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            routerLink="/projects"
+            routerLink="/projects/all"
             routerLinkActive="active"
             i18n="Navbar Projects Link|Link to Projects page@@navbarProjects"
           >
@@ -93,10 +93,7 @@
             routerLinkActive="active"
           >
             <span>{{ username }}</span>
-            <img
-              src="https://staging.ecosounds.org/images/user/user_spanhalf.png"
-              alt="Profile Icon"
-            />
+            <img src="/assets/images/user/user_span4.png" alt="Profile Icon" />
           </a>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">

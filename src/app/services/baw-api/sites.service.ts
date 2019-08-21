@@ -29,7 +29,7 @@ export class SitesService extends SecurityService {
    */
   public getSite(id: number): Subject<Site> {
     const subject = new Subject<Site>();
-    const callback = (data: SiteResponse) => new Site(data.data);
+    const callback = (site: SiteInterface) => new Site(site);
 
     this.getDetails(subject, callback, this.paths.flattened, {
       args: { siteId: id }
@@ -46,7 +46,7 @@ export class SitesService extends SecurityService {
    */
   public getProjectSite(projectId: number, siteId: number): Subject<Site> {
     const subject = new Subject<Site>();
-    const callback = (data: SiteResponse) => new Site(data.data);
+    const callback = (site: SiteInterface) => new Site(site);
 
     this.getDetails(subject, callback, this.paths.nested, {
       args: { projectId, siteId }
@@ -63,9 +63,9 @@ export class SitesService extends SecurityService {
    */
   public getProjectSites(id: number): Subject<Site[]> {
     const subject = new Subject<Site[]>();
-    const callback = (data: SitesResponse) =>
-      data.data.map(projectData => {
-        return new Site(projectData);
+    const callback = (sites: SiteInterface[]) =>
+      sites.map(site => {
+        return new Site(site);
       });
 
     this.getDetails(subject, callback, this.paths.list, {
@@ -82,9 +82,9 @@ export class SitesService extends SecurityService {
    */
   public getFilteredSites(filters: SiteFiler): Subject<Site[]> {
     const subject = new Subject<Site[]>();
-    const callback = (data: SitesResponse) =>
-      data.data.map(projectData => {
-        return new Site(projectData);
+    const callback = (sites: SiteInterface[]) =>
+      sites.map(site => {
+        return new Site(site);
       });
 
     this.getDetails(subject, callback, this.paths.filter, { filters });

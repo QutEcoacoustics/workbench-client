@@ -1,1 +1,46 @@
-<p>details works!</p>
+<div *ngIf="project">
+  <h1>{{ project.name }}</h1>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="thumbnail">
+        <img
+          src="/assets/images/project/project_span4.png"
+          [alt]="project.name"
+        />
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <p>{{ project.description }}</p>
+    </div>
+  </div>
+
+  <h2>Sites</h2>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let site of sites">
+          <div class="site">
+            <div class="image">
+              <a href="">
+                <img
+                  src="/assets/images/site/site_span4.png"
+                  [alt]="site.name"
+                />
+              </a>
+            </div>
+            <div class="body">
+              <div class="heading">
+                <h4>
+                  <a href="">{{ site.name }}</a>
+                </h4>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-6"></div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
@@ -23,7 +24,7 @@ import { projectsCategory, projectsMenuItem } from "../../projects.menus";
     </div>
   `
 })
-export class ListComponent implements OnInit {
+export class ListComponent extends PageComponent implements OnInit {
   projectList$: Observable<any> = this.api.getProjects().pipe(
     map((data: Project[]) => {
       return List(
@@ -35,14 +36,16 @@ export class ListComponent implements OnInit {
                 "https://staging.ecosounds.org/images/project/project_span3.png",
               alt: project.name
             },
-            link: "https://staging.ecosounds.org/projects/" + project.id
+            route: "/projects/" + project.id
           };
         })
       );
     })
   );
 
-  constructor(private api: ProjectsService) {}
+  constructor(private api: ProjectsService) {
+    super();
+  }
 
   ngOnInit() {}
 }

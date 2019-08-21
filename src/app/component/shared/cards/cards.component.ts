@@ -46,4 +46,5 @@ export interface Card {
   image?: { url: string; alt: string };
   description?: string;
   link?: string;
+  route?: string;
 }

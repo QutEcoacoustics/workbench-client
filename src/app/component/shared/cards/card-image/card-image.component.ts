@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { Card } from "../cards.component";
 
 @Component({
   selector: "app-card-image",
@@ -12,26 +13,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardImageComponent implements OnInit {
-  @Input() title: string;
-  @Input() image: { url: string; alt: string };
-  @Input() link?: string;
-  @Input() description?: string;
+  @Input() card: Card;
 
   constructor() {}
 
-  ngOnInit() {
-    this.checkRequiredFields("title", this.title);
-    this.checkRequiredFields("image", this.image);
-  }
-
-  /**
-   * Check input field is provided
-   * @param name Input variable name
-   * @param input Input variable
-   */
-  checkRequiredFields(name: string, input: any) {
-    if (input === null || input === undefined) {
-      throw new Error("Attribute " + name + " is required");
-    }
-  }
+  ngOnInit() {}
 }

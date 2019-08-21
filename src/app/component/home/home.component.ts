@@ -31,11 +31,10 @@ export class HomeComponent extends PageComponent implements OnInit {
             return {
               title: project.name,
               image: {
-                url:
-                  "https://staging.ecosounds.org/images/project/project_span3.png",
+                url: "/assets/images/project/project_span4.png",
                 alt: project.name
               },
-              link: "https://staging.ecosounds.org/projects/" + project.id
+              route: "projects/" + project.id
             };
           })
         );

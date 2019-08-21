@@ -2,19 +2,14 @@
   <ng-container *ngIf="imageCards; else defaultCards">
     <app-card-image
       *ngFor="let item of cards"
-      [title]="item.title"
-      [image]="item.image"
-      [description]="item.description"
-      [link]="item.link"
+      [card]="item"
       class="col-lg-4 col-sm-6 portfolio-item mb-4"
     ></app-card-image>
   </ng-container>
   <ng-template #defaultCards>
     <app-card
       *ngFor="let item of cards"
-      [title]="item.title"
-      [description]="item.description"
-      [link]="item.link"
+      [card]="item"
       class="col-lg-4 col-sm-6 mb-4"
     ></app-card>
   </ng-template>

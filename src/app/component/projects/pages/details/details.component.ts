@@ -1,8 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
+import { Project } from "src/app/models/Project";
+import { Site } from "src/app/models/Site";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { projectMenuItem, projectsCategory } from "../../projects.menus";
 
 @Page({
@@ -16,23 +20,35 @@ import { projectMenuItem, projectsCategory } from "../../projects.menus";
 @Component({
   selector: "app-projects-details",
   templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ["./details.component.scss"]
 })
-export class DetailsComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private api: ProjectsService) {}
+export class DetailsComponent extends PageComponent implements OnInit {
+  project: Project;
+  sites: Site[];
+
+  constructor(
+    private route: ActivatedRoute,
+    private projectsApi: ProjectsService,
+    private sitesApi: SitesService
+  ) {
+    super();
+  }
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe({
-      next: queryParams => {
-        console.debug(queryParams);
-        const projectId = queryParams.get("projectId");
-        console.debug(projectId);
-      }
-    });
+    this.route.params.subscribe({
+      next: data => {
+        this.projectsApi.getProject(data.projectId).subscribe({
+          next: project => {
+            this.project = project;
+          }
+        });
 
-    this.api.getProject(512).subscribe({
-      next: data => console.debug(data)
+        this.sitesApi.getProjectSites(data.projectId).subscribe({
+          next: sites => {
+            this.sites = sites;
+          }
+        });
+      }
     });
   }
 }

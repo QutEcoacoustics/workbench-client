@@ -12,7 +12,7 @@ export const projectsCategory: Category = {
 export const projectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
   label: "Projects",
-  route: projectsRoute,
+  route: projectsRoute.add("all"),
   tooltip: () => "View projects I have access too",
   order: { priority: 4, indentation: 0 }
 });

@@ -1,13 +1,22 @@
 <div class="card h-100">
   <h4 class="card-header text-center">
-    <a [href]="link" *ngIf="link; else noLinkTitle">
-      {{ title }}
-    </a>
-    <ng-template #noLinkTitle>{{ title }}</ng-template>
+    <ng-container *ngIf="card.link || card.route; else noLinkTitle">
+      <ng-container *ngIf="card.link; else route">
+        <a [href]="card.link">{{ card.title }}</a>
+      </ng-container>
+
+      <ng-template #route>
+        <a [routerLink]="card.route">
+          {{ card.title }}
+        </a>
+      </ng-template>
+    </ng-container>
+
+    <ng-template #noLinkTitle>{{ card.title }}</ng-template>
   </h4>
   <div class="card-body">
-    <p class="card-text" [ngClass]="{ 'font-italic': !description }">
-      {{ description ? description : 'No description given' }}
+    <p class="card-text" [ngClass]="{ 'font-italic': !card.description }">
+      {{ card.description ? card.description : 'No description given' }}
     </p>
   </div>
 </div>
