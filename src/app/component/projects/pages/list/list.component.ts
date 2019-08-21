@@ -2,16 +2,21 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { projectsCategory, projectsMenuItem } from "../../projects.menus";
+import {
+  newProjectMenuItem,
+  projectsCategory,
+  projectsMenuItem
+} from "../../projects.menus";
 
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List(),
+    actions: List<AnyMenuItem>([newProjectMenuItem]),
     links: List()
   },
   self: projectsMenuItem

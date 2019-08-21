@@ -1,18 +1,23 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
-import { projectMenuItem, projectsCategory } from "../../projects.menus";
+import {
+  editProjectMenuItem,
+  projectMenuItem,
+  projectsCategory
+} from "../../projects.menus";
 
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List(),
+    actions: List<AnyMenuItem>([editProjectMenuItem]),
     links: List()
   },
   self: projectMenuItem
