@@ -22,7 +22,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 })
 export class HomeComponent extends PageComponent implements OnInit {
   processList: List<Card>;
-  updateProjectList$: Observable<any> = this.api
+  projectList$: Observable<any> = this.api
     .getFilteredProjects({ items: 3 })
     .pipe(
       map((data: Project[]) => {

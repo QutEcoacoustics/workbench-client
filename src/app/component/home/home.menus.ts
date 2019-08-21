@@ -12,6 +12,5 @@ export const homeMenuItem = MenuRoute({
   label: "Home",
   route: homeRoute,
   tooltip: () => "Home page",
-  predicate: user => !user,
   order: { priority: 1, indentation: 0 }
 });

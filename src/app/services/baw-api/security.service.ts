@@ -19,6 +19,12 @@ export class SecurityService extends BawApiService {
 
     this.loggedInTrigger.next(this.isLoggedIn());
 
+    this.loggedInTrigger.subscribe({
+      next: () => {
+        "LoggedInTrigger Update";
+      }
+    });
+
     this.paths = {
       register: "/security",
       signIn: "/security",
@@ -33,13 +39,20 @@ export class SecurityService extends BawApiService {
     return this.loggedInTrigger;
   }
 
+  /**
+   * Get response from details route. Updates on logged in state change
+   * @param subject Subject to update
+   * @param callback Callback function which generates the model
+   * @param path API path
+   * @param args API arguments
+   */
   getDetails(
     subject: Subject<any>,
     callback: (data: any) => any,
     path: string,
     args?: any
   ) {
-    this.getLoggedInTrigger().subscribe({
+    this.loggedInTrigger.subscribe({
       next: () => super.getDetails(subject, callback, path, args),
       error: err => subject.error(err)
     });
@@ -71,9 +84,21 @@ export class SecurityService extends BawApiService {
       return;
     }
 
-    this.delete(this.paths.signOut);
-    this.clearSessionStorage();
-    this.loggedInTrigger.next(false);
+    this.delete(this.paths.signOut).subscribe({
+      next: (data: APIResponse) => {
+        if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+          this.loggedInTrigger.next(false);
+          this.clearSessionStorage();
+        } else {
+          console.error("Unknown error thrown by login rest api");
+          console.error(data);
+        }
+      },
+      error: err => {
+        console.error("Unknown error thrown by login rest api");
+        console.error(err);
+      }
+    });
   }
 
   /**

@@ -1,5 +1,6 @@
 import { List } from "immutable";
 import { homeCategory, homeMenuItem } from "src/app/component/home/home.menus";
+import { projectsMenuItem } from "src/app/component/projects/projects.menus";
 import {
   loginMenuItem,
   registerMenuItem
@@ -10,7 +11,8 @@ export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
     homeMenuItem,
     loginMenuItem,
-    registerMenuItem
+    registerMenuItem,
+    projectsMenuItem
   ]),
   defaultCategory: homeCategory
 };
