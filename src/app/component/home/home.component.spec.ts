@@ -1,10 +1,15 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterModule } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
+import { HttpClient } from "selenium-webdriver/http";
 import { CardImageComponent } from "src/app/component/shared/cards/card-image/card-image.component";
 import { CardComponent } from "src/app/component/shared/cards/card/card.component";
 import { CardsComponent } from "src/app/component/shared/cards/cards.component";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -47,13 +52,8 @@ describe("HomeComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        HomeComponent,
-        CardsComponent,
-        CardComponent,
-        CardImageComponent
-      ],
-      imports: [],
+      declarations: [HomeComponent],
+      imports: [SharedModule, HttpClientModule, RouterTestingModule],
       providers: [{ provide: ProjectsService, useClass: MockProjectsService }]
     }).compileComponents();
   }));

@@ -56,7 +56,9 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
+    cardComponent.card = {
+      title: "title"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -73,8 +75,10 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.description = "description";
+    cardComponent.card = {
+      title: "title",
+      description: "description"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -91,8 +95,10 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.link = "https://link/";
+    cardComponent.card = {
+      title: "title",
+      link: "https://link/"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -110,7 +116,9 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
+    cardComponent.card = {
+      title: "title1"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -121,7 +129,9 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
+    cardComponent.card = {
+      title: "title2"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -138,7 +148,9 @@ describe("CardsComponent", () => {
     // Create first card
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
+    cardComponent.card = {
+      title: "title"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -159,8 +171,10 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.description = "desc1";
+    cardComponent.card = {
+      title: "title1",
+      description: "desc1"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -171,8 +185,10 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.description = "desc2";
+    cardComponent.card = {
+      title: "title2",
+      description: "desc2"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -192,8 +208,10 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.link = "https://link1/";
+    cardComponent.card = {
+      title: "title1",
+      link: "https://link1/"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -204,8 +222,10 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.link = "https://link2/";
+    cardComponent.card = {
+      title: "title2",
+      link: "https://link2/"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -225,9 +245,11 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.description = "desc1";
-    cardComponent.link = "https://link1/";
+    cardComponent.card = {
+      title: "title1",
+      description: "desc1",
+      link: "https://link1/"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -238,9 +260,11 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.description = "desc2";
-    cardComponent.link = "https://link2/";
+    cardComponent.card = {
+      title: "title2",
+      description: "desc2",
+      link: "https://link2/"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -288,8 +312,10 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardImageComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.image = { url: "image", alt: "alt" };
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image", alt: "alt" }
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -314,9 +340,11 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardImageComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.image = { url: "image", alt: "alt" };
-    cardComponent.description = "description";
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image", alt: "alt" },
+      description: "description"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -341,9 +369,11 @@ describe("CardsComponent", () => {
     // Create test card
     const cardFixture = TestBed.createComponent(CardImageComponent);
     const cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.image = { url: "image", alt: "alt" };
-    cardComponent.link = "https://link/";
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image", alt: "alt" },
+      link: "https://link/"
+    };
     cardFixture.detectChanges();
     const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -368,8 +398,10 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.image = { url: "image1", alt: "alt1" };
+    cardComponent.card = {
+      title: "title1",
+      image: { url: "image1", alt: "alt1" }
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -380,8 +412,10 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.image = { url: "image2", alt: "alt2" };
+    cardComponent.card = {
+      title: "title2",
+      image: { url: "image2", alt: "alt2" }
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -403,8 +437,10 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.image = { url: "image1", alt: "alt1" };
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image1", alt: "alt1" }
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -415,8 +451,10 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title";
-    cardComponent.image = { url: "image2", alt: "alt2" };
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image2", alt: "alt2" }
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -438,8 +476,10 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.image = { url: "image", alt: "alt" };
+    cardComponent.card = {
+      title: "title",
+      image: { url: "image", alt: "alt" }
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -450,8 +490,10 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.image = { url: "image", alt: "alt" };
+    cardComponent.card = {
+      title: "title2",
+      image: { url: "image2", alt: "alt2" }
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -481,9 +523,11 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.image = { url: "image1", alt: "alt1" };
-    cardComponent.description = "desc1";
+    cardComponent.card = {
+      title: "title1",
+      image: { url: "image1", alt: "alt1" },
+      description: "desc1"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -494,9 +538,11 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.image = { url: "image2", alt: "alt2" };
-    cardComponent.description = "desc2";
+    cardComponent.card = {
+      title: "title2",
+      image: { url: "image2", alt: "alt2" },
+      description: "desc2"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -526,9 +572,12 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.image = { url: "image1", alt: "alt1" };
-    cardComponent.link = "https://link1/";
+    cardComponent.card = {
+      title: "title1",
+      image: { url: "image1", alt: "alt1" },
+      description: "desc1",
+      link: "https://link1/"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -539,9 +588,11 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.image = { url: "image2", alt: "alt2" };
-    cardComponent.link = "https://link2/";
+    cardComponent.card = {
+      title: "title2",
+      image: { url: "image2", alt: "alt2" },
+      description: "desc2"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -573,10 +624,12 @@ describe("CardsComponent", () => {
     // Create first card
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title1";
-    cardComponent.image = { url: "image1", alt: "alt1" };
-    cardComponent.description = "desc1";
-    cardComponent.link = "https://link1/";
+    cardComponent.card = {
+      title: "title1",
+      image: { url: "image1", alt: "alt1" },
+      description: "desc1",
+      link: "https://link1/"
+    };
     cardFixture.detectChanges();
     let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"
@@ -587,10 +640,12 @@ describe("CardsComponent", () => {
     // Create second card
     cardFixture = TestBed.createComponent(CardImageComponent);
     cardComponent = cardFixture.componentInstance;
-    cardComponent.title = "title2";
-    cardComponent.image = { url: "image2", alt: "alt2" };
-    cardComponent.description = "desc2";
-    cardComponent.link = "https://link2/";
+    cardComponent.card = {
+      title: "title2",
+      image: { url: "image2", alt: "alt2" },
+      description: "desc2",
+      link: "https://link2/"
+    };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
       ".card"

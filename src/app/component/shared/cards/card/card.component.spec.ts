@@ -27,7 +27,9 @@ describe("CardComponent", () => {
   });
 
   it("should create", () => {
-    component.title = "title";
+    component.card = {
+      title: "title"
+    };
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

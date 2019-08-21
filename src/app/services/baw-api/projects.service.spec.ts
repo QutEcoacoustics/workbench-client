@@ -65,7 +65,7 @@ describe("ProjectsService", () => {
       name: "512 Name",
       description: "512 Description.",
       creator_id: 138,
-      site_ids: [513, 514, 519],
+      site_ids: new Set([513, 514, 519]),
       description_html: "<p>512 Description.</p>\n"
     }
   };
@@ -75,7 +75,7 @@ describe("ProjectsService", () => {
     name: "512 Name",
     description: "512 Description.",
     creatorId: 138,
-    siteIds: [513, 514, 519]
+    siteIds: new Set([513, 514, 519])
   });
 
   const projectUnauthorizedResponse = {
@@ -120,7 +120,7 @@ describe("ProjectsService", () => {
         name: "512 Name",
         description: "512 Description.",
         creator_id: 138,
-        site_ids: [513, 514, 519],
+        site_ids: new Set([513, 514, 519]),
         description_html: "<p>512 Description.</p>\n"
       },
       {
@@ -128,7 +128,7 @@ describe("ProjectsService", () => {
         name: "513 Name",
         description: "513 Description.",
         creator_id: 138,
-        site_ids: [513, 514, 519],
+        site_ids: new Set([513, 514, 519]),
         description_html: "<p>513 Description.</p>\n"
       }
     ]
@@ -140,14 +140,14 @@ describe("ProjectsService", () => {
       name: "512 Name",
       description: "512 Description.",
       creatorId: 138,
-      siteIds: [513, 514, 519]
+      siteIds: new Set([513, 514, 519])
     }),
     new Project({
       id: 513,
       name: "513 Name",
       description: "513 Description.",
       creatorId: 138,
-      siteIds: [513, 514, 519]
+      siteIds: new Set([513, 514, 519])
     })
   ];
 
@@ -323,7 +323,7 @@ describe("ProjectsService", () => {
           name: "512 Name",
           description: "512 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>512 Description.</p>\n"
         },
         {
@@ -331,7 +331,7 @@ describe("ProjectsService", () => {
           name: "513 Name",
           description: "513 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>513 Description.</p>\n"
         },
         {
@@ -339,7 +339,7 @@ describe("ProjectsService", () => {
           name: "514 Name",
           description: "514 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>514 Description.</p>\n"
         }
       ]
@@ -351,21 +351,21 @@ describe("ProjectsService", () => {
         name: "512 Name",
         description: "512 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 513,
         name: "513 Name",
         description: "513 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 514,
         name: "514 Name",
         description: "514 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       })
     ];
 
@@ -415,7 +415,7 @@ describe("ProjectsService", () => {
           name: "512 Name",
           description: "512 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>512 Description.</p>\n"
         },
         {
@@ -423,7 +423,7 @@ describe("ProjectsService", () => {
           name: "513 Name",
           description: "513 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>513 Description.</p>\n"
         },
         {
@@ -431,7 +431,7 @@ describe("ProjectsService", () => {
           name: "514 Name",
           description: "514 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>514 Description.</p>\n"
         }
       ]
@@ -443,21 +443,21 @@ describe("ProjectsService", () => {
         name: "512 Name",
         description: "512 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 513,
         name: "513 Name",
         description: "513 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 514,
         name: "514 Name",
         description: "514 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       })
     ];
 
@@ -509,7 +509,7 @@ describe("ProjectsService", () => {
           name: "512 Name",
           description: "512 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>512 Description.</p>\n"
         },
         {
@@ -517,7 +517,7 @@ describe("ProjectsService", () => {
           name: "513 Name",
           description: "513 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>513 Description.</p>\n"
         },
         {
@@ -525,7 +525,7 @@ describe("ProjectsService", () => {
           name: "514 Name",
           description: "514 Description.",
           creator_id: 138,
-          site_ids: [513, 514, 519],
+          site_ids: new Set([513, 514, 519]),
           description_html: "<p>514 Description.</p>\n"
         }
       ]
@@ -537,21 +537,21 @@ describe("ProjectsService", () => {
         name: "512 Name",
         description: "512 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 513,
         name: "513 Name",
         description: "513 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       }),
       new Project({
         id: 514,
         name: "514 Name",
         description: "514 Description.",
         creatorId: 138,
-        siteIds: [513, 514, 519]
+        siteIds: new Set([513, 514, 519])
       })
     ];
 
