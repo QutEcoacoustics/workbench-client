@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
@@ -25,7 +25,12 @@ import {
   selector: "app-projects-list",
   template: `
     <div class="mt-4">
-      <app-cards [cards]="projectList$ | async"></app-cards>
+      <ng-container *ngIf="projectList$ | async as data; else loadingOrError">
+        <app-cards [cards]="data"></app-cards>
+      </ng-container>
+      <ng-template #loadingOrError>
+        <h4 class="text-center">No projects found</h4>
+      </ng-template>
     </div>
   `
 })

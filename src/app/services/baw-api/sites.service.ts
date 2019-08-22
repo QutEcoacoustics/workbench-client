@@ -80,7 +80,7 @@ export class SitesService extends SecurityService {
    * @param filters Filters
    * @returns Observable list of sites
    */
-  public getFilteredSites(filters: SiteFiler): Subject<Site[]> {
+  public getFilteredSites(filters: SiteFilter): Subject<Site[]> {
     const subject = new Subject<Site[]>();
     const callback = (sites: SiteInterface[]) =>
       sites.map(site => {
@@ -93,7 +93,7 @@ export class SitesService extends SecurityService {
   }
 }
 
-export interface SiteFiler extends Filter {
+export interface SiteFilter extends Filter {
   orderBy?: "id" | "name" | "description";
 }
 

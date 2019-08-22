@@ -107,9 +107,8 @@ export interface MenuLink extends MenuItem {
 }
 
 export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
-  return Object.assign(item, {kind: "MenuLink" as "MenuLink"});
+  return Object.assign(item, { kind: "MenuLink" as "MenuLink" });
 }
-
 
 /**
  * MenuRoute interface. Defines an internal page/route within this application.
@@ -124,8 +123,10 @@ export interface MenuRoute extends MenuItem {
   route: StrongRoute;
 }
 
-export function MenuRoute<T extends Omit<MenuRoute, "kind">>(item: T): MenuRoute {
-  return Object.assign(item, {kind: "MenuRoute" as "MenuRoute"});
+export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
+  item: T
+): MenuRoute {
+  return Object.assign(item, { kind: "MenuRoute" as "MenuRoute" });
 }
 
 /**
@@ -138,8 +139,10 @@ export interface MenuAction extends MenuItem {
   action: () => any | void;
 }
 
-export function MenuAction<T extends Omit<MenuAction, "kind">>(item: T): MenuAction {
-  return Object.assign(item, {kind: "MenuAction" as "MenuAction"});
+export function MenuAction<T extends Omit<MenuAction, "kind">>(
+  item: T
+): MenuAction {
+  return Object.assign(item, { kind: "MenuAction" as "MenuAction" });
 }
 
 /**

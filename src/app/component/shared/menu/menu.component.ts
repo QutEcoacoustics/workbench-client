@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Input,
   OnInit
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { List, Map } from "immutable";
+import { List } from "immutable";
 import {
   AnyMenuItem,
   isButton,

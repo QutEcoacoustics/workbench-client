@@ -62,21 +62,26 @@ export class BawApiInterceptor implements HttpInterceptor {
 
   /**
    * Writes error to console and throws error
-   * @param error HTTP Error
+   * @param response HTTP Error
    * @throws Observable<never>
    */
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.error instanceof ErrorEvent) {
+  private handleError(response: HttpErrorResponse): Observable<never> {
+    if (response.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error("An error occurred:", error.error.message);
+      console.error("An error occurred:", response.error.message);
       return throwError(
         new Error("Something bad happened; please try again later.")
       );
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      console.error(`Backend returned code ${error.status}: `, error);
-      return throwError(new Error(error.error.meta.error.details));
+      console.error(`Backend returned code ${response.status}: `, response);
+
+      try {
+        return throwError(new Error(response.error.meta.error.details));
+      } catch (TypeError) {
+        return throwError(new Error(response.message));
+      }
     }
   }
 
