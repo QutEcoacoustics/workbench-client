@@ -12,7 +12,7 @@ export const projectsCategory: Category = {
 export const projectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
   label: "Projects",
-  route: projectsRoute.add("all"),
+  route: projectsRoute,
   tooltip: () => "View projects I have access too",
   order: { priority: 4, indentation: 0 }
 });
@@ -23,7 +23,10 @@ export const newProjectMenuItem = MenuRoute({
   route: projectsRoute.add("new"),
   tooltip: () => "The current project",
   predicate: user => !!user,
-  order: { priority: 4, indentation: 1 }
+  order: {
+    priority: projectsMenuItem.order.priority,
+    indentation: projectsMenuItem.order.indentation + 1
+  }
 });
 
 export const projectMenuItem = MenuRoute({
@@ -31,7 +34,10 @@ export const projectMenuItem = MenuRoute({
   label: "Project",
   route: projectsRoute.add(":projectId"),
   tooltip: () => "The current project",
-  order: { priority: 4, indentation: 1 }
+  order: {
+    priority: projectsMenuItem.order.priority,
+    indentation: projectsMenuItem.order.indentation + 1
+  }
 });
 
 export const projectCategory: Category = {
@@ -46,5 +52,8 @@ export const editProjectMenuItem = MenuRoute({
   route: projectMenuItem.route.add("edit"),
   tooltip: () => "The current project",
   predicate: user => !!user,
-  order: { priority: 4, indentation: 2 }
+  order: {
+    priority: projectMenuItem.order.priority,
+    indentation: projectMenuItem.order.indentation + 1
+  }
 });

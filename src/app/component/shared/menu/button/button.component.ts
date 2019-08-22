@@ -3,7 +3,20 @@ import { MenuAction } from "src/app/interfaces/menusInterfaces";
 
 @Component({
   selector: "app-menu-button",
-  templateUrl: "./button.component.html",
+  template: `
+    <button
+      class="btn text-left"
+      (click)="link.action()"
+      ngbTooltip="{{ link.tooltip() }}"
+      placement="{{ placement }}"
+    >
+      <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
+      <span>{{ link.label }}</span>
+      <span class="d-none" [id]="id">
+        {{ link.tooltip }}
+      </span>
+    </button>
+  `,
   styleUrls: ["./button.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
