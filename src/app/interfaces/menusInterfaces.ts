@@ -1,6 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { User } from "../models/User";
+import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
 
 /**
@@ -68,7 +68,7 @@ export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
 /**
  * User callback function
  */
-export type UserCallback<T> = null | ((user?: User) => T);
+export type UserCallback<T> = null | ((user?: SessionUser) => T);
 
 /**
  * An item designed to be in a menu.

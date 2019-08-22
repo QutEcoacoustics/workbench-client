@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { User } from "src/app/models/User";
+import { SessionUser } from "src/app/models/User";
 import { environment } from "src/environments/environment";
 
 /**
@@ -36,35 +36,53 @@ export abstract class BawApiService {
   };
 
   public isLoggedIn(): boolean {
-    return !!this.getSessionUser();
+    const user = this.getSessionUser();
+    return user ? !!user.authToken : false;
   }
 
   /**
    * Username of the logged in user
    */
-  public getUser(): User | null {
+  public getUser(): SessionUser | null {
     return this.getSessionUser();
   }
 
   /**
    * Get response from details route
    * @param subject Subject to update
-   * @param callback Callback function which generates the model
+   * @param next Callback function which generates the model
    * @param path API path
    * @param args API arguments
    */
   protected getDetails(
     subject: Subject<any>,
-    callback: (data: any) => any,
+    next: (data: any) => any,
     path: string,
-    args?: any
+    args?: PathArg
   ) {
     this.get<APIResponse>(path, args).subscribe({
       next: (data: APIResponse) => {
-        subject.next(callback(data.data));
+        subject.next(next(data.data));
       },
       error: (err: ErrorResponse) => {
         subject.error(err);
+      }
+    });
+  }
+
+  protected create(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    args?: PathArg,
+    options?: any
+  ) {
+    this.post<APIResponse>(path, args, options).subscribe({
+      next: (data: APIResponse) => {
+        next(data.data);
+      },
+      error: (err: ErrorResponse) => {
+        error(err);
       }
     });
   }
@@ -73,29 +91,43 @@ export abstract class BawApiService {
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
+   * @param args API arguments
+   * @param options Request options
    */
-  protected get<T>(path: string, args?: PathArg): Observable<T> {
-    return this.http.get<T>(this.getPath(path, args));
+  protected get<T>(
+    path: string,
+    args?: PathArg,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.get<T>(this.getPath(path, args), options);
   }
 
   /**
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
+   * @param args API arguments
+   * @param options Request options
    */
-  protected delete<T>(path: string, args?: PathArg): Observable<T> {
-    return this.http.delete<T>(this.getPath(path, args));
+  protected delete<T>(
+    path: string,
+    args?: PathArg,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.delete<T>(this.getPath(path, args), options);
   }
 
   /**
    * Constructs a `POST` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
+   * @param args API arguments
+   * @param options Request options
    */
   protected post<T>(
     path: string,
     args?: PathArg,
-    options?: any
+    options?: RequestOptions
   ): Observable<T> {
     return this.http.post<T>(this.getPath(path, args), options);
   }
@@ -103,12 +135,12 @@ export abstract class BawApiService {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  private getSessionUser(): User | null {
-    let user: User;
+  private getSessionUser(): SessionUser | null {
+    let user: SessionUser;
     try {
       user = JSON.parse(
         sessionStorage.getItem(this.SESSION_STORAGE.user)
-      ) as User;
+      ) as SessionUser;
     } catch (Exception) {
       user = null;
     }
@@ -207,6 +239,23 @@ export interface APIResponse {
     error?: MetaError;
   };
   data: any;
+}
+
+export interface RequestOptions {
+  headers?:
+    | HttpHeaders
+    | {
+        [header: string]: string | string[];
+      };
+  observe?: "body";
+  params?:
+    | HttpParams
+    | {
+        [param: string]: string | string[];
+      };
+  reportProgress?: boolean;
+  responseType?: "json";
+  withCredentials?: boolean;
 }
 
 /**

@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
+import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { UserService } from "src/app/services/baw-api/user.service";
 import { homeMenuItem } from "../../home/home.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
@@ -16,6 +18,7 @@ export class HeaderComponent implements OnInit {
   collapsed: boolean;
   loggedIn: boolean;
   user: User;
+  userImage: string;
   title = "Ecosounds";
 
   routes = {
@@ -27,7 +30,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private api: SecurityService,
+    private securityApi: SecurityService,
+    private userApi: UserService,
     private ref: ChangeDetectorRef
   ) {}
 
@@ -41,12 +45,18 @@ export class HeaderComponent implements OnInit {
       }
     });
 
-    if (this.api.isLoggedIn()) {
-      this.user = this.api.getUser();
-    }
+    this.userApi.getMyAccount().subscribe(user => {
+      this.user = user;
 
-    this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      this.user = loggedIn ? this.api.getUser() : null;
+      // Find the smallest icon for the user
+      if (this.user) {
+        this.user.imageUrls.forEach(imageUrl => {
+          if (imageUrl.size === ImageSizes.small) {
+            this.userImage = imageUrl.url;
+          }
+        });
+      }
+
       this.ref.detectChanges();
     });
   }
@@ -84,6 +94,6 @@ export class HeaderComponent implements OnInit {
    * Logout user
    */
   logout() {
-    this.api.signOut();
+    this.securityApi.signOut();
   }
 }

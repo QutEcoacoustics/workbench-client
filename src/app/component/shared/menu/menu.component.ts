@@ -13,7 +13,7 @@ import {
   isInternalRoute,
   LabelAndIcon
 } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
+import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 
 @Component({
@@ -40,7 +40,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // Get user details
-    const user: User = this.api.getUser();
+    const user: SessionUser = this.api.getUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     this.filteredLinks = this.removeDuplicates(
@@ -78,7 +78,7 @@ export class MenuComponent implements OnInit {
    * @param link Link to display
    * @returns True if filter is passed
    */
-  private filter(user: User, link: AnyMenuItem) {
+  private filter(user: SessionUser, link: AnyMenuItem) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
       return link.predicate(user);

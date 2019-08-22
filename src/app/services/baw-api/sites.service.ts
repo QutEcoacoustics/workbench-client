@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { ID } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
 import { APIResponseList, Filter, Paths } from "./base-api.service";
 import { SecurityService } from "./security.service";
@@ -27,7 +28,7 @@ export class SitesService extends SecurityService {
    * @param id Site ID
    * @returns Observable returning singular site
    */
-  public getSite(id: number): Subject<Site> {
+  public getSite(id: ID): Subject<Site> {
     const subject = new Subject<Site>();
     const callback = (site: SiteInterface) => new Site(site);
 
@@ -44,7 +45,7 @@ export class SitesService extends SecurityService {
    * @param siteId Site ID
    * @returns Observable returning singular site
    */
-  public getProjectSite(projectId: number, siteId: number): Subject<Site> {
+  public getProjectSite(projectId: ID, siteId: ID): Subject<Site> {
     const subject = new Subject<Site>();
     const callback = (site: SiteInterface) => new Site(site);
 
@@ -61,7 +62,7 @@ export class SitesService extends SecurityService {
    * @param id Project ID
    * @returns Observable list of sites for a project
    */
-  public getProjectSites(id: number): Subject<Site[]> {
+  public getProjectSites(id: ID): Subject<Site[]> {
     const subject = new Subject<Site[]>();
     const callback = (sites: SiteInterface[]) =>
       sites.map(site => {

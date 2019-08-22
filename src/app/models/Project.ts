@@ -1,15 +1,16 @@
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
+import { Description, ID, IDs, Name } from "../interfaces/apiInterfaces";
 
 /**
  * A project model.
  */
 export interface ProjectInterface {
-  creatorId: number;
-  description: string;
-  id: number;
-  name: string;
-  siteIds: Set<number>;
+  creatorId: ID;
+  description: Description;
+  id: ID;
+  name: Name;
+  siteIds: IDs;
   imageUrl?: string;
 }
 
@@ -17,12 +18,12 @@ export interface ProjectInterface {
  * A project model.
  */
 export class Project implements ProjectInterface {
-  public readonly id: number;
-  public readonly name: string;
+  public readonly id: ID;
+  public readonly name: Name;
   public readonly imageUrl: string;
-  public readonly creatorId: number;
-  public readonly description: string;
-  public readonly siteIds: Set<number>;
+  public readonly creatorId: ID;
+  public readonly description: Description;
+  public readonly siteIds: IDs;
 
   constructor(project: ProjectInterface) {
     this.id = project.id;

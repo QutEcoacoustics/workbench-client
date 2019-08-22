@@ -1,8 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { User } from "src/app/models/User";
-import { APIResponse, BawApiService, Paths } from "./base-api.service";
+import { SessionUser } from "src/app/models/User";
+import {
+  APIResponse,
+  BawApiService,
+  ErrorResponse,
+  Paths
+} from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -27,6 +32,7 @@ export class SecurityService extends BawApiService {
 
     this.paths = {
       register: "/security",
+      userAccount: "/user_accounts/:id",
       signIn: "/security",
       signOut: "/security"
     };
@@ -65,13 +71,14 @@ export class SecurityService extends BawApiService {
 
   /**
    * Login the user, this function can only be called if user
-   * is not logged in. Details are retrieved directly from the
-   * login form template so that changes to the api are reflected
-   * here without update.
+   * is not logged in.
    * @param details Details provided by login form
    * @returns Observable (true if success, error string if failure)
    */
-  signIn(details: any): Observable<boolean | string> {
+  signIn(details: {
+    email: string;
+    password: string;
+  }): Observable<boolean | string> {
     return this.authenticateUser(this.paths.signIn, details);
   }
 
@@ -111,6 +118,19 @@ export class SecurityService extends BawApiService {
     details: { email: string; password: string }
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
+    const next = (data: Authentication) => {
+      this.setSessionUser({
+        authToken: data.authToken,
+        userName: data.userName
+      });
+      this.loggedInTrigger.next(true);
+      subject.next(true);
+    };
+    const error = (err: ErrorResponse) => {
+      console.error(err);
+      this.loggedInTrigger.next(false);
+      subject.error(err);
+    };
 
     // Return early if logged in
     if (this.isLoggedIn()) {
@@ -119,34 +139,7 @@ export class SecurityService extends BawApiService {
       return subject.asObservable();
     }
 
-    this.post<AuthenticationResponse>(path, undefined, details).subscribe(
-      (data: AuthenticationResponse) => {
-        if (data.meta.status === this.RETURN_CODE.SUCCESS) {
-          // TODO Read id and role from api
-          this.setSessionUser({
-            id: 12345,
-            role: "User",
-            iconUrl: "/assets/images/user/user_span4.png",
-            authToken: data.data.authToken,
-            username: data.data.userName
-          });
-
-          // Trigger login trackers
-          this.loggedInTrigger.next(true);
-          subject.next(true);
-        } else {
-          console.error("Unknown error thrown by login rest api");
-          console.error(data);
-          this.loggedInTrigger.next(false);
-          subject.error("Something bad happened; please try again later.");
-        }
-      },
-      (err: string) => {
-        console.error(err);
-        this.loggedInTrigger.next(false);
-        subject.error(err);
-      }
-    );
+    this.create(next, error, path, undefined, details);
 
     return subject.asObservable();
   }
@@ -155,7 +148,7 @@ export class SecurityService extends BawApiService {
    * Add user details to the session storage
    * @param user User details
    */
-  private setSessionUser(user: User) {
+  private setSessionUser(user: SessionUser) {
     sessionStorage.setItem(this.SESSION_STORAGE.user, JSON.stringify(user));
   }
 

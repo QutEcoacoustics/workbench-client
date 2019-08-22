@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
 import { Filter, Paths } from "./base-api.service";
 import { SecurityService } from "./security.service";
@@ -29,7 +30,7 @@ export class ProjectsService extends SecurityService {
    * @param id Project ID
    * @returns Observable returning singular project
    */
-  public getProject(id: number): Subject<Project> {
+  public getProject(id: ID): Subject<Project> {
     const subject = new Subject<Project>();
     const callback = (project: ProjectInterface) => new Project(project);
 

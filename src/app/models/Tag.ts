@@ -1,16 +1,20 @@
+import { ID } from "../interfaces/apiInterfaces";
+
+type TypeOfTag =
+  | "commonName"
+  | "speciesName"
+  | "looksLike"
+  | "soundsLike"
+  | "general";
+
 /**
  * A tag model.
  */
 export interface TagInterface {
-  id: number;
+  id: ID;
   text: string;
   isTaxanomic: boolean;
-  typeOfTag:
-    | "commonName"
-    | "speciesName"
-    | "looksLike"
-    | "soundsLike"
-    | "general";
+  typeOfTag: TypeOfTag;
   retired: boolean;
 }
 
@@ -27,15 +31,10 @@ export class Tag implements TagInterface {
    * @param retired Is tag retired
    */
   constructor(
-    public readonly id: number,
+    public readonly id: ID,
     public readonly text: string,
     public readonly isTaxanomic: boolean,
-    public readonly typeOfTag:
-      | "commonName"
-      | "speciesName"
-      | "looksLike"
-      | "soundsLike"
-      | "general",
+    public readonly typeOfTag: TypeOfTag,
     public readonly retired: boolean
   ) {}
 }

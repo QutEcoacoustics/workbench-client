@@ -37,7 +37,7 @@ steps:
     condition: succeededOrFailed()
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '**/coverage/workbench-client/cobertura-coverage.xml'
+      summaryFileLocation: '**/cobertura-coverage.xml'
       reportDirectory: 'coverage/workbench-client/'
       failIfCoverageEmpty: true
 

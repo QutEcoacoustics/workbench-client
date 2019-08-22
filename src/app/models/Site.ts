@@ -1,45 +1,40 @@
+import {
+  Description,
+  ID,
+  IDs,
+  Name,
+  TimezoneInformation
+} from "../interfaces/apiInterfaces";
 import { Project } from "./Project";
 
 /**
  * A site model.
  */
 export interface SiteInterface {
-  description: string;
-  id: number;
+  id: ID;
+  name: Name;
   imageUrl?: string;
+  description: Description;
   locationObfuscated: boolean;
-  name: string;
-  projectIds: number[];
+  projectIds: IDs;
   customLatitude?: number;
   customLongitude?: number;
-  timezoneInformation?: {
-    friendlyIdentifier: string;
-    identifier: string;
-    identifierAlt: string;
-    utcOffset: number;
-    utcTotalOffset: number;
-  };
+  timezoneInformation?: TimezoneInformation;
 }
 
 /**
  * A site model.
  */
 export class Site implements SiteInterface {
-  public readonly id: number;
-  public readonly name: string;
+  public readonly id: ID;
+  public readonly name: Name;
   public readonly imageUrl: string;
-  public readonly description: string;
+  public readonly description: Description;
   public readonly locationObfuscated: boolean;
-  public readonly projectIds: number[];
+  public readonly projectIds: IDs;
   public readonly customLatitude?: number;
   public readonly customLongitude?: number;
-  public readonly timezoneInformation?: {
-    friendlyIdentifier: string;
-    identifier: string;
-    identifierAlt: string;
-    utcOffset: number;
-    utcTotalOffset: number;
-  };
+  public readonly timezoneInformation?: TimezoneInformation;
 
   constructor(site: SiteInterface) {
     this.id = site.id;
@@ -47,7 +42,7 @@ export class Site implements SiteInterface {
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.description = site.description;
     this.locationObfuscated = site.locationObfuscated;
-    this.projectIds = site.projectIds;
+    this.projectIds = new Set(site.projectIds);
     this.customLatitude = site.customLatitude;
     this.customLongitude = site.customLongitude;
     this.timezoneInformation = site.timezoneInformation;

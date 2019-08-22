@@ -7,6 +7,7 @@ import { MenuExternalLinkComponent } from "./menu/external-link/external-link.co
 import { MenuInternalLinkComponent } from "./menu/internal-link/internal-link.component";
 import { MenuComponent } from "./menu/menu.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
+import { UserBadgeComponent } from "./user-badge/user-badge.component";
 
 export const sharedComponents = [
   FooterComponent,
@@ -17,5 +18,6 @@ export const sharedComponents = [
   MenuExternalLinkComponent,
   ActionMenuComponent,
   SecondaryMenuComponent,
-  FormComponent
+  FormComponent,
+  UserBadgeComponent
 ];
