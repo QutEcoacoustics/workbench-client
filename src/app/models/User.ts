@@ -1,6 +1,7 @@
 import {
   AuthToken,
   ID,
+  ImageSizes,
   ImageURL,
   TimezoneInformation,
   UserName
@@ -72,6 +73,21 @@ export class User implements UserInterface {
   get isAdmin(): boolean {
     // tslint:disable-next-line: no-bitwise
     return (this.rolesMask & 1) === 1;
+  }
+
+  /**
+   * Get image from imageUrls which relates to the given size
+   * @param size Size of image
+   * @returns Image URL
+   */
+  getImage(size: ImageSizes): string {
+    this.imageUrls.forEach(imageUrl => {
+      if (imageUrl.size === size) {
+        return imageUrl.url;
+      }
+    });
+
+    return "/assets/images/user/user_span4.png";
   }
 }
 

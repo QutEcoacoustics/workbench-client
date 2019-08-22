@@ -50,11 +50,7 @@ export class HeaderComponent implements OnInit {
 
       // Find the smallest icon for the user
       if (this.user) {
-        this.user.imageUrls.forEach(imageUrl => {
-          if (imageUrl.size === ImageSizes.small) {
-            this.userImage = imageUrl.url;
-          }
-        });
+        this.userImage = this.user.getImage(ImageSizes.small);
       }
 
       this.ref.detectChanges();

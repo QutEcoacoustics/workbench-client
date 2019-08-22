@@ -1,0 +1,17 @@
+.media {
+  display: flex;
+
+  .image img {
+    max-width: 30px;
+    height: auto;
+  }
+
+  .body {
+    flex: 1;
+
+    .heading {
+      margin-top: 0px;
+      margin-bottom: 5px;
+    }
+  }
+}

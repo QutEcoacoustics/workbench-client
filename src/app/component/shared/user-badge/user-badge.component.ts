@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 
 @Component({
@@ -16,7 +17,11 @@ export class UserBadgeComponent implements OnInit {
   @Input() label: string;
   @Input() user: User;
 
+  userImage: string;
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.userImage = this.user.getImage(ImageSizes.small);
+  }
 }

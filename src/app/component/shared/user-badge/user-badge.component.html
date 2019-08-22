@@ -1,16 +1,12 @@
 <h4>{{ label }}</h4>
 <div class="media">
-  <div class="media-left media-middle">
+  <div class="image">
     <a [href]="user.url">
-      <img
-        class="media-object"
-        [src]="user.imageUrls[0].url"
-        [alt]="user.userName"
-      />
+      <img [src]="userImage" [alt]="user.userName" />
     </a>
   </div>
-  <div class="media-body">
-    <a [href]="user.url">{{ user.userName }}</a>
+  <div class="body">
+    <a class="header" [href]="user.url">{{ user.userName }}</a>
     <br />
     Last Seen: {{ user.lastSeenAt }}
   </div>
