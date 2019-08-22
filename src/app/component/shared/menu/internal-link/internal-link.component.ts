@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit
+} from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
 @Component({
@@ -6,10 +12,10 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
   template: `
     <a
       class="nav-link"
-      routerLink="{{ link.route }}"
-      routerLinkActive="active"
       placement="{{ placement }}"
-      ngbTooltip="{{ link.tooltip() }}"
+      routerLink="{{ linkRoute }}"
+      [ngClass]="{ active: active }"
+      [ngbTooltip]="link.tooltip()"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span>{{ link.label }}</span>
@@ -21,10 +27,27 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
   styleUrls: ["./internal-link.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuInternalLinkComponent {
+export class MenuInternalLinkComponent implements OnInit {
   @Input() id: string;
   @Input() link: MenuRoute;
+  @Input() linkParams: Params;
   @Input() placement: "left" | "right";
+  linkRoute: string;
+  active: boolean;
 
   constructor() {}
+
+  ngOnInit() {
+    // Replace attributes in route path (eg. /projects/:projectId => /projects/512)
+    this.linkRoute = this.link.route.toString();
+    for (const paramKey in this.linkParams) {
+      this.linkRoute = this.linkRoute.replace(
+        ":" + paramKey,
+        this.linkParams[paramKey]
+      );
+    }
+
+    // Determine if link is active
+    this.active = this.linkRoute === window.location.pathname;
+  }
 }

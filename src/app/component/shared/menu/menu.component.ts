@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnInit
 } from "@angular/core";
-import { List } from "immutable";
+import { ActivatedRoute, Params } from "@angular/router";
+import { List, Map } from "immutable";
 import {
   AnyMenuItem,
   isButton,
@@ -22,17 +24,20 @@ import { BawApiService } from "src/app/services/baw-api/base-api.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnInit {
-  constructor(private api: BawApiService) {}
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
   @Input() menuType: "action" | "secondary";
 
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
+  routerParams: Params;
+  url: string;
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
   isAction = isButton;
+
+  constructor(private api: BawApiService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     // Get user details
@@ -44,6 +49,12 @@ export class MenuComponent implements OnInit {
         ? this.links.filter(link => this.filter(user, link))
         : List<AnyMenuItem>([])
     );
+
+    this.route.params.subscribe({
+      next: params => {
+        this.routerParams = params;
+      }
+    });
   }
 
   /**
