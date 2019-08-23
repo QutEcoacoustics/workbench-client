@@ -54,19 +54,29 @@ export class MenuComponent implements OnInit {
     const user: SessionUser = this.api.getUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
+    // Filter links
     this.filteredLinks = this.removeDuplicates(
       this.links
         ? this.links.filter(link => this.filter(user, link))
         : List<AnyMenuItem>([])
     );
 
+    // Retrieve router parameters to override link attributes
     this.route.params.subscribe({
       next: params => {
         this.routerParams = params;
       }
     });
 
+    // Load widget
     this.loadComponent();
+  }
+
+  /**
+   * Determine whether to show links
+   */
+  linksExist() {
+    return this.filteredLinks.size !== 0;
   }
 
   /**
@@ -85,6 +95,9 @@ export class MenuComponent implements OnInit {
     return `${link.order.indentation}em`;
   }
 
+  /**
+   * Load widget component
+   */
   loadComponent() {
     if (!this.widget) {
       return;

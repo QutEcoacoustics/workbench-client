@@ -91,5 +91,6 @@ export class HeaderComponent implements OnInit {
    */
   logout() {
     this.securityApi.signOut();
+    this.router.navigate(["/"]);
   }
 }

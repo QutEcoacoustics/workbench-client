@@ -9,6 +9,9 @@ import { MenuComponent } from "./menu/menu.component";
 import { PermissionsShieldComponent } from "./permissions-shield/permissions-shield.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
+import { ForbiddenComponent } from "./utilities/forbidden.component";
+import { ItemNotFoundComponent } from "./utilities/item-not-found.component";
+import { UnauthorizedComponent } from "./utilities/unauthorized.component";
 
 export const sharedComponents = [
   FooterComponent,
@@ -21,5 +24,8 @@ export const sharedComponents = [
   SecondaryMenuComponent,
   FormComponent,
   UserBadgeComponent,
-  PermissionsShieldComponent
+  PermissionsShieldComponent,
+  ItemNotFoundComponent,
+  UnauthorizedComponent,
+  ForbiddenComponent
 ];

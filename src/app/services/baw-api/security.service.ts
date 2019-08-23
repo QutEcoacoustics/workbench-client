@@ -2,12 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import {
-  APIResponse,
-  BawApiService,
-  ErrorResponse,
-  Paths
-} from "./base-api.service";
+import { APIError } from "./base-api.interceptor";
+import { APIResponse, BawApiService, Paths } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -92,7 +88,7 @@ export class SecurityService extends BawApiService {
 
     this.delete(this.paths.signOut).subscribe({
       next: (data: APIResponse) => {
-        if (data.meta.status === this.RETURN_CODE.SUCCESS) {
+        if (data.meta.status === this.apiReturnCodes.success) {
           this.loggedInTrigger.next(false);
           this.clearSessionStorage();
         } else {
@@ -125,8 +121,7 @@ export class SecurityService extends BawApiService {
       this.loggedInTrigger.next(true);
       subject.next(true);
     };
-    const error = (err: ErrorResponse) => {
-      console.error(err);
+    const error = (err: APIError) => {
       this.loggedInTrigger.next(false);
       subject.error(err);
     };
@@ -148,15 +143,15 @@ export class SecurityService extends BawApiService {
    * @param user User details
    */
   private setSessionUser(user: SessionUser) {
-    sessionStorage.setItem(this.SESSION_STORAGE.user, JSON.stringify(user));
+    sessionStorage.setItem(this.sessionStorage.user, JSON.stringify(user));
   }
 
   /**
    * Clear session storage
    */
   private clearSessionStorage() {
-    for (const key in this.SESSION_STORAGE) {
-      sessionStorage.removeItem(this.SESSION_STORAGE[key]);
+    for (const key in this.sessionStorage) {
+      sessionStorage.removeItem(this.sessionStorage[key]);
     }
   }
 }

@@ -8,6 +8,7 @@ import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { APIError } from "src/app/services/baw-api/base-api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -33,6 +34,8 @@ import {
 export class DetailsComponent extends PageComponent implements OnInit {
   project: Project;
   sites: Site[];
+  error: number;
+  errorCodes = this.sitesApi.apiReturnCodes;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,13 +46,15 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    // TODO Reject user if no permissions to access page
-
     this.route.params.subscribe({
       next: data => {
         this.projectsApi.getProject(data.projectId).subscribe({
           next: project => {
             this.project = project;
+            this.error = null;
+          },
+          error: (err: APIError) => {
+            this.error = err.code;
           }
         });
 

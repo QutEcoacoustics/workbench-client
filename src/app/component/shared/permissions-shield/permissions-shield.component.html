@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="!error">
   <app-user-badge [label]="'Created By'" [users]="createdBy"></app-user-badge>
   <app-user-badge [label]="'Modified By'" [users]="modifiedBy"></app-user-badge>
   <!-- <app-user-badge [label]="'Owned By'" [users]="ownedBy"></app-user-badge> -->

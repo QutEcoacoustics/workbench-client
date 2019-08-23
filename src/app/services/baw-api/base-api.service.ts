@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
 import { environment } from "src/environments/environment";
+import { APIError } from "./base-api.interceptor";
 
 /**
  * Interface with BAW Server Rest API
@@ -26,13 +27,15 @@ export abstract class BawApiService {
   private url = environment.bawApiUrl;
 
   protected paths: Paths;
-  protected RETURN_CODE = {
-    SUCCESS: 200,
-    BAD_REQUEST: 400,
-    UNAUTHORIZED: 401
-  };
-  protected SESSION_STORAGE = {
+  protected sessionStorage = {
     user: "user"
+  };
+
+  public apiReturnCodes = {
+    success: 200,
+    badRequest: 400,
+    unauthorized: 401,
+    notFound: 404
   };
 
   public isLoggedIn(): boolean {
@@ -64,7 +67,7 @@ export abstract class BawApiService {
       next: (data: APIResponse) => {
         subject.next(next(data.data));
       },
-      error: (err: ErrorResponse) => {
+      error: (err: APIError) => {
         subject.error(err);
       }
     });
@@ -81,7 +84,7 @@ export abstract class BawApiService {
       next: (data: APIResponse) => {
         next(data.data);
       },
-      error: (err: ErrorResponse) => {
+      error: (err: APIError) => {
         error(err);
       }
     });
@@ -139,7 +142,7 @@ export abstract class BawApiService {
     let user: SessionUser;
     try {
       user = JSON.parse(
-        sessionStorage.getItem(this.SESSION_STORAGE.user)
+        sessionStorage.getItem(this.sessionStorage.user)
       ) as SessionUser;
     } catch (Exception) {
       user = null;
@@ -190,21 +193,6 @@ export abstract class BawApiService {
 export interface MetaError {
   details: string;
   info: string;
-}
-
-/**
- * Api error response
- */
-export interface ErrorResponse {
-  error: {
-    meta: {
-      status: number;
-      message: string;
-      error: {
-        details: string;
-      };
-    };
-  };
 }
 
 /**

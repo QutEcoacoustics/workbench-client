@@ -1,4 +1,4 @@
-<div *ngIf="project">
+<ng-container *ngIf="!error && project">
   <h1>{{ project.name }}</h1>
 
   <div class="row">
@@ -58,4 +58,12 @@
     </div>
     <div class="col-sm-6"></div>
   </div>
-</div>
+</ng-container>
+
+<ng-container *ngIf="error === errorCodes.unauthorized">
+  <app-unauthorized></app-unauthorized>
+</ng-container>
+
+<ng-container *ngIf="error === errorCodes.notFound">
+  <app-item-not-found></app-item-not-found>
+</ng-container>

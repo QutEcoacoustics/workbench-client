@@ -46,14 +46,14 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     // Convert outgoing data
     request = request.clone({
-      body: this.convertJSToJson(request.body)
+      body: toSnakeCase(request.body)
     });
 
     return next.handle(request).pipe(
       // Convert incoming data
       map(resp => {
         if (resp instanceof HttpResponse) {
-          return resp.clone({ body: this.convertJsonToJS(resp.body) });
+          return resp.clone({ body: toCamelCase(resp.body) });
         }
       }),
       catchError(this.handleError)
@@ -65,41 +65,51 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @param response HTTP Error
    * @throws Observable<never>
    */
-  private handleError(response: HttpErrorResponse): Observable<never> {
+  private handleError(
+    response: HttpErrorResponse | ErrorResponse
+  ): Observable<never> {
     if (response.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error("An error occurred:", response.error.message);
-      return throwError(
-        new Error("Something bad happened; please try again later.")
-      );
+      return throwError({
+        code: response.status,
+        message: response.message
+      });
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       console.error(`Backend returned code ${response.status}: `, response);
 
       try {
-        return throwError(new Error(response.error.meta.error.details));
+        return throwError({
+          code: response.status,
+          message: response.error.meta.error.details
+        });
       } catch (TypeError) {
-        return throwError(new Error(response.message));
+        return throwError({
+          code: response.status,
+          message: response.message
+        });
       }
     }
   }
+}
 
-  /**
-   * Convert json object to javascript object
-   * @param obj Object to convert
-   */
-  private convertJsonToJS(obj: any): any {
-    // Convert from snake_case to camelCase
-    return toCamelCase(obj);
-  }
-
-  /**
-   * Convert javascript object to json object
-   * @param obj Object to convert
-   */
-  private convertJSToJson(obj: any): any {
-    // Convert from camelCase to snake_case
-    return toSnakeCase(obj);
-  }
+export interface APIError {
+  code: number;
+  message: string;
+}
+/**
+ * Api error response
+ */
+interface ErrorResponse extends HttpErrorResponse {
+  error: {
+    meta: {
+      status: number;
+      message: string;
+      error: {
+        details: string;
+      };
+    };
+  };
 }

@@ -21,9 +21,12 @@ export class UserBadgeComponent implements OnInit {
   @Input() label: string;
   @Input() users: { user: User; time: Time }[];
 
+  userNotFound: boolean;
   imageSize = ImageSizes.small;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.userNotFound = this.users.length === 0;
+  }
 }

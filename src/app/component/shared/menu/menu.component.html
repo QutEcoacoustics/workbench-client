@@ -1,53 +1,56 @@
 <nav class="container navbar navbar-expand-lg navbar-light bg-light p-0 pt-2">
   <ul class="nav nav-pills align-items-center">
-    <li class="nav-item">
-      <h6 class="nav-link disabled m-0">
-        <ng-container *ngIf="title; else linksTitle">
-          <fa-icon [icon]="title.icon"></fa-icon>
-          {{ title.label }}
-        </ng-container>
-        <ng-template #linksTitle>
-          Menu
-        </ng-template>
-      </h6>
-    </li>
-    <hr class="w-100" />
-    <li
-      class="nav-item"
-      *ngFor="let link of filteredLinks; let i = index"
-      [ngStyle]="{ 'padding-left': calculatePadding(link) }"
-    >
-      <ng-container *ngIf="isAction(link); else elseLink">
-        <app-menu-button
-          [id]="menuType + '-tooltip-' + i"
-          [link]="link"
-          [placement]="placement"
-        ></app-menu-button>
-      </ng-container>
-      <ng-template #elseLink>
-        <ng-container *ngIf="isInternalLink(link)">
-          <app-menu-internal-link
-            [id]="menuType + '-tooltip-' + i"
-            [link]="link"
-            [linkParams]="routerParams"
-            [placement]="placement"
-          >
-          </app-menu-internal-link>
-        </ng-container>
-        <ng-container *ngIf="isExternalLink(link)">
-          <app-menu-external-link
-            [id]="menuType + '-tooltip-' + i"
-            [link]="link"
-            [placement]="placement"
-          >
-          </app-menu-external-link>
-        </ng-container>
-      </ng-template>
-    </li>
+    <ng-container *ngIf="linksExist()">
+      <li class="nav-item">
+        <h6 class="nav-link disabled m-0">
+          <ng-container *ngIf="title; else linksTitle">
+            <fa-icon [icon]="title.icon"></fa-icon>
+            {{ title.label }}
+          </ng-container>
+          <ng-template #linksTitle>
+            Menu
+          </ng-template>
+        </h6>
+      </li>
 
-    <ng-container *ngIf="widget">
       <hr class="w-100" />
+
+      <li
+        class="nav-item"
+        *ngFor="let link of filteredLinks; let i = index"
+        [ngStyle]="{ 'padding-left': calculatePadding(link) }"
+      >
+        <ng-container *ngIf="isAction(link); else elseLink">
+          <app-menu-button
+            [id]="menuType + '-tooltip-' + i"
+            [link]="link"
+            [placement]="placement"
+          ></app-menu-button>
+        </ng-container>
+        <ng-template #elseLink>
+          <ng-container *ngIf="isInternalLink(link)">
+            <app-menu-internal-link
+              [id]="menuType + '-tooltip-' + i"
+              [link]="link"
+              [linkParams]="routerParams"
+              [placement]="placement"
+            >
+            </app-menu-internal-link>
+          </ng-container>
+          <ng-container *ngIf="isExternalLink(link)">
+            <app-menu-external-link
+              [id]="menuType + '-tooltip-' + i"
+              [link]="link"
+              [placement]="placement"
+            >
+            </app-menu-external-link>
+          </ng-container>
+        </ng-template>
+      </li>
+
+      <hr class="w-100" *ngIf="widget" />
     </ng-container>
+
     <div class="widget">
       <ng-template appMenuWidget></ng-template>
     </div>
