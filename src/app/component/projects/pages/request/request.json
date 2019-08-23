@@ -9,7 +9,7 @@
       "type": "select",
       "templateOptions": {
         "label": "Project Name",
-        "placeholder": "Select one or more projects by holding Ctrl on Windows or Command on a Mac, and clicking the project names.",
+        "description": "Select one or more projects by holding Ctrl on Windows or Command on a Mac, and clicking the project names.",
         "multiple": true,
         "required": true,
         "options": [
@@ -26,7 +26,8 @@
       "templateOptions": {
         "label": "Reason",
         "required": false,
-        "rows": 8
+        "rows": 8,
+        "placeholder": "Select one or more projects by holding Ctrl on Windows or Command on a Mac, and clicking the project names."
       }
     }
   ]

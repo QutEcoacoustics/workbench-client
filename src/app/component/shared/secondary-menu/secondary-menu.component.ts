@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import {
+  MenuRoute,
+  NavigableMenuItem
+} from "src/app/interfaces/menusInterfaces";
 import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 import { WidgetMenuItem } from "../widget/widgetItem";
@@ -30,6 +33,14 @@ export class SecondaryMenuComponent implements OnInit {
       const defaultLinks = DefaultMenu.contextLinks;
       // and current page
       const current = page.self;
+      // and parent pages
+      const parentMenuRoutes: MenuRoute[] = [];
+      let menuRoute = current;
+      while (menuRoute.parent) {
+        menuRoute = menuRoute.parent;
+        parentMenuRoutes.push(menuRoute);
+      }
+
       // with any links from route
       const links =
         page && page.menus && page.menus.links
@@ -41,7 +52,9 @@ export class SecondaryMenuComponent implements OnInit {
           : null;
 
       // and add it all together
-      const allLinks = defaultLinks.concat(links, current).sort(this.compare);
+      const allLinks = defaultLinks
+        .concat(links, List<MenuRoute>(parentMenuRoutes), current)
+        .sort(this.compare);
 
       if (!links.isEmpty) {
         console.log("Links menu found");

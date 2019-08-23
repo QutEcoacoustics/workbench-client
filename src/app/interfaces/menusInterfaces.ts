@@ -122,6 +122,11 @@ export interface MenuRoute extends MenuItem {
    * The internal route this menu item points to
    */
   route: StrongRoute;
+
+  /**
+   * Menu parent
+   */
+  parent?: MenuRoute;
 }
 
 export function MenuRoute<T extends Omit<MenuRoute, "kind">>(

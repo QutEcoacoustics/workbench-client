@@ -62,7 +62,8 @@ export const editProjectMenuItem = MenuRoute({
   icon: ["fas", "edit"],
   label: "Edit this project",
   route: projectMenuItem.route.add("edit"),
-  tooltip: () => "The current project",
+  parent: projectMenuItem,
+  tooltip: () => "Change the details for this project",
   predicate: user => !!user,
   order: {
     priority: projectMenuItem.order.priority,

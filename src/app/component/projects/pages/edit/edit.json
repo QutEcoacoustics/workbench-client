@@ -1,0 +1,35 @@
+{
+  "model": {
+    "name": "",
+    "description": "",
+    "image": ""
+  },
+  "fields": [
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Project Name",
+        "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8
+      }
+    },
+    {
+      "key": "image",
+      "type": "input",
+      "templateOptions": {
+        "label": "Image",
+        "type": "file",
+        "required": false
+      }
+    }
+  ]
+}
