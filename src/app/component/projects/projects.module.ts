@@ -6,13 +6,15 @@ import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
+import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.menus";
 
 export const ProjectsComponents = [
   ListComponent,
   DetailsComponent,
   NewComponent,
-  EditComponent
+  EditComponent,
+  RequestComponent
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);

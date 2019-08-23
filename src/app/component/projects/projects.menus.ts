@@ -29,6 +29,18 @@ export const newProjectMenuItem = MenuRoute({
   }
 });
 
+export const requestProjectMenuItem = MenuRoute({
+  icon: ["fas", "key"],
+  label: "Request access",
+  route: projectsRoute.add("request"),
+  tooltip: () => "Request access to a project not listed here",
+  predicate: user => !!user,
+  order: {
+    priority: projectsMenuItem.order.priority,
+    indentation: projectsMenuItem.order.indentation + 1
+  }
+});
+
 export const projectMenuItem = MenuRoute({
   icon: ["fas", "folder-open"],
   label: "Project",

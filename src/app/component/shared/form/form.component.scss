@@ -23,3 +23,9 @@
   padding-bottom: 15px;
   text-align: center;
 }
+
+// Fixes issue with ngx formly
+input[type='file'] {
+  border: 0px;
+  height: auto;
+}

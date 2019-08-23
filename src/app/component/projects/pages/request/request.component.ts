@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator";
-import { newProjectMenuItem, projectsCategory } from "../../projects.menus";
-import data from "./new.json";
+import { Page } from "src/app/interfaces/pageDecorator.js";
+import {
+  projectsCategory,
+  requestProjectMenuItem
+} from "../../projects.menus.js";
+import data from "./request.json";
 
 @Page({
   category: projectsCategory,
@@ -11,22 +14,22 @@ import data from "./new.json";
     actions: List(),
     links: List()
   },
-  self: newProjectMenuItem
+  self: requestProjectMenuItem
 })
 @Component({
-  selector: "app-projects-new",
+  selector: "app-projects-request",
   template: `
     <app-form
       [schema]="schema"
-      [title]="'New Project'"
+      [title]="'Request project access'"
       [error]="error"
-      [submitLabel]="'Submit'"
+      [submitLabel]="'Submit request'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
   `
 })
-export class NewComponent extends PageComponent implements OnInit {
+export class RequestComponent extends PageComponent implements OnInit {
   schema = data;
   error: string;
   loading: boolean;
