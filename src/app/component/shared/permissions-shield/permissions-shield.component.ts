@@ -1,5 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { map, mergeAll, mergeMap, switchAll, switchMap } from "rxjs/operators";
+import {
+  ID,
+  Time,
+  TimezoneInformation
+} from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { UserService } from "src/app/services/baw-api/user.service";
 import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
@@ -10,67 +19,44 @@ import { WidgetComponent } from "../widget/widget.component";
 export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   @Input() data: any;
 
-  createdBy: User[];
-  modifiedBy: User[];
-  ownedBy: User[];
+  createdBy: { user: User; time: Time }[] = [];
+  modifiedBy: { user: User; time: Time }[] = [];
 
-  constructor() {}
+  constructor(
+    private route: ActivatedRoute,
+    private projectsApi: ProjectsService,
+    private userApi: UserService,
+    private ref: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    const testAccount = new User({
-      id: 1,
-      userName: "Admin",
-      rolesMask: 1,
-      timezoneInformation: null,
-      rolesMaskNames: ["admin"],
-      imageUrls: [
-        {
-          size: "extralarge" as "extralarge",
-          url: "/images/user/user_span4.png",
-          width: 300,
-          height: 300
-        },
-        {
-          size: "large" as "large",
-          url: "/images/user/user_span3.png",
-          width: 220,
-          height: 220
-        },
-        {
-          size: "medium" as "medium",
-          url: "/images/user/user_span2.png",
-          width: 140,
-          height: 140
-        },
-        {
-          size: "small" as "small",
-          url: "/images/user/user_span1.png",
-          width: 60,
-          height: 60
-        },
-        {
-          size: "tiny" as "tiny",
-          url: "/images/user/user_spanhalf.png",
-          width: 30,
-          height: 30
-        }
-      ],
-      lastSeenAt: "2019-08-22T17:22:40.080+10:00",
-      preferences: {
-        volume: 1,
-        muted: false,
-        autoPlay: true,
-        visualize: {
-          hideImages: false,
-          hideFixed: true
-        },
-        setting: [1, 2, 3]
-      },
-      isConfirmed: true
-    });
+    // TODO remove nested subscription
+    this.route.params.subscribe({
+      next: data => {
+        this.projectsApi.getProject(data.projectId).subscribe(project => {
+          this.createdBy = [];
+          this.modifiedBy = [];
 
-    this.createdBy = [testAccount];
-    this.modifiedBy = [testAccount];
-    this.ownedBy = [testAccount];
+          this.getUser(this.createdBy, project.creatorId, project.createdAt);
+
+          if (project.updaterId) {
+            this.getUser(this.modifiedBy, project.creatorId, project.createdAt);
+          }
+        });
+      }
+    });
+  }
+
+  getUser(pointer: { user: User; time: Time }[], id: ID, time: Time) {
+    const subscription = this.userApi
+      .getUserAccount(id)
+      .subscribe((user: User) => {
+        pointer.push({
+          user,
+          time
+        });
+        subscription.unsubscribe();
+        this.ref.detectChanges();
+      });
   }
 }

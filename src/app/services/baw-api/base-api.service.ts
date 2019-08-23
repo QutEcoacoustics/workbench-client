@@ -159,8 +159,11 @@ export abstract class BawApiService {
       // Replace fragment inputs
       if (args.args) {
         for (const key in args.args) {
-          const value = args.args[key];
-          path = path.replace("{" + key + "}", value as string);
+          // $2 allows the replacement to add the '/' character if it exists in the original string
+          path = path.replace(
+            new RegExp(`(:${key})(\/?)`),
+            args.args[key] + "$2"
+          );
         }
       }
       if (args.filters) {

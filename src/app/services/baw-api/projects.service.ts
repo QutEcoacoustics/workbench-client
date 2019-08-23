@@ -20,7 +20,7 @@ export class ProjectsService extends SecurityService {
 
     this.paths = {
       details: "/projects",
-      show: "/projects/{projectId}",
+      show: "/projects/:projectId",
       filter: "/projects/filter"
     };
   }

@@ -1,13 +1,13 @@
 <h4>{{ label }}</h4>
 <div class="media" *ngFor="let user of users">
   <div class="image">
-    <a [href]="user.url">
-      <img [src]="user.getImage(imageSize)" [alt]="user.userName" />
+    <a [href]="user.user.url">
+      <img [src]="user.user.getImage(imageSize)" [alt]="user.user.userName" />
     </a>
   </div>
   <div class="body">
-    <a class="header" [href]="user.url">{{ user.userName }}</a>
+    <a class="heading" [href]="user.user.url">{{ user.user.userName }}</a>
     <br />
-    Last Seen: {{ user.lastSeenAt }}
+    <p style="word-wrap: break-word">Last Seen: {{ user.time }}</p>
   </div>
 </div>

@@ -1,17 +1,31 @@
+h4 {
+  font-size: 1.2rem;
+}
+
 .media {
   display: flex;
 
-  .image img {
-    max-width: 30px;
-    height: auto;
+  .image {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
+
+    img {
+      max-width: 30px;
+      height: auto;
+    }
   }
 
   .body {
     flex: 1;
 
     .heading {
-      margin-top: 0px;
-      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      margin: 0px;
     }
   }
 }

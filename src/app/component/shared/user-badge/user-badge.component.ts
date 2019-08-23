@@ -4,7 +4,11 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import { ImageSizes } from "src/app/interfaces/apiInterfaces";
+import {
+  ImageSizes,
+  Time,
+  TimezoneInformation
+} from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 
 @Component({
@@ -15,7 +19,7 @@ import { User } from "src/app/models/User";
 })
 export class UserBadgeComponent implements OnInit {
   @Input() label: string;
-  @Input() users: User[];
+  @Input() users: { user: User; time: Time }[];
 
   imageSize = ImageSizes.small;
 

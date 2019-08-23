@@ -1,17 +1,21 @@
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
-import { Description, ID, IDs, Name } from "../interfaces/apiInterfaces";
+import { Description, ID, IDs, Name, Time } from "../interfaces/apiInterfaces";
 
 /**
  * A project model.
  */
 export interface ProjectInterface {
-  creatorId: ID;
-  description: Description;
   id: ID;
   name: Name;
-  siteIds: IDs;
   imageUrl?: string;
+  creatorId: ID;
+  createdAt?: Time;
+  updaterId?: ID;
+  updatedAt?: Time;
+  ownerId?: ID;
+  description: Description;
+  siteIds: IDs;
 }
 
 /**
@@ -22,6 +26,9 @@ export class Project implements ProjectInterface {
   public readonly name: Name;
   public readonly imageUrl: string;
   public readonly creatorId: ID;
+  public readonly createdAt?: Time;
+  public readonly updaterId?: ID;
+  public readonly updatedAt?: Time;
   public readonly description: Description;
   public readonly siteIds: IDs;
 
@@ -31,6 +38,9 @@ export class Project implements ProjectInterface {
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
     this.creatorId = project.creatorId;
+    this.createdAt = project.createdAt || "1970-01-01T00:00:00.000+10:00";
+    this.updaterId = project.updaterId;
+    this.updatedAt = project.updatedAt || "1970-01-01T00:00:00.000+10:00";
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
   }

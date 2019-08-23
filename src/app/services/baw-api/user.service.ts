@@ -15,7 +15,7 @@ export class UserService extends BawApiService {
 
     this.paths = {
       myAccount: "/my_account",
-      userAccount: "/user_account/:userId"
+      userAccount: "/user_accounts/:userId"
     };
   }
 

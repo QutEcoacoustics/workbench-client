@@ -4,6 +4,8 @@ export type Name = string;
 export type UserName = string;
 export type AuthToken = string;
 export type Description = string;
+export type Time = string;
+
 export enum ImageSizes {
   extraLarge = "extralarge",
   large = "large",

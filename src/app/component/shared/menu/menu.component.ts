@@ -90,13 +90,10 @@ export class MenuComponent implements OnInit {
       return;
     }
 
-    console.debug("Widget Found: ", this.widget);
-
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       this.widget.component
     );
 
-    console.debug("Menu Widget: ", this.menuWidget);
     const viewContainerRef = this.menuWidget.viewContainerRef;
     viewContainerRef.clear();
 

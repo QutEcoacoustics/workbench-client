@@ -43,6 +43,8 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
+    // TODO Reject user if no permissions to access page
+
     this.route.params.subscribe({
       next: data => {
         this.projectsApi.getProject(data.projectId).subscribe({

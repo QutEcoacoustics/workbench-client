@@ -32,7 +32,6 @@ export class SecurityService extends BawApiService {
 
     this.paths = {
       register: "/security",
-      userAccount: "/user_accounts/:id",
       signIn: "/security",
       signOut: "/security"
     };

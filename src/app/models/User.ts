@@ -46,17 +46,49 @@ export class User implements UserInterface {
 
   constructor(user: UserInterface) {
     this.id = user.id;
-    this.userName = user.userName;
+    this.userName = user.userName || "Deleted User";
     this.timezoneInformation = user.timezoneInformation;
-    this.imageUrls = user.imageUrls.map(image => {
-      image.url = `/assets/${image.url}`;
-      return image;
-    });
     this.lastSeenAt = user.lastSeenAt;
     this.preferences = user.preferences;
     this.isConfirmed = user.isConfirmed;
     this.rolesMask = user.rolesMask;
     this.rolesMaskNames = user.rolesMaskNames;
+
+    this.imageUrls = user.imageUrls.map(image => {
+      image.url = `/assets/${image.url}`;
+      return image;
+    }) || [
+      {
+        size: "extralarge",
+        url: "/images/user/user_span4.png",
+        width: 300,
+        height: 300
+      },
+      {
+        size: "large",
+        url: "/images/user/user_span3.png",
+        width: 220,
+        height: 220
+      },
+      {
+        size: "medium",
+        url: "/images/user/user_span2.png",
+        width: 140,
+        height: 140
+      },
+      {
+        size: "small",
+        url: "/images/user/user_span1.png",
+        width: 60,
+        height: 60
+      },
+      {
+        size: "tiny",
+        url: "/images/user/user_spanhalf.png",
+        width: 30,
+        height: 30
+      }
+    ];
   }
 
   // TODO Change this to reference the user account component

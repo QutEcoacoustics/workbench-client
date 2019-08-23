@@ -16,9 +16,9 @@ export class SitesService extends SecurityService {
     super(http);
 
     this.paths = {
-      list: "/projects/{projectId}/sites/",
-      flattened: "/sites/{siteId}",
-      nested: "/projects/{projectId}/sites/{siteId}",
+      list: "/projects/:projectId/sites/",
+      flattened: "/sites/:siteId",
+      nested: "/projects/:projectId/sites/:siteId",
       filter: "/sites/filter"
     };
   }
