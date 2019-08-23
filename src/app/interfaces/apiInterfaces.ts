@@ -8,7 +8,8 @@ export enum ImageSizes {
   extraLarge = "extralarge",
   large = "large",
   medium = "medium",
-  small = "small"
+  small = "small",
+  tiny = "tiny"
 }
 
 export interface TimezoneInformation {
@@ -20,7 +21,7 @@ export interface TimezoneInformation {
 }
 export interface ImageURL {
   height: number;
-  size: "extralarge" | "large" | "medium" | "small";
+  size: "extralarge" | "large" | "medium" | "small" | "tiny";
   url: string;
   width: number;
 }

@@ -4,11 +4,17 @@ import { List } from "immutable";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
+import { WidgetMenuItem } from "../widget/widgetItem";
 
 @Component({
   selector: "app-secondary-menu",
   template: `
-    <app-menu [links]="contextLinks" [menuType]="'secondary'"> </app-menu>
+    <app-menu
+      [links]="contextLinks"
+      [widget]="linksWidget"
+      [menuType]="'secondary'"
+    >
+    </app-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -16,6 +22,7 @@ export class SecondaryMenuComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   contextLinks: List<NavigableMenuItem>;
+  linksWidget: WidgetMenuItem;
 
   ngOnInit() {
     this.route.data.subscribe((page: PageInfo) => {
@@ -28,6 +35,10 @@ export class SecondaryMenuComponent implements OnInit {
         page && page.menus && page.menus.links
           ? page.menus.links
           : List<NavigableMenuItem>();
+      const linksWidget =
+        page && page.menus && page.menus.actions
+          ? page.menus.linksWidget
+          : null;
 
       // and add it all together
       const allLinks = defaultLinks.concat(links, current).sort(this.compare);
@@ -38,6 +49,7 @@ export class SecondaryMenuComponent implements OnInit {
       }
 
       this.contextLinks = allLinks;
+      this.linksWidget = linksWidget;
     });
   }
 

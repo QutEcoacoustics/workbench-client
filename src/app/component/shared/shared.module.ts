@@ -9,9 +9,10 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.modules";
 import { sharedComponents } from "./shared.components";
+import { WidgetDirective } from "./widget/widget.directive";
 
 @NgModule({
-  declarations: sharedComponents,
+  declarations: [...sharedComponents, WidgetDirective],
   imports: [
     CommonModule,
     RouterModule,

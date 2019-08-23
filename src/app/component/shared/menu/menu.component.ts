@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ComponentFactoryResolver,
   Input,
-  OnInit
+  OnInit,
+  ViewChild
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { List } from "immutable";
@@ -15,6 +17,9 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { WidgetComponent } from "../widget/widget.component";
+import { WidgetDirective } from "../widget/widget.directive";
+import { WidgetMenuItem } from "../widget/widgetItem";
 
 @Component({
   selector: "app-menu",
@@ -25,7 +30,9 @@ import { BawApiService } from "src/app/services/baw-api/base-api.service";
 export class MenuComponent implements OnInit {
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
+  @Input() widget: WidgetMenuItem;
   @Input() menuType: "action" | "secondary";
+  @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
 
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
@@ -36,7 +43,11 @@ export class MenuComponent implements OnInit {
   isExternalLink = isExternalLink;
   isAction = isButton;
 
-  constructor(private api: BawApiService, private route: ActivatedRoute) {}
+  constructor(
+    private api: BawApiService,
+    private route: ActivatedRoute,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit() {
     // Get user details
@@ -54,6 +65,8 @@ export class MenuComponent implements OnInit {
         this.routerParams = params;
       }
     });
+
+    this.loadComponent();
   }
 
   /**
@@ -70,6 +83,25 @@ export class MenuComponent implements OnInit {
     }
 
     return `${link.order.indentation}em`;
+  }
+
+  loadComponent() {
+    if (!this.widget) {
+      return;
+    }
+
+    console.debug("Widget Found: ", this.widget);
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      this.widget.component
+    );
+
+    console.debug("Menu Widget: ", this.menuWidget);
+    const viewContainerRef = this.menuWidget.viewContainerRef;
+    viewContainerRef.clear();
+
+    const componentRef = viewContainerRef.createComponent(componentFactory);
+    (componentRef.instance as WidgetComponent).data = this.widget.data;
   }
 
   /**

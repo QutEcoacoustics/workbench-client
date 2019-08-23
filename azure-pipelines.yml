@@ -26,7 +26,7 @@ steps:
       ng build --prod
     displayName: 'npm install and build'
   - script: |
-      npm test -- --watch=false
+      npm test -- --watch=false --code-coverage
     displayName: 'Test suite'
   - script: |
       npm run lint

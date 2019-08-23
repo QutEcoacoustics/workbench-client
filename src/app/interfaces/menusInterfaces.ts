@@ -1,5 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
+import { WidgetMenuItem } from "../component/shared/widget/widgetItem";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
 
@@ -199,5 +200,7 @@ export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
  */
 export interface Menus {
   actions: List<AnyMenuItem>;
+  actionsWidget?: WidgetMenuItem;
   links: List<NavigableMenuItem>;
+  linksWidget?: WidgetMenuItem;
 }

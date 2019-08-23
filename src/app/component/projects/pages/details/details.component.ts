@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
@@ -18,6 +20,7 @@ import {
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([editProjectMenuItem]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
   self: projectMenuItem

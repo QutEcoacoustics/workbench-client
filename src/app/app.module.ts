@@ -19,11 +19,13 @@ import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
 import { ProjectsModule } from "./component/projects/projects.module";
 import { SecurityModule } from "./component/security/security.module";
+import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./component/shared/shared.module";
+import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, WidgetDirective],
   imports: [
     BrowserModule,
     RouterModule,
@@ -54,6 +56,7 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
     }
   ],
   bootstrap: [AppComponent],
+  entryComponents: [PermissionsShieldComponent],
   exports: []
 })
 export class AppModule {

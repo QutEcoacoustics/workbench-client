@@ -6,6 +6,7 @@ import { MenuButtonComponent } from "./menu/button/button.component";
 import { MenuExternalLinkComponent } from "./menu/external-link/external-link.component";
 import { MenuInternalLinkComponent } from "./menu/internal-link/internal-link.component";
 import { MenuComponent } from "./menu/menu.component";
+import { PermissionsShieldComponent } from "./permissions-shield/permissions-shield.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 
@@ -19,5 +20,6 @@ export const sharedComponents = [
   ActionMenuComponent,
   SecondaryMenuComponent,
   FormComponent,
-  UserBadgeComponent
+  UserBadgeComponent,
+  PermissionsShieldComponent
 ];

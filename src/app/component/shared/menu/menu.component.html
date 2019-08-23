@@ -44,5 +44,10 @@
         </ng-container>
       </ng-template>
     </li>
+
+    <ng-container *ngIf="widget">
+      <hr class="w-100" />
+    </ng-container>
+    <ng-template appMenuWidget></ng-template>
   </ul>
 </nav>

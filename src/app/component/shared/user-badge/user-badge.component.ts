@@ -15,13 +15,11 @@ import { User } from "src/app/models/User";
 })
 export class UserBadgeComponent implements OnInit {
   @Input() label: string;
-  @Input() user: User;
+  @Input() users: User[];
 
-  userImage: string;
+  imageSize = ImageSizes.small;
 
   constructor() {}
 
-  ngOnInit() {
-    this.userImage = this.user.getImage(ImageSizes.small);
-  }
+  ngOnInit() {}
 }
