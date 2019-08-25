@@ -1,3 +1,4 @@
+import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   Description,
   ID,
@@ -62,7 +63,8 @@ export class Site implements SiteInterface {
   }
 
   getSiteUrl(project: Project): string {
-    return "not_developed/:projectId/:siteId"
+    return siteMenuItem.route
+      .toString()
       .replace(":projectId", project.id.toString())
       .replace(":siteId", this.id.toString());
   }

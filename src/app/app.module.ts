@@ -1,7 +1,7 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -22,6 +22,7 @@ import { SecurityModule } from "./component/security/security.module";
 import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
+import { SitesModule } from "./component/sites/sites.module";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 @NgModule({
@@ -44,6 +45,7 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
     SecurityModule,
     AboutModule,
     ProjectsModule,
+    SitesModule,
     // these last two must be last!
     HomeModule,
     ErrorModule

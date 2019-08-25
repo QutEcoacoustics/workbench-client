@@ -1,0 +1,57 @@
+.thumbnail {
+  -o-transition: border 0.2s ease-in-out;
+  -webkit-transition: border 0.2s ease-in-out;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  display: block;
+  line-height: 1.428571429;
+  margin-bottom: 20px;
+  padding: 4px;
+  padding-right: 10px;
+  transition: border 0.2s ease-in-out;
+
+  img {
+    display: block;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+  }
+}
+
+h1 small {
+  font-size: 65%;
+  color: #777;
+}
+
+ul {
+  margin-bottom: 0px;
+}
+
+.nav > li > a:hover {
+  text-decoration: none;
+  background-color: #eee;
+  &.active {
+    text-decoration: none;
+    background-color: #007bff;
+  }
+}
+.nav-pills > li > a {
+  font-size: 0.9rem;
+  border-radius: 4px;
+}
+
+.map-placeholder {
+  border: 1px solid black;
+  height: 400px;
+  display: block;
+  line-height: 400px;
+  text-align: center;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+  }
+}

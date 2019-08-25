@@ -1,0 +1,62 @@
+<ng-container *ngIf="!error && site">
+  <h1>
+    <small>Project: {{ project.name }}</small
+    ><br />
+    {{ site.name }}
+  </h1>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="thumbnail">
+        <img [src]="site.imageUrl" [alt]="site.name" />
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <p>{{ site.description }}</p>
+    </div>
+  </div>
+
+  <h2>Audio Recordings</h2>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <p>
+        This site contains recordings from ... at ... to ... at ....<br />This
+        site covers ... and there are records for ... of that time.
+      </p>
+
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" href="not_developed">
+            <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
+            Play
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="not_developed">
+            <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+            Visualise
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div
+      class="col-sm-6"
+      [ngClass]="{
+        'map-placeholder': !site.customLatitude || !site.customLongitude
+      }"
+    >
+      <span *ngIf="!site.customLatitude || !site.customLongitude">
+        This site does not have a location set
+      </span>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="error === errorCodes.unauthorized">
+  <app-unauthorized></app-unauthorized>
+</ng-container>
+
+<ng-container *ngIf="error === errorCodes.notFound">
+  <app-item-not-found></app-item-not-found>
+</ng-container>
