@@ -12,12 +12,7 @@
         "description": "Select one or more projects by holding Ctrl on Windows or Command on a Mac, and clicking the project names.",
         "multiple": true,
         "required": true,
-        "options": [
-          { "value": 1, "label": "Option 1" },
-          { "value": 2, "label": "Option 2" },
-          { "value": 3, "label": "Option 3" },
-          { "value": 4, "label": "Option 4" }
-        ]
+        "options": []
       }
     },
     {

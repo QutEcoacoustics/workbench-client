@@ -27,6 +27,7 @@ import data from "./edit.json";
   `
 })
 export class EditComponent extends PageComponent implements OnInit {
+  // TODO Display the name of the previous project and auto fill form with previous values
   schema = data;
   error: string;
   loading: boolean;

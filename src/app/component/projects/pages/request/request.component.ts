@@ -1,11 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator.js";
-import {
-  projectsCategory,
-  requestProjectMenuItem
-} from "../../projects.menus.js";
+import { Page } from "src/app/interfaces/pageDecorator";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { projectsCategory, requestProjectMenuItem } from "../../projects.menus";
 import data from "./request.json";
 
 @Page({
@@ -30,16 +28,27 @@ import data from "./request.json";
   `
 })
 export class RequestComponent extends PageComponent implements OnInit {
-  schema = data;
+  schema: any;
   error: string;
   loading: boolean;
 
-  constructor() {
+  constructor(private api: ProjectsService) {
     super();
   }
 
   ngOnInit() {
     this.loading = false;
+
+    // TODO Change this to the list of projects a user does not have access to
+    this.schema = data;
+    this.api.getProjects().subscribe(projects => {
+      this.schema.fields[0].templateOptions.options = projects.map(project => {
+        return {
+          value: project.id,
+          label: project.name
+        };
+      });
+    });
   }
 
   /**
