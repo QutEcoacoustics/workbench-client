@@ -21,7 +21,7 @@ export const newProjectMenuItem = MenuRoute({
   icon: ["fas", "plus"],
   label: "New project",
   route: projectsRoute.add("new"),
-  tooltip: () => "The current project",
+  tooltip: () => "Create a new project",
   predicate: user => !!user,
   order: {
     priority: projectsMenuItem.order.priority,

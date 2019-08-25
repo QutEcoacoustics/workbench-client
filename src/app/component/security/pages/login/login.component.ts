@@ -19,7 +19,6 @@ import data from "./login.json";
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      loginMenuItem,
       confirmAccountMenuItem,
       resetPasswordMenuItem,
       unlockAccountMenuItem

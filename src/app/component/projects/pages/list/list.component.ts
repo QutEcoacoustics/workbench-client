@@ -17,11 +17,7 @@ import {
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectsMenuItem,
-      newProjectMenuItem,
-      requestProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([newProjectMenuItem, requestProjectMenuItem]),
     links: List()
   },
   self: projectsMenuItem

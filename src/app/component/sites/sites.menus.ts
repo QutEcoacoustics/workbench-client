@@ -21,6 +21,19 @@ export const siteMenuItem = MenuRoute({
   }
 });
 
+export const newSiteMenuItem = MenuRoute({
+  icon: ["fas", "plus"],
+  label: "New site",
+  route: sitesRoute.add("new"),
+  tooltip: () => "Create a new site",
+  predicate: user => !!user,
+  parent: projectMenuItem,
+  order: {
+    priority: projectMenuItem.order.priority,
+    indentation: projectMenuItem.order.indentation + 1
+  }
+});
+
 export const editSiteMenuItem = MenuRoute({
   icon: ["fas", "edit"],
   label: "Edit this project",

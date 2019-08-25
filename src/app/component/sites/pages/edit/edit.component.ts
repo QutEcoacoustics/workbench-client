@@ -45,7 +45,7 @@ export class EditComponent extends PageComponent implements OnInit {
     this.loading = false;
 
     // TODO Display the name of the previous project and auto fill form with previous values
-    // this is currently not working
+    // this is currently not working. Time zone should also provide more information for the user
     this.route.params.subscribe({
       next: params => {
         this.api.getProject(params.projectId).subscribe({

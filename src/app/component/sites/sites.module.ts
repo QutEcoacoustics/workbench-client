@@ -4,9 +4,10 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
+import { NewComponent } from "./pages/new/new.component";
 import { sitesRoute } from "./sites.menus";
 
-export const SitesComponents = [DetailsComponent, EditComponent];
+export const SitesComponents = [DetailsComponent, EditComponent, NewComponent];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
 

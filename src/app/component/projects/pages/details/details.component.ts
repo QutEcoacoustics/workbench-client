@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
@@ -20,7 +21,7 @@ import {
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([editProjectMenuItem]),
+    actions: List<AnyMenuItem>([editProjectMenuItem, newSiteMenuItem]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
