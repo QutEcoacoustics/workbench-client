@@ -12,7 +12,9 @@
     <div class="body">
       <a class="heading" [href]="user.user.url">{{ user.user.userName }}</a>
       <br />
-      <p style="word-wrap: break-word">Last Seen: {{ user.time }}</p>
+      <p style="word-wrap: break-word" *ngIf="user.time">
+        Last Seen: {{ user.time }}
+      </p>
     </div>
   </div>
 </ng-template>

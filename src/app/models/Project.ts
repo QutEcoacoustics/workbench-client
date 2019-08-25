@@ -22,6 +22,7 @@ export interface ProjectInterface {
  * A project model.
  */
 export class Project implements ProjectInterface {
+  public readonly kind: "Project";
   public readonly id: ID;
   public readonly name: Name;
   public readonly imageUrl: string;
@@ -29,10 +30,13 @@ export class Project implements ProjectInterface {
   public readonly createdAt?: Time;
   public readonly updaterId?: ID;
   public readonly updatedAt?: Time;
+  public readonly ownerId?: ID;
   public readonly description: Description;
   public readonly siteIds: IDs;
 
   constructor(project: ProjectInterface) {
+    this.kind = "Project";
+
     this.id = project.id;
     this.name = project.name;
     this.imageUrl =
@@ -41,6 +45,7 @@ export class Project implements ProjectInterface {
     this.createdAt = project.createdAt || "1970-01-01T00:00:00.000+10:00";
     this.updaterId = project.updaterId;
     this.updatedAt = project.updatedAt || "1970-01-01T00:00:00.000+10:00";
+    this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
   }

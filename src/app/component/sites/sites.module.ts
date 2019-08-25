@@ -3,9 +3,10 @@ import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
 import { DetailsComponent } from "./pages/details/details.component";
+import { EditComponent } from "./pages/edit/edit.component";
 import { sitesRoute } from "./sites.menus";
 
-export const SitesComponents = [DetailsComponent];
+export const SitesComponents = [DetailsComponent, EditComponent];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
 

@@ -1,0 +1,64 @@
+{
+  "model": {
+    "name": "",
+    "description": "",
+    "latitude": 0,
+    "longitude": 0,
+    "image": "",
+    "timezone": ""
+  },
+  "fields": [
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Site Name",
+        "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8
+      }
+    },
+    {
+      "key": "latitude",
+      "type": "input",
+      "templateOptions": {
+        "label": "Latitude",
+        "type": "number",
+        "required": false
+      }
+    },
+    {
+      "key": "longitude",
+      "type": "input",
+      "templateOptions": {
+        "label": "Longitude",
+        "type": "number",
+        "required": false
+      }
+    },
+    {
+      "key": "image",
+      "type": "input",
+      "templateOptions": {
+        "label": "Image",
+        "type": "file",
+        "required": false
+      }
+    },
+    {
+      "key": "timezone",
+      "type": "input",
+      "templateOptions": {
+        "label": "Time Zone",
+        "required": true
+      }
+    }
+  ]
+}

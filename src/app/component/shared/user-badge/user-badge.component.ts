@@ -4,11 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import {
-  ImageSizes,
-  Time,
-  TimezoneInformation
-} from "src/app/interfaces/apiInterfaces";
+import { ImageSizes, Time } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 
 @Component({
@@ -19,7 +15,7 @@ import { User } from "src/app/models/User";
 })
 export class UserBadgeComponent implements OnInit {
   @Input() label: string;
-  @Input() users: { user: User; time: Time }[];
+  @Input() users: UserBadge[];
 
   userNotFound: boolean;
   imageSize = ImageSizes.small;
@@ -27,6 +23,11 @@ export class UserBadgeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.userNotFound = this.users.length === 0;
+    this.userNotFound = this.users ? this.users.length === 0 : true;
   }
+}
+
+export interface UserBadge {
+  user: User;
+  time: Time;
 }

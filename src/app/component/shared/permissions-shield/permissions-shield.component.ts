@@ -1,9 +1,20 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { ID, Time } from "src/app/interfaces/apiInterfaces";
+import { Project } from "src/app/models/Project";
+import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { UserBadge } from "../user-badge/user-badge.component";
 import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
@@ -11,16 +22,20 @@ import { WidgetComponent } from "../widget/widget.component";
   templateUrl: "./permissions-shield.component.html",
   styleUrls: ["./permissions-shield.component.scss"]
 })
-export class PermissionsShieldComponent implements OnInit, WidgetComponent {
+export class PermissionsShieldComponent
+  implements OnInit, OnDestroy, WidgetComponent {
   @Input() data: any;
 
-  createdBy: { user: User; time: Time }[] = [];
-  modifiedBy: { user: User; time: Time }[] = [];
+  private subsink = new SubSink();
+  createdBy: UserBadge[];
+  modifiedBy: UserBadge[];
+  ownedBy: UserBadge[];
   error: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private projectsApi: ProjectsService,
+    private sitesApi: SitesService,
     private userApi: UserService,
     private ref: ChangeDetectorRef
   ) {}
@@ -28,48 +43,69 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   ngOnInit() {
     this.error = true;
 
+    // ! UserBadges are not updating after subscriptions are complete
     // TODO remove nested subscription
-    // TODO unsubscribe subscriptions on destroy
-    this.route.params.subscribe({
+    this.subsink.sink = this.route.params.subscribe({
       next: data => {
-        this.projectsApi.getProject(data.projectId).subscribe({
-          next: project => {
-            this.error = false;
-            this.createdBy = [];
-            this.modifiedBy = [];
+        this.createdBy = [];
+        this.modifiedBy = [];
 
-            this.getUser(this.createdBy, project.creatorId, project.createdAt);
-
-            if (project.updaterId) {
-              this.getUser(
-                this.modifiedBy,
-                project.creatorId,
-                project.createdAt
-              );
-            }
-          },
-          error: err => {
-            this.ref.detectChanges();
-          }
-        });
+        if (data.siteId && data.projectId) {
+          this.ownedBy = null;
+          this.sitesApi
+            .getProjectSite(data.projectId, data.siteId)
+            .subscribe(this.getUserShields());
+        } else if (data.projectId) {
+          this.ownedBy = [];
+          this.projectsApi
+            .getProject(data.projectId)
+            .subscribe(this.getUserShields());
+        }
       }
     });
   }
 
-  getUser(pointer: { user: User; time: Time }[], id: ID, time: Time) {
-    const subscription = this.userApi.getUserAccount(id).subscribe({
+  ngOnDestroy() {
+    this.subsink.unsubscribe();
+  }
+
+  /**
+   * Get user shields
+   */
+  getUserShields() {
+    return {
+      next: (model: Project | Site) => {
+        this.error = false;
+
+        this.getUser(this.createdBy, model.creatorId, model.createdAt);
+        this.getUser(this.modifiedBy, model.updaterId, model.updatedAt);
+
+        if (model.kind === "Project") {
+          this.getUser(this.ownedBy, model.ownerId, null);
+        }
+      }
+    };
+  }
+
+  /**
+   * Append user to pointer
+   * @param pointer Variable pointer
+   * @param id User ID
+   * @param time User last edit
+   */
+  getUser(pointer: UserBadge[], id: ID, time: Time) {
+    if (!id) {
+      this.ref.detectChanges();
+      return;
+    }
+
+    this.subsink.sink = this.userApi.getUserAccount(id).subscribe({
       next: (user: User) => {
-        pointer.push({
-          user,
-          time
-        });
-        subscription.unsubscribe();
-        this.ref.detectChanges();
-      },
-      error: err => {
-        subscription.unsubscribe();
+        pointer.push({ user, time });
         this.ref.detectChanges();
       }
     });
   }
+
+  calculateTimePassed(time: Time) {}
 }

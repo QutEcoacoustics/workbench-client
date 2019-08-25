@@ -11,12 +11,16 @@ import { Site } from "src/app/models/Site";
 import { APIError } from "src/app/services/baw-api/base-api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
-import { siteMenuItem, sitesCategory } from "../../sites.menus";
+import {
+  editSiteMenuItem,
+  siteMenuItem,
+  sitesCategory
+} from "../../sites.menus";
 
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([]),
+    actions: List<AnyMenuItem>([editSiteMenuItem]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

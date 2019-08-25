@@ -20,3 +20,16 @@ export const siteMenuItem = MenuRoute({
     indentation: projectMenuItem.order.indentation + 1
   }
 });
+
+export const editSiteMenuItem = MenuRoute({
+  icon: ["fas", "edit"],
+  label: "Edit this project",
+  route: siteMenuItem.route.add("edit"),
+  parent: siteMenuItem,
+  tooltip: () => "Change the details for this site",
+  predicate: user => !!user,
+  order: {
+    priority: siteMenuItem.order.priority,
+    indentation: siteMenuItem.order.indentation + 1
+  }
+});

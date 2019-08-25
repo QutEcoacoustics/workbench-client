@@ -32,6 +32,7 @@ export interface SiteInterface {
  * A site model.
  */
 export class Site implements SiteInterface {
+  public readonly kind: "Site";
   public readonly id: ID;
   public readonly name: Name;
   public readonly imageUrl: string;
@@ -47,6 +48,7 @@ export class Site implements SiteInterface {
   public readonly timezoneInformation?: TimezoneInformation;
 
   constructor(site: SiteInterface) {
+    this.kind = "Site";
     this.id = site.id;
     this.name = site.name;
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
