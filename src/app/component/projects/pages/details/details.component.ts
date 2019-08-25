@@ -47,8 +47,8 @@ export class DetailsComponent extends PageComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe({
-      next: data => {
-        this.projectsApi.getProject(data.projectId).subscribe({
+      next: params => {
+        this.projectsApi.getProject(params.projectId).subscribe({
           next: project => {
             this.project = project;
             this.error = null;
@@ -58,7 +58,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
           }
         });
 
-        this.sitesApi.getProjectSites(data.projectId).subscribe({
+        this.sitesApi.getProjectSites(params.projectId).subscribe({
           next: sites => {
             this.sites = sites;
           }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
@@ -17,7 +17,11 @@ import {
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([newProjectMenuItem, requestProjectMenuItem]),
+    actions: List<AnyMenuItem>([
+      projectsMenuItem,
+      newProjectMenuItem,
+      requestProjectMenuItem
+    ]),
     links: List()
   },
   self: projectsMenuItem

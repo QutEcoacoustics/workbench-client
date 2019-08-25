@@ -1,15 +1,25 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { projectsCategory, requestProjectMenuItem } from "../../projects.menus";
+import {
+  newProjectMenuItem,
+  projectsCategory,
+  projectsMenuItem,
+  requestProjectMenuItem
+} from "../../projects.menus";
 import data from "./request.json";
 
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List(),
+    actions: List<AnyMenuItem>([
+      projectsMenuItem,
+      newProjectMenuItem,
+      requestProjectMenuItem
+    ]),
     links: List()
   },
   self: requestProjectMenuItem
