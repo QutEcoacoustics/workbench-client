@@ -24,6 +24,7 @@ export class FormComponent implements OnInit {
   };
   @Input() schemaUrl: string;
   @Input() title?: string;
+  @Input() subTitle?: string;
   @Input() submitLabel: string;
   @Input() submitLoading: boolean;
   @Input() error?: string;

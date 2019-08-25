@@ -1,0 +1,62 @@
+{
+  "model": {
+    "name": "",
+    "email": "",
+    "organization": "",
+    "organization_type": "",
+    "request": ""
+  },
+  "fields": [
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Your name",
+        "required": false
+      }
+    },
+    {
+      "key": "email",
+      "type": "input",
+      "templateOptions": {
+        "type": "email",
+        "label": "Contact Email",
+        "required": true
+      }
+    },
+    {
+      "key": "organization",
+      "type": "input",
+      "templateOptions": {
+        "label": "Organization",
+        "required": true
+      }
+    },
+    {
+      "key": "organization_type",
+      "type": "select",
+      "templateOptions": {
+        "label": "Organization Type",
+        "options": [
+          { "label": "General", "value": "general" },
+          { "label": "Academic", "value": "academic" },
+          { "label": "Government", "value": "government" },
+          { "label": "Non profit", "value": "non_profit" },
+          { "label": "Commercial", "value": "commercial" },
+          { "label": "Personal", "value": "personal" }
+        ],
+        "required": true
+      }
+    },
+    {
+      "key": "request",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Request details",
+        "description": "Include Projects/Sites, dates/times, and data format.",
+        "rows": 8,
+        "required": true
+      }
+    }
+  ]
+}
