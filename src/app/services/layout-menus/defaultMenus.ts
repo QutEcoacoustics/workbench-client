@@ -7,6 +7,7 @@ import {
   loginMenuItem,
   registerMenuItem
 } from "src/app/component/security/security.menus";
+import { statisticsMenuItem } from "src/app/component/statistics/statistics.menus";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 
 export const DefaultMenu = {
@@ -16,7 +17,8 @@ export const DefaultMenu = {
     registerMenuItem,
     projectsMenuItem,
     dataRequestMenuItem,
-    reportProblemMenuItem
+    reportProblemMenuItem,
+    statisticsMenuItem
   ]),
   defaultCategory: homeCategory
 };

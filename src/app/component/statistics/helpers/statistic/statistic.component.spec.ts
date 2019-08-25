@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { UserBadgeComponent } from "./user-badge.component";
+import { StatisticComponent } from "./statistic.component";
 
-describe("UserBadgeComponent", () => {
-  let component: UserBadgeComponent;
-  let fixture: ComponentFixture<UserBadgeComponent>;
+describe("StatisticComponent", () => {
+  let component: StatisticComponent;
+  let fixture: ComponentFixture<StatisticComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserBadgeComponent]
+      declarations: [StatisticComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserBadgeComponent);
+    fixture = TestBed.createComponent(StatisticComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
