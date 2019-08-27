@@ -36,11 +36,15 @@ steps:
     displayName: 'Publish code coverage results'
     condition: succeededOrFailed()
     inputs:
-      codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/workbench-client/cobertura-coverage.xml'
-      reportDirectory: '$(System.DefaultWorkingDirectory)/coverage/workbench-client/'
-      failIfCoverageEmpty: true
+      codeCoverageTool: 'cobertura'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage/workbench-client/cobertura-coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage/workbench-client/'
+      failIfCoverageEmpty: false
 
+  - task: CmdLine@2
+    inputs:
+      script: 'ls -A'
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
   - task: PublishTestResults@2
     displayName: 'Publish test results'
     condition: succeededOrFailed()
