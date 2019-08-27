@@ -1,5 +1,7 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { RouterTestingModule } from "@angular/router/testing";
+import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
 describe("ActionMenuComponent", () => {
@@ -8,6 +10,7 @@ describe("ActionMenuComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
       declarations: [ActionMenuComponent]
     }).compileComponents();
   }));
@@ -20,9 +23,5 @@ describe("ActionMenuComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("should have tests", () => {
-    expect(false).toBeTruthy();
   });
 });

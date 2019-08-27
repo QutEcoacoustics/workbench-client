@@ -1,15 +1,15 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "./app.component";
 import { FooterComponent } from "./component/shared/footer/footer.component";
 import { HeaderComponent } from "./component/shared/header/header.component";
+import { SharedModule } from "./component/shared/shared.module";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, FontAwesomeModule],
+      imports: [RouterTestingModule, SharedModule, HttpClientModule],
       declarations: [AppComponent, HeaderComponent, FooterComponent]
     }).compileComponents();
   }));

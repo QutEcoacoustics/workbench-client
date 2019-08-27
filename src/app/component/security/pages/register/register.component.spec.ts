@@ -24,7 +24,7 @@ describe("RegisterComponent", () => {
   class MockSecurityService {
     private trigger = new BehaviorSubject<boolean>(false);
 
-    public login(details: {
+    public signIn(details: {
       email: string;
       password: string;
     }): Observable<boolean | string> {

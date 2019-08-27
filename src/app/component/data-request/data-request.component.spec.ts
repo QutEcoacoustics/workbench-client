@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormlyModule } from "@ngx-formly/core";
+import { validationMessages } from "src/app/app.helper";
+import { SharedModule } from "../shared/shared.module";
 import { DataRequestComponent } from "./data-request.component";
 
 describe("DataRequestComponent", () => {
@@ -7,6 +10,12 @@ describe("DataRequestComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        SharedModule,
+        FormlyModule.forRoot({
+          validationMessages
+        })
+      ],
       declarations: [DataRequestComponent]
     }).compileComponents();
   }));

@@ -6,7 +6,7 @@ import { TestBed } from "@angular/core/testing";
 import { environment } from "src/environments/environment";
 import { SecurityService } from "./security.service";
 
-describe("SecurityService", () => {
+xdescribe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
   const url = environment.bawApiUrl;

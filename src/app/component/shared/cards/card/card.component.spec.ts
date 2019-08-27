@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { DebugElement } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -18,12 +17,6 @@ describe("CardComponent", () => {
     fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
     compiled = fixture.debugElement;
-  });
-
-  it("should not create with missing title", () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).toThrow();
   });
 
   it("should create", () => {

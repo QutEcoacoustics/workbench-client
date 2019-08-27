@@ -2,7 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnChanges
+  OnChanges,
+  OnInit
 } from "@angular/core";
 import { List } from "immutable";
 
@@ -12,11 +13,15 @@ import { List } from "immutable";
   styleUrls: ["./cards.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardsComponent implements OnChanges {
+export class CardsComponent implements OnInit, OnChanges {
   @Input() cards: List<Card>;
   imageCards: boolean;
 
   constructor() {}
+
+  ngOnInit() {
+    this.ngOnChanges();
+  }
 
   ngOnChanges() {
     if (!this.cards) {
