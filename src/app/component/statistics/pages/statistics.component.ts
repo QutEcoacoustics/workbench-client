@@ -3,6 +3,8 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
+import { Site } from "src/app/models/Site";
+import { User } from "src/app/models/User";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
 @Page({
@@ -21,6 +23,8 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 export class StatisticsComponent extends PageComponent implements OnInit {
   groupOne: { icon: IconProp; name: string; value: string | number }[];
   groupTwo: { icon: IconProp; name: string; value: string | number }[];
+  recentAnnotations: Annotation[] | AnnotationExpanded[];
+  recentRecordings: Recording[] | RecordingExpanded[];
 
   constructor() {
     super();
@@ -102,5 +106,59 @@ export class StatisticsComponent extends PageComponent implements OnInit {
         value: "57 years and 5 months"
       }
     ];
+
+    this.recentAnnotations = [
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" },
+      { updated: "about 8 hours ago" }
+    ];
+
+    this.recentRecordings = [
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" },
+      { duration: "1 minute", uploaded: "7 days ago" }
+    ];
   }
+
+  isExpanded(
+    group:
+      | Annotation[]
+      | AnnotationExpanded[]
+      | Recording[]
+      | RecordingExpanded[]
+  ): group is AnnotationExpanded[] | RecordingExpanded[] {
+    return Object.values(group[0]).indexOf("site") > -1;
+  }
+}
+
+interface Annotation {
+  tag?: string;
+  updated: string;
+}
+interface AnnotationExpanded {
+  site: Site;
+  user: User;
+  updated: string;
+  tag: string;
+}
+
+interface Recording {
+  duration: string;
+  uploaded: string;
+}
+
+interface RecordingExpanded {
+  site: Site;
+  duration: string;
+  uploaded: string;
 }
