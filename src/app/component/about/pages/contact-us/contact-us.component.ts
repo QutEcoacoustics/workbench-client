@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
-import { aboutCategory, contactUsMenuItem } from "../about.menus";
+import { aboutCategory, contactUsMenuItem } from "../../about.menus";
 import data from "./contact-us.json";
 
 @Page({
@@ -14,7 +14,7 @@ import data from "./contact-us.json";
   self: contactUsMenuItem
 })
 @Component({
-  selector: "app-contact-us",
+  selector: "app-about-contact-us",
   template: `
     <app-form
       [schema]="schema"

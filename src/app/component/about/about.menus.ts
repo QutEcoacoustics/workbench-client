@@ -15,3 +15,24 @@ export const contactUsMenuItem = MenuRoute({
   route: aboutRoute.add("contact_us"),
   tooltip: () => "Contact us about general enquiries"
 });
+
+export const creditsMenuItem = MenuRoute({
+  icon: ["fas", "hands-helping"],
+  label: "Credits",
+  route: aboutRoute.add("credits"),
+  tooltip: () => "Credits"
+});
+
+export const disclaimersMenuItem = MenuRoute({
+  icon: ["fas", "exclamation-circle"],
+  label: "Disclaimers",
+  route: aboutRoute.add("disclaimers"),
+  tooltip: () => "Disclaimers"
+});
+
+export const ethicsMenuItem = MenuRoute({
+  icon: ["fas", "balance-scale"],
+  label: "Ethics",
+  route: aboutRoute.add("ethics"),
+  tooltip: () => "Ethics"
+});
