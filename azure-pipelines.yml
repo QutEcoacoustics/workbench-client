@@ -44,13 +44,3 @@ steps:
       testResultsFiles: '**/TESTS-*.xml'
       mergeTestResults: true
       publishRunAttachments: true
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Pipeline Artifact'
-    inputs:
-      artifactName: 'workbench-client'
-      targetPath: 'dist/workbench-client'
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Build Artifact'
-    inputs:
-      PathtoPublish: 'dist/workbench-client'
-      ArtifactName: workbench-client
