@@ -55,7 +55,7 @@ export abstract class BawApiService {
    * @param path API path
    * @param args API arguments
    */
-  protected getDetails(
+  protected details(
     subject: Subject<any>,
     next: (data: any) => any,
     path: string,
@@ -63,7 +63,11 @@ export abstract class BawApiService {
   ) {
     this.get<APIResponse>(path, args).subscribe({
       next: (data: APIResponse) => {
-        subject.next(next(data.data));
+        if (data.data) {
+          subject.next(next(data.data));
+        } else {
+          subject.error("No data returned from API");
+        }
       },
       error: (err: APIError) => {
         subject.error(err);
@@ -71,25 +75,47 @@ export abstract class BawApiService {
     });
   }
 
+  /**
+   * Filtered request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
+  protected filter(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    args?: PathArg,
+    body?: { filter: any },
+    options?: RequestOptions
+  ) {
+    this.post<APIResponse>(path, args, body, options).subscribe(
+      this.handleResponse(next, error)
+    );
+  }
+  /**
+   * Create request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
   protected create(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
     args?: PathArg,
-    options?: any
+    body?: any,
+    options?: RequestOptions
   ) {
-    this.post<APIResponse>(path, args, options).subscribe({
-      next: (data: APIResponse) => {
-        if (data.data) {
-          next(data.data);
-        } else {
-          error("No data returned from API");
-        }
-      },
-      error: (err: APIError) => {
-        error(err);
-      }
-    });
+    this.post<APIResponse>(path, args, body, options).subscribe(
+      this.handleResponse(next, error)
+    );
   }
 
   /**
@@ -99,7 +125,7 @@ export abstract class BawApiService {
    * @param args API arguments
    * @param options Request options
    */
-  protected get<T>(
+  private get<T>(
     path: string,
     args?: PathArg,
     options?: RequestOptions
@@ -127,14 +153,36 @@ export abstract class BawApiService {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    * @param args API arguments
+   * @param body Request body
    * @param options Request options
    */
-  protected post<T>(
+  private post<T>(
     path: string,
     args?: PathArg,
+    body?: any,
     options?: RequestOptions
   ): Observable<T> {
-    return this.http.post<T>(this.getPath(path, args), options);
+    return this.http.post<T>(this.getPath(path, args), body, options);
+  }
+
+  /**
+   * Handle API response
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   */
+  private handleResponse(next: (data: any) => void, error: (err: any) => void) {
+    return {
+      next: (data: APIResponse) => {
+        if (data.data) {
+          next(data.data);
+        } else {
+          error("No data returned from API");
+        }
+      },
+      error: (err: APIError) => {
+        error(err);
+      }
+    };
   }
 
   /**

@@ -6,6 +6,7 @@ import { Description, ID, IDs, Name, Time } from "../interfaces/apiInterfaces";
  * A project model.
  */
 export interface ProjectInterface {
+  kind?: "Project";
   id: ID;
   name: Name;
   imageUrl?: string;
@@ -42,9 +43,13 @@ export class Project implements ProjectInterface {
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
     this.creatorId = project.creatorId;
-    this.createdAt = project.createdAt || "1970-01-01T00:00:00.000+10:00";
+    this.createdAt = project.createdAt
+      ? new Date(project.createdAt)
+      : new Date("1970-01-01T00:00:00.000+10:00");
     this.updaterId = project.updaterId;
-    this.updatedAt = project.updatedAt || "1970-01-01T00:00:00.000+10:00";
+    this.updatedAt = project.updatedAt
+      ? new Date(project.updatedAt)
+      : new Date("1970-01-01T00:00:00.000+10:00");
     this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);

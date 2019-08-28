@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
+import { AudioRecordingsService } from "src/app/services/baw-api/audio-recordings.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { projectMenuItem, projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";

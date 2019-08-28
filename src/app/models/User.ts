@@ -11,6 +11,7 @@ import {
  * A user model.
  */
 export interface UserInterface {
+  kind?: "User";
   id: ID;
   userName: UserName;
   rolesMask: number;
@@ -34,6 +35,7 @@ export interface SessionUserInterface {
  * A user model.
  */
 export class User implements UserInterface {
+  public readonly kind: "User";
   public readonly id: ID;
   public readonly userName: UserName;
   public readonly timezoneInformation: TimezoneInformation;
@@ -45,6 +47,8 @@ export class User implements UserInterface {
   public readonly rolesMaskNames: string[];
 
   constructor(user: UserInterface) {
+    this.kind = "User";
+
     this.id = user.id;
     this.userName = user.userName || "Deleted User";
     this.timezoneInformation = user.timezoneInformation;

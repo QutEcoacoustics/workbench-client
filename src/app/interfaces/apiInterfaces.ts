@@ -1,10 +1,11 @@
 export type ID = number;
 export type IDs = Set<ID>;
+export type UUID = string;
 export type Name = string;
 export type UserName = string;
 export type AuthToken = string;
 export type Description = string;
-export type Time = string;
+export type Time = Date;
 
 export enum ImageSizes {
   extraLarge = "extralarge",

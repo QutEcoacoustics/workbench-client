@@ -30,7 +30,7 @@ export class UserService extends BawApiService {
     this.securityApi.getLoggedInTrigger().subscribe({
       next: loggedIn => {
         if (loggedIn) {
-          this.getDetails(subject, callback, this.paths.myAccount);
+          this.details(subject, callback, this.paths.myAccount);
         } else {
           subject.next(null);
         }
@@ -50,7 +50,7 @@ export class UserService extends BawApiService {
     const subject = new Subject<User>();
     const callback = (user: UserInterface) => new User(user);
 
-    this.getDetails(subject, callback, this.paths.userAccount, {
+    this.details(subject, callback, this.paths.userAccount, {
       args: { userId: id }
     });
 

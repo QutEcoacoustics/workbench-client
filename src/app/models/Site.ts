@@ -13,6 +13,7 @@ import { Project } from "./Project";
  * A site model.
  */
 export interface SiteInterface {
+  kind?: "Site";
   id: ID;
   name: Name;
   imageUrl?: string;
@@ -56,9 +57,13 @@ export class Site implements SiteInterface {
     this.locationObfuscated = site.locationObfuscated;
     this.projectIds = new Set(site.projectIds);
     this.creatorId = site.creatorId;
-    this.createdAt = site.createdAt || "1970-01-01T00:00:00.000+10:00";
+    this.createdAt = site.createdAt
+      ? new Date(site.createdAt)
+      : new Date("1970-01-01T00:00:00.000+10:00");
     this.updaterId = site.updaterId;
-    this.updatedAt = site.updatedAt || "1970-01-01T00:00:00.000+10:00";
+    this.updatedAt = site.updatedAt
+      ? new Date(site.updatedAt)
+      : new Date("1970-01-01T00:00:00.000+10:00");
     this.customLatitude = site.customLatitude;
     this.customLongitude = site.customLongitude;
     this.timezoneInformation = site.timezoneInformation;

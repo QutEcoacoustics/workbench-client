@@ -10,8 +10,6 @@ import { SecurityService } from "./security.service";
   providedIn: "root"
 })
 export class SitesService extends SecurityService {
-  protected paths: Paths;
-
   constructor(http: HttpClient) {
     super(http);
 
@@ -32,7 +30,7 @@ export class SitesService extends SecurityService {
     const subject = new Subject<Site>();
     const callback = (site: SiteInterface) => new Site(site);
 
-    this.getDetails(subject, callback, this.paths.flattened, {
+    this.details(subject, callback, this.paths.flattened, {
       args: { siteId: id }
     });
 
@@ -49,7 +47,7 @@ export class SitesService extends SecurityService {
     const subject = new Subject<Site>();
     const callback = (site: SiteInterface) => new Site(site);
 
-    this.getDetails(subject, callback, this.paths.nested, {
+    this.details(subject, callback, this.paths.nested, {
       args: { projectId, siteId }
     });
 
@@ -69,7 +67,7 @@ export class SitesService extends SecurityService {
         return new Site(site);
       });
 
-    this.getDetails(subject, callback, this.paths.list, {
+    this.details(subject, callback, this.paths.list, {
       args: { projectId: id }
     });
 
@@ -88,7 +86,7 @@ export class SitesService extends SecurityService {
         return new Site(site);
       });
 
-    this.getDetails(subject, callback, this.paths.filter, { filters });
+    this.details(subject, callback, this.paths.filter, { filters });
 
     return subject;
   }
@@ -96,18 +94,4 @@ export class SitesService extends SecurityService {
 
 export interface SiteFilter extends Filter {
   orderBy?: "id" | "name" | "description";
-}
-
-/**
- * Site interface
- */
-export interface SiteResponse extends Response {
-  data: SiteInterface;
-}
-
-/**
- * Sites interface
- */
-export interface SitesResponse extends APIResponseList {
-  data: SiteInterface[];
 }

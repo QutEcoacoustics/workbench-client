@@ -13,8 +13,6 @@ import { SecurityService } from "./security.service";
   providedIn: "root"
 })
 export class ProjectsService extends SecurityService {
-  protected paths: Paths;
-
   constructor(http: HttpClient) {
     super(http);
 
@@ -34,7 +32,7 @@ export class ProjectsService extends SecurityService {
     const subject = new Subject<Project>();
     const callback = (project: ProjectInterface) => new Project(project);
 
-    this.getDetails(subject, callback, this.paths.show, {
+    this.details(subject, callback, this.paths.show, {
       args: { projectId: id }
     });
 
@@ -50,7 +48,7 @@ export class ProjectsService extends SecurityService {
     const callback = (projects: ProjectInterface[]) =>
       projects.map((project: ProjectInterface) => new Project(project));
 
-    this.getDetails(subject, callback, this.paths.details);
+    this.details(subject, callback, this.paths.details);
 
     return subject;
   }
@@ -65,7 +63,7 @@ export class ProjectsService extends SecurityService {
     const callback = (projects: ProjectInterface[]) =>
       projects.map((project: ProjectInterface) => new Project(project));
 
-    this.getDetails(subject, callback, this.paths.filter, {
+    this.details(subject, callback, this.paths.filter, {
       filters
     });
 

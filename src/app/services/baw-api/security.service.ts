@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { SessionUser } from "src/app/models/User";
+import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { APIError } from "./base-api.interceptor";
 import { APIResponse, BawApiService, Paths } from "./base-api.service";
 
@@ -12,7 +12,6 @@ import { APIResponse, BawApiService, Paths } from "./base-api.service";
   providedIn: "root"
 })
 export class SecurityService extends BawApiService {
-  protected paths: Paths;
   protected loggedInTrigger = new BehaviorSubject<boolean>(false);
 
   constructor(http: HttpClient) {
@@ -47,14 +46,14 @@ export class SecurityService extends BawApiService {
    * @param path API path
    * @param args API arguments
    */
-  getDetails(
+  details(
     subject: Subject<any>,
     callback: (data: any) => any,
     path: string,
     args?: any
   ) {
     this.loggedInTrigger.subscribe({
-      next: () => super.getDetails(subject, callback, path, args),
+      next: () => super.details(subject, callback, path, args),
       error: err => subject.error(err)
     });
   }
@@ -164,12 +163,6 @@ export class SecurityService extends BawApiService {
 /**
  * Login interface
  */
-interface Authentication {
-  authToken: string;
+interface Authentication extends SessionUserInterface {
   message: string;
-  userName: string;
-}
-
-interface AuthenticationResponse extends APIResponse {
-  data: Authentication;
 }
