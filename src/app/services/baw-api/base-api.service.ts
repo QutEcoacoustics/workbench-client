@@ -27,9 +27,7 @@ export abstract class BawApiService {
   private url = environment.bawApiUrl;
 
   protected paths: Paths;
-  protected sessionStorage = {
-    user: "user"
-  };
+  protected userSessionStorage = "user";
 
   public apiReturnCodes = {
     success: 200,
@@ -141,9 +139,9 @@ export abstract class BawApiService {
   private getSessionUser(): SessionUser | null {
     let user: SessionUser;
     try {
-      user = JSON.parse(
-        sessionStorage.getItem(this.sessionStorage.user)
-      ) as SessionUser;
+      user = new SessionUser(
+        JSON.parse(sessionStorage.getItem(this.userSessionStorage))
+      );
     } catch (Exception) {
       user = null;
     }

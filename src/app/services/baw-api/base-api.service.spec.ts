@@ -2,7 +2,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { BawApiService } from "./base-api.service";
 
-xdescribe("BawApiService", () => {
+describe("BawApiService", () => {
   let service: BawApiService;
 
   beforeEach(() => {

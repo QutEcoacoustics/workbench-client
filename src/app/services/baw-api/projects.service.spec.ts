@@ -1,10 +1,13 @@
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Project } from "src/app/models/Project";
 import { environment } from "src/environments/environment";
+import { BawApiInterceptor } from "./base-api.interceptor";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
@@ -13,6 +16,57 @@ xdescribe("ProjectsService", () => {
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
   const url = environment.bawApiUrl;
+
+  class MockSecurityService {
+    private trigger = new BehaviorSubject<boolean>(false);
+
+    public signIn(details: {
+      email: string;
+      password: string;
+    }): Observable<boolean | string> {
+      const subject = new Subject<boolean | string>();
+
+      setTimeout(() => {
+        if (details.email === "email" && details.password === "password") {
+          subject.next(true);
+          this.trigger.next(true);
+        } else {
+          subject.error("Error MSG");
+          this.trigger.next(false);
+        }
+      }, 1000);
+
+      return subject.asObservable();
+    }
+
+    public register(details: {
+      username: string;
+      email: string;
+      password: string;
+    }): Observable<boolean | string> {
+      const subject = new Subject<boolean | string>();
+
+      setTimeout(() => {
+        if (
+          details.username === "username" &&
+          details.email === "email" &&
+          details.password === "password"
+        ) {
+          subject.next(true);
+          this.trigger.next(true);
+        } else {
+          subject.error("Error MSG");
+          this.trigger.next(false);
+        }
+      }, 1000);
+
+      return subject.asObservable();
+    }
+
+    public getLoggedInTrigger() {
+      return this.trigger;
+    }
+  }
 
   const pageNotFoundResponse = {
     meta: {
@@ -154,7 +208,11 @@ xdescribe("ProjectsService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProjectsService, SecurityService]
+      providers: [
+        ProjectsService,
+        { provide: SecurityService, useClass: MockSecurityService },
+        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+      ]
     });
     service = TestBed.get(ProjectsService);
     securityService = TestBed.get(SecurityService);
@@ -194,22 +252,15 @@ xdescribe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getProjects should return data", () => {
+  it("getProjects should return data", fakeAsync(() => {
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
 
+    tick();
     const req = httpMock.expectOne(url + "/projects");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(projectsValidResponse);
-  });
+  }));
 
   it("getProject should return data", () => {
     service.getProject(512).subscribe(res => {
@@ -217,14 +268,6 @@ xdescribe("ProjectsService", () => {
     });
 
     const req = httpMock.expectOne(url + "/projects/512");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(projectValidResponse);
   });
 
@@ -240,14 +283,6 @@ xdescribe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne(url + "/projects/-1");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(itemNotFoundResponse);
   });
 
@@ -263,14 +298,6 @@ xdescribe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne(url + "/projects/-1");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(pageNotFoundResponse);
   });
 
@@ -286,18 +313,10 @@ xdescribe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne(url + "/projects/-1");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(projectUnauthorizedResponse);
   });
 
-  it("getFilteredProjects should get filtered number of items", () => {
+  it("getFilteredProjects should get filtered number of items", fakeAsync(() => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -377,19 +396,12 @@ xdescribe("ProjectsService", () => {
         expect(res).toEqual(dummyApiConvertedResponse);
       });
 
+    tick();
     const req = httpMock.expectOne(url + "/projects/filter?items=3");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(dummyApiResponse);
-  });
+  }));
 
-  it("getFilteredProjects should get ordered by creator id", () => {
+  it("getFilteredProjects should get ordered by creator id", fakeAsync(() => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -469,21 +481,14 @@ xdescribe("ProjectsService", () => {
         expect(res).toEqual(dummyApiConvertedResponse);
       });
 
+    tick();
     const req = httpMock.expectOne(
       url + "/projects/filter?order_by=creator_id"
     );
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(dummyApiResponse);
-  });
+  }));
 
-  it("getFilteredProjects should get multi filter", () => {
+  it("getFilteredProjects should get multi filter", fakeAsync(() => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -566,19 +571,12 @@ xdescribe("ProjectsService", () => {
         expect(res).toEqual(dummyApiConvertedResponse);
       });
 
+    tick();
     const req = httpMock.expectOne(
       url + "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
     );
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush(dummyApiResponse);
-  });
+  }));
 
   it("getProject empty response should return error msg", () => {
     service.getProject(512).subscribe(
@@ -592,14 +590,6 @@ xdescribe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne(url + "/projects/512");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -615,18 +605,10 @@ xdescribe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne(url + "/projects");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
     req.flush({ meta: { status: 404 } });
   });
 
-  it("getFilteredProjects empty response should return error msg", () => {
+  it("getFilteredProjects empty response should return error msg", fakeAsync(() => {
     service
       .getFilteredProjects({
         items: 3
@@ -641,57 +623,48 @@ xdescribe("ProjectsService", () => {
         }
       );
 
-    const req = httpMock.expectOne(url + "/projects/filter?items=3");
-    expect(req.request.method).toBe("GET");
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
+    tick();
+    /* httpMock.match(request => {
+      return (
+        request.url === url + "/projects/filter" &&
+        request.urlWithParams === url + "/projects/filter" &&
+        request.method === "GET"
+      );
+    });
+    httpMock.expectNone(url + "/projects/512"); */
+    const req = httpMock.expectOne({
+      url: url + "/projects/filter",
+      method: "GET"
+    });
     req.flush({ meta: { status: 404 } });
-  });
+  }));
 
   // TODO Ensure authenticated tests are not interfering with each other
-  it("authenticated getProjects should return data", () => {
+  it("authenticated getProjects should return data", fakeAsync(() => {
+    service.getProjects().subscribe(res => {
+      expect(res).toEqual(projectsValidConvertedResponse);
+    });
+    let projects = httpMock.expectOne({
+      url: url + "/projects",
+      method: "GET"
+    });
+    projects.flush(projectsValidResponse);
+
     securityService
       .signIn({ email: "email", password: "password" })
-      .subscribe(() => {
-        service.getProjects().subscribe(res => {
-          expect(res).toEqual(projectsValidConvertedResponse);
-        });
+      .subscribe(() => {});
 
-        const projects = httpMock.expectOne(url + "/projects");
-        expect(projects.request.method).toBe("GET");
-        expect(projects.request.headers.has("Authorization")).toBeTruthy();
-        expect(projects.request.headers.has("Accept")).toBeTruthy();
-        expect(projects.request.headers.get("Accept")).toBeTruthy(
-          "application/json"
-        );
-        expect(projects.request.headers.has("Content-Type")).toBeTruthy();
-        expect(projects.request.headers.get("Content-Type")).toBeTruthy(
-          "application/json"
-        );
-        projects.flush(projectsValidResponse);
-      });
+    tick(2000);
 
-    const login = httpMock.expectOne(url + "/security");
-    login.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
-        user_name: "Test",
-        message: "Logged in successfully."
-      }
+    projects = httpMock.expectOne({
+      url: url + "/projects",
+      method: "GET"
     });
-  });
+    projects.flush(projectsValidResponse);
+  }));
 
   // TODO Ensure authenticated tests are not interfering with each other
-  it("authenticated getProject should return data", () => {
+  it("authenticated getProject should return data", fakeAsync(() => {
     securityService
       .signIn({ email: "email", password: "password" })
       .subscribe(() => {
@@ -699,31 +672,12 @@ xdescribe("ProjectsService", () => {
           expect(res).toEqual(projectValidConvertedResponse);
         });
 
-        const project = httpMock.expectOne(url + "/projects/512");
-        expect(project.request.method).toBe("GET");
-        expect(project.request.headers.has("Authorization")).toBeTruthy();
-        expect(project.request.headers.has("Accept")).toBeTruthy();
-        expect(project.request.headers.get("Accept")).toBeTruthy(
-          "application/json"
-        );
-        expect(project.request.headers.has("Content-Type")).toBeTruthy();
-        expect(project.request.headers.get("Content-Type")).toBeTruthy(
-          "application/json"
-        );
+        const project = httpMock.expectOne({
+          url: url + "/projects/512",
+          method: "GET"
+        });
         project.flush(projectValidResponse);
       });
-
-    const login = httpMock.expectOne(url + "/security");
-    login.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
-        user_name: "Test",
-        message: "Logged in successfully."
-      }
-    });
-  });
+    tick(2000);
+  }));
 });

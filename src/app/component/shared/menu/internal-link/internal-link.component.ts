@@ -38,11 +38,6 @@ export class MenuInternalLinkComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.debug(this.id);
-    console.debug(this.link);
-    console.debug(this.linkParams);
-    console.debug(this.placement);
-
     // Replace attributes in route path (eg. /projects/:projectId => /projects/512)
     this.linkRoute = this.link.route.toString();
     for (const paramKey in this.linkParams) {
