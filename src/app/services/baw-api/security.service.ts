@@ -114,6 +114,11 @@ export class SecurityService extends BawApiService {
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {
+      if (!data) {
+        this.loggedInTrigger.next(false);
+        subject.error("No data returned from API");
+      }
+
       const user = new SessionUser({
         authToken: data.authToken,
         userName: data.userName

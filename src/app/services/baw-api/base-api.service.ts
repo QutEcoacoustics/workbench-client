@@ -80,7 +80,11 @@ export abstract class BawApiService {
   ) {
     this.post<APIResponse>(path, args, options).subscribe({
       next: (data: APIResponse) => {
-        next(data.data);
+        if (data.data) {
+          next(data.data);
+        } else {
+          error("No data returned from API");
+        }
       },
       error: (err: APIError) => {
         error(err);

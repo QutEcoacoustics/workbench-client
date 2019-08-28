@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
 import { PageInfo } from "src/app/interfaces/pageInfo";
 import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
@@ -18,15 +19,16 @@ import { WidgetMenuItem } from "../widget/widgetItem";
     </app-menu>
   `
 })
-export class ActionMenuComponent implements OnInit {
+export class ActionMenuComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute) {}
 
+  subsink = new SubSink();
   actionTitle: LabelAndIcon;
   actionLinks: List<AnyMenuItem>;
   actionWidget: WidgetMenuItem;
 
   ngOnInit() {
-    this.route.data.subscribe((page: PageInfo) => {
+    this.subsink.sink = this.route.data.subscribe((page: PageInfo) => {
       const actionMenu =
         page && page.menus && page.menus.actions
           ? page.menus.actions
@@ -41,5 +43,9 @@ export class ActionMenuComponent implements OnInit {
       this.actionLinks = actionMenu;
       this.actionWidget = actionWidget;
     });
+  }
+
+  ngOnDestroy() {
+    this.subsink.unsubscribe();
   }
 }

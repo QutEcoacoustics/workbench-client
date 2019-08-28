@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import {
   MenuRoute,
   NavigableMenuItem
@@ -21,18 +27,26 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SecondaryMenuComponent implements OnInit {
+export class SecondaryMenuComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute) {}
 
+  subsink = new SubSink();
   contextLinks: List<NavigableMenuItem>;
   linksWidget: WidgetMenuItem;
 
   ngOnInit() {
-    this.route.data.subscribe((page: PageInfo) => {
+    this.subsink.sink = this.route.data.subscribe((page: PageInfo) => {
       // get default links
       const defaultLinks = DefaultMenu.contextLinks;
       // and current page
       const current = page.self;
+
+      // If page does not have a component, return early
+      // This use case is only encountered by unit tests
+      if (!current) {
+        return;
+      }
+
       // and parent pages
       const parentMenuRoutes: MenuRoute[] = [];
       let menuRoute = current;
@@ -64,6 +78,10 @@ export class SecondaryMenuComponent implements OnInit {
       this.contextLinks = allLinks;
       this.linksWidget = linksWidget;
     });
+  }
+
+  ngOnDestroy() {
+    this.subsink.unsubscribe();
   }
 
   /**
