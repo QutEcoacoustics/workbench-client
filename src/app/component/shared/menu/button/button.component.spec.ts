@@ -19,7 +19,7 @@ describe("MenuButtonComponent", () => {
     component.id = "id";
     component.link = {
       kind: "MenuAction",
-      action: () => console.debug("action"),
+      action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
