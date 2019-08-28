@@ -150,10 +150,7 @@ export class SecurityService extends BawApiService {
    * @param user User details
    */
   private setSessionUser(user: SessionUser) {
-    sessionStorage.setItem(
-      this.userSessionStorage,
-      JSON.stringify(user.toJson())
-    );
+    sessionStorage.setItem(this.userSessionStorage, JSON.stringify(user));
   }
 
   /**

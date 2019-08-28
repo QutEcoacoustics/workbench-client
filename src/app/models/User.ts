@@ -137,14 +137,4 @@ export class SessionUser implements SessionUserInterface {
     this.authToken = user.authToken;
     this.userName = user.userName;
   }
-
-  /**
-   * Convert class back to interface for parsing to session cookie
-   */
-  toJson(): SessionUserInterface {
-    return {
-      authToken: this.authToken,
-      userName: this.userName
-    };
-  }
 }

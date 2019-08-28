@@ -480,8 +480,6 @@ describe("CardsComponent", () => {
       ".card"
     )[0];
 
-    console.log(cards[0]);
-    console.log(testCard);
     expect(cards[0]).toEqual(testCard);
 
     // Create second card

@@ -12,6 +12,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { MockSecurityService } from "src/app/services/baw-api/mock/securityMockService";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { RegisterComponent } from "./register.component";
 
@@ -20,57 +21,6 @@ describe("RegisterComponent", () => {
   let securityService: SecurityService;
   let router: Router;
   let fixture: ComponentFixture<RegisterComponent>;
-
-  class MockSecurityService {
-    private trigger = new BehaviorSubject<boolean>(false);
-
-    public signIn(details: {
-      email: string;
-      password: string;
-    }): Observable<boolean | string> {
-      const subject = new Subject<boolean | string>();
-
-      setTimeout(() => {
-        if (details.email === "email" && details.password === "password") {
-          subject.next(true);
-          this.trigger.next(true);
-        } else {
-          subject.error("Error MSG");
-          this.trigger.next(false);
-        }
-      }, 1000);
-
-      return subject.asObservable();
-    }
-
-    public register(details: {
-      username: string;
-      email: string;
-      password: string;
-    }): Observable<boolean | string> {
-      const subject = new Subject<boolean | string>();
-
-      setTimeout(() => {
-        if (
-          details.username === "username" &&
-          details.email === "email" &&
-          details.password === "password"
-        ) {
-          subject.next(true);
-          this.trigger.next(true);
-        } else {
-          subject.error("Error MSG");
-          this.trigger.next(false);
-        }
-      }, 1000);
-
-      return subject.asObservable();
-    }
-
-    public getLoggedInTrigger() {
-      return this.trigger;
-    }
-  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

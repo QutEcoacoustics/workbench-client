@@ -4,10 +4,10 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Project } from "src/app/models/Project";
 import { environment } from "src/environments/environment";
 import { BawApiInterceptor } from "./base-api.interceptor";
+import { MockSecurityService } from "./mock/securityMockService";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
@@ -17,57 +17,6 @@ xdescribe("ProjectsService", () => {
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
   const url = environment.bawApiUrl;
-
-  class MockSecurityService {
-    private trigger = new BehaviorSubject<boolean>(false);
-
-    public signIn(details: {
-      email: string;
-      password: string;
-    }): Observable<boolean | string> {
-      const subject = new Subject<boolean | string>();
-
-      setTimeout(() => {
-        if (details.email === "email" && details.password === "password") {
-          subject.next(true);
-          this.trigger.next(true);
-        } else {
-          subject.error("Error MSG");
-          this.trigger.next(false);
-        }
-      }, 1000);
-
-      return subject.asObservable();
-    }
-
-    public register(details: {
-      username: string;
-      email: string;
-      password: string;
-    }): Observable<boolean | string> {
-      const subject = new Subject<boolean | string>();
-
-      setTimeout(() => {
-        if (
-          details.username === "username" &&
-          details.email === "email" &&
-          details.password === "password"
-        ) {
-          subject.next(true);
-          this.trigger.next(true);
-        } else {
-          subject.error("Error MSG");
-          this.trigger.next(false);
-        }
-      }, 1000);
-
-      return subject.asObservable();
-    }
-
-    public getLoggedInTrigger() {
-      return this.trigger;
-    }
-  }
 
   const pageNotFoundResponse = {
     meta: {
