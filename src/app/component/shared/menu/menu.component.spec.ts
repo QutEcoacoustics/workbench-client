@@ -1,5 +1,6 @@
+import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { RouterTestingModule } from "@angular/router/testing";
 import { MenuComponent } from "./menu.component";
 
 describe("MenuComponent", () => {
@@ -8,6 +9,7 @@ describe("MenuComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [HttpClientModule, RouterTestingModule],
       declarations: [MenuComponent]
     }).compileComponents();
   }));
@@ -20,9 +22,5 @@ describe("MenuComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("should have tests", () => {
-    expect(false).toBeTruthy();
   });
 });

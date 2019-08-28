@@ -1,13 +1,11 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { MenuButtonComponent } from "../menu/button/button.component";
 import { MenuExternalLinkComponent } from "../menu/external-link/external-link.component";
 import { MenuInternalLinkComponent } from "../menu/internal-link/internal-link.component";
 import { MenuComponent } from "../menu/menu.component";
+import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
 
 describe("SecondaryMenuComponent", () => {
@@ -16,13 +14,7 @@ describe("SecondaryMenuComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule,
-        RouterTestingModule,
-        HttpClientModule,
-        FontAwesomeModule,
-        NgbModule
-      ],
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
       declarations: [
         SecondaryMenuComponent,
         MenuComponent,
@@ -41,9 +33,5 @@ describe("SecondaryMenuComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("should have tests", () => {
-    expect(false).toBeTruthy();
   });
 });

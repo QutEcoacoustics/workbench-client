@@ -13,8 +13,4 @@ describe("SitesService", () => {
     const service: SitesService = TestBed.get(SitesService);
     expect(service).toBeTruthy();
   });
-
-  it("should have tests", () => {
-    expect(false).toBeTruthy();
-  });
 });

@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { SharedModule } from "../../shared/shared.module";
+import { GroupComponent } from "../helpers/group/group.component";
+import { StatisticComponent } from "../helpers/statistic/statistic.component";
 import { StatisticsComponent } from "./statistics.component";
 
 describe("StatisticsComponent", () => {
@@ -7,7 +10,8 @@ describe("StatisticsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StatisticsComponent]
+      imports: [SharedModule],
+      declarations: [StatisticsComponent, StatisticComponent, GroupComponent]
     }).compileComponents();
   }));
 

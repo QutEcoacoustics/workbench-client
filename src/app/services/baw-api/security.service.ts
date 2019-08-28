@@ -114,10 +114,17 @@ export class SecurityService extends BawApiService {
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {
-      this.setSessionUser({
+      if (!data) {
+        this.loggedInTrigger.next(false);
+        subject.error("No data returned from API");
+      }
+
+      const user = new SessionUser({
         authToken: data.authToken,
         userName: data.userName
       });
+
+      this.setSessionUser(user);
       this.loggedInTrigger.next(true);
       subject.next(true);
     };
@@ -143,16 +150,14 @@ export class SecurityService extends BawApiService {
    * @param user User details
    */
   private setSessionUser(user: SessionUser) {
-    sessionStorage.setItem(this.sessionStorage.user, JSON.stringify(user));
+    sessionStorage.setItem(this.userSessionStorage, JSON.stringify(user));
   }
 
   /**
    * Clear session storage
    */
   private clearSessionStorage() {
-    for (const key in this.sessionStorage) {
-      sessionStorage.removeItem(this.sessionStorage[key]);
-    }
+    sessionStorage.removeItem(this.userSessionStorage);
   }
 }
 

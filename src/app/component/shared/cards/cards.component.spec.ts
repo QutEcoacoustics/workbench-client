@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { DebugElement } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { List } from "immutable";
 import { CardImageComponent } from "./card-image/card-image.component";
 import { CardComponent } from "./card/card.component";
@@ -27,10 +26,6 @@ describe("CardsComponent", () => {
     component.cards = List([{ title: "title" }]);
     fixture.detectChanges();
     expect(component).toBeTruthy();
-  });
-
-  it("should not create with missing cards", () => {
-    expect(() => fixture.detectChanges()).toThrow();
   });
 
   it("should create single card", () => {
@@ -477,7 +472,7 @@ describe("CardsComponent", () => {
     let cardFixture = TestBed.createComponent(CardImageComponent);
     let cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
-      title: "title",
+      title: "title1",
       image: { url: "image", alt: "alt" }
     };
     cardFixture.detectChanges();
@@ -492,7 +487,7 @@ describe("CardsComponent", () => {
     cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title2",
-      image: { url: "image2", alt: "alt2" }
+      image: { url: "image", alt: "alt" }
     };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
@@ -575,7 +570,6 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title1",
       image: { url: "image1", alt: "alt1" },
-      description: "desc1",
       link: "https://link1/"
     };
     cardFixture.detectChanges();
@@ -591,7 +585,7 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title2",
       image: { url: "image2", alt: "alt2" },
-      description: "desc2"
+      link: "https://link2/"
     };
     cardFixture.detectChanges();
     testCard = cardFixture.debugElement.nativeElement.querySelectorAll(

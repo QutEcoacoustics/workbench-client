@@ -84,9 +84,9 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    this.api.signIn($event).subscribe(
+    this.subs.sink = this.api.signIn($event).subscribe(
       () => {
-        this.router.navigate(["/"]);
+        this.router.navigate([""]);
         this.loading = false;
       },
       err => {

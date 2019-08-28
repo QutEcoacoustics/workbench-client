@@ -53,8 +53,11 @@ export class GroupComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    const midIndex = Math.ceil(this.statistics.length / 2);
+    if (!this.statistics) {
+      return;
+    }
 
+    const midIndex = Math.ceil(this.statistics.length / 2);
     this.groupOne = this.statistics.slice(0, midIndex);
     this.groupTwo = this.statistics.slice(midIndex, this.statistics.length);
   }

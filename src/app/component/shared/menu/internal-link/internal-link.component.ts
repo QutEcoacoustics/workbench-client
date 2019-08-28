@@ -4,7 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { Params } from "@angular/router";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
 @Component({

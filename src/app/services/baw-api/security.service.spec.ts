@@ -1,9 +1,11 @@
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { environment } from "src/environments/environment";
+import { BawApiInterceptor } from "./base-api.interceptor";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
@@ -14,7 +16,10 @@ describe("SecurityService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [SecurityService]
+      providers: [
+        SecurityService,
+        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+      ]
     });
 
     service = TestBed.get(SecurityService);
@@ -58,27 +63,20 @@ describe("SecurityService", () => {
     expect(service.getUser()).toBe(null);
   });
 
-  // TODO FIXME Because this test runs asynchronously, the other tests can affects the results
-  it("getLoggedInTrigger should return false initially", () => {
-    service.getLoggedInTrigger().subscribe(loggedIn => {
-      expect(loggedIn).toBeFalsy();
-    });
-  });
-
   it("login should set session cookie", () => {
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        id: 12345,
-        role: "User",
-        authToken: "pUqyq5KDvZq24qSm8sy1",
-        username: "Test"
+        authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+        userName: "Test"
       });
     });
 
-    const req = httpMock.expectOne(url + "/security");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
     expect(req.request.headers.has("Accept")).toBeTruthy();
     expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
@@ -93,26 +91,28 @@ describe("SecurityService", () => {
         message: "OK"
       },
       data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
         user_name: "Test",
         message: "Logged in successfully."
       }
     });
   });
 
-  it("login should return error msg when already logged in", () => {
+  it("login should return error msg when already logged in", fakeAsync(() => {
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
+      console.log("User: ", JSON.parse(sessionStorage.getItem("user")));
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        id: 12345,
-        role: "User",
-        authToken: "pUqyq5KDvZq24qSm8sy1",
-        username: "Test"
+        authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+        userName: "Test"
       });
     });
 
-    const req = httpMock.expectOne(url + "/security");
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
 
     req.flush({
       meta: {
@@ -120,11 +120,13 @@ describe("SecurityService", () => {
         message: "OK"
       },
       data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
         user_name: "Test",
         message: "Logged in successfully."
       }
     });
+
+    tick(2000);
 
     service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
@@ -136,8 +138,11 @@ describe("SecurityService", () => {
       }
     );
 
-    httpMock.expectNone(url + "/security");
-  });
+    httpMock.expectNone({
+      url: url + "/security",
+      method: "POST"
+    });
+  }));
 
   it("login should return error on bad credentials", () => {
     service.signIn({ email: "email", password: "password" }).subscribe(
@@ -150,8 +155,10 @@ describe("SecurityService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/security");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
     expect(req.request.headers.has("Accept")).toBeTruthy();
     expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
@@ -190,8 +197,10 @@ describe("SecurityService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/security");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
     expect(req.request.headers.has("Accept")).toBeTruthy();
     expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
@@ -212,6 +221,221 @@ describe("SecurityService", () => {
       data: null
     });
   });
+
+  it("logout should clear session cookie", fakeAsync(() => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(sessionStorage.getItem("user")).toBeTruthy();
+    });
+
+    const loginReq = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
+    loginReq.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+
+    service.signOut();
+
+    const logoutReq = httpMock.expectOne({
+      url: url + "/security",
+      method: "DELETE"
+    });
+    logoutReq.flush({
+      meta: {
+        status: 200,
+        message: "OK",
+        error: {
+          links: {
+            "Log in": "/my_account/sign_in",
+            Register: "/my_account/sign_up"
+          },
+          info: null
+        }
+      },
+      data: {
+        user_name: "Test",
+        message: "Logged out successfully."
+      }
+    });
+
+    expect(sessionStorage.getItem("user")).toBeFalsy();
+  }));
+
+  it("logout should set getUser to null", fakeAsync(() => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(sessionStorage.getItem("user")).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+
+    service.signOut();
+
+    const logoutReq = httpMock.expectOne({
+      url: url + "/security",
+      method: "DELETE"
+    });
+    logoutReq.flush({
+      meta: {
+        status: 200,
+        message: "OK",
+        error: {
+          links: {
+            "Log in": "/my_account/sign_in",
+            Register: "/my_account/sign_up"
+          },
+          info: null
+        }
+      },
+      data: {
+        user_name: "Test",
+        message: "Logged out successfully."
+      }
+    });
+
+    expect(service.getUser()).toBeFalsy();
+  }));
+
+  it("logout should set isLoggedIn to false", fakeAsync(() => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(sessionStorage.getItem("user")).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+
+    service.signOut();
+
+    const logoutReq = httpMock.expectOne({
+      url: url + "/security",
+      method: "DELETE"
+    });
+    logoutReq.flush({
+      meta: {
+        status: 200,
+        message: "OK",
+        error: {
+          links: {
+            "Log in": "/my_account/sign_in",
+            Register: "/my_account/sign_up"
+          },
+          info: null
+        }
+      },
+      data: {
+        user_name: "Test",
+        message: "Logged out successfully."
+      }
+    });
+
+    expect(service.isLoggedIn()).toBeFalsy();
+  }));
+
+  it("logout should not crash when already logged out", fakeAsync(() => {
+    service.signIn({ email: "email", password: "password" }).subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(sessionStorage.getItem("user")).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne({
+      url: url + "/security",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+
+    service.signOut();
+
+    const logoutReq = httpMock.expectOne({
+      url: url + "/security",
+      method: "DELETE"
+    });
+    logoutReq.flush({
+      meta: {
+        status: 200,
+        message: "OK",
+        error: {
+          links: {
+            "Log in": "/my_account/sign_in",
+            Register: "/my_account/sign_up"
+          },
+          info: null
+        }
+      },
+      data: {
+        user_name: "Test",
+        message: "Logged out successfully."
+      }
+    });
+
+    service.signOut();
+
+    httpMock.expectNone({
+      url: url + "/security",
+      method: "DELETE"
+    });
+    expect(service.isLoggedIn()).toBeFalsy();
+  }));
+
+  // TODO Implement the following tests
+  xit("getLoggedInTrigger should return false initially", fakeAsync(() => {
+    service.getLoggedInTrigger().subscribe(loggedIn => {
+      expect(loggedIn).toBeFalsy();
+    });
+  }));
+
+  xit("getLoggedInTrigger should trigger on login", () => {});
+
+  xit("getLoggedInTrigger should trigger on register", () => {});
+
+  xit("getLoggedInTrigger should trigger on logout", () => {});
 
   // TODO Implement when register route is completed
   xit("register should set session cookie", () => {
@@ -241,99 +465,4 @@ describe("SecurityService", () => {
   xit("register should return error on missing credentials", () => {
     expect(false).toBe(true);
   });
-
-  it("logout should clear session cookie", () => {
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        id: 12345,
-        role: "User",
-        authToken: "pUqyq5KDvZq24qSm8sy1",
-        username: "Test"
-      });
-    });
-
-    const req = httpMock.expectOne(url + "/security");
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
-        user_name: "Test",
-        message: "Logged in successfully."
-      }
-    });
-
-    service.signOut();
-    expect(service.getUser()).toBeFalsy();
-  });
-
-  it("logout should set isLoggedIn to false", () => {
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        id: 12345,
-        role: "User",
-        authToken: "pUqyq5KDvZq24qSm8sy1",
-        username: "Test"
-      });
-    });
-
-    const req = httpMock.expectOne(url + "/security");
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
-        user_name: "Test",
-        message: "Logged in successfully."
-      }
-    });
-
-    service.signOut();
-    expect(service.isLoggedIn()).toBeFalsy();
-  });
-
-  it("logout should not crash when already logged out", () => {
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        id: 12345,
-        role: "User",
-        authToken: "pUqyq5KDvZq24qSm8sy1",
-        username: "Test"
-      });
-    });
-
-    const req = httpMock.expectOne(url + "/security");
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "pUqyq5KDvZq24qSm8sy1",
-        user_name: "Test",
-        message: "Logged in successfully."
-      }
-    });
-
-    service.signOut();
-    service.signOut();
-    expect(service.isLoggedIn()).toBeFalsy();
-  });
-
-  // TODO Implement the following tests
-  xit("getLoggedInTrigger should trigger on login", () => {});
-
-  xit("getLoggedInTrigger should trigger on register", () => {});
-
-  xit("getLoggedInTrigger should trigger on logout", () => {});
 });
