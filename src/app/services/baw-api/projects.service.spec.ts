@@ -11,6 +11,7 @@ import { BawApiInterceptor } from "./base-api.interceptor";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
+// TODO Fix test suite
 xdescribe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;

@@ -27,7 +27,7 @@ steps:
       ng build --prod
     displayName: 'npm install and build'
   - script: |
-      npm test -- --watch=false --code-coverage
+      npm test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
     displayName: 'Test suite'
   - script: |
       npm run lint
