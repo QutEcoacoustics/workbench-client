@@ -9,11 +9,12 @@ export const sitesCategory: Category = {
   route: sitesRoute
 };
 
-export const siteMenuItem = MenuRoute({
-  icon: ["fas", "map-marker-alt"],
-  label: "Site",
-  route: sitesRoute.add(":siteId"),
-  tooltip: () => "The current site",
+export const newSiteMenuItem = MenuRoute({
+  icon: ["fas", "plus"],
+  label: "New site",
+  route: sitesRoute.add("new"),
+  tooltip: () => "Create a new site",
+  predicate: user => !!user,
   parent: projectMenuItem,
   order: {
     priority: projectMenuItem.order.priority,
@@ -21,12 +22,11 @@ export const siteMenuItem = MenuRoute({
   }
 });
 
-export const newSiteMenuItem = MenuRoute({
-  icon: ["fas", "plus"],
-  label: "New site",
-  route: sitesRoute.add("new"),
-  tooltip: () => "Create a new site",
-  predicate: user => !!user,
+export const siteMenuItem = MenuRoute({
+  icon: ["fas", "map-marker-alt"],
+  label: "Site",
+  route: sitesRoute.add(":siteId"),
+  tooltip: () => "The current site",
   parent: projectMenuItem,
   order: {
     priority: projectMenuItem.order.priority,

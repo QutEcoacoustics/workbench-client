@@ -1,6 +1,8 @@
 <ng-container *ngIf="!error && site">
   <h1>
-    <small class="text-muted">Project: {{ project.name }}</small>
+    <small class="text-muted" *ngIf="project">
+      Project: {{ project.name }}
+    </small>
     <br />
     {{ site.name }}
   </h1>

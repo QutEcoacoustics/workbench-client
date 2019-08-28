@@ -81,6 +81,58 @@ There are three environments supported by this application.
 - Production: Building the latest changes in production mode for release
   - `$ npm run build`
 
+## Common Problems
+
+- Added a new page component and its not appearing at its route? Check the following:
+
+  - Did you extend PageComponent?
+  - Did you call `super()` in the constructor?
+  - Did you call the `@Page` decorator?
+  - Check your imports to ensure no import file paths end in '.js'
+  - Ensure any parameter routes are the last defined for its parent route (related to issue [#12](https://github.com/QutEcoacoustics/workbench-client/issues/12))
+
+- Unit tests are failing? Check the following:
+
+  - Have you added `SharedModule`?
+
+  ```javascript
+    TestBed.configureTestingModule({
+      imports: [
+        SharedModule
+      ]
+  ```
+
+  - If the component has any form of routing (including `ActivatedRoute`):
+
+  ```javascript
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule
+      ]
+  ```
+
+  - If the component has any form of http requests:
+
+  ```javascript
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientModule
+        // or
+        HttpClientTestingModule
+      ]
+  ```
+
+  - If the component uses the Formly form building module:
+
+  ```javascript
+    TestBed.configureTestingModule({
+      imports: [
+        FormlyModule.forRoot({
+          validationMessages
+        })
+      ]
+  ```
+
 ## Licence
 
 Apache License, Version 2.0

@@ -14,11 +14,7 @@ import data from "./new.json";
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectsMenuItem,
-      newProjectMenuItem,
-      requestProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([projectsMenuItem, requestProjectMenuItem]),
     links: List()
   },
   self: newSiteMenuItem

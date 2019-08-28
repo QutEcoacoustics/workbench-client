@@ -76,9 +76,7 @@ export class StrongRoute {
   format(...args: string[]): string[] {
     if (args.length !== this.parameters.length) {
       throw new Error(
-        `Got ${args.length} route arguments but expected ${
-          this.parameters.length
-        }`
+        `Got ${args.length} route arguments but expected ${this.parameters.length}`
       );
     }
 
@@ -90,9 +88,7 @@ export class StrongRoute {
           return param;
         } else {
           throw new Error(
-            `Parameter named ${
-              x.name
-            } was not supplied a value and a default value was not given`
+            `Parameter named ${x.name} was not supplied a value and a default value was not given`
           );
         }
       } else {
