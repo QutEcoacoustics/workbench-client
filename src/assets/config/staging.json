@@ -1,12 +1,10 @@
 {
-  "environments": {
-    "staging": {
-      "apiRoot": "http://staging.EXAMPLE.org",
-      "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
-      "siteDir": "/system/listen_to/",
-      "ga": {
-        "trackingId": "<<PLACEHOLDER>>"
-      }
+  "environment": {
+    "apiRoot": "http://staging.EXAMPLE.org",
+    "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
+    "siteDir": "/system/listen_to/",
+    "ga": {
+      "trackingId": "<<PLACEHOLDER>>"
     }
   },
   "values": {

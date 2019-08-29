@@ -30,6 +30,20 @@ $ npm start
 
 Then open a web browser to `localhost:4200`.
 
+### Documentation
+
+This project implements the compodoc documentation tool. To generate the documentation for yourself, run the following command:
+
+```javascript
+npm run documentation:generate
+```
+
+This will create a `./documentation` folder containing the generated documentation. To view this in your web browser, run the following command:
+
+```javascript
+npm run documentation
+```
+
 ### Testing
 
 #### End to End Testing

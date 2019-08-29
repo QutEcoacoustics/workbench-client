@@ -1,18 +1,16 @@
 {
-  "environments": {
-    "production": {
-      "apiRoot": "https://www.ecosounds.org",
-      "siteRoot": "https://www.ecosounds.org/listen_to",
-      "siteDir": "/listen_to/",
-      "ga": {
-        "domain": "ecosounds.org",
-        "trackingId": "UA-48132665-3"
-      }
+  "environment": {
+    "apiRoot": "https://www.ecosounds.org",
+    "siteRoot": "https://www.ecosounds.org/listen_to",
+    "siteDir": "/listen_to/",
+    "ga": {
+      "domain": "ecosounds.org",
+      "trackingId": "UA-48132665-3"
     }
   },
   "values": {
     "keys": {
-      "googleMaps": "AIzaSyCyAgRoOPT4LGztyfr6NShyZFMq3y13W8Q"
+      "googleMaps": ""
     },
     "brand": {
       "name": "Ecosounds",

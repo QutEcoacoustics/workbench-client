@@ -20,7 +20,7 @@ import {
 })
 @Component({
   selector: "app-about-credits",
-  templateUrl: "/src/app/services/cms/cms.template.html"
+  templateUrl: "../../services/cms/cms.template.html"
 })
 export class CreditsComponent extends PageComponent implements OnInit {
   blob: string;
@@ -46,7 +46,7 @@ export class CreditsComponent extends PageComponent implements OnInit {
 })
 @Component({
   selector: "app-about-disclaimers",
-  templateUrl: "/src/app/services/cms/cms.template.html"
+  templateUrl: "../../services/cms/cms.template.html"
 })
 export class DisclaimersComponent extends PageComponent implements OnInit {
   blob: string;
@@ -72,7 +72,7 @@ export class DisclaimersComponent extends PageComponent implements OnInit {
 })
 @Component({
   selector: "app-about-ethics",
-  templateUrl: "/src/app/services/cms/cms.template.html"
+  templateUrl: "../../services/cms/cms.template.html"
 })
 export class EthicsComponent extends PageComponent implements OnInit {
   blob: string;

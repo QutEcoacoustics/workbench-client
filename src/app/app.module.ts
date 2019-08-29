@@ -4,7 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FormlyModule } from "@ngx-formly/core";
-import { HttpClient } from "selenium-webdriver/http";
+import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { appInitializerFn, validationMessages } from "./app.helper";
@@ -20,7 +20,10 @@ import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import { AppConfigService } from "./services/app-config/app-config.service";
+import {
+  APP_CONFIG,
+  AppConfigService
+} from "./services/app-config/app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 @NgModule({
@@ -50,6 +53,10 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
       provide: HTTP_INTERCEPTORS,
       useClass: BawApiInterceptor,
       multi: true
+    },
+    {
+      provide: APP_CONFIG,
+      useValue: environment.appConfig
     },
     {
       provide: APP_INITIALIZER,

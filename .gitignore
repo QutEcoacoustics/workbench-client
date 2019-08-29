@@ -68,3 +68,6 @@ website tree
 
 # Test output
 TESTS-*.xml
+
+# Documentation
+documentation
