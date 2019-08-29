@@ -1,9 +1,9 @@
 {
   "short_name": "Ecosounds",
   "name": "QUT Ecosounds",
-  "start_url": "/projects",
+  "start_url": "/",
   "background_color": "#dfe7e9",
+  "theme_color": "#343a40",
   "display": "standalone",
-  "scope": "/",
-  "theme_color": "#343a40"
+  "orientation": "portrait"
 }

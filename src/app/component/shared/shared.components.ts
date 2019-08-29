@@ -1,9 +1,6 @@
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
-import { HeaderDropdownComponent } from "./header/header-dropdown/header-dropdown.component";
-import { HeaderItemComponent } from "./header/header-item/header-item.component";
-import { HeaderComponent } from "./header/header.component";
 import { MenuButtonComponent } from "./menu/button/button.component";
 import { MenuExternalLinkComponent } from "./menu/external-link/external-link.component";
 import { MenuInternalLinkComponent } from "./menu/internal-link/internal-link.component";
@@ -17,7 +14,6 @@ import { UnauthorizedComponent } from "./utilities/unauthorized.component";
 
 export const sharedComponents = [
   FooterComponent,
-  HeaderComponent,
   MenuComponent,
   MenuButtonComponent,
   MenuInternalLinkComponent,
@@ -29,7 +25,5 @@ export const sharedComponents = [
   PermissionsShieldComponent,
   ItemNotFoundComponent,
   UnauthorizedComponent,
-  ForbiddenComponent,
-  HeaderItemComponent,
-  HeaderDropdownComponent
+  ForbiddenComponent
 ];

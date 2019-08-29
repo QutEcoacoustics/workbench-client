@@ -1,4 +1,5 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 
 export let APP_CONFIG = new InjectionToken("app.config");
 
@@ -6,7 +7,10 @@ export let APP_CONFIG = new InjectionToken("app.config");
 export class AppConfigService {
   private appConfig: any;
 
-  constructor(@Inject(APP_CONFIG) private config: string) {}
+  constructor(
+    @Inject(APP_CONFIG) private config: string,
+    private titleService: Title
+  ) {}
 
   async loadAppConfig(): Promise<any> {
     // Using fetch because HttpClient fails. Could be an issue due
@@ -15,6 +19,7 @@ export class AppConfigService {
     const response = await fetch(this.config);
     const data = await response.json();
     this.appConfig = data;
+    this.titleService.setTitle(this.appConfig.values.brand.name);
   }
 
   getConfig() {

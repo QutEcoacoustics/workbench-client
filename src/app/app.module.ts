@@ -7,7 +7,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { appInitializerFn, validationMessages } from "./app.helper";
+import { appInitializerFn, providers, validationMessages } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
@@ -47,24 +47,7 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
     HomeModule,
     ErrorModule
   ],
-  providers: [
-    AppConfigService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: BawApiInterceptor,
-      multi: true
-    },
-    {
-      provide: APP_CONFIG,
-      useValue: environment.appConfig
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFn,
-      multi: true,
-      deps: [AppConfigService]
-    }
-  ],
+  providers: [...providers],
   bootstrap: [AppComponent],
   entryComponents: [PermissionsShieldComponent],
   exports: []

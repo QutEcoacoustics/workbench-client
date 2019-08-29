@@ -1,4 +1,11 @@
-import { AppConfigService } from "./services/app-config/app-config.service";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { APP_INITIALIZER } from "@angular/core";
+import { environment } from "src/environments/environment";
+import {
+  APP_CONFIG,
+  AppConfigService
+} from "./services/app-config/app-config.service";
+import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -29,3 +36,22 @@ export function appInitializerFn(appConfig: AppConfigService) {
     return appConfig.loadAppConfig();
   };
 }
+
+export const providers = [
+  AppConfigService,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: BawApiInterceptor,
+    multi: true
+  },
+  {
+    provide: APP_CONFIG,
+    useValue: environment.appConfig
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: appInitializerFn,
+    multi: true,
+    deps: [AppConfigService]
+  }
+];

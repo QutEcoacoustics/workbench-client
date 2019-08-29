@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { providers } from "src/app/app.helper";
 import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
@@ -12,7 +13,8 @@ describe("HeaderComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent],
-      imports: [RouterTestingModule, FontAwesomeModule, HttpClientModule]
+      imports: [RouterTestingModule, FontAwesomeModule, HttpClientModule],
+      providers: [...providers]
     }).compileComponents();
   }));
 

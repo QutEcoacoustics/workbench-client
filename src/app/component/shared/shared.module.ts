@@ -8,6 +8,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.modules";
+import { HeaderModule } from "./header/header.module";
 import { sharedComponents } from "./shared.components";
 import { WidgetDirective } from "./widget/widget.directive";
 
@@ -23,7 +24,8 @@ import { WidgetDirective } from "./widget/widget.directive";
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
-    CardsModule
+    CardsModule,
+    HeaderModule
   ],
   exports: [
     CommonModule,
@@ -36,6 +38,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     FormlyModule,
     FormlyBootstrapModule,
     CardsModule,
+    HeaderModule,
     sharedComponents
   ]
 })
