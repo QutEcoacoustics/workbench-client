@@ -76,7 +76,6 @@ export class DetailsComponent extends PageComponent implements OnInit {
                   next: recordings => {
                     this.recordings = recordings;
                     this.extremityDates(recordings);
-                    console.debug(this.recordings);
                   }
                 });
             },
@@ -100,9 +99,6 @@ export class DetailsComponent extends PageComponent implements OnInit {
         endDate = recording.recordedDate;
       }
     });
-
-    console.debug("Start: ", startDate);
-    console.debug("End: ", endDate);
 
     this.startDate = startDate;
     this.endDate = endDate;

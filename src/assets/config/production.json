@@ -1,0 +1,49 @@
+{
+  "environments": {
+    "production": {
+      "apiRoot": "https://www.ecosounds.org",
+      "siteRoot": "https://www.ecosounds.org/listen_to",
+      "siteDir": "/listen_to/",
+      "ga": {
+        "domain": "ecosounds.org",
+        "trackingId": "UA-48132665-3"
+      }
+    }
+  },
+  "values": {
+    "keys": {
+      "googleMaps": "AIzaSyCyAgRoOPT4LGztyfr6NShyZFMq3y13W8Q"
+    },
+    "brand": {
+      "name": "Ecosounds",
+      "title": "Ecosounds | Acoustic Workbench"
+    },
+    "content": {
+      "research": {
+        "header_title": "Research",
+        "items": [
+          {
+            "innerText": "About",
+            "title": "About",
+            "url": "http://research.ecosounds.org/"
+          },
+          {
+            "innerText": "Articles",
+            "title": "Articles",
+            "url": "http://research.ecosounds.org/articles.html"
+          },
+          {
+            "innerText": "People",
+            "title": "People",
+            "url": "http://research.ecosounds.org/people/people.html"
+          },
+          {
+            "innerText": "Publications",
+            "title": "Publications",
+            "url": "http://research.ecosounds.org/publications/publications.html"
+          }
+        ]
+      }
+    }
+  }
+}

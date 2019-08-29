@@ -8,6 +8,7 @@ import { CardImageComponent } from "src/app/component/shared/cards/card-image/ca
 import { CardComponent } from "src/app/component/shared/cards/card/card.component";
 import { CardsComponent } from "src/app/component/shared/cards/cards.component";
 import { Project } from "src/app/models/Project";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
@@ -54,7 +55,10 @@ describe("HomeComponent", () => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
       imports: [SharedModule, HttpClientModule, RouterTestingModule],
-      providers: [{ provide: ProjectsService, useClass: MockProjectsService }]
+      providers: [
+        AppConfigService,
+        { provide: ProjectsService, useClass: MockProjectsService }
+      ]
     }).compileComponents();
   }));
 

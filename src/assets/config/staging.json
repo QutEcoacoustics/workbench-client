@@ -1,0 +1,32 @@
+{
+  "environments": {
+    "staging": {
+      "apiRoot": "http://staging.EXAMPLE.org",
+      "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
+      "siteDir": "/system/listen_to/",
+      "ga": {
+        "trackingId": "<<PLACEHOLDER>>"
+      }
+    }
+  },
+  "values": {
+    "keys": {
+      "googleMaps": ""
+    },
+    "brand": {
+      "name": "<<brand name here>>",
+      "title": "<<brand name here>> | Acoustic Workbench"
+    },
+    "content": {
+      "research": {
+        "header_title": "Custom Menu",
+        "items": [
+          {
+            "innerText": "Example",
+            "url": "http://www.EXAMPLE.org/awebpage"
+          }
+        ]
+      }
+    }
+  }
+}

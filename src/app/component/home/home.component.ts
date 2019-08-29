@@ -5,9 +5,9 @@ import { map } from "rxjs/operators";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { AudioRecordingsService } from "src/app/services/baw-api/audio-recordings.service";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { projectMenuItem, projectsMenuItem } from "../projects/projects.menus";
+import { projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -33,11 +33,16 @@ export class HomeComponent extends PageComponent implements OnInit {
       })
     );
 
-  constructor(private api: ProjectsService) {
+  constructor(
+    private api: ProjectsService,
+    private environment: AppConfigService
+  ) {
     super();
   }
 
   ngOnInit() {
+    console.debug(this.environment.getConfig());
+
     this.processList = List([
       {
         title: "Environment",

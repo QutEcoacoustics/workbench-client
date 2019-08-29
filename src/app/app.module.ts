@@ -1,19 +1,13 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormsModule } from "@angular/forms";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
+import { HttpClient } from "selenium-webdriver/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { validationMessages } from "./app.helper";
+import { appInitializerFn, validationMessages } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
@@ -26,24 +20,18 @@ import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
+import { AppConfigService } from "./services/app-config/app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],
   imports: [
     BrowserModule,
-    RouterModule,
     AppRoutingModule,
-    NgbModule,
-    FontAwesomeModule,
-    FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
     FormlyModule.forRoot({
       validationMessages
     }),
-    FormlyBootstrapModule,
-    LoadingBarHttpClientModule,
     SharedModule,
     SecurityModule,
     AboutModule,
@@ -57,10 +45,17 @@ import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
     ErrorModule
   ],
   providers: [
+    AppConfigService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: BawApiInterceptor,
       multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFn,
+      multi: true,
+      deps: [AppConfigService]
     }
   ],
   bootstrap: [AppComponent],

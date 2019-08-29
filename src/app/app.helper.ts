@@ -1,13 +1,11 @@
+import { AppConfigService } from "./services/app-config/app-config.service";
+
 function minLengthValidationMessage(err, field) {
-  return `Input should have at least ${
-    field.templateOptions.minLength
-  } characters`;
+  return `Input should have at least ${field.templateOptions.minLength} characters`;
 }
 
 function maxLengthValidationMessage(err, field) {
-  return `This value should be less than ${
-    field.templateOptions.maxLength
-  } characters`;
+  return `This value should be less than ${field.templateOptions.maxLength} characters`;
 }
 
 function minValidationMessage(err, field) {
@@ -25,3 +23,9 @@ export const validationMessages = [
   { name: "min", message: minValidationMessage },
   { name: "max", message: maxValidationMessage }
 ];
+
+export function appInitializerFn(appConfig: AppConfigService) {
+  return () => {
+    return appConfig.loadAppConfig();
+  };
+}
