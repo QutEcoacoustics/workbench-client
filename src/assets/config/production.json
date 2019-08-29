@@ -16,32 +16,36 @@
       "name": "Ecosounds",
       "title": "Ecosounds | Acoustic Workbench"
     },
-    "content": {
-      "research": {
+    "content": [
+      {
+        "title": "Listen",
+        "url": "https://www.ecosounds.org/listen"
+      },
+      {
+        "title": "Library",
+        "url": "https://www.ecosounds.org/library"
+      },
+      {
         "header_title": "Research",
         "items": [
           {
-            "innerText": "About",
             "title": "About",
             "url": "http://research.ecosounds.org/"
           },
           {
-            "innerText": "Articles",
             "title": "Articles",
             "url": "http://research.ecosounds.org/articles.html"
           },
           {
-            "innerText": "People",
             "title": "People",
             "url": "http://research.ecosounds.org/people/people.html"
           },
           {
-            "innerText": "Publications",
             "title": "Publications",
             "url": "http://research.ecosounds.org/publications/publications.html"
           }
         ]
       }
-    }
+    ]
   }
 }

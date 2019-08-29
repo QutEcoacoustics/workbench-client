@@ -15,16 +15,16 @@
       "name": "<<brand name here>>",
       "title": "<<brand name here>> | Acoustic Workbench"
     },
-    "content": {
-      "research": {
+    "content": [
+      {
         "header_title": "Custom Menu",
         "items": [
           {
-            "innerText": "Example",
+            "title": "Example",
             "url": "http://www.EXAMPLE.org/awebpage"
           }
         ]
       }
-    }
+    ]
   }
 }

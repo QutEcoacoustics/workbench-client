@@ -1,6 +1,8 @@
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
+import { HeaderDropdownComponent } from "./header/header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "./header/header-item/header-item.component";
 import { HeaderComponent } from "./header/header.component";
 import { MenuButtonComponent } from "./menu/button/button.component";
 import { MenuExternalLinkComponent } from "./menu/external-link/external-link.component";
@@ -27,5 +29,7 @@ export const sharedComponents = [
   PermissionsShieldComponent,
   ItemNotFoundComponent,
   UnauthorizedComponent,
-  ForbiddenComponent
+  ForbiddenComponent,
+  HeaderItemComponent,
+  HeaderDropdownComponent
 ];

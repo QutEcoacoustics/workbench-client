@@ -32,16 +32,18 @@ export class HomeComponent extends PageComponent implements OnInit {
         return List(data.map(project => project.card));
       })
     );
+  title: string;
 
   constructor(
     private api: ProjectsService,
-    private environment: AppConfigService
+    private appConfig: AppConfigService
   ) {
     super();
   }
 
   ngOnInit() {
-    console.debug(this.environment.getConfig());
+    const config = this.appConfig.getConfig();
+    this.title = config.values.brand.title;
 
     this.processList = List([
       {

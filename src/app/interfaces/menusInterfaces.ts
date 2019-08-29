@@ -198,6 +198,16 @@ export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
 }
 
 /**
+ * Determines if an object is part of the Navigable interface
+ * @param menuItem Menu item
+ */
+export function isNavigableMenuItem(
+  menuItem: any
+): menuItem is NavigableMenuItem {
+  return isInternalRoute(menuItem) || isExternalLink(menuItem);
+}
+
+/**
  * MenusInfo interface. This stores information required to generate the
  * various menus attached to a component.
  * @param actions List of actions

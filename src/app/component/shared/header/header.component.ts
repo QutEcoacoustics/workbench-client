@@ -1,17 +1,33 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation
+} from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
+import { List } from "immutable";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
+import {
+  isNavigableMenuItem,
+  MenuLink,
+  NavigableMenuItem
+} from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
+import { DropDownHeader } from "./header-dropdown/header-dropdown.component";
 
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.scss"]
+  styleUrls: ["./header.component.scss"],
+  // tslint:disable-next-line: use-component-view-encapsulation
+  encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent implements OnInit {
   activeLink: string;
@@ -19,7 +35,11 @@ export class HeaderComponent implements OnInit {
   loggedIn: boolean;
   user: User;
   userImage: string;
-  title = "Ecosounds";
+  title: string;
+  config: any;
+  headers: List<NavigableMenuItem | DropDownHeader>;
+
+  isNavigableMenuItem = isNavigableMenuItem;
 
   routes = {
     home: homeMenuItem,
@@ -32,12 +52,29 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private securityApi: SecurityService,
     private userApi: UserService,
+    private appConfig: AppConfigService,
     private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.config = this.appConfig.getConfig();
     this.collapsed = true;
     this.activeLink = "projects";
+    this.title = this.config.values.brand.name;
+    this.headers = List([
+      projectsMenuItem,
+      ...this.config.values.content.map(header => {
+        if (header.header_title) {
+          return {
+            header_title: header.header_title,
+            items: header.items.map(item => this.generateLink(item))
+          } as DropDownHeader;
+        } else {
+          return this.generateLink(header);
+        }
+      }),
+      contactUsMenuItem
+    ]);
 
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
@@ -55,6 +92,14 @@ export class HeaderComponent implements OnInit {
 
       this.ref.detectChanges();
     });
+  }
+
+  private generateLink(item): MenuLink {
+    return {
+      kind: "MenuLink",
+      label: item.title,
+      uri: item.url
+    } as MenuLink;
   }
 
   /**

@@ -4,18 +4,13 @@
 
 <div class="container-fluid" style="background-color: #e9ecef">
   <section class="toImplement container">
-    <h1 i18n="Ecosounds Title|Title for ecosounds.@@Title">
-      Ecosounds
+    <h1>
+      {{ title }}
     </h1>
-    <p
-      class="lead"
-      i18n="Ecosounds Subtitle|Subtitle for ecosounds.@@ecosoundsSubtitle"
-    >
+    <p class="lead">
       Welcome! Ecosounds is a repository of environmental audio recordings.
     </p>
-    <p
-      i18n="Ecosounds Description|Description of what ecosounds is.@@ecosoundsDescription"
-    >
+    <p>
       This website facilitates the management, access, visualization, and
       analysis of environmental acoustic data. It uses the Acoustic Workbench
       software which is is open source and available from
@@ -30,9 +25,7 @@
 
 <div class="container-fluid">
   <section class="container">
-    <h2
-      i18n="Our Process|Our process for creating and analysing data.@@ourProcessTitle"
-    >
+    <h2>
       Our Process
     </h2>
 
@@ -42,14 +35,10 @@
 
 <div class="container-fluid" style="background-color: #e9ecef">
   <section class="container">
-    <h2
-      i18n="Projects Title|Projects users are allowed to access without logging in.@@projectsTitle"
-    >
+    <h2>
       Some of the projects you can access
     </h2>
-    <p
-      i18n="Projects Description|Description of public projects.@@projectsDescription"
-    >
+    <p>
       You can browse some public projects and audio recordings without logging
       in. To participate in the analysis work you will need to Log in with an
       existing account or Register for a new account.
@@ -59,7 +48,6 @@
       <ng-container>
         <button
           class="m-auto btn btn-outline-primary"
-          i18n="Projects Button|Link to further list of projects.@@projectsButton"
           routerLink="{{ moreProjectsLink.route }}"
         >
           More Projects

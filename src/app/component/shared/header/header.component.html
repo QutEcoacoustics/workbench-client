@@ -24,40 +24,21 @@
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav mr-auto">
         <!-- Projects Link -->
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="{{ routes.projects.route }}"
-            routerLinkActive="active"
-            i18n="Navbar Projects Link|Link to Projects page@@navbarProjects"
-          >
-            Projects
-          </a>
-        </li>
+        <ng-container *ngFor="let header of headers">
+          <ng-container *ngIf="!isNavigableMenuItem(header)">
+            <app-header-dropdown
+              [active]="isActive(header.header_title)"
+              [links]="header"
+            ></app-header-dropdown>
+          </ng-container>
 
-        <!-- Listen link -->
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/listen"
-            routerLinkActive="active"
-            i18n="Navbar Listen Link|Link to Listen page@@navbarListen"
-          >
-            Listen
-          </a>
-        </li>
-
-        <!-- Library link -->
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            i18n="Navbar Library Link|Link to Library page@@navbarLibrary"
-            routerLink="/library"
-            routerLinkActive="active"
-          >
-            Library
-          </a>
-        </li>
+          <ng-container *ngIf="isNavigableMenuItem(header)">
+            <app-header-item
+              [active]="isActive(title)"
+              [link]="header"
+            ></app-header-item>
+          </ng-container>
+        </ng-container>
       </ul>
 
       <!-- Right aligned unauthenticated links -->
@@ -97,7 +78,7 @@
           </a>
         </li>
         <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
-          <button class="nav-link btn" (click)="logout()">
+          <button class="nav-link btn btn-link" (click)="logout()">
             Logout
           </button>
         </li>
