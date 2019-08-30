@@ -1,5 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit
+} from "@angular/core";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-menu-external-link",
@@ -20,10 +26,17 @@ import { MenuLink } from "src/app/interfaces/menusInterfaces";
   styleUrls: ["./external-link.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuExternalLinkComponent {
+export class MenuExternalLinkComponent implements OnInit {
   @Input() id: string;
   @Input() link: MenuLink;
   @Input() placement: "left" | "right";
 
-  constructor() {}
+  constructor(private config: AppConfigService) {}
+
+  ngOnInit() {
+    if (this.link.uri.charAt(0) === "/") {
+      this.link.uri =
+        this.config.getConfig().environment.apiRoot + this.link.uri;
+    }
+  }
 }

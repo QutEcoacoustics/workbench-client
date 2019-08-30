@@ -14,12 +14,23 @@ export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
     homeMenuItem,
     loginMenuItem,
+    registerMenuItem,
     {
       kind: "MenuLink",
-      icon: registerMenuItem.icon,
-      label: registerMenuItem.label,
-      tooltip: registerMenuItem.tooltip,
-      order: registerMenuItem.order,
+      icon: ["fas", "user"],
+      label: "My Profile",
+      tooltip: () => "REPLACE_ME",
+      predicate: user => !!user,
+      order: { priority: 2, indentation: 0 },
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: ["fas", "border-all"],
+      label: "My Annotations",
+      tooltip: () => "REPLACE_ME",
+      predicate: user => !!user,
+      order: { priority: 3, indentation: 0 },
       uri: "REPLACE_ME"
     },
     projectsMenuItem,
@@ -27,50 +38,29 @@ export const DefaultMenu = {
       kind: "MenuLink",
       icon: ["fas", "server"],
       label: "Audio Analysis",
-      tooltip: () => "Audio Analysis",
+      tooltip: () => "View audio analysis jobs",
       order: { priority: 5, indentation: 0 },
-      uri: "REPLACE_ME"
+      uri: "/audio_analysis"
     },
     {
       kind: "MenuLink",
       icon: ["fas", "book"],
       label: "Library",
-      tooltip: () => "Library",
+      tooltip: () => "Annotation library",
       order: { priority: 6, indentation: 0 },
-      uri: "REPLACE_ME"
+      uri: "/library"
     },
-    {
-      kind: "MenuLink",
-      icon: dataRequestMenuItem.icon,
-      label: dataRequestMenuItem.label,
-      tooltip: dataRequestMenuItem.tooltip,
-      order: dataRequestMenuItem.order,
-      uri: "REPLACE_ME"
-    },
+    dataRequestMenuItem,
     {
       kind: "MenuLink",
       icon: ["fas", "envelope"],
       label: "Send Audio",
-      tooltip: () => "Send Audio",
+      tooltip: () => "Send us audio recordings to upload",
       order: { priority: 8, indentation: 0 },
-      uri: "REPLACE_ME"
+      uri: "/data_upload"
     },
-    {
-      kind: "MenuLink",
-      icon: reportProblemMenuItem.icon,
-      label: reportProblemMenuItem.label,
-      tooltip: reportProblemMenuItem.tooltip,
-      order: reportProblemMenuItem.order,
-      uri: "REPLACE_ME"
-    },
-    {
-      kind: "MenuLink",
-      icon: statisticsMenuItem.icon,
-      label: statisticsMenuItem.label,
-      tooltip: statisticsMenuItem.tooltip,
-      order: statisticsMenuItem.order,
-      uri: "REPLACE_ME"
-    }
+    reportProblemMenuItem,
+    statisticsMenuItem
   ]),
   defaultCategory: homeCategory
 };

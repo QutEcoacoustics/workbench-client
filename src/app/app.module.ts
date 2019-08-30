@@ -1,13 +1,12 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FormlyModule } from "@ngx-formly/core";
-import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { appInitializerFn, providers, validationMessages } from "./app.helper";
+import { providers, validationMessages } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
@@ -20,11 +19,6 @@ import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import {
-  APP_CONFIG,
-  AppConfigService
-} from "./services/app-config/app-config.service";
-import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],

@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a
       class="navbar-brand"
-      routerLink="{{ routes.home.route }}"
+      [routerLink]="routes.home.route.toString()"
       routerLinkActive="active"
     >
       {{ title }}
@@ -46,9 +46,8 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            routerLink="{{ routes.register.route }}"
+            [routerLink]="routes.register.route.toString()"
             routerLinkActive="active"
-            i18n="Navbar Register Link|Link to account registration page@@navbarStatistics"
           >
             {{ routes.register.label }}
           </a>
@@ -56,9 +55,8 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
             class="nav-link"
-            routerLink="{{ routes.login.route }}"
+            [routerLink]="routes.login.route.toString()"
             routerLinkActive="active"
-            i18n="Navbar Login Link|Link to account login page@@navbarLogin"
           >
             {{ routes.login.label }}
           </a>
@@ -68,11 +66,7 @@
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
         <li class="nav-item">
-          <a
-            class="nav-link login-widget"
-            routerLink="/profile"
-            routerLinkActive="active"
-          >
+          <a class="nav-link login-widget" [href]="routes.profile.url">
             <span>{{ user.userName }}</span>
             <img alt="Profile Icon" [src]="userImage" />
           </a>

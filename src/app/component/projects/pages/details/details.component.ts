@@ -4,7 +4,7 @@ import { List } from "immutable";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { PageComponent } from "src/app/interfaces/pageComponent";
 import { Page } from "src/app/interfaces/pageDecorator";
 import { Project } from "src/app/models/Project";
@@ -21,7 +21,24 @@ import {
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([editProjectMenuItem, newSiteMenuItem]),
+    actions: List<AnyMenuItem>([
+      {
+        kind: "MenuLink",
+        uri: "/listen",
+        icon: ["fas", "map"],
+        label: "Explore audio",
+        tooltip: () => "Explore audio"
+      } as MenuLink,
+      editProjectMenuItem,
+      {
+        kind: "MenuLink",
+        uri: "REPLACE_ME",
+        icon: ["fas", "key"],
+        label: "Edit Permissions",
+        tooltip: () => "REPLACE_ME"
+      } as MenuLink,
+      newSiteMenuItem
+    ]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

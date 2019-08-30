@@ -43,9 +43,11 @@ export class HeaderComponent implements OnInit {
 
   routes = {
     home: homeMenuItem,
-    projects: projectsMenuItem,
     login: loginMenuItem,
-    register: registerMenuItem
+    register: registerMenuItem,
+    profile: {
+      url: this.appConfig.getConfig().environment.apiRoot + "/my_account"
+    }
   };
 
   constructor(

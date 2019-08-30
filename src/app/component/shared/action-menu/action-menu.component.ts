@@ -33,6 +33,7 @@ export class ActionMenuComponent implements OnInit, OnDestroy {
         page && page.menus && page.menus.actions
           ? page.menus.actions
           : List<AnyMenuItem>();
+
       const actionWidget =
         page && page.menus && page.menus.actions
           ? page.menus.actionsWidget

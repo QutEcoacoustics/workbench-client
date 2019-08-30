@@ -38,6 +38,7 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
     this.subsink.sink = this.route.data.subscribe((page: PageInfo) => {
       // get default links
       const defaultLinks = DefaultMenu.contextLinks;
+
       // and current page
       const current = page.self;
 

@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { version } from "package.json";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import {
+  contactUsMenuItem,
+  creditsMenuItem,
+  disclaimersMenuItem,
+  ethicsMenuItem
+} from "../../about/about.menus";
+import { statisticsMenuItem } from "../../statistics/statistics.menus";
 
 @Component({
   selector: "app-footer",
@@ -13,11 +20,11 @@ export class FooterComponent implements OnInit {
 
   // TODO Update this to the internal routes
   routes = {
-    contactUs: this.config.getConfig().environment.apiRoot + "/contact_us",
-    ethics: this.config.getConfig().environment.apiRoot + "/ethics_statement",
-    credits: this.config.getConfig().environment.apiRoot + "/credits",
-    disclaimers: this.config.getConfig().environment.apiRoot + "/disclaimers",
-    statistics: this.config.getConfig().environment.apiRoot + "/website_status"
+    contactUs: contactUsMenuItem,
+    ethics: ethicsMenuItem,
+    credits: creditsMenuItem,
+    disclaimers: disclaimersMenuItem,
+    statistics: statisticsMenuItem
   };
 
   constructor(private config: AppConfigService) {}
