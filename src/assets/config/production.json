@@ -4,8 +4,7 @@
     "siteRoot": "https://www.ecosounds.org/listen_to",
     "siteDir": "/listen_to/",
     "ga": {
-      "domain": "ecosounds.org",
-      "trackingId": "UA-48132665-3"
+      "trackingId": "<<PLACEHOLDER>>"
     }
   },
   "values": {

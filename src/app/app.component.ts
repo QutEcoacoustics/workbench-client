@@ -1,26 +1,54 @@
-import { Component } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit
+} from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { delay, map, withLatestFrom } from "rxjs/operators";
+import { AppConfigService } from "./services/app-config/app-config.service";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit {
   menuLayout: boolean;
+  googleAnalytics: string;
+
+  /**
+   * Delay showing loading bar
+   */
+  delayedProgress$ = this.loader.progress$.pipe(
+    delay(3000),
+    withLatestFrom(this.loader.progress$),
+    map(v => v[1])
+  );
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private elementRef: ElementRef,
     private router: Router,
     private route: ActivatedRoute,
+    private config: AppConfigService,
     public loader: LoadingBarService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.menuLayout = true;
+    this.googleAnalytics = this.config.getConfig().environment.ga.trackingId;
 
     // Determine whether the currently shown component uses the menu layout or fullscreen
-    this.router.events.subscribe(val => {
-      if (val instanceof NavigationEnd) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Google Analytics
+        (window as any).ga("set", "page", event.urlAfterRedirects);
+        (window as any).ga("send", "pageview");
+
         // Find the primary router component
         let displayComponent = this.route.snapshot.firstChild;
 
@@ -53,12 +81,41 @@ export class AppComponent {
     });
   }
 
-  /**
-   * Delay showing loading bar
-   */
-  delayedProgress$ = this.loader.progress$.pipe(
-    delay(3000),
-    withLatestFrom(this.loader.progress$),
-    map(v => v[1])
-  );
+  ngAfterViewInit() {
+    /**
+     * Add google analytics tag.
+     * Whilst using the DOM is bad practice in angular, it does not
+     * seem possible to access Services in the index.html file
+     * (or event the environment settings). Other potential solutions
+     * could be multiple index.html files which are replaced in the
+     * angular.json file, or using main.ts to perform the fetch command
+     * receiving the environment config and create the script inside the
+     * index.html file.
+     */
+    const s = this.document.createElement("script");
+    s.type = "text/javascript";
+    s.innerHTML = `
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      (i[r] =
+        i[r] ||
+        function() {
+          (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+      (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m);
+    })(
+      window,
+      document,
+      'script',
+      'https://www.google-analytics.com/analytics.js',
+      'ga'
+    );
+    ga('create', '${this.googleAnalytics}', 'auto');
+    `;
+    this.elementRef.nativeElement.appendChild(s);
+  }
 }
