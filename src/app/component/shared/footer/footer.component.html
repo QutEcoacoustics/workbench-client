@@ -8,47 +8,27 @@
         <p class="nav-link disabled m-0">Production v{{ version }}</p>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="{{ routes.statistics.route }}"
-          routerLinkActive="active"
-        >
+        <a class="nav-link" [href]="routes.statistics">
           Statistics
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/about/disclaimers"
-          routerLinkActive="active"
-        >
+        <a class="nav-link" [href]="routes.disclaimers">
           Disclaimers
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/about/credits"
-          routerLinkActive="active"
-        >
+        <a class="nav-link" [href]="routes.credits">
           Credits
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/about/ethics"
-          routerLinkActive="active"
-        >
+        <a class="nav-link" [href]="routes.ethics">
           Ethics
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="{{ routes.contactUs.route }}"
-          routerLinkActive="active"
-        >
+        <a class="nav-link" [href]="routes.contactUs">
           Contact Us
         </a>
       </li>

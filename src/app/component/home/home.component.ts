@@ -33,6 +33,7 @@ export class HomeComponent extends PageComponent implements OnInit {
       })
     );
   title: string;
+  researchAboutUrl: string;
 
   constructor(
     private api: ProjectsService,
@@ -44,6 +45,12 @@ export class HomeComponent extends PageComponent implements OnInit {
   ngOnInit() {
     const config = this.appConfig.getConfig();
     this.title = config.values.brand.title;
+
+    // Find research about url
+    this.researchAboutUrl = this.appConfig.getContentUrl(
+      config.values.content,
+      ["Research", "About"]
+    );
 
     this.processList = List([
       {

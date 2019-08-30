@@ -35,32 +35,32 @@ export class StatisticsComponent extends PageComponent implements OnInit {
       {
         icon: ["fas", "home"],
         name: "Projects",
-        value: 148
+        value: "Unknown"
       },
       {
         icon: ["fas", "bullseye"],
         name: "Annotations",
-        value: 237542
+        value: "Unknown"
       },
       {
         icon: ["fas", "tags"],
         name: "Available tags",
-        value: 2852
+        value: "Unknown"
       },
       {
         icon: ["fas", "map-marker-alt"],
         name: "Sites",
-        value: 1784
+        value: "Unknown"
       },
       {
         icon: ["fas", "file-audio"],
         name: "Audio recordings",
-        value: 610665
+        value: "Unknown"
       },
       {
         icon: ["fas", "users"],
         name: "Users",
-        value: 1128
+        value: "Unknown"
       }
     ];
 
@@ -68,66 +68,48 @@ export class StatisticsComponent extends PageComponent implements OnInit {
       {
         icon: ["fas", "tags"],
         name: "Unique tags attached to annotations",
-        value: 1264
+        value: "Unknown"
       },
       {
         icon: ["fas", "tags"],
         name: "Tags attached to annotations",
-        value: 440426
+        value: "Unknown"
       },
       {
         icon: ["fas", "bullseye"],
         name: "New annotations in the last month",
-        value: 707
+        value: "Unknown"
       },
       {
         icon: ["fas", "clock"],
         name: "Overall annotation duration",
-        value: "1 week and 19 hours"
+        value: "Unknown"
       },
       {
         icon: ["fas", "users"],
         name: "Users Online",
-        value: 2
+        value: "Unknown"
       },
       {
         icon: ["fas", "file-audio"],
         name: "Overall audio recording file size",
-        value: "120TB"
+        value: "Unknown"
       },
       {
         icon: ["fas", "file-audio"],
         name: "New audio recordings in last month",
-        value: "19394"
+        value: "Unknown"
       },
       {
         icon: ["fas", "clock"],
         name: "Overall audio duration",
-        value: "57 years and 5 months"
+        value: "Unknown"
       }
     ];
 
-    this.recentAnnotations = [
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" },
-      { updated: "about 8 hours ago" }
-    ];
+    this.recentAnnotations = [{ updated: "Unknown" }];
 
-    this.recentRecordings = [
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" },
-      { duration: "1 minute", uploaded: "7 days ago" }
-    ];
+    this.recentRecordings = [{ duration: "Unknown", uploaded: "Unknown" }];
   }
 
   isExpanded(

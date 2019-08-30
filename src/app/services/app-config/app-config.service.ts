@@ -25,4 +25,24 @@ export class AppConfigService {
   getConfig() {
     return this.appConfig;
   }
+
+  getContentUrl(content: any, titles: string[]) {
+    content.forEach(header => {
+      if (titles.length === 1) {
+        if (header.title && header.title === titles[0]) {
+          return header.url;
+        } else {
+          return "";
+        }
+      } else if (header.header_title && header.header_title === titles[0]) {
+        return this.getContentUrl(
+          header.items,
+          titles.slice(1, titles.length - 1)
+        );
+      }
+    });
+
+    // Return empty url if not found
+    return "#";
+  }
 }

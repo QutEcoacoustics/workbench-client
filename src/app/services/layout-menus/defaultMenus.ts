@@ -14,11 +14,63 @@ export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
     homeMenuItem,
     loginMenuItem,
-    registerMenuItem,
+    {
+      kind: "MenuLink",
+      icon: registerMenuItem.icon,
+      label: registerMenuItem.label,
+      tooltip: registerMenuItem.tooltip,
+      order: registerMenuItem.order,
+      uri: "REPLACE_ME"
+    },
     projectsMenuItem,
-    dataRequestMenuItem,
-    reportProblemMenuItem,
-    statisticsMenuItem
+    {
+      kind: "MenuLink",
+      icon: ["fas", "server"],
+      label: "Audio Analysis",
+      tooltip: () => "Audio Analysis",
+      order: { priority: 5, indentation: 0 },
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: ["fas", "book"],
+      label: "Library",
+      tooltip: () => "Library",
+      order: { priority: 6, indentation: 0 },
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: dataRequestMenuItem.icon,
+      label: dataRequestMenuItem.label,
+      tooltip: dataRequestMenuItem.tooltip,
+      order: dataRequestMenuItem.order,
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: ["fas", "envelope"],
+      label: "Send Audio",
+      tooltip: () => "Send Audio",
+      order: { priority: 8, indentation: 0 },
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: reportProblemMenuItem.icon,
+      label: reportProblemMenuItem.label,
+      tooltip: reportProblemMenuItem.tooltip,
+      order: reportProblemMenuItem.order,
+      uri: "REPLACE_ME"
+    },
+    {
+      kind: "MenuLink",
+      icon: statisticsMenuItem.icon,
+      label: statisticsMenuItem.label,
+      tooltip: statisticsMenuItem.tooltip,
+      order: statisticsMenuItem.order,
+      uri: "REPLACE_ME"
+    }
   ]),
   defaultCategory: homeCategory
 };
