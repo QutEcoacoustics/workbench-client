@@ -18,14 +18,16 @@ import data from "./edit.json";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Edit Site'"
-      [error]="error"
-      [submitLabel]="'Submit'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Edit Site'"
+        [error]="error"
+        [submitLabel]="'Submit'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class EditComponent extends PageComponent implements OnInit {

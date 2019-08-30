@@ -28,14 +28,16 @@ import data from "./reset-password.json";
 @Component({
   selector: "app-reset-password",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Forgot your password?'"
-      [submitLabel]="'Send me reset password instructions'"
-      [submitLoading]="loading"
-      [error]="error"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Forgot your password?'"
+        [submitLabel]="'Send me reset password instructions'"
+        [submitLoading]="loading"
+        [error]="error"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class ResetPasswordComponent extends PageComponent implements OnInit {

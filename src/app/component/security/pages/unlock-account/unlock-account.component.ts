@@ -28,14 +28,16 @@ import data from "./unlock-account.json";
 @Component({
   selector: "app-confirm-account",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Resend unlock instructions'"
-      [submitLabel]="'Resend unlock instructions'"
-      [submitLoading]="loading"
-      [error]="error"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Resend unlock instructions'"
+        [submitLabel]="'Resend unlock instructions'"
+        [submitLoading]="loading"
+        [error]="error"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class UnlockPasswordComponent extends PageComponent implements OnInit {

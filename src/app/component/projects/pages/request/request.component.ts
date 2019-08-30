@@ -27,14 +27,16 @@ import data from "./request.json";
 @Component({
   selector: "app-projects-request",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Request project access'"
-      [error]="error"
-      [submitLabel]="'Submit request'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Request project access'"
+        [error]="error"
+        [submitLabel]="'Submit request'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class RequestComponent extends PageComponent implements OnInit {

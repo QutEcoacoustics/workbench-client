@@ -11,6 +11,7 @@ import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { ForbiddenComponent } from "./utilities/forbidden.component";
 import { ItemNotFoundComponent } from "./utilities/item-not-found.component";
 import { UnauthorizedComponent } from "./utilities/unauthorized.component";
+import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
   FooterComponent,
@@ -25,5 +26,6 @@ export const sharedComponents = [
   PermissionsShieldComponent,
   ItemNotFoundComponent,
   UnauthorizedComponent,
-  ForbiddenComponent
+  ForbiddenComponent,
+  WIPComponent
 ];

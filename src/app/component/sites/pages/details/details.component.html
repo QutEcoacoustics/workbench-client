@@ -18,41 +18,43 @@
     </div>
   </div>
 
-  <h2>Audio Recordings</h2>
+  <app-wip>
+    <h2>Audio Recordings</h2>
 
-  <div class="row">
-    <div class="col-sm-6">
-      <p>
-        This site contains recordings from ... at ... to ... at ....<br />This
-        site covers ... and there are records for ... of that time.
-      </p>
+    <div class="row">
+      <div class="col-sm-6">
+        <p>
+          This site contains recordings from ... at ... to ... at ....<br />This
+          site covers ... and there are records for ... of that time.
+        </p>
 
-      <ul class="nav nav-pills">
-        <li class="nav-item">
-          <a class="nav-link" href="not_developed">
-            <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-            Play
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="not_developed">
-            <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-            Visualise
-          </a>
-        </li>
-      </ul>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link" href="not_developed">
+              <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
+              Play
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="not_developed">
+              <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+              Visualise
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="col-sm-6"
+        [ngClass]="{
+          'map-placeholder': !site.customLatitude || !site.customLongitude
+        }"
+      >
+        <span *ngIf="!site.customLatitude || !site.customLongitude">
+          This site does not have a location set
+        </span>
+      </div>
     </div>
-    <div
-      class="col-sm-6"
-      [ngClass]="{
-        'map-placeholder': !site.customLatitude || !site.customLongitude
-      }"
-    >
-      <span *ngIf="!site.customLatitude || !site.customLongitude">
-        This site does not have a location set
-      </span>
-    </div>
-  </div>
+  </app-wip>
 </ng-container>
 
 <ng-container *ngIf="error === errorCodes.unauthorized">

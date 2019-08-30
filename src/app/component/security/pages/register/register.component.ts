@@ -14,13 +14,15 @@ import data from "./register.json";
 @Component({
   selector: "app-authentication-register",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Register'"
-      [submitLoading]="loading"
-      [error]="error"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Register'"
+        [submitLoading]="loading"
+        [error]="error"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class RegisterComponent extends PageComponent

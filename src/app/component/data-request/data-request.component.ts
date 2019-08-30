@@ -32,13 +32,15 @@ import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
       You <strong>do not need</strong> to use this form if you need the standard
       <strong>annotations CSV</strong> download.
     </p>
-    <app-form
-      [schema]="schema"
-      [error]="error"
-      [submitLabel]="'Submit'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [error]="error"
+        [submitLabel]="'Submit'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class DataRequestComponent extends PageComponent implements OnInit {

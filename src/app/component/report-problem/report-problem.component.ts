@@ -19,15 +19,17 @@ import {
 @Component({
   selector: "app-report-problem",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Report Problem'"
-      [subTitle]="subTitle"
-      [error]="error"
-      [submitLabel]="'Submit'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Report Problem'"
+        [subTitle]="subTitle"
+        [error]="error"
+        [submitLabel]="'Submit'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class ReportProblemComponent extends PageComponent implements OnInit {

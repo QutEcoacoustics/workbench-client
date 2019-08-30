@@ -28,14 +28,16 @@ import data from "./confirm-account.json";
 @Component({
   selector: "app-confirm-account",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Resend confirmation instructions?'"
-      [submitLabel]="'Resend confirmation instructions'"
-      [submitLoading]="loading"
-      [error]="error"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Resend confirmation instructions?'"
+        [submitLabel]="'Resend confirmation instructions'"
+        [submitLoading]="loading"
+        [error]="error"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class ConfirmPasswordComponent extends PageComponent implements OnInit {

@@ -12,9 +12,8 @@
       </h6>
     </li>
 
-    <hr class="w-100" *ngIf="menuType === 'action'" />
-
     <ng-container *ngIf="linksExist()">
+      <hr class="w-100" *ngIf="menuType === 'action'" />
       <li
         class="nav-item"
         *ngFor="let link of filteredLinks; let i = index"

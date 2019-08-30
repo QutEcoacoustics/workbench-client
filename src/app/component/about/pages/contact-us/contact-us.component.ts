@@ -16,14 +16,16 @@ import data from "./contact-us.json";
 @Component({
   selector: "app-about-contact-us",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Contact Us'"
-      [error]="error"
-      [submitLabel]="'Submit'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'Contact Us'"
+        [error]="error"
+        [submitLabel]="'Submit'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class ContactUsComponent extends PageComponent implements OnInit {

@@ -26,14 +26,16 @@ import data from "./new.json";
 @Component({
   selector: "app-projects-new",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'New Project'"
-      [error]="error"
-      [submitLabel]="'Submit'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <app-wip>
+      <app-form
+        [schema]="schema"
+        [title]="'New Project'"
+        [error]="error"
+        [submitLabel]="'Submit'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </app-wip>
   `
 })
 export class NewComponent extends PageComponent implements OnInit {
