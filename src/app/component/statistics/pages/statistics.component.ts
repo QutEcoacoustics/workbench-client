@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";

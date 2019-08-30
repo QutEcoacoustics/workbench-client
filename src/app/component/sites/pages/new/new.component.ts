@@ -5,16 +5,20 @@ import {
   projectsMenuItem,
   requestProjectMenuItem
 } from "src/app/component/projects/projects.menus";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator";
 import { newSiteMenuItem, sitesCategory } from "../../sites.menus";
 import data from "./new.json";
 
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, requestProjectMenuItem]),
+    actions: List<AnyMenuItem>([
+      projectsMenuItem,
+      newProjectMenuItem,
+      requestProjectMenuItem
+    ]),
     links: List()
   },
   self: newSiteMenuItem

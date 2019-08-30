@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { editProjectMenuItem, projectCategory } from "../../projects.menus";
 import data from "./edit.json";

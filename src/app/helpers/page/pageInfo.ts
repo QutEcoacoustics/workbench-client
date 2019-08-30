@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { Data } from "@angular/router";
-import { Category, MenuRoute, Menus } from "./menusInterfaces";
+import { Category, MenuRoute, Menus } from "src/app/interfaces/menusInterfaces";
 
 /**
  * Page info interface.

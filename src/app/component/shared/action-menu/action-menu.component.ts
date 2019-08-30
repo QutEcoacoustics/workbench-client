@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
+import { PageInfo } from "src/app/helpers/page/pageInfo";
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
-import { PageInfo } from "src/app/interfaces/pageInfo";
-import { DefaultMenu } from "src/app/services/layout-menus/defaultMenus";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 @Component({

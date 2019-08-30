@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
+import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { DataRequestComponent } from "./data-request.component";
 import { dataRequestRoute } from "./data-request.menus";

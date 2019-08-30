@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
-import { PageComponent } from "src/app/interfaces/pageComponent";
-import { Page } from "src/app/interfaces/pageDecorator";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
 import data from "./register.json";

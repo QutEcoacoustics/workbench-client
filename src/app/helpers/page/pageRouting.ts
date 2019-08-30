@@ -1,7 +1,7 @@
 import { Type } from "@angular/core";
 import { Route } from "@angular/router";
-import { ActionMenuComponent } from "../component/shared/action-menu/action-menu.component";
-import { SecondaryMenuComponent } from "../component/shared/secondary-menu/secondary-menu.component";
+import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
+import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
 import { getPageInfo } from "./pageComponent";
 
 /**

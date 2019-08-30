@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
+import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import {
   CreditsComponent,
   DisclaimersComponent,

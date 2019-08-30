@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "src/app/interfaces/pageRouting";
+import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { GroupComponent } from "./helpers/group/group.component";
 import { StatisticComponent } from "./helpers/statistic/statistic.component";
