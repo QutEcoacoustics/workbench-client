@@ -1,5 +1,6 @@
 @import './app/styles/variables.scss';
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 /* Overwrite bootstrap maximum window size */
 @media (min-width: 1200px) {

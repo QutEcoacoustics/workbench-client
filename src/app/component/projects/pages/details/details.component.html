@@ -1,4 +1,4 @@
-<ng-container *ngIf="!error && project">
+<ng-container *ngIf="state === 'project'">
   <h1>{{ project.name }}</h1>
 
   <div class="row">
@@ -60,10 +60,17 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="error === errorCodes.unauthorized">
+<ng-container *ngIf="state === 'unauthorized'">
   <app-unauthorized></app-unauthorized>
 </ng-container>
 
-<ng-container *ngIf="error === errorCodes.notFound">
+<ng-container *ngIf="state === 'notFound'">
   <app-item-not-found></app-item-not-found>
+</ng-container>
+
+<ng-container *ngIf="state === 'loading'">
+  <h4 class="text-center">Loading</h4>
+  <div class="d-flex justify-content-center">
+    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+  </div>
 </ng-container>

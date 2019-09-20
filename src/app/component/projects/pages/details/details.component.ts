@@ -52,8 +52,8 @@ import {
 export class DetailsComponent extends PageComponent implements OnInit {
   project: Project;
   sites: Site[];
-  error: number;
   errorCodes = this.sitesApi.apiReturnCodes;
+  state = "loading";
 
   constructor(
     private route: ActivatedRoute,
@@ -69,10 +69,14 @@ export class DetailsComponent extends PageComponent implements OnInit {
         this.projectsApi.getProject(params.projectId).subscribe({
           next: project => {
             this.project = project;
-            this.error = null;
+            this.state = "project";
           },
           error: (err: APIError) => {
-            this.error = err.code;
+            if (err.code === this.errorCodes.unauthorized) {
+              this.state = "unauthorized";
+            } else {
+              this.state = "notFound";
+            }
           }
         });
 

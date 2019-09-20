@@ -33,7 +33,8 @@ export abstract class BawApiService {
     success: 200,
     badRequest: 400,
     unauthorized: 401,
-    notFound: 404
+    notFound: 404,
+    internalServerFailure: 500
   };
 
   public isLoggedIn(): boolean {

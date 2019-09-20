@@ -1,6 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -17,6 +19,7 @@ import { WidgetDirective } from "./widget/widget.directive";
   imports: [
     CommonModule,
     RouterModule,
+    BrowserAnimationsModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,
@@ -24,6 +27,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
+    MatProgressSpinnerModule,
     CardsModule,
     HeaderModule
   ],
@@ -37,6 +41,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
+    MatProgressSpinnerModule,
     CardsModule,
     HeaderModule,
     sharedComponents
