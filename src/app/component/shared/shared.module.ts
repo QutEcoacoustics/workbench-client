@@ -1,3 +1,4 @@
+import { AgmCoreModule } from "@agm/core";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -20,6 +21,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     CommonModule,
     RouterModule,
     BrowserAnimationsModule,
+    AgmCoreModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,
@@ -34,6 +36,7 @@ import { WidgetDirective } from "./widget/widget.directive";
   exports: [
     CommonModule,
     RouterModule,
+    AgmCoreModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,

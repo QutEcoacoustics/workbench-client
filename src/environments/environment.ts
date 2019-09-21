@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   routerEnableTracing: false,
   appConfig: "assets/config/development.json",
+  googleApiKey: "",
   bawApiUrl: "https://staging.ecosounds.org"
 };
 

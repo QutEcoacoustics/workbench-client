@@ -35,6 +35,9 @@ export class HomeComponent extends PageComponent implements OnInit {
   title: string;
   researchAboutUrl: string;
 
+  lat = 51.678418;
+  lng = 7.809007;
+
   constructor(
     private api: ProjectsService,
     private appConfig: AppConfigService

@@ -12,6 +12,9 @@ export class AppConfigService {
     private titleService: Title
   ) {}
 
+  /**
+   * Load the application config from the ecosounds website
+   */
   async loadAppConfig(): Promise<any> {
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
@@ -22,10 +25,18 @@ export class AppConfigService {
     this.titleService.setTitle(this.appConfig.values.brand.name);
   }
 
+  /**
+   * Get the application config
+   */
   getConfig() {
     return this.appConfig;
   }
 
+  /**
+   * Get the url for a url link from the application config
+   * @param content Application config
+   * @param titles Title of link (titles if link is a subset of another)
+   */
   getContentUrl(content: any, titles: string[]) {
     content.forEach(header => {
       if (titles.length === 1) {
