@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { version } from "package.json";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -18,7 +17,6 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
 export class FooterComponent implements OnInit {
   public version: string = version;
 
-  // TODO Update this to the internal routes
   routes = {
     contactUs: contactUsMenuItem,
     ethics: ethicsMenuItem,
@@ -27,7 +25,7 @@ export class FooterComponent implements OnInit {
     statistics: statisticsMenuItem
   };
 
-  constructor(private config: AppConfigService) {}
+  constructor() {}
 
   ngOnInit() {}
 }

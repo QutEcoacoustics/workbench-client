@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { SharedModule } from "../shared.module";
 import { WIPComponent } from "./wip.component";
 
 describe("WIPComponent", () => {
@@ -8,6 +8,7 @@ describe("WIPComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [SharedModule],
       declarations: [WIPComponent]
     }).compileComponents();
   }));
@@ -21,4 +22,6 @@ describe("WIPComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add tests
 });

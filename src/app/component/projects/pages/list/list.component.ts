@@ -27,7 +27,12 @@ import {
   template: `
     <div class="mt-4">
       <ng-container *ngIf="projectList$ | async as data; else loadingOrError">
-        <app-cards [cards]="data"></app-cards>
+        <ng-container *ngIf="data.length > 0; else noProjects">
+          <app-cards [cards]="data"></app-cards>
+        </ng-container>
+        <ng-template #noProjects>
+          <h4 class="text-center">Your list of projects is empty</h4>
+        </ng-template>
       </ng-container>
       <ng-template #loadingOrError>
         <h4 class="text-center">No projects found</h4>

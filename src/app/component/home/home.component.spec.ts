@@ -1,3 +1,4 @@
+import { AgmCoreModule, MapsAPILoader } from "@agm/core";
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -52,6 +53,14 @@ describe("HomeComponent", () => {
       imports: [SharedModule, HttpClientModule, RouterTestingModule],
       providers: [
         ...providers,
+        {
+          provide: MapsAPILoader,
+          useValue: {
+            load: jasmine
+              .createSpy("load")
+              .and.returnValue(new Promise(() => true))
+          }
+        },
         { provide: ProjectsService, useClass: MockProjectsService }
       ]
     }).compileComponents();

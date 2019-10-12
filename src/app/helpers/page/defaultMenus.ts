@@ -19,7 +19,7 @@ export const DefaultMenu = {
       kind: "MenuLink",
       icon: ["fas", "user"],
       label: "My Profile",
-      tooltip: () => "REPLACE_ME",
+      tooltip: () => "View profile",
       predicate: user => !!user,
       order: { priority: 2, indentation: 0 },
       uri: "REPLACE_ME"
@@ -28,7 +28,7 @@ export const DefaultMenu = {
       kind: "MenuLink",
       icon: ["fas", "border-all"],
       label: "My Annotations",
-      tooltip: () => "REPLACE_ME",
+      tooltip: () => "View my recent annotations",
       predicate: user => !!user,
       order: { priority: 3, indentation: 0 },
       uri: "REPLACE_ME"
