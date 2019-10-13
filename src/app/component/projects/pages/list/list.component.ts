@@ -27,7 +27,7 @@ import {
   template: `
     <div class="mt-4">
       <ng-container *ngIf="projectList$ | async as data; else loadingOrError">
-        <ng-container *ngIf="data.length > 0; else noProjects">
+        <ng-container *ngIf="data.size > 0; else noProjects">
           <app-cards [cards]="data"></app-cards>
         </ng-container>
         <ng-template #noProjects>
