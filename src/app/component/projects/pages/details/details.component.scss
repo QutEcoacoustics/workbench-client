@@ -39,3 +39,17 @@ agm-map {
   height: 100%;
   min-height: 400px;
 }
+
+.map-placeholder {
+  border: 1px solid black;
+  display: block;
+  height: 400px;
+  line-height: 400px;
+  text-align: center;
+
+  span {
+    display: inline-block;
+    line-height: normal;
+    vertical-align: middle;
+  }
+}

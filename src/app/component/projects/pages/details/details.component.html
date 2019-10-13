@@ -60,19 +60,18 @@
 
     <!-- Right aligned map -->
     <div class="col-sm-6">
-      <div *ngIf="sites">
-        <agm-map
-          [latitude]="sites[0].customLatitude"
-          [longitude]="sites[0].customLongitude"
-        >
+      <ng-container *ngIf="sites && sites.length > 0; else placeholderMap">
+        <agm-map [latitude]="avgLat" [longitude]="avgLong">
           <agm-marker
             *ngFor="let site of sites"
-            [label]="site.name"
             [latitude]="site.customLatitude"
             [longitude]="site.customLongitude"
           ></agm-marker>
         </agm-map>
-      </div>
+      </ng-container>
+      <ng-template #placeholderMap>
+        <div class="map-placeholder"><span>No locations specified</span></div>
+      </ng-template>
     </div>
   </div>
 </ng-container>
