@@ -54,6 +54,8 @@ export class DetailsComponent extends PageComponent implements OnInit {
   sites: Site[];
   errorCodes = this.sitesApi.apiReturnCodes;
   state = "loading";
+  avgLat = 0;
+  avgLong = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +66,8 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.debug("avgLat", this.avgLat);
+    console.debug("avgLong", this.avgLong);
     this.route.params.subscribe({
       next: params => {
         this.projectsApi.getProject(params.projectId).subscribe({
@@ -82,6 +86,14 @@ export class DetailsComponent extends PageComponent implements OnInit {
 
         this.sitesApi.getProjectSites(params.projectId).subscribe({
           next: sites => {
+            // Calculate map lat and long
+            sites.map(site => {
+              // this.avgLat += site.customLatitude;
+              // this.avgLong += site.customLongitude;
+            });
+            // this.avgLat /= sites.length;
+            // this.avgLong /= sites.length;
+
             this.sites = sites;
           }
         });

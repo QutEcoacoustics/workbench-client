@@ -1,6 +1,6 @@
 <ng-container *ngIf="state === 'project'">
+  <!-- Project Details -->
   <h1>{{ project.name }}</h1>
-
   <div class="row">
     <div class="col-sm-4">
       <div class="thumbnail">
@@ -12,9 +12,10 @@
     </div>
   </div>
 
+  <!-- Sites -->
   <h2>Sites</h2>
-
   <div class="row">
+    <!-- Left aligned list of sites -->
     <div class="col-sm-6">
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let site of sites">
@@ -56,18 +57,37 @@
         </li>
       </ul>
     </div>
-    <div class="col-sm-6"></div>
+
+    <!-- Right aligned map -->
+    <div class="col-sm-6">
+      <div *ngIf="sites">
+        <agm-map
+          [latitude]="sites[0].customLatitude"
+          [longitude]="sites[0].customLongitude"
+        >
+          <agm-marker
+            *ngFor="let site of sites"
+            [label]="site.name"
+            [latitude]="site.customLatitude"
+            [longitude]="site.customLongitude"
+          ></agm-marker>
+        </agm-map>
+      </div>
+    </div>
   </div>
 </ng-container>
 
+<!-- Unauthorized Access Display -->
 <ng-container *ngIf="state === 'unauthorized'">
   <app-unauthorized></app-unauthorized>
 </ng-container>
 
+<!-- Project Not Found Display -->
 <ng-container *ngIf="state === 'notFound'">
   <app-item-not-found></app-item-not-found>
 </ng-container>
 
+<!-- Project Data Loading Display -->
 <ng-container *ngIf="state === 'loading'">
   <h4 class="text-center">Loading</h4>
   <div class="d-flex justify-content-center">
