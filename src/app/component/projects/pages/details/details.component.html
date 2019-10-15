@@ -62,19 +62,21 @@
     <div class="col-sm-6">
       <ng-container *ngIf="sites && sites.length > 0; else placeholderMap">
         <agm-map [latitude]="avgLat" [longitude]="avgLong">
-          <agm-marker
-            *ngFor="let site of sites"
-            [latitude]="site.customLatitude"
-            [longitude]="site.customLongitude"
-          >
-            <agm-snazzy-info-window
-              [isOpen]="true"
-              [padding]="'10px 25px 10px 10px'"
-              [borderRadius]="'10px'"
+          <ng-container *ngFor="let site of sites">
+            <agm-marker
+              *ngIf="site.customLongitude && site.customLatitude"
+              [latitude]="site.customLatitude"
+              [longitude]="site.customLongitude"
             >
-              <ng-template>{{ site.name }}</ng-template>
-            </agm-snazzy-info-window>
-          </agm-marker>
+              <agm-snazzy-info-window
+                [isOpen]="true"
+                [padding]="'10px 25px 10px 10px'"
+                [borderRadius]="'10px'"
+              >
+                <ng-template>{{ site.name }}</ng-template>
+              </agm-snazzy-info-window>
+            </agm-marker>
+          </ng-container>
         </agm-map>
       </ng-container>
       <ng-template #placeholderMap>

@@ -43,15 +43,34 @@
           </li>
         </ul>
       </div>
-      <div
-        class="col-sm-6"
-        [ngClass]="{
-          'map-placeholder': !site.customLatitude || !site.customLongitude
-        }"
-      >
-        <span *ngIf="!site.customLatitude || !site.customLongitude">
-          This site does not have a location set
-        </span>
+      <div class="col-sm-6">
+        <ng-container
+          *ngIf="
+            site && site.customLatitude && site.customLongitude;
+            else placeholderMap
+          "
+        >
+          <agm-map
+            [latitude]="site.customLatitude"
+            [longitude]="site.customLongitude"
+          >
+            <agm-marker
+              [latitude]="site.customLatitude"
+              [longitude]="site.customLongitude"
+            >
+              <agm-snazzy-info-window
+                [isOpen]="true"
+                [padding]="'10px 25px 10px 10px'"
+                [borderRadius]="'10px'"
+              >
+                <ng-template>{{ site.name }}</ng-template>
+              </agm-snazzy-info-window>
+            </agm-marker>
+          </agm-map>
+        </ng-container>
+        <ng-template #placeholderMap>
+          <div class="map-placeholder"><span>No locations specified</span></div>
+        </ng-template>
       </div>
     </div>
   </app-wip>
