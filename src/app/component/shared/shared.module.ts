@@ -1,4 +1,5 @@
 import { AgmCoreModule } from "@agm/core";
+import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -22,6 +23,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     RouterModule,
     BrowserAnimationsModule,
     AgmCoreModule,
+    AgmSnazzyInfoWindowModule,
     LoadingBarHttpClientModule,
     NgbModule,
     FontAwesomeModule,
