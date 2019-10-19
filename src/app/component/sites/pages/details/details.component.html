@@ -50,23 +50,23 @@
             else placeholderMap
           "
         >
-          <agm-map
-            [latitude]="site.customLatitude"
-            [longitude]="site.customLongitude"
-          >
-            <agm-marker
-              [latitude]="site.customLatitude"
-              [longitude]="site.customLongitude"
-            >
-              <agm-snazzy-info-window
-                [isOpen]="true"
-                [padding]="'10px 25px 10px 10px'"
-                [borderRadius]="'10px'"
+          <div class="map-container">
+            <agm-map [fitBounds]="true">
+              <agm-marker
+                [latitude]="site.customLatitude"
+                [longitude]="site.customLongitude"
+                [agmFitBounds]="true"
               >
-                <ng-template>{{ site.name }}</ng-template>
-              </agm-snazzy-info-window>
-            </agm-marker>
-          </agm-map>
+                <agm-snazzy-info-window
+                  [isOpen]="true"
+                  [padding]="'10px 25px 10px 10px'"
+                  [borderRadius]="'10px'"
+                >
+                  <ng-template>{{ site.name }}</ng-template>
+                </agm-snazzy-info-window>
+              </agm-marker>
+            </agm-map>
+          </div>
         </ng-container>
         <ng-template #placeholderMap>
           <div class="map-placeholder"><span>No locations specified</span></div>
