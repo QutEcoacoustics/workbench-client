@@ -28,7 +28,7 @@ export class AppConfigService {
   /**
    * Get the application config
    */
-  getConfig() {
+  getConfig(): any {
     return this.appConfig;
   }
 
@@ -37,7 +37,7 @@ export class AppConfigService {
    * @param content Application config
    * @param titles Title of link (titles if link is a subset of another)
    */
-  getContentUrl(content: any, titles: string[]) {
+  getContentUrl(content: any, titles: string[]): string {
     content.forEach(header => {
       if (titles.length === 1) {
         if (header.title && header.title === titles[0]) {
