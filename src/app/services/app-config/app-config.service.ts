@@ -1,11 +1,12 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
+import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 
 export let APP_CONFIG = new InjectionToken("app.config");
 
 @Injectable()
 export class AppConfigService {
-  private appConfig: any;
+  private appConfig: Configuration;
 
   constructor(
     @Inject(APP_CONFIG) private config: string,
@@ -28,7 +29,7 @@ export class AppConfigService {
   /**
    * Get the application config
    */
-  getConfig() {
+  getConfig(): Configuration {
     return this.appConfig;
   }
 
@@ -45,7 +46,7 @@ export class AppConfigService {
         } else {
           return "";
         }
-      } else if (header.header_title && header.header_title === titles[0]) {
+      } else if (header.headerTitle && header.headerTitle === titles[0]) {
         return this.getContentUrl(
           header.items,
           titles.slice(1, titles.length - 1)
@@ -56,4 +57,37 @@ export class AppConfigService {
     // Return empty url if not found
     return "#";
   }
+}
+
+export interface Configuration {
+  environment: {
+    apiRoot: string;
+    siteRoot: string;
+    siteDir: string;
+    ga: {
+      trackingId: string;
+    };
+  };
+  values: {
+    keys: {
+      googleMaps: string;
+    };
+    brand: {
+      name: string;
+      title: string;
+    };
+    content: Links[];
+  };
+}
+
+type Links = SingleLink | MultiLink;
+
+export interface MultiLink {
+  headerTitle: string;
+  items: SingleLink[] | NavigableMenuItem[];
+}
+
+export interface SingleLink {
+  title: string;
+  url: string;
 }

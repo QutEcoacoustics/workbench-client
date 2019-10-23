@@ -13,14 +13,16 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import {
+  AppConfigService,
+  MultiLink
+} from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
-import { DropDownHeader } from "./header-dropdown/header-dropdown.component";
 
 @Component({
   selector: "app-header",
@@ -37,7 +39,7 @@ export class HeaderComponent implements OnInit {
   userImage: string;
   title: string;
   config: any;
-  headers: List<NavigableMenuItem | DropDownHeader>;
+  headers: List<NavigableMenuItem | MultiLink>;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
@@ -63,14 +65,16 @@ export class HeaderComponent implements OnInit {
     this.collapsed = true;
     this.activeLink = "projects";
     this.title = this.config.values.brand.name;
+
+    // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
       ...this.config.values.content.map(header => {
-        if (header.header_title) {
+        if (header.headerTitle) {
           return {
-            header_title: header.header_title,
+            headerTitle: header.headerTitle,
             items: header.items.map(item => this.generateLink(item))
-          } as DropDownHeader;
+          } as MultiLink;
         } else {
           return this.generateLink(header);
         }
