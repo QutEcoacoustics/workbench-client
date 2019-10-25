@@ -129,7 +129,7 @@ export class SecurityService extends BawApiService {
     };
     const error = (err: APIError) => {
       this.loggedInTrigger.next(false);
-      subject.error(err);
+      subject.error(err.message);
     };
 
     // Return early if logged in

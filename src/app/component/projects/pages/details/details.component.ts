@@ -72,7 +72,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
             this.state = "project";
           },
           error: (err: APIError) => {
-            if (err.code === this.errorCodes.unauthorized) {
+            if (err.status === this.errorCodes.unauthorized) {
               this.state = "unauthorized";
             } else {
               this.state = "notFound";

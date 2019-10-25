@@ -90,7 +90,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       err => {
-        this.error = err.message;
+        this.error = err;
         this.loading = false;
       }
     );

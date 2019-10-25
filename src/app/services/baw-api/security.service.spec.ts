@@ -147,7 +147,7 @@ describe("SecurityService", () => {
   it("login should return error on bad credentials", () => {
     service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
-        expect(res).toBeFalsy();
+        expect(true).toBeFalsy();
       },
       err => {
         expect(err).toBeTruthy();
@@ -167,23 +167,26 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
-          links: {
-            "Confirm account": "/my_account/confirmation/new",
-            "Reset password": "/my_account/password/new",
-            "Unlock account": "/my_account/unlock/new"
-          },
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details:
+              "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
+            links: {
+              "Confirm account": "/my_account/confirmation/new",
+              "Reset password": "/my_account/password/new",
+              "Unlock account": "/my_account/unlock/new"
+            },
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("login should return error on missing credentials", () => {
@@ -209,17 +212,20 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 400,
-        message: "Bad Request",
-        error: {
-          details: "The request could not be verified.",
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 400,
+          message: "Bad Request",
+          error: {
+            details: "The request could not be verified.",
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 400, statusText: "Bad Request" }
+    );
   });
 
   it("logout should clear session cookie", fakeAsync(() => {

@@ -16,10 +16,22 @@ import {
 import { environment } from "src/environments/environment";
 import { BawApiService } from "./base-api.service";
 
+/**
+ * BAW API Interceptor.
+ * This handles intercepting http requests to the BAW API server and manages
+ * login tokens and error handling.
+ */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
   constructor(public api: BawApiService) {}
 
+  /**
+   * Intercept http requests and handle appending login tokens and errors.
+   * This interceptor also handles converting the variable names in json objects
+   * from snake case to camel case, and back again for outgoing and ingoing requests.
+   * @param request Http Request
+   * @param next Function to be run after interceptor
+   */
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
@@ -66,41 +78,32 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @throws Observable<never>
    */
   private handleError(
-    response: HttpErrorResponse | ErrorResponse
+    response: HttpErrorResponse | ErrorResponse | APIError
   ): Observable<never> {
-    if (response.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error("An error occurred:", response.error.message);
+    if (isErrorResponse(response)) {
       return throwError({
-        code: response.status,
-        message: response.message
+        status: response.status,
+        message: response.error.meta.error.details
       });
     } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(`Backend returned code ${response.status}: `, response);
-
-      try {
-        return throwError({
-          code: response.status,
-          message: response.error.meta.error.details
-        });
-      } catch (TypeError) {
-        return throwError({
-          code: response.status,
-          message: response.message
-        });
-      }
+      return throwError({
+        status: response.status,
+        message: response.message
+      });
     }
   }
 }
 
+/**
+ * API Service error response
+ */
 export interface APIError {
-  code: number;
+  status: number;
   message: string;
 }
+
 /**
- * Api error response
+ * BAW API raw error response
  */
 interface ErrorResponse extends HttpErrorResponse {
   error: {
@@ -112,4 +115,10 @@ interface ErrorResponse extends HttpErrorResponse {
       };
     };
   };
+}
+
+function isErrorResponse(
+  errorResponse: ErrorResponse | APIError | HttpErrorResponse
+): errorResponse is ErrorResponse {
+  return "error" in errorResponse && !(errorResponse instanceof ErrorEvent);
 }

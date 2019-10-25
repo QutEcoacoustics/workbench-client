@@ -60,7 +60,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
             this.error = null;
           },
           error: (err: APIError) => {
-            this.error = err.code;
+            this.error = err.status;
           }
         });
 
@@ -80,7 +80,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
                 });
             },
             error: (err: APIError) => {
-              this.error = err.code;
+              this.error = err.status;
             }
           });
       }
