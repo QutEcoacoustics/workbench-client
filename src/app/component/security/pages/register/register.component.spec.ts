@@ -480,5 +480,5 @@ describe("RegisterComponent", () => {
     expect(button.disabled).toBeTruthy();
   }));
 
-  xit("should register account on submit", () => {});
+  // xit("should register account on submit", () => {});
 });

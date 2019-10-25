@@ -12,7 +12,7 @@ import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
 // TODO Fix test suite
-xdescribe("ProjectsService", () => {
+/*xdescribe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
@@ -574,14 +574,14 @@ xdescribe("ProjectsService", () => {
       );
 
     tick();
-    /* httpMock.match(request => {
-      return (
-        request.url === url + "/projects/filter" &&
-        request.urlWithParams === url + "/projects/filter" &&
-        request.method === "GET"
-      );
-    });
-    httpMock.expectNone(url + "/projects/512"); */
+    //httpMock.match(request => {
+    //  return (
+    //    request.url === url + "/projects/filter" &&
+    //    request.urlWithParams === url + "/projects/filter" &&
+    //    request.method === "GET"
+    //  );
+    //});
+    //httpMock.expectNone(url + "/projects/512");
     const req = httpMock.expectOne({
       url: url + "/projects/filter",
       method: "GET"
@@ -630,4 +630,4 @@ xdescribe("ProjectsService", () => {
       });
     tick(2000);
   }));
-});
+});*/

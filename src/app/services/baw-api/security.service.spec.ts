@@ -431,7 +431,7 @@ describe("SecurityService", () => {
   }));
 
   // TODO Implement the following tests
-  xit("getLoggedInTrigger should return false initially", fakeAsync(() => {
+  /*xit("getLoggedInTrigger should return false initially", fakeAsync(() => {
     service.getLoggedInTrigger().subscribe(loggedIn => {
       expect(loggedIn).toBeFalsy();
     });
@@ -470,5 +470,5 @@ describe("SecurityService", () => {
 
   xit("register should return error on missing credentials", () => {
     expect(false).toBe(true);
-  });
+  });*/
 });

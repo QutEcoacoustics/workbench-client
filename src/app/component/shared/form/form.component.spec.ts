@@ -44,7 +44,7 @@ describe("FormComponent", () => {
   });
 
   // TODO Implement this test
-  xit("should display bootstrap alert message with missing email", fakeAsync(() => {
+  /*xit("should display bootstrap alert message with missing email", fakeAsync(() => {
     const button = fixture.debugElement.nativeElement.querySelector("button");
     button.click();
 
@@ -62,5 +62,5 @@ describe("FormComponent", () => {
     expect(msg).toBeTruthy();
     expect(msg.innerText).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(3);
-  }));
+  }));*/
 });

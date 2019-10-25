@@ -138,5 +138,5 @@ describe("ConfirmPasswordComponent", () => {
     expect(component.submit).toHaveBeenCalledWith({ email: "email" });
   }));
 
-  xit("should confirm account on submit", () => {});
+  // xit("should confirm account on submit", () => {});
 });

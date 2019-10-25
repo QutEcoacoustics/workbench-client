@@ -319,34 +319,6 @@ describe("LoginComponent", () => {
     });
   }));
 
-  // TODO Implement, currently this fails because navigation does not occur
-  xit("should redirect to home page on successful login", fakeAsync(() => {
-    spyOn(router, "navigate");
-
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
-    password.value = "password";
-    password.dispatchEvent(new Event("input"));
-
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
-    button.click();
-
-    tick(5000);
-    fixture.detectChanges();
-
-    expect(router.navigate).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(["/"]);
-  }));
-
   it("should show error on bad email", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callThrough();
@@ -517,4 +489,32 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
   }));
+
+  // TODO Implement, currently this fails because navigation does not occur
+  /*xit("should redirect to home page on successful login", fakeAsync(() => {
+    spyOn(router, "navigate");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(["/"]);
+  }));*/
 });

@@ -138,5 +138,5 @@ describe("ResetPasswordComponent", () => {
     expect(component.submit).toHaveBeenCalledWith({ email: "email" });
   }));
 
-  xit("should reset password on submit", () => {});
+  // xit("should reset password on submit", () => {});
 });
