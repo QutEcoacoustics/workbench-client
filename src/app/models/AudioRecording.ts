@@ -20,6 +20,9 @@ export interface AudioRecordingInterface {
   updatedAt: Time;
 }
 
+/**
+ * An audio recording model
+ */
 export class AudioRecording implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
   public readonly id: ID;
