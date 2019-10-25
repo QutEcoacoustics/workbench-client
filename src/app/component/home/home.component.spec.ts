@@ -1,10 +1,14 @@
-import { AgmCoreModule, MapsAPILoader } from "@agm/core";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { providers } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import {
+  APP_CONFIG,
+  MockAppConfigService
+} from "src/app/services/app-config/app-configMock.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
@@ -50,17 +54,11 @@ describe("HomeComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
-      imports: [SharedModule, HttpClientModule, RouterTestingModule],
+      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...providers,
-        {
-          provide: MapsAPILoader,
-          useValue: {
-            load: jasmine
-              .createSpy("load")
-              .and.returnValue(new Promise(() => true))
-          }
-        },
+        { provide: APP_CONFIG, useValue: "" },
+        { provide: AppConfigService, useClass: MockAppConfigService },
         { provide: ProjectsService, useClass: MockProjectsService }
       ]
     }).compileComponents();
@@ -76,15 +74,5 @@ describe("HomeComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("all images must have alt", async(() => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      const images = fixture.nativeElement.querySelectorAll("img");
-
-      images.forEach(image => {
-        expect(image.alt).toBeTruthy();
-        expect(image.alt.length).toBeGreaterThan(0);
-      });
-    });
-  }));
+  // TODO Add unit tests
 });

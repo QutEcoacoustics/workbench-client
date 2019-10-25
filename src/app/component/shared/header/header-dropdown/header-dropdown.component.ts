@@ -8,7 +8,7 @@ import {
   isExternalLink,
   isInternalRoute
 } from "src/app/interfaces/menusInterfaces";
-import { MultiLink } from "src/app/services/app-config/app-config.service";
+import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-header-dropdown",
@@ -46,7 +46,7 @@ import { MultiLink } from "src/app/services/app-config/app-config.service";
 })
 export class HeaderDropdownComponent implements OnInit {
   @Input() active: boolean;
-  @Input() links: MultiLink;
+  @Input() links: HeaderDropDownConvertedLink;
 
   isInternalRoute = isInternalRoute;
   isExternalLink = isExternalLink;

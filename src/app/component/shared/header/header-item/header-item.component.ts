@@ -13,7 +13,7 @@ import {
 @Component({
   selector: "app-header-item",
   template: `
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="link">
       <ng-container *ngIf="isInternalRoute(link)">
         <a
           class="nav-link"

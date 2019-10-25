@@ -59,6 +59,9 @@ export class AppConfigService {
   }
 }
 
+/**
+ * External configuration file contents
+ */
 export interface Configuration {
   environment: {
     apiRoot: string;
@@ -80,14 +83,28 @@ export interface Configuration {
   };
 }
 
-type Links = SingleLink | MultiLink;
+type Links = HeaderLink | HeaderDropDownLink;
 
-export interface MultiLink {
-  headerTitle: string;
-  items: SingleLink[] | NavigableMenuItem[];
-}
-
-export interface SingleLink {
+/**
+ * Single link for header
+ */
+export interface HeaderLink {
   title: string;
   url: string;
+}
+
+/**
+ * Dropdown list of links for header
+ */
+export interface HeaderDropDownLink {
+  headerTitle: string;
+  items: HeaderLink[] | NavigableMenuItem[];
+}
+
+/**
+ * Dropdown list of navigable menu items
+ * @extends HeaderDropDownLink
+ */
+export interface HeaderDropDownConvertedLink extends HeaderDropDownLink {
+  items: NavigableMenuItem[];
 }

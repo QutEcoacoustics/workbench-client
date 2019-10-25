@@ -20,4 +20,6 @@ describe("HeaderItemComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });

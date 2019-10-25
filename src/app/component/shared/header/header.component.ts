@@ -15,7 +15,8 @@ import {
 import { User } from "src/app/models/User";
 import {
   AppConfigService,
-  MultiLink
+  HeaderDropDownConvertedLink,
+  HeaderDropDownLink
 } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
@@ -39,7 +40,7 @@ export class HeaderComponent implements OnInit {
   userImage: string;
   title: string;
   config: any;
-  headers: List<NavigableMenuItem | MultiLink>;
+  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
@@ -74,7 +75,7 @@ export class HeaderComponent implements OnInit {
           return {
             headerTitle: header.headerTitle,
             items: header.items.map(item => this.generateLink(item))
-          } as MultiLink;
+          } as HeaderDropDownConvertedLink;
         } else {
           return this.generateLink(header);
         }

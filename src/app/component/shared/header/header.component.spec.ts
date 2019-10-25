@@ -1,13 +1,15 @@
 import { HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { appInitializerFn, providers } from "src/app/app.helper";
+import { providers } from "src/app/app.helper";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import {
   APP_CONFIG,
   MockAppConfigService
 } from "src/app/services/app-config/app-configMock.service";
+import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "./header-item/header-item.component";
 import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
@@ -16,17 +18,16 @@ describe("HeaderComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent],
+      declarations: [
+        HeaderComponent,
+        HeaderItemComponent,
+        HeaderDropdownComponent
+      ],
       imports: [RouterTestingModule, FontAwesomeModule, HttpClientModule],
       providers: [
         ...providers,
         { provide: APP_CONFIG, useValue: "" },
-        {
-          provide: APP_INITIALIZER,
-          useFactory: appInitializerFn,
-          multi: true,
-          deps: [MockAppConfigService]
-        }
+        { provide: AppConfigService, useClass: MockAppConfigService }
       ]
     }).compileComponents();
   }));
@@ -40,4 +41,6 @@ describe("HeaderComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });

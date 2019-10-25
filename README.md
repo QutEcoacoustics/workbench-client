@@ -110,41 +110,60 @@ There are three environments supported by this application.
   - Have you added `SharedModule`?
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule
-      ]
+  TestBed.configureTestingModule({
+    imports: [
+      SharedModule
+    ]
   ```
 
   - If the component has any form of routing (including `ActivatedRoute`):
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ]
+  TestBed.configureTestingModule({
+    imports: [
+      RouterTestingModule
+    ]
   ```
 
   - If the component has any form of http requests:
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule
-        // or
-        HttpClientTestingModule
-      ]
+  TestBed.configureTestingModule({
+    imports: [
+      HttpClientModule
+      // or
+      HttpClientTestingModule
+    ]
   ```
 
   - If the component uses the Formly form building module:
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ]
+  TestBed.configureTestingModule({
+    imports: [
+      FormlyModule.forRoot({
+        validationMessages
+      })
+    ]
+  ```
+
+  - When testing a component which depends on the app-config.service:
+
+  ```javascript
+  // Imports must be correct
+  import { AppConfigService } from 'src/app/services/app-config/app-config.service';
+  import {
+    APP_CONFIG,
+    MockAppConfigService
+  } from 'src/app/services/app-config/app-configMock.service';
+
+  TestBed.configureTestingModule({
+  providers: [
+    ...providers,
+    { provide: APP_CONFIG, useValue: '' },
+    { provide: AppConfigService, useClass: MockAppConfigService }
+  ];
+
   ```
 
 ## Licence

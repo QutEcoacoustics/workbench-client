@@ -6,13 +6,22 @@ import { providers } from "./app.helper";
 import { FooterComponent } from "./component/shared/footer/footer.component";
 import { HeaderComponent } from "./component/shared/header/header.component";
 import { SharedModule } from "./component/shared/shared.module";
+import { AppConfigService } from "./services/app-config/app-config.service";
+import {
+  APP_CONFIG,
+  MockAppConfigService
+} from "./services/app-config/app-configMock.service";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, SharedModule, HttpClientModule],
       declarations: [AppComponent, HeaderComponent, FooterComponent],
-      providers: [...providers]
+      providers: [
+        ...providers,
+        { provide: APP_CONFIG, useValue: "" },
+        { provide: AppConfigService, useClass: MockAppConfigService }
+      ]
     }).compileComponents();
   }));
 
@@ -21,4 +30,6 @@ describe("AppComponent", () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });
