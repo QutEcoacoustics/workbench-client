@@ -1,36 +1,54 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"typescript.tsdk": "node_modules\\typescript\\lib",
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules\\typescript\\lib",
     "typescript.preferences.quoteStyle": "double",
     "editor.codeActionsOnSave": {
       "source.fixAll.tslint": true
     },
-		"cSpell.words": [
-			"Formly",
-			"fontawesome",
-			"fortawesome"
-		  ],
-		  "cSpell.ignorePaths": [
-			"**/package-lock.json",
-			"**/node_modules/**",
-			"**/vscode-extension/**",
-			"**/.git/objects/**",
-			"**/.vscode/**",
-			"**/tslint.json",
-			"**/baw-client.code-workspace",
-			"**/tsconfig*.json",
-			"**/tsconfig.json",
-		],
-	},
-	"extensions": {
-		"recommendations": [
-			"cyrilletuzi.angular-schematics",
-			"ms-vscode.vscode-typescript-tslint-plugin"
-		]
-	}
+    "cSpell.words": [
+      "Formly",
+      "fontawesome",
+      "fortawesome"
+      ],
+      "cSpell.ignorePaths": [
+      "**/package-lock.json",
+      "**/node_modules/**",
+      "**/vscode-extension/**",
+      "**/.git/objects/**",
+      "**/.vscode/**",
+      "**/tslint.json",
+      "**/baw-client.code-workspace",
+      "**/tsconfig*.json",
+      "**/tsconfig.json",
+    ],
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#3795b0",
+      "activityBar.foreground": "#e7e7e7",
+      "activityBar.inactiveForeground": "#e7e7e799",
+      "activityBarBadge.background": "#922e7b",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "titleBar.activeBackground": "#2b7489",
+      "titleBar.inactiveBackground": "#2b748999",
+      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.inactiveForeground": "#e7e7e799",
+      "statusBar.background": "#2b7489",
+      "statusBarItem.hoverBackground": "#3795b0",
+      "statusBar.foreground": "#e7e7e7"
+    },
+    "peacock.color": "#2b7489",
+    "angularKarmaTestExplorer.debugMode": true,
+
+  },
+  "extensions": {
+    "recommendations": [
+      "cyrilletuzi.angular-schematics",
+      "ms-vscode.vscode-typescript-tslint-plugin",
+      "raagh.angular-karma-test-explorer"
+    ]
+  }
 }

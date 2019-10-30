@@ -18,7 +18,6 @@ The Angular 8 client for an acoustic workbench application.
 To install project dependencies run:
 
 ```bash
-$ npm install -g @angular/cli
 $ npm install
 ```
 
@@ -29,6 +28,19 @@ $ npm start
 ```
 
 Then open a web browser to `localhost:4200`.
+
+### Access the ng tool
+
+```bash
+$ npx ng
+```
+
+or 
+
+```
+npm run ng
+```
+
 
 ### Documentation
 

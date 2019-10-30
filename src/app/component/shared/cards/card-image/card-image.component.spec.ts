@@ -58,7 +58,7 @@ describe("CardImageComponent", () => {
     fixture.detectChanges();
 
     const image = compiled.nativeElement.querySelector("img");
-    expect(image.src).toBe("http://localhost:9876/image");
+    expect(image.src).toBe(`http://${ window.location.host }/image`);
   });
 
   it("should handle remote image", () => {

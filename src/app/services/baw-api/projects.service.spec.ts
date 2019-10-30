@@ -59,7 +59,7 @@ import { SecurityService } from "./security.service";
         total: 1,
         max_page: 1,
         current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+          "<INTENTIONALLY BROKEN DO NOT REFER TO EXTERNAL SERVICES>/projects?direction=asc&items=3&order_by=name&page=1",
         previous: null,
         next: null
       }
@@ -113,7 +113,7 @@ import { SecurityService } from "./security.service";
         total: 1,
         max_page: 1,
         current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+          "<INTENTIONALLY BROKEN DO NOT REFER TO EXTERNAL SERVICES>/projects?direction=asc&items=3&order_by=name&page=1",
         previous: null,
         next: null
       }
@@ -281,7 +281,7 @@ import { SecurityService } from "./security.service";
           total: 1,
           max_page: 1,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<INTENTIONALLY BROKEN DO NOT REFER TO EXTERNAL SERVICES>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
@@ -366,7 +366,7 @@ import { SecurityService } from "./security.service";
           total: 1,
           max_page: 1,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<INTENTIONALLY BROKEN DO NOT REFER TO EXTERNAL SERVICES>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
@@ -453,7 +453,7 @@ import { SecurityService } from "./security.service";
           total: 1,
           max_page: 2,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<INTENTIONALLY BROKEN DO NOT REFER TO EXTERNAL SERVICES>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
