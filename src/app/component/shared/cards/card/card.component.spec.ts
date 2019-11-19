@@ -2,6 +2,7 @@ import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CardComponent } from "./card.component";
 
+// TODO Add unit tests
 describe("CardComponent", () => {
   let component: CardComponent;
   let fixture: ComponentFixture<CardComponent>;
