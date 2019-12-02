@@ -20,10 +20,15 @@ export class AppConfigService {
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
-    const response = await fetch(this.config);
-    const data = await response.json();
-    this.appConfig = data;
-    this.titleService.setTitle(this.appConfig.values.brand.name);
+    await fetch(this.config)
+      .then(response => response.json())
+      .then(data => {
+        this.appConfig = data;
+        this.titleService.setTitle(data.values.brand.name);
+      })
+      .catch(() => {
+        this.appConfig = undefined;
+      });
   }
 
   /**
@@ -39,20 +44,15 @@ export class AppConfigService {
    * @param titles Title of link (titles if link is a subset of another)
    */
   getContentUrl(content: any, titles: string[]) {
-    content.forEach(header => {
+    for (const header of content) {
       if (titles.length === 1) {
-        if (header.title && header.title === titles[0]) {
+        if (isHeaderLink(header) && header.title === titles[0]) {
           return header.url;
-        } else {
-          return "";
         }
-      } else if (header.headerTitle && header.headerTitle === titles[0]) {
-        return this.getContentUrl(
-          header.items,
-          titles.slice(1, titles.length - 1)
-        );
+      } else if (!isHeaderLink(header) && header.headerTitle === titles[0]) {
+        return this.getContentUrl(header.items, titles.slice(1, titles.length));
       }
-    });
+    }
 
     // Return empty url if not found
     return "#";
@@ -84,6 +84,10 @@ export interface Configuration {
 }
 
 type Links = HeaderLink | HeaderDropDownLink;
+
+function isHeaderLink(link: Links): link is HeaderLink {
+  return "title" in link;
+}
 
 /**
  * Single link for header

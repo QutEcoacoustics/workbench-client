@@ -6,7 +6,6 @@ export let APP_CONFIG = new InjectionToken("app.config");
 
 @Injectable()
 export class MockAppConfigService {
-  private appConfig: Configuration;
   private testAppConfig: Configuration = {
     environment: {
       apiRoot: "<< apiRoot >>",
@@ -58,7 +57,6 @@ export class MockAppConfigService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         this.titleService.setTitle("Testing");
-        this.appConfig = this.testAppConfig;
 
         resolve();
       }, 300);
