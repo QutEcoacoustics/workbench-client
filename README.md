@@ -160,9 +160,9 @@ There are three environments supported by this application.
 
   ```javascript
   TestBed.configureTestingModule({
-  providers: [
-    ...testProviders,
-  ];
+    providers: [
+      ...testProviders,
+    ];
 
   ```
 

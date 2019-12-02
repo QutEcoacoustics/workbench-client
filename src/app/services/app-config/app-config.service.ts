@@ -23,7 +23,6 @@ export class AppConfigService {
     await fetch(this.config)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         this.appConfig = data;
         this.titleService.setTitle(data.values.brand.name);
       })

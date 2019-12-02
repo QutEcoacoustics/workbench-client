@@ -15,8 +15,7 @@ import {
 import { User } from "src/app/models/User";
 import {
   AppConfigService,
-  HeaderDropDownConvertedLink,
-  HeaderDropDownLink
+  HeaderDropDownConvertedLink
 } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";

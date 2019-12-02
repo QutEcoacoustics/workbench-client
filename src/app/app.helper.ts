@@ -5,6 +5,10 @@ import {
   APP_CONFIG,
   AppConfigService
 } from "./services/app-config/app-config.service";
+import {
+  APP_CONFIG as MOCK_APP_CONFIG,
+  MockAppConfigService
+} from "./services/app-config/mock-app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 
 function minLengthValidationMessage(err, field) {
@@ -37,6 +41,12 @@ export function appInitializerFn(appConfig: AppConfigService) {
   };
 }
 
+export function mockAppInitializerFn(appConfig: MockAppConfigService) {
+  return () => {
+    return appConfig.loadAppConfig();
+  };
+}
+
 export const providers = [
   AppConfigService,
   {
@@ -57,14 +67,17 @@ export const providers = [
 ];
 
 export const testProviders = [
-  AppConfigService,
+  {
+    provide: AppConfigService,
+    useClass: MockAppConfigService
+  },
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
   },
   {
-    provide: APP_CONFIG,
+    provide: MOCK_APP_CONFIG,
     useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
   },
   {

@@ -866,7 +866,6 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     component.submitFunction.subscribe(data => {
       expect(data).toBeTruthy();
-      console.log(data);
       expect(data).toEqual({
         register: {
           password: "user input",
