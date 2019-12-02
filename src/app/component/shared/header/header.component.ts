@@ -44,14 +44,7 @@ export class HeaderComponent implements OnInit {
 
   isNavigableMenuItem = isNavigableMenuItem;
 
-  routes = {
-    home: homeMenuItem,
-    login: loginMenuItem,
-    register: registerMenuItem,
-    profile: {
-      url: this.appConfig.getConfig().environment.apiRoot + "/my_account"
-    }
-  };
+  routes: any;
 
   constructor(
     private router: Router,
@@ -62,10 +55,18 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.config = this.appConfig.getConfig();
     this.collapsed = true;
     this.activeLink = "projects";
+    this.config = this.appConfig.getConfig();
     this.title = this.config.values.brand.name;
+    this.routes = {
+      home: homeMenuItem,
+      login: loginMenuItem,
+      register: registerMenuItem,
+      profile: {
+        url: this.appConfig.getConfig().environment.apiRoot + "/my_account"
+      }
+    };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([

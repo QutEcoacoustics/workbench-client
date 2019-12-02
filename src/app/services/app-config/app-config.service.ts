@@ -6,7 +6,7 @@ export let APP_CONFIG = new InjectionToken("app.config");
 
 @Injectable()
 export class AppConfigService {
-  private appConfig: Configuration;
+  private appConfig: Configuration = undefined;
 
   constructor(
     @Inject(APP_CONFIG) private config: string,
@@ -23,16 +23,19 @@ export class AppConfigService {
     await fetch(this.config)
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         this.appConfig = data;
         this.titleService.setTitle(data.values.brand.name);
       })
       .catch(() => {
-        this.appConfig = undefined;
+        this.appConfig = null;
       });
   }
 
   /**
-   * Get the application config
+   * Get the application config.
+   * Returned undefined if config has not loaded yet.
+   * Returns null if an error has occurred
    */
   getConfig(): Configuration {
     return this.appConfig;

@@ -79,7 +79,7 @@ describe("AppConfigService", () => {
     });
   });
 
-  it("should return undefined on failure to download environment", done => {
+  it("should return null on failure to download environment", done => {
     TestBed.configureTestingModule({
       providers: [
         AppConfigService,
@@ -92,12 +92,12 @@ describe("AppConfigService", () => {
 
     const service: AppConfigService = TestBed.get(AppConfigService);
     service.loadAppConfig().then(() => {
-      expect(service.getConfig()).toEqual(undefined);
+      expect(service.getConfig()).toEqual(null);
       done();
     });
   });
 
-  it("should return undefined on malformed response", done => {
+  it("should return null on malformed response", done => {
     TestBed.configureTestingModule({
       providers: [
         AppConfigService,
@@ -110,9 +110,24 @@ describe("AppConfigService", () => {
 
     const service: AppConfigService = TestBed.get(AppConfigService);
     service.loadAppConfig().then(() => {
-      expect(service.getConfig()).toEqual(undefined);
+      expect(service.getConfig()).toEqual(null);
       done();
     });
+  });
+
+  it("should return undefined if config file has not loaded yet", () => {
+    TestBed.configureTestingModule({
+      providers: [
+        AppConfigService,
+        {
+          provide: APP_CONFIG,
+          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment-MALFORMED.json`
+        }
+      ]
+    });
+
+    const service: AppConfigService = TestBed.get(AppConfigService);
+    expect(service.getConfig()).toEqual(undefined);
   });
 
   it("should get content url start of array", () => {

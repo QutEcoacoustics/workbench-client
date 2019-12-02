@@ -2,13 +2,8 @@
 // import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 // import { RouterTestingModule } from "@angular/router/testing";
 // import { Subject } from "rxjs";
-// import { providers } from "src/app/app.helper";
+// import { testProviders } from "src/app/app.helper";
 // import { Project } from "src/app/models/Project";
-// import { AppConfigService } from "src/app/services/app-config/app-config.service";
-// import {
-//   APP_CONFIG,
-//   MockAppConfigService
-// } from "src/app/services/app-config/app-configMock.service";
 // import { ProjectsService } from "src/app/services/baw-api/projects.service";
 // import { SharedModule } from "../shared/shared.module";
 // import { HomeComponent } from "./home.component";
@@ -56,9 +51,7 @@
 //       declarations: [HomeComponent],
 //       imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
 //       providers: [
-//         ...providers,
-//         { provide: APP_CONFIG, useValue: "" },
-//         { provide: AppConfigService, useClass: MockAppConfigService },
+//         ...testProviders,
 //         { provide: ProjectsService, useClass: MockProjectsService }
 //       ]
 //     }).compileComponents();
