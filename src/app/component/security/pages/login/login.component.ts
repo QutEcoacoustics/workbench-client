@@ -34,6 +34,7 @@ import data from "./login.json";
       [schema]="schema"
       [title]="'Log in'"
       [error]="error"
+      [submitLabel]="'Log in'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>

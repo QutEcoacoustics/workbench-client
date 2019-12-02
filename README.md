@@ -35,12 +35,11 @@ Then open a web browser to `localhost:4200`.
 $ npx ng
 ```
 
-or 
+or
 
 ```
 npm run ng
 ```
-
 
 ### Documentation
 
@@ -142,8 +141,6 @@ There are three environments supported by this application.
   ```javascript
   TestBed.configureTestingModule({
     imports: [
-      HttpClientModule
-      // or
       HttpClientTestingModule
     ]
   ```
@@ -159,21 +156,12 @@ There are three environments supported by this application.
     ]
   ```
 
-  - When testing a component which depends on the app-config.service:
+  - When testing a component which depends on any of the providers (eg. HTTP Interceptor):
 
   ```javascript
-  // Imports must be correct
-  import { AppConfigService } from 'src/app/services/app-config/app-config.service';
-  import {
-    APP_CONFIG,
-    MockAppConfigService
-  } from 'src/app/services/app-config/app-configMock.service';
-
   TestBed.configureTestingModule({
   providers: [
-    ...providers,
-    { provide: APP_CONFIG, useValue: '' },
-    { provide: AppConfigService, useClass: MockAppConfigService }
+    ...testProviders,
   ];
 
   ```
