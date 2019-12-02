@@ -1,7 +1,7 @@
 // import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 // import { RouterTestingModule } from "@angular/router/testing";
 // import { FormlyModule } from "@ngx-formly/core";
-// import { validationMessages } from "src/app/app.helper";
+// import { testProviders, validationMessages } from "src/app/app.helper";
 // import { SharedModule } from "src/app/component/shared/shared.module";
 // import { EditComponent } from "./edit.component";
 
@@ -18,7 +18,8 @@
 //           validationMessages
 //         })
 //       ],
-//       declarations: [EditComponent]
+//       declarations: [EditComponent],
+//       providers: [...testProviders]
 //     }).compileComponents();
 //   }));
 

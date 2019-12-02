@@ -120,5 +120,10 @@ interface ErrorResponse extends HttpErrorResponse {
 function isErrorResponse(
   errorResponse: ErrorResponse | APIError | HttpErrorResponse
 ): errorResponse is ErrorResponse {
-  return "error" in errorResponse && !(errorResponse instanceof ErrorEvent);
+  return (
+    "error" in errorResponse &&
+    "meta" in errorResponse.error &&
+    "error" in errorResponse.error.meta &&
+    "details" in errorResponse.error.meta.error
+  );
 }

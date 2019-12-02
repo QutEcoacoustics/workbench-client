@@ -55,3 +55,22 @@ export const providers = [
     deps: [AppConfigService]
   }
 ];
+
+export const testProviders = [
+  AppConfigService,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: BawApiInterceptor,
+    multi: true
+  },
+  {
+    provide: APP_CONFIG,
+    useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: appInitializerFn,
+    multi: true,
+    deps: [AppConfigService]
+  }
+];

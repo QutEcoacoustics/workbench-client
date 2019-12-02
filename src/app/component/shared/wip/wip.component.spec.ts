@@ -1,27 +1,27 @@
-// import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-// import { SharedModule } from "../shared.module";
-// import { WIPComponent } from "./wip.component";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { SharedModule } from "../shared.module";
+import { WIPComponent } from "./wip.component";
 
-// describe("WIPComponent", () => {
-//   let component: WIPComponent;
-//   let fixture: ComponentFixture<WIPComponent>;
+describe("WIPComponent", () => {
+  let component: WIPComponent;
+  let fixture: ComponentFixture<WIPComponent>;
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       imports: [SharedModule],
-//       declarations: [WIPComponent]
-//     }).compileComponents();
-//   }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule],
+      declarations: [WIPComponent]
+    }).compileComponents();
+  }));
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(WIPComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(WIPComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-//   it("should create", () => {
-//     expect(component).toBeTruthy();
-//   });
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 
-//   // TODO Add tests
-// });
+  // TODO Add tests
+});
