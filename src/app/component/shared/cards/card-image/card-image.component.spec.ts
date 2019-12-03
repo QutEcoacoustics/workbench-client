@@ -66,7 +66,7 @@ describe("CardImageComponent", () => {
       title: "title",
       image: {
         url:
-          "https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
+          "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
         alt: "alt"
       }
     };
@@ -74,7 +74,7 @@ describe("CardImageComponent", () => {
 
     const image = compiled.nativeElement.querySelector("img");
     expect(image.src).toBe(
-      "https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
+      "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
     );
   });
 

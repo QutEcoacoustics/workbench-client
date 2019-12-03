@@ -3,6 +3,7 @@
   "rules": {
     "array-type": false,
     "arrow-parens": false,
+    "await-promise": true,
     "deprecation": {
       "severity": "warning"
     },
@@ -45,6 +46,7 @@
     "quotemark": [true, "double"],
     "trailing-comma": false,
     "no-conflicting-lifecycle": true,
+    "no-debugger": true,
     "no-host-metadata-property": true,
     "no-input-rename": true,
     "no-inputs-metadata-property": true,
@@ -52,8 +54,10 @@
     "no-output-on-prefix": true,
     "no-output-rename": true,
     "no-outputs-metadata-property": true,
+    "prefer-for-of": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
+    "triple-equals": true,
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true
   },

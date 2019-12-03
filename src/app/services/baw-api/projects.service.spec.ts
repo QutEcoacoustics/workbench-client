@@ -574,14 +574,14 @@ xdescribe("ProjectsService", () => {
       );
 
     tick();
-    //httpMock.match(request => {
+    // httpMock.match(request => {
     //  return (
     //    request.url === url + "/projects/filter" &&
     //    request.urlWithParams === url + "/projects/filter" &&
     //    request.method === "GET"
     //  );
-    //});
-    //httpMock.expectNone(url + "/projects/512");
+    // });
+    // httpMock.expectNone(url + "/projects/512");
     const req = httpMock.expectOne({
       url: url + "/projects/filter",
       method: "GET"
