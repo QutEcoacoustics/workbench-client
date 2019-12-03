@@ -41,12 +41,6 @@ export function appInitializerFn(appConfig: AppConfigService) {
   };
 }
 
-export function mockAppInitializerFn(appConfig: MockAppConfigService) {
-  return () => {
-    return appConfig.loadAppConfig();
-  };
-}
-
 export const providers = [
   AppConfigService,
   {

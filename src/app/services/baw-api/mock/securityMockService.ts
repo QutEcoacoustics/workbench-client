@@ -18,7 +18,7 @@ export class MockSecurityService {
       this.trigger.next(false);
     }
 
-    subject.pipe(delay(2000));
+    subject.pipe(delay(50));
     return subject.asObservable();
   }
 
@@ -41,7 +41,7 @@ export class MockSecurityService {
       this.trigger.next(false);
     }
 
-    subject.pipe(delay(1000));
+    subject.pipe(delay(50));
     return subject.asObservable();
   }
 

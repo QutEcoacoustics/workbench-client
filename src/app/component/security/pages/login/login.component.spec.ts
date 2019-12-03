@@ -13,6 +13,7 @@ import { BehaviorSubject } from "rxjs";
 import { validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { MockSecurityService } from "src/app/services/baw-api/mock/securityMockService";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
@@ -34,7 +35,10 @@ describe("LoginComponent", () => {
         })
       ],
       declarations: [LoginComponent, HomeComponent],
-      providers: [{ provide: SecurityService, useClass: MockSecurityService }]
+      providers: [
+        BawApiService,
+        { provide: SecurityService, useClass: MockSecurityService }
+      ]
     }).compileComponents();
   }));
 

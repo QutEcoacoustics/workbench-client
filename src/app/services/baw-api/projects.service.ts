@@ -71,6 +71,6 @@ export class ProjectsService extends SecurityService {
   }
 }
 
-interface ProjectFilter extends Filter {
+export interface ProjectFilter extends Filter {
   orderBy?: "id" | "name" | "description" | "creatorId";
 }
