@@ -156,12 +156,22 @@ There are three environments supported by this application.
     ]
   ```
 
-  - When testing a component which depends on any of the providers (eg. HTTP Interceptor):
+  - If the component depends on the app initializer to load the environment:
 
   ```javascript
   TestBed.configureTestingModule({
     providers: [
-      ...testProviders,
+      ...testAppInitializer,
+    ];
+
+  ```
+
+  - If the component depends on any baw services:
+
+  ```javascript
+  TestBed.configureTestingModule({
+    providers: [
+      ...testBawServices,
     ];
 
   ```

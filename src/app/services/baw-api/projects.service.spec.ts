@@ -12,7 +12,7 @@ import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
 // TODO Fix test suite
-/*xdescribe("ProjectsService", () => {
+xdescribe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
@@ -630,4 +630,4 @@ import { SecurityService } from "./security.service";
       });
     tick(2000);
   }));
-});*/
+});

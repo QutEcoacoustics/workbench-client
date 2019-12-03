@@ -10,6 +10,13 @@ import {
   MockAppConfigService
 } from "./services/app-config/mock-app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
+import { BawApiService } from "./services/baw-api/base-api.service";
+import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
+import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
+import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
+import { ProjectsService } from "./services/baw-api/projects.service";
+import { SecurityService } from "./services/baw-api/security.service";
+import { SitesService } from "./services/baw-api/sites.service";
 
 function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -60,15 +67,10 @@ export const providers = [
   }
 ];
 
-export const testProviders = [
+export const testAppInitializer = [
   {
     provide: AppConfigService,
     useClass: MockAppConfigService
-  },
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: BawApiInterceptor,
-    multi: true
   },
   {
     provide: MOCK_APP_CONFIG,
@@ -80,4 +82,16 @@ export const testProviders = [
     multi: true,
     deps: [AppConfigService]
   }
+];
+
+export const testBawServices = [
+  BawApiService,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: BawApiInterceptor,
+    multi: true
+  },
+  { provide: SecurityService, useClass: MockSecurityService },
+  { provide: ProjectsService, useClass: MockProjectsService },
+  { provide: SitesService, useClass: MockSitesService }
 ];

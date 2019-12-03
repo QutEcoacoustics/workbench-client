@@ -10,11 +10,9 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject } from "rxjs";
-import { validationMessages } from "src/app/app.helper";
+import { testBawServices, validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
-import { MockSecurityService } from "src/app/services/baw-api/mock/securityMockService";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
 
@@ -35,10 +33,7 @@ describe("LoginComponent", () => {
         })
       ],
       declarations: [LoginComponent, HomeComponent],
-      providers: [
-        BawApiService,
-        { provide: SecurityService, useClass: MockSecurityService }
-      ]
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 
@@ -495,7 +490,7 @@ describe("LoginComponent", () => {
   }));
 
   // TODO Implement, currently this fails because navigation does not occur
-  /*xit("should redirect to home page on successful login", fakeAsync(() => {
+  xit("should redirect to home page on successful login", fakeAsync(() => {
     spyOn(router, "navigate");
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
@@ -520,5 +515,5 @@ describe("LoginComponent", () => {
 
     expect(router.navigate).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(["/"]);
-  }));*/
+  }));
 });

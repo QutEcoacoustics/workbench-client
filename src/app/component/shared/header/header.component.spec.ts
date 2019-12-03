@@ -2,7 +2,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { testProviders } from "src/app/app.helper";
+import { testAppInitializer } from "src/app/app.helper";
 import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
 import { HeaderItemComponent } from "./header-item/header-item.component";
 import { HeaderComponent } from "./header.component";
@@ -19,7 +19,7 @@ describe("HeaderComponent", () => {
         HeaderDropdownComponent
       ],
       imports: [RouterTestingModule, FontAwesomeModule, HttpClientModule],
-      providers: [...testProviders]
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

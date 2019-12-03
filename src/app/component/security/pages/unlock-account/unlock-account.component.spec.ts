@@ -138,5 +138,5 @@ describe("UnlockPasswordComponent", () => {
     expect(component.submit).toHaveBeenCalledWith({ email: "email" });
   }));
 
-  // xit("should unlock account on submit", () => {});
+  xit("should unlock account on submit", () => {});
 });
