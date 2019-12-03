@@ -10,14 +10,14 @@ export interface AudioRecordingInterface {
   recordedDate: Time;
   siteId: ID;
   durationSeconds: number;
-  sampleRateHertz: number;
-  channels: number;
-  bitRateBps: number;
-  mediaType: string;
-  dataLengthBytes: number;
-  status: "ready" | "uploading" | "corrupt";
-  createdAt: Time;
-  updatedAt: Time;
+  sampleRateHertz?: number;
+  channels?: number;
+  bitRateBps?: number;
+  mediaType?: string;
+  dataLengthBytes?: number;
+  status?: "ready" | "uploading" | "corrupt";
+  createdAt?: Time;
+  updatedAt?: Time;
 }
 
 /**

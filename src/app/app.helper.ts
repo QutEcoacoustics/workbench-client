@@ -17,6 +17,10 @@ import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { SitesService } from "./services/baw-api/sites.service";
+import { AudioRecordingsService } from "./services/baw-api/audio-recordings.service";
+import { MockAudioRecordingsService } from "./services/baw-api/mock/audioRecordingsMockService";
+import { UserService } from "./services/baw-api/user.service";
+import { MockUserService } from "./services/baw-api/mock/userMockService";
 
 function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -93,5 +97,7 @@ export const testBawServices = [
   },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
-  { provide: SitesService, useClass: MockSitesService }
+  { provide: SitesService, useClass: MockSitesService },
+  { provide: UserService, useClass: MockUserService },
+  { provide: AudioRecordingsService, useClass: MockAudioRecordingsService }
 ];

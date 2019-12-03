@@ -101,7 +101,7 @@ export class AudioRecordingsService extends SecurityService {
 /**
  * Audio recording filter
  */
-interface AudioRecordingFilter extends Filter {
+export interface AudioRecordingFilter extends Filter {
   orderBy?:
     | "id"
     | "uuid"
