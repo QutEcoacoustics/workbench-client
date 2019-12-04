@@ -126,7 +126,7 @@ export abstract class BawApiService {
    * @param args API arguments
    * @param options Request options
    */
-  private get<T>(
+  protected get<T>(
     path: string,
     args?: PathArg,
     params?: HttpParams
@@ -157,7 +157,7 @@ export abstract class BawApiService {
    * @param body Request body
    * @param options Request options
    */
-  private post<T>(
+  protected post<T>(
     path: string,
     args?: PathArg,
     body?: any,
