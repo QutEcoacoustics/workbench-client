@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
-import { AudioRecordingFilter } from "../audio-recordings.service";
+import { AudioRecordingFilters } from "../audio-recordings.service";
 import { SecurityService } from "../security.service";
 
 @Injectable({
@@ -21,7 +21,7 @@ export class MockAudioRecordingsService extends SecurityService {
    */
   public getAudioRecordings(
     siteId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording[]> {
     const subject = new Subject<AudioRecording[]>();
 
@@ -56,7 +56,7 @@ export class MockAudioRecordingsService extends SecurityService {
   public getAudioRecording(
     siteId: ID,
     recordingId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording> {
     const subject = new Subject<AudioRecording>();
 

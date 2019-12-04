@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
-import { APIErrorDetails } from "./base-api.interceptor";
-import { APIResponse, BawApiService } from "./base-api.service";
+import { APIErrorDetails } from "./api.interceptor";
+import { APIResponse, BawApiService, Filters } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -45,15 +45,17 @@ export class SecurityService extends BawApiService {
    * @param callback Callback function which generates the model
    * @param path API path
    * @param args API arguments
+   * @param filters API parameters
    */
   details(
     subject: Subject<any>,
     callback: (data: any) => any,
     path: string,
-    args?: any
+    args?: any,
+    filters?: Filters
   ) {
     this.loggedInTrigger.subscribe({
-      next: () => super.details(subject, callback, path, args),
+      next: () => super.details(subject, callback, path, args, filters),
       error: err => subject.error(err)
     });
   }

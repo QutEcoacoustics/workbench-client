@@ -11,7 +11,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./base-api.interceptor";
+import { BawApiInterceptor } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 describe("BawApiInterceptor", () => {

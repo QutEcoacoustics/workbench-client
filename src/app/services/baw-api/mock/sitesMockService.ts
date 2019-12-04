@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Site } from "src/app/models/Site";
 import { SecurityService } from "../security.service";
-import { SiteFilter } from "../sites.service";
+import { SiteFilters } from "../sites.service";
 
 @Injectable({
   providedIn: "root"
@@ -137,7 +137,7 @@ export class MockSitesService extends SecurityService {
    * @param filters Filters
    * @returns Observable list of sites
    */
-  public getFilteredSites(filters: SiteFilter): Subject<Site[]> {
+  public getFilteredSites(filters: SiteFilters): Subject<Site[]> {
     const subject = new Subject<Site[]>();
 
     setTimeout(() => {

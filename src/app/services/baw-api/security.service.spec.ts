@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./base-api.interceptor";
+import { BawApiInterceptor } from "./api.interceptor";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {

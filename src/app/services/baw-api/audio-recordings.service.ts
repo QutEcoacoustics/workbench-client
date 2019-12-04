@@ -6,8 +6,8 @@ import {
   AudioRecording,
   AudioRecordingInterface
 } from "src/app/models/AudioRecording";
-import { APIErrorDetails } from "./base-api.interceptor";
-import { Filter } from "./base-api.service";
+import { APIErrorDetails } from "./api.interceptor";
+import { Filters } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
 @Injectable({
@@ -29,7 +29,7 @@ export class AudioRecordingsService extends SecurityService {
    */
   public getAudioRecordings(
     siteId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording[]> {
     const subject = new Subject<AudioRecording[]>();
     const next = (data: AudioRecordingInterface[]) => {
@@ -65,7 +65,7 @@ export class AudioRecordingsService extends SecurityService {
   public getAudioRecording(
     siteId: ID,
     recordingId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording> {
     const subject = new Subject<AudioRecording>();
     const next = (data: AudioRecordingInterface) => {
@@ -79,9 +79,10 @@ export class AudioRecordingsService extends SecurityService {
       next,
       error,
       this.paths.filter,
-      { filters },
+      {},
       {
         filter: {
+          ...filters,
           and: {
             siteId: {
               eq: siteId
@@ -101,7 +102,7 @@ export class AudioRecordingsService extends SecurityService {
 /**
  * Audio recording filter
  */
-export interface AudioRecordingFilter extends Filter {
+export interface AudioRecordingFilters extends Filters {
   orderBy?:
     | "id"
     | "uuid"

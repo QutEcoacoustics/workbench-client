@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
-import { ProjectFilter } from "../projects.service";
+import { ProjectFilters } from "../projects.service";
 import { SecurityService } from "../security.service";
 
 /**
@@ -74,7 +74,7 @@ export class MockProjectsService extends SecurityService {
    * @param filters Filters
    * @returns Observable list of projects
    */
-  public getFilteredProjects(filters: ProjectFilter): Subject<Project[]> {
+  public getFilteredProjects(filters: ProjectFilters): Subject<Project[]> {
     const subject = new Subject<Project[]>();
 
     setTimeout(() => {

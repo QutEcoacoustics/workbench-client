@@ -9,8 +9,8 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/mock-app-config.service";
+import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
 import { AudioRecordingsService } from "./services/baw-api/audio-recordings.service";
-import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 import { BawApiService } from "./services/baw-api/base-api.service";
 import { MockAudioRecordingsService } from "./services/baw-api/mock/audioRecordingsMockService";
 import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";

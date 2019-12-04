@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
 import { environment } from "src/environments/environment";
-import { APIErrorDetails } from "./base-api.interceptor";
+import { APIErrorDetails } from "./api.interceptor";
 
 /**
  * Interface with BAW Server Rest API
@@ -48,14 +48,21 @@ export abstract class BawApiService {
    * @param next Callback function which generates the model
    * @param path API path
    * @param args API arguments
+   * @param filters API filters
    */
   protected details(
     subject: Subject<any>,
     next: (data: any) => any,
     path: string,
-    args?: PathArg
+    args?: PathArg,
+    filters?: Filters
   ) {
-    this.get<APIResponse>(path, args).subscribe({
+    let params = new HttpParams();
+    for (const filter in filters) {
+      params = params.set(filter, filters[filter]);
+    }
+
+    this.get<APIResponse>(path, args, params).subscribe({
       next: (data: APIResponse) => {
         if (data.data) {
           subject.next(next(data.data));
@@ -122,9 +129,9 @@ export abstract class BawApiService {
   private get<T>(
     path: string,
     args?: PathArg,
-    options?: RequestOptions
+    params?: HttpParams
   ): Observable<T> {
-    return this.http.get<T>(this.getPath(path, args), options);
+    return this.http.get<T>(this.getPath(path, args), { params });
   }
 
   /**
@@ -257,7 +264,7 @@ export interface Paths {
 /**
  * Default filter for routes
  */
-export interface Filter {
+export interface Filters {
   direction?: "asc" | "desc";
   items?: number;
   orderBy?: string;

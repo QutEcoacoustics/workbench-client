@@ -9,8 +9,8 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { AudioRecordingsService } from "src/app/services/baw-api/audio-recordings.service";
-import { APIErrorDetails } from "src/app/services/baw-api/base-api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
