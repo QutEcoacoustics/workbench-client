@@ -21,59 +21,54 @@ export class MockUserService extends BawApiService {
   getMyAccount(): Subject<User> {
     const subject = new Subject<User>();
 
-    this.securityApi.getLoggedInTrigger().subscribe({
-      next: loggedIn => {
-        if (loggedIn) {
-          subject.next(
-            new User({
-              id: 1,
-              userName: "Username",
-              rolesMask: 1,
-              timezoneInformation: null,
-              rolesMaskNames: [],
-              imageUrls: [
-                {
-                  size: "extralarge",
-                  url: "/images/user/user_span4.png",
-                  width: 300,
-                  height: 300
-                },
-                {
-                  size: "large",
-                  url: "/images/user/user_span3.png",
-                  width: 220,
-                  height: 220
-                },
-                {
-                  size: "medium",
-                  url: "/images/user/user_span2.png",
-                  width: 140,
-                  height: 140
-                },
-                {
-                  size: "small",
-                  url: "/images/user/user_span1.png",
-                  width: 60,
-                  height: 60
-                },
-                {
-                  size: "tiny",
-                  url: "/images/user/user_spanhalf.png",
-                  width: 30,
-                  height: 30
-                }
-              ],
-              lastSeenAt: new Date("2019-12-04T08:58:03.864+10:00"),
-              preferences: null,
-              isConfirmed: true
-            })
-          );
-        } else {
-          subject.next(null);
-        }
-      },
-      error: err => subject.error(err)
-    });
+    if (this.securityApi.isLoggedIn()) {
+      subject.next(
+        new User({
+          id: 1,
+          userName: "Username",
+          rolesMask: 1,
+          timezoneInformation: null,
+          rolesMaskNames: [],
+          imageUrls: [
+            {
+              size: "extralarge",
+              url: "/images/user/user_span4.png",
+              width: 300,
+              height: 300
+            },
+            {
+              size: "large",
+              url: "/images/user/user_span3.png",
+              width: 220,
+              height: 220
+            },
+            {
+              size: "medium",
+              url: "/images/user/user_span2.png",
+              width: 140,
+              height: 140
+            },
+            {
+              size: "small",
+              url: "/images/user/user_span1.png",
+              width: 60,
+              height: 60
+            },
+            {
+              size: "tiny",
+              url: "/images/user/user_spanhalf.png",
+              width: 30,
+              height: 30
+            }
+          ],
+          lastSeenAt: new Date("2019-12-04T08:58:03.864+10:00"),
+          preferences: null,
+          isConfirmed: true
+        })
+      );
+    } else {
+      subject.next(null);
+    }
 
     return subject;
   }

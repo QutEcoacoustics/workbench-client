@@ -53,6 +53,6 @@ describe("BawApiService", () => {
   });
 
   it("should not return user", () => {
-    expect(service.getUser()).toBe(null);
+    expect(service.getSessionUser()).toBe(null);
   });
 });

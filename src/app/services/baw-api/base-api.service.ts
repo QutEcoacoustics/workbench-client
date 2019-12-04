@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
 import { environment } from "src/environments/environment";
-import { APIError } from "./base-api.interceptor";
+import { APIErrorDetails } from "./base-api.interceptor";
 
 /**
  * Interface with BAW Server Rest API
@@ -43,13 +43,6 @@ export abstract class BawApiService {
   }
 
   /**
-   * Username of the logged in user
-   */
-  public getUser(): SessionUser | null {
-    return this.getSessionUser();
-  }
-
-  /**
    * Get response from details route
    * @param subject Subject to update
    * @param next Callback function which generates the model
@@ -70,7 +63,7 @@ export abstract class BawApiService {
           subject.error("No data returned from API");
         }
       },
-      error: (err: APIError) => {
+      error: (err: APIErrorDetails) => {
         subject.error(err);
       }
     });
@@ -180,7 +173,7 @@ export abstract class BawApiService {
           error("No data returned from API");
         }
       },
-      error: (err: APIError) => {
+      error: (err: APIErrorDetails) => {
         error(err);
       }
     };
@@ -189,7 +182,7 @@ export abstract class BawApiService {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  private getSessionUser(): SessionUser | null {
+  public getSessionUser(): SessionUser | null {
     let user: SessionUser;
     try {
       user = new SessionUser(

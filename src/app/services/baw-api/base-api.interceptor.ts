@@ -3,6 +3,7 @@ import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
+  HttpParams,
   HttpRequest,
   HttpResponse
 } from "@angular/common/http";
@@ -37,7 +38,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (!request.url.includes(environment.bawApiUrl)) {
-      return;
+      return next.handle(request);
     }
 
     request = request.clone({
@@ -51,7 +52,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (this.api.isLoggedIn()) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Token token="${this.api.getUser().authToken}"`
+          Authorization: `Token token="${this.api.getSessionUser().authToken}"`
         }
       });
     }
@@ -59,6 +60,29 @@ export class BawApiInterceptor implements HttpInterceptor {
     // Convert outgoing data
     request = request.clone({
       body: toSnakeCase(request.body)
+    });
+
+    // Convert http parameter data (GET Requests)
+    const oldParams = request.clone().params;
+    let newParams = new HttpParams();
+    const keys = oldParams.keys();
+
+    for (const key of keys) {
+      const value = oldParams.get(key);
+
+      // Need to it this way so that whitelisted key values are respected in conversion
+      let converted = {};
+      converted[key] = value;
+      converted = toSnakeCase(converted);
+
+      newParams = newParams.set(
+        Object.keys(converted)[0],
+        converted[Object.keys(converted)[0]]
+      );
+    }
+
+    request = request.clone({
+      params: newParams
     });
 
     return next.handle(request).pipe(
@@ -78,7 +102,7 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @throws Observable<never>
    */
   private handleError(
-    response: HttpErrorResponse | ErrorResponse | APIError
+    response: HttpErrorResponse | APIErrorResponse | APIErrorDetails
   ): Observable<never> {
     if (isErrorResponse(response)) {
       return throwError({
@@ -97,7 +121,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 /**
  * API Service error response
  */
-export interface APIError {
+export interface APIErrorDetails {
   status: number;
   message: string;
 }
@@ -105,7 +129,7 @@ export interface APIError {
 /**
  * BAW API raw error response
  */
-interface ErrorResponse extends HttpErrorResponse {
+interface APIErrorResponse extends HttpErrorResponse {
   error: {
     meta: {
       status: number;
@@ -118,8 +142,8 @@ interface ErrorResponse extends HttpErrorResponse {
 }
 
 function isErrorResponse(
-  errorResponse: ErrorResponse | APIError | HttpErrorResponse
-): errorResponse is ErrorResponse {
+  errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
+): errorResponse is APIErrorResponse {
   return (
     "error" in errorResponse &&
     "meta" in errorResponse.error &&

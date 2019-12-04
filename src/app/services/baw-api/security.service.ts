@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
-import { APIError } from "./base-api.interceptor";
-import { APIResponse, BawApiService, Paths } from "./base-api.service";
+import { APIErrorDetails } from "./base-api.interceptor";
+import { APIResponse, BawApiService } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -127,7 +127,7 @@ export class SecurityService extends BawApiService {
       this.loggedInTrigger.next(true);
       subject.next(true);
     };
-    const error = (err: APIError) => {
+    const error = (err: APIErrorDetails) => {
       this.loggedInTrigger.next(false);
       subject.error(err.message);
     };

@@ -9,18 +9,18 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/mock-app-config.service";
+import { AudioRecordingsService } from "./services/baw-api/audio-recordings.service";
 import { BawApiInterceptor } from "./services/baw-api/base-api.interceptor";
 import { BawApiService } from "./services/baw-api/base-api.service";
+import { MockAudioRecordingsService } from "./services/baw-api/mock/audioRecordingsMockService";
 import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
 import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
 import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
+import { MockUserService } from "./services/baw-api/mock/userMockService";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { SitesService } from "./services/baw-api/sites.service";
-import { AudioRecordingsService } from "./services/baw-api/audio-recordings.service";
-import { MockAudioRecordingsService } from "./services/baw-api/mock/audioRecordingsMockService";
 import { UserService } from "./services/baw-api/user.service";
-import { MockUserService } from "./services/baw-api/mock/userMockService";
 
 function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;

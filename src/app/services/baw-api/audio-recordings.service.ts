@@ -6,7 +6,7 @@ import {
   AudioRecording,
   AudioRecordingInterface
 } from "src/app/models/AudioRecording";
-import { APIError } from "./base-api.interceptor";
+import { APIErrorDetails } from "./base-api.interceptor";
 import { Filter } from "./base-api.service";
 import { SecurityService } from "./security.service";
 
@@ -35,7 +35,7 @@ export class AudioRecordingsService extends SecurityService {
     const next = (data: AudioRecordingInterface[]) => {
       subject.next(data.map(recording => new AudioRecording(recording)));
     };
-    const error = (err: APIError) => {
+    const error = (err: APIErrorDetails) => {
       subject.error(err);
     };
 
@@ -71,7 +71,7 @@ export class AudioRecordingsService extends SecurityService {
     const next = (data: AudioRecordingInterface) => {
       subject.next(new AudioRecording(data));
     };
-    const error = (err: APIError) => {
+    const error = (err: APIErrorDetails) => {
       subject.error(err);
     };
 

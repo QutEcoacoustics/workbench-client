@@ -43,7 +43,7 @@
     "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,
     "ordered-imports": true,
-    "quotemark": [true, "double"],
+    "quotemark": [true, "double", "avoid-escape"],
     "trailing-comma": false,
     "no-conflicting-lifecycle": true,
     "no-debugger": true,

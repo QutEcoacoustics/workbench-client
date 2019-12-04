@@ -10,7 +10,7 @@ import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { AudioRecordingsService } from "src/app/services/baw-api/audio-recordings.service";
-import { APIError } from "src/app/services/baw-api/base-api.interceptor";
+import { APIErrorDetails } from "src/app/services/baw-api/base-api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -59,7 +59,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
             this.project = project;
             this.error = null;
           },
-          error: (err: APIError) => {
+          error: (err: APIErrorDetails) => {
             this.error = err.status;
           }
         });
@@ -79,7 +79,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
                   }
                 });
             },
-            error: (err: APIError) => {
+            error: (err: APIErrorDetails) => {
               this.error = err.status;
             }
           });

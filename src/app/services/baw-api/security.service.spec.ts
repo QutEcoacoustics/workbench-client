@@ -60,7 +60,7 @@ describe("SecurityService", () => {
   });
 
   it("getUser should return null initially", () => {
-    expect(service.getUser()).toBe(null);
+    expect(service.getSessionUser()).toBe(null);
   });
 
   it("login should set session cookie", () => {
@@ -323,7 +323,7 @@ describe("SecurityService", () => {
       }
     });
 
-    expect(service.getUser()).toBeFalsy();
+    expect(service.getSessionUser()).toBeFalsy();
   }));
 
   it("logout should set isLoggedIn to false", fakeAsync(() => {
