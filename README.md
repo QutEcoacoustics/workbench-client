@@ -122,27 +122,31 @@ There are three environments supported by this application.
 
   ```javascript
   TestBed.configureTestingModule({
-    imports: [
-      SharedModule
-    ]
+    imports: [SharedModule]
+  });
   ```
 
   - If the component has any form of routing (including `ActivatedRoute`):
 
   ```javascript
   TestBed.configureTestingModule({
-    imports: [
-      RouterTestingModule
-    ]
+    imports: [RouterTestingModule]
+  });
   ```
 
   - If the component has any form of http requests:
 
   ```javascript
-  TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule
-    ]
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    });
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
+  });
   ```
 
   - If the component uses the Formly form building module:
@@ -154,26 +158,37 @@ There are three environments supported by this application.
         validationMessages
       })
     ]
+  });
   ```
 
   - If the component depends on the app initializer to load the environment:
 
   ```javascript
   TestBed.configureTestingModule({
-    providers: [
-      ...testAppInitializer,
-    ];
-
+    providers: [...testAppInitializer]
+  });
   ```
 
   - If the component depends on any baw services:
 
   ```javascript
   TestBed.configureTestingModule({
-    providers: [
-      ...testBawServices,
-    ];
+    providers: [...testBawServices]
+  });
+  ```
 
+  - If the component depends on session storage:
+
+  ```javascript
+  beforeEach(() => {
+    Object.defineProperty(window, "sessionStorage", {
+      value: mockSessionStorage
+    });
+  }
+
+  afterEach(() => {
+    sessionStorage.clear();
+  })
   ```
 
 ## Licence

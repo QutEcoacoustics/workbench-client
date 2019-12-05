@@ -14,7 +14,7 @@ export class SitesService extends SecurityService {
     super(http);
 
     this.paths = {
-      list: "/projects/:projectId/sites/",
+      list: "/projects/:projectId/sites",
       flattened: "/sites/:siteId",
       nested: "/projects/:projectId/sites/:siteId",
       filter: "/sites/filter"
@@ -70,23 +70,6 @@ export class SitesService extends SecurityService {
     this.details(subject, callback, this.paths.list, {
       args: { projectId: id }
     });
-
-    return subject;
-  }
-
-  /**
-   * Get list of filtered sites
-   * @param filters Filters
-   * @returns Observable list of sites
-   */
-  public getFilteredSites(filters: SiteFilters): Subject<Site[]> {
-    const subject = new Subject<Site[]>();
-    const callback = (sites: SiteInterface[]) =>
-      sites.map(site => {
-        return new Site(site);
-      });
-
-    this.details(subject, callback, this.paths.filter, {}, filters);
 
     return subject;
   }

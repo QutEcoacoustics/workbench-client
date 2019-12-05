@@ -10,12 +10,8 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.tslint": true
     },
-    "cSpell.words": [
-      "Formly",
-      "fontawesome",
-      "fortawesome"
-      ],
-      "cSpell.ignorePaths": [
+    "cSpell.words": ["Formly", "fontawesome", "fortawesome"],
+    "cSpell.ignorePaths": [
       "**/package-lock.json",
       "**/node_modules/**",
       "**/vscode-extension/**",
@@ -24,7 +20,7 @@
       "**/tslint.json",
       "**/baw-client.code-workspace",
       "**/tsconfig*.json",
-      "**/tsconfig.json",
+      "**/tsconfig.json"
     ],
     "workbench.colorCustomizations": {
       "activityBar.background": "#3795b0",
@@ -42,14 +38,12 @@
       "statusBar.foreground": "#e7e7e7"
     },
     "peacock.color": "#2b7489",
-    "angularKarmaTestExplorer.debugMode": true,
-
+    "angularKarmaTestExplorer.debugMode": true
   },
   "extensions": {
     "recommendations": [
       "cyrilletuzi.angular-schematics",
-      "ms-vscode.vscode-typescript-tslint-plugin",
-      "raagh.angular-karma-test-explorer"
+      "ms-vscode.vscode-typescript-tslint-plugin"
     ]
   }
 }
