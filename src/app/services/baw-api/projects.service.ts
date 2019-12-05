@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
-import { Filters, Paths } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 /**
  * Interacts with projects route in baw api
@@ -12,7 +11,7 @@ import { SecurityService } from "./security.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends SecurityService {
+export class ProjectsService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 

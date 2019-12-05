@@ -7,13 +7,12 @@ import {
   AudioRecordingInterface
 } from "src/app/models/AudioRecording";
 import { APIErrorDetails } from "./api.interceptor";
-import { Filters } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class AudioRecordingsService extends SecurityService {
+export class AudioRecordingsService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 

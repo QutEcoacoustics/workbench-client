@@ -19,12 +19,6 @@ export class SecurityService extends BawApiService {
 
     this.loggedInTrigger.next(this.isLoggedIn());
 
-    this.loggedInTrigger.subscribe({
-      next: () => {
-        "LoggedInTrigger Update";
-      }
-    });
-
     this.paths = {
       register: "/security",
       signIn: "/security",

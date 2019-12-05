@@ -3,13 +3,12 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
-import { Filters } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends SecurityService {
+export class SitesService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
