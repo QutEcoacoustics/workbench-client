@@ -55,12 +55,12 @@ steps:
   - script: npm run build
     displayName: "Build the workbench client"
 
-  - script: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: "$(Build.SourcesDirectory)/dist/**/*"
-        archiveType: "zip"
-        archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
-      displayName: "Zip workbench files"
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: "$(Build.SourcesDirectory)/dist/**/*"
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
+    displayName: "Zip workbench files"
 
   - task: PublishBuildArtifacts@1
     inputs:
