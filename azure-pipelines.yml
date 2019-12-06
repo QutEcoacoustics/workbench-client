@@ -43,13 +43,13 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.ArtifactStagingDirectory)/dist/**/*"
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/**/dist/**/*"
       artifactName: analysis
     displayName: "Publish analysis"
 
   - task: DeleteFiles@1
     inputs:
-      SourceFolder: "$(Build.ArtifactStagingDirectory)/dist/**/*"
+      SourceFolder: "$(Build.ArtifactStagingDirectory)/**/dist/**/*"
     displayName: "Cleanup analysis files"
 
   - script: npm run build
@@ -57,7 +57,7 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.ArtifactStagingDirectory)/dist/**"
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/**/dist/**"
       artifactName: workbench-client
     displayName: "Publish build files"
 
