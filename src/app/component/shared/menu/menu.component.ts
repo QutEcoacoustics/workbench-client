@@ -57,14 +57,13 @@ export class MenuComponent implements OnInit {
     // Filter links
     this.filteredLinks = this.removeDuplicates(
       this.links
-        ? this.links.filter(link => this.filter(user, link))
+        ? this.links.filter(link => this.filter(user, link)).sort(this.compare)
         : List<AnyMenuItem>([])
     );
 
     // Retrieve router parameters to override link attributes
     this.route.params.subscribe({
       next: params => {
-        console.log(params);
         this.routerParams = params;
       }
     });
@@ -154,5 +153,40 @@ export class MenuComponent implements OnInit {
     });
 
     return set;
+  }
+
+  /**
+   * Sort function for list of menu items
+   * @param a First menu item
+   * @param b Second menu item
+   */
+  private compare(a: AnyMenuItem, b: AnyMenuItem): number {
+    // If no order, return alphabetical order
+    if (!a.order && !b.order) {
+      return a.label < b.label ? -1 : 1;
+    }
+
+    // If only a has order, return a
+    if (a.order && !b.order) {
+      return -1;
+    }
+
+    // If only b has order, return b
+    if (b.order && !a.order) {
+      return 1;
+    }
+
+    // If both have the same order number,
+    // prioritize based on indentation and alphabetical order
+    if (a.order.priority === b.order.priority) {
+      if (a.order.indentation === b.order.indentation) {
+        return a.label < b.label ? -1 : 1;
+      }
+
+      return a.order.indentation < b.order.indentation ? -1 : 1;
+    }
+
+    // Return the menu item with the lower order value
+    return a.order.priority < b.order.priority ? -1 : 1;
   }
 }
