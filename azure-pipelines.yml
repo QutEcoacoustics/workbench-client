@@ -56,11 +56,11 @@ steps:
     displayName: "Build the workbench client"
 
   - script: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: "$(Build.SourcesDirectory)/dist/**/*"
-      archiveType: "zip"
-      archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
-    displayName: "Zip workbench files"
+      inputs:
+        rootFolderOrFile: "$(Build.SourcesDirectory)/dist/**/*"
+        archiveType: "zip"
+        archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
+      displayName: "Zip workbench files"
 
   - task: PublishBuildArtifacts@1
     inputs:
