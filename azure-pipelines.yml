@@ -12,22 +12,10 @@ steps:
       versionSpec: 10.x
     displayName: Install Node.js
 
-  # this may no-longer be needed because i've installed the puppeteer package
-  # which installs its own version of chromium
-  # - script: |
-  #     sudo apt-get install libxss1 libappindicator1 libindicator7
-  #     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  #     sudo apt install ./google-chrome*.deb
-  #   displayName: Install Chrome
-
   - task: Npm@1
     inputs:
       command: install
     displayName: npm install
-
-
-  - script: npm run build
-    displayName: build the workbench client
 
   - script: |
       npm test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
@@ -39,7 +27,7 @@ steps:
       summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage/workbench-client/cobertura-coverage.xml"
       failIfCoverageEmpty: true
     condition: succeededOrFailed()
-    displayName: 'Publish code coverage results'
+    displayName: "Publish code coverage results"
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
@@ -49,6 +37,29 @@ steps:
       mergeTestResults: true
       publishRunAttachments: true
     displayName: Publish test results
+
+  - script: npm run stats
+    displayName: "Analyze workbench client bundle"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/dist/**/*"
+      artifactName: analysis
+    displayName: "Publish analysis"
+
+  - task: DeleteFiles@1
+    inputs:
+      SourceFolder: "$(Build.ArtifactStagingDirectory)/dist/**/*"
+    displayName: "Cleanup analysis files"
+
+  - script: npm run build
+    displayName: "Build the workbench client"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/dist/**"
+      artifactName: workbench-client
+    displayName: "Publish build files"
 
   - script: npm run lint
     condition: succeededOrFailed()
