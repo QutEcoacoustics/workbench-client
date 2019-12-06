@@ -63,7 +63,7 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/**/dist/**"
+      pathtoPublish: "$(Build.SourcesDirectory)/dist/**/*"
       artifactName: workbench-client
     displayName: "Publish build files"
 
