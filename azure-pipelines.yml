@@ -66,6 +66,7 @@ steps:
       rootFolderOrFile: "$(Build.SourcesDirectory)/dist/workbench-client/"
       archiveType: "zip"
       archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
+      includeRootFolder: false
     displayName: "Zip workbench files"
 
   - task: PublishBuildArtifacts@1
