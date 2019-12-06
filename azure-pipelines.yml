@@ -43,15 +43,9 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es2015.json"
+      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-*.json"
       artifactName: analysis
-    displayName: "Publish es2015 analysis"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es5.json"
-      artifactName: analysis
-    displayName: "Publish es5 analysis"
+    displayName: "Publish analysis"
 
   - task: DeleteFiles@1
     inputs:
@@ -61,9 +55,16 @@ steps:
   - script: npm run build
     displayName: "Build the workbench client"
 
+  - script: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: "$(Build.SourcesDirectory)/dist/**/*"
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
+    displayName: "Zip workbench files"
+
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/**/*"
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
       artifactName: workbench-client
     displayName: "Publish build files"
 
