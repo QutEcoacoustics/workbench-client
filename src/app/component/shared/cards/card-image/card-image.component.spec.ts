@@ -1,5 +1,5 @@
 import { DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CardImageComponent } from "./card-image.component";
 
 describe("CardImageComponent", () => {
@@ -7,13 +7,11 @@ describe("CardImageComponent", () => {
   let fixture: ComponentFixture<CardImageComponent>;
   let compiled: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CardImageComponent]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CardImageComponent);
     component = fixture.componentInstance;
     compiled = fixture.debugElement;
