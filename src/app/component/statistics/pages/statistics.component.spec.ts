@@ -24,4 +24,6 @@ describe("StatisticsComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });

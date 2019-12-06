@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MenuLink } from "src/app/interfaces/menusInterfaces";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
 describe("HeaderDropdownComponent", () => {
@@ -14,10 +15,16 @@ describe("HeaderDropdownComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderDropdownComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it("should create", () => {
+    component.links = {
+      headerTitle: "test",
+      items: [{ kind: "MenuLink", label: "label", uri: "uri" } as MenuLink]
+    };
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  // TODO Add more unit tests
 });

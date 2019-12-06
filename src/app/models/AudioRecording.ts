@@ -10,16 +10,19 @@ export interface AudioRecordingInterface {
   recordedDate: Time;
   siteId: ID;
   durationSeconds: number;
-  sampleRateHertz: number;
-  channels: number;
-  bitRateBps: number;
-  mediaType: string;
-  dataLengthBytes: number;
-  status: "ready" | "uploading" | "corrupt";
-  createdAt: Time;
-  updatedAt: Time;
+  sampleRateHertz?: number;
+  channels?: number;
+  bitRateBps?: number;
+  mediaType?: string;
+  dataLengthBytes?: number;
+  status?: "ready" | "uploading" | "corrupt";
+  createdAt?: Time;
+  updatedAt?: Time;
 }
 
+/**
+ * An audio recording model
+ */
 export class AudioRecording implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
   public readonly id: ID;

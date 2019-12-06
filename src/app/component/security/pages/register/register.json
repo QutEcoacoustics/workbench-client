@@ -1,10 +1,5 @@
 {
-  "model": {
-    "username": "",
-    "email": "",
-    "password": "",
-    "passwordConf": ""
-  },
+  "model": {},
   "fields": [
     {
       "key": "register",

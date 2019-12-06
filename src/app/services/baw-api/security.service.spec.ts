@@ -5,7 +5,8 @@ import {
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./base-api.interceptor";
+import { BawApiInterceptor } from "./api.interceptor";
+import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
@@ -25,30 +26,13 @@ describe("SecurityService", () => {
     service = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
 
-    const mockSessionStorage = (() => {
-      let storage = {};
-      return {
-        getItem(key) {
-          return storage[key];
-        },
-        removeItem(key) {
-          delete storage[key];
-        },
-        setItem(key, value) {
-          storage[key] = value.toString();
-        },
-        clear() {
-          storage = {};
-        },
-        get length() {
-          return Object.keys(storage).length;
-        }
-      };
-    })();
-
     Object.defineProperty(window, "sessionStorage", {
       value: mockSessionStorage
     });
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
   });
 
   it("should be created", () => {
@@ -60,7 +44,7 @@ describe("SecurityService", () => {
   });
 
   it("getUser should return null initially", () => {
-    expect(service.getUser()).toBe(null);
+    expect(service.getSessionUser()).toBe(null);
   });
 
   it("login should set session cookie", () => {
@@ -147,7 +131,7 @@ describe("SecurityService", () => {
   it("login should return error on bad credentials", () => {
     service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
-        expect(res).toBeFalsy();
+        expect(true).toBeFalsy();
       },
       err => {
         expect(err).toBeTruthy();
@@ -167,23 +151,26 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
-          links: {
-            "Confirm account": "/my_account/confirmation/new",
-            "Reset password": "/my_account/password/new",
-            "Unlock account": "/my_account/unlock/new"
-          },
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details:
+              "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
+            links: {
+              "Confirm account": "/my_account/confirmation/new",
+              "Reset password": "/my_account/password/new",
+              "Unlock account": "/my_account/unlock/new"
+            },
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("login should return error on missing credentials", () => {
@@ -209,17 +196,20 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 400,
-        message: "Bad Request",
-        error: {
-          details: "The request could not be verified.",
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 400,
+          message: "Bad Request",
+          error: {
+            details: "The request could not be verified.",
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 400, statusText: "Bad Request" }
+    );
   });
 
   it("logout should clear session cookie", fakeAsync(() => {
@@ -317,7 +307,7 @@ describe("SecurityService", () => {
       }
     });
 
-    expect(service.getUser()).toBeFalsy();
+    expect(service.getSessionUser()).toBeFalsy();
   }));
 
   it("logout should set isLoggedIn to false", fakeAsync(() => {

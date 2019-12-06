@@ -1,43 +1,31 @@
-import { HttpClientModule } from "@angular/common/http";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "./base-api.service";
+import { mockSessionStorage } from "./mock/sessionStorageMock";
 
 describe("BawApiService", () => {
   let service: BawApiService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule]
+      imports: [HttpClientTestingModule]
     });
     service = TestBed.get(BawApiService);
-
-    // Mock session storage
-    const storageMock = () => {
-      const storage = {};
-
-      return {
-        setItem(key, value) {
-          storage[key] = value || "";
-        },
-        getItem(key) {
-          return key in storage ? storage[key] : null;
-        },
-        removeItem(key) {
-          delete storage[key];
-        },
-        get length() {
-          return Object.keys(storage).length;
-        },
-        key(i) {
-          const keys = Object.keys(storage);
-          return keys[i] || null;
-        }
-      };
-    };
+    httpMock = TestBed.get(HttpTestingController);
 
     Object.defineProperty(window, "sessionStorage", {
-      value: storageMock
+      value: mockSessionStorage
     });
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
   });
 
   it("should be created", () => {
@@ -53,6 +41,26 @@ describe("BawApiService", () => {
   });
 
   it("should not return user", () => {
-    expect(service.getUser()).toBe(null);
+    expect(service.getSessionUser()).toBe(null);
+  });
+
+  it("should be logged in after user saved to session storage", () => {
+    const user = new SessionUser({
+      authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+      userName: "username"
+    });
+    sessionStorage.setItem("user", JSON.stringify(user));
+    expect(service.isLoggedIn()).toBeTruthy();
+  });
+
+  it("should return user after user saved to session storage", () => {
+    const user = new SessionUser({
+      authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+      userName: "username"
+    });
+    sessionStorage.setItem("user", JSON.stringify(user));
+    expect(service.getSessionUser()).toBeTruthy();
+    expect(service.getSessionUser().authToken).toBe("aaaaaaaaaaaaaaaaaaaaaa");
+    expect(service.getSessionUser().userName).toBe("username");
   });
 });

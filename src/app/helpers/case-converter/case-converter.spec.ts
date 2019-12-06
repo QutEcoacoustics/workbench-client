@@ -2,7 +2,6 @@ import { toCamelCase, toSnakeCase } from "./case-converter";
 
 /**
  * Tests are developed here: https://github.com/travelperk/case-converter
- * @author travelperk
  * @copyright MIT
  */
 

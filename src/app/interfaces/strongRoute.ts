@@ -144,7 +144,7 @@ export class StrongRoute {
     const fragments = [];
     const parameters = [];
     let current: StrongRoute = this;
-    while (current != null) {
+    while (current !== null) {
       fragments.push(current);
       if (current.isParameter) {
         parameters.push(current);

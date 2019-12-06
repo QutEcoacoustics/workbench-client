@@ -3,8 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
-import { Filter, Paths } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 /**
  * Interacts with projects route in baw api
@@ -12,7 +11,7 @@ import { SecurityService } from "./security.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends SecurityService {
+export class ProjectsService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
 
@@ -58,19 +57,17 @@ export class ProjectsService extends SecurityService {
    * @param filters Filters
    * @returns Observable list of projects
    */
-  public getFilteredProjects(filters: ProjectFilter): Subject<Project[]> {
+  public getFilteredProjects(filters: ProjectFilters): Subject<Project[]> {
     const subject = new Subject<Project[]>();
     const callback = (projects: ProjectInterface[]) =>
       projects.map((project: ProjectInterface) => new Project(project));
 
-    this.details(subject, callback, this.paths.filter, {
-      filters
-    });
+    this.details(subject, callback, this.paths.filter, {}, filters);
 
     return subject;
   }
 }
 
-interface ProjectFilter extends Filter {
+export interface ProjectFilters extends Filters {
   orderBy?: "id" | "name" | "description" | "creatorId";
 }
