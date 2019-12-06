@@ -30,8 +30,8 @@ import { WidgetMenuItem } from "../widget/widgetItem";
 export class MenuComponent implements OnInit {
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
-  @Input() widget: WidgetMenuItem;
   @Input() menuType: "action" | "secondary";
+  @Input() widget?: WidgetMenuItem;
   @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
 
   filteredLinks: Set<AnyMenuItem>;
@@ -64,6 +64,7 @@ export class MenuComponent implements OnInit {
     // Retrieve router parameters to override link attributes
     this.route.params.subscribe({
       next: params => {
+        console.log(params);
         this.routerParams = params;
       }
     });
@@ -76,11 +77,12 @@ export class MenuComponent implements OnInit {
    * Determine whether to show links
    */
   linksExist() {
-    return this.filteredLinks.size !== 0;
+    return this.filteredLinks.size > 0;
   }
 
   /**
    * Calculate the left padding of a secondary link item
+   * @param link Link to calculate padding for
    */
   calculatePadding(link: AnyMenuItem) {
     // Only the secondary menu implements this option

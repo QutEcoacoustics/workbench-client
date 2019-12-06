@@ -2,8 +2,6 @@ import { AgmCoreModule } from "@agm/core";
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FormlyModule } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
@@ -51,8 +49,4 @@ import { StatisticsModule } from "./component/statistics/statistics.module";
   entryComponents: [PermissionsShieldComponent],
   exports: []
 })
-export class AppModule {
-  constructor() {
-    library.add(fas);
-  }
-}
+export class AppModule {}
