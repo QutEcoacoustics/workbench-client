@@ -1,9 +1,5 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import {
-  environment,
-  values
-} from "../../../assets/tests/remoteEnvironment.json";
 import { Configuration } from "./app-config.service.js";
 
 export let APP_CONFIG = new InjectionToken("app.config");
@@ -33,7 +29,44 @@ export class MockAppConfigService {
    * Returns null if an error has occurred
    */
   getConfig(): Configuration {
-    return { environment, values };
+    return {
+      environment: {
+        apiRoot: "http://apiroot",
+        siteRoot: "<< siteRoot >>",
+        siteDir: "<< siteDir >>",
+        ga: {
+          trackingId: "<< placeholder >>"
+        }
+      },
+      values: {
+        keys: {
+          googleMaps: "<< googleMaps >>"
+        },
+        brand: {
+          name: "<< brandName >>",
+          title: "<< brandTitle >>"
+        },
+        content: [
+          {
+            title: "<< content1 >>",
+            url: "<< contentUrl1 >>"
+          },
+          {
+            headerTitle: "<< content2 >>",
+            items: [
+              {
+                title: "<< content3 >>",
+                url: "<< contentUrl3 >>"
+              },
+              {
+                title: "<< content4 >>",
+                url: "<< contentUrl4 >>"
+              }
+            ]
+          }
+        ]
+      }
+    };
   }
 
   /**

@@ -107,5 +107,8 @@ describe("CardComponent", () => {
     expect(
       links[0].attributes.getNamedItem("ng-reflect-router-link")
     ).toBeTruthy();
+    expect(
+      links[0].attributes.getNamedItem("ng-reflect-router-link").value
+    ).toBe("/brokenlink");
   });
 });
