@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { HttpClientModule } from "@angular/common/http";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { providers } from "src/app/app.helper";
+import { testAppInitializer, testBawServices } from "src/app/app.helper";
+import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "./header-item/header-item.component";
 import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
@@ -12,9 +13,13 @@ describe("HeaderComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent],
+      declarations: [
+        HeaderComponent,
+        HeaderItemComponent,
+        HeaderDropdownComponent
+      ],
       imports: [RouterTestingModule, FontAwesomeModule, HttpClientModule],
-      providers: [...providers]
+      providers: [...testAppInitializer, ...testBawServices]
     }).compileComponents();
   }));
 
@@ -27,4 +32,6 @@ describe("HeaderComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });

@@ -6,9 +6,9 @@ import {
 } from "@angular/core";
 import {
   isExternalLink,
-  isInternalRoute,
-  NavigableMenuItem
+  isInternalRoute
 } from "src/app/interfaces/menusInterfaces";
+import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-header-dropdown",
@@ -20,7 +20,7 @@ import {
         class="btn btn-link nav-link dropdown-toggle"
         [ngClass]="{ active: active }"
       >
-        {{ links.header_title }}
+        {{ links.headerTitle }}
       </button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
         <ng-container *ngFor="let link of links.items">
@@ -46,7 +46,7 @@ import {
 })
 export class HeaderDropdownComponent implements OnInit {
   @Input() active: boolean;
-  @Input() links: DropDownHeader;
+  @Input() links: HeaderDropDownConvertedLink;
 
   isInternalRoute = isInternalRoute;
   isExternalLink = isExternalLink;
@@ -54,9 +54,4 @@ export class HeaderDropdownComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
-}
-
-export interface DropDownHeader {
-  header_title: string;
-  items: NavigableMenuItem[];
 }

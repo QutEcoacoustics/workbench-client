@@ -3,5 +3,5 @@ export const environment = {
   routerEnableTracing: false,
   appConfig: "assets/config/production.json",
   googleApiKey: "",
-  bawApiUrl: "https://ecosounds.org"
+  bawApiUrl: "https://SOME-ACOUSTIC-WORKBENCH"
 };

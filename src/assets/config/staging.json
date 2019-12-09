@@ -17,7 +17,7 @@
     },
     "content": [
       {
-        "header_title": "Custom Menu",
+        "headerTitle": "Custom Menu",
         "items": [
           {
             "title": "Example",

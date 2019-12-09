@@ -51,7 +51,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // Get user details
-    const user: SessionUser = this.api.getUser();
+    const user: SessionUser = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links

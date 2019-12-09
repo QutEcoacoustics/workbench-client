@@ -3,16 +3,15 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { Project } from "src/app/models/Project";
 import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./base-api.interceptor";
-import { MockSecurityService } from "./mock/securityMockService";
+import { BawApiInterceptor } from "./api.interceptor";
+import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
 
-// TODO Fix test suite
-xdescribe("ProjectsService", () => {
+describe("ProjectsService", () => {
   let service: ProjectsService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
@@ -59,7 +58,7 @@ xdescribe("ProjectsService", () => {
         total: 1,
         max_page: 1,
         current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+          "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
         previous: null,
         next: null
       }
@@ -113,7 +112,7 @@ xdescribe("ProjectsService", () => {
         total: 1,
         max_page: 1,
         current:
-          "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+          "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
         previous: null,
         next: null
       }
@@ -160,41 +159,22 @@ xdescribe("ProjectsService", () => {
       imports: [HttpClientTestingModule],
       providers: [
         ProjectsService,
-        { provide: SecurityService, useClass: MockSecurityService },
+        SecurityService,
         { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
       ]
     });
-    service = TestBed.get(ProjectsService);
-    securityService = TestBed.get(SecurityService);
-    httpMock = TestBed.get(HttpTestingController);
-
-    const mockSessionStorage = (() => {
-      let storage = {};
-      return {
-        getItem(key) {
-          return storage[key];
-        },
-        removeItem(key) {
-          delete storage[key];
-        },
-        setItem(key, value) {
-          storage[key] = value.toString();
-        },
-        clear() {
-          storage = {};
-        },
-        get length() {
-          return Object.keys(storage).length;
-        }
-      };
-    })();
 
     Object.defineProperty(window, "sessionStorage", {
       value: mockSessionStorage
     });
+
+    service = TestBed.get(ProjectsService);
+    securityService = TestBed.get(SecurityService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
+    sessionStorage.clear();
     httpMock.verify();
   });
 
@@ -202,15 +182,14 @@ xdescribe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getProjects should return data", fakeAsync(() => {
+  it("getProjects should return data", () => {
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
 
-    tick();
     const req = httpMock.expectOne(url + "/projects");
     req.flush(projectsValidResponse);
-  }));
+  });
 
   it("getProject should return data", () => {
     service.getProject(512).subscribe(res => {
@@ -221,14 +200,21 @@ xdescribe("ProjectsService", () => {
     req.flush(projectValidResponse);
   });
 
-  it("getProject invalid project should return error", () => {
+  it("getProject invalid project should return error", done => {
     service.getProject(-1).subscribe(
-      res => {
-        expect(res).toBeFalsy();
+      () => {
+        expect(false).toBeTruthy(
+          "getProject should not return result on error"
+        );
+        done();
       },
       err => {
         expect(err).toBeTruthy();
         expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
       }
     );
 
@@ -236,14 +222,21 @@ xdescribe("ProjectsService", () => {
     req.flush(itemNotFoundResponse);
   });
 
-  it("getProject invalid page should return error", () => {
+  it("getProject invalid page should return error", done => {
     service.getProject(-1).subscribe(
-      res => {
-        expect(res).toBeFalsy();
+      () => {
+        expect(false).toBeTruthy(
+          "getProject should not return result on error"
+        );
+        done();
       },
       err => {
         expect(err).toBeTruthy();
         expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
       }
     );
 
@@ -251,14 +244,21 @@ xdescribe("ProjectsService", () => {
     req.flush(pageNotFoundResponse);
   });
 
-  it("getProject unauthorized should return error", () => {
+  it("getProject unauthorized should return error", done => {
     service.getProject(-1).subscribe(
-      res => {
-        expect(res).toBeFalsy();
+      () => {
+        expect(false).toBeTruthy(
+          "getProject should not return result on error"
+        );
+        done();
       },
       err => {
         expect(err).toBeTruthy();
         expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
       }
     );
 
@@ -266,7 +266,7 @@ xdescribe("ProjectsService", () => {
     req.flush(projectUnauthorizedResponse);
   });
 
-  it("getFilteredProjects should get filtered number of items", fakeAsync(() => {
+  it("getFilteredProjects should get filtered number of items", done => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -281,7 +281,7 @@ xdescribe("ProjectsService", () => {
           total: 1,
           max_page: 1,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
@@ -342,16 +342,25 @@ xdescribe("ProjectsService", () => {
       .getFilteredProjects({
         items: 3
       })
-      .subscribe(res => {
-        expect(res).toEqual(dummyApiConvertedResponse);
-      });
+      .subscribe(
+        res => {
+          expect(res).toEqual(dummyApiConvertedResponse);
+          done();
+        },
+        () => {
+          expect(false).toBeTruthy("No error should be reported");
+          done();
+        },
+        () => {
+          done();
+        }
+      );
 
-    tick();
     const req = httpMock.expectOne(url + "/projects/filter?items=3");
     req.flush(dummyApiResponse);
-  }));
+  });
 
-  it("getFilteredProjects should get ordered by creator id", fakeAsync(() => {
+  it("getFilteredProjects should get ordered by creator id", done => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -366,7 +375,7 @@ xdescribe("ProjectsService", () => {
           total: 1,
           max_page: 1,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
@@ -427,18 +436,27 @@ xdescribe("ProjectsService", () => {
       .getFilteredProjects({
         orderBy: "creatorId"
       })
-      .subscribe(res => {
-        expect(res).toEqual(dummyApiConvertedResponse);
-      });
+      .subscribe(
+        res => {
+          expect(res).toEqual(dummyApiConvertedResponse);
+          done();
+        },
+        () => {
+          expect(false).toBeTruthy("No error should be reported");
+          done();
+        },
+        () => {
+          done();
+        }
+      );
 
-    tick();
     const req = httpMock.expectOne(
       url + "/projects/filter?order_by=creator_id"
     );
     req.flush(dummyApiResponse);
-  }));
+  });
 
-  it("getFilteredProjects should get multi filter", fakeAsync(() => {
+  it("getFilteredProjects should get multi filter", done => {
     const dummyApiResponse = {
       meta: {
         status: 200,
@@ -453,7 +471,7 @@ xdescribe("ProjectsService", () => {
           total: 1,
           max_page: 2,
           current:
-            "http://staging.ecosounds.org/projects?direction=asc&items=3&order_by=name&page=1",
+            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
           previous: null,
           next: null
         }
@@ -517,25 +535,39 @@ xdescribe("ProjectsService", () => {
         orderBy: "creatorId",
         page: 2
       })
-      .subscribe(res => {
-        expect(res).toEqual(dummyApiConvertedResponse);
-      });
+      .subscribe(
+        res => {
+          expect(res).toEqual(dummyApiConvertedResponse);
+          done();
+        },
+        () => {
+          expect(false).toBeTruthy("No error should be reported");
+          done();
+        },
+        () => {
+          done();
+        }
+      );
 
-    tick();
     const req = httpMock.expectOne(
       url + "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
     );
     req.flush(dummyApiResponse);
-  }));
+  });
 
-  it("getProject empty response should return error msg", () => {
+  it("getProject empty response should return error msg", done => {
     service.getProject(512).subscribe(
-      res => {
-        expect(res).toBeFalsy();
+      () => {
+        expect(false).toBeTruthy("Error response should not return result");
+        done();
       },
       err => {
         expect(err).toBeTruthy();
         expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
       }
     );
 
@@ -543,14 +575,19 @@ xdescribe("ProjectsService", () => {
     req.flush({ meta: { status: 404 } });
   });
 
-  it("getProjects empty response should return error msg", () => {
+  it("getProjects empty response should return error msg", done => {
     service.getProjects().subscribe(
-      res => {
-        expect(res).toBeFalsy();
+      () => {
+        expect(false).toBeTruthy("Error response should not return result");
+        done();
       },
       err => {
         expect(err).toBeTruthy();
         expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
       }
     );
 
@@ -558,76 +595,99 @@ xdescribe("ProjectsService", () => {
     req.flush({ meta: { status: 404 } });
   });
 
-  it("getFilteredProjects empty response should return error msg", fakeAsync(() => {
+  it("getFilteredProjects empty response should return error msg", done => {
     service
       .getFilteredProjects({
         items: 3
       })
       .subscribe(
-        res => {
-          expect(res).toBeFalsy();
+        () => {
+          expect(false).toBeTruthy("Error response should not return result");
+          done();
         },
         err => {
           expect(err).toBeTruthy();
           expect(typeof err).toBe("string");
+          done();
+        },
+        () => {
+          done();
         }
       );
 
-    tick();
-    /* httpMock.match(request => {
-      return (
-        request.url === url + "/projects/filter" &&
-        request.urlWithParams === url + "/projects/filter" &&
-        request.method === "GET"
-      );
-    });
-    httpMock.expectNone(url + "/projects/512"); */
-    const req = httpMock.expectOne({
-      url: url + "/projects/filter",
-      method: "GET"
-    });
+    const req = httpMock.expectOne(url + "/projects/filter?items=3");
     req.flush({ meta: { status: 404 } });
-  }));
+  });
 
-  // TODO Ensure authenticated tests are not interfering with each other
-  it("authenticated getProjects should return data", fakeAsync(() => {
+  it("authenticated getProjects should return data", () => {
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
-    let projects = httpMock.expectOne({
-      url: url + "/projects",
-      method: "GET"
-    });
-    projects.flush(projectsValidResponse);
 
+    // Login
     securityService
       .signIn({ email: "email", password: "password" })
       .subscribe(() => {});
 
-    tick(2000);
+    // Catch security check and return login details
+    const login = httpMock.expectOne(url + "/security");
+    login.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
 
-    projects = httpMock.expectOne({
+    const projects = httpMock.expectOne({
       url: url + "/projects",
       method: "GET"
     });
     projects.flush(projectsValidResponse);
-  }));
+  });
 
-  // TODO Ensure authenticated tests are not interfering with each other
-  it("authenticated getProject should return data", fakeAsync(() => {
+  it("authenticated getProject should return data", done => {
+    service.getProject(512).subscribe(
+      res => {
+        expect(res).toEqual(projectValidConvertedResponse);
+        done();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    // Login
     securityService
       .signIn({ email: "email", password: "password" })
-      .subscribe(() => {
-        service.getProject(512).subscribe(res => {
-          expect(res).toEqual(projectValidConvertedResponse);
-        });
+      .subscribe(() => {});
 
-        const project = httpMock.expectOne({
-          url: url + "/projects/512",
-          method: "GET"
-        });
-        project.flush(projectValidResponse);
-      });
-    tick(2000);
-  }));
+    // Catch security check and return login details
+    const login = httpMock.expectOne(url + "/security");
+    login.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
+    });
+
+    const project = httpMock.expectOne({
+      url: url + "/projects/512",
+      method: "GET"
+    });
+    project.flush(projectValidResponse);
+  });
 });

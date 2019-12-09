@@ -18,7 +18,6 @@ The Angular 8 client for an acoustic workbench application.
 To install project dependencies run:
 
 ```bash
-$ npm install -g @angular/cli
 $ npm install
 ```
 
@@ -29,6 +28,18 @@ $ npm start
 ```
 
 Then open a web browser to `localhost:4200`.
+
+### Access the ng tool
+
+```bash
+$ npx ng
+```
+
+or
+
+```
+npm run ng
+```
 
 ### Documentation
 
@@ -110,41 +121,74 @@ There are three environments supported by this application.
   - Have you added `SharedModule`?
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule
-      ]
+  TestBed.configureTestingModule({
+    imports: [SharedModule]
+  });
   ```
 
   - If the component has any form of routing (including `ActivatedRoute`):
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ]
+  TestBed.configureTestingModule({
+    imports: [RouterTestingModule]
+  });
   ```
 
   - If the component has any form of http requests:
 
   ```javascript
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule
-        // or
-        HttpClientTestingModule
-      ]
+      imports: [HttpClientTestingModule]
+    });
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
+  });
   ```
 
   - If the component uses the Formly form building module:
 
   ```javascript
-    TestBed.configureTestingModule({
-      imports: [
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ]
+  TestBed.configureTestingModule({
+    imports: [
+      FormlyModule.forRoot({
+        validationMessages
+      })
+    ]
+  });
+  ```
+
+  - If the component depends on the app initializer to load the environment:
+
+  ```javascript
+  TestBed.configureTestingModule({
+    providers: [...testAppInitializer]
+  });
+  ```
+
+  - If the component depends on any baw services:
+
+  ```javascript
+  TestBed.configureTestingModule({
+    providers: [...testBawServices]
+  });
+  ```
+
+  - If the component depends on session storage:
+
+  ```javascript
+  beforeEach(() => {
+    Object.defineProperty(window, "sessionStorage", {
+      value: mockSessionStorage
+    });
+  }
+
+  afterEach(() => {
+    sessionStorage.clear();
+  })
   ```
 
 ## Licence

@@ -1,16 +1,292 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { User } from "src/app/models/User";
+import { environment } from "src/environments/environment";
+import { BawApiInterceptor } from "./api.interceptor";
+import { mockSessionStorage } from "./mock/sessionStorageMock";
+import { SecurityService } from "./security.service";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
-  beforeEach(() =>
+  let httpMock: HttpTestingController;
+  let service: UserService;
+  let securityService: SecurityService;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule]
-    })
-  );
+      imports: [HttpClientTestingModule],
+      providers: [
+        SecurityService,
+        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+      ]
+    });
+
+    Object.defineProperty(window, "sessionStorage", {
+      value: mockSessionStorage
+    });
+
+    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.get(UserService);
+    securityService = TestBed.get(SecurityService);
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
+  });
 
   it("should be created", () => {
-    const service: UserService = TestBed.get(UserService);
     expect(service).toBeTruthy();
+  });
+
+  /**
+   * Supplementary function to login account. This should never fail without tests
+   * for security service also failing
+   */
+  function login() {
+    securityService
+      .signIn({ email: "email", password: "password" })
+      .subscribe(() => {});
+
+    const req = httpMock.expectOne(
+      {
+        url: environment.bawApiUrl + "/security",
+        method: "post"
+      },
+      "Supplementary function to login account. If this fails, test if unit test causes double login."
+    );
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "xxxxxxxxxxxxxxxxxxxx",
+        user_name: "username",
+        message: "Logged in successfully."
+      }
+    });
+  }
+
+  it("getMyAccount should return error if user not logged in", done => {
+    service.getMyAccount().subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not produce response");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy();
+        expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    httpMock.expectNone(environment.bawApiUrl + "/my_account");
+  });
+
+  it("getMyAccount should return details is user logged in", done => {
+    login();
+
+    service.getMyAccount().subscribe(
+      resp => {
+        expect(resp).toEqual(
+          new User({
+            id: 7,
+            userName: "username",
+            rolesMask: 2,
+            timezoneInformation: null,
+            rolesMaskNames: ["user"],
+            imageUrls: [
+              {
+                size: "extralarge",
+                url: "/images/user/user_span4.png",
+                width: 300,
+                height: 300
+              }
+            ],
+            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            preferences: null,
+            isConfirmed: true
+          })
+        );
+        done();
+      },
+      () => {
+        expect(false).toBeTruthy("Should not produce error response");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne(environment.bawApiUrl + "/my_account");
+    req.flush({
+      meta: { status: 200, message: "OK" },
+      data: {
+        id: 7,
+        user_name: "username",
+        roles_mask: 2,
+        timezone_information: null,
+        roles_mask_names: ["user"],
+        image_urls: [
+          {
+            size: "extralarge",
+            url: "/images/user/user_span4.png",
+            width: 300,
+            height: 300
+          }
+        ],
+        last_seen_at: "2019-12-05T14:11:20.366+10:00",
+        preferences: null,
+        isConfirmed: true
+      }
+    });
+  });
+
+  it("getUserAccount should return error if user is not logged in", done => {
+    service.getUserAccount(1).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not produce response");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy();
+        expect(typeof err).toBe("string");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    httpMock.expectNone(environment.bawApiUrl + "/my_account");
+  });
+
+  it("getUserAccount should return data if user is logged in", done => {
+    login();
+
+    service.getUserAccount(1).subscribe(
+      resp => {
+        expect(resp).toEqual(
+          new User({
+            id: 1,
+            userName: "username",
+            rolesMask: 2,
+            timezoneInformation: null,
+            rolesMaskNames: ["user"],
+            imageUrls: [
+              {
+                size: "extralarge",
+                url: "/images/user/user_span4.png",
+                width: 300,
+                height: 300
+              }
+            ],
+            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            preferences: null,
+            isConfirmed: true
+          })
+        );
+        done();
+      },
+      () => {
+        expect(false).toBeTruthy("Should not produce error response");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne(environment.bawApiUrl + "/user_accounts/1");
+    req.flush({
+      meta: { status: 200, message: "OK" },
+      data: {
+        id: 1,
+        user_name: "username",
+        roles_mask: 2,
+        timezone_information: null,
+        roles_mask_names: ["user"],
+        image_urls: [
+          {
+            size: "extralarge",
+            url: "/images/user/user_span4.png",
+            width: 300,
+            height: 300
+          }
+        ],
+        last_seen_at: "2019-12-05T14:11:20.366+10:00",
+        preferences: null,
+        isConfirmed: true
+      }
+    });
+  });
+
+  it("getUserAccount change request based on user id", done => {
+    login();
+
+    service.getUserAccount(5).subscribe(
+      resp => {
+        expect(resp).toEqual(
+          new User({
+            id: 5,
+            userName: "username",
+            rolesMask: 2,
+            timezoneInformation: null,
+            rolesMaskNames: ["user"],
+            imageUrls: [
+              {
+                size: "extralarge",
+                url: "/images/user/user_span4.png",
+                width: 300,
+                height: 300
+              }
+            ],
+            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            preferences: null,
+            isConfirmed: true
+          })
+        );
+        done();
+      },
+      () => {
+        expect(false).toBeTruthy("Should not produce error response");
+        done();
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne(environment.bawApiUrl + "/user_accounts/5");
+    req.flush({
+      meta: { status: 200, message: "OK" },
+      data: {
+        id: 5,
+        user_name: "username",
+        roles_mask: 2,
+        timezone_information: null,
+        roles_mask_names: ["user"],
+        image_urls: [
+          {
+            size: "extralarge",
+            url: "/images/user/user_span4.png",
+            width: 300,
+            height: 300
+          }
+        ],
+        last_seen_at: "2019-12-05T14:11:20.366+10:00",
+        preferences: null,
+        isConfirmed: true
+      }
+    });
   });
 });

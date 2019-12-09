@@ -8,7 +8,6 @@ export interface SubscriptionLike {
  * Subscription sink that holds Observable subscriptions
  * until you call unsubscribe on it in ngOnDestroy.
  * Class was created here: https://github.com/wardbell/subsink
- * @author wardbell
  * @copyright MIT
  */
 export class SubSink {

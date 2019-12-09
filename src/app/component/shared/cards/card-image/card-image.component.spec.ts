@@ -1,5 +1,5 @@
 import { DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CardImageComponent } from "./card-image.component";
 
 describe("CardImageComponent", () => {
@@ -7,13 +7,11 @@ describe("CardImageComponent", () => {
   let fixture: ComponentFixture<CardImageComponent>;
   let compiled: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CardImageComponent]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CardImageComponent);
     component = fixture.componentInstance;
     compiled = fixture.debugElement;
@@ -58,7 +56,7 @@ describe("CardImageComponent", () => {
     fixture.detectChanges();
 
     const image = compiled.nativeElement.querySelector("img");
-    expect(image.src).toBe("http://localhost:9876/image");
+    expect(image.src).toBe(`http://${window.location.host}/image`);
   });
 
   it("should handle remote image", () => {
@@ -66,7 +64,7 @@ describe("CardImageComponent", () => {
       title: "title",
       image: {
         url:
-          "https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
+          "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
         alt: "alt"
       }
     };
@@ -74,7 +72,7 @@ describe("CardImageComponent", () => {
 
     const image = compiled.nativeElement.querySelector("img");
     expect(image.src).toBe(
-      "https://www.ecosounds.org/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
+      "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
     );
   });
 
