@@ -7,17 +7,20 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
-import { CardsModule } from "./cards/cards.modules";
+import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
+import { MapComponent } from "./map/map.component";
 import { sharedComponents } from "./shared.components";
 import { WidgetDirective } from "./widget/widget.directive";
 
 @NgModule({
-  declarations: [...sharedComponents, WidgetDirective],
+  declarations: [...sharedComponents, WidgetDirective, MapComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -52,4 +55,8 @@ import { WidgetDirective } from "./widget/widget.directive";
     sharedComponents
   ]
 })
-export class SharedModule {}
+export class SharedModule {
+  constructor() {
+    library.add(fas);
+  }
+}

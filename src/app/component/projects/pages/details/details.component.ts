@@ -1,11 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { flatMap } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -49,11 +51,13 @@ import {
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"]
 })
-export class DetailsComponent extends PageComponent implements OnInit {
+export class DetailsComponent extends PageComponent
+  implements OnInit, OnDestroy {
   project: Project;
   sites: Site[];
   errorCodes = this.sitesApi.apiReturnCodes;
   state = "loading";
+  subSink: SubSink = new SubSink();
 
   constructor(
     private route: ActivatedRoute,
@@ -64,28 +68,47 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe({
-      next: params => {
-        this.projectsApi.getProject(params.projectId).subscribe({
-          next: project => {
-            this.project = project;
-            this.state = "project";
-          },
-          error: (err: APIErrorDetails) => {
-            if (err.status === this.errorCodes.unauthorized) {
-              this.state = "unauthorized";
-            } else {
-              this.state = "notFound";
-            }
+    // Retrieve project details
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.projectsApi.getProject(params.projectId);
+        })
+      )
+      .subscribe(
+        project => {
+          this.project = project;
+          this.state = "project";
+        },
+        (err: APIErrorDetails) => {
+          if (err.status === this.errorCodes.unauthorized) {
+            this.state = "unauthorized";
+          } else {
+            this.state = "notFound";
           }
-        });
+        }
+      );
 
-        this.sitesApi.getProjectSites(params.projectId).subscribe({
-          next: sites => {
-            this.sites = sites;
+    // Retrieve site details
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.sitesApi.getProjectSites(params.projectId);
+        })
+      )
+      .subscribe(
+        sites => (this.sites = sites),
+        (err: APIErrorDetails) => {
+          if (err.status === this.errorCodes.unauthorized) {
+            this.state = "unauthorized";
+          } else {
+            this.state = "notFound";
           }
-        });
-      }
-    });
+        }
+      );
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 }

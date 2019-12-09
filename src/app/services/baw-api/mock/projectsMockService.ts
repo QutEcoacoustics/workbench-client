@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
+import { BawApiService } from "../base-api.service";
 import { ProjectFilters } from "../projects.service";
-import { SecurityService } from "../security.service";
 
 /**
  * Interacts with projects route in baw api
@@ -12,7 +12,7 @@ import { SecurityService } from "../security.service";
 @Injectable({
   providedIn: "root"
 })
-export class MockProjectsService extends SecurityService {
+export class MockProjectsService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
   }

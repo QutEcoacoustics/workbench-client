@@ -84,7 +84,6 @@ describe("SecurityService", () => {
 
   it("login should return error msg when already logged in", fakeAsync(() => {
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      console.log("User: ", JSON.parse(sessionStorage.getItem("user")));
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({

@@ -4,12 +4,12 @@ import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { AudioRecordingFilters } from "../audio-recordings.service";
-import { SecurityService } from "../security.service";
+import { BawApiService } from "../base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class MockAudioRecordingsService extends SecurityService {
+export class MockAudioRecordingsService extends BawApiService {
   constructor(http: HttpClient) {
     super(http);
   }

@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="col-sm-8">
-      <p>{{ project.description }}</p>
+      <p id="project_description">{{ project.description }}</p>
     </div>
   </div>
 
@@ -18,73 +18,22 @@
     <!-- Left aligned list of sites -->
     <div class="col-sm-6">
       <ul class="list-group">
-        <li class="list-group-item" *ngFor="let site of sites">
-          <div class="site">
-            <div class="image">
-              <a [routerLink]="site.getSiteUrl(project)">
-                <img [src]="site.imageUrl" [alt]="site.name" />
-              </a>
-            </div>
-            <div class="body">
-              <div class="heading">
-                <h5>
-                  <a [routerLink]="site.getSiteUrl(project)">{{ site.name }}</a>
-                </h5>
-              </div>
-
-              <ul class="nav nav-pills float-right">
-                <li class="nav-item">
-                  <a class="nav-link" [routerLink]="site.getSiteUrl(project)">
-                    <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
-                    Details
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="not_developed">
-                    <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-                    Play
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="not_developed">
-                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-                    Visualise
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </li>
+        <ng-container *ngIf="sites && sites.length > 0; else placeholderSite">
+          <app-site-card
+            *ngFor="let site of sites"
+            [project]="project"
+            [site]="site"
+          ></app-site-card>
+        </ng-container>
+        <ng-template #placeholderSite>
+          <p id="site_placeholder">No sites associated with this project</p>
+        </ng-template>
       </ul>
     </div>
 
     <!-- Right aligned map -->
     <div class="col-sm-6">
-      <ng-container *ngIf="sites && sites.length > 0; else placeholderMap">
-        <div class="map-container">
-          <agm-map [fitBounds]="true">
-            <ng-container *ngFor="let site of sites">
-              <agm-marker
-                *ngIf="site.customLongitude && site.customLatitude"
-                [latitude]="site.customLatitude"
-                [longitude]="site.customLongitude"
-                [agmFitBounds]="true"
-              >
-                <agm-snazzy-info-window
-                  [isOpen]="true"
-                  [padding]="'10px 25px 10px 10px'"
-                  [borderRadius]="'10px'"
-                >
-                  <ng-template>{{ site.name }}</ng-template>
-                </agm-snazzy-info-window>
-              </agm-marker>
-            </ng-container>
-          </agm-map>
-        </div>
-      </ng-container>
-      <ng-template #placeholderMap>
-        <div class="map-placeholder"><span>No locations specified</span></div>
-      </ng-template>
+      <app-map [sites]="sites"></app-map>
     </div>
   </div>
 </ng-container>
