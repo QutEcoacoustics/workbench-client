@@ -15,12 +15,11 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
-import { MapComponent } from "./map/map.component";
 import { sharedComponents } from "./shared.components";
 import { WidgetDirective } from "./widget/widget.directive";
 
 @NgModule({
-  declarations: [...sharedComponents, WidgetDirective, MapComponent],
+  declarations: [...sharedComponents, WidgetDirective],
   imports: [
     CommonModule,
     RouterModule,

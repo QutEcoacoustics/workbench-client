@@ -18,13 +18,14 @@ export const ProjectsComponents = [
   NewComponent,
   EditComponent,
   RequestComponent,
+  SiteCardComponent,
   SiteCardComponent
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [ProjectsComponents, SiteCardComponent, MapComponent],
+  declarations: [ProjectsComponents, MapComponent],
   imports: [
     SharedModule,
     AgmSnazzyInfoWindowModule,

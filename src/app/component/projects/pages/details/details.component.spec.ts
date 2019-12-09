@@ -6,7 +6,8 @@ import {
   ComponentFixture,
   fakeAsync,
   flush,
-  TestBed
+  TestBed,
+  tick
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
@@ -95,6 +96,50 @@ describe("ProjectDetailsComponent", () => {
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized Access");
   });
+
+  it("should show loading until project returns", fakeAsync(() => {
+    spyOn(projectsApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+
+      setTimeout(() => {
+        subject.next(
+          new Project({
+            id: 1,
+            name: "Test project",
+            description: "A test project",
+            creatorId: 1,
+            siteIds: new Set([])
+          })
+        );
+      }, 1000);
+
+      return subject;
+    });
+    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+      const subject = new Subject<Site[]>();
+
+      setTimeout(() => {
+        subject.next([]);
+      }, 50);
+
+      return subject;
+    });
+
+    // Only return sites
+    fixture.detectChanges();
+    tick(50);
+    fixture.detectChanges();
+    const loading = fixture.debugElement.nativeElement.querySelector("h4");
+    expect(loading).toBeTruthy();
+    expect(loading.innerText).toBe("Loading");
+
+    // Return project data
+    flush();
+    fixture.detectChanges();
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Test project");
+  }));
 
   it("should display project name", fakeAsync(() => {
     spyOn(projectsApi, "getProject").and.callFake(() => {

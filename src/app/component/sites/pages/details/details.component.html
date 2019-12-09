@@ -1,4 +1,4 @@
-<ng-container *ngIf="!error && site">
+<ng-container *ngIf="state === 'ready'">
   <h1>
     <small class="text-muted" *ngIf="project">
       Project: {{ project.name }}
@@ -44,42 +44,16 @@
         </ul>
       </div>
       <div class="col-sm-6">
-        <ng-container
-          *ngIf="
-            site && site.customLatitude && site.customLongitude;
-            else placeholderMap
-          "
-        >
-          <div class="map-container">
-            <agm-map [fitBounds]="true">
-              <agm-marker
-                [latitude]="site.customLatitude"
-                [longitude]="site.customLongitude"
-                [agmFitBounds]="true"
-              >
-                <agm-snazzy-info-window
-                  [isOpen]="true"
-                  [padding]="'10px 25px 10px 10px'"
-                  [borderRadius]="'10px'"
-                >
-                  <ng-template>{{ site.name }}</ng-template>
-                </agm-snazzy-info-window>
-              </agm-marker>
-            </agm-map>
-          </div>
-        </ng-container>
-        <ng-template #placeholderMap>
-          <div class="map-placeholder"><span>No locations specified</span></div>
-        </ng-template>
+        <app-map [sites]="[site]"></app-map>
       </div>
     </div>
   </app-wip>
 </ng-container>
 
-<ng-container *ngIf="error === errorCodes.unauthorized">
+<ng-container *ngIf="state === 'unauthorized'">
   <app-unauthorized></app-unauthorized>
 </ng-container>
 
-<ng-container *ngIf="error === errorCodes.notFound">
+<ng-container *ngIf="state === 'notFound'">
   <app-item-not-found></app-item-not-found>
 </ng-container>
