@@ -4,7 +4,7 @@ import { Site } from "src/app/models/Site";
 @Component({
   selector: "app-map",
   template: `
-    <ng-container *ngIf="sites && sites.length > 0; else placeholderMap">
+    <ng-container *ngIf="locationPins; else placeholderMap">
       <div class="map-container">
         <agm-map [fitBounds]="true">
           <ng-container *ngFor="let site of sites">
@@ -34,8 +34,30 @@ import { Site } from "src/app/models/Site";
 })
 export class MapComponent implements OnInit {
   @Input() sites: Site[];
+  locationPins = false;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.locationPins = createMap(this.sites);
+  }
+}
+
+/**
+ * Determine whether google maps should be shown. This searches the list of sites
+ * and determines if any have a custom latitude and longitude.
+ * @param sites List of sites
+ * @returns True if google map should be created
+ */
+export function createMap(sites: Site[]): boolean {
+  for (const site of sites) {
+    if (
+      typeof site.customLatitude === "number" &&
+      typeof site.customLongitude === "number"
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }

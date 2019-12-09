@@ -1,8 +1,4 @@
 import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from "@angular/common/http/testing";
-import {
   ComponentFixture,
   fakeAsync,
   flush,
@@ -257,7 +253,7 @@ describe("ProjectDetailsComponent", () => {
     expect(image.alt.length).toBeGreaterThan(0);
   }));
 
-  it("should display custom description", fakeAsync(() => {
+  it("should display description", fakeAsync(() => {
     spyOn(projectsApi, "getProject").and.callFake(() => {
       const subject = new Subject<Project>();
 
