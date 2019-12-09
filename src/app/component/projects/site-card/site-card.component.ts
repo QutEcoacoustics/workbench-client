@@ -13,34 +13,38 @@ import { Site } from "src/app/models/Site";
     <li class="list-group-item">
       <div class="site">
         <div class="image">
-          <a [routerLink]="site.getSiteUrl(project)">
-            <img [src]="site.imageUrl" [alt]="site.name" />
+          <a id="imageLink" [routerLink]="site.getSiteUrl(project)">
+            <img id="image" [src]="site.imageUrl" [alt]="site.name + ' alt'" />
           </a>
         </div>
         <div class="body">
           <div class="heading">
-            <h5>
-              <a [routerLink]="site.getSiteUrl(project)">
+            <a id="nameLink" [routerLink]="site.getSiteUrl(project)">
+              <h5 id="name">
                 {{ site.name }}
-              </a>
-            </h5>
+              </h5>
+            </a>
           </div>
 
           <ul class="nav nav-pills float-right">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="site.getSiteUrl(project)">
+              <a
+                id="details"
+                class="nav-link"
+                [routerLink]="site.getSiteUrl(project)"
+              >
                 <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
                 Details
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="not_developed">
+              <a id="play" class="nav-link" href="not_developed">
                 <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
                 Play
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="not_developed">
+              <a id="visualize" class="nav-link" href="not_developed">
                 <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                 Visualise
               </a>
