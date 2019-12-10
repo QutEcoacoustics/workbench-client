@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
+import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 
 /**
@@ -18,7 +19,8 @@ export class ProjectsService extends BawApiService {
     this.paths = {
       details: "/projects",
       show: "/projects/:projectId",
-      filter: "/projects/filter"
+      filter: "/projects/filter",
+      new: "/projects"
     };
   }
 
@@ -63,6 +65,32 @@ export class ProjectsService extends BawApiService {
       projects.map((project: ProjectInterface) => new Project(project));
 
     this.details(subject, callback, this.paths.filter, {}, filters);
+
+    return subject;
+  }
+
+  /**
+   * Create a new project
+   * @param details Form details
+   */
+  public newProject(details: {
+    name: string;
+    description: string;
+    creatorId: string;
+    image: string;
+  }): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    const next = (data: ProjectInterface) => {
+      console.debug(data);
+      subject.next(true);
+    };
+    const error = (err: APIErrorDetails) => {
+      console.debug(err);
+      subject.error(err.message);
+    };
+
+    this.create(next, error, this.paths.new, {}, details, {});
 
     return subject;
   }

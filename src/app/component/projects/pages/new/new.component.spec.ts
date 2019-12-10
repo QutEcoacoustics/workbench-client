@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { validationMessages } from "src/app/app.helper";
+import { testBawServices, validationMessages } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { NewComponent } from "./new.component";
 
@@ -16,7 +16,8 @@ describe("ProjectsNewComponent", () => {
           validationMessages
         })
       ],
-      declarations: [NewComponent]
+      declarations: [NewComponent],
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 
