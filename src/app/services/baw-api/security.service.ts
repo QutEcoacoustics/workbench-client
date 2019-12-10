@@ -77,6 +77,7 @@ export class SecurityService extends BawApiService {
    */
   signOut() {
     if (!this.isLoggedIn()) {
+      this.clearSessionStorage();
       this.loggedInTrigger.next(false);
       return;
     }
@@ -84,8 +85,8 @@ export class SecurityService extends BawApiService {
     this.delete(this.paths.signOut).subscribe({
       next: (data: APIResponse) => {
         if (data.meta.status === this.apiReturnCodes.success) {
-          this.loggedInTrigger.next(false);
           this.clearSessionStorage();
+          this.loggedInTrigger.next(false);
         } else {
           console.error("Unknown error thrown by login rest api");
           console.error(data);
@@ -110,6 +111,7 @@ export class SecurityService extends BawApiService {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {
       if (!data) {
+        this.clearSessionStorage();
         this.loggedInTrigger.next(false);
         subject.error("No data returned from API");
       }
@@ -124,6 +126,7 @@ export class SecurityService extends BawApiService {
       subject.next(true);
     };
     const error = (err: APIErrorDetails) => {
+      this.clearSessionStorage();
       this.loggedInTrigger.next(false);
       subject.error(err.message);
     };

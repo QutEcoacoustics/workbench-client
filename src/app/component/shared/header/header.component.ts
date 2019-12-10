@@ -1,11 +1,14 @@
 import {
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
   ViewEncapsulation
 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
+import { flatMap } from "rxjs/operators";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -31,15 +34,16 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   activeLink: string;
   collapsed: boolean;
-  loggedIn: boolean;
-  user: User;
-  userImage: string;
-  title: string;
   config: any;
   headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  loggedIn: boolean;
+  subSink: SubSink = new SubSink();
+  title: string;
+  user: User;
+  userImage: string;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
@@ -83,22 +87,34 @@ export class HeaderComponent implements OnInit {
       contactUsMenuItem
     ]);
 
-    this.router.events.subscribe(val => {
+    this.subSink.sink = this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
         this.toggleCollapse(true);
       }
     });
 
-    this.userApi.getMyAccount().subscribe(user => {
-      this.user = user;
+    this.subSink.sink = this.securityApi.getLoggedInTrigger().subscribe(() => {
+      this.userApi.getMyAccount().subscribe(
+        user => {
+          this.user = user;
 
-      // Find the smallest icon for the user
-      if (this.user) {
-        this.userImage = this.user.getImage(ImageSizes.small);
-      }
+          // Find the small icon for the user
+          if (this.user) {
+            this.userImage = this.user.getImage(ImageSizes.small);
+          }
 
-      this.ref.detectChanges();
+          this.ref.detectChanges();
+        },
+        () => {
+          this.user = null;
+          this.ref.detectChanges();
+        }
+      );
     });
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 
   private generateLink(item): MenuLink {
