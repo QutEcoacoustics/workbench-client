@@ -162,7 +162,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.securityApi.signOut().subscribe({
       error: () => {},
       complete: () => {
-        this.router.navigate(["/"]);
+        this.router.navigate([""]);
       }
     });
   }
