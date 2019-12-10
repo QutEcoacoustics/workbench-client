@@ -19,13 +19,14 @@ describe("SecurityService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
+        ...testAppInitializer,
+        BawApiInterceptor,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true
         },
-        ...testAppInitializer
+        SecurityService
       ]
     });
 

@@ -22,13 +22,14 @@ describe("SitesService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
+        BawApiInterceptor,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true
         },
-        ...testAppInitializer
+        ...testAppInitializer,
+        SecurityService
       ]
     });
 

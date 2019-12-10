@@ -159,14 +159,15 @@ describe("ProjectsService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        ProjectsService,
-        SecurityService,
+        ...testAppInitializer,
+        BawApiInterceptor,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true
         },
-        ...testAppInitializer
+        ProjectsService,
+        SecurityService
       ]
     });
 

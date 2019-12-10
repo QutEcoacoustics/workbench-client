@@ -4,13 +4,9 @@ import { delay } from "rxjs/operators";
 import { AppConfigService } from "../../app-config/app-config.service";
 import { BawApiService } from "../base-api.service";
 
-export class MockSecurityService extends BawApiService {
+export class MockSecurityService {
   private loggedIn = false;
   private trigger = new BehaviorSubject<boolean>(false);
-
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
-  }
 
   public signIn(details: {
     email: string;
