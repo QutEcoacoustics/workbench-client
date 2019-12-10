@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       login: loginMenuItem,
       register: registerMenuItem,
       profile: {
-        url: this.appConfig.getConfig().environment.apiRoot + "/my_account"
+        url: "http://INTENTIONALLY_BROKEN_LINK/"
       }
     };
 
@@ -93,24 +93,32 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subSink.sink = this.securityApi.getLoggedInTrigger().subscribe(() => {
-      this.userApi.getMyAccount().subscribe(
-        user => {
-          this.user = user;
+    this.subSink.sink = this.securityApi
+      .getLoggedInTrigger()
+      .subscribe(loggedIn => {
+        this.subSink.sink = this.userApi.getMyAccount().subscribe(
+          user => {
+            this.user = user;
 
-          // Find the small icon for the user
-          if (this.user) {
-            this.userImage = this.user.getImage(ImageSizes.small);
+            // Find the small icon for the user
+            if (this.user) {
+              this.userImage = this.user.getImage(ImageSizes.small);
+            }
+
+            this.ref.detectChanges();
+          },
+          () => {
+            this.user = null;
+
+            // If the user is logged in, but the retrieval failed. Log them out
+            if (loggedIn) {
+              this.securityApi.signOut().subscribe();
+            }
+
+            this.ref.detectChanges();
           }
-
-          this.ref.detectChanges();
-        },
-        () => {
-          this.user = null;
-          this.ref.detectChanges();
-        }
-      );
-    });
+        );
+      });
   }
 
   ngOnDestroy() {
