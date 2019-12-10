@@ -1,9 +1,14 @@
-import { AgmCoreModule } from "@agm/core";
+import {
+  AgmCoreModule,
+  LAZY_MAPS_API_CONFIG,
+  LazyMapsAPILoaderConfigLiteral
+} from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
+import { forwardRef, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormlyModule } from "@ngx-formly/core";
+import { config } from "process";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -22,18 +27,24 @@ import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
 import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
-// TODO Fix this
-let googleApiKey: string;
-retrieveAppConfig(
-  environment.appConfig,
-  data => {
-    googleApiKey = data.values.keys.googleMaps;
-  },
-  err => {
-    googleApiKey = "";
-    console.error("Failed to load google api key: ", err);
+// tslint:disable-next-line: no-use-before-declare
+@Injectable({ providedIn: forwardRef(() => AppModule) })
+export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
+  apiKey?: string;
+
+  constructor() {
+    retrieveAppConfig(
+      environment.appConfig,
+      data => {
+        this.apiKey = data.values.keys.googleMaps;
+      },
+      err => {
+        this.apiKey = "";
+        console.error("Failed to load google api key: ", err);
+      }
+    );
   }
-);
+}
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],
@@ -41,9 +52,7 @@ retrieveAppConfig(
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    AgmCoreModule.forRoot({
-      apiKey: ""
-    }),
+    AgmCoreModule.forRoot(),
     AgmSnazzyInfoWindowModule,
     FormlyModule.forRoot({
       validationMessages
@@ -60,7 +69,10 @@ retrieveAppConfig(
     HomeModule,
     ErrorModule
   ],
-  providers: [...providers],
+  providers: [
+    ...providers,
+    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [PermissionsShieldComponent],
   exports: []
