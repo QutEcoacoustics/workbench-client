@@ -30,6 +30,7 @@ export class UserService extends BawApiService {
       this.details(subject, callback, this.paths.myAccount);
     } else {
       subject.error("User is not logged in");
+      subject.complete();
     }
 
     return subject;
