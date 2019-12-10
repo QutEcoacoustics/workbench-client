@@ -156,9 +156,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   /**
    * Logout user
+   * TODO Handle error by giving user a warning
    */
   logout() {
-    this.securityApi.signOut();
-    this.router.navigate(["/"]);
+    this.securityApi.signOut().subscribe({
+      error: () => {},
+      complete: () => {
+        this.router.navigate(["/"]);
+      }
+    });
   }
 }

@@ -76,9 +76,12 @@ export class SecurityService extends BawApiService {
    * Logout user and clear session storage values
    */
   signOut() {
+    const subject = new Subject<any>();
+
     if (!this.isLoggedIn()) {
       this.clearSessionStorage();
       this.loggedInTrigger.next(false);
+      subject.complete();
       return;
     }
 
@@ -87,16 +90,21 @@ export class SecurityService extends BawApiService {
         if (data.meta.status === this.apiReturnCodes.success) {
           this.clearSessionStorage();
           this.loggedInTrigger.next(false);
+          subject.complete();
         } else {
           console.error("Unknown error thrown by login rest api");
           console.error(data);
+          subject.error(data);
         }
       },
       error: err => {
         console.error("Unknown error thrown by login rest api");
         console.error(err);
+        subject.error(err);
       }
     });
+
+    return subject;
   }
 
   /**
