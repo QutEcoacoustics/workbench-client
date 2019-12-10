@@ -2,7 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
-import { User, UserInterface } from "src/app/models/User";
+import { User } from "src/app/models/User";
+import { AppConfigService } from "../../app-config/app-config.service";
 import { BawApiService } from "../base-api.service";
 import { SecurityService } from "../security.service";
 
@@ -10,8 +11,12 @@ import { SecurityService } from "../security.service";
   providedIn: "root"
 })
 export class MockUserService extends BawApiService {
-  constructor(private securityApi: SecurityService, http: HttpClient) {
-    super(http);
+  constructor(
+    private securityApi: SecurityService,
+    http: HttpClient,
+    config: AppConfigService
+  ) {
+    super(http, config);
   }
 
   /**

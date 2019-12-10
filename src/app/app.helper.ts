@@ -89,6 +89,7 @@ export const testAppInitializer = [
 ];
 
 export const testBawServices = [
+  ...testAppInitializer,
   BawApiService,
   {
     provide: HTTP_INTERCEPTORS,

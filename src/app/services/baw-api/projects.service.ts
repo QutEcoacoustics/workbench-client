@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
+import { AppConfigService } from "../app-config/app-config.service";
 import { BawApiService, Filters } from "./base-api.service";
 
 /**
@@ -12,8 +13,8 @@ import { BawApiService, Filters } from "./base-api.service";
   providedIn: "root"
 })
 export class ProjectsService extends BawApiService {
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
       details: "/projects",

@@ -4,8 +4,9 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { ProjectsService } from "./projects.service";
@@ -13,9 +14,9 @@ import { SecurityService } from "./security.service";
 
 describe("ProjectsService", () => {
   let service: ProjectsService;
+  let config: AppConfigService;
   let securityService: SecurityService;
   let httpMock: HttpTestingController;
-  const url = environment.bawApiUrl;
 
   const pageNotFoundResponse = {
     meta: {
@@ -160,7 +161,12 @@ describe("ProjectsService", () => {
       providers: [
         ProjectsService,
         SecurityService,
-        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        ...testAppInitializer
       ]
     });
 
@@ -169,6 +175,7 @@ describe("ProjectsService", () => {
     });
 
     service = TestBed.get(ProjectsService);
+    config = TestBed.get(AppConfigService);
     securityService = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
   });
@@ -187,7 +194,9 @@ describe("ProjectsService", () => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
 
-    const req = httpMock.expectOne(url + "/projects");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects"
+    );
     req.flush(projectsValidResponse);
   });
 
@@ -196,7 +205,9 @@ describe("ProjectsService", () => {
       expect(res).toEqual(projectValidConvertedResponse);
     });
 
-    const req = httpMock.expectOne(url + "/projects/512");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/512"
+    );
     req.flush(projectValidResponse);
   });
 
@@ -218,7 +229,9 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/projects/-1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/-1"
+    );
     req.flush(itemNotFoundResponse);
   });
 
@@ -240,7 +253,9 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/projects/-1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/-1"
+    );
     req.flush(pageNotFoundResponse);
   });
 
@@ -262,7 +277,9 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/projects/-1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/-1"
+    );
     req.flush(projectUnauthorizedResponse);
   });
 
@@ -356,7 +373,9 @@ describe("ProjectsService", () => {
         }
       );
 
-    const req = httpMock.expectOne(url + "/projects/filter?items=3");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/filter?items=3"
+    );
     req.flush(dummyApiResponse);
   });
 
@@ -451,7 +470,8 @@ describe("ProjectsService", () => {
       );
 
     const req = httpMock.expectOne(
-      url + "/projects/filter?order_by=creator_id"
+      config.getConfig().environment.apiRoot +
+        "/projects/filter?order_by=creator_id"
     );
     req.flush(dummyApiResponse);
   });
@@ -550,7 +570,8 @@ describe("ProjectsService", () => {
       );
 
     const req = httpMock.expectOne(
-      url + "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
+      config.getConfig().environment.apiRoot +
+        "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
     );
     req.flush(dummyApiResponse);
   });
@@ -571,7 +592,9 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/projects/512");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/512"
+    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -591,7 +614,9 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne(url + "/projects");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects"
+    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -615,7 +640,9 @@ describe("ProjectsService", () => {
         }
       );
 
-    const req = httpMock.expectOne(url + "/projects/filter?items=3");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/filter?items=3"
+    );
     req.flush({ meta: { status: 404 } });
   });
 
@@ -630,7 +657,9 @@ describe("ProjectsService", () => {
       .subscribe(() => {});
 
     // Catch security check and return login details
-    const login = httpMock.expectOne(url + "/security");
+    const login = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/security"
+    );
     login.flush({
       meta: {
         status: 200,
@@ -644,7 +673,7 @@ describe("ProjectsService", () => {
     });
 
     const projects = httpMock.expectOne({
-      url: url + "/projects",
+      url: config.getConfig().environment.apiRoot + "/projects",
       method: "GET"
     });
     projects.flush(projectsValidResponse);
@@ -671,7 +700,9 @@ describe("ProjectsService", () => {
       .subscribe(() => {});
 
     // Catch security check and return login details
-    const login = httpMock.expectOne(url + "/security");
+    const login = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/security"
+    );
     login.flush({
       meta: {
         status: 200,
@@ -685,7 +716,7 @@ describe("ProjectsService", () => {
     });
 
     const project = httpMock.expectOne({
-      url: url + "/projects/512",
+      url: config.getConfig().environment.apiRoot + "/projects/512",
       method: "GET"
     });
     project.flush(projectValidResponse);

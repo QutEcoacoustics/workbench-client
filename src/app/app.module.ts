@@ -20,6 +20,20 @@ import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
+import { retrieveAppConfig } from "./services/app-config/app-config.service";
+
+// TODO Fix this
+let googleApiKey: string;
+retrieveAppConfig(
+  environment.appConfig,
+  data => {
+    googleApiKey = data.values.keys.googleMaps;
+  },
+  err => {
+    googleApiKey = "";
+    console.error("Failed to load google api key: ", err);
+  }
+);
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],
@@ -28,7 +42,7 @@ import { StatisticsModule } from "./component/statistics/statistics.module";
     AppRoutingModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: environment.googleApiKey
+      apiKey: ""
     }),
     AgmSnazzyInfoWindowModule,
     FormlyModule.forRoot({

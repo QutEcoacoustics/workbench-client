@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { APIResponse, BawApiService, Filters } from "./base-api.service";
 
@@ -14,8 +15,8 @@ import { APIResponse, BawApiService, Filters } from "./base-api.service";
 export class SecurityService extends BawApiService {
   protected loggedInTrigger = new BehaviorSubject<boolean>(false);
 
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.loggedInTrigger.next(this.isLoggedIn());
 

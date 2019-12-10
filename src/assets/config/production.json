@@ -1,7 +1,7 @@
 {
   "environment": {
-    "apiRoot": "https://www.ecosounds.org",
-    "siteRoot": "https://www.ecosounds.org/listen_to",
+    "apiRoot": "https://www.EXAMPLE.org",
+    "siteRoot": "https://www.EXAMPLE.org/listen_to",
     "siteDir": "/listen_to/",
     "ga": {
       "trackingId": "<<PLACEHOLDER>>"

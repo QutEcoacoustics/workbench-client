@@ -20,15 +20,16 @@ export class AppConfigService {
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
-    await fetch(this.config)
-      .then(response => response.json())
-      .then(data => {
+    return retrieveAppConfig(
+      this.config,
+      data => {
         this.appConfig = data;
         this.titleService.setTitle(data.values.brand.name);
-      })
-      .catch(() => {
+      },
+      () => {
         this.appConfig = null;
-      });
+      }
+    );
   }
 
   /**
@@ -59,6 +60,17 @@ export class AppConfigService {
     // Return empty url if not found
     return "#";
   }
+}
+
+export async function retrieveAppConfig(
+  config: string,
+  dataFunc: (data: any) => void,
+  catchFunc: (err: any) => void
+) {
+  return await fetch(config)
+    .then(response => response.json())
+    .then(dataFunc)
+    .catch(catchFunc);
 }
 
 /**
