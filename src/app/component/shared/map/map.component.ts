@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { Site } from "src/app/models/Site";
 
 @Component({
@@ -32,13 +32,17 @@ import { Site } from "src/app/models/Site";
   `,
   styleUrls: ["./map.component.scss"]
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnChanges {
   @Input() sites: Site[];
   locationPins = false;
 
   constructor() {}
 
   ngOnInit() {
+    this.locationPins = createMap(this.sites);
+  }
+
+  ngOnChanges() {
     this.locationPins = createMap(this.sites);
   }
 }
@@ -50,6 +54,10 @@ export class MapComponent implements OnInit {
  * @returns True if google map should be created
  */
 export function createMap(sites: Site[]): boolean {
+  if (!sites) {
+    return false;
+  }
+
   for (const site of sites) {
     if (
       typeof site.customLatitude === "number" &&
