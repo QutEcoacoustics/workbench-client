@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
+import { AppConfigService } from "../../app-config/app-config.service";
 import { AudioRecordingFilters } from "../audio-recordings.service";
 import { BawApiService } from "../base-api.service";
 
@@ -10,8 +11,8 @@ import { BawApiService } from "../base-api.service";
   providedIn: "root"
 })
 export class MockAudioRecordingsService extends BawApiService {
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
   }
 
   /**

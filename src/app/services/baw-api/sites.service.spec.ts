@@ -1,11 +1,12 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { Site } from "src/app/models/Site";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
@@ -13,6 +14,7 @@ import { SitesService } from "./sites.service";
 
 describe("SitesService", () => {
   let httpMock: HttpTestingController;
+  let config: AppConfigService;
   let service: SitesService;
   let securityService: SecurityService;
 
@@ -20,8 +22,14 @@ describe("SitesService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
-        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+        BawApiInterceptor,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        ...testAppInitializer,
+        SecurityService
       ]
     });
 
@@ -30,6 +38,7 @@ describe("SitesService", () => {
     });
 
     service = TestBed.get(SitesService);
+    config = TestBed.get(AppConfigService);
     securityService = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
   });
@@ -70,7 +79,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/sites/1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/sites/1"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {
@@ -114,7 +125,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/sites/5");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/sites/5"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {
@@ -164,7 +177,9 @@ describe("SitesService", () => {
       .subscribe(() => {});
 
     // Catch security check and return login details
-    const login = httpMock.expectOne(environment.bawApiUrl + "/security");
+    const login = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/security"
+    );
     login.flush({
       meta: {
         status: 200,
@@ -177,7 +192,9 @@ describe("SitesService", () => {
       }
     });
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/sites/1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/sites/1"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {
@@ -211,7 +228,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/sites/1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/sites/1"
+    );
     req.flush({
       meta: {
         status: 404,
@@ -239,7 +258,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/sites/1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/sites/1"
+    );
     req.flush({
       meta: {
         status: 401,
@@ -286,7 +307,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/projects/1/sites/1"
+      config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
     req.flush({
       meta: { status: 200, message: "OK" },
@@ -337,7 +358,9 @@ describe("SitesService", () => {
       .subscribe(() => {});
 
     // Catch security check and return login details
-    const login = httpMock.expectOne(environment.bawApiUrl + "/security");
+    const login = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/security"
+    );
     login.flush({
       meta: {
         status: 200,
@@ -351,7 +374,7 @@ describe("SitesService", () => {
     });
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/projects/1/sites/1"
+      config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
     req.flush({
       meta: { status: 200, message: "OK" },
@@ -397,7 +420,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/projects/2/sites/3"
+      config.getConfig().environment.apiRoot + "/projects/2/sites/3"
     );
     req.flush({
       meta: { status: 200, message: "OK" },
@@ -433,7 +456,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/projects/1/sites/1"
+      config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
     req.flush({
       meta: {
@@ -463,7 +486,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/projects/1/sites/1"
+      config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
     req.flush({
       meta: {
@@ -521,7 +544,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/projects/1/sites");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/1/sites"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: [
@@ -595,7 +620,9 @@ describe("SitesService", () => {
       .subscribe(() => {});
 
     // Catch security check and return login details
-    const login = httpMock.expectOne(environment.bawApiUrl + "/security");
+    const login = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/security"
+    );
     login.flush({
       meta: {
         status: 200,
@@ -608,7 +635,9 @@ describe("SitesService", () => {
       }
     });
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/projects/1/sites");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/1/sites"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: [
@@ -676,7 +705,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/projects/5/sites");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/5/sites"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: [
@@ -723,7 +754,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/projects/1/sites");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/1/sites"
+    );
     req.flush({
       meta: {
         status: 404,
@@ -751,7 +784,9 @@ describe("SitesService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/projects/1/sites");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/projects/1/sites"
+    );
     req.flush({
       meta: {
         status: 401,

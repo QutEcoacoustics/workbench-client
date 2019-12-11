@@ -1,6 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
@@ -11,7 +12,8 @@ describe("ActionMenuComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpClientModule, SharedModule],
-      declarations: [ActionMenuComponent]
+      declarations: [ActionMenuComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

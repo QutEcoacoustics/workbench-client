@@ -4,7 +4,8 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { environment } from "src/environments/environment";
+import { testAppInitializer } from "src/app/app.helper";
+import { AppConfigService } from "../app-config/app-config.service";
 import { BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
@@ -12,18 +13,25 @@ import { SecurityService } from "./security.service";
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
-  const url = environment.bawApiUrl;
+  let config: AppConfigService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
-        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+        ...testAppInitializer,
+        BawApiInterceptor,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        SecurityService
       ]
     });
 
     service = TestBed.get(SecurityService);
+    config = TestBed.get(AppConfigService);
     httpMock = TestBed.get(HttpTestingController);
 
     Object.defineProperty(window, "sessionStorage", {
@@ -33,6 +41,7 @@ describe("SecurityService", () => {
 
   afterEach(() => {
     sessionStorage.clear();
+    httpMock.verify();
   });
 
   it("should be created", () => {
@@ -58,7 +67,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -93,7 +102,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
 
@@ -122,7 +131,7 @@ describe("SecurityService", () => {
     );
 
     httpMock.expectNone({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
   }));
@@ -139,7 +148,7 @@ describe("SecurityService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -184,7 +193,7 @@ describe("SecurityService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -218,7 +227,7 @@ describe("SecurityService", () => {
     });
 
     const loginReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     loginReq.flush({
@@ -236,7 +245,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -267,7 +276,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -285,7 +294,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -316,7 +325,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -334,7 +343,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -365,7 +374,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -383,7 +392,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -407,7 +416,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     httpMock.expectNone({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     expect(service.isLoggedIn()).toBeFalsy();

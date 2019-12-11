@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 
 /**
@@ -22,9 +22,9 @@ export abstract class BawApiService {
     filter -> POST with filter body
   */
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient, protected config: AppConfigService) {}
 
-  private url = environment.bawApiUrl;
+  private url = this.config.getConfig().environment.apiRoot;
 
   protected paths: Paths;
   protected userSessionStorage = "user";
