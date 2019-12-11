@@ -90,7 +90,7 @@ describe("ProjectDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized Access");
+    expect(title.innerText).toBe("Unauthorized access");
   });
 
   it("should handle site not found", () => {
@@ -124,7 +124,7 @@ describe("ProjectDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized Access");
+    expect(title.innerText).toBe("Unauthorized access");
   });
 
   it("should show project error instead of site error when project loads first", fakeAsync(() => {
@@ -153,7 +153,7 @@ describe("ProjectDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized Access");
+    expect(title.innerText).toBe("Unauthorized access");
   }));
 
   it("should show project error instead of site error when site loads first", fakeAsync(() => {
@@ -182,7 +182,7 @@ describe("ProjectDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized Access");
+    expect(title.innerText).toBe("Unauthorized access");
   }));
 
   it("should show loading until project returns", fakeAsync(() => {

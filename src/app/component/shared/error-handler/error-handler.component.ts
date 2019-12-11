@@ -1,11 +1,18 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from "@angular/core";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 
 @Component({
   selector: "app-error-handler",
   template: `
     <ng-container *ngIf="display === 'unauthorized'">
-      <h1>Unauthorized Access</h1>
+      <h1>Unauthorized access</h1>
       <p>You need to log in or register before continuing.</p>
     </ng-container>
     <ng-container *ngIf="display === 'notFound'">
@@ -17,12 +24,13 @@ import { BawApiService } from "src/app/services/baw-api/base-api.service";
       <p>You do not have sufficient permissions to access this page.</p>
     </ng-container>
     <ng-container *ngIf="display === 'unknown'">
-      <h1>Unknown Error</h1>
+      <h1>Unknown error</h1>
       <p>
         An unknown error has occurred. Please try again or report the issue.
       </p>
     </ng-container>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorHandlerComponent implements OnInit, OnChanges {
   @Input() errorCode: number;
@@ -31,11 +39,15 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
   constructor(private api: BawApiService) {}
 
   ngOnInit() {
+    console.log("Init");
     this.evaluateError();
+    console.log("Display: ", this.display);
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("Change detected");
     this.evaluateError();
+    console.log("Display: ", this.display);
   }
 
   evaluateError() {
@@ -53,6 +65,7 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
         break;
 
       case undefined:
+      case null:
         this.display = "";
         break;
 
