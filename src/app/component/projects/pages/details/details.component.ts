@@ -55,6 +55,7 @@ export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
   project: Project;
   sites: Site[];
+  status: number;
   state = "loading";
   subSink: SubSink = new SubSink();
 
@@ -80,11 +81,8 @@ export class DetailsComponent extends PageComponent
           this.state = "ready";
         },
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
-          }
+          this.status = err.status;
+          this.state = "error";
         }
       );
 
@@ -98,10 +96,9 @@ export class DetailsComponent extends PageComponent
       .subscribe(
         sites => (this.sites = sites),
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
+          if (this.state !== "error") {
+            this.status = err.status;
+            this.state = "error";
           }
         }
       );

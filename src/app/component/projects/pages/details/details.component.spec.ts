@@ -93,6 +93,98 @@ describe("ProjectDetailsComponent", () => {
     expect(title.innerText).toBe("Unauthorized Access");
   });
 
+  it("should handle site not found", () => {
+    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+      const subject = new Subject<Site[]>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.notFound,
+        message: "Project Not Found"
+      });
+      return subject;
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Not found");
+  });
+
+  it("should handle unauthorized site", () => {
+    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+      const subject = new Subject<Site[]>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.unauthorized,
+        message: "Unauthorized"
+      });
+      return subject;
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized Access");
+  });
+
+  it("should show project error instead of site error when project loads first", fakeAsync(() => {
+    spyOn(projectsApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+      subject.error({
+        status: projectsApi.apiReturnCodes.unauthorized,
+        message: "Unauthorized"
+      });
+      return subject;
+    });
+    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+      const subject = new Subject<Site>();
+      setTimeout(() => {
+        subject.error({
+          status: sitesApi.apiReturnCodes.notFound,
+          message: "Site Not Found"
+        });
+      }, 50);
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized Access");
+  }));
+
+  it("should show project error instead of site error when site loads first", fakeAsync(() => {
+    spyOn(projectsApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+      setTimeout(() => {
+        subject.error({
+          status: projectsApi.apiReturnCodes.unauthorized,
+          message: "Unauthorized"
+        });
+      }, 50);
+      return subject;
+    });
+    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+      const subject = new Subject<Site>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.notFound,
+        message: "Site Not Found"
+      });
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized Access");
+  }));
+
   it("should show loading until project returns", fakeAsync(() => {
     spyOn(projectsApi, "getProject").and.callFake(() => {
       const subject = new Subject<Project>();
