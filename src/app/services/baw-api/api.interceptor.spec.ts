@@ -53,7 +53,7 @@ describe("BawApiInterceptor", () => {
     };
 
     http.get<any>(environment.bawApiUrl + "/brokenapiroute").subscribe(
-      data => {
+      () => {
         expect(false).toBeTruthy("HTTP Error Responses should not return data");
         done();
       },
@@ -88,6 +88,58 @@ describe("BawApiInterceptor", () => {
         data: null
       },
       { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("should handle api error response with info", done => {
+    const noop = () => {
+      done();
+    };
+
+    http.get<any>(environment.bawApiUrl + "/brokenapiroute").subscribe(
+      () => {
+        expect(false).toBeTruthy("HTTP Error Responses should not return data");
+        done();
+      },
+      err => {
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        });
+        done();
+      },
+      noop
+    );
+
+    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
     );
   });
 

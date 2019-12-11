@@ -104,17 +104,24 @@ export class BawApiInterceptor implements HttpInterceptor {
   private handleError(
     response: HttpErrorResponse | APIErrorResponse | APIErrorDetails
   ): Observable<never> {
-    if (isErrorResponse(response)) {
-      return throwError({
+    if (isErrorDetails(response)) {
+      return throwError(response);
+    } else if (isErrorResponse(response)) {
+      const error: APIErrorDetails = {
         status: response.status,
-        message: response.error.meta.error.details,
-        info: response.error.meta.error.info
-      });
+        message: response.error.meta.error.details
+      };
+
+      if (response.error.meta.error.info) {
+        error.info = response.error.meta.error.info;
+      }
+
+      return throwError(error);
     } else {
       return throwError({
         status: response.status,
         message: response.message
-      });
+      } as APIErrorDetails);
     }
   }
 }
@@ -125,7 +132,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 export interface APIErrorDetails {
   status: number;
   message: string;
-  info: any;
+  info?: any;
 }
 
 /**
@@ -145,6 +152,24 @@ interface APIErrorResponse extends HttpErrorResponse {
   };
 }
 
+/**
+ * Determine if error response has already been processed
+ * @param errorResponse Error response
+ */
+function isErrorDetails(
+  errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
+): errorResponse is APIErrorDetails {
+  return (
+    "status" in errorResponse &&
+    "message" in errorResponse &&
+    Object.keys(errorResponse).length <= 3
+  );
+}
+
+/**
+ * Determine if error response is from API
+ * @param errorResponse Error response
+ */
 function isErrorResponse(
   errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
 ): errorResponse is APIErrorResponse {
