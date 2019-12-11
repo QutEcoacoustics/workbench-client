@@ -819,7 +819,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: environment.bawApiUrl + "/projects/1/sites",
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
       method: "POST"
     });
     req.flush(
@@ -858,7 +858,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: environment.bawApiUrl + "/projects/5/sites",
+      url: config.getConfig().environment.apiRoot + "/projects/5/sites",
       method: "POST"
     });
     req.flush(
@@ -887,7 +887,7 @@ describe("SitesService", () => {
     service.newProjectSite(1, { name: "Testing Site #1" }).subscribe();
 
     const req = httpMock.expectOne({
-      url: environment.bawApiUrl + "/projects/1/sites",
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
       method: "POST"
     });
     expect(req.request.body).toEqual({
@@ -904,7 +904,7 @@ describe("SitesService", () => {
       .subscribe();
 
     const req = httpMock.expectOne({
-      url: environment.bawApiUrl + "/projects/1/sites",
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
       method: "POST"
     });
     expect(req.request.body).toEqual({
@@ -931,7 +931,7 @@ describe("SitesService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: environment.bawApiUrl + "/projects/1/sites",
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
       method: "POST"
     });
     req.flush(

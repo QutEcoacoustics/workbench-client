@@ -736,7 +736,7 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    const req = httpMock.expectOne({ url: config.getConfig().environment.apiRoot + "/projects", method: "POST" });
     req.flush(
       {
         meta: {
@@ -759,7 +759,7 @@ describe("ProjectsService", () => {
   it("newProject should create new project with required details", () => {
     service.newProject({ name: "Testing Project #1" }).subscribe();
 
-    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    const req = httpMock.expectOne({ url: config.getConfig().environment.apiRoot + "/projects", method: "POST" });
     expect(req.request.body).toEqual({
       name: "Testing Project #1"
     });
@@ -773,7 +773,7 @@ describe("ProjectsService", () => {
       })
       .subscribe();
 
-    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    const req = httpMock.expectOne({ url: config.getConfig().environment.apiRoot + "/projects", method: "POST" });
     expect(req.request.body).toEqual({
       name: "Testing Project #1",
       description: "Custom description"
@@ -798,7 +798,7 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    const req = httpMock.expectOne({ url: config.getConfig().environment.apiRoot + "/projects", method: "POST" });
     req.flush(
       {
         meta: {
@@ -834,7 +834,7 @@ describe("ProjectsService", () => {
       }
     );
 
-    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    const req = httpMock.expectOne({ url: config.getConfig().environment.apiRoot + "/projects", method: "POST" });
     req.flush(
       {
         meta: {
