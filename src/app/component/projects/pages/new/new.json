@@ -20,9 +20,10 @@
     },
     {
       "key": "image",
-      "type": "file",
+      "type": "input",
       "templateOptions": {
         "label": "Image",
+        "type": "file",
         "required": false
       }
     }

@@ -5,9 +5,10 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
+import { FormlyModule } from "@ngx-formly/core";
+import { validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { FormlyCustomModule } from "src/app/helpers/formly/formly.module";
 import { UnlockPasswordComponent } from "./unlock-account.component";
 
 describe("UnlockPasswordComponent", () => {
@@ -16,7 +17,12 @@ describe("UnlockPasswordComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, FormlyCustomModule],
+      imports: [
+        SharedModule,
+        FormlyModule.forRoot({
+          validationMessages
+        })
+      ],
       declarations: [UnlockPasswordComponent, HomeComponent]
     }).compileComponents();
   }));
