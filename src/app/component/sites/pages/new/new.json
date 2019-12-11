@@ -35,23 +35,6 @@
         "type": "number",
         "required": false
       }
-    },
-    {
-      "key": "image",
-      "type": "input",
-      "templateOptions": {
-        "label": "Image",
-        "type": "file",
-        "required": false
-      }
-    },
-    {
-      "key": "timezone",
-      "type": "input",
-      "templateOptions": {
-        "label": "Time Zone",
-        "required": true
-      }
     }
   ]
 }

@@ -59,17 +59,6 @@ export class EditComponent extends PageComponent implements OnInit {
         },
         err => {}
       );
-
-    this.route.params.subscribe({
-      next: params => {
-        this.api.getProject(params.projectId).subscribe({
-          next: project => {
-            this.schema.model.name = project.name;
-            this.ready = true;
-          }
-        });
-      }
-    });
   }
 
   /**

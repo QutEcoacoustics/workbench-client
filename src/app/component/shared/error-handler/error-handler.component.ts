@@ -39,15 +39,11 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
   constructor(private api: BawApiService) {}
 
   ngOnInit() {
-    console.log("Init");
     this.evaluateError();
-    console.log("Display: ", this.display);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log("Change detected");
+  ngOnChanges() {
     this.evaluateError();
-    console.log("Display: ", this.display);
   }
 
   evaluateError() {

@@ -6,7 +6,7 @@ import { Site } from "src/app/models/Site";
   template: `
     <ng-container *ngIf="locationPins; else placeholderMap">
       <div class="map-container">
-        <agm-map [fitBounds]="true">
+        <agm-map [fitBounds]="true" [mapTypeId]="'satellite'">
           <ng-container *ngFor="let site of sites">
             <agm-marker
               *ngIf="containsLocation(site)"
