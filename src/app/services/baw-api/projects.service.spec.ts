@@ -705,20 +705,23 @@ describe("ProjectsService", () => {
     );
 
     const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
-    req.flush({
-      meta: {
-        status: 201,
-        message: "Created"
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 1,
+          name: "Testing Project #1",
+          description: null,
+          creator_id: 1,
+          site_ids: [],
+          description_html: null
+        }
       },
-      data: {
-        id: 1,
-        name: "Testing Project #1",
-        description: null,
-        creator_id: 1,
-        site_ids: [],
-        description_html: null
-      }
-    });
+      { status: 201, statusText: "Created" }
+    );
   });
 
   it("newProject should create new project with required details", () => {

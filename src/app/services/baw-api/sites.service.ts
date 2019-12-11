@@ -1,8 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import {
+  Description,
+  ID,
+  IDs,
+  Latitude,
+  Longitude,
+  Name,
+  TimezoneInformation
+} from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
+import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 
 @Injectable({
@@ -16,7 +25,8 @@ export class SitesService extends BawApiService {
       list: "/projects/:projectId/sites",
       flattened: "/sites/:siteId",
       nested: "/projects/:projectId/sites/:siteId",
-      filter: "/sites/filter"
+      filter: "/sites/filter",
+      new: "/projects/:projectId/sites"
     };
   }
 
@@ -69,6 +79,49 @@ export class SitesService extends BawApiService {
     this.details(subject, callback, this.paths.list, {
       args: { projectId: id }
     });
+
+    return subject;
+  }
+
+  /**
+   * Create a new site
+   * @param id Project ID
+   * @param details Form details
+   */
+  public newProjectSite(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    const next = () => {
+      subject.next(true);
+      subject.complete();
+    };
+    const error = (err: APIErrorDetails) => {
+      // Deal with custom info
+      if (err.info && err.info.name && err.info.name.length === 1) {
+        subject.error(err.message + ": name " + err.info.name[0]);
+      } else {
+        subject.error(err.message);
+      }
+    };
+
+    this.create(
+      next,
+      error,
+      this.paths.new,
+      { args: { projectId: id } },
+      details,
+      {}
+    );
 
     return subject;
   }

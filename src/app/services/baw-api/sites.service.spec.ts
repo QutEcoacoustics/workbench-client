@@ -769,4 +769,154 @@ describe("SitesService", () => {
       data: null
     });
   });
+
+  it("newProjectSite should create new site", done => {
+    service.newProjectSite(1, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: environment.bawApiUrl + "/projects/1/sites",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 6,
+          name: "Test site #1",
+          description: null,
+          project_ids: [1],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: null
+        }
+      },
+      { status: 201, statusText: "Created" }
+    );
+  });
+
+  it("newProjectSite should create new site with random project id", done => {
+    service.newProjectSite(5, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: environment.bawApiUrl + "/projects/5/sites",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 6,
+          name: "Test site #1",
+          description: null,
+          project_ids: [5],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: null
+        }
+      },
+      { status: 201, statusText: "Created" }
+    );
+  });
+
+  it("newProjectSite should create new site with required details", () => {
+    service.newProjectSite(1, { name: "Testing Site #1" }).subscribe();
+
+    const req = httpMock.expectOne({
+      url: environment.bawApiUrl + "/projects/1/sites",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1"
+    });
+  });
+
+  it("newProjectSite should create new site with description", () => {
+    service
+      .newProjectSite(1, {
+        name: "Testing Site #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({
+      url: environment.bawApiUrl + "/projects/1/sites",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("newProjectSite should create new site with location obfuscated", done => {});
+  xit("newProjectSite should create new site with custom location", done => {});
+  xit("newProjectSite should create new site with timezone information", done => {});
+
+  it("newProjectSite should handle unauthorized", done => {
+    service.newProjectSite(1, { name: "Testing Site #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Unauthorized");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: environment.bawApiUrl + "/projects/1/sites",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
 });
