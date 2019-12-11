@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { flatMap } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
 import data from "./edit.json";
 
@@ -20,6 +21,7 @@ import data from "./edit.json";
   template: `
     <app-wip>
       <app-form
+        *ngIf="ready"
         [schema]="schema"
         [title]="'Edit Site'"
         [error]="error"
@@ -34,30 +36,29 @@ export class EditComponent extends PageComponent implements OnInit {
   schema = data;
   error: string;
   loading: boolean;
+  ready: boolean;
 
-  constructor(
-    private route: ActivatedRoute,
-    private ref: ChangeDetectorRef,
-    private api: ProjectsService
-  ) {
+  constructor(private route: ActivatedRoute, private api: SitesService) {
     super();
   }
 
   ngOnInit() {
+    this.ready = false;
     this.loading = false;
 
-    // TODO Display the name of the previous project and auto fill form with previous values
-    // this is currently not working. Time zone should also provide more information for the user
-    this.route.params.subscribe({
-      next: params => {
-        this.api.getProject(params.projectId).subscribe({
-          next: project => {
-            this.schema.model.name = project.name;
-            this.ref.detectChanges();
-          }
-        });
-      }
-    });
+    this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.api.getProjectSite(params.projectId, params.siteId);
+        })
+      )
+      .subscribe(
+        site => {
+          this.schema.model.name = site.name;
+          this.ready = true;
+        },
+        err => {}
+      );
   }
 
   /**
