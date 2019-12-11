@@ -1,6 +1,5 @@
 import { Location } from "@angular/common";
 import {
-  async,
   ComponentFixture,
   fakeAsync,
   TestBed,
@@ -508,9 +507,12 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
   }));
 
-  // TODO Implement, currently this fails because navigation does not occur
   it("should redirect to home page on successful login", fakeAsync(() => {
-    spyOn(router, "navigate");
+    spyOn(router, "navigate").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"

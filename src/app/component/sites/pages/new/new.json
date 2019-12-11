@@ -1,12 +1,5 @@
 {
-  "model": {
-    "name": "",
-    "description": "",
-    "latitude": 0,
-    "longitude": 0,
-    "image": "",
-    "timezone": ""
-  },
+  "model": {},
   "fields": [
     {
       "key": "name",
