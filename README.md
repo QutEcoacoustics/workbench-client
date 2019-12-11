@@ -153,11 +153,7 @@ There are three environments supported by this application.
 
   ```javascript
   TestBed.configureTestingModule({
-    imports: [
-      FormlyModule.forRoot({
-        validationMessages
-      })
-    ]
+    imports: [FormlyCustomModule]
   });
   ```
 

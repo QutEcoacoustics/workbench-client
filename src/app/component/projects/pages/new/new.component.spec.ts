@@ -4,10 +4,10 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { FormlyCustomModule } from "src/app/helpers/formly/formly.module";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { NewComponent } from "./new.component";
 
@@ -18,12 +18,7 @@ describe("ProjectsNewComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ],
+      imports: [SharedModule, FormlyCustomModule],
       declarations: [NewComponent],
       providers: [...testBawServices]
     }).compileComponents();

@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { validationMessages } from "src/app/app.helper";
+import { formlyRoot } from "src/app/helpers/formly/formly.module";
 import { FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
@@ -41,10 +41,8 @@ describe("FormComponent", () => {
         NgbModule,
         FormsModule,
         ReactiveFormsModule,
-        FormlyModule.forRoot({
-          validationMessages
-        }),
-        FormlyBootstrapModule
+        FormlyBootstrapModule,
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [FormComponent]
     }).compileComponents();

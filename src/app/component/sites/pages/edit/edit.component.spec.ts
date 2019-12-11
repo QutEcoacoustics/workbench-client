@@ -1,12 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import {
-  testAppInitializer,
-  testBawServices,
-  validationMessages
-} from "src/app/app.helper";
+import { testAppInitializer, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { FormlyCustomModule } from "src/app/helpers/formly/formly.module";
 import { EditComponent } from "./edit.component";
 
 describe("SitesEditComponent", () => {
@@ -15,13 +11,7 @@ describe("SitesEditComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ],
+      imports: [RouterTestingModule, SharedModule, FormlyCustomModule],
       declarations: [EditComponent],
       providers: [...testAppInitializer, ...testBawServices]
     }).compileComponents();
