@@ -1,7 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import {
+  Description,
+  ID,
+  ImageURL,
+  Name
+} from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
@@ -74,20 +79,23 @@ export class ProjectsService extends BawApiService {
    * @param details Form details
    */
   public newProject(details: {
-    name: string;
-    description: string;
-    creatorId: string;
-    image: string;
+    name: Name;
+    description?: Description;
+    image?: ImageURL;
   }): Subject<boolean> {
     const subject = new Subject<boolean>();
 
-    const next = (data: ProjectInterface) => {
-      console.debug(data);
+    const next = () => {
       subject.next(true);
+      subject.complete();
     };
     const error = (err: APIErrorDetails) => {
-      console.debug(err);
-      subject.error(err.message);
+      // Deal with custom info
+      if (err.info && err.info.name && err.info.name.length === 1) {
+        subject.error(err.message + ": name " + err.info.name[0]);
+      } else {
+        subject.error(err.message);
+      }
     };
 
     this.create(next, error, this.paths.new, {}, details, {});

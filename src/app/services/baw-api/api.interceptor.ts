@@ -107,7 +107,8 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (isErrorResponse(response)) {
       return throwError({
         status: response.status,
-        message: response.error.meta.error.details
+        message: response.error.meta.error.details,
+        info: response.error.meta.error.info
       });
     } else {
       return throwError({
@@ -124,6 +125,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 export interface APIErrorDetails {
   status: number;
   message: string;
+  info: any;
 }
 
 /**
@@ -136,8 +138,10 @@ interface APIErrorResponse extends HttpErrorResponse {
       message: string;
       error: {
         details: string;
+        info?: any;
       };
     };
+    data: null;
   };
 }
 

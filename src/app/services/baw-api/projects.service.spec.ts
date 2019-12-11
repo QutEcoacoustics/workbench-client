@@ -690,4 +690,134 @@ describe("ProjectsService", () => {
     });
     project.flush(projectValidResponse);
   });
+
+  it("newProject should create new project", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    req.flush({
+      meta: {
+        status: 201,
+        message: "Created"
+      },
+      data: {
+        id: 1,
+        name: "Testing Project #1",
+        description: null,
+        creator_id: 1,
+        site_ids: [],
+        description_html: null
+      }
+    });
+  });
+
+  it("newProject should create new project with required details", () => {
+    service.newProject({ name: "Testing Project #1" }).subscribe();
+
+    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1"
+    });
+  });
+
+  it("newProject should create new project with description", () => {
+    service
+      .newProject({
+        name: "Testing Project #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("newProject should create new project with image", done => {});
+  xit("newProject should create new project with image and description", done => {});
+
+  it("newProject should return error on duplicate project", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy(
+          "Record could not be saved: name has already been taken"
+        );
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("newProject should handle unauthorized", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Unauthorized");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({ url: url + "/projects", method: "POST" });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
 });
