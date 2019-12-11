@@ -14,7 +14,7 @@ import {
   toCamelCase,
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { BawApiService } from "./base-api.service";
 
 /**
@@ -24,7 +24,7 @@ import { BawApiService } from "./base-api.service";
  */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
-  constructor(public api: BawApiService) {}
+  constructor(public api: BawApiService, private config: AppConfigService) {}
 
   /**
    * Intercept http requests and handle appending login tokens and errors.
@@ -37,7 +37,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!request.url.includes(environment.bawApiUrl)) {
+    if (!request.url.includes(this.config.getConfig().environment.apiRoot)) {
       return next.handle(request);
     }
 

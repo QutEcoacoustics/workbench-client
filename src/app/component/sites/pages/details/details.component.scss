@@ -1,4 +1,4 @@
-@import '../../../../styles/thumbnail.scss';
+@import "../../../../styles/thumbnail.scss";
 
 ul {
   margin-bottom: 0px;
@@ -15,18 +15,4 @@ ul {
 .nav-pills > li > a {
   font-size: 0.9rem;
   border-radius: 4px;
-}
-
-.map-placeholder {
-  border: 1px solid black;
-  height: 400px;
-  display: block;
-  line-height: 400px;
-  text-align: center;
-
-  span {
-    display: inline-block;
-    vertical-align: middle;
-    line-height: normal;
-  }
 }

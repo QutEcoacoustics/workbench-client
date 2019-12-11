@@ -1,10 +1,14 @@
-import { AgmCoreModule } from "@agm/core";
+import {
+  AgmCoreModule,
+  LAZY_MAPS_API_CONFIG,
+  LazyMapsAPILoaderConfigLiteral
+} from "@agm/core";
+import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
+import { forwardRef, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FormlyModule } from "@ngx-formly/core";
+import { config } from "process";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -21,6 +25,26 @@ import { SharedModule } from "./component/shared/shared.module";
 import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
+import { retrieveAppConfig } from "./services/app-config/app-config.service";
+
+// tslint:disable-next-line: no-use-before-declare
+@Injectable({ providedIn: forwardRef(() => AppModule) })
+export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
+  apiKey?: string;
+
+  constructor() {
+    retrieveAppConfig(
+      environment.appConfig,
+      data => {
+        this.apiKey = data.values.keys.googleMaps;
+      },
+      err => {
+        this.apiKey = "";
+        console.error("Failed to load google api key: ", err);
+      }
+    );
+  }
+}
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],
@@ -28,9 +52,8 @@ import { StatisticsModule } from "./component/statistics/statistics.module";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    AgmCoreModule.forRoot({
-      apiKey: environment.googleApiKey
-    }),
+    AgmCoreModule.forRoot(),
+    AgmSnazzyInfoWindowModule,
     FormlyModule.forRoot({
       validationMessages
     }),
@@ -46,13 +69,12 @@ import { StatisticsModule } from "./component/statistics/statistics.module";
     HomeModule,
     ErrorModule
   ],
-  providers: [...providers],
+  providers: [
+    ...providers,
+    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [PermissionsShieldComponent],
   exports: []
 })
-export class AppModule {
-  constructor() {
-    library.add(fas);
-  }
-}
+export class AppModule {}

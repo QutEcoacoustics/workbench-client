@@ -8,8 +8,9 @@ import {
   Name
 } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
+import { AppConfigService } from "../../app-config/app-config.service";
+import { BawApiService } from "../base-api.service";
 import { ProjectFilters } from "../projects.service";
-import { SecurityService } from "../security.service";
 
 /**
  * Interacts with projects route in baw api
@@ -17,9 +18,9 @@ import { SecurityService } from "../security.service";
 @Injectable({
   providedIn: "root"
 })
-export class MockProjectsService extends SecurityService {
-  constructor(http: HttpClient) {
-    super(http);
+export class MockProjectsService extends BawApiService {
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
   }
 
   /**

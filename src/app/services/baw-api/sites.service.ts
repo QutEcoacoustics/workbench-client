@@ -11,6 +11,7 @@ import {
   TimezoneInformation
 } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 
@@ -18,8 +19,8 @@ import { BawApiService, Filters } from "./base-api.service";
   providedIn: "root"
 })
 export class SitesService extends BawApiService {
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
       list: "/projects/:projectId/sites",
