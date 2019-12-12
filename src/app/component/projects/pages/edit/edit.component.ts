@@ -1,15 +1,15 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { flatMap } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
+import { ID } from "src/app/interfaces/apiInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { editProjectMenuItem, projectCategory } from "../../projects.menus";
 import data from "./edit.json";
-import { ID } from "src/app/interfaces/apiInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: projectCategory,
@@ -69,7 +69,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         project => {
-          this.schema.model.name = project.name;
+          this.schema.model["name"] = project.name;
           this.ready = true;
         },
         (err: APIErrorDetails) => {

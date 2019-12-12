@@ -72,7 +72,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         site => {
-          this.schema.model.name = site.name;
+          this.schema.model["name"] = site.name;
           this.ready = true;
         },
         (err: APIErrorDetails) => {
