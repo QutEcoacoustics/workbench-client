@@ -10,7 +10,10 @@ import {
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
+import { ID } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem, sitesCategory } from "../../sites.menus";
 import data from "./new.json";
@@ -30,28 +33,33 @@ import data from "./new.json";
 @Component({
   selector: "app-sites-new",
   template: `
-    <app-wip>
-      <app-form
-        [schema]="schema"
-        [title]="'New Site'"
-        [error]="error"
-        [success]="success"
-        [submitLabel]="'Submit'"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+    <app-form
+      *ngIf="ready"
+      [schema]="schema"
+      [title]="'New Site'"
+      [error]="error"
+      [success]="success"
+      [submitLabel]="'Submit'"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></app-form>
+    <app-error-handler [errorCode]="errorCode"></app-error-handler>
   `
 })
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
+  errorCode: number;
   loading: boolean;
+  ready: boolean;
   schema = data;
   subSink: SubSink = new SubSink();
   success: string;
 
+  projectId: ID;
+
   constructor(
-    private api: SitesService,
+    private sitesApi: SitesService,
+    private projectsApi: ProjectsService,
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute
   ) {
@@ -60,6 +68,23 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = false;
+
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          this.projectId = params.projectId;
+          return this.projectsApi.getProject(params.projectId);
+        })
+      )
+      .subscribe(
+        () => {
+          this.ready = true;
+        },
+        (err: APIErrorDetails) => {
+          this.errorCode = err.status;
+          this.ready = false;
+        }
+      );
   }
 
   ngOnDestroy() {
@@ -77,7 +102,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.subSink.sink = this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.newProjectSite(params.projectId, $event);
+          return this.sitesApi.newProjectSite(params.projectId, $event);
         })
       )
       .subscribe(
@@ -85,8 +110,8 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
           this.success = "Site was successfully created.";
           this.loading = false;
         },
-        err => {
-          this.error = err;
+        (err: APIErrorDetails) => {
+          this.error = err.message;
           this.loading = false;
         }
       );

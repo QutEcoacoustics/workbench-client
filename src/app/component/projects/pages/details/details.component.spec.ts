@@ -16,6 +16,7 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { SiteCardComponent } from "../../site-card/site-card.component";
 import { DetailsComponent } from "./details.component";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 describe("ProjectDetailsComponent", () => {
   let projectsApi: ProjectsService;
@@ -65,7 +66,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: projectsApi.apiReturnCodes.notFound,
         message: "Project Not Found"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -82,7 +83,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: projectsApi.apiReturnCodes.unauthorized,
         message: "Unauthorized"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -99,7 +100,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: sitesApi.apiReturnCodes.notFound,
         message: "Project Not Found"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -116,7 +117,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: sitesApi.apiReturnCodes.unauthorized,
         message: "Unauthorized"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -133,7 +134,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: projectsApi.apiReturnCodes.unauthorized,
         message: "Unauthorized"
-      });
+      } as APIErrorDetails);
       return subject;
     });
     spyOn(sitesApi, "getProjectSite").and.callFake(() => {
@@ -142,7 +143,7 @@ describe("ProjectDetailsComponent", () => {
         subject.error({
           status: sitesApi.apiReturnCodes.notFound,
           message: "Site Not Found"
-        });
+        } as APIErrorDetails);
       }, 50);
       return subject;
     });
@@ -163,7 +164,7 @@ describe("ProjectDetailsComponent", () => {
         subject.error({
           status: projectsApi.apiReturnCodes.unauthorized,
           message: "Unauthorized"
-        });
+        } as APIErrorDetails);
       }, 50);
       return subject;
     });
@@ -172,7 +173,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: sitesApi.apiReturnCodes.notFound,
         message: "Site Not Found"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 

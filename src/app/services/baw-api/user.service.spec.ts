@@ -7,7 +7,7 @@ import { TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiInterceptor } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 import { UserService } from "./user.service";
@@ -87,9 +87,12 @@ describe("UserService", () => {
         expect(false).toBeTruthy("Should not produce response");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 0,
+          message: "User is not logged in."
+        });
         done();
       },
       () => {
@@ -168,9 +171,12 @@ describe("UserService", () => {
         expect(false).toBeTruthy("Should not produce response");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 0,
+          message: "User is not logged in."
+        });
         done();
       },
       () => {

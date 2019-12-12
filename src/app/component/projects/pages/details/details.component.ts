@@ -16,6 +16,8 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  exploreAudioMenuItem,
   projectMenuItem,
   projectsCategory
 } from "../../projects.menus";
@@ -24,21 +26,9 @@ import {
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
-        uri: "/listen",
-        icon: ["fas", "map"],
-        label: "Explore audio",
-        tooltip: () => "Explore audio"
-      } as MenuLink,
+      exploreAudioMenuItem,
       editProjectMenuItem,
-      {
-        kind: "MenuLink",
-        uri: "REPLACE_ME",
-        icon: ["fas", "key"],
-        label: "Edit Permissions",
-        tooltip: () => "REPLACE_ME"
-      } as MenuLink,
+      editProjectPermissionsMenuItem,
       newSiteMenuItem
     ]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),

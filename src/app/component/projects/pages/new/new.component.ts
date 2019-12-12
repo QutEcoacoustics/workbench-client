@@ -4,6 +4,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
@@ -28,17 +29,15 @@ import data from "./new.json";
 @Component({
   selector: "app-projects-new",
   template: `
-    <app-wip>
-      <app-form
-        [schema]="schema"
-        [title]="'New Project'"
-        [error]="error"
-        [success]="success"
-        [submitLabel]="'Submit'"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+    <app-form
+      [schema]="schema"
+      [title]="'New Project'"
+      [error]="error"
+      [success]="success"
+      [submitLabel]="'Submit'"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></app-form>
   `
 })
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
@@ -73,8 +72,13 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
         this.success = "Project was successfully created.";
         this.loading = false;
       },
-      err => {
-        this.error = err;
+      (err: APIErrorDetails) => {
+        if (err.info && err.info.name && err.info.name.length === 1) {
+          this.error = err.message + ": name " + err.info.name[0];
+        } else {
+          this.error = err.message;
+        }
+
         this.loading = false;
       }
     );

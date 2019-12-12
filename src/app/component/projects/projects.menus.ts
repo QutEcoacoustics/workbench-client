@@ -1,4 +1,8 @@
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
+import {
+  Category,
+  MenuLink,
+  MenuRoute
+} from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const projectsRoute = StrongRoute.Base.add("projects");
@@ -70,3 +74,20 @@ export const editProjectMenuItem = MenuRoute({
     indentation: projectMenuItem.order.indentation + 1
   }
 });
+
+export const exploreAudioMenuItem = {
+  kind: "MenuLink",
+  uri: "/listen",
+  icon: ["fas", "map"],
+  label: "Explore audio",
+  tooltip: () => "Explore audio"
+} as MenuLink;
+
+export const editProjectPermissionsMenuItem = {
+  kind: "MenuLink",
+  uri: "REPLACE_ME",
+  icon: ["fas", "key"],
+  label: "Edit Permissions",
+  tooltip: () => "REPLACE_ME",
+  predicate: user => !!user
+} as MenuLink;
