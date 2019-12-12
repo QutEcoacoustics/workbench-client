@@ -7,6 +7,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { editProjectMenuItem, projectCategory } from "../../projects.menus";
 import data from "./edit.json";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: projectCategory,
@@ -57,7 +58,7 @@ export class EditComponent extends PageComponent implements OnInit {
           this.schema.model.name = project.name;
           this.ready = true;
         },
-        err => {}
+        (err: APIErrorDetails) => {}
       );
   }
 

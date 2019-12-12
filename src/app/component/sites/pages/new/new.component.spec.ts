@@ -10,11 +10,15 @@ import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import { testBawServices, validationMessages } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { Project } from "src/app/models/Project";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { NewComponent } from "./new.component";
 
 describe("SitesNewComponent", () => {
-  let api: SitesService;
+  let sitesApi: SitesService;
+  let projectApi: ProjectsService;
   let router: ActivatedRoute;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
@@ -23,7 +27,96 @@ describe("SitesNewComponent", () => {
     public params = new BehaviorSubject<any>({ projectId: 1 });
   }
 
-  beforeEach(() => {
+  beforeEach(fakeAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        FormlyModule.forRoot({
+          validationMessages
+        })
+      ],
+      declarations: [NewComponent],
+      providers: [
+        ...testBawServices,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+  }));
+
+  it("should handle project not found", fakeAsync(() => {
+    fixture = TestBed.createComponent(NewComponent);
+    sitesApi = TestBed.get(SitesService);
+    projectApi = TestBed.get(ProjectsService);
+    router = TestBed.get(ActivatedRoute);
+    component = fixture.componentInstance;
+    component.schema.model = {};
+
+    spyOn(projectApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+
+      setTimeout(() => {
+        subject.error({
+          message: "Not Found",
+          status: projectApi.apiReturnCodes.notFound
+        } as APIErrorDetails);
+      }, 50);
+
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Not found");
+  }));
+
+  it("should handle project unauthorized", fakeAsync(() => {
+    fixture = TestBed.createComponent(NewComponent);
+    sitesApi = TestBed.get(SitesService);
+    projectApi = TestBed.get(ProjectsService);
+    router = TestBed.get(ActivatedRoute);
+    component = fixture.componentInstance;
+    component.schema.model = {};
+
+    spyOn(projectApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+
+      setTimeout(() => {
+        subject.error({
+          message: "Unauthorized",
+          status: projectApi.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
+      }, 50);
+
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized access");
+  }));
+});
+
+describe("SitesNewComponent", () => {
+  let sitesApi: SitesService;
+  let projectApi: ProjectsService;
+  let router: ActivatedRoute;
+  let component: NewComponent;
+  let fixture: ComponentFixture<NewComponent>;
+
+  class MockActivatedRoute {
+    public params = new BehaviorSubject<any>({ projectId: 1 });
+  }
+
+  beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -40,13 +133,35 @@ describe("SitesNewComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
-    api = TestBed.get(SitesService);
+    sitesApi = TestBed.get(SitesService);
+    projectApi = TestBed.get(ProjectsService);
     router = TestBed.get(ActivatedRoute);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-
     component.schema.model = {};
-  });
+
+    spyOn(projectApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+
+      setTimeout(() => {
+        subject.next(
+          new Project({
+            id: 1,
+            name: "Project",
+            description: "Project Description",
+            creatorId: 1,
+            siteIds: new Set([1])
+          })
+        );
+        subject.complete();
+      }, 50);
+
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+  }));
 
   it("should create", () => {
     expect(component).toBeTruthy();
@@ -362,7 +477,7 @@ describe("SitesNewComponent", () => {
 
   it("should create new site on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -379,15 +494,15 @@ describe("SitesNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalledWith(1, {
+    expect(sitesApi.newProjectSite).toHaveBeenCalled();
+    expect(sitesApi.newProjectSite).toHaveBeenCalledWith(1, {
       name: "test site"
     });
   }));
 
   it("should create new site containing emoji on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -404,15 +519,15 @@ describe("SitesNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalledWith(1, {
+    expect(sitesApi.newProjectSite).toHaveBeenCalled();
+    expect(sitesApi.newProjectSite).toHaveBeenCalledWith(1, {
       name: "test site 😀"
     });
   }));
 
   it("should create new site on submit with description", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -435,8 +550,8 @@ describe("SitesNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalledWith(1, {
+    expect(sitesApi.newProjectSite).toHaveBeenCalled();
+    expect(sitesApi.newProjectSite).toHaveBeenCalledWith(1, {
       name: "test site",
       description: "test description"
     });
@@ -444,7 +559,7 @@ describe("SitesNewComponent", () => {
 
   xit("should not create new site on submit with latitude and no longitude", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -473,7 +588,7 @@ describe("SitesNewComponent", () => {
 
   xit("should not create new site on submit with longitude and no latitude", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -502,7 +617,7 @@ describe("SitesNewComponent", () => {
 
   xit("should create new site on submit with latitude and longitude", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite");
+    spyOn(sitesApi, "newProjectSite");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -531,8 +646,8 @@ describe("SitesNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalled();
-    expect(api.newProjectSite).toHaveBeenCalledWith(1, {
+    expect(sitesApi.newProjectSite).toHaveBeenCalled();
+    expect(sitesApi.newProjectSite).toHaveBeenCalledWith(1, {
       name: "test site"
     });
   }));
@@ -542,7 +657,7 @@ describe("SitesNewComponent", () => {
 
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
@@ -576,11 +691,14 @@ describe("SitesNewComponent", () => {
 
   it("should show error on unauthorized", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: sitesApi.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -609,11 +727,14 @@ describe("SitesNewComponent", () => {
 
   it("should show error on site not found", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Not Found");
+        subject.error({
+          message: "Not Found",
+          info: sitesApi.apiReturnCodes.notFound
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -644,7 +765,7 @@ describe("SitesNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
@@ -676,11 +797,14 @@ describe("SitesNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: sitesApi.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -707,7 +831,7 @@ describe("SitesNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
@@ -737,11 +861,14 @@ describe("SitesNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: sitesApi.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;

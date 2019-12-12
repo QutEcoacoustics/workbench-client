@@ -7,6 +7,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
 import data from "./edit.json";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: sitesCategory,
@@ -57,7 +58,7 @@ export class EditComponent extends PageComponent implements OnInit {
           this.schema.model.name = site.name;
           this.ready = true;
         },
-        err => {}
+        (err: APIErrorDetails) => {}
       );
   }
 

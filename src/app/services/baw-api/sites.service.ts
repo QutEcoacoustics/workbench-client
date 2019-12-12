@@ -106,14 +106,7 @@ export class SitesService extends BawApiService {
       subject.next(true);
       subject.complete();
     };
-    const error = (err: APIErrorDetails) => {
-      // Deal with custom info
-      if (err.info && err.info.name && err.info.name.length === 1) {
-        subject.error(err.message + ": name " + err.info.name[0]);
-      } else {
-        subject.error(err.message);
-      }
-    };
+    const error = (err: APIErrorDetails) => subject.error(err);
 
     this.create(
       next,

@@ -8,6 +8,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
 import { testBawServices, validationMessages } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { NewComponent } from "./new.component";
 
@@ -344,7 +345,18 @@ describe("ProjectsNewComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Record could not be saved: name has already been taken");
+        subject.error({
+          message: "Record could not be saved",
+          status: api.apiReturnCodes.unprocessableEntity,
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -379,7 +391,10 @@ describe("ProjectsNewComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: api.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -446,7 +461,10 @@ describe("ProjectsNewComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: api.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -507,7 +525,10 @@ describe("ProjectsNewComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          message: "Unauthorized",
+          info: api.apiReturnCodes.unauthorized
+        } as APIErrorDetails);
       }, 50);
 
       return subject;

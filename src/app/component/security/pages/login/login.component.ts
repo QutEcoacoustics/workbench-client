@@ -14,6 +14,7 @@ import {
   unlockAccountMenuItem
 } from "../../security.menus";
 import data from "./login.json";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: securityCategory,
@@ -90,8 +91,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         this.router.navigate([""]);
         this.loading = false;
       },
-      err => {
-        this.error = err;
+      (err: APIErrorDetails) => {
+        this.error = err.message;
         this.loading = false;
       }
     );
