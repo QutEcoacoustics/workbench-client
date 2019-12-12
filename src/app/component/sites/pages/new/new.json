@@ -19,7 +19,7 @@
       }
     },
     {
-      "key": "latitude",
+      "key": "customLatitude",
       "type": "input",
       "templateOptions": {
         "label": "Latitude",
@@ -28,11 +28,28 @@
       }
     },
     {
-      "key": "longitude",
+      "key": "customLongitude",
       "type": "input",
       "templateOptions": {
         "label": "Longitude",
         "type": "number",
+        "required": false
+      }
+    },
+    {
+      "key": "image",
+      "type": "input",
+      "templateOptions": {
+        "label": "Image",
+        "type": "file",
+        "required": false
+      }
+    },
+    {
+      "key": "timezoneInformation",
+      "type": "input",
+      "templateOptions": {
+        "label": "Time Zone",
         "required": false
       }
     }

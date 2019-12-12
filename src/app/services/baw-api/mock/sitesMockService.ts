@@ -1,7 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import {
+  Description,
+  ID,
+  Latitude,
+  Longitude,
+  Name,
+  TimezoneInformation
+} from "src/app/interfaces/apiInterfaces";
 import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../../app-config/app-config.service";
 import { BawApiService } from "../base-api.service";
@@ -57,6 +64,27 @@ export class MockSitesService extends BawApiService {
    */
   public getFilteredSites(filters: SiteFilters): Subject<Site[]> {
     const subject = new Subject<Site[]>();
+
+    return subject;
+  }
+
+  /**
+   * Create a new site
+   * @param id Project ID
+   * @param details Form details
+   */
+  public newProjectSite(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
 
     return subject;
   }
