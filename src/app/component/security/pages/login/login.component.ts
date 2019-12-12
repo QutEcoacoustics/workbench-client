@@ -5,6 +5,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import {
   confirmAccountMenuItem,
@@ -14,7 +15,6 @@ import {
   unlockAccountMenuItem
 } from "../../security.menus";
 import data from "./login.json";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: securityCategory,

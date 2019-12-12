@@ -1,13 +1,13 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { flatMap } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { editProjectMenuItem, projectCategory } from "../../projects.menus";
 import data from "./edit.json";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: projectCategory,

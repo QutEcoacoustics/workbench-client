@@ -4,10 +4,10 @@ import { List } from "immutable";
 import { flatMap } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
 import data from "./edit.json";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Page({
   category: sitesCategory,
