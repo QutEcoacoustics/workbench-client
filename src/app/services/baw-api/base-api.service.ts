@@ -103,6 +103,7 @@ export abstract class BawApiService {
       this.handleResponse(next, error)
     );
   }
+
   /**
    * Create request for API route
    * @param next Callback function for successful response
@@ -121,6 +122,28 @@ export abstract class BawApiService {
     options?: RequestOptions
   ) {
     this.post<APIResponse>(path, args, body, options).subscribe(
+      this.handleResponse(next, error)
+    );
+  }
+
+  /**
+   * Update request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
+  protected update(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    args?: PathArg,
+    body?: any,
+    options?: RequestOptions
+  ) {
+    this.patch<APIResponse>(path, args, body, options).subscribe(
       this.handleResponse(next, error)
     );
   }
@@ -170,6 +193,23 @@ export abstract class BawApiService {
     options?: RequestOptions
   ): Observable<T> {
     return this.http.post<T>(this.getPath(path, args), body, options);
+  }
+
+  /**
+   * Constructs a `PATCH` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
+  protected patch<T>(
+    path: string,
+    args?: PathArg,
+    body?: any,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.patch<T>(this.getPath(path, args), body, options);
   }
 
   /**
