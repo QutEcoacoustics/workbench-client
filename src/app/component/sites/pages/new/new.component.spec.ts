@@ -319,7 +319,7 @@ describe("SitesNewComponent", () => {
 
   /* End of input typing checks */
 
-  it("should not call submit function with missing project name", fakeAsync(() => {
+  it("should not call submit function with missing site name", fakeAsync(() => {
     spyOn(component, "submit");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
@@ -537,8 +537,8 @@ describe("SitesNewComponent", () => {
     });
   }));
 
-  xit("should create new project on submit with image", fakeAsync(() => {}));
-  xit("should create new project on submit with all inputs", fakeAsync(() => {}));
+  xit("should create new site on submit with image", fakeAsync(() => {}));
+  xit("should create new site on submit with all inputs", fakeAsync(() => {}));
 
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
@@ -556,7 +556,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     const button = fixture.debugElement.nativeElement.querySelector(
@@ -589,7 +589,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     const button = fixture.debugElement.nativeElement.querySelector(
@@ -607,7 +607,7 @@ describe("SitesNewComponent", () => {
     expect(msg.innerText).toContain("Unauthorized");
   }));
 
-  it("should show error on project not found", fakeAsync(() => {
+  it("should show error on site not found", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "newProjectSite").and.callFake(() => {
       const subject = new Subject<boolean>();
@@ -622,7 +622,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     const button = fixture.debugElement.nativeElement.querySelector(
@@ -658,7 +658,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     button.click();
@@ -689,7 +689,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     button.click();
@@ -721,7 +721,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     button.click();
@@ -750,7 +750,7 @@ describe("SitesNewComponent", () => {
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    name.value = "test project";
+    name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
     button.click();
