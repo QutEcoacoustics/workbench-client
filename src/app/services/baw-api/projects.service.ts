@@ -26,7 +26,8 @@ export class ProjectsService extends BawApiService {
       details: "/projects",
       show: "/projects/:projectId",
       filter: "/projects/filter",
-      new: "/projects"
+      new: "/projects",
+      update: "/projects/:projectId"
     };
   }
 
@@ -100,6 +101,45 @@ export class ProjectsService extends BawApiService {
     };
 
     this.create(next, error, this.paths.new, {}, details, {});
+
+    return subject;
+  }
+
+  /**
+   * Update a project
+   * @param details Form details
+   */
+  public updateProject(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      image?: ImageURL;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    const next = () => {
+      subject.next(true);
+      subject.complete();
+    };
+    const error = (err: APIErrorDetails) => {
+      // Deal with custom info
+      if (err.info && err.info.name && err.info.name.length === 1) {
+        subject.error(err.message + ": name " + err.info.name[0]);
+      } else {
+        subject.error(err.message);
+      }
+    };
+
+    this.update(
+      next,
+      error,
+      this.paths.update,
+      { args: { projectId: id } },
+      details,
+      {}
+    );
 
     return subject;
   }

@@ -980,7 +980,7 @@ describe("SitesService", () => {
         },
         data: {
           id: 1,
-          name: "Test site",
+          name: "Testing site #1",
           description: "Test site description",
           project_ids: [1],
           location_obfuscated: false,
@@ -1019,7 +1019,7 @@ describe("SitesService", () => {
         },
         data: {
           id: 1,
-          name: "Test site",
+          name: "Testing site #1",
           description: "Test site description",
           project_ids: [5],
           location_obfuscated: false,
@@ -1058,7 +1058,7 @@ describe("SitesService", () => {
         },
         data: {
           id: 1,
-          name: "Test site",
+          name: "Testing site #1",
           description: "Test site description",
           project_ids: [5],
           location_obfuscated: false,
