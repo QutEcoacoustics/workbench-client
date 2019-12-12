@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
@@ -9,7 +10,8 @@ describe("CmsComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [CmsComponent]
+      declarations: [CmsComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

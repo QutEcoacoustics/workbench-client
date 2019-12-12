@@ -1,5 +1,5 @@
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
-import { CmsComponent } from "./cms/cms/cms.component";
+import { CmsComponent } from "./cms/cms.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";

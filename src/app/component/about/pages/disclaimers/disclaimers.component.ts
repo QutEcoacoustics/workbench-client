@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { List } from "immutable";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { aboutCategory, disclaimersMenuItem } from "../../about.menus";

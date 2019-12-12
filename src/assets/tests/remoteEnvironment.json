@@ -3,6 +3,7 @@
     "apiRoot": "<< apiRoot >>",
     "siteRoot": "<< siteRoot >>",
     "siteDir": "<< siteDir >>",
+    "cmsRoot": "<< cmsRoot >>",
     "ga": {
       "trackingId": "<< placeholder >>"
     }

@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-cms",
@@ -29,11 +30,18 @@ export class CmsComponent implements OnInit, OnDestroy {
   blob: string;
   notifier = new Subject();
 
-  constructor(private http: HttpClient, private ref: ChangeDetectorRef) {}
+  constructor(
+    private config: AppConfigService,
+    private http: HttpClient,
+    private ref: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    console.log("cms");
     this.http
-      .get("/assets/content/" + this.page, { responseType: "text" })
+      .get(this.config.getConfig().environment.cmsRoot + "/" + this.page, {
+        responseType: "text"
+      })
       .pipe(takeUntil(this.notifier))
       .subscribe(
         data => {
