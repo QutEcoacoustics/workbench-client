@@ -130,7 +130,8 @@ export class SitesService extends BawApiService {
 
   /**
    * Create a new site
-   * @param id Project ID
+   * @param projectId Project ID
+   * @param siteId Site ID
    * @param details Form details
    */
   public updateProjectSite(

@@ -57,7 +57,7 @@
       "type": "input",
       "templateOptions": {
         "label": "Time Zone",
-        "required": true
+        "required": false
       }
     }
   ]
