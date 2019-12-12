@@ -19,7 +19,7 @@
       }
     },
     {
-      "key": "latitude",
+      "key": "customLatitude",
       "type": "input",
       "templateOptions": {
         "label": "Latitude",
@@ -28,7 +28,7 @@
       }
     },
     {
-      "key": "longitude",
+      "key": "customLongitude",
       "type": "input",
       "templateOptions": {
         "label": "Longitude",
@@ -46,7 +46,7 @@
       }
     },
     {
-      "key": "timezone",
+      "key": "timezoneInformation",
       "type": "input",
       "templateOptions": {
         "label": "Time Zone",
