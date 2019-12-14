@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import { environment } from "src/environments/environment";
-import { APIError } from "./base-api.interceptor";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails } from "./api.interceptor";
 
 /**
  * Interface with BAW Server Rest API
@@ -22,9 +22,9 @@ export abstract class BawApiService {
     filter -> POST with filter body
   */
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient, protected config: AppConfigService) {}
 
-  private url = environment.bawApiUrl;
+  private url = this.config.getConfig().environment.apiRoot;
 
   protected paths: Paths;
   protected userSessionStorage = "user";
@@ -43,35 +43,38 @@ export abstract class BawApiService {
   }
 
   /**
-   * Username of the logged in user
-   */
-  public getUser(): SessionUser | null {
-    return this.getSessionUser();
-  }
-
-  /**
    * Get response from details route
    * @param subject Subject to update
    * @param next Callback function which generates the model
    * @param path API path
    * @param args API arguments
+   * @param filters API filters
    */
   protected details(
     subject: Subject<any>,
     next: (data: any) => any,
     path: string,
-    args?: PathArg
+    args?: PathArg,
+    filters?: Filters
   ) {
-    this.get<APIResponse>(path, args).subscribe({
+    let params = new HttpParams();
+    for (const filter in filters) {
+      params = params.set(filter, filters[filter]);
+    }
+
+    this.get<APIResponse>(path, args, params).subscribe({
       next: (data: APIResponse) => {
         if (data.data) {
           subject.next(next(data.data));
+          subject.complete();
         } else {
           subject.error("No data returned from API");
+          subject.complete();
         }
       },
-      error: (err: APIError) => {
+      error: (err: APIErrorDetails) => {
         subject.error(err);
+        subject.complete();
       }
     });
   }
@@ -126,12 +129,12 @@ export abstract class BawApiService {
    * @param args API arguments
    * @param options Request options
    */
-  private get<T>(
+  protected get<T>(
     path: string,
     args?: PathArg,
-    options?: RequestOptions
+    params?: HttpParams
   ): Observable<T> {
-    return this.http.get<T>(this.getPath(path, args), options);
+    return this.http.get<T>(this.getPath(path, args), { params });
   }
 
   /**
@@ -157,7 +160,7 @@ export abstract class BawApiService {
    * @param body Request body
    * @param options Request options
    */
-  private post<T>(
+  protected post<T>(
     path: string,
     args?: PathArg,
     body?: any,
@@ -180,7 +183,7 @@ export abstract class BawApiService {
           error("No data returned from API");
         }
       },
-      error: (err: APIError) => {
+      error: (err: APIErrorDetails) => {
         error(err);
       }
     };
@@ -189,7 +192,7 @@ export abstract class BawApiService {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  private getSessionUser(): SessionUser | null {
+  public getSessionUser(): SessionUser | null {
     let user: SessionUser;
     try {
       user = new SessionUser(
@@ -264,7 +267,7 @@ export interface Paths {
 /**
  * Default filter for routes
  */
-export interface Filter {
+export interface Filters {
   direction?: "asc" | "desc";
   items?: number;
   orderBy?: string;

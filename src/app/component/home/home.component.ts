@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { flatMap, map } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
@@ -25,21 +26,21 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 export class HomeComponent extends PageComponent implements OnInit {
   moreProjectsLink = projectsMenuItem;
   processList: List<Card>;
-  projectList$: Observable<any> = this.api
-    .getFilteredProjects({ items: 3 })
-    .pipe(
-      map((data: Project[]) => {
-        return List(data.map(project => project.card));
-      })
-    );
+  projectList$: Observable<any> = this.securityApi.getLoggedInTrigger().pipe(
+    flatMap(() => {
+      return this.projectApi.getFilteredProjects({ items: 3 });
+    }),
+    map((data: Project[]) => {
+      return List(data.map(project => project.card));
+    })
+  );
+
   title: string;
   researchAboutUrl: string;
 
-  lat = 51.678418;
-  lng = 7.809007;
-
   constructor(
-    private api: ProjectsService,
+    private projectApi: ProjectsService,
+    private securityApi: SecurityService,
     private appConfig: AppConfigService
   ) {
     super();

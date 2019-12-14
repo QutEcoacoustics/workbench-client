@@ -1,11 +1,14 @@
 import {
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
   ViewEncapsulation
 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
+import { flatMap } from "rxjs/operators";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -13,14 +16,16 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import {
+  AppConfigService,
+  HeaderDropDownConvertedLink
+} from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
-import { DropDownHeader } from "./header-dropdown/header-dropdown.component";
 
 @Component({
   selector: "app-header",
@@ -29,26 +34,20 @@ import { DropDownHeader } from "./header-dropdown/header-dropdown.component";
   // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   activeLink: string;
   collapsed: boolean;
+  config: any;
+  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
   loggedIn: boolean;
+  subSink: SubSink = new SubSink();
+  title: string;
   user: User;
   userImage: string;
-  title: string;
-  config: any;
-  headers: List<NavigableMenuItem | DropDownHeader>;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
-  routes = {
-    home: homeMenuItem,
-    login: loginMenuItem,
-    register: registerMenuItem,
-    profile: {
-      url: this.appConfig.getConfig().environment.apiRoot + "/my_account"
-    }
-  };
+  routes: any;
 
   constructor(
     private router: Router,
@@ -59,18 +58,28 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.config = this.appConfig.getConfig();
     this.collapsed = true;
     this.activeLink = "projects";
+    this.config = this.appConfig.getConfig();
     this.title = this.config.values.brand.name;
+    this.routes = {
+      home: homeMenuItem,
+      login: loginMenuItem,
+      register: registerMenuItem,
+      profile: {
+        url: "http://INTENTIONALLY_BROKEN_LINK/"
+      }
+    };
+
+    // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
       ...this.config.values.content.map(header => {
-        if (header.header_title) {
+        if (header.headerTitle) {
           return {
-            header_title: header.header_title,
+            headerTitle: header.headerTitle,
             items: header.items.map(item => this.generateLink(item))
-          } as DropDownHeader;
+          } as HeaderDropDownConvertedLink;
         } else {
           return this.generateLink(header);
         }
@@ -78,22 +87,42 @@ export class HeaderComponent implements OnInit {
       contactUsMenuItem
     ]);
 
-    this.router.events.subscribe(val => {
+    this.subSink.sink = this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
         this.toggleCollapse(true);
       }
     });
 
-    this.userApi.getMyAccount().subscribe(user => {
-      this.user = user;
+    this.subSink.sink = this.securityApi
+      .getLoggedInTrigger()
+      .subscribe(loggedIn => {
+        this.subSink.sink = this.userApi.getMyAccount().subscribe(
+          user => {
+            this.user = user;
 
-      // Find the smallest icon for the user
-      if (this.user) {
-        this.userImage = this.user.getImage(ImageSizes.small);
-      }
+            // Find the small icon for the user
+            if (this.user) {
+              this.userImage = this.user.getImage(ImageSizes.small);
+            }
 
-      this.ref.detectChanges();
-    });
+            this.ref.detectChanges();
+          },
+          () => {
+            this.user = null;
+
+            // If the user is logged in, but the retrieval failed. Log them out
+            if (loggedIn) {
+              this.securityApi.signOut().subscribe();
+            }
+
+            this.ref.detectChanges();
+          }
+        );
+      });
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 
   private generateLink(item): MenuLink {
@@ -135,9 +164,14 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Logout user
+   * TODO Handle error by giving user a warning
    */
   logout() {
-    this.securityApi.signOut();
-    this.router.navigate(["/"]);
+    this.securityApi.signOut().subscribe({
+      error: () => {},
+      complete: () => {
+        this.router.navigate([""]);
+      }
+    });
   }
 }

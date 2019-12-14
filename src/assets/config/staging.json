@@ -1,7 +1,7 @@
 {
   "environment": {
-    "apiRoot": "http://staging.EXAMPLE.org",
-    "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
+    "apiRoot": "http://staging.ecosounds.org",
+    "siteRoot": "http://staging.ecosounds.org/system/listen_to",
     "siteDir": "/system/listen_to/",
     "ga": {
       "trackingId": "<<PLACEHOLDER>>"
@@ -17,7 +17,7 @@
     },
     "content": [
       {
-        "header_title": "Custom Menu",
+        "headerTitle": "Custom Menu",
         "items": [
           {
             "title": "Example",

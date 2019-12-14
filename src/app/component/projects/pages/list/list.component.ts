@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnChanges, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";

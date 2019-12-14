@@ -1,14 +1,10 @@
 import camelCase from "lodash.camelcase";
-import flow from "lodash.flow";
-import kebabCase from "lodash.kebabcase";
 import snakeCase from "lodash.snakecase";
-import upperFirst from "lodash.upperfirst";
 import * as whitelist from "./whitelist.json";
 
 /**
  * Deeply converts keys of an object from one case to another.
  * Function was created here: https://github.com/travelperk/case-converter
- * @author travelperk
  * @copyright MIT
  * @param oldObject to convert
  * @param converterFunction to convert key.

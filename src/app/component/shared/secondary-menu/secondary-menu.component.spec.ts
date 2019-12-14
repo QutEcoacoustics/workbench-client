@@ -1,6 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { MenuButtonComponent } from "../menu/button/button.component";
 import { MenuExternalLinkComponent } from "../menu/external-link/external-link.component";
 import { MenuInternalLinkComponent } from "../menu/internal-link/internal-link.component";
@@ -21,7 +22,8 @@ describe("SecondaryMenuComponent", () => {
         MenuButtonComponent,
         MenuExternalLinkComponent,
         MenuInternalLinkComponent
-      ]
+      ],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 
@@ -34,4 +36,6 @@ describe("SecondaryMenuComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Add unit tests
 });

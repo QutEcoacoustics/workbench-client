@@ -34,6 +34,7 @@ import data from "./login.json";
       [schema]="schema"
       [title]="'Log in'"
       [error]="error"
+      [submitLabel]="'Log in'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
@@ -90,7 +91,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       err => {
-        this.error = err.message;
+        this.error = err;
         this.loading = false;
       }
     );

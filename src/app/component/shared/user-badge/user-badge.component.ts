@@ -9,7 +9,31 @@ import { User } from "src/app/models/User";
 
 @Component({
   selector: "app-user-badge",
-  templateUrl: "./user-badge.component.html",
+  template: `
+    <h4>{{ label }}</h4>
+    <ng-container *ngIf="userNotFound; else userFound">
+      <p>User not found</p>
+    </ng-container>
+    <ng-template #userFound>
+      <div class="media" *ngFor="let user of users">
+        <div class="image">
+          <a [href]="user.user.url">
+            <img
+              [src]="user.user.getImage(imageSize)"
+              [alt]="user.user.userName"
+            />
+          </a>
+        </div>
+        <div class="body">
+          <a class="heading" [href]="user.user.url">{{ user.user.userName }}</a>
+          <br />
+          <p style="word-wrap: break-word" *ngIf="user.time">
+            Last Seen: {{ user.time }}
+          </p>
+        </div>
+      </div>
+    </ng-template>
+  `,
   styleUrls: ["./user-badge.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

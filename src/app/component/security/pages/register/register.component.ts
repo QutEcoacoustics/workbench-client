@@ -18,6 +18,7 @@ import data from "./register.json";
       <app-form
         [schema]="schema"
         [title]="'Register'"
+        [submitLabel]="'Register'"
         [submitLoading]="loading"
         [error]="error"
         (onSubmit)="submit($event)"

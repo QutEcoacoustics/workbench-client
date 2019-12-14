@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {

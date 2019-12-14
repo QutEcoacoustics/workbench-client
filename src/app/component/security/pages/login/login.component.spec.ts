@@ -10,10 +10,9 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject } from "rxjs";
-import { validationMessages } from "src/app/app.helper";
+import { testBawServices, validationMessages } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { MockSecurityService } from "src/app/services/baw-api/mock/securityMockService";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
 
@@ -34,7 +33,7 @@ describe("LoginComponent", () => {
         })
       ],
       declarations: [LoginComponent, HomeComponent],
-      providers: [{ provide: SecurityService, useClass: MockSecurityService }]
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 
@@ -319,34 +318,6 @@ describe("LoginComponent", () => {
     });
   }));
 
-  // TODO Implement, currently this fails because navigation does not occur
-  xit("should redirect to home page on successful login", fakeAsync(() => {
-    spyOn(router, "navigate");
-
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
-    password.value = "password";
-    password.dispatchEvent(new Event("input"));
-
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
-    button.click();
-
-    tick(5000);
-    fixture.detectChanges();
-
-    expect(router.navigate).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(["/"]);
-  }));
-
   it("should show error on bad email", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callThrough();
@@ -516,5 +487,33 @@ describe("LoginComponent", () => {
 
     tick();
     fixture.detectChanges();
+  }));
+
+  // TODO Implement, currently this fails because navigation does not occur
+  xit("should redirect to home page on successful login", fakeAsync(() => {
+    spyOn(router, "navigate");
+
+    const email = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    email.value = "email";
+    email.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    tick(5000);
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(["/"]);
   }));
 });

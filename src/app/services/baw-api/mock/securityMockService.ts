@@ -1,7 +1,11 @@
+import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
+import { AppConfigService } from "../../app-config/app-config.service";
+import { BawApiService } from "../base-api.service";
 
 export class MockSecurityService {
+  private loggedIn = false;
   private trigger = new BehaviorSubject<boolean>(false);
 
   public signIn(details: {
@@ -11,14 +15,16 @@ export class MockSecurityService {
     const subject = new Subject<boolean | string>();
 
     if (details.email === "email" && details.password === "password") {
+      this.loggedIn = true;
       subject.next(true);
       this.trigger.next(true);
     } else {
+      this.loggedIn = false;
       subject.error("Error MSG");
       this.trigger.next(false);
     }
 
-    subject.pipe(delay(2000));
+    subject.pipe(delay(50));
     return subject.asObservable();
   }
 
@@ -34,14 +40,16 @@ export class MockSecurityService {
       details.email === "email" &&
       details.password === "password"
     ) {
+      this.loggedIn = true;
       subject.next(true);
       this.trigger.next(true);
     } else {
+      this.loggedIn = false;
       subject.error("Error MSG");
       this.trigger.next(false);
     }
 
-    subject.pipe(delay(1000));
+    subject.pipe(delay(50));
     return subject.asObservable();
   }
 
@@ -51,5 +59,9 @@ export class MockSecurityService {
 
   public getLoggedInTrigger() {
     return this.trigger;
+  }
+
+  public isLoggedIn(): boolean {
+    return this.loggedIn;
   }
 }
