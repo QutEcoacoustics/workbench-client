@@ -6,16 +6,16 @@ import {
   AudioRecording,
   AudioRecordingInterface
 } from "src/app/models/AudioRecording";
-import { APIError } from "./base-api.interceptor";
-import { Filter } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails } from "./api.interceptor";
+import { BawApiService, Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class AudioRecordingsService extends SecurityService {
-  constructor(http: HttpClient) {
-    super(http);
+export class AudioRecordingsService extends BawApiService {
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
       filter: "/audio_recordings/filter"
@@ -29,13 +29,13 @@ export class AudioRecordingsService extends SecurityService {
    */
   public getAudioRecordings(
     siteId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording[]> {
     const subject = new Subject<AudioRecording[]>();
     const next = (data: AudioRecordingInterface[]) => {
       subject.next(data.map(recording => new AudioRecording(recording)));
     };
-    const error = (err: APIError) => {
+    const error = (err: APIErrorDetails) => {
       subject.error(err);
     };
 
@@ -65,13 +65,13 @@ export class AudioRecordingsService extends SecurityService {
   public getAudioRecording(
     siteId: ID,
     recordingId: ID,
-    filters?: AudioRecordingFilter
+    filters?: AudioRecordingFilters
   ): Subject<AudioRecording> {
     const subject = new Subject<AudioRecording>();
     const next = (data: AudioRecordingInterface) => {
       subject.next(new AudioRecording(data));
     };
-    const error = (err: APIError) => {
+    const error = (err: APIErrorDetails) => {
       subject.error(err);
     };
 
@@ -79,9 +79,10 @@ export class AudioRecordingsService extends SecurityService {
       next,
       error,
       this.paths.filter,
-      { filters },
+      {},
       {
         filter: {
+          ...filters,
           and: {
             siteId: {
               eq: siteId
@@ -101,7 +102,7 @@ export class AudioRecordingsService extends SecurityService {
 /**
  * Audio recording filter
  */
-interface AudioRecordingFilter extends Filter {
+export interface AudioRecordingFilters extends Filters {
   orderBy?:
     | "id"
     | "uuid"

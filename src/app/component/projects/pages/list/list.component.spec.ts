@@ -1,5 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { testBawServices } from "src/app/app.helper";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
@@ -9,7 +10,8 @@ describe("ProjectsListComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      declarations: [ListComponent]
+      declarations: [ListComponent],
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 

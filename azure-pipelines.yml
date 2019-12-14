@@ -4,43 +4,52 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '10.x'
-    displayName: 'Install Node.js'
+      versionSpec: 10.x
+    displayName: Install Node.js
 
-  - script: |
-      sudo apt-get install libxss1 libappindicator1 libindicator7
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      sudo apt install ./google-chrome*.deb
-    displayName: 'Install Chrome'
-  - script: |
-      npm install -g @angular/cli
-      npm install
-      ng build --prod
-    displayName: 'npm install and build'
+  # this may no-longer be needed because i've installed the puppeteer package
+  # which installs its own version of chromium
+  # - script: |
+  #     sudo apt-get install libxss1 libappindicator1 libindicator7
+  #     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  #     sudo apt install ./google-chrome*.deb
+  #   displayName: Install Chrome
+
+  - task: Npm@1
+    inputs:
+      command: install
+    displayName: npm install
+
+
+  - script: npm run build
+    displayName: build the workbench client
+
   - script: |
       npm test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
-    displayName: 'Test suite'
-  - script: |
-      npm run lint
-    displayName: 'Lint project'
+    displayName: Run the test suite
 
   - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage results'
-    condition: succeededOrFailed()
     inputs:
-      codeCoverageTool: 'cobertura'
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage/workbench-client/cobertura-coverage.xml'
+      codeCoverageTool: "cobertura"
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage/workbench-client/cobertura-coverage.xml"
       failIfCoverageEmpty: true
+    condition: succeededOrFailed()
+    displayName: 'Publish code coverage results'
+
   - task: PublishTestResults@2
-    displayName: 'Publish test results'
     condition: succeededOrFailed()
     inputs:
-      testResultsFormat: 'JUnit'
-      testResultsFiles: '**/TESTS-*.xml'
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/TESTS-*.xml"
       mergeTestResults: true
       publishRunAttachments: true
+    displayName: Publish test results
+
+  - script: npm run lint
+    condition: succeededOrFailed()
+    displayName: Lint project

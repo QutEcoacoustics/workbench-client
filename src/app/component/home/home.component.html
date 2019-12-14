@@ -16,7 +16,7 @@
       software which is is open source and available from
       <a href="https://github.com/QutEcoacoustics">GitHub.</a><br />The website
       is run by the QUT Ecoacoustics Research Group to
-      <a routerLink="/research/about" routerLinkActive="active">
+      <a [href]="researchAboutUrl">
         support bioacoustics and ecoacoustics research.
       </a>
     </p>
@@ -56,7 +56,3 @@
     </app-cards>
   </section>
 </div>
-
-<agm-map [latitude]="lat" [longitude]="lng">
-  <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-</agm-map>

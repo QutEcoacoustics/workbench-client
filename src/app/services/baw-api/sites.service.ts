@@ -3,18 +3,18 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
-import { APIResponseList, Filter, Paths } from "./base-api.service";
-import { SecurityService } from "./security.service";
+import { AppConfigService } from "../app-config/app-config.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends SecurityService {
-  constructor(http: HttpClient) {
-    super(http);
+export class SitesService extends BawApiService {
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
-      list: "/projects/:projectId/sites/",
+      list: "/projects/:projectId/sites",
       flattened: "/sites/:siteId",
       nested: "/projects/:projectId/sites/:siteId",
       filter: "/sites/filter"
@@ -73,25 +73,8 @@ export class SitesService extends SecurityService {
 
     return subject;
   }
-
-  /**
-   * Get list of filtered sites
-   * @param filters Filters
-   * @returns Observable list of sites
-   */
-  public getFilteredSites(filters: SiteFilter): Subject<Site[]> {
-    const subject = new Subject<Site[]>();
-    const callback = (sites: SiteInterface[]) =>
-      sites.map(site => {
-        return new Site(site);
-      });
-
-    this.details(subject, callback, this.paths.filter, { filters });
-
-    return subject;
-  }
 }
 
-export interface SiteFilter extends Filter {
+export interface SiteFilters extends Filters {
   orderBy?: "id" | "name" | "description";
 }

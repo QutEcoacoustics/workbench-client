@@ -19,7 +19,27 @@ import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
   selector: "app-permissions-shield",
-  templateUrl: "./permissions-shield.component.html",
+  template: `
+    <div *ngIf="!error">
+      <app-user-badge
+        [label]="'Created By'"
+        [users]="createdBy"
+        *ngIf="createdBy"
+      ></app-user-badge>
+      <app-user-badge
+        [label]="'Modified By'"
+        [users]="modifiedBy"
+        *ngIf="modifiedBy"
+      ></app-user-badge>
+      <app-user-badge
+        [label]="'Owned By'"
+        [users]="ownedBy"
+        *ngIf="ownedBy"
+      ></app-user-badge>
+      <h4>Your access level</h4>
+      <p>Not Implemented</p>
+    </div>
+  `,
   styleUrls: ["./permissions-shield.component.scss"]
 })
 export class PermissionsShieldComponent

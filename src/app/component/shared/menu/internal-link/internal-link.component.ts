@@ -12,13 +12,13 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
   template: `
     <a
       class="nav-link"
-      placement="{{ placement }}"
-      routerLink="{{ linkRoute }}"
       [ngClass]="{ active: active }"
+      [routerLink]="linkRoute"
+      [placement]="placement"
       [ngbTooltip]="link.tooltip()"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-      <span>{{ link.label }}</span>
+      <span id="label">{{ link.label }}</span>
       <span class="d-none" [id]="id">
         {{ link.tooltip() }}
       </span>

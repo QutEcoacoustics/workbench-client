@@ -7,13 +7,13 @@ import { MenuAction } from "src/app/interfaces/menusInterfaces";
     <button
       class="btn text-left"
       (click)="link.action()"
-      ngbTooltip="{{ link.tooltip() }}"
-      placement="{{ placement }}"
+      [ngbTooltip]="link.tooltip()"
+      [placement]="placement"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-      <span>{{ link.label }}</span>
+      <span id="label">{{ link.label }}</span>
       <span class="d-none" [id]="id">
-        {{ link.tooltip }}
+        {{ link.tooltip() }}
       </span>
     </button>
   `,

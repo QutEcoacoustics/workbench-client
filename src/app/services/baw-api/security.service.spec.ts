@@ -4,51 +4,44 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./base-api.interceptor";
+import { testAppInitializer } from "src/app/app.helper";
+import { AppConfigService } from "../app-config/app-config.service";
+import { BawApiInterceptor } from "./api.interceptor";
+import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
-  const url = environment.bawApiUrl;
+  let config: AppConfigService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
-        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+        ...testAppInitializer,
+        BawApiInterceptor,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        SecurityService
       ]
     });
 
     service = TestBed.get(SecurityService);
+    config = TestBed.get(AppConfigService);
     httpMock = TestBed.get(HttpTestingController);
-
-    const mockSessionStorage = (() => {
-      let storage = {};
-      return {
-        getItem(key) {
-          return storage[key];
-        },
-        removeItem(key) {
-          delete storage[key];
-        },
-        setItem(key, value) {
-          storage[key] = value.toString();
-        },
-        clear() {
-          storage = {};
-        },
-        get length() {
-          return Object.keys(storage).length;
-        }
-      };
-    })();
 
     Object.defineProperty(window, "sessionStorage", {
       value: mockSessionStorage
     });
+  });
+
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
   });
 
   it("should be created", () => {
@@ -60,7 +53,7 @@ describe("SecurityService", () => {
   });
 
   it("getUser should return null initially", () => {
-    expect(service.getUser()).toBe(null);
+    expect(service.getSessionUser()).toBe(null);
   });
 
   it("login should set session cookie", () => {
@@ -74,7 +67,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -100,7 +93,6 @@ describe("SecurityService", () => {
 
   it("login should return error msg when already logged in", fakeAsync(() => {
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      console.log("User: ", JSON.parse(sessionStorage.getItem("user")));
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
@@ -110,7 +102,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
 
@@ -139,7 +131,7 @@ describe("SecurityService", () => {
     );
 
     httpMock.expectNone({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
   }));
@@ -147,7 +139,7 @@ describe("SecurityService", () => {
   it("login should return error on bad credentials", () => {
     service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
-        expect(res).toBeFalsy();
+        expect(true).toBeFalsy();
       },
       err => {
         expect(err).toBeTruthy();
@@ -156,7 +148,7 @@ describe("SecurityService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -167,23 +159,26 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
-          links: {
-            "Confirm account": "/my_account/confirmation/new",
-            "Reset password": "/my_account/password/new",
-            "Unlock account": "/my_account/unlock/new"
-          },
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details:
+              "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
+            links: {
+              "Confirm account": "/my_account/confirmation/new",
+              "Reset password": "/my_account/password/new",
+              "Unlock account": "/my_account/unlock/new"
+            },
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("login should return error on missing credentials", () => {
@@ -198,7 +193,7 @@ describe("SecurityService", () => {
     );
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -209,17 +204,20 @@ describe("SecurityService", () => {
       "application/json"
     );
 
-    req.flush({
-      meta: {
-        status: 400,
-        message: "Bad Request",
-        error: {
-          details: "The request could not be verified.",
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 400,
+          message: "Bad Request",
+          error: {
+            details: "The request could not be verified.",
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 400, statusText: "Bad Request" }
+    );
   });
 
   it("logout should clear session cookie", fakeAsync(() => {
@@ -229,7 +227,7 @@ describe("SecurityService", () => {
     });
 
     const loginReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     loginReq.flush({
@@ -247,7 +245,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -278,7 +276,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -296,7 +294,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -317,7 +315,7 @@ describe("SecurityService", () => {
       }
     });
 
-    expect(service.getUser()).toBeFalsy();
+    expect(service.getSessionUser()).toBeFalsy();
   }));
 
   it("logout should set isLoggedIn to false", fakeAsync(() => {
@@ -327,7 +325,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -345,7 +343,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -376,7 +374,7 @@ describe("SecurityService", () => {
     });
 
     const req = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
     req.flush({
@@ -394,7 +392,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     const logoutReq = httpMock.expectOne({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     logoutReq.flush({
@@ -418,7 +416,7 @@ describe("SecurityService", () => {
     service.signOut();
 
     httpMock.expectNone({
-      url: url + "/security",
+      url: config.getConfig().environment.apiRoot + "/security",
       method: "DELETE"
     });
     expect(service.isLoggedIn()).toBeFalsy();
