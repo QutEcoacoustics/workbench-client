@@ -5,9 +5,11 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   selector: "app-items-item",
   template: `
     <li class="list-group-item clearfix">
-      <fa-icon [icon]="icon"></fa-icon>
-      {{ name }}
-      <span class="badge badge-pill badge-secondary float-right">
+      <fa-icon id="icon" [icon]="icon"></fa-icon>
+      <span id="name">
+        {{ name }}
+      </span>
+      <span id="value" class="badge badge-pill badge-secondary float-right">
         {{ value }}
       </span>
     </li>
