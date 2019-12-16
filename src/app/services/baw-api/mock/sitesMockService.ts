@@ -69,6 +69,28 @@ export class MockSitesService extends BawApiService {
   }
 
   /**
+   * Update a projects site
+   * @param projectId Project ID
+   * @param siteId Site ID
+   * @param details Form details
+   */
+  public updateProjectSite(
+    projectId: ID,
+    siteId: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    return subject;
+  }
+  /**
    * Create a new site
    * @param id Project ID
    * @param details Form details

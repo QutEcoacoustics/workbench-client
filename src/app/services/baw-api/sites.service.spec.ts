@@ -991,4 +991,225 @@ describe("SitesService", () => {
       { status: 401, statusText: "Unauthorized" }
     );
   });
+
+  it("updateProjectSite should update site", done => {
+    service.updateProjectSite(1, 1, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 200,
+          message: "OK"
+        },
+        data: {
+          id: 1,
+          name: "Testing site #1",
+          description: "Test site description",
+          project_ids: [1],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: "<p>Test site description</p>\n"
+        }
+      },
+      { status: 200, statusText: "OK" }
+    );
+  });
+
+  it("updateProjectSite should update site with random project id", done => {
+    service.updateProjectSite(5, 1, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/5/sites/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 200,
+          message: "OK"
+        },
+        data: {
+          id: 1,
+          name: "Testing site #1",
+          description: "Test site description",
+          project_ids: [5],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: "<p>Test site description</p>\n"
+        }
+      },
+      { status: 200, statusText: "OK" }
+    );
+  });
+
+  it("updateProjectSite should update site with random site id", done => {
+    service.updateProjectSite(1, 5, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/5",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 200,
+          message: "OK"
+        },
+        data: {
+          id: 1,
+          name: "Testing site #1",
+          description: "Test site description",
+          project_ids: [5],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: "<p>Test site description</p>\n"
+        }
+      },
+      { status: 200, statusText: "OK" }
+    );
+  });
+
+  it("updateProjectSite should update site with required details", () => {
+    service.updateProjectSite(1, 1, { name: "Testing Site #1" }).subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/1",
+      method: "PATCH"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1"
+    });
+  });
+
+  it("updateProjectSite should update site with description", () => {
+    service
+      .updateProjectSite(1, 1, {
+        name: "Testing Site #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/1",
+      method: "PATCH"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("updateProjectSite should update new site with location obfuscated", done => {});
+  xit("updateProjectSite should update new site with custom location", done => {});
+  xit("updateProjectSite should update new site with timezone information", done => {});
+
+  it("updateProjectSite should handle unauthorized", done => {
+    service.updateProjectSite(1, 1, { name: "Testing Site #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Unauthorized");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("updateProjectSite should handle not found", done => {
+    service.updateProjectSite(1, 1, { name: "Testing Site #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Not Found");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 404,
+          message: "Not Found",
+          error: {
+            details: "Could not find the requested item.",
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 404, statusText: "Not Found" }
+    );
+  });
 });

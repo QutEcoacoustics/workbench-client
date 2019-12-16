@@ -68,4 +68,21 @@ export class MockProjectsService extends BawApiService {
 
     return subject;
   }
+
+  /**
+   * Update a project
+   * @param details Form details
+   */
+  public updateProject(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      image?: ImageURL;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    return subject;
+  }
 }

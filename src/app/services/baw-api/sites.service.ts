@@ -27,7 +27,8 @@ export class SitesService extends BawApiService {
       flattened: "/sites/:siteId",
       nested: "/projects/:projectId/sites/:siteId",
       filter: "/sites/filter",
-      new: "/projects/:projectId/sites"
+      new: "/projects/:projectId/sites",
+      update: "/projects/:projectId/sites/:siteId"
     };
   }
 
@@ -113,6 +114,51 @@ export class SitesService extends BawApiService {
       error,
       this.paths.new,
       { args: { projectId: id } },
+      details,
+      {}
+    );
+
+    return subject;
+  }
+
+  /**
+   * Update a projects site
+   * @param projectId Project ID
+   * @param siteId Site ID
+   * @param details Form details
+   */
+  public updateProjectSite(
+    projectId: ID,
+    siteId: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    const next = () => {
+      subject.next(true);
+      subject.complete();
+    };
+    const error = (err: APIErrorDetails) => {
+      // Deal with custom info
+      if (err.info && err.info.name && err.info.name.length === 1) {
+        subject.error(err.message + ": name " + err.info.name[0]);
+      } else {
+        subject.error(err.message);
+      }
+    };
+
+    this.update(
+      next,
+      error,
+      this.paths.update,
+      { args: { projectId, siteId } },
       details,
       {}
     );

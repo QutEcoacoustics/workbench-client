@@ -1,9 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { flatMap } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { SubSink } from "src/app/helpers/subsink/subsink";
+import { ID } from "src/app/interfaces/apiInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { editProjectMenuItem, projectCategory } from "../../projects.menus";
@@ -26,20 +28,31 @@ import data from "./edit.json";
         [schema]="schema"
         [title]="'Edit Project'"
         [error]="error"
+        [success]="success"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
+    <app-error-handler [errorCode]="errorCode"></app-error-handler>
   `
 })
-export class EditComponent extends PageComponent implements OnInit {
-  schema = data;
+export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
+  errorCode: number;
   loading: boolean;
   ready: boolean;
+  schema = data;
+  subSink: SubSink = new SubSink();
+  success: string;
 
-  constructor(private route: ActivatedRoute, private api: ProjectsService) {
+  projectId: ID;
+
+  constructor(
+    private route: ActivatedRoute,
+    private api: ProjectsService,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -47,19 +60,27 @@ export class EditComponent extends PageComponent implements OnInit {
     this.ready = false;
     this.loading = false;
 
-    this.route.params
+    this.subSink.sink = this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.getProject(params.projectId);
+          this.projectId = params.projectId;
+          return this.api.getProject(this.projectId);
         })
       )
       .subscribe(
         project => {
-          this.schema.model.name = project.name;
+          this.schema.model["name"] = project.name;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {}
+        (err: APIErrorDetails) => {
+          this.errorCode = err.status;
+          this.ready = false;
+        }
       );
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 
   /**
@@ -68,7 +89,19 @@ export class EditComponent extends PageComponent implements OnInit {
    */
   submit($event: any) {
     this.loading = true;
-    console.log($event);
-    this.loading = false;
+    this.ref.detectChanges();
+
+    this.subSink.sink = this.api
+      .updateProject(this.projectId, $event)
+      .subscribe(
+        () => {
+          this.success = "Project was successfully updated.";
+          this.loading = false;
+        },
+        err => {
+          this.error = err;
+          this.loading = false;
+        }
+      );
   }
 }

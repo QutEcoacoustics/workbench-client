@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnChanges,
-  OnInit,
-  SimpleChange
-} from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   ComponentFixture,
   fakeAsync,
