@@ -1,0 +1,39 @@
+<app-wip>
+  <h1>{{ user.userName }}</h1>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="thumbnail">
+        <img alt="{{ user.userName }} profile image" [src]="imageUrl" />
+        <div class="caption">
+          <p>
+            <span aria-hidden="true" class="fa fa-clock-o"></span>
+            Unknown time since last logged in
+          </p>
+          <p>
+            <span class="fa fa-user"></span>
+            Unknown membership length
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Download
+            </div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <a href="BROKEN LINK">Annotations you've created</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <app-items [items]="userStatistics"></app-items>
+    </div>
+  </div>
+
+  <app-error-handler [errorCode]="errorCode"></app-error-handler>
+</app-wip>

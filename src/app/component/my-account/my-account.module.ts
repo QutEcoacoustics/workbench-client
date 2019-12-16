@@ -14,4 +14,4 @@ const routes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
   imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...MyAccountComponents]
 })
-export class ProjectsModule {}
+export class MyAccountModule {}

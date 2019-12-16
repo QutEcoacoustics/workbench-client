@@ -24,6 +24,7 @@ import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
+import { profileMenuItem } from "../../my-account/my-account.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
@@ -63,12 +64,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.config = this.appConfig.getConfig();
     this.title = this.config.values.brand.name;
     this.routes = {
-      home: homeMenuItem,
-      login: loginMenuItem,
-      register: registerMenuItem,
-      profile: {
-        url: "http://INTENTIONALLY_BROKEN_LINK/"
-      }
+      home: homeMenuItem.route.toString(),
+      login: loginMenuItem.route.toString(),
+      register: registerMenuItem.route.toString(),
+      profile: profileMenuItem.route.toString()
     };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
