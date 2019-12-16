@@ -8,21 +8,26 @@ import { siteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { myAccountCategory, profileMenuItem } from "../../my-account.menus";
+import {
+  editProfileMenuItem,
+  myAccountCategory,
+  profileMenuItem
+} from "../../my-account.menus";
 
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List(),
+    actions: List<AnyMenuItem>([editProfileMenuItem]),
     links: List()
   },
   self: profileMenuItem
 })
 @Component({
-  selector: "app-profile",
+  selector: "app-my-account-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"]
 })

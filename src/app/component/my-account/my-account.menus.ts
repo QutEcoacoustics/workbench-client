@@ -17,3 +17,16 @@ export const profileMenuItem = MenuRoute({
   predicate: user => !!user,
   order: { priority: 1, indentation: 0 }
 });
+
+export const editProfileMenuItem = MenuRoute({
+  icon: ["fas", "edit"],
+  label: "Edit my profile",
+  route: profileMenuItem.route.add("edit"),
+  parent: profileMenuItem,
+  tooltip: () => "Change the details for this profile",
+  predicate: user => !!user,
+  order: {
+    priority: profileMenuItem.order.priority,
+    indentation: profileMenuItem.order.indentation + 1
+  }
+});

@@ -1,5 +1,6 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { testBawServices } from "src/app/app.helper";
 import { ProfileComponent } from "./profile.component";
 
 describe("ProfileComponent", () => {
@@ -8,7 +9,9 @@ describe("ProfileComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProfileComponent]
+      imports: [HttpClientTestingModule],
+      declarations: [ProfileComponent],
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 
