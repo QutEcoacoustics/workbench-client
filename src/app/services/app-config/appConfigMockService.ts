@@ -34,6 +34,7 @@ export class MockAppConfigService {
         apiRoot: "http://apiroot",
         siteRoot: "<< siteRoot >>",
         siteDir: "<< siteDir >>",
+        cmsRoot: "<< cmsRoot >>",
         ga: {
           trackingId: "<< placeholder >>"
         }

@@ -55,6 +55,7 @@
     "no-output-rename": true,
     "no-outputs-metadata-property": true,
     "prefer-for-of": true,
+    "rxjs-no-unsafe-takeuntil": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "triple-equals": true,
