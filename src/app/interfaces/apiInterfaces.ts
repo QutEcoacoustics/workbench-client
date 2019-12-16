@@ -31,6 +31,14 @@ export type Description = string;
  */
 export type Time = Date;
 /**
+ * BAW API Latitude
+ */
+export type Latitude = string;
+/**
+ * BAW API Longitude
+ */
+export type Longitude = string;
+/**
  * BAW API Image Sizes
  */
 export enum ImageSizes {

@@ -7,7 +7,7 @@ import { TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiInterceptor } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 import { SitesService } from "./sites.service";
@@ -217,10 +217,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 404,
+          message: "Could not find the requested item."
+        });
         done();
       },
       () => {
@@ -231,14 +233,17 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/sites/1"
     );
-    req.flush({
-      meta: {
-        status: 404,
-        message: "Not Found",
-        error: { details: "Could not find the requested item.", info: null }
+    req.flush(
+      {
+        meta: {
+          status: 404,
+          message: "Not Found",
+          error: { details: "Could not find the requested item.", info: null }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 404, statusText: "Not Found" }
+    );
   });
 
   it("getSite should error on unauthorized", done => {
@@ -247,10 +252,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
         done();
       },
       () => {
@@ -261,22 +268,25 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/sites/1"
     );
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details: "You need to log in or register before continuing.",
-          links: {
-            "Log in": "/my_account/sign_in",
-            Register: "/my_account/sign_up",
-            "Confirm account": "/my_account/confirmation/new"
-          },
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("getProjectSite should return data", done => {
@@ -444,10 +454,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 404,
+          message: "Could not find the requested item."
+        });
         done();
       },
       () => {
@@ -458,14 +470,20 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
-    req.flush({
-      meta: {
-        status: 404,
-        message: "Not Found",
-        error: { details: "Could not find the requested item.", info: null }
+    req.flush(
+      {
+        meta: {
+          status: 404,
+          message: "Not Found",
+          error: { details: "Could not find the requested item.", info: null }
+        },
+        data: null
       },
-      data: null
-    });
+      {
+        status: 404,
+        statusText: "Not Found"
+      }
+    );
   });
 
   it("getProjectSite should error on unauthorized", done => {
@@ -474,10 +492,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
         done();
       },
       () => {
@@ -488,22 +508,25 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/1/sites/1"
     );
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details: "You need to log in or register before continuing.",
-          links: {
-            "Log in": "/my_account/sign_in",
-            Register: "/my_account/sign_up",
-            "Confirm account": "/my_account/confirmation/new"
-          },
-          info: null
-        }
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("getProjectSites should return data", done => {
@@ -743,10 +766,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 404,
+          message: "Could not find the requested item."
+        });
         done();
       },
       () => {
@@ -757,14 +782,17 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/1/sites"
     );
-    req.flush({
-      meta: {
-        status: 404,
-        message: "Not Found",
-        error: { details: "Could not find the requested item.", info: null }
+    req.flush(
+      {
+        meta: {
+          status: 404,
+          message: "Not Found",
+          error: { details: "Could not find the requested item.", info: null }
+        },
+        data: null
       },
-      data: null
-    });
+      { status: 404, statusText: "Not Found" }
+    );
   });
 
   it("getProjectSites should error on unauthorized", done => {
@@ -773,10 +801,12 @@ describe("SitesService", () => {
         expect(false).toBeTruthy("Should not return result");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
         done();
       },
       () => {
@@ -787,21 +817,178 @@ describe("SitesService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/1/sites"
     );
-    req.flush({
-      meta: {
-        status: 401,
-        message: "Unauthorized",
-        error: {
-          details: "You need to log in or register before continuing.",
-          links: {
-            "Log in": "/my_account/sign_in",
-            Register: "/my_account/sign_up",
-            "Confirm account": "/my_account/confirmation/new"
-          },
-          info: null
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("newProjectSite should create new site", done => {
+    service.newProjectSite(1, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 6,
+          name: "Test site #1",
+          description: null,
+          project_ids: [1],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: null
         }
       },
-      data: null
+      { status: 201, statusText: "Created" }
+    );
+  });
+
+  it("newProjectSite should create new site with random project id", done => {
+    service.newProjectSite(5, { name: "Testing site #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/5/sites",
+      method: "POST"
     });
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 6,
+          name: "Test site #1",
+          description: null,
+          project_ids: [5],
+          location_obfuscated: false,
+          custom_latitude: null,
+          custom_longitude: null,
+          timezone_information: null,
+          description_html: null
+        }
+      },
+      { status: 201, statusText: "Created" }
+    );
+  });
+
+  it("newProjectSite should create new site with required details", () => {
+    service.newProjectSite(1, { name: "Testing Site #1" }).subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1"
+    });
+  });
+
+  it("newProjectSite should create new site with description", () => {
+    service
+      .newProjectSite(1, {
+        name: "Testing Site #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Site #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("newProjectSite should create new site with location obfuscated", done => {});
+  xit("newProjectSite should create new site with custom location", done => {});
+  xit("newProjectSite should create new site with timezone information", done => {});
+
+  it("newProjectSite should handle unauthorized", done => {
+    service.newProjectSite(1, { name: "Testing Site #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1/sites",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 });

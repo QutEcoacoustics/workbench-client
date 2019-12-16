@@ -31,9 +31,13 @@ export abstract class BawApiService {
 
   public apiReturnCodes = {
     success: 200,
+    created: 201,
     badRequest: 400,
     unauthorized: 401,
+    forbidden: 403,
     notFound: 404,
+    unsupportedMediaType: 415,
+    unprocessableEntity: 422,
     internalServerFailure: 500
   };
 
