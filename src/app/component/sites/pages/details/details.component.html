@@ -52,15 +52,7 @@
   </app-wip>
 </ng-container>
 
-<!-- Unauthorized Access Display -->
-<ng-container *ngIf="state === 'unauthorized'">
-  <app-unauthorized></app-unauthorized>
-</ng-container>
-
-<!-- Site Not Found Display -->
-<ng-container *ngIf="state === 'notFound'">
-  <app-item-not-found></app-item-not-found>
-</ng-container>
+<app-error-handler [errorCode]="status"></app-error-handler>
 
 <!-- Project Data Loading Display -->
 <ng-container *ngIf="state === 'loading'">

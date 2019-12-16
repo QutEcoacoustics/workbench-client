@@ -35,9 +35,7 @@ export class AudioRecordingsService extends BawApiService {
     const next = (data: AudioRecordingInterface[]) => {
       subject.next(data.map(recording => new AudioRecording(recording)));
     };
-    const error = (err: APIErrorDetails) => {
-      subject.error(err);
-    };
+    const error = (err: APIErrorDetails) => subject.error(err);
 
     this.filter(
       next,
@@ -71,9 +69,7 @@ export class AudioRecordingsService extends BawApiService {
     const next = (data: AudioRecordingInterface) => {
       subject.next(new AudioRecording(data));
     };
-    const error = (err: APIErrorDetails) => {
-      subject.error(err);
-    };
+    const error = (err: APIErrorDetails) => subject.error(err);
 
     this.filter(
       next,

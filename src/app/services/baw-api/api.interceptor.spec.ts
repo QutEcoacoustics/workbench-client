@@ -11,7 +11,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiInterceptor } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 describe("BawApiInterceptor", () => {
@@ -57,13 +57,13 @@ describe("BawApiInterceptor", () => {
     http
       .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
       .subscribe(
-        data => {
+        () => {
           expect(false).toBeTruthy(
             "HTTP Error Responses should not return data"
           );
           done();
         },
-        err => {
+        (err: APIErrorDetails) => {
           expect(err).toEqual({
             status: 401,
             message:
@@ -99,6 +99,64 @@ describe("BawApiInterceptor", () => {
     );
   });
 
+  it("should handle api error response with info", done => {
+    const noop = () => {
+      done();
+    };
+
+    http
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
+      .subscribe(
+        () => {
+          expect(false).toBeTruthy(
+            "HTTP Error Responses should not return data"
+          );
+          done();
+        },
+        (err: APIErrorDetails) => {
+          expect(err).toEqual({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          });
+          done();
+        },
+        noop
+      );
+
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
   it("should handle http error response", done => {
     const noop = () => {
       done();
@@ -113,7 +171,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        err => {
+        (err: APIErrorDetails) => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${

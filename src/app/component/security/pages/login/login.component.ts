@@ -5,6 +5,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import {
   confirmAccountMenuItem,
@@ -90,8 +91,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         this.router.navigate([""]);
         this.loading = false;
       },
-      err => {
-        this.error = err;
+      (err: APIErrorDetails) => {
+        this.error = err.message;
         this.loading = false;
       }
     );

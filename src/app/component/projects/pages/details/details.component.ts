@@ -16,6 +16,8 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  exploreAudioMenuItem,
   projectMenuItem,
   projectsCategory
 } from "../../projects.menus";
@@ -24,21 +26,9 @@ import {
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
-        uri: "/listen",
-        icon: ["fas", "map"],
-        label: "Explore audio",
-        tooltip: () => "Explore audio"
-      } as MenuLink,
+      exploreAudioMenuItem,
       editProjectMenuItem,
-      {
-        kind: "MenuLink",
-        uri: "REPLACE_ME",
-        icon: ["fas", "key"],
-        label: "Edit Permissions",
-        tooltip: () => "REPLACE_ME"
-      } as MenuLink,
+      editProjectPermissionsMenuItem,
       newSiteMenuItem
     ]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
@@ -55,6 +45,7 @@ export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
   project: Project;
   sites: Site[];
+  status: number;
   state = "loading";
   subSink: SubSink = new SubSink();
 
@@ -80,11 +71,8 @@ export class DetailsComponent extends PageComponent
           this.state = "ready";
         },
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
-          }
+          this.status = err.status;
+          this.state = "error";
         }
       );
 
@@ -98,10 +86,9 @@ export class DetailsComponent extends PageComponent
       .subscribe(
         sites => (this.sites = sites),
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
+          if (this.state !== "error") {
+            this.status = err.status;
+            this.state = "error";
           }
         }
       );

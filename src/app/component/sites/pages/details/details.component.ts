@@ -43,6 +43,7 @@ export class DetailsComponent extends PageComponent
   recordings: AudioRecording[];
   site: Site;
   startDate: Date;
+  status: number;
   state = "loading";
   subSink: SubSink = new SubSink();
 
@@ -75,11 +76,8 @@ export class DetailsComponent extends PageComponent
           }
         },
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
-          }
+          this.status = err.status;
+          this.state = "error";
         }
       );
 
@@ -100,10 +98,10 @@ export class DetailsComponent extends PageComponent
           }
         },
         (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
+          // Let project error dominate
+          if (this.state !== "error") {
+            this.status = err.status;
+            this.state = "error";
           }
         }
       );
@@ -122,12 +120,9 @@ export class DetailsComponent extends PageComponent
           this.recordings = recordings;
           this.extremityDates(recordings);
         },
-        (err: APIErrorDetails) => {
-          if (err.status === this.sitesApi.apiReturnCodes.unauthorized) {
-            this.state = "unauthorized";
-          } else {
-            this.state = "notFound";
-          }
+        () => {
+          // Doesn't break things if audio recordings don't load
+          this.recordings = [];
         }
       );
   }

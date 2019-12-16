@@ -6,7 +6,7 @@ import {
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiInterceptor } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 
@@ -124,9 +124,12 @@ describe("SecurityService", () => {
       res => {
         expect(res).toBeFalsy();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 0,
+          message: "You are already logged in, try logging out first."
+        });
       }
     );
 
@@ -141,9 +144,13 @@ describe("SecurityService", () => {
       res => {
         expect(true).toBeFalsy();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 401,
+          message:
+            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
+        });
       }
     );
 
@@ -178,45 +185,6 @@ describe("SecurityService", () => {
         data: null
       },
       { status: 401, statusText: "Unauthorized" }
-    );
-  });
-
-  it("login should return error on missing credentials", () => {
-    service.signIn({ email: "email", password: "password" }).subscribe(
-      res => {
-        expect(res).toBeFalsy();
-      },
-      err => {
-        expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/security",
-      method: "POST"
-    });
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-    expect(req.request.headers.has("Accept")).toBeTruthy();
-    expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-    expect(req.request.headers.has("Content-Type")).toBeTruthy();
-    expect(req.request.headers.get("Content-Type")).toBeTruthy(
-      "application/json"
-    );
-
-    req.flush(
-      {
-        meta: {
-          status: 400,
-          message: "Bad Request",
-          error: {
-            details: "The request could not be verified.",
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 400, statusText: "Bad Request" }
     );
   });
 

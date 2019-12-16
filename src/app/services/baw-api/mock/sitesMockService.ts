@@ -1,7 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import {
+  Description,
+  ID,
+  Latitude,
+  Longitude,
+  Name,
+  TimezoneInformation
+} from "src/app/interfaces/apiInterfaces";
 import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../../app-config/app-config.service";
 import { BawApiService } from "../base-api.service";
@@ -23,28 +30,6 @@ export class MockSitesService extends BawApiService {
   public getSite(id: ID): Subject<Site> {
     const subject = new Subject<Site>();
 
-    setTimeout(() => {
-      subject.next(
-        new Site({
-          id,
-          name: "Site",
-          creatorId: 1,
-          description: "A sample site",
-          projectIds: new Set([1, 2, 3]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        })
-      );
-    }, 50);
-
     return subject;
   }
 
@@ -56,28 +41,6 @@ export class MockSitesService extends BawApiService {
    */
   public getProjectSite(projectId: ID, siteId: ID): Subject<Site> {
     const subject = new Subject<Site>();
-
-    setTimeout(() => {
-      subject.next(
-        new Site({
-          id: siteId,
-          name: "Site",
-          creatorId: 1,
-          description: "A sample site",
-          projectIds: new Set([projectId, 2, 3]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        })
-      );
-    }, 50);
 
     return subject;
   }
@@ -91,45 +54,6 @@ export class MockSitesService extends BawApiService {
   public getProjectSites(id: ID): Subject<Site[]> {
     const subject = new Subject<Site[]>();
 
-    setTimeout(() => {
-      subject.next([
-        new Site({
-          id: 1,
-          name: "Site",
-          creatorId: 1,
-          description: "A sample site",
-          projectIds: new Set([id, 2, 3]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        }),
-        new Site({
-          id: 2,
-          name: "Site",
-          creatorId: 2,
-          description: "A sample site",
-          projectIds: new Set([id, 4, 5]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        })
-      ]);
-    }, 50);
-
     return subject;
   }
 
@@ -141,44 +65,48 @@ export class MockSitesService extends BawApiService {
   public getFilteredSites(filters: SiteFilters): Subject<Site[]> {
     const subject = new Subject<Site[]>();
 
-    setTimeout(() => {
-      subject.next([
-        new Site({
-          id: 1,
-          name: "Site",
-          creatorId: 1,
-          description: "A sample site",
-          projectIds: new Set([1, 2, 3]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        }),
-        new Site({
-          id: 2,
-          name: "Site",
-          creatorId: 2,
-          description: "A sample site",
-          projectIds: new Set([4, 5, 6]),
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 0,
-          timezoneInformation: {
-            identifierAlt: "Paris",
-            identifier: "Europe/Paris",
-            friendlyIdentifier: "Europe - Paris",
-            utcOffset: 3600,
-            utcTotalOffset: 3600
-          }
-        })
-      ]);
-    }, 50);
+    return subject;
+  }
+
+  /**
+   * Update a projects site
+   * @param projectId Project ID
+   * @param siteId Site ID
+   * @param details Form details
+   */
+  public updateProjectSite(
+    projectId: ID,
+    siteId: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    return subject;
+  }
+  /**
+   * Create a new site
+   * @param id Project ID
+   * @param details Form details
+   */
+  public newProjectSite(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      locationObfuscated?: boolean;
+      customLatitude?: Latitude;
+      customLongitude?: Longitude;
+      timezoneInformation?: TimezoneInformation;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
 
     return subject;
   }
