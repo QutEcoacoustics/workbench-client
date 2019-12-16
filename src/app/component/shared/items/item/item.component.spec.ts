@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { ItemsItemComponent } from "./item.component";
+import { ItemComponent } from "./item.component";
 
-describe("ItemsItemComponent", () => {
-  let component: ItemsItemComponent;
-  let fixture: ComponentFixture<ItemsItemComponent>;
+describe("ItemComponent", () => {
+  let component: ItemComponent;
+  let fixture: ComponentFixture<ItemComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
-      declarations: [ItemsItemComponent]
+      declarations: [ItemComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemsItemComponent);
+    fixture = TestBed.createComponent(ItemComponent);
     component = fixture.componentInstance;
   });
 
@@ -38,6 +38,19 @@ describe("ItemsItemComponent", () => {
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
       "fas,home"
+    );
+  });
+
+  it("should display random icon", () => {
+    component.icon = ["fas", "user"] as IconProp;
+    component.name = "Test";
+    component.value = 0;
+
+    fixture.detectChanges();
+    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,user"
     );
   });
 

@@ -23,7 +23,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemsItemComponent {
+export class ItemComponent {
   @Input() icon: IconProp;
   @Input() name: string;
   @Input() value: string | number;

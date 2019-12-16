@@ -4,13 +4,13 @@ import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { ItemsItemComponent } from "./item/item.component";
+import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
 
 @NgModule({
-  declarations: [ItemsComponent, ItemsItemComponent],
+  declarations: [ItemsComponent, ItemComponent],
   imports: [CommonModule, RouterModule, FontAwesomeModule],
-  exports: [ItemsComponent, ItemsItemComponent]
+  exports: [ItemsComponent]
 })
 export class ItemsModule {
   constructor() {

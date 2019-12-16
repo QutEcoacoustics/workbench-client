@@ -33,32 +33,26 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsComponent implements OnInit {
-  @Input() statistics: {
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }[];
+  @Input() items: ItemInterface[];
 
-  groupOne: {
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }[];
-  groupTwo: {
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }[];
+  groupOne: ItemInterface[];
+  groupTwo: ItemInterface[];
 
   constructor() {}
 
   ngOnInit() {
-    if (!this.statistics) {
+    if (!this.items) {
       return;
     }
 
-    const midIndex = Math.ceil(this.statistics.length / 2);
-    this.groupOne = this.statistics.slice(0, midIndex);
-    this.groupTwo = this.statistics.slice(midIndex, this.statistics.length);
+    const midIndex = Math.ceil(this.items.length / 2);
+    this.groupOne = this.items.slice(0, midIndex);
+    this.groupTwo = this.items.slice(midIndex, this.items.length);
   }
+}
+
+export interface ItemInterface {
+  icon: IconProp;
+  name: string;
+  value: string | number;
 }
