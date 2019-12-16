@@ -1,6 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
+import { ConfigOption } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
+import { FormlyFileInput } from "./component/shared/formly/file-input.component";
 import {
   APP_CONFIG,
   AppConfigService
@@ -38,13 +40,21 @@ function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
-export const validationMessages = [
-  { name: "required", message: "This field is required" },
-  { name: "minlength", message: minLengthValidationMessage },
-  { name: "maxlength", message: maxLengthValidationMessage },
-  { name: "min", message: minValidationMessage },
-  { name: "max", message: maxValidationMessage }
-];
+export const formlyRoot = {
+  types: [
+    {
+      name: "file",
+      component: FormlyFileInput
+    }
+  ],
+  validationMessages: [
+    { name: "required", message: "This field is required" },
+    { name: "minlength", message: minLengthValidationMessage },
+    { name: "maxlength", message: maxLengthValidationMessage },
+    { name: "min", message: minValidationMessage },
+    { name: "max", message: maxValidationMessage }
+  ]
+} as ConfigOption;
 
 export function appInitializerFn(appConfig: AppConfigService) {
   return () => {

@@ -8,7 +8,7 @@ import {
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -28,9 +28,7 @@ describe("RegisterComponent", () => {
           { path: "security/register", component: RegisterComponent }
         ]),
         SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [RegisterComponent, HomeComponent],
       providers: [...testBawServices]

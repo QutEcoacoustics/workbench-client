@@ -6,7 +6,7 @@ import {
   tick
 } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { validationMessages } from "src/app/app.helper";
+import { formlyRoot } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { UnlockPasswordComponent } from "./unlock-account.component";
@@ -17,12 +17,7 @@ describe("UnlockPasswordComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ],
+      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
       declarations: [UnlockPasswordComponent, HomeComponent]
     }).compileComponents();
   }));
