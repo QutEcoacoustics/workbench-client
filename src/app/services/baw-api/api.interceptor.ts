@@ -37,16 +37,22 @@ export class BawApiInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!request.url.includes(this.config.getConfig().environment.apiRoot)) {
+    if (
+      !request.url.includes(this.config.getConfig().environment.apiRoot) &&
+      !request.url.includes(this.config.getConfig().environment.cmsRoot)
+    ) {
       return next.handle(request);
     }
 
-    request = request.clone({
-      setHeaders: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    });
+    // Don't add these headers to requests to cms service
+    if (request.responseType !== "text") {
+      request = request.clone({
+        setHeaders: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      });
+    }
 
     // If logged in, add authorization token
     if (this.api.isLoggedIn()) {
@@ -160,8 +166,8 @@ function isErrorDetails(
   errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
 ): errorResponse is APIErrorDetails {
   return (
-    "status" in errorResponse &&
-    "message" in errorResponse &&
+    errorResponse["status"] &&
+    errorResponse["message"] &&
     Object.keys(errorResponse).length <= 3
   );
 }
@@ -174,9 +180,9 @@ function isErrorResponse(
   errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
 ): errorResponse is APIErrorResponse {
   return (
-    "error" in errorResponse &&
-    "meta" in errorResponse.error &&
-    "error" in errorResponse.error.meta &&
-    "details" in errorResponse.error.meta.error
+    errorResponse["error"] &&
+    errorResponse["error"]["meta"] &&
+    errorResponse["error"]["meta"]["error"] &&
+    errorResponse["error"]["meta"]["error"]["details"]
   );
 }
