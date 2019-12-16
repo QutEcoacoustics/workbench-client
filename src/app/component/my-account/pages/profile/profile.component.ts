@@ -61,6 +61,7 @@ export class ProfileComponent extends PageComponent
       { icon: ["fas", "tags"], name: "Tags", value: "Unknown" },
       { icon: ["fas", "bookmark"], name: "Bookmarks", value: "Unknown" },
       { icon: siteMenuItem.icon, name: siteMenuItem.label, value: "Unknown" },
+      { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
       { icon: ["fas", "comments"], name: "Comments", value: "Unknown" }
     ];
   }
