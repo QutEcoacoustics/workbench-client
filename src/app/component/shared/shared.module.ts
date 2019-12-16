@@ -15,6 +15,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
+import { ItemsModule } from "./items/items.module";
 import { sharedComponents } from "./shared.components";
 import { WidgetDirective } from "./widget/widget.directive";
 
@@ -35,7 +36,8 @@ import { WidgetDirective } from "./widget/widget.directive";
     FormlyBootstrapModule,
     MatProgressSpinnerModule,
     CardsModule,
-    HeaderModule
+    HeaderModule,
+    ItemsModule
   ],
   exports: [
     CommonModule,
@@ -51,6 +53,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     MatProgressSpinnerModule,
     CardsModule,
     HeaderModule,
+    ItemsModule,
     sharedComponents
   ]
 })

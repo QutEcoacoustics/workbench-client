@@ -1,8 +1,8 @@
 <app-wip>
   <h1>Statistics</h1>
 
-  <app-group [statistics]="groupOne"></app-group>
-  <app-group [statistics]="groupTwo"></app-group>
+  <app-items [statistics]="groupOne"></app-items>
+  <app-items [statistics]="groupTwo"></app-items>
 
   <h2>Recent Annotations</h2>
 
@@ -26,7 +26,7 @@
       <tr *ngFor="let tag of recentAnnotations">
         <td>{{ tag.site.name }}</td>
         <td>{{ tag.user.url }}</td>
-        <td>{{ tag.tag || '(none)' }}</td>
+        <td>{{ tag.tag || "(none)" }}</td>
         <td>{{ tag.updated }}</td>
       </tr>
     </tbody>
@@ -48,7 +48,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let tag of recentAnnotations">
-        <td>{{ tag.tag || '(none)' }}</td>
+        <td>{{ tag.tag || "(none)" }}</td>
         <td>{{ tag.updated }}</td>
       </tr>
     </tbody>

@@ -1,13 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Component({
-  selector: "app-statistic",
+  selector: "app-items-item",
   template: `
     <li class="list-group-item clearfix">
       <fa-icon [icon]="icon"></fa-icon>
@@ -26,7 +21,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StatisticComponent {
+export class ItemsItemComponent {
   @Input() icon: IconProp;
   @Input() name: string;
   @Input() value: string | number;

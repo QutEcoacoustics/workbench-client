@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { StatisticComponent } from "./statistic.component";
+import { ItemsItemComponent } from "./item.component";
 
-describe("StatisticComponent", () => {
-  let component: StatisticComponent;
-  let fixture: ComponentFixture<StatisticComponent>;
+describe("ItemsItemComponent", () => {
+  let component: ItemsItemComponent;
+  let fixture: ComponentFixture<ItemsItemComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
-      declarations: [StatisticComponent]
+      declarations: [ItemsItemComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StatisticComponent);
+    fixture = TestBed.createComponent(ItemsItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

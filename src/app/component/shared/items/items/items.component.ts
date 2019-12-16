@@ -7,32 +7,32 @@ import {
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Component({
-  selector: "app-group",
+  selector: "app-items",
   template: `
     <div class="row pb-5">
       <div class="col-sm-6">
         <ul class="list-group" *ngFor="let stat of groupOne">
-          <app-statistic
+          <app-items-item
             [icon]="stat.icon"
             [name]="stat.name"
             [value]="stat.value"
-          ></app-statistic>
+          ></app-items-item>
         </ul>
       </div>
       <div class="col-sm-6">
         <ul class="list-group" *ngFor="let stat of groupTwo">
-          <app-statistic
+          <app-items-item
             [icon]="stat.icon"
             [name]="stat.name"
             [value]="stat.value"
-          ></app-statistic>
+          ></app-items-item>
         </ul>
       </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GroupComponent implements OnInit {
+export class ItemsComponent implements OnInit {
   @Input() statistics: {
     icon: IconProp;
     name: string;
