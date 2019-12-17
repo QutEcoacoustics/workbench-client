@@ -119,9 +119,7 @@ describe("SitesNewComponent", () => {
       imports: [
         SharedModule,
         RouterTestingModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [NewComponent],
       providers: [
