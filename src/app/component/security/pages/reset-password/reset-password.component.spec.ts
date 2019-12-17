@@ -26,6 +26,8 @@ describe("ResetPasswordComponent", () => {
     fixture = TestBed.createComponent(ResetPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    component.schema.model = {};
   });
 
   it("should create", () => {

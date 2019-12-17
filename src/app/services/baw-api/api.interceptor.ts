@@ -37,16 +37,22 @@ export class BawApiInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!request.url.includes(this.config.getConfig().environment.apiRoot)) {
+    if (
+      !request.url.includes(this.config.getConfig().environment.apiRoot) &&
+      !request.url.includes(this.config.getConfig().environment.cmsRoot)
+    ) {
       return next.handle(request);
     }
 
-    request = request.clone({
-      setHeaders: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    });
+    // Don't add these headers to requests to cms service
+    if (request.responseType !== "text") {
+      request = request.clone({
+        setHeaders: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      });
+    }
 
     // If logged in, add authorization token
     if (this.api.isLoggedIn()) {
@@ -104,16 +110,24 @@ export class BawApiInterceptor implements HttpInterceptor {
   private handleError(
     response: HttpErrorResponse | APIErrorResponse | APIErrorDetails
   ): Observable<never> {
-    if (isErrorResponse(response)) {
-      return throwError({
+    if (isErrorDetails(response)) {
+      return throwError(response);
+    } else if (isErrorResponse(response)) {
+      const error: APIErrorDetails = {
         status: response.status,
         message: response.error.meta.error.details
-      });
+      };
+
+      if (response.error.meta.error.info) {
+        error.info = response.error.meta.error.info;
+      }
+
+      return throwError(error);
     } else {
       return throwError({
         status: response.status,
         message: response.message
-      });
+      } as APIErrorDetails);
     }
   }
 }
@@ -124,6 +138,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 export interface APIErrorDetails {
   status: number;
   message: string;
+  info?: any;
 }
 
 /**
@@ -136,18 +151,38 @@ interface APIErrorResponse extends HttpErrorResponse {
       message: string;
       error: {
         details: string;
+        info?: any;
       };
     };
+    data: null;
   };
 }
 
+/**
+ * Determine if error response has already been processed
+ * @param errorResponse Error response
+ */
+function isErrorDetails(
+  errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
+): errorResponse is APIErrorDetails {
+  return (
+    errorResponse["status"] &&
+    errorResponse["message"] &&
+    Object.keys(errorResponse).length <= 3
+  );
+}
+
+/**
+ * Determine if error response is from API
+ * @param errorResponse Error response
+ */
 function isErrorResponse(
   errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
 ): errorResponse is APIErrorResponse {
   return (
-    "error" in errorResponse &&
-    "meta" in errorResponse.error &&
-    "error" in errorResponse.error.meta &&
-    "details" in errorResponse.error.meta.error
+    errorResponse["error"] &&
+    errorResponse["error"]["meta"] &&
+    errorResponse["error"]["meta"]["error"] &&
+    errorResponse["error"]["meta"]["error"]["details"]
   );
 }

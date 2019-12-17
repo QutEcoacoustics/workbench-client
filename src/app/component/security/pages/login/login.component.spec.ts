@@ -1,6 +1,5 @@
 import { Location } from "@angular/common";
 import {
-  async,
   ComponentFixture,
   fakeAsync,
   TestBed,
@@ -23,7 +22,7 @@ describe("LoginComponent", () => {
   let location: Location;
   let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -33,9 +32,7 @@ describe("LoginComponent", () => {
       declarations: [LoginComponent, HomeComponent],
       providers: [...testBawServices]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     securityService = TestBed.get(SecurityService);
@@ -43,6 +40,11 @@ describe("LoginComponent", () => {
     location = TestBed.get(Location);
     router.initialNavigation();
     fixture.detectChanges();
+
+    component.schema.model = {
+      email: "",
+      password: ""
+    };
   });
 
   it("should create", () => {
@@ -136,7 +138,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -175,7 +179,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -226,7 +232,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -279,7 +287,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -350,7 +360,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -389,7 +401,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -428,7 +442,9 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -439,7 +455,9 @@ describe("LoginComponent", () => {
     tick(5000);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.debugElement.nativeElement.querySelector(
+      "ngb-alert.alert-danger"
+    );
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -487,9 +505,12 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
   }));
 
-  // TODO Implement, currently this fails because navigation does not occur
-  xit("should redirect to home page on successful login", fakeAsync(() => {
-    spyOn(router, "navigate");
+  it("should redirect to home page on successful login", fakeAsync(() => {
+    spyOn(router, "navigate").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
 
     const email = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -512,6 +533,6 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     expect(router.navigate).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(["/"]);
+    expect(router.navigate).toHaveBeenCalledWith([""]);
   }));
 });

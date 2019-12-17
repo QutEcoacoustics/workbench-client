@@ -9,6 +9,10 @@
     {{ error }}
   </ngb-alert>
 
+  <ngb-alert [type]="'success'" (close)="clearSuccess()" *ngIf="success">
+    {{ success }}
+  </ngb-alert>
+
   <div class="clearfix">
     <form [formGroup]="form" (ngSubmit)="submit(model)">
       <!-- Loading spinner -->

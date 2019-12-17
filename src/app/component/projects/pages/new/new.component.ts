@@ -1,8 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
@@ -26,29 +29,34 @@ import data from "./new.json";
 @Component({
   selector: "app-projects-new",
   template: `
-    <app-wip>
-      <app-form
-        [schema]="schema"
-        [title]="'New Project'"
-        [error]="error"
-        [submitLabel]="'Submit'"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+    <app-form
+      [schema]="schema"
+      [title]="'New Project'"
+      [error]="error"
+      [success]="success"
+      [submitLabel]="'Submit'"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></app-form>
   `
 })
-export class NewComponent extends PageComponent implements OnInit {
-  schema = data;
+export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
   loading: boolean;
+  schema = data;
+  subSink: SubSink = new SubSink();
+  success: string;
 
-  constructor() {
+  constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
     super();
   }
 
   ngOnInit() {
     this.loading = false;
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 
   /**
@@ -57,7 +65,22 @@ export class NewComponent extends PageComponent implements OnInit {
    */
   submit($event: any) {
     this.loading = true;
-    console.log($event);
-    this.loading = false;
+    this.ref.detectChanges();
+
+    this.subSink.sink = this.api.newProject($event).subscribe(
+      () => {
+        this.success = "Project was successfully created.";
+        this.loading = false;
+      },
+      (err: APIErrorDetails) => {
+        if (err.info && err.info.name && err.info.name.length === 1) {
+          this.error = err.message + ": name " + err.info.name[0];
+        } else {
+          this.error = err.message;
+        }
+
+        this.loading = false;
+      }
+    );
   }
 }

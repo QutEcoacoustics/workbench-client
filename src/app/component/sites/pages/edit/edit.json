@@ -1,12 +1,5 @@
 {
-  "model": {
-    "name": "",
-    "description": "",
-    "latitude": 0,
-    "longitude": 0,
-    "image": "",
-    "timezone": ""
-  },
+  "model": {},
   "fields": [
     {
       "key": "name",
@@ -26,7 +19,7 @@
       }
     },
     {
-      "key": "latitude",
+      "key": "customLatitude",
       "type": "input",
       "templateOptions": {
         "label": "Latitude",
@@ -35,7 +28,7 @@
       }
     },
     {
-      "key": "longitude",
+      "key": "customLongitude",
       "type": "input",
       "templateOptions": {
         "label": "Longitude",
@@ -52,11 +45,11 @@
       }
     },
     {
-      "key": "timezone",
+      "key": "timezoneInformation",
       "type": "timezone",
       "templateOptions": {
         "label": "Time Zone",
-        "required": true
+        "required": false
       }
     }
   ]

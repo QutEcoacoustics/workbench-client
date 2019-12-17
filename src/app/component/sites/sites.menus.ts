@@ -36,7 +36,7 @@ export const siteMenuItem = MenuRoute({
 
 export const editSiteMenuItem = MenuRoute({
   icon: ["fas", "edit"],
-  label: "Edit this project",
+  label: "Edit this site",
   route: siteMenuItem.route.add("edit"),
   parent: siteMenuItem,
   tooltip: () => "Change the details for this site",

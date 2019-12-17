@@ -7,7 +7,7 @@ import { TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiInterceptor } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { ProjectsService } from "./projects.service";
 import { SecurityService } from "./security.service";
@@ -220,9 +220,12 @@ describe("ProjectsService", () => {
         );
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 404,
+          message: "Could not find the requested item."
+        });
         done();
       },
       () => {
@@ -233,7 +236,7 @@ describe("ProjectsService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/-1"
     );
-    req.flush(itemNotFoundResponse);
+    req.flush(itemNotFoundResponse, { status: 404, statusText: "Not Found" });
   });
 
   it("getProject invalid page should return error", done => {
@@ -244,9 +247,13 @@ describe("ProjectsService", () => {
         );
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 404,
+          message: "Could not find the requested page.",
+          info: { original_route: "dsfaggsdfg", original_http_method: "GET" }
+        });
         done();
       },
       () => {
@@ -257,7 +264,7 @@ describe("ProjectsService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/-1"
     );
-    req.flush(pageNotFoundResponse);
+    req.flush(pageNotFoundResponse, { status: 404, statusText: "Not Found" });
   });
 
   it("getProject unauthorized should return error", done => {
@@ -268,9 +275,12 @@ describe("ProjectsService", () => {
         );
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
         done();
       },
       () => {
@@ -281,7 +291,10 @@ describe("ProjectsService", () => {
     const req = httpMock.expectOne(
       config.getConfig().environment.apiRoot + "/projects/-1"
     );
-    req.flush(projectUnauthorizedResponse);
+    req.flush(projectUnauthorizedResponse, {
+      status: 401,
+      statusText: "Unauthorized"
+    });
   });
 
   it("getFilteredProjects should get filtered number of items", done => {
@@ -577,76 +590,6 @@ describe("ProjectsService", () => {
     req.flush(dummyApiResponse);
   });
 
-  it("getProject empty response should return error msg", done => {
-    service.getProject(512).subscribe(
-      () => {
-        expect(false).toBeTruthy("Error response should not return result");
-        done();
-      },
-      err => {
-        expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        done();
-      },
-      () => {
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/512"
-    );
-    req.flush({ meta: { status: 404 } });
-  });
-
-  it("getProjects empty response should return error msg", done => {
-    service.getProjects().subscribe(
-      () => {
-        expect(false).toBeTruthy("Error response should not return result");
-        done();
-      },
-      err => {
-        expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
-        done();
-      },
-      () => {
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects"
-    );
-    req.flush({ meta: { status: 404 } });
-  });
-
-  it("getFilteredProjects empty response should return error msg", done => {
-    service
-      .getFilteredProjects({
-        items: 3
-      })
-      .subscribe(
-        () => {
-          expect(false).toBeTruthy("Error response should not return result");
-          done();
-        },
-        err => {
-          expect(err).toBeTruthy();
-          expect(typeof err).toBe("string");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/filter?items=3"
-    );
-    req.flush({ meta: { status: 404 } });
-  });
-
   it("authenticated getProjects should return data", () => {
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
@@ -721,5 +664,378 @@ describe("ProjectsService", () => {
       method: "GET"
     });
     project.flush(projectValidResponse);
+  });
+
+  it("newProject should create new project", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 201,
+          message: "Created"
+        },
+        data: {
+          id: 1,
+          name: "Testing Project #1",
+          description: null,
+          creator_id: 1,
+          site_ids: [],
+          description_html: null
+        }
+      },
+      { status: 201, statusText: "Created" }
+    );
+  });
+
+  it("newProject should create new project with required details", () => {
+    service.newProject({ name: "Testing Project #1" }).subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1"
+    });
+  });
+
+  it("newProject should create new project with description", () => {
+    service
+      .newProject({
+        name: "Testing Project #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects",
+      method: "POST"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("newProject should create new project with image", done => {});
+  xit("newProject should create new project with image and description", done => {});
+
+  it("newProject should return error on duplicate project", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("newProject should handle unauthorized", done => {
+    service.newProject({ name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You need to log in or register before continuing."
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("updateProject should update project", done => {
+    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "Testing Project #1",
+        description: "testing description",
+        creator_id: 1,
+        site_ids: [],
+        description_html: "<p>testing description</p>\n"
+      }
+    });
+  });
+
+  it("updateProject should update project with random project id", done => {
+    service.updateProject(5, { name: "Testing Project #1" }).subscribe(
+      res => {
+        expect(res).toBeTrue();
+      },
+      () => {
+        expect(false).toBeTruthy("Should be no error response");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/5",
+      method: "PATCH"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 5,
+        name: "Testing Project #1",
+        description: "testing description",
+        creator_id: 1,
+        site_ids: [],
+        description_html: "<p>testing description</p>\n"
+      }
+    });
+  });
+
+  it("updateProject should update project with required details", () => {
+    service.updateProject(1, { name: "Testing Project #1" }).subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1"
+    });
+  });
+
+  it("updateProject should update project with description", () => {
+    service
+      .updateProject(1, {
+        name: "Testing Project #1",
+        description: "Custom description"
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    expect(req.request.body).toEqual({
+      name: "Testing Project #1",
+      description: "Custom description"
+    });
+  });
+
+  // Image option not available
+  xit("updateProject should update project with image", done => {});
+  xit("updateProject should update project with image and description", done => {});
+
+  // API Route broken for this scenario
+  xit("updateProject should return error on duplicate project", done => {
+    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy(
+          "Record could not be saved: name has already been taken"
+        );
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("updateProject should handle unauthorized", done => {
+    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Unauthorized");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            links: {
+              "Log in": "/my_account/sign_in",
+              Register: "/my_account/sign_up",
+              "Confirm account": "/my_account/confirmation/new"
+            },
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("updateProject should handle not found", done => {
+    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
+      () => {
+        expect(false).toBeTruthy("Should not return result");
+        done();
+      },
+      err => {
+        expect(err).toBeTruthy("Not Found");
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/projects/1",
+      method: "PATCH"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 404,
+          message: "Not Found",
+          error: {
+            details: "Could not find the requested item.",
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 404, statusText: "Not Found" }
+    );
   });
 });

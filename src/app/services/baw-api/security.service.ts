@@ -51,7 +51,7 @@ export class SecurityService extends BawApiService {
   ) {
     this.loggedInTrigger.subscribe({
       next: () => super.details(subject, callback, path, args, filters),
-      error: err => subject.error(err)
+      error: (err: APIErrorDetails) => subject.error(err)
     });
   }
 
@@ -98,7 +98,7 @@ export class SecurityService extends BawApiService {
           subject.error(data);
         }
       },
-      error: err => {
+      error: (err: APIErrorDetails) => {
         console.error("Unknown error thrown by login rest api");
         console.error(err);
         subject.error(err);
@@ -122,7 +122,10 @@ export class SecurityService extends BawApiService {
       if (!data) {
         this.clearSessionStorage();
         this.loggedInTrigger.next(false);
-        subject.error("No data returned from API");
+        subject.error({
+          status: 0,
+          message: "No data returned from API"
+        } as APIErrorDetails);
       }
 
       const user = new SessionUser({
@@ -137,13 +140,16 @@ export class SecurityService extends BawApiService {
     const error = (err: APIErrorDetails) => {
       this.clearSessionStorage();
       this.loggedInTrigger.next(false);
-      subject.error(err.message);
+      subject.error(err);
     };
 
     // Return early if logged in
     if (this.isLoggedIn()) {
       this.loggedInTrigger.next(true);
-      subject.error("You are already logged in, try logging out first.");
+      subject.error({
+        status: 0,
+        message: "You are already logged in, try logging out first."
+      } as APIErrorDetails);
       return subject.asObservable();
     }
 

@@ -12,6 +12,7 @@ import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { SiteCardComponent } from "../../site-card/site-card.component";
@@ -65,7 +66,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: projectsApi.apiReturnCodes.notFound,
         message: "Project Not Found"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -82,7 +83,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: projectsApi.apiReturnCodes.unauthorized,
         message: "Unauthorized"
-      });
+      } as APIErrorDetails);
       return subject;
     });
 
@@ -90,8 +91,100 @@ describe("ProjectDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized Access");
+    expect(title.innerText).toBe("Unauthorized access");
   });
+
+  it("should handle site not found", () => {
+    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+      const subject = new Subject<Site[]>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.notFound,
+        message: "Project Not Found"
+      } as APIErrorDetails);
+      return subject;
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Not found");
+  });
+
+  it("should handle unauthorized site", () => {
+    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+      const subject = new Subject<Site[]>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.unauthorized,
+        message: "Unauthorized"
+      } as APIErrorDetails);
+      return subject;
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized access");
+  });
+
+  it("should show project error instead of site error when project loads first", fakeAsync(() => {
+    spyOn(projectsApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+      subject.error({
+        status: projectsApi.apiReturnCodes.unauthorized,
+        message: "Unauthorized"
+      } as APIErrorDetails);
+      return subject;
+    });
+    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+      const subject = new Subject<Site>();
+      setTimeout(() => {
+        subject.error({
+          status: sitesApi.apiReturnCodes.notFound,
+          message: "Site Not Found"
+        } as APIErrorDetails);
+      }, 50);
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized access");
+  }));
+
+  it("should show project error instead of site error when site loads first", fakeAsync(() => {
+    spyOn(projectsApi, "getProject").and.callFake(() => {
+      const subject = new Subject<Project>();
+      setTimeout(() => {
+        subject.error({
+          status: projectsApi.apiReturnCodes.unauthorized,
+          message: "Unauthorized"
+        } as APIErrorDetails);
+      }, 50);
+      return subject;
+    });
+    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+      const subject = new Subject<Site>();
+      subject.error({
+        status: sitesApi.apiReturnCodes.notFound,
+        message: "Site Not Found"
+      } as APIErrorDetails);
+      return subject;
+    });
+
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unauthorized access");
+  }));
 
   it("should show loading until project returns", fakeAsync(() => {
     spyOn(projectsApi, "getProject").and.callFake(() => {

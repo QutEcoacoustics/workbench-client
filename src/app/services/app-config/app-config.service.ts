@@ -81,6 +81,7 @@ export interface Configuration {
     apiRoot: string;
     siteRoot: string;
     siteDir: string;
+    cmsRoot: string;
     ga: {
       trackingId: string;
     };

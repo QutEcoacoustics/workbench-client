@@ -41,6 +41,8 @@ describe("RegisterComponent", () => {
     securityService = TestBed.get(SecurityService);
     router = TestBed.get(Router);
     fixture.detectChanges();
+
+    component.schema.model = {};
   });
 
   it("should create", () => {
