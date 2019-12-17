@@ -1,8 +1,9 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
+import { BehaviorSubject } from "rxjs";
 import { testBawServices } from "src/app/app.helper";
 import {
   AnyMenuItem,
@@ -14,7 +15,6 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { mockSessionStorage } from "src/app/services/baw-api/mock/sessionStorageMock";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -22,9 +22,13 @@ import { MenuInternalLinkComponent } from "./internal-link/internal-link.compone
 import { MenuComponent } from "./menu.component";
 
 describe("MenuComponent", () => {
-  let router: Router;
+  let router: ActivatedRoute;
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
+
+  class MockActivatedRoute {
+    public params = new BehaviorSubject<any>({ attribute: 10 });
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,10 +50,13 @@ describe("MenuComponent", () => {
         MenuExternalLinkComponent,
         MenuInternalLinkComponent
       ],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
     }).compileComponents();
 
-    router = TestBed.get(Router);
+    router = TestBed.get(ActivatedRoute);
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
 
@@ -112,11 +119,26 @@ describe("MenuComponent", () => {
     );
   });
 
-  xit("should create no links", () => {
+  it("should create no links", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    // TODO Check that menu looks normal
+    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    expect(title).toBeTruthy("Title should exist");
+    expect(title.innerText.trim()).toBe("MENU");
+
+    const internalLinks = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    const externalLinks = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-external-link"
+    );
+    const buttons = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-button"
+    );
+    expect(internalLinks.length).toBe(0, "Should not be any internal links");
+    expect(externalLinks.length).toBe(0, "Should not be any external links");
+    expect(buttons.length).toBe(0, "Should not be any buttons");
   });
 
   it("should create internal link", () => {
@@ -145,6 +167,7 @@ describe("MenuComponent", () => {
       route: StrongRoute.Base.add("home")
     } as MenuRoute;
     internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -153,6 +176,50 @@ describe("MenuComponent", () => {
     expect(links.length).toBe(1, "Should be one internal link");
 
     const link = links[0];
+    const internalLink = internalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
+  });
+
+  it("should create internal link with user dependant tooltip", () => {
+    const api: BawApiService = TestBed.get(BawApiService);
+    spyOn(api, "getSessionUser").and.callFake(
+      () =>
+        new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
+    );
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: user => `${user.userName} tooltip`,
+        route: StrongRoute.Base.add("home")
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const internalLinkFixture = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent = internalLinkFixture.componentInstance;
+    internalLinkComponent.id = "action-tooltip-0";
+    internalLinkComponent.link = {
+      kind: "MenuRoute",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: user => `${user.userName} tooltip`,
+      route: StrongRoute.Base.add("home")
+    } as MenuRoute;
+    internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "username tooltip";
+    internalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    )[0];
     const internalLink = internalLinkFixture.debugElement.nativeElement;
     expect(link.innerHTML).toEqual(
       internalLink.innerHTML,
@@ -189,6 +256,7 @@ describe("MenuComponent", () => {
     internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
@@ -198,6 +266,7 @@ describe("MenuComponent", () => {
     internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -243,6 +312,7 @@ describe("MenuComponent", () => {
       uri: "http://brokenlink/"
     } as MenuLink;
     externalLinkComponent.placement = "left";
+    externalLinkComponent.tooltip = "tooltip";
     externalLinkFixture.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -251,6 +321,50 @@ describe("MenuComponent", () => {
     expect(links.length).toBe(1, "Should contain one external link");
 
     const link = links[0];
+    const externalLink = externalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      externalLink.innerHTML,
+      "External link HTML should match"
+    );
+  });
+
+  it("should create external link with user dependant tooltip", () => {
+    const api: BawApiService = TestBed.get(BawApiService);
+    spyOn(api, "getSessionUser").and.callFake(
+      () =>
+        new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
+    );
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuLink",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: user => `${user.userName} tooltip`,
+        uri: "http://brokenlink/"
+      } as MenuLink
+    ]);
+    fixture.detectChanges();
+
+    const externalLinkFixture = TestBed.createComponent(
+      MenuExternalLinkComponent
+    );
+    const externalLinkComponent = externalLinkFixture.componentInstance;
+    externalLinkComponent.id = "action-tooltip-0";
+    externalLinkComponent.link = {
+      kind: "MenuLink",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: user => `${user.userName} tooltip`,
+      uri: "http://brokenlink/"
+    } as MenuLink;
+    externalLinkComponent.placement = "left";
+    externalLinkComponent.tooltip = "username tooltip";
+    externalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-external-link"
+    )[0];
     const externalLink = externalLinkFixture.debugElement.nativeElement;
     expect(link.innerHTML).toEqual(
       externalLink.innerHTML,
@@ -287,6 +401,7 @@ describe("MenuComponent", () => {
     externalLinkComponent1.id = "action-tooltip-0";
     externalLinkComponent1.link = externalLink1Obj;
     externalLinkComponent1.placement = "left";
+    externalLinkComponent1.tooltip = "tooltip";
     externalLinkFixture1.detectChanges();
 
     const externalLinkFixture2 = TestBed.createComponent(
@@ -296,6 +411,7 @@ describe("MenuComponent", () => {
     externalLinkComponent2.id = "action-tooltip-1";
     externalLinkComponent2.link = externalLink2Obj;
     externalLinkComponent2.placement = "left";
+    externalLinkComponent2.tooltip = "tooltip";
     externalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -339,6 +455,7 @@ describe("MenuComponent", () => {
       action: () => {}
     } as MenuAction;
     buttonComponent.placement = "left";
+    buttonComponent.tooltip = "tooltip";
     buttonFixture.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -347,6 +464,48 @@ describe("MenuComponent", () => {
     expect(links.length).toBe(1, "Should only create one button");
 
     const link = links[0];
+    const button = buttonFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      button.innerHTML,
+      "Button HTML should match"
+    );
+  });
+
+  it("should create action button with user dependant tooltip", () => {
+    const api: BawApiService = TestBed.get(BawApiService);
+    spyOn(api, "getSessionUser").and.callFake(
+      () =>
+        new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
+    );
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuAction",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: user => `${user.userName} tooltip`,
+        action: () => {}
+      } as MenuAction
+    ]);
+    fixture.detectChanges();
+
+    const buttonFixture = TestBed.createComponent(MenuButtonComponent);
+    const buttonComponent = buttonFixture.componentInstance;
+    buttonComponent.id = "action-tooltip-0";
+    buttonComponent.link = {
+      kind: "MenuAction",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: user => `${user.userName} tooltip`,
+      action: () => {}
+    } as MenuAction;
+    buttonComponent.placement = "left";
+    buttonComponent.tooltip = "username tooltip";
+    buttonFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-button"
+    )[0];
     const button = buttonFixture.debugElement.nativeElement;
     expect(link.innerHTML).toEqual(
       button.innerHTML,
@@ -381,6 +540,7 @@ describe("MenuComponent", () => {
     buttonComponent1.id = "action-tooltip-0";
     buttonComponent1.link = button1Obj;
     buttonComponent1.placement = "left";
+    buttonComponent1.tooltip = "tooltip";
     buttonFixture1.detectChanges();
 
     const buttonFixture2 = TestBed.createComponent(MenuButtonComponent);
@@ -388,6 +548,7 @@ describe("MenuComponent", () => {
     buttonComponent2.id = "action-tooltip-1";
     buttonComponent2.link = button2Obj;
     buttonComponent2.placement = "left";
+    buttonComponent2.tooltip = "tooltip";
     buttonFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -447,6 +608,7 @@ describe("MenuComponent", () => {
     buttonComponent.id = "action-tooltip-0";
     buttonComponent.link = buttonObj;
     buttonComponent.placement = "left";
+    buttonComponent.tooltip = "tooltip";
     buttonFixture.detectChanges();
 
     // Create test external link
@@ -457,6 +619,7 @@ describe("MenuComponent", () => {
     externalLinkComponent.id = "action-tooltip-1";
     externalLinkComponent.link = externalLinkObj;
     externalLinkComponent.placement = "left";
+    externalLinkComponent.tooltip = "tooltip";
     externalLinkFixture.detectChanges();
 
     // Create test internal link
@@ -467,6 +630,7 @@ describe("MenuComponent", () => {
     internalLinkComponent.id = "action-tooltip-2";
     internalLinkComponent.link = internalLinkObj;
     internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
 
     // Retrieve links
@@ -537,6 +701,7 @@ describe("MenuComponent", () => {
       route
     } as MenuRoute;
     internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -552,8 +717,7 @@ describe("MenuComponent", () => {
     );
   });
 
-  // TODO Figure out how to trick router.params() function
-  xit("should create internal link with router parameters", fakeAsync(() => {
+  it("should create internal link with router parameters", fakeAsync(() => {
     const base = StrongRoute.Base.add("home");
     const route = base.add(":attribute");
     const testRoute = StrongRoute.Base.add("home").add("10");
@@ -571,36 +735,95 @@ describe("MenuComponent", () => {
       route: testRoute
     } as MenuRoute;
     internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
 
-    router.navigate(["home", "10"]).then(() => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        {
-          kind: "MenuRoute",
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route
-        } as MenuRoute
-      ]);
-      fixture.detectChanges();
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
 
-      const links = fixture.debugElement.nativeElement.querySelectorAll(
-        "app-menu-internal-link"
-      );
-      expect(links.length).toBe(1, "Should be one internal link");
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(1, "Should be one internal link");
 
-      const link = links[0];
-      const internalLink = internalLinkFixture.debugElement.nativeElement;
-      expect(link.innerHTML).toEqual(
-        internalLink.innerHTML,
-        "Internal link HTML should match"
-      );
-    });
+    const link = links[0];
+    const internalLink = internalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
   }));
 
-  it("should order links by priority", () => {
+  it("should order links by priority on secondary menu", () => {
+    const internalLink1Obj = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      order: { priority: 2, indentation: 0 }
+    } as MenuRoute;
+    const internalLink2Obj = {
+      kind: "MenuRoute",
+      label: "label b",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("house"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-1";
+    internalLinkComponent1.link = internalLink1Obj;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const internalLinkFixture2 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
+    internalLinkComponent2.id = "secondary-tooltip-0";
+    internalLinkComponent2.link = internalLink2Obj;
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
+    internalLinkFixture2.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
+
+    expect(links[0].innerHTML).toEqual(
+      internalLink2.innerHTML,
+      "First internal link HTML should match"
+    );
+    expect(links[1].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "Second internal link HTML should match"
+    );
+  });
+
+  it("should order links by priority on action menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label a",
@@ -626,18 +849,78 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
+    internalLinkFixture2.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
+
+    expect(links[0].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "First internal link HTML should match"
+    );
+    expect(links[1].innerHTML).toEqual(
+      internalLink2.innerHTML,
+      "Second internal link HTML should match"
+    );
+  });
+
+  it("should order links by alphabetical order on secondary menu", () => {
+    const internalLink1Obj = {
+      kind: "MenuRoute",
+      label: "label b",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home")
+    } as MenuRoute;
+    const internalLink2Obj = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("house")
+    } as MenuRoute;
+
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-1";
+    internalLinkComponent1.link = internalLink1Obj;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const internalLinkFixture2 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
+    internalLinkComponent2.id = "secondary-tooltip-0";
+    internalLinkComponent2.link = internalLink2Obj;
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -658,7 +941,7 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links by alphabetical order", () => {
+  it("should not order links by alphabetical order on action menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label b",
@@ -682,18 +965,79 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
+    internalLinkFixture2.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
+
+    expect(links[0].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "First internal link HTML should match"
+    );
+    expect(links[1].innerHTML).toEqual(
+      internalLink2.innerHTML,
+      "Second internal link HTML should match"
+    );
+  });
+
+  it("should order links with ordered link first on secondary menu", () => {
+    const internalLink1Obj = {
+      kind: "MenuRoute",
+      label: "label b",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home")
+    } as MenuRoute;
+    const internalLink2Obj = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("house"),
+      order: { priority: 2, indentation: 0 }
+    } as MenuRoute;
+
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-1";
+    internalLinkComponent1.link = internalLink1Obj;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const internalLinkFixture2 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
+    internalLinkComponent2.id = "secondary-tooltip-0";
+    internalLinkComponent2.link = internalLink2Obj;
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -714,7 +1058,7 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links with ordered link first", () => {
+  it("should not order links with ordered link first on action menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label b",
@@ -739,18 +1083,20 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -762,16 +1108,16 @@ describe("MenuComponent", () => {
     const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
 
     expect(links[0].innerHTML).toEqual(
-      internalLink2.innerHTML,
+      internalLink1.innerHTML,
       "First internal link HTML should match"
     );
     expect(links[1].innerHTML).toEqual(
-      internalLink1.innerHTML,
+      internalLink2.innerHTML,
       "Second internal link HTML should match"
     );
   });
 
-  it("should order links with duplicate priority and indentation alphabetically", () => {
+  it("should not order links with duplicate priority and indentation alphabetically on action menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label b",
@@ -797,18 +1143,80 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
+    internalLinkFixture2.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
+
+    expect(links[0].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "First internal link HTML should match"
+    );
+    expect(links[1].innerHTML).toEqual(
+      internalLink2.innerHTML,
+      "Second internal link HTML should match"
+    );
+  });
+
+  it("should order links with duplicate priority and indentation alphabetically on secondary menu", () => {
+    const internalLink1Obj = {
+      kind: "MenuRoute",
+      label: "label b",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+    const internalLink2Obj = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("house"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-1";
+    internalLinkComponent1.link = internalLink1Obj;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const internalLinkFixture2 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
+    internalLinkComponent2.id = "secondary-tooltip-0";
+    internalLinkComponent2.link = internalLink2Obj;
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -829,7 +1237,67 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links with duplicate priority by indentation", () => {
+  it("should order links with duplicate priority by indentation on secondary menu", () => {
+    const internalLink1Obj = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      order: { priority: 1, indentation: 1 }
+    } as MenuRoute;
+    const internalLink2Obj = {
+      kind: "MenuRoute",
+      label: "label b",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("house"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-1";
+    internalLinkComponent1.link = internalLink1Obj;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const internalLinkFixture2 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
+    internalLinkComponent2.id = "secondary-tooltip-0";
+    internalLinkComponent2.link = internalLink2Obj;
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
+    internalLinkFixture2.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
+
+    expect(links[0].innerHTML).toEqual(
+      internalLink2.innerHTML,
+      "First internal link HTML should match"
+    );
+    expect(links[1].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "Second internal link HTML should match"
+    );
+  });
+
+  it("should not order links with duplicate priority by indentation on action menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label a",
@@ -855,18 +1323,20 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "action-tooltip-0";
     internalLinkComponent1.link = internalLink1Obj;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "action-tooltip-1";
     internalLinkComponent2.link = internalLink2Obj;
     internalLinkComponent2.placement = "left";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -878,16 +1348,16 @@ describe("MenuComponent", () => {
     const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
 
     expect(links[0].innerHTML).toEqual(
-      internalLink2.innerHTML,
+      internalLink1.innerHTML,
       "First internal link HTML should match"
     );
     expect(links[1].innerHTML).toEqual(
-      internalLink1.innerHTML,
+      internalLink2.innerHTML,
       "Second internal link HTML should match"
     );
   });
 
-  it("should order sub-links", () => {
+  it("should order sub-links on secondary menu", () => {
     const internalLink1Obj = {
       kind: "MenuRoute",
       label: "label a",
@@ -905,7 +1375,7 @@ describe("MenuComponent", () => {
       order: { priority: 1, indentation: 1 }
     } as MenuRoute;
 
-    component.menuType = "action";
+    component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
     fixture.detectChanges();
 
@@ -913,18 +1383,20 @@ describe("MenuComponent", () => {
       MenuInternalLinkComponent
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "action-tooltip-1";
+    internalLinkComponent1.id = "secondary-tooltip-1";
     internalLinkComponent1.link = internalLink1Obj;
-    internalLinkComponent1.placement = "left";
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const internalLinkFixture2 = TestBed.createComponent(
       MenuInternalLinkComponent
     );
     const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "action-tooltip-0";
+    internalLinkComponent2.id = "secondary-tooltip-0";
     internalLinkComponent2.link = internalLink2Obj;
-    internalLinkComponent2.placement = "left";
+    internalLinkComponent2.placement = "right";
+    internalLinkComponent2.tooltip = "tooltip";
     internalLinkFixture2.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -945,7 +1417,7 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should filter duplicate link labels", () => {
+  it("should filter duplicate link labels on action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
       {
@@ -981,6 +1453,7 @@ describe("MenuComponent", () => {
       order: { priority: 1, indentation: 0 }
     } as MenuRoute;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -995,7 +1468,58 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should filter links with failing predicate", () => {
+  it("should filter duplicate link labels on secondary menu", () => {
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label a",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("home"),
+        order: { priority: 1, indentation: 0 }
+      } as MenuRoute,
+      {
+        kind: "MenuRoute",
+        label: "label a",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("house"),
+        order: { priority: 2, indentation: 0 }
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-0";
+    internalLinkComponent1.link = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(1, "Should be only one internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    expect(links[0].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "First internal link HTML should match"
+    );
+  });
+
+  it("should filter links with failing predicate on action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
       {
@@ -1032,6 +1556,7 @@ describe("MenuComponent", () => {
       order: { priority: 1, indentation: 0 }
     } as MenuRoute;
     internalLinkComponent1.placement = "left";
+    internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
 
     const links = fixture.debugElement.nativeElement.querySelectorAll(
@@ -1046,11 +1571,98 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("filter should not provide user details", () => {
+  it("should filter links with failing predicate on secondary menu", () => {
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label a",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("home"),
+        order: { priority: 1, indentation: 0 }
+      } as MenuRoute,
+      {
+        kind: "MenuRoute",
+        label: "label b",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("house"),
+        order: { priority: 2, indentation: 0 },
+        predicate: () => false
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const internalLinkFixture1 = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
+    internalLinkComponent1.id = "secondary-tooltip-0";
+    internalLinkComponent1.link = {
+      kind: "MenuRoute",
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      order: { priority: 1, indentation: 0 }
+    } as MenuRoute;
+    internalLinkComponent1.placement = "right";
+    internalLinkComponent1.tooltip = "tooltip";
+    internalLinkFixture1.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(1, "Should be only one internal links");
+
+    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
+    expect(links[0].innerHTML).toEqual(
+      internalLink1.innerHTML,
+      "First internal link HTML should match"
+    );
+  });
+
+  it("filter should not provide user details on action menu", () => {
     const api: BawApiService = TestBed.get(BawApiService);
     spyOn(api, "getSessionUser").and.callFake(() => null);
 
     component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label a",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("home"),
+        order: { priority: 1, indentation: 0 }
+      } as MenuRoute,
+      {
+        kind: "MenuRoute",
+        label: "label b",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("house"),
+        order: { priority: 2, indentation: 0 },
+        predicate: user => {
+          expect(user).toBeFalsy();
+          return !user;
+        }
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const links = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    );
+    expect(links.length).toBe(2, "Should be two internal links");
+  });
+
+  it("filter should not provide user details on secondary menu", () => {
+    const api: BawApiService = TestBed.get(BawApiService);
+    spyOn(api, "getSessionUser").and.callFake(() => null);
+
+    component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
       {
         kind: "MenuRoute",
@@ -1127,8 +1739,236 @@ describe("MenuComponent", () => {
     expect(links.length).toBe(2, "Should be two internal links");
   });
 
-  xit("should handle setting tooltip for action menu", () => {});
-  xit("should handle setting tooltip for secondary menu", () => {});
+  it("should handle internal link action menu", () => {
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("home")
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const internalLinkFixture = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent = internalLinkFixture.componentInstance;
+    internalLinkComponent.id = "action-tooltip-0";
+    internalLinkComponent.link = {
+      kind: "MenuRoute",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home")
+    } as MenuRoute;
+    internalLinkComponent.placement = "left";
+    internalLinkComponent.tooltip = "tooltip";
+    internalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    )[0];
+    const internalLink = internalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
+  });
+
+  it("should handle internal link secondary menu", () => {
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuRoute",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.Base.add("home")
+      } as MenuRoute
+    ]);
+    fixture.detectChanges();
+
+    const internalLinkFixture = TestBed.createComponent(
+      MenuInternalLinkComponent
+    );
+    const internalLinkComponent = internalLinkFixture.componentInstance;
+    internalLinkComponent.id = "secondary-tooltip-0";
+    internalLinkComponent.link = {
+      kind: "MenuRoute",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home")
+    } as MenuRoute;
+    internalLinkComponent.placement = "right";
+    internalLinkComponent.tooltip = "tooltip";
+    internalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-internal-link"
+    )[0];
+    const internalLink = internalLinkFixture.debugElement.nativeElement;
+
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
+  });
+
+  it("should handle external link action menu", () => {
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuLink",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        uri: "http://brokenlink/"
+      } as MenuLink
+    ]);
+    fixture.detectChanges();
+
+    const externalLinkFixture = TestBed.createComponent(
+      MenuExternalLinkComponent
+    );
+    const externalLinkComponent = externalLinkFixture.componentInstance;
+    externalLinkComponent.id = "action-tooltip-0";
+    externalLinkComponent.link = {
+      kind: "MenuLink",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      uri: "http://brokenlink/"
+    } as MenuLink;
+    externalLinkComponent.placement = "left";
+    externalLinkComponent.tooltip = "tooltip";
+    externalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-external-link"
+    )[0];
+    const internalLink = externalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
+  });
+
+  it("should handle external link secondary menu", () => {
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuLink",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        uri: "http://brokenlink/"
+      } as MenuLink
+    ]);
+    fixture.detectChanges();
+
+    const externalLinkFixture = TestBed.createComponent(
+      MenuExternalLinkComponent
+    );
+    const externalLinkComponent = externalLinkFixture.componentInstance;
+    externalLinkComponent.id = "secondary-tooltip-0";
+    externalLinkComponent.link = {
+      kind: "MenuLink",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      uri: "http://brokenlink/"
+    } as MenuLink;
+    externalLinkComponent.placement = "right";
+    externalLinkComponent.tooltip = "tooltip";
+    externalLinkFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-external-link"
+    )[0];
+    const internalLink = externalLinkFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      internalLink.innerHTML,
+      "Internal link HTML should match"
+    );
+  });
+
+  it("should create action button action menu", () => {
+    component.menuType = "action";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuAction",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        action: () => {}
+      } as MenuAction
+    ]);
+    fixture.detectChanges();
+
+    const buttonFixture = TestBed.createComponent(MenuButtonComponent);
+    const buttonComponent = buttonFixture.componentInstance;
+    buttonComponent.id = "action-tooltip-0";
+    buttonComponent.link = {
+      kind: "MenuAction",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      action: () => {}
+    } as MenuAction;
+    buttonComponent.placement = "left";
+    buttonComponent.tooltip = "tooltip";
+    buttonFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-button"
+    )[0];
+    const button = buttonFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      button.innerHTML,
+      "Button HTML should match"
+    );
+  });
+
+  it("should create action button secondary menu", () => {
+    component.menuType = "secondary";
+    component.links = List<AnyMenuItem>([
+      {
+        kind: "MenuAction",
+        label: "label",
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        action: () => {}
+      } as MenuAction
+    ]);
+    fixture.detectChanges();
+
+    const buttonFixture = TestBed.createComponent(MenuButtonComponent);
+    const buttonComponent = buttonFixture.componentInstance;
+    buttonComponent.id = "secondary-tooltip-0";
+    buttonComponent.link = {
+      kind: "MenuAction",
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      action: () => {}
+    } as MenuAction;
+    buttonComponent.placement = "right";
+    buttonComponent.tooltip = "tooltip";
+    buttonFixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelectorAll(
+      "app-menu-button"
+    )[0];
+    const button = buttonFixture.debugElement.nativeElement;
+    expect(link.innerHTML).toEqual(
+      button.innerHTML,
+      "Button HTML should match"
+    );
+  });
 
   xit("should not create widget when none provided", () => {});
   xit("should create widget when provided", () => {});

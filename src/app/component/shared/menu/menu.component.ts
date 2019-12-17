@@ -38,6 +38,7 @@ export class MenuComponent implements OnInit {
   placement: "left" | "right";
   routerParams: Params;
   url: string;
+  user: SessionUser;
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
@@ -51,13 +52,15 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // Get user details
-    const user: SessionUser = this.api.getSessionUser();
+    this.user = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
     this.filteredLinks = this.removeDuplicates(
       this.links
-        ? this.links.filter(link => this.filter(user, link)).sort(this.compare)
+        ? this.menuType === "secondary"
+          ? this.links.filter(link => this.filter(link)).sort(this.compare)
+          : this.links.filter(link => this.filter(link))
         : List<AnyMenuItem>([])
     );
 
@@ -117,14 +120,13 @@ export class MenuComponent implements OnInit {
 
   /**
    * Filters a list of links / buttons used by the action and secondary menus.
-   * @param user User details
    * @param link Link to display
    * @returns True if filter is passed
    */
-  private filter(user: SessionUser, link: AnyMenuItem) {
+  private filter(link: AnyMenuItem) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
-      return link.predicate(user);
+      return link.predicate(this.user);
     }
     return true;
   }
