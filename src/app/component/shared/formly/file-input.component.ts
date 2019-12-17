@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
 @Component({
@@ -9,4 +10,6 @@ import { FieldType } from "@ngx-formly/core";
   `
 })
 // tslint:disable-next-line: component-class-suffix
-export class FormlyFileInput extends FieldType {}
+export class FormlyFileInput extends FieldType {
+  formControl: FormControl;
+}
