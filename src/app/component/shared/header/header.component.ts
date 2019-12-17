@@ -64,10 +64,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.config = this.appConfig.getConfig();
     this.title = this.config.values.brand.name;
     this.routes = {
-      home: homeMenuItem.route.toString(),
-      login: loginMenuItem.route.toString(),
-      register: registerMenuItem.route.toString(),
-      profile: profileMenuItem.route.toString()
+      home: homeMenuItem,
+      login: loginMenuItem,
+      register: registerMenuItem,
+      profile: profileMenuItem
     };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface

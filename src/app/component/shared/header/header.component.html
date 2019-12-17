@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a
       class="navbar-brand"
-      [routerLink]="routes.home"
+      [routerLink]="routes.home.route.toString()"
       routerLinkActive="active"
     >
       {{ title }}
@@ -46,7 +46,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            [routerLink]="routes.register"
+            [routerLink]="routes.register.route.toString()"
             routerLinkActive="active"
           >
             {{ routes.register.label }}
@@ -55,7 +55,7 @@
         <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
           <a
             class="nav-link"
-            [routerLink]="routes.login"
+            [routerLink]="routes.login.route.toString()"
             routerLinkActive="active"
           >
             {{ routes.login.label }}
@@ -68,7 +68,7 @@
         <li class="nav-item">
           <a
             class="nav-link login-widget"
-            [routerLink]="routes.profile"
+            [routerLink]="routes.profile.route.toString()"
             routerLinkActive="active"
           >
             <span>{{ user.userName }}</span>

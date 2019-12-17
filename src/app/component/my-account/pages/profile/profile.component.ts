@@ -47,7 +47,7 @@ import {
       },
       {
         kind: "MenuLink",
-        icon: ["fas", "bookmark"],
+        icon: ["fas", "bullseye"],
         label: "My Annotations",
         uri: "BROKEN LINK",
         tooltip: user => `Annotations created by ${user.userName}`,
