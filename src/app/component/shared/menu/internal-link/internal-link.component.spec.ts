@@ -27,6 +27,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -43,6 +44,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -65,6 +67,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -84,6 +87,30 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
+    component.linkParams = {};
+    component.placement = "left";
+    fixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelector("a");
+
+    expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
+    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "custom tooltip"
+    );
+  });
+
+  it("should not use link tooltip", () => {
+    component.id = "id";
+    component.link = {
+      icon: ["fas", "home"],
+      kind: "MenuRoute",
+      label: "home",
+      route: StrongRoute.Base.add("home"),
+      tooltip: () => "tooltip"
+    };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -106,6 +133,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -126,6 +154,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -147,6 +176,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
     fixture.detectChanges();
@@ -169,6 +199,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
     fixture.detectChanges();
@@ -191,6 +222,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("brokenlink"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
     fixture.detectChanges();
@@ -213,6 +245,7 @@ describe("MenuInternalLinkComponent", () => {
       route: baseRoute.add(":attribute"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = { attribute: "10" };
     component.placement = "right";
     fixture.detectChanges();
@@ -233,6 +266,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("brokenlink"),
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
     fixture.detectChanges();
@@ -250,6 +284,7 @@ describe("MenuInternalLinkComponent", () => {
       route: StrongRoute.Base.add("context.html"), // This is the window.location.pathname of unit tests
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
     fixture.detectChanges();

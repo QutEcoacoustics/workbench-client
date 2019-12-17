@@ -5,7 +5,7 @@ import { testAppInitializer } from "src/app/app.helper";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
-describe("ActionMenuComponent", () => {
+xdescribe("ActionMenuComponent", () => {
   let component: ActionMenuComponent;
   let fixture: ComponentFixture<ActionMenuComponent>;
 
@@ -26,4 +26,14 @@ describe("ActionMenuComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  xit("should handle no links", () => {});
+  xit("should handle single internal link", () => {});
+  xit("should handle multiple internal links", () => {});
+  xit("should handle single external link", () => {});
+  xit("should handle multiple external links", () => {});
+  xit("should handle single action button", () => {});
+  xit("should handle multiple action button", () => {});
+  xit("should handle no widget", () => {});
+  xit("should handle widget", () => {});
 });

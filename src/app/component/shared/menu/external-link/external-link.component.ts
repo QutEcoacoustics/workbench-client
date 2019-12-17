@@ -14,12 +14,12 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
       class="nav-link"
       href="{{ link.uri }}"
       placement="{{ placement }}"
-      ngbTooltip="{{ link.tooltip() }}"
+      ngbTooltip="{{ tooltip }}"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span id="label">{{ link.label }}</span>
       <span class="d-none" [id]="id">
-        {{ link.tooltip() }}
+        {{ tooltip }}
       </span>
     </a>
   `,
@@ -30,6 +30,7 @@ export class MenuExternalLinkComponent implements OnInit {
   @Input() id: string;
   @Input() link: MenuLink;
   @Input() placement: "left" | "right";
+  @Input() tooltip: string;
 
   constructor(private config: AppConfigService) {}
 

@@ -24,8 +24,9 @@ describe("MenuButtonComponent", () => {
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -41,6 +42,7 @@ describe("MenuButtonComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -60,8 +62,9 @@ describe("MenuButtonComponent", () => {
       action: () => console.log("action"),
       label: "custom label",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -80,6 +83,31 @@ describe("MenuButtonComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
+    component.placement = "left";
+    fixture.detectChanges();
+
+    const button = fixture.debugElement.nativeElement.querySelector("button");
+
+    expect(button).toBeTruthy("Button should have [ngbTooltip] directive");
+    expect(
+      button.attributes.getNamedItem("ng-reflect-ngb-tooltip")
+    ).toBeTruthy();
+    expect(button.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "custom tooltip"
+    );
+  });
+
+  it("should not use link tooltip", () => {
+    component.id = "id";
+    component.link = {
+      kind: "MenuAction",
+      action: () => console.log("action"),
+      label: "home",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip"
+    };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -103,6 +131,7 @@ describe("MenuButtonComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -120,8 +149,9 @@ describe("MenuButtonComponent", () => {
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -140,8 +170,9 @@ describe("MenuButtonComponent", () => {
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -161,8 +192,9 @@ describe("MenuButtonComponent", () => {
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
 
@@ -182,8 +214,9 @@ describe("MenuButtonComponent", () => {
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
 
@@ -199,8 +232,9 @@ describe("MenuButtonComponent", () => {
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
 

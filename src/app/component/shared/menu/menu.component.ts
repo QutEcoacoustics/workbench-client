@@ -30,14 +30,15 @@ import { WidgetMenuItem } from "../widget/widgetItem";
 export class MenuComponent implements OnInit {
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
-  @Input() widget: WidgetMenuItem;
   @Input() menuType: "action" | "secondary";
+  @Input() widget?: WidgetMenuItem;
   @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
 
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
   routerParams: Params;
   url: string;
+  user: SessionUser;
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
@@ -51,13 +52,15 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // Get user details
-    const user: SessionUser = this.api.getSessionUser();
+    this.user = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
     this.filteredLinks = this.removeDuplicates(
       this.links
-        ? this.links.filter(link => this.filter(user, link))
+        ? this.menuType === "secondary"
+          ? this.links.filter(link => this.filter(link)).sort(this.compare)
+          : this.links.filter(link => this.filter(link))
         : List<AnyMenuItem>([])
     );
 
@@ -76,11 +79,12 @@ export class MenuComponent implements OnInit {
    * Determine whether to show links
    */
   linksExist() {
-    return this.filteredLinks.size !== 0;
+    return this.filteredLinks.size > 0;
   }
 
   /**
    * Calculate the left padding of a secondary link item
+   * @param link Link to calculate padding for
    */
   calculatePadding(link: AnyMenuItem) {
     // Only the secondary menu implements this option
@@ -116,14 +120,13 @@ export class MenuComponent implements OnInit {
 
   /**
    * Filters a list of links / buttons used by the action and secondary menus.
-   * @param user User details
    * @param link Link to display
    * @returns True if filter is passed
    */
-  private filter(user: SessionUser, link: AnyMenuItem) {
+  private filter(link: AnyMenuItem) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
-      return link.predicate(user);
+      return link.predicate(this.user);
     }
     return true;
   }
@@ -152,5 +155,40 @@ export class MenuComponent implements OnInit {
     });
 
     return set;
+  }
+
+  /**
+   * Sort function for list of menu items
+   * @param a First menu item
+   * @param b Second menu item
+   */
+  private compare(a: AnyMenuItem, b: AnyMenuItem): number {
+    // If no order, return alphabetical order
+    if (!a.order && !b.order) {
+      return a.label < b.label ? -1 : 1;
+    }
+
+    // If only a has order, return a
+    if (a.order && !b.order) {
+      return -1;
+    }
+
+    // If only b has order, return b
+    if (b.order && !a.order) {
+      return 1;
+    }
+
+    // If both have the same order number,
+    // prioritize based on indentation and alphabetical order
+    if (a.order.priority === b.order.priority) {
+      if (a.order.indentation === b.order.indentation) {
+        return a.label < b.label ? -1 : 1;
+      }
+
+      return a.order.indentation < b.order.indentation ? -1 : 1;
+    }
+
+    // Return the menu item with the lower order value
+    return a.order.priority < b.order.priority ? -1 : 1;
   }
 }
