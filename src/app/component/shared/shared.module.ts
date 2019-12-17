@@ -17,10 +17,9 @@ import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
 import { MenuModule } from "./menu/menu.module";
 import { sharedComponents } from "./shared.components";
-import { WidgetDirective } from "./widget/widget.directive";
 
 @NgModule({
-  declarations: [...sharedComponents, WidgetDirective],
+  declarations: [...sharedComponents],
   imports: [
     CommonModule,
     RouterModule,
