@@ -24,7 +24,10 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
+            ],
             "scripts": ["node_modules/marked/lib/marked.js"],
             "sourceMap": true
           },
@@ -139,7 +142,10 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": ["src/assets", "src/manifest.json"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
+            ],
             "scripts": ["node_modules/marked/lib/marked.js"]
           }
         },

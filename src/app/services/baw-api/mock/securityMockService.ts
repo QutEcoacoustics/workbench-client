@@ -1,5 +1,6 @@
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
+import { APIErrorDetails } from "../api.interceptor";
 
 export class MockSecurityService {
   private loggedIn = false;
@@ -17,7 +18,10 @@ export class MockSecurityService {
       this.trigger.next(true);
     } else {
       this.loggedIn = false;
-      subject.error("Error MSG");
+      subject.error({
+        status: 401,
+        message: "Unauthorized"
+      } as APIErrorDetails);
       this.trigger.next(false);
     }
 
@@ -42,7 +46,10 @@ export class MockSecurityService {
       this.trigger.next(true);
     } else {
       this.loggedIn = false;
-      subject.error("Error MSG");
+      subject.error({
+        status: 401,
+        message: "Unauthorized"
+      } as APIErrorDetails);
       this.trigger.next(false);
     }
 

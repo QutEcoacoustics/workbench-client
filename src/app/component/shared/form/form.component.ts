@@ -28,6 +28,7 @@ export class FormComponent implements OnInit {
   @Input() submitLabel: string;
   @Input() submitLoading: boolean;
   @Input() error?: string;
+  @Input() success?: string;
 
   // Rename is required to stop formly from hijacking the variable
   // tslint:disable-next-line: no-output-rename
@@ -86,6 +87,13 @@ export class FormComponent implements OnInit {
    */
   clearError() {
     this.error = null;
+  }
+
+  /**
+   * Clear form success
+   */
+  clearSuccess() {
+    this.success = null;
   }
 
   /**

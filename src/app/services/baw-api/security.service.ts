@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { APIResponse, BawApiService, Filters } from "./base-api.service";
 
@@ -14,8 +15,8 @@ import { APIResponse, BawApiService, Filters } from "./base-api.service";
 export class SecurityService extends BawApiService {
   protected loggedInTrigger = new BehaviorSubject<boolean>(false);
 
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.loggedInTrigger.next(this.isLoggedIn());
 
@@ -50,7 +51,7 @@ export class SecurityService extends BawApiService {
   ) {
     this.loggedInTrigger.subscribe({
       next: () => super.details(subject, callback, path, args, filters),
-      error: err => subject.error(err)
+      error: (err: APIErrorDetails) => subject.error(err)
     });
   }
 
@@ -76,26 +77,35 @@ export class SecurityService extends BawApiService {
    * Logout user and clear session storage values
    */
   signOut() {
+    const subject = new Subject<any>();
+
     if (!this.isLoggedIn()) {
+      this.clearSessionStorage();
       this.loggedInTrigger.next(false);
+      subject.complete();
       return;
     }
 
     this.delete(this.paths.signOut).subscribe({
       next: (data: APIResponse) => {
         if (data.meta.status === this.apiReturnCodes.success) {
-          this.loggedInTrigger.next(false);
           this.clearSessionStorage();
+          this.loggedInTrigger.next(false);
+          subject.complete();
         } else {
           console.error("Unknown error thrown by login rest api");
           console.error(data);
+          subject.error(data);
         }
       },
-      error: err => {
+      error: (err: APIErrorDetails) => {
         console.error("Unknown error thrown by login rest api");
         console.error(err);
+        subject.error(err);
       }
     });
+
+    return subject;
   }
 
   /**
@@ -110,8 +120,12 @@ export class SecurityService extends BawApiService {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {
       if (!data) {
+        this.clearSessionStorage();
         this.loggedInTrigger.next(false);
-        subject.error("No data returned from API");
+        subject.error({
+          status: 0,
+          message: "No data returned from API"
+        } as APIErrorDetails);
       }
 
       const user = new SessionUser({
@@ -124,14 +138,18 @@ export class SecurityService extends BawApiService {
       subject.next(true);
     };
     const error = (err: APIErrorDetails) => {
+      this.clearSessionStorage();
       this.loggedInTrigger.next(false);
-      subject.error(err.message);
+      subject.error(err);
     };
 
     // Return early if logged in
     if (this.isLoggedIn()) {
       this.loggedInTrigger.next(true);
-      subject.error("You are already logged in, try logging out first.");
+      subject.error({
+        status: 0,
+        message: "You are already logged in, try logging out first."
+      } as APIErrorDetails);
       return subject.asObservable();
     }
 

@@ -3,6 +3,7 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "./base-api.service";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
@@ -13,7 +14,8 @@ describe("BawApiService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [...testAppInitializer]
     });
     service = TestBed.get(BawApiService);
     httpMock = TestBed.get(HttpTestingController);

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 
 /**
@@ -22,18 +22,22 @@ export abstract class BawApiService {
     filter -> POST with filter body
   */
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient, protected config: AppConfigService) {}
 
-  private url = environment.bawApiUrl;
+  private url = this.config.getConfig().environment.apiRoot;
 
   protected paths: Paths;
   protected userSessionStorage = "user";
 
   public apiReturnCodes = {
     success: 200,
+    created: 201,
     badRequest: 400,
     unauthorized: 401,
+    forbidden: 403,
     notFound: 404,
+    unsupportedMediaType: 415,
+    unprocessableEntity: 422,
     internalServerFailure: 500
   };
 
@@ -66,12 +70,15 @@ export abstract class BawApiService {
       next: (data: APIResponse) => {
         if (data.data) {
           subject.next(next(data.data));
+          subject.complete();
         } else {
           subject.error("No data returned from API");
+          subject.complete();
         }
       },
       error: (err: APIErrorDetails) => {
         subject.error(err);
+        subject.complete();
       }
     });
   }
@@ -97,6 +104,7 @@ export abstract class BawApiService {
       this.handleResponse(next, error)
     );
   }
+
   /**
    * Create request for API route
    * @param next Callback function for successful response
@@ -115,6 +123,28 @@ export abstract class BawApiService {
     options?: RequestOptions
   ) {
     this.post<APIResponse>(path, args, body, options).subscribe(
+      this.handleResponse(next, error)
+    );
+  }
+
+  /**
+   * Update request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
+  protected update(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    args?: PathArg,
+    body?: any,
+    options?: RequestOptions
+  ) {
+    this.patch<APIResponse>(path, args, body, options).subscribe(
       this.handleResponse(next, error)
     );
   }
@@ -164,6 +194,23 @@ export abstract class BawApiService {
     options?: RequestOptions
   ): Observable<T> {
     return this.http.post<T>(this.getPath(path, args), body, options);
+  }
+
+  /**
+   * Constructs a `PATCH` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   * @param args API arguments
+   * @param body Request body
+   * @param options Request options
+   */
+  protected patch<T>(
+    path: string,
+    args?: PathArg,
+    body?: any,
+    options?: RequestOptions
+  ): Observable<T> {
+    return this.http.patch<T>(this.getPath(path, args), body, options);
   }
 
   /**

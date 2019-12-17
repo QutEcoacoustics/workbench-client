@@ -4,15 +4,17 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
-import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./api.interceptor";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
   let httpMock: HttpTestingController;
+  let config: AppConfigService;
   let service: UserService;
   let securityService: SecurityService;
 
@@ -20,8 +22,14 @@ describe("UserService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        SecurityService,
-        { provide: HTTP_INTERCEPTORS, useClass: BawApiInterceptor, multi: true }
+        BawApiInterceptor,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        ...testAppInitializer,
+        SecurityService
       ]
     });
 
@@ -30,6 +38,7 @@ describe("UserService", () => {
     });
 
     httpMock = TestBed.get(HttpTestingController);
+    config = TestBed.get(AppConfigService);
     service = TestBed.get(UserService);
     securityService = TestBed.get(SecurityService);
   });
@@ -54,7 +63,7 @@ describe("UserService", () => {
 
     const req = httpMock.expectOne(
       {
-        url: environment.bawApiUrl + "/security",
+        url: config.getConfig().environment.apiRoot + "/security",
         method: "post"
       },
       "Supplementary function to login account. If this fails, test if unit test causes double login."
@@ -78,9 +87,12 @@ describe("UserService", () => {
         expect(false).toBeTruthy("Should not produce response");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 0,
+          message: "User is not logged in."
+        });
         done();
       },
       () => {
@@ -88,7 +100,7 @@ describe("UserService", () => {
       }
     );
 
-    httpMock.expectNone(environment.bawApiUrl + "/my_account");
+    httpMock.expectNone(config.getConfig().environment.apiRoot + "/my_account");
   });
 
   it("getMyAccount should return details is user logged in", done => {
@@ -127,7 +139,9 @@ describe("UserService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/my_account");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/my_account"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {
@@ -157,9 +171,12 @@ describe("UserService", () => {
         expect(false).toBeTruthy("Should not produce response");
         done();
       },
-      err => {
+      (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(typeof err).toBe("string");
+        expect(err).toEqual({
+          status: 0,
+          message: "User is not logged in."
+        });
         done();
       },
       () => {
@@ -167,7 +184,7 @@ describe("UserService", () => {
       }
     );
 
-    httpMock.expectNone(environment.bawApiUrl + "/my_account");
+    httpMock.expectNone(config.getConfig().environment.apiRoot + "/my_account");
   });
 
   it("getUserAccount should return data if user is logged in", done => {
@@ -206,7 +223,9 @@ describe("UserService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/user_accounts/1");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/user_accounts/1"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {
@@ -266,7 +285,9 @@ describe("UserService", () => {
       }
     );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/user_accounts/5");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/user_accounts/5"
+    );
     req.flush({
       meta: { status: 200, message: "OK" },
       data: {

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject } from "rxjs";
+import { testAppInitializer } from "src/app/app.helper";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
@@ -25,7 +26,10 @@ xdescribe("SecondaryMenuComponent", () => {
         RouterTestingModule.withRoutes([])
       ],
       declarations: [SecondaryMenuComponent],
-      providers: [{ provide: ActivatedRoute, useClass: MockActivatedRoute }]
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SecondaryMenuComponent);

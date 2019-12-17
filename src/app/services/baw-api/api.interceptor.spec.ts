@@ -10,12 +10,13 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
-import { environment } from "src/environments/environment";
-import { BawApiInterceptor } from "./api.interceptor";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 describe("BawApiInterceptor", () => {
   let api: BawApiService;
+  let config: AppConfigService;
   let http: HttpClient;
   let httpMock: HttpTestingController;
 
@@ -34,6 +35,7 @@ describe("BawApiInterceptor", () => {
     });
 
     api = TestBed.get(BawApiService);
+    config = TestBed.get(AppConfigService);
     http = TestBed.get(HttpClient);
     httpMock = TestBed.get(HttpTestingController);
   });
@@ -52,22 +54,28 @@ describe("BawApiInterceptor", () => {
       done();
     };
 
-    http.get<any>(environment.bawApiUrl + "/brokenapiroute").subscribe(
-      data => {
-        expect(false).toBeTruthy("HTTP Error Responses should not return data");
-        done();
-      },
-      err => {
-        expect(err).toEqual({
-          status: 401,
-          message:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
-        });
-        done();
-      },
-      noop
+    http
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
+      .subscribe(
+        () => {
+          expect(false).toBeTruthy(
+            "HTTP Error Responses should not return data"
+          );
+          done();
+        },
+        (err: APIErrorDetails) => {
+          expect(err).toEqual({
+            status: 401,
+            message:
+              "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
+          });
+          done();
+        },
+        noop
+      );
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
     );
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
 
     req.flush(
       {
@@ -91,26 +99,92 @@ describe("BawApiInterceptor", () => {
     );
   });
 
+  it("should handle api error response with info", done => {
+    const noop = () => {
+      done();
+    };
+
+    http
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
+      .subscribe(
+        () => {
+          expect(false).toBeTruthy(
+            "HTTP Error Responses should not return data"
+          );
+          done();
+        },
+        (err: APIErrorDetails) => {
+          expect(err).toEqual({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          });
+          done();
+        },
+        noop
+      );
+
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      },
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
   it("should handle http error response", done => {
     const noop = () => {
       done();
     };
 
-    http.get<any>(environment.bawApiUrl + "/brokenapiroute").subscribe(
-      data => {
-        expect(false).toBeTruthy("HTTP Error Responses should not return data");
-        done();
-      },
-      err => {
-        expect(err).toEqual({
-          status: 404,
-          message: `Http failure response for ${environment.bawApiUrl}/brokenapiroute: 404 Page Not Found`
-        });
-        done();
-      },
-      noop
+    http
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
+      .subscribe(
+        data => {
+          expect(false).toBeTruthy(
+            "HTTP Error Responses should not return data"
+          );
+          done();
+        },
+        (err: APIErrorDetails) => {
+          expect(err).toEqual({
+            status: 404,
+            message: `Http failure response for ${
+              config.getConfig().environment.apiRoot
+            }/brokenapiroute: 404 Page Not Found`
+          });
+          done();
+        },
+        noop
+      );
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
     );
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
 
     req.flush({}, { status: 404, statusText: "Page Not Found" });
   });
@@ -124,16 +198,16 @@ describe("BawApiInterceptor", () => {
     expect(req.request.headers.has("Accept")).toBeFalsy();
   });
 
-  it("should not set token header on outgoing data to non baw api traffic when not logged in", () => {
+  it("should not set Authorization header on outgoing data to non baw api traffic when not logged in", () => {
     const noop = () => {};
 
     http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
     const req = httpMock.expectOne("https://brokenlink");
 
-    expect(req.request.headers.has("Token")).toBeFalsy();
+    expect(req.request.headers.has("Authorization")).toBeFalsy();
   });
 
-  it("should not set token header on outgoing data to non baw api traffic when logged in", () => {
+  it("should not set Authorization header on outgoing data to non baw api traffic when logged in", () => {
     const noop = () => {};
 
     spyOn(api, "isLoggedIn").and.callFake(() => {
@@ -230,9 +304,11 @@ describe("BawApiInterceptor", () => {
     const noop = () => {};
 
     http
-      .get<any>(environment.bawApiUrl + "/brokenapiroute")
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
       .subscribe(noop, noop, noop);
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
 
     expect(req.request.headers.has("Accept")).toBeTruthy();
     expect(req.request.headers.get("Accept")).toBe("application/json");
@@ -242,9 +318,11 @@ describe("BawApiInterceptor", () => {
     const noop = () => {};
 
     http
-      .get<any>(environment.bawApiUrl + "/brokenapiroute")
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
       .subscribe(noop, noop, noop);
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
 
     expect(req.request.headers.has("Content-Type")).toBeTruthy();
     expect(req.request.headers.get("Content-Type")).toBe("application/json");
@@ -255,11 +333,14 @@ describe("BawApiInterceptor", () => {
     const params = new HttpParams().set("shouldConvert", "true");
 
     http
-      .get<any>(environment.bawApiUrl + "/brokenapiroute", { params })
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute", {
+        params
+      })
       .subscribe(noop, noop, noop);
 
     const req = httpMock.expectOne(
-      environment.bawApiUrl + "/brokenapiroute?should_convert=true"
+      config.getConfig().environment.apiRoot +
+        "/brokenapiroute?should_convert=true"
     );
 
     expect(req).toBeTruthy();
@@ -269,12 +350,14 @@ describe("BawApiInterceptor", () => {
     const noop = () => {};
 
     http
-      .post<any>(environment.bawApiUrl + "/brokenapiroute", {
+      .post<any>(config.getConfig().environment.apiRoot + "/brokenapiroute", {
         shouldConvert: true
       })
       .subscribe(noop, noop, noop);
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
 
     expect(req.request.body).toEqual({ should_convert: true });
   });
@@ -284,17 +367,21 @@ describe("BawApiInterceptor", () => {
       done();
     };
 
-    http.get<any>(environment.bawApiUrl + "/brokenapiroute").subscribe(
-      response => {
-        expect(response).toBeTruthy();
-        expect(response).toEqual({ dummyResponse: true });
-        done();
-      },
-      noop,
-      noop
-    );
+    http
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
+      .subscribe(
+        response => {
+          expect(response).toBeTruthy();
+          expect(response).toEqual({ dummyResponse: true });
+          done();
+        },
+        noop,
+        noop
+      );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
     req.flush({ dummy_response: true });
   });
 
@@ -303,32 +390,38 @@ describe("BawApiInterceptor", () => {
       done();
     };
 
-    http.post<any>(environment.bawApiUrl + "/brokenapiroute", {}).subscribe(
-      response => {
-        expect(response).toBeTruthy();
-        expect(response).toEqual({ dummyResponse: true });
-        done();
-      },
-      noop,
-      noop
-    );
+    http
+      .post<any>(config.getConfig().environment.apiRoot + "/brokenapiroute", {})
+      .subscribe(
+        response => {
+          expect(response).toBeTruthy();
+          expect(response).toEqual({ dummyResponse: true });
+          done();
+        },
+        noop,
+        noop
+      );
 
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
     req.flush({ dummy_response: true });
   });
 
-  it("should not attach token to baw api requests when unauthenticated", () => {
+  it("should not attach Authorization to baw api requests when unauthenticated", () => {
     const noop = () => {};
 
     http
-      .get<any>(environment.bawApiUrl + "/brokenapiroute")
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
       .subscribe(noop, noop, noop);
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
 
     expect(req.request.headers.has("Authorization")).toBeFalsy();
   });
 
-  it("should attach token to baw api requests when authenticated", () => {
+  it("should attach Authorization to baw api requests when authenticated", () => {
     const noop = () => {};
 
     spyOn(api, "isLoggedIn").and.callFake(() => {
@@ -342,9 +435,11 @@ describe("BawApiInterceptor", () => {
     });
 
     http
-      .get<any>(environment.bawApiUrl + "/brokenapiroute")
+      .get<any>(config.getConfig().environment.apiRoot + "/brokenapiroute")
       .subscribe(noop, noop, noop);
-    const req = httpMock.expectOne(environment.bawApiUrl + "/brokenapiroute");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/brokenapiroute"
+    );
 
     expect(req.request.headers.has("Authorization")).toBeTruthy();
     expect(req.request.headers.get("Authorization")).toBe(

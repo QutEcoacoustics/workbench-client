@@ -18,7 +18,7 @@ export interface SiteInterface {
   name: Name;
   imageUrl?: string;
   description: Description;
-  locationObfuscated: boolean;
+  locationObfuscated?: boolean;
   creatorId: ID;
   createdAt?: Time;
   updaterId?: ID;
@@ -54,7 +54,7 @@ export class Site implements SiteInterface {
     this.name = site.name;
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.description = site.description;
-    this.locationObfuscated = site.locationObfuscated;
+    this.locationObfuscated = site.locationObfuscated || false;
     this.projectIds = new Set(site.projectIds);
     this.creatorId = site.creatorId;
     this.createdAt = site.createdAt

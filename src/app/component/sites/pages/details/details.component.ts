@@ -1,10 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { flatMap } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
@@ -33,14 +35,17 @@ import {
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"]
 })
-export class DetailsComponent extends PageComponent implements OnInit {
-  project: Project;
-  site: Site;
-  recordings: AudioRecording[];
-  startDate: Date;
+export class DetailsComponent extends PageComponent
+  implements OnInit, OnDestroy {
   endDate: Date;
-  error: number;
-  errorCodes = this.sitesApi.apiReturnCodes;
+  loadingProgress = 0;
+  project: Project;
+  recordings: AudioRecording[];
+  site: Site;
+  startDate: Date;
+  status: number;
+  state = "loading";
+  subSink: SubSink = new SubSink();
 
   constructor(
     private route: ActivatedRoute,
@@ -52,39 +57,74 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe({
-      next: params => {
-        this.projectsApi.getProject(params.projectId).subscribe({
-          next: project => {
-            this.project = project;
-            this.error = null;
-          },
-          error: (err: APIErrorDetails) => {
-            this.error = err.status;
+    const allRequiredDataLoaded = 2;
+
+    // Retrieve project details
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.projectsApi.getProject(params.projectId);
+        })
+      )
+      .subscribe(
+        project => {
+          this.project = project;
+
+          this.loadingProgress++;
+          if (this.loadingProgress === allRequiredDataLoaded) {
+            this.state = "ready";
           }
-        });
+        },
+        (err: APIErrorDetails) => {
+          this.status = err.status;
+          this.state = "error";
+        }
+      );
 
-        this.sitesApi
-          .getProjectSite(params.projectId, params.siteId)
-          .subscribe({
-            next: site => {
-              this.site = site;
+    // Retrieve site and audio recording details
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.sitesApi.getProjectSite(params.projectId, params.siteId);
+        })
+      )
+      .subscribe(
+        site => {
+          this.site = site;
 
-              this.audioRecordingApi
-                .getAudioRecordings(site.id, { items: 100 })
-                .subscribe({
-                  next: recordings => {
-                    this.recordings = recordings;
-                    this.extremityDates(recordings);
-                  }
-                });
-            },
-            error: (err: APIErrorDetails) => {
-              this.error = err.status;
-            }
+          this.loadingProgress++;
+          if (this.loadingProgress === allRequiredDataLoaded) {
+            this.state = "ready";
+          }
+        },
+        (err: APIErrorDetails) => {
+          // Let project error dominate
+          if (this.state !== "error") {
+            this.status = err.status;
+            this.state = "error";
+          }
+        }
+      );
+
+    // Retrieve audio recording details
+    this.subSink.sink = this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.audioRecordingApi.getAudioRecordings(params.siteId, {
+            items: 100
           });
-      }
-    });
+        })
+      )
+      .subscribe(
+        recordings => {
+          this.recordings = recordings;
+          this.extremityDates(recordings);
+        },
+        () => {
+          // Doesn't break things if audio recordings don't load
+          this.recordings = [];
+        }
+      );
   }
 
   extremityDates(recordings: AudioRecording[]) {
@@ -102,5 +142,9 @@ export class DetailsComponent extends PageComponent implements OnInit {
 
     this.startDate = startDate;
     this.endDate = endDate;
+  }
+
+  ngOnDestroy() {
+    this.subSink.unsubscribe();
   }
 }

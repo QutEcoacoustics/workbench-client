@@ -3,14 +3,16 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { User, UserInterface } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserService extends BawApiService {
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
       myAccount: "/my_account",
@@ -29,7 +31,11 @@ export class UserService extends BawApiService {
     if (this.isLoggedIn()) {
       this.details(subject, callback, this.paths.myAccount);
     } else {
-      subject.error("User is not logged in");
+      subject.error({
+        status: 0,
+        message: "User is not logged in."
+      } as APIErrorDetails);
+      subject.complete();
     }
 
     return subject;
@@ -49,7 +55,10 @@ export class UserService extends BawApiService {
         args: { userId: id }
       });
     } else {
-      subject.error("User is not logged in");
+      subject.error({
+        status: 0,
+        message: "User is not logged in."
+      } as APIErrorDetails);
     }
 
     return subject;

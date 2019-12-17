@@ -1,4 +1,5 @@
-<ng-container *ngIf="!error && site">
+<ng-container *ngIf="state === 'ready'">
+  <!-- Site Details -->
   <h1>
     <small class="text-muted" *ngIf="project">
       Project: {{ project.name }}
@@ -14,16 +15,17 @@
       </div>
     </div>
     <div class="col-sm-8">
-      <p>{{ site.description }}</p>
+      <p id="site_description">{{ site.description }}</p>
     </div>
   </div>
 
   <app-wip>
+    <!-- Audio Recording Summary -->
     <h2>Audio Recordings</h2>
 
     <div class="row">
       <div class="col-sm-6">
-        <p>
+        <p id="audio_recording_description">
           This site contains recordings from ... at ... to ... at ....<br />This
           site covers ... and there are records for ... of that time.
         </p>
@@ -43,24 +45,19 @@
           </li>
         </ul>
       </div>
-      <div
-        class="col-sm-6"
-        [ngClass]="{
-          'map-placeholder': !site.customLatitude || !site.customLongitude
-        }"
-      >
-        <span *ngIf="!site.customLatitude || !site.customLongitude">
-          This site does not have a location set
-        </span>
+      <div class="col-sm-6">
+        <app-map [sites]="[site]"></app-map>
       </div>
     </div>
   </app-wip>
 </ng-container>
 
-<ng-container *ngIf="error === errorCodes.unauthorized">
-  <app-unauthorized></app-unauthorized>
-</ng-container>
+<app-error-handler [errorCode]="status"></app-error-handler>
 
-<ng-container *ngIf="error === errorCodes.notFound">
-  <app-item-not-found></app-item-not-found>
+<!-- Project Data Loading Display -->
+<ng-container *ngIf="state === 'loading'">
+  <h4 class="text-center">Loading</h4>
+  <div class="d-flex justify-content-center">
+    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+  </div>
 </ng-container>

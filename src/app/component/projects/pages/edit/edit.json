@@ -1,9 +1,5 @@
 {
-  "model": {
-    "name": "",
-    "description": "",
-    "image": ""
-  },
+  "model": {},
   "fields": [
     {
       "key": "name",

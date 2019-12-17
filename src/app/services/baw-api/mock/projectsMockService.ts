@@ -1,10 +1,16 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import {
+  Description,
+  ID,
+  ImageURL,
+  Name
+} from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
+import { AppConfigService } from "../../app-config/app-config.service";
+import { BawApiService } from "../base-api.service";
 import { ProjectFilters } from "../projects.service";
-import { SecurityService } from "../security.service";
 
 /**
  * Interacts with projects route in baw api
@@ -12,9 +18,9 @@ import { SecurityService } from "../security.service";
 @Injectable({
   providedIn: "root"
 })
-export class MockProjectsService extends SecurityService {
-  constructor(http: HttpClient) {
-    super(http);
+export class MockProjectsService extends BawApiService {
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
   }
 
   /**
@@ -25,18 +31,6 @@ export class MockProjectsService extends SecurityService {
   public getProject(id: ID): Subject<Project> {
     const subject = new Subject<Project>();
 
-    setTimeout(() => {
-      subject.next(
-        new Project({
-          id,
-          name: "Project",
-          description: "A sample project",
-          creatorId: 1,
-          siteIds: new Set([1, 2, 3])
-        })
-      );
-    }, 50);
-
     return subject;
   }
 
@@ -46,25 +40,6 @@ export class MockProjectsService extends SecurityService {
    */
   public getProjects(): Subject<Project[]> {
     const subject = new Subject<Project[]>();
-
-    setTimeout(() => {
-      subject.next([
-        new Project({
-          id: 1,
-          name: "Project 1",
-          description: "A sample project 1",
-          creatorId: 1,
-          siteIds: new Set([1, 2, 3])
-        }),
-        new Project({
-          id: 2,
-          name: "Project 2",
-          description: "A sample project 2",
-          creatorId: 2,
-          siteIds: new Set([4, 5, 6])
-        })
-      ]);
-    }, 50);
 
     return subject;
   }
@@ -77,24 +52,36 @@ export class MockProjectsService extends SecurityService {
   public getFilteredProjects(filters: ProjectFilters): Subject<Project[]> {
     const subject = new Subject<Project[]>();
 
-    setTimeout(() => {
-      subject.next([
-        new Project({
-          id: 1,
-          name: "Project 1",
-          description: "A sample project 1",
-          creatorId: 1,
-          siteIds: new Set([1, 2, 3])
-        }),
-        new Project({
-          id: 2,
-          name: "Project 2",
-          description: "A sample project 2",
-          creatorId: 2,
-          siteIds: new Set([4, 5, 6])
-        })
-      ]);
-    }, 50);
+    return subject;
+  }
+
+  /**
+   * Create a new project
+   * @param details Form details
+   */
+  public newProject(details: {
+    name: Name;
+    description?: Description;
+    image?: ImageURL;
+  }): Subject<boolean> {
+    const subject = new Subject<boolean>();
+
+    return subject;
+  }
+
+  /**
+   * Update a project
+   * @param details Form details
+   */
+  public updateProject(
+    id: ID,
+    details: {
+      name: Name;
+      description?: Description;
+      image?: ImageURL;
+    }
+  ): Subject<boolean> {
+    const subject = new Subject<boolean>();
 
     return subject;
   }

@@ -31,6 +31,8 @@ describe("UnlockPasswordComponent", () => {
     fixture = TestBed.createComponent(UnlockPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    component.schema.model = {};
   });
 
   it("should create", () => {

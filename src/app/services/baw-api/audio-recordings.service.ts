@@ -6,6 +6,7 @@ import {
   AudioRecording,
   AudioRecordingInterface
 } from "src/app/models/AudioRecording";
+import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 
@@ -13,8 +14,8 @@ import { BawApiService, Filters } from "./base-api.service";
   providedIn: "root"
 })
 export class AudioRecordingsService extends BawApiService {
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config);
 
     this.paths = {
       filter: "/audio_recordings/filter"
@@ -34,9 +35,7 @@ export class AudioRecordingsService extends BawApiService {
     const next = (data: AudioRecordingInterface[]) => {
       subject.next(data.map(recording => new AudioRecording(recording)));
     };
-    const error = (err: APIErrorDetails) => {
-      subject.error(err);
-    };
+    const error = (err: APIErrorDetails) => subject.error(err);
 
     this.filter(
       next,
@@ -70,9 +69,7 @@ export class AudioRecordingsService extends BawApiService {
     const next = (data: AudioRecordingInterface) => {
       subject.next(new AudioRecording(data));
     };
-    const error = (err: APIErrorDetails) => {
-      subject.error(err);
-    };
+    const error = (err: APIErrorDetails) => subject.error(err);
 
     this.filter(
       next,
