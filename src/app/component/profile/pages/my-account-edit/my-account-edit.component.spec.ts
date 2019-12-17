@@ -1,7 +1,6 @@
 import {
   ComponentFixture,
   fakeAsync,
-  flush,
   TestBed,
   tick
 } from "@angular/core/testing";
@@ -12,12 +11,12 @@ import { testBawServices, validationMessages } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { EditComponent } from "./edit.component";
+import { MyAccountEditComponent } from "./my-account-edit.component";
 
 describe("ProfileEditComponent", () => {
   let api: UserService;
-  let component: EditComponent;
-  let fixture: ComponentFixture<EditComponent>;
+  let component: MyAccountEditComponent;
+  let fixture: ComponentFixture<MyAccountEditComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,11 +27,11 @@ describe("ProfileEditComponent", () => {
           validationMessages
         })
       ],
-      declarations: [EditComponent],
+      declarations: [MyAccountEditComponent],
       providers: [...testBawServices]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditComponent);
+    fixture = TestBed.createComponent(MyAccountEditComponent);
     api = TestBed.get(UserService);
     component = fixture.componentInstance;
     component.schema.model = { edit: {} };

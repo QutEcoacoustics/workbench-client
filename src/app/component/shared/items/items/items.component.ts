@@ -9,7 +9,7 @@ import { ItemInterface } from "../item/item.component";
 @Component({
   selector: "app-items",
   template: `
-    <div class="row pb-5">
+    <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group" *ngFor="let stat of groupOne">
           <app-items-item

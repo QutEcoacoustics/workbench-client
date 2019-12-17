@@ -9,19 +9,19 @@ import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
-  editProfileMenuItem,
+  editMyAccountMenuItem,
   myAccountCategory,
-  profileMenuItem
-} from "../../my-account.menus";
-import data from "./edit.json";
+  myAccountMenuItem
+} from "../../profile.menus.js";
+import data from "./my-account-edit.json";
 
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([profileMenuItem, editProfileMenuItem]),
+    actions: List<AnyMenuItem>([myAccountMenuItem, editMyAccountMenuItem]),
     links: List()
   },
-  self: editProfileMenuItem
+  self: editMyAccountMenuItem
 })
 @Component({
   selector: "app-my-account-edit",
@@ -56,7 +56,8 @@ import data from "./edit.json";
     <app-error-handler [errorCode]="errorCode"></app-error-handler>
   `
 })
-export class EditComponent extends PageComponent implements OnInit, OnDestroy {
+export class MyAccountEditComponent extends PageComponent
+  implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   errorEdit: string;
   errorDelete: string;

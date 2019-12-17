@@ -8,7 +8,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { forwardRef, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormlyModule } from "@ngx-formly/core";
-import { config } from "process";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -17,7 +16,10 @@ import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
-import { MyAccountModule } from "./component/my-account/my-account.module";
+import {
+  MyAccountModule,
+  ProfileModule
+} from "./component/profile/profile.module";
 import { ProjectsModule } from "./component/projects/projects.module";
 import { ReportProblemsModule } from "./component/report-problem/report-problem.module";
 import { SecurityModule } from "./component/security/security.module";
@@ -67,6 +69,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
     DataRequestModule,
     StatisticsModule,
     MyAccountModule,
+    ProfileModule,
     // these last two must be last!
     HomeModule,
     ErrorModule

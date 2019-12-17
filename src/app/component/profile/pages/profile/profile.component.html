@@ -21,9 +21,9 @@
           </div>
         </div>
 
-        <!-- User annotations -->
-        <div class="row">
-          <div class="col-sm-12">
+        <!-- User annotations (Disabled in third person) -->
+        <div class="row" *ngIf="!thirdPerson">
+          <div class="col-sm-12 pb-3">
             <div class="card">
               <div class="card-header">
                 Download
