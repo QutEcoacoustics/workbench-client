@@ -12,7 +12,7 @@ import {
   editMyAccountMenuItem,
   myAccountCategory,
   myAccountMenuItem
-} from "../../profile.menus.js";
+} from "../../profile.menus";
 import data from "./my-account-edit.json";
 
 @Page({

@@ -131,6 +131,14 @@ export class MyAccountProfileComponent extends PageComponent
     actions: List<AnyMenuItem>([
       {
         kind: "MenuLink",
+        icon: ["fas", "edit"],
+        label: "Edit their profile",
+        uri: "BROKEN LINK",
+        tooltip: () => "Change the details for their profile",
+        predicate: user => !!user
+      },
+      {
+        kind: "MenuLink",
         icon: ["fas", "globe-asia"],
         label: "Their Projects",
         uri: "BROKEN LINK",
