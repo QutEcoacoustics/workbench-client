@@ -10,7 +10,7 @@ import { ItemsComponent } from "./items/items.component";
 @NgModule({
   declarations: [ItemsComponent, ItemComponent],
   imports: [CommonModule, RouterModule, FontAwesomeModule],
-  exports: [ItemsComponent]
+  exports: [ItemsComponent, ItemComponent]
 })
 export class ItemsModule {
   constructor() {

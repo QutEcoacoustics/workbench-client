@@ -4,7 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { ItemInterface } from "../item/item.component";
 
 @Component({
   selector: "app-items",
@@ -49,10 +49,4 @@ export class ItemsComponent implements OnInit {
     this.groupOne = this.items.slice(0, midIndex);
     this.groupTwo = this.items.slice(midIndex, this.items.length);
   }
-}
-
-export interface ItemInterface {
-  icon: IconProp;
-  name: string;
-  value: string | number;
 }

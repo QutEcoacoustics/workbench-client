@@ -51,7 +51,16 @@
               <div class="card-header">
                 Most Popular Tags
               </div>
-              <ul class="list-group list-group-flush"></ul>
+              <ul class="list-group list-group-flush">
+                <app-items-item
+                  [icon]="tag.icon"
+                  [name]="tag.name"
+                  [value]="tag.value"
+                  [uri]="tag.uri"
+                  *ngFor="let tag of tags"
+                >
+                </app-items-item>
+              </ul>
             </div>
           </div>
         </div>
