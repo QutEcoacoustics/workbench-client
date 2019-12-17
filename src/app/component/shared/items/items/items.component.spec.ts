@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "../../shared.module";
-import { ItemComponent } from "../item/item.component";
-import { ItemInterface, ItemsComponent } from "./items.component";
+import { ItemComponent, ItemInterface } from "../item/item.component";
+import { ItemsComponent } from "./items.component";
 
 describe("ItemsComponent", () => {
   let component: ItemsComponent;
