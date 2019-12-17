@@ -35,14 +35,7 @@ describe("MenuComponent", () => {
       imports: [
         SharedModule,
         HttpClientModule,
-        RouterTestingModule.withRoutes([
-          { path: "", component: MenuComponent, pathMatch: "full" },
-          {
-            path: "home",
-            component: MenuComponent,
-            children: [{ path: ":attribute", component: MenuComponent }]
-          }
-        ])
+        RouterTestingModule.withRoutes([])
       ],
       declarations: [
         MenuComponent,
