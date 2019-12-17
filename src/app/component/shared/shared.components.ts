@@ -1,7 +1,8 @@
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
-import { FormlyFileInput } from "./formly/file-input.component";
+import { FileValueAccessor } from "./formly/file-input.directive";
+import { FormlyImageInput } from "./formly/image-input.component";
 import { MenuButtonComponent } from "./menu/button/button.component";
 import { MenuExternalLinkComponent } from "./menu/external-link/external-link.component";
 import { MenuInternalLinkComponent } from "./menu/internal-link/internal-link.component";
@@ -29,5 +30,7 @@ export const sharedComponents = [
   UnauthorizedComponent,
   ForbiddenComponent,
   WIPComponent,
-  FormlyFileInput
+  FormlyImageInput
 ];
+
+export const formlyAccessors = [FileValueAccessor];

@@ -4,12 +4,17 @@ import { FieldType } from "@ngx-formly/core";
 
 @Component({
   // tslint:disable-next-line: component-selector
-  selector: "formly-file-input",
+  selector: "formly-image-input",
   template: `
-    <input type="file" [formControl]="formControl" [formlyAttributes]="field" />
+    <input
+      type="file"
+      accept="image/*"
+      [formControl]="formControl"
+      [formlyAttributes]="field"
+    />
   `
 })
 // tslint:disable-next-line: component-class-suffix
-export class FormlyFileInput extends FieldType {
+export class FormlyImageInput extends FieldType {
   formControl: FormControl;
 }

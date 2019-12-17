@@ -45,7 +45,7 @@
     },
     {
       "key": "image",
-      "type": "file",
+      "type": "image",
       "templateOptions": {
         "label": "Image",
         "required": false

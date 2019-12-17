@@ -2,7 +2,7 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
 import { ConfigOption } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
-import { FormlyFileInput } from "./component/shared/formly/file-input.component";
+import { FormlyImageInput } from "./component/shared/formly/image-input.component";
 import {
   APP_CONFIG,
   AppConfigService
@@ -43,8 +43,8 @@ function maxValidationMessage(err, field) {
 export const formlyRoot = {
   types: [
     {
-      name: "file",
-      component: FormlyFileInput
+      name: "image",
+      component: FormlyImageInput
     }
   ],
   validationMessages: [
