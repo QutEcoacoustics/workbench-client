@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { projectsMenuItem } from "src/app/component/projects/projects.menus";
 import { ItemInterface } from "src/app/component/shared/items/items/items.component";
-import { siteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
@@ -21,7 +19,41 @@ import {
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([editProfileMenuItem]),
+    actions: List<AnyMenuItem>([
+      editProfileMenuItem,
+      {
+        kind: "MenuLink",
+        icon: ["fas", "globe-asia"],
+        label: "My Projects",
+        uri: "BROKEN LINK",
+        tooltip: user => `Projects ${user.userName} can access`,
+        predicate: user => !!user
+      },
+      {
+        kind: "MenuLink",
+        icon: ["fas", "map-marker-alt"],
+        label: "My Sites",
+        uri: "BROKEN LINK",
+        tooltip: user => `Sites ${user.userName} can access`,
+        predicate: user => !!user
+      },
+      {
+        kind: "MenuLink",
+        icon: ["fas", "bookmark"],
+        label: "My Bookmarks",
+        uri: "BROKEN LINK",
+        tooltip: user => `Bookmarks created by ${user.userName}`,
+        predicate: user => !!user
+      },
+      {
+        kind: "MenuLink",
+        icon: ["fas", "bookmark"],
+        label: "My Annotations",
+        uri: "BROKEN LINK",
+        tooltip: user => `Annotations created by ${user.userName}`,
+        predicate: user => !!user
+      }
+    ]),
     links: List()
   },
   self: profileMenuItem
@@ -58,14 +90,10 @@ export class ProfileComponent extends PageComponent
       );
 
     this.userStatistics = [
-      {
-        icon: projectsMenuItem.icon,
-        name: projectsMenuItem.label,
-        value: "Unknown"
-      },
+      { icon: ["fas", "globe-asia"], name: "Projects", value: "Unknown" },
       { icon: ["fas", "tags"], name: "Tags", value: "Unknown" },
       { icon: ["fas", "bookmark"], name: "Bookmarks", value: "Unknown" },
-      { icon: siteMenuItem.icon, name: siteMenuItem.label, value: "Unknown" },
+      { icon: ["fas", "map-marker-alt"], name: "Sites", value: "Unknown" },
       { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
       { icon: ["fas", "comments"], name: "Comments", value: "Unknown" }
     ];
