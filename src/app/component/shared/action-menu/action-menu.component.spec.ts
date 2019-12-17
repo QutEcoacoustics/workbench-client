@@ -24,4 +24,14 @@ xdescribe("ActionMenuComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  xit("should handle no links", () => {});
+  xit("should handle single internal link", () => {});
+  xit("should handle multiple internal links", () => {});
+  xit("should handle single external link", () => {});
+  xit("should handle multiple external links", () => {});
+  xit("should handle single action button", () => {});
+  xit("should handle multiple action button", () => {});
+  xit("should handle no widget", () => {});
+  xit("should handle widget", () => {});
 });
