@@ -128,7 +128,6 @@ describe("UserService", () => {
             isConfirmed: true
           })
         );
-        done();
       },
       () => {
         expect(false).toBeTruthy("Should not produce error response");
@@ -212,7 +211,6 @@ describe("UserService", () => {
             isConfirmed: true
           })
         );
-        done();
       },
       () => {
         expect(false).toBeTruthy("Should not produce error response");
@@ -274,7 +272,6 @@ describe("UserService", () => {
             isConfirmed: true
           })
         );
-        done();
       },
       () => {
         expect(false).toBeTruthy("Should not produce error response");

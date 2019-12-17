@@ -67,7 +67,7 @@
           "type": "input",
           "templateOptions": {
             "type": "password",
-            "label": "Password",
+            "label": "Current Password",
             "required": true,
             "minLength": 6,
             "description": "we need your current password to confirm your changes"

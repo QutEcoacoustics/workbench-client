@@ -35,7 +35,8 @@ import data from "./edit.json";
         [success]="successEdit"
         [submitLabel]="'Update'"
         [submitLoading]="loading"
-        (onSubmit)="submit($event)"
+        [btnColor]="'btn-warning'"
+        (onSubmit)="submitEdit($event)"
       ></app-form>
 
       <app-form
@@ -48,7 +49,7 @@ import data from "./edit.json";
         [submitLabel]="'Cancel my account'"
         [submitLoading]="loading"
         [btnColor]="'btn-danger'"
-        (onSubmit)="submit($event)"
+        (onSubmit)="submitDelete($event)"
       >
       </app-form>
     </app-wip>
@@ -99,10 +100,18 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Form submission
+   * Edit form submission
    * @param $event Form response
    */
-  submit($event: any) {
-    console.log($event);
+  submitEdit($event: any) {
+    console.log("Edit Submission: ", $event);
+  }
+
+  /**
+   * Delete form submission
+   * @param $event Form response
+   */
+  submitDelete($event: any) {
+    console.log("Delete Submission", $event);
   }
 }

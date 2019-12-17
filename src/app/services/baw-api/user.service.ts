@@ -35,7 +35,6 @@ export class UserService extends BawApiService {
         status: 0,
         message: "User is not logged in."
       } as APIErrorDetails);
-      subject.complete();
     }
 
     return subject;

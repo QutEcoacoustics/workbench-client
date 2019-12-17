@@ -73,12 +73,10 @@ export abstract class BawApiService {
           subject.complete();
         } else {
           subject.error("No data returned from API");
-          subject.complete();
         }
       },
       error: (err: APIErrorDetails) => {
         subject.error(err);
-        subject.complete();
       }
     });
   }
