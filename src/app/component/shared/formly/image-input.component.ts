@@ -14,7 +14,10 @@ import { FieldType } from "@ngx-formly/core";
         }}
       </label>
 
-      <div class="input-group">
+      <div
+        class="input-group"
+        style="border: 1px solid #ced4da; border-radius: 0.25rem;"
+      >
         <input
           type="file"
           accept="image/*"

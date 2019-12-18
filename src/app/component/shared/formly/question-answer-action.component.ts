@@ -18,12 +18,16 @@ import { FieldType } from "@ngx-formly/core";
             readonly
             class="form-control"
             [id]="field.id"
-            [value]="model[key]"
+            [value]="model[key].value"
           />
         </div>
 
         <div class="col-sm-3 pl-3 pl-sm-0 pr-3">
-          <button class="btn btn-primary w-100">
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            (click)="model[key].action()"
+          >
             Update
           </button>
         </div>

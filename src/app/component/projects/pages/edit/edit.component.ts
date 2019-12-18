@@ -33,8 +33,8 @@ import data from "./edit.json";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
+      <app-error-handler [errorCode]="errorCode"></app-error-handler>
     </app-wip>
-    <app-error-handler [errorCode]="errorCode"></app-error-handler>
   `
 })
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {

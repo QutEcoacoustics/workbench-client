@@ -6,16 +6,12 @@ import { FieldType } from "@ngx-formly/core";
   // tslint:disable-next-line: component-selector
   selector: "formly-question-answer",
   template: `
-    <div class="form-group row">
-      <label
-        *ngIf="field.templateOptions.label"
-        class="col-sm-2 col-form-label"
-        [for]="field.id"
-      >
+    <div class="form-group">
+      <label *ngIf="field.templateOptions.label" [for]="field.id">
         {{ field.templateOptions.label }}
       </label>
 
-      <div class="input-group col-sm-10">
+      <div class="input-group">
         <input
           type="text"
           readonly
