@@ -18,6 +18,7 @@ import { FieldType } from "@ngx-formly/core";
         <input
           type="file"
           accept="image/*"
+          class="form-control"
           [formControl]="formControl"
           [formlyAttributes]="field"
         />

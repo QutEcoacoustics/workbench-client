@@ -3,6 +3,7 @@ import { APP_INITIALIZER } from "@angular/core";
 import { ConfigOption } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
+import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
   APP_CONFIG,
@@ -50,6 +51,10 @@ export const formlyRoot = {
     {
       name: "timezone",
       component: FormlyTimezoneInput
+    },
+    {
+      name: "question-answer",
+      component: FormlyQuestionAnswer
     }
   ],
   validationMessages: [
