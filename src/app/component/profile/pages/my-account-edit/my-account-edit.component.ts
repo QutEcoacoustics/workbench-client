@@ -90,7 +90,6 @@ export class MyAccountEditComponent extends PageComponent
         },
         (err: APIErrorDetails) => {
           this.error = err;
-          this.loading = false;
         }
       );
   }

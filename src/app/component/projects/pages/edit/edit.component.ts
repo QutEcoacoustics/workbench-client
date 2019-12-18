@@ -74,7 +74,6 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
         },
         (err: APIErrorDetails) => {
           this.errorDetails = err;
-          this.ready = false;
         }
       );
   }

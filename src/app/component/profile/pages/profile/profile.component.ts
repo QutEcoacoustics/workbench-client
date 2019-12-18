@@ -201,7 +201,6 @@ export class ProfileComponent extends PageComponent
           this.imageUrl = user.getImage(ImageSizes.large);
         },
         (err: APIErrorDetails) => {
-          console.error(err);
           this.error = err;
         }
       );
