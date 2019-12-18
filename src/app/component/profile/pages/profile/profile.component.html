@@ -69,11 +69,11 @@
   </ng-container>
 
   <!-- Loading spinner -->
-  <div class="d-flex justify-content-center" *ngIf="!errorCode && !user">
+  <div class="d-flex justify-content-center" *ngIf="!error && !user">
     <div class="spinner-border text-success" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
 
-  <app-error-handler [errorCode]="errorCode"></app-error-handler>
+  <app-error-handler [error]="error"></app-error-handler>
 </app-wip>

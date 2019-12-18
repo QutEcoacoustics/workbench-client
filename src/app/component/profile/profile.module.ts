@@ -8,6 +8,7 @@ import {
   ProfileComponent
 } from "./pages/profile/profile.component";
 import { myAccountRoute, profileRoute } from "./profile.menus";
+import { EditComponent } from './pages/edit/edit.component';
 
 export const MyAccountComponents = [
   MyAccountProfileComponent,
@@ -19,7 +20,7 @@ const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
 const profileRoutes = profileRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [MyAccountComponents],
+  declarations: [MyAccountComponents, EditComponent],
   imports: [SharedModule, RouterModule.forChild(myAccountRoutes)],
   exports: [RouterModule, ...MyAccountComponents]
 })

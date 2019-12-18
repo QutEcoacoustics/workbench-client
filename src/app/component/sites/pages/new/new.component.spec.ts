@@ -58,7 +58,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Not Found",
-          status: projectApi.apiReturnCodes.notFound
+          status: 404
         } as APIErrorDetails);
       }, 50);
 
@@ -88,7 +88,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          status: projectApi.apiReturnCodes.unauthorized
+          status: 401
         } as APIErrorDetails);
       }, 50);
 
@@ -697,7 +697,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: sitesApi.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 
@@ -733,7 +733,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Not Found",
-          info: sitesApi.apiReturnCodes.notFound
+          info: 404
         } as APIErrorDetails);
       }, 50);
 
@@ -803,7 +803,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: sitesApi.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 
@@ -867,7 +867,7 @@ describe("SitesNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: sitesApi.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 

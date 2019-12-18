@@ -91,17 +91,17 @@ describe("SecurityService", () => {
     });
   });
 
-  it("login should return error msg when already logged in", fakeAsync(() => {
+  it("login should update user session on second login", fakeAsync(done => {
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
       expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+        authToken: "aaaaaaaaaaaaaaa",
         userName: "Test"
       });
     });
 
-    const req = httpMock.expectOne({
+    let req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
     });
@@ -112,7 +112,7 @@ describe("SecurityService", () => {
         message: "OK"
       },
       data: {
-        auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
+        auth_token: "aaaaaaaaaaaaaaa",
         user_name: "Test",
         message: "Logged in successfully."
       }
@@ -122,20 +122,36 @@ describe("SecurityService", () => {
 
     service.signIn({ email: "email", password: "password" }).subscribe(
       res => {
-        expect(res).toBeFalsy();
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+        expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
+          authToken: "bbbbbbbbbbbbbbb",
+          userName: "Test"
+        });
       },
       (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 0,
-          message: "You are already logged in, try logging out first."
-        });
+        expect(false).toBeTruthy("Should not return error message");
+      },
+      () => {
+        done();
       }
     );
 
-    httpMock.expectNone({
+    req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
       method: "POST"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        auth_token: "bbbbbbbbbbbbbbb",
+        user_name: "Test",
+        message: "Logged in successfully."
+      }
     });
   }));
 

@@ -13,6 +13,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Site } from "src/app/models/Site";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { EditComponent } from "./edit.component";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 describe("SitesEditComponent", () => {
   let api: SitesService;
@@ -582,7 +583,10 @@ describe("SitesEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -615,7 +619,7 @@ describe("SitesEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Not Found");
+        subject.error({ status: 404, message: "Not Found" } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -682,7 +686,10 @@ describe("SitesEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -743,7 +750,10 @@ describe("SitesEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;

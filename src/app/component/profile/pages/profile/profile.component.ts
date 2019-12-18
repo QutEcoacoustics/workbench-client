@@ -13,6 +13,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
+  editProfileMenuItem,
   myAccountCategory,
   myAccountMenuItem,
   profileCategory,
@@ -69,7 +70,7 @@ import {
 export class MyAccountProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  errorCode: number;
+  error: APIErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
   thirdPerson = false;
@@ -90,7 +91,7 @@ export class MyAccountProfileComponent extends PageComponent
           this.imageUrl = user.getImage(ImageSizes.large);
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
+          this.error = err;
         }
       );
 
@@ -129,14 +130,7 @@ export class MyAccountProfileComponent extends PageComponent
   category: profileCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
-        icon: ["fas", "edit"],
-        label: "Edit their profile",
-        uri: "BROKEN LINK",
-        tooltip: () => "Change the details for their profile",
-        predicate: user => !!user
-      },
+      editProfileMenuItem,
       {
         kind: "MenuLink",
         icon: ["fas", "globe-asia"],
@@ -182,7 +176,7 @@ export class MyAccountProfileComponent extends PageComponent
 export class ProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  errorCode: number;
+  error: APIErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
   thirdPerson = true;
@@ -207,7 +201,8 @@ export class ProfileComponent extends PageComponent
           this.imageUrl = user.getImage(ImageSizes.large);
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
+          console.error(err);
+          this.error = err;
         }
       );
 

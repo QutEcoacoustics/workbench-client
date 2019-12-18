@@ -23,13 +23,13 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
         <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
       </div>
     </ng-container>
-    <app-error-handler [errorCode]="errorCode"></app-error-handler>
+    <app-error-handler [error]="error"></app-error-handler>
   `
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
   blob: string;
-  errorCode: number;
+  error: APIErrorDetails;
   loading = true;
   notifier = new Subject();
 
@@ -52,7 +52,7 @@ export class CmsComponent implements OnInit, OnDestroy {
           this.ref.detectChanges();
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
+          this.error = err;
           this.loading = false;
           this.ref.detectChanges();
         }

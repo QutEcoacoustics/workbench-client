@@ -64,7 +64,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(projectsApi, "getProject").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
-        status: projectsApi.apiReturnCodes.notFound,
+        status: 404,
         message: "Project Not Found"
       } as APIErrorDetails);
       return subject;
@@ -81,7 +81,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(projectsApi, "getProject").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
-        status: projectsApi.apiReturnCodes.unauthorized,
+        status: 401,
         message: "Unauthorized"
       } as APIErrorDetails);
       return subject;
@@ -98,7 +98,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(sitesApi, "getProjectSite").and.callFake(() => {
       const subject = new Subject<Site>();
       subject.error({
-        status: sitesApi.apiReturnCodes.notFound,
+        status: 404,
         message: "Project Not Found"
       } as APIErrorDetails);
       return subject;
@@ -115,7 +115,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(sitesApi, "getProjectSite").and.callFake(() => {
       const subject = new Subject<Site>();
       subject.error({
-        status: sitesApi.apiReturnCodes.unauthorized,
+        status: 401,
         message: "Unauthorized"
       } as APIErrorDetails);
       return subject;
@@ -132,7 +132,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(projectsApi, "getProject").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
-        status: projectsApi.apiReturnCodes.unauthorized,
+        status: 401,
         message: "Unauthorized"
       } as APIErrorDetails);
       return subject;
@@ -141,7 +141,7 @@ describe("SitesDetailsComponent", () => {
       const subject = new Subject<Site>();
       setTimeout(() => {
         subject.error({
-          status: sitesApi.apiReturnCodes.notFound,
+          status: 404,
           message: "Site Not Found"
         } as APIErrorDetails);
       }, 50);
@@ -162,7 +162,7 @@ describe("SitesDetailsComponent", () => {
       const subject = new Subject<Project>();
       setTimeout(() => {
         subject.error({
-          status: projectsApi.apiReturnCodes.unauthorized,
+          status: 401,
           message: "Unauthorized"
         } as APIErrorDetails);
       }, 50);
@@ -171,7 +171,7 @@ describe("SitesDetailsComponent", () => {
     spyOn(sitesApi, "getProjectSite").and.callFake(() => {
       const subject = new Subject<Site>();
       subject.error({
-        status: sitesApi.apiReturnCodes.notFound,
+        status: 404,
         message: "Site Not Found"
       } as APIErrorDetails);
       return subject;

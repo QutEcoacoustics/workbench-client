@@ -53,7 +53,7 @@ import data from "./my-account-edit.json";
       >
       </app-form>
     </app-wip>
-    <app-error-handler [errorCode]="errorCode"></app-error-handler>
+    <app-error-handler [error]="error"></app-error-handler>
   `
 })
 export class MyAccountEditComponent extends PageComponent
@@ -61,7 +61,7 @@ export class MyAccountEditComponent extends PageComponent
   private unsubscribe = new Subject();
   errorEdit: string;
   errorDelete: string;
-  errorCode: number;
+  error: APIErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -89,7 +89,7 @@ export class MyAccountEditComponent extends PageComponent
           this.schema.model.edit["name"] = this.user.userName;
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
+          this.error = err;
           this.loading = false;
         }
       );

@@ -13,6 +13,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 describe("ProjectsEditComponent", () => {
   let api: ProjectsService;
@@ -369,7 +370,18 @@ describe("ProjectsEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Record could not be saved: name has already been taken");
+        subject.error({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -404,7 +416,10 @@ describe("ProjectsEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -439,7 +454,10 @@ describe("ProjectsEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;
@@ -470,7 +488,10 @@ describe("ProjectsEditComponent", () => {
       const subject = new Subject<boolean>();
 
       setTimeout(() => {
-        subject.error("Unauthorized");
+        subject.error({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }, 50);
 
       return subject;

@@ -90,8 +90,8 @@ describe("UserService", () => {
       (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
-          status: 0,
-          message: "User is not logged in."
+          status: 401,
+          message: "You need to log in or register before continuing."
         });
         done();
       },
@@ -100,7 +100,23 @@ describe("UserService", () => {
       }
     );
 
-    httpMock.expectNone(config.getConfig().environment.apiRoot + "/my_account");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/my_account"
+    );
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("getMyAccount should return details is user logged in", done => {
@@ -173,8 +189,8 @@ describe("UserService", () => {
       (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
-          status: 0,
-          message: "User is not logged in."
+          status: 401,
+          message: "You need to log in or register before continuing."
         });
         done();
       },
@@ -183,7 +199,23 @@ describe("UserService", () => {
       }
     );
 
-    httpMock.expectNone(config.getConfig().environment.apiRoot + "/my_account");
+    const req = httpMock.expectOne(
+      config.getConfig().environment.apiRoot + "/user_accounts/1"
+    );
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You need to log in or register before continuing.",
+            info: null
+          }
+        },
+        data: null
+      },
+      { status: 401, statusText: "Unauthorized" }
+    );
   });
 
   it("getUserAccount should return data if user is logged in", done => {
