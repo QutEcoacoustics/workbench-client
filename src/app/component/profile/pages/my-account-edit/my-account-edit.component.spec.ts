@@ -13,7 +13,7 @@ import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { MyAccountEditComponent } from "./my-account-edit.component";
 
-describe("ProfileEditComponent", () => {
+describe("MyAccountEditComponent", () => {
   let api: UserService;
   let component: MyAccountEditComponent;
   let fixture: ComponentFixture<MyAccountEditComponent>;
