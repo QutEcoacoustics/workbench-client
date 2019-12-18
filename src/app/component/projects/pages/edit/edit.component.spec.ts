@@ -11,9 +11,9 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { testBawServices, validationMessages } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 describe("ProjectsEditComponent", () => {
   let api: ProjectsService;

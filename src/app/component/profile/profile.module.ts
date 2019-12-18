@@ -2,13 +2,13 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
+import { EditComponent } from "./pages/edit/edit.component";
 import { MyAccountEditComponent } from "./pages/my-account-edit/my-account-edit.component";
 import {
   MyAccountProfileComponent,
   ProfileComponent
 } from "./pages/profile/profile.component";
 import { myAccountRoute, profileRoute } from "./profile.menus";
-import { EditComponent } from './pages/edit/edit.component';
 
 export const MyAccountComponents = [
   MyAccountProfileComponent,
