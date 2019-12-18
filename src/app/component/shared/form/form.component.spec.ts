@@ -630,6 +630,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       buttonPressed = true;
     });
@@ -661,6 +662,7 @@ describe("FormComponent", () => {
     };
     component.submitLabel = "Label";
     component.submitLoading = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(data => {
       expect(data).toBeTruthy();
       expect(data).toEqual({ input: "user input" });
@@ -697,6 +699,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       buttonPressed = true;
     });
@@ -728,6 +731,7 @@ describe("FormComponent", () => {
     };
     component.submitLabel = "Label";
     component.submitLoading = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(data => {
       expect(data).toBeTruthy();
       expect(data).toEqual({ input: "user input" });
@@ -764,6 +768,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       buttonPressed = true;
     });
@@ -800,6 +805,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       buttonPressed = true;
     });
@@ -857,6 +863,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       buttonPressed = true;
     });
@@ -925,6 +932,7 @@ describe("FormComponent", () => {
     };
     component.submitLabel = "Label";
     component.submitLoading = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(() => {
       component.error = "Custom Error";
     });
@@ -1038,6 +1046,7 @@ describe("FormComponent", () => {
     };
     component.submitLabel = "Label";
     component.submitLoading = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(data => {
       expect(data).toBeTruthy();
       expect(data).toEqual({
@@ -1108,6 +1117,7 @@ describe("FormComponent", () => {
     component.submitLabel = "Label";
     component.submitLoading = false;
     let buttonPressed = false;
+    // tslint:disable-next-line: rxjs-no-ignored-error
     component.submitFunction.subscribe(data => {
       buttonPressed = true;
     });

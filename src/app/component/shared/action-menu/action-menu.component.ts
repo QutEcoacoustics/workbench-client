@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { PageInfo } from "src/app/helpers/page/pageInfo";
-import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 @Component({
@@ -20,33 +22,37 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `
 })
 export class ActionMenuComponent implements OnInit, OnDestroy {
-  constructor(private route: ActivatedRoute) {}
-
-  subsink = new SubSink();
+  private unsubscribe = new Subject();
   actionTitle: LabelAndIcon;
   actionLinks: List<AnyMenuItem>;
   actionWidget: WidgetMenuItem;
 
+  constructor(private route: ActivatedRoute) {}
+
   ngOnInit() {
-    this.subsink.sink = this.route.data.subscribe((page: PageInfo) => {
-      const actionMenu =
-        page && page.menus && page.menus.actions
-          ? page.menus.actions
-          : List<AnyMenuItem>();
+    this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
+      (page: PageInfo) => {
+        const actionMenu =
+          page && page.menus && page.menus.actions
+            ? page.menus.actions
+            : List<AnyMenuItem>();
 
-      const actionWidget =
-        page && page.menus && page.menus.actions
-          ? page.menus.actionsWidget
-          : null;
+        const actionWidget =
+          page && page.menus && page.menus.actions
+            ? page.menus.actionsWidget
+            : null;
 
-      this.actionTitle =
-        page && page.category ? page.category : DefaultMenu.defaultCategory;
-      this.actionLinks = actionMenu;
-      this.actionWidget = actionWidget;
-    });
+        this.actionTitle =
+          page && page.category ? page.category : DefaultMenu.defaultCategory;
+        this.actionLinks = actionMenu;
+        this.actionWidget = actionWidget;
+      },
+      (err: APIErrorDetails) => console.error("ActionMenuComponent", err)
+    );
   }
 
   ngOnDestroy() {
-    this.subsink.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

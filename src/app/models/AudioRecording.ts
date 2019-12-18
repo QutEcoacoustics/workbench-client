@@ -1,4 +1,4 @@
-import { ID, DateTime, UUID } from "../interfaces/apiInterfaces";
+import { DateTime, ID, UUID } from "../interfaces/apiInterfaces";
 
 /**
  * An audio recording model

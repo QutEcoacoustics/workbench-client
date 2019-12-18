@@ -3,11 +3,14 @@ import {
   Component,
   ComponentFactoryResolver,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import {
   AnyMenuItem,
   isButton,
@@ -27,13 +30,14 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   styleUrls: ["./menu.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
   @Input() menuType: "action" | "secondary";
   @Input() widget?: WidgetMenuItem;
   @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
 
+  private unsubscribe = new Subject();
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
   routerParams: Params;
@@ -65,14 +69,22 @@ export class MenuComponent implements OnInit {
     );
 
     // Retrieve router parameters to override link attributes
-    this.route.params.subscribe({
-      next: params => {
+    this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
+      params => {
         this.routerParams = params;
+      },
+      err => {
+        console.error("MenuComponent: ", err);
       }
-    });
+    );
 
     // Load widget
     this.loadComponent();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**

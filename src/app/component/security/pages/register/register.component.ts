@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { SubSink } from "src/app/helpers/subsink/subsink";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
 import data from "./register.json";
@@ -23,14 +25,16 @@ import data from "./register.json";
         [error]="error"
         (onSubmit)="submit($event)"
       ></app-form>
+      <app-error-handler [error]="errorDetails"></app-error-handler>
     </app-wip>
   `
 })
 export class RegisterComponent extends PageComponent
   implements OnInit, OnDestroy {
-  private subs = new SubSink();
+  private unsubscribe = new Subject();
   schema = data;
   error: string;
+  errorDetails: APIErrorDetails;
   loading: boolean;
 
   constructor(private api: SecurityService) {
@@ -40,19 +44,29 @@ export class RegisterComponent extends PageComponent
   ngOnInit() {
     this.loading = true;
 
-    this.subs.sink = this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      if (loggedIn) {
-        this.loading = true;
-        this.error = "You are already logged in";
-      } else {
-        this.loading = false;
-        this.error = null;
-      }
-    });
+    this.api
+      .getLoggedInTrigger()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        loggedIn => {
+          this.errorDetails = undefined;
+          if (loggedIn) {
+            this.loading = true;
+            this.error = "You are already logged in";
+          } else {
+            this.loading = false;
+            this.error = null;
+          }
+        },
+        (err: APIErrorDetails) => {
+          this.errorDetails = err;
+        }
+      );
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   submit(model) {

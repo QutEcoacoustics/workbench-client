@@ -10,7 +10,6 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { PageInfo } from "src/app/helpers/page/pageInfo";
-import { SubSink } from "src/app/helpers/subsink/subsink";
 import {
   MenuRoute,
   NavigableMenuItem
