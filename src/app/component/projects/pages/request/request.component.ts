@@ -1,8 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
@@ -36,12 +39,16 @@ import data from "./request.json";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
+      <app-error-handler [error]="errorDetails"></app-error-handler>
     </app-wip>
   `
 })
-export class RequestComponent extends PageComponent implements OnInit {
+export class RequestComponent extends PageComponent
+  implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
   schema: any;
   error: string;
+  errorDetails: APIErrorDetails;
   loading: boolean;
 
   constructor(private api: ProjectsService) {
@@ -53,14 +60,27 @@ export class RequestComponent extends PageComponent implements OnInit {
 
     // TODO Change this to the list of projects a user does not have access to
     this.schema = data;
-    this.api.getProjects().subscribe(projects => {
-      this.schema.fields[0].templateOptions.options = projects.map(project => {
-        return {
-          value: project.id,
-          label: project.name
-        };
-      });
-    });
+    this.api
+      .getProjects()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        projects => {
+          this.schema.fields[0].templateOptions.options = projects.map(
+            project => {
+              return {
+                value: project.id,
+                label: project.name
+              };
+            }
+          );
+        },
+        (err: APIErrorDetails) => (this.errorDetails = err)
+      );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**

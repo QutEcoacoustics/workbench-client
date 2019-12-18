@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { flatMap } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { flatMap, takeUntil } from "rxjs/operators";
 import {
   newProjectMenuItem,
   projectsMenuItem,
@@ -9,7 +10,6 @@ import {
 } from "src/app/component/projects/projects.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { SubSink } from "src/app/helpers/subsink/subsink";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
@@ -47,12 +47,12 @@ import data from "./new.json";
   `
 })
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
   error: string;
   errorDetails: APIErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
-  subSink: SubSink = new SubSink();
   success: string;
 
   projectId: ID;
@@ -69,12 +69,13 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = false;
 
-    this.subSink.sink = this.route.params
+    this.route.params
       .pipe(
         flatMap(params => {
           this.projectId = params.projectId;
           return this.projectsApi.getProject(params.projectId);
-        })
+        }),
+        takeUntil(this.unsubscribe)
       )
       .subscribe(
         () => {
@@ -88,7 +89,8 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subSink.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**
@@ -99,11 +101,12 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    this.subSink.sink = this.route.params
+    this.route.params
       .pipe(
         flatMap(params => {
           return this.sitesApi.newProjectSite(params.projectId, $event);
-        })
+        }),
+        takeUntil(this.unsubscribe)
       )
       .subscribe(
         () => {

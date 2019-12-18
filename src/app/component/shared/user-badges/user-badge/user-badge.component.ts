@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnChanges,
   OnInit
 } from "@angular/core";
-import { ImageSizes, Time } from "src/app/interfaces/apiInterfaces";
+import { List } from "immutable";
+import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 
 @Component({
@@ -17,18 +19,15 @@ import { User } from "src/app/models/User";
     <ng-template #userFound>
       <div class="media" *ngFor="let user of users">
         <div class="image">
-          <a [href]="user.user.url">
-            <img
-              [src]="user.user.getImage(imageSize)"
-              [alt]="user.user.userName"
-            />
+          <a [href]="user.url">
+            <img [src]="user.getImage(imageSize)" [alt]="user.userName" />
           </a>
         </div>
         <div class="body">
-          <a class="heading" [href]="user.user.url">{{ user.user.userName }}</a>
+          <a class="heading" [routerLink]="user.url">{{ user.userName }}</a>
           <br />
-          <p style="word-wrap: break-word" *ngIf="user.time">
-            Last Seen: {{ user.time }}
+          <p style="word-wrap: break-word" *ngIf="lengthOfTime">
+            {{ lengthOfTime }}
           </p>
         </div>
       </div>
@@ -37,21 +36,30 @@ import { User } from "src/app/models/User";
   styleUrls: ["./user-badge.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserBadgeComponent implements OnInit {
+export class UserBadgeComponent implements OnInit, OnChanges {
   @Input() label: string;
-  @Input() users: UserBadge[];
-
+  @Input() users: List<User>;
+  @Input() lengthOfTime: string;
   userNotFound: boolean;
   imageSize = ImageSizes.small;
 
   constructor() {}
 
   ngOnInit() {
-    this.userNotFound = this.users ? this.users.length === 0 : true;
+    this.checkUserExists();
+  }
+
+  ngOnChanges() {
+    this.checkUserExists();
+  }
+
+  private checkUserExists() {
+    this.userNotFound = this.users ? this.users.count() === 0 : true;
   }
 }
 
-export interface UserBadge {
-  user: User;
-  time: Time;
+export interface Badge {
+  label: string;
+  users: List<User>;
+  lengthOfTime: string;
 }

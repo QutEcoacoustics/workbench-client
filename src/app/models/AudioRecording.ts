@@ -1,4 +1,4 @@
-import { ID, Time, UUID } from "../interfaces/apiInterfaces";
+import { ID, DateTime, UUID } from "../interfaces/apiInterfaces";
 
 /**
  * An audio recording model
@@ -7,7 +7,7 @@ export interface AudioRecordingInterface {
   kind?: "AudioRecording";
   id: ID;
   uuid: UUID;
-  recordedDate: Time;
+  recordedDate: DateTime;
   siteId: ID;
   durationSeconds: number;
   sampleRateHertz?: number;
@@ -16,8 +16,8 @@ export interface AudioRecordingInterface {
   mediaType?: string;
   dataLengthBytes?: number;
   status?: "ready" | "uploading" | "corrupt";
-  createdAt?: Time;
-  updatedAt?: Time;
+  createdAt?: DateTime;
+  updatedAt?: DateTime;
 }
 
 /**
@@ -27,7 +27,7 @@ export class AudioRecording implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
   public readonly id: ID;
   public readonly uuid: UUID;
-  public readonly recordedDate: Time;
+  public readonly recordedDate: DateTime;
   public readonly siteId: ID;
   public readonly durationSeconds: number;
   public readonly sampleRateHertz: number;
@@ -36,8 +36,8 @@ export class AudioRecording implements AudioRecordingInterface {
   public readonly mediaType: string;
   public readonly dataLengthBytes: number;
   public readonly status: "ready" | "uploading" | "corrupt";
-  public readonly createdAt: Time;
-  public readonly updatedAt: Time;
+  public readonly createdAt: DateTime;
+  public readonly updatedAt: DateTime;
 
   constructor(audioRecording: AudioRecordingInterface) {
     this.kind = "AudioRecording";

@@ -1,3 +1,4 @@
+import { profileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
   ID,
@@ -95,9 +96,10 @@ export class User implements UserInterface {
     ];
   }
 
-  // TODO Change this to reference the user account component
   get url(): string {
-    return "/user_accounts/" + this.id;
+    return profileMenuItem.route
+      .toString()
+      .replace(":userId", this.id.toString());
   }
 
   /**

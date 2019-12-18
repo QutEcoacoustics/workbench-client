@@ -28,8 +28,9 @@ export type AuthToken = string;
 export type Description = string;
 /**
  * BAW API Item Time
+ * Defaults to 1970-01-01T00:00:00.000
  */
-export type Time = Date;
+export type DateTime = Date;
 /**
  * BAW API Latitude
  */

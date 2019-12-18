@@ -1,6 +1,12 @@
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
-import { Description, ID, IDs, Name, Time } from "../interfaces/apiInterfaces";
+import {
+  DateTime,
+  Description,
+  ID,
+  IDs,
+  Name
+} from "../interfaces/apiInterfaces";
 
 /**
  * A project model.
@@ -11,9 +17,9 @@ export interface ProjectInterface {
   name: Name;
   imageUrl?: string;
   creatorId: ID;
-  createdAt?: Time;
+  createdAt?: DateTime;
   updaterId?: ID;
-  updatedAt?: Time;
+  updatedAt?: DateTime;
   ownerId?: ID;
   description: Description;
   siteIds: IDs;
@@ -28,9 +34,9 @@ export class Project implements ProjectInterface {
   public readonly name: Name;
   public readonly imageUrl: string;
   public readonly creatorId: ID;
-  public readonly createdAt?: Time;
+  public readonly createdAt?: DateTime;
   public readonly updaterId?: ID;
-  public readonly updatedAt?: Time;
+  public readonly updatedAt?: DateTime;
   public readonly ownerId?: ID;
   public readonly description: Description;
   public readonly siteIds: IDs;
@@ -45,11 +51,11 @@ export class Project implements ProjectInterface {
     this.creatorId = project.creatorId;
     this.createdAt = project.createdAt
       ? new Date(project.createdAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      : new Date("1970-01-01T00:00:00.000");
     this.updaterId = project.updaterId;
     this.updatedAt = project.updatedAt
       ? new Date(project.updatedAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      : new Date("1970-01-01T00:00:00.000");
     this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);

@@ -59,6 +59,7 @@ describe("UserService", () => {
   function login() {
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     const req = httpMock.expectOne(

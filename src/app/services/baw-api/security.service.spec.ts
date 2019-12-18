@@ -57,6 +57,7 @@ describe("SecurityService", () => {
   });
 
   it("login should set session cookie", () => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -92,6 +93,7 @@ describe("SecurityService", () => {
   });
 
   it("login should update user session on second login", fakeAsync(done => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -205,6 +207,7 @@ describe("SecurityService", () => {
   });
 
   it("logout should clear session cookie", fakeAsync(() => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -254,6 +257,7 @@ describe("SecurityService", () => {
   }));
 
   it("logout should set getUser to null", fakeAsync(() => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -303,6 +307,7 @@ describe("SecurityService", () => {
   }));
 
   it("logout should set isLoggedIn to false", fakeAsync(() => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -352,6 +357,7 @@ describe("SecurityService", () => {
   }));
 
   it("logout should not crash when already logged out", fakeAsync(() => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.signIn({ email: "email", password: "password" }).subscribe(res => {
       expect(res).toBeTruthy();
       expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -408,6 +414,7 @@ describe("SecurityService", () => {
 
   // TODO Implement the following tests
   xit("getLoggedInTrigger should return false initially", fakeAsync(() => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.getLoggedInTrigger().subscribe(loggedIn => {
       expect(loggedIn).toBeFalsy();
     });
