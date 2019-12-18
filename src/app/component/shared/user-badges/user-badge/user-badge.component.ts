@@ -12,21 +12,30 @@ import { User } from "src/app/models/User";
 @Component({
   selector: "app-user-badge",
   template: `
-    <h4>{{ label }}</h4>
+    <h4 id="label">{{ label }}</h4>
     <ng-container *ngIf="userNotFound; else userFound">
-      <p>User not found</p>
+      <p id="notFound">User not found</p>
     </ng-container>
     <ng-template #userFound>
       <div class="media" *ngFor="let user of users">
         <div class="image">
-          <a [href]="user.url">
-            <img [src]="user.getImage(imageSize)" [alt]="user.userName" />
+          <a id="imageLink" [routerLink]="user.url">
+            <img
+              [src]="user.getImage(imageSize)"
+              [alt]="user.userName + ' profile picture'"
+            />
           </a>
         </div>
         <div class="body">
-          <a class="heading" [routerLink]="user.url">{{ user.userName }}</a>
+          <a id="username" class="heading" [routerLink]="user.url">{{
+            user.userName
+          }}</a>
           <br />
-          <p style="word-wrap: break-word" *ngIf="lengthOfTime">
+          <p
+            id="lengthOfTime"
+            style="word-wrap: break-word"
+            *ngIf="lengthOfTime"
+          >
             {{ lengthOfTime }}
           </p>
         </div>

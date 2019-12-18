@@ -1,6 +1,7 @@
 import { profileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
+  DateTime,
   ID,
   ImageSizes,
   ImageURL,
@@ -17,10 +18,10 @@ export interface UserInterface {
   userName: UserName;
   rolesMask: number;
   rolesMaskNames: string[];
-  timezoneInformation: TimezoneInformation;
-  imageUrls: ImageURL[];
-  lastSeenAt: Date;
-  preferences: any;
+  timezoneInformation?: TimezoneInformation;
+  imageUrls?: ImageURL[];
+  lastSeenAt: DateTime | string;
+  preferences?: any;
   isConfirmed?: boolean;
 }
 
@@ -41,7 +42,7 @@ export class User implements UserInterface {
   public readonly userName: UserName;
   public readonly timezoneInformation: TimezoneInformation;
   public readonly imageUrls: ImageURL[];
-  public readonly lastSeenAt: Date;
+  public readonly lastSeenAt: DateTime;
   public readonly preferences: any;
   public readonly isConfirmed: boolean;
   public readonly rolesMask: number;
@@ -59,41 +60,43 @@ export class User implements UserInterface {
     this.rolesMask = user.rolesMask;
     this.rolesMaskNames = user.rolesMaskNames;
 
-    this.imageUrls = user.imageUrls.map(image => {
-      image.url = `/assets/${image.url}`;
-      return image;
-    }) || [
-      {
-        size: "extralarge",
-        url: "/images/user/user_span4.png",
-        width: 300,
-        height: 300
-      },
-      {
-        size: "large",
-        url: "/images/user/user_span3.png",
-        width: 220,
-        height: 220
-      },
-      {
-        size: "medium",
-        url: "/images/user/user_span2.png",
-        width: 140,
-        height: 140
-      },
-      {
-        size: "small",
-        url: "/images/user/user_span1.png",
-        width: 60,
-        height: 60
-      },
-      {
-        size: "tiny",
-        url: "/images/user/user_spanhalf.png",
-        width: 30,
-        height: 30
-      }
-    ];
+    this.imageUrls = user.imageUrls
+      ? user.imageUrls.map(image => {
+          image.url = `/assets/${image.url}`;
+          return image;
+        })
+      : [
+          {
+            size: "extralarge",
+            url: "/images/user/user_span4.png",
+            width: 300,
+            height: 300
+          },
+          {
+            size: "large",
+            url: "/images/user/user_span3.png",
+            width: 220,
+            height: 220
+          },
+          {
+            size: "medium",
+            url: "/images/user/user_span2.png",
+            width: 140,
+            height: 140
+          },
+          {
+            size: "small",
+            url: "/images/user/user_span1.png",
+            width: 60,
+            height: 60
+          },
+          {
+            size: "tiny",
+            url: "/images/user/user_spanhalf.png",
+            width: 30,
+            height: 30
+          }
+        ];
   }
 
   get url(): string {
