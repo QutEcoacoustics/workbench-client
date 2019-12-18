@@ -5,6 +5,7 @@ import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { FileValueAccessor } from "./formly/file-input.directive";
 import { FormlyImageInput } from "./formly/image-input.component";
+import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./formly/question-answer.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { MenuButtonComponent } from "./menu/button/button.component";
@@ -32,7 +33,8 @@ export const sharedComponents = [
   CmsComponent,
   FormlyImageInput,
   FormlyTimezoneInput,
-  FormlyQuestionAnswer
+  FormlyQuestionAnswer,
+  FormlyQuestionAnswerAction
 ];
 
 export const formlyAccessors = [FileValueAccessor];

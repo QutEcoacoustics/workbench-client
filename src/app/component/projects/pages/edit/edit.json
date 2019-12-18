@@ -1,5 +1,8 @@
 {
-  "model": {},
+  "model": {
+    "testing1": "Account unactivated hgfjhgfjhgfjhgfjhgjhgfjhfgjhgf",
+    "testing2": "Account unactivated hgfjhgfjhgfjhgfjhgjhgfjhfgjhgf"
+  },
   "fields": [
     {
       "key": "name",
@@ -24,6 +27,20 @@
       "templateOptions": {
         "label": "Image",
         "required": false
+      }
+    },
+    {
+      "key": "testing1",
+      "type": "question-answer",
+      "templateOptions": {
+        "label": "Testing1"
+      }
+    },
+    {
+      "key": "testing2",
+      "type": "question-answer-action",
+      "templateOptions": {
+        "label": "Testing2"
       }
     }
   ]
