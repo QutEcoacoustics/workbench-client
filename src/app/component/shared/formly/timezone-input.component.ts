@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 import moment from "moment";
@@ -47,20 +47,16 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
           </ng-container>
         </select>
         <div class="input-group-append">
-          <div class="input-group-text">{{ model[key] || "(no match)" }}</div>
+          <div class="input-group-text">
+            <small>{{ model[key] || "(no match)" }}</small>
+          </div>
         </div>
       </div>
     </div>
   `
 })
 // tslint:disable-next-line: component-class-suffix
-export class FormlyTimezoneInput extends FieldType
-  implements OnInit, AfterViewInit {
-  @Input() disabled = false;
-
-  /**
-   * All time zones combined in one array, for each country
-   */
+export class FormlyTimezoneInput extends FieldType implements OnInit {
   timezones: Timezone[];
   formControl: FormControl;
 
@@ -72,10 +68,9 @@ export class FormlyTimezoneInput extends FieldType
     this.timezones = this.service.getZones();
   }
 
-  ngAfterViewInit() {}
-
   /**
-   * Format a timezone into a human readable format
+   * Format a zone into a human readable format
+   * eg. Australia/Lord_Howe => Australia - Lord Howe
    * @param zone Zone to format
    */
   formatTimezoneString(zone: string): string {
@@ -88,35 +83,13 @@ export class FormlyTimezoneInput extends FieldType
    * @param zone Timezone
    */
   offsetOfTimezone(zone: string): string {
-    let offset = moment.tz(zone).utcOffset();
-    const negativeOffset = offset < 0;
+    const abbreviation = moment.tz(zone).zoneAbbr();
 
-    if (negativeOffset) {
-      offset *= -1;
+    // Check if abbreviation is known
+    if (abbreviation.includes("+") || abbreviation.includes("-")) {
+      return moment.tz(zone).format("(Z)");
+    } else {
+      return moment.tz(zone).format("z (Z)");
     }
-
-    const hours = Math.floor(offset / 60);
-    const minutes = (offset / 60 - hours) * 60;
-    return (
-      "GMT" +
-      (negativeOffset ? "-" : "+") +
-      this.numberPadding(hours, 2) +
-      ":" +
-      this.numberPadding(minutes, 2)
-    );
-  }
-
-  /**
-   * Prepend padding to a number
-   * @param num Number to pad
-   * @param places Number of places to pad to
-   * @param padding Padding filler (defaults to '0')
-   */
-  private numberPadding(
-    num: number,
-    places: number,
-    padding: string = "0"
-  ): string {
-    return String(num).padStart(places, padding);
   }
 }
