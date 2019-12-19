@@ -25,13 +25,6 @@
         "label": "Image",
         "required": false
       }
-    },
-    {
-      "key": "timezone",
-      "type": "timezone",
-      "templateOptions": {
-        "label": "Timezone"
-      }
     }
   ]
 }

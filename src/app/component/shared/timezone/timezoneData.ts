@@ -1,3 +1,5 @@
+// List grabbed from here: https://github.com/samuelnygaard/ng2-timezone-selector/blob/master/src/timezone-picker.service.ts#L44
+// TODO Replace this list with a request to here: http://api.worldbank.org/v2/country?format=json
 export const zones = {
   AD: ["Europe/Andorra"],
   AE: ["Asia/Dubai"],
