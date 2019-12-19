@@ -144,7 +144,7 @@ describe("ErrorHandlerComponent", () => {
     expect(body).toBeFalsy();
   });
 
-  it("should handle changing code", fakeAsync(() => {
+  it("should detect changes", fakeAsync(() => {
     const testFixture: ComponentFixture<TestErrorHandlerComponent> = TestBed.createComponent(
       TestErrorHandlerComponent
     );
