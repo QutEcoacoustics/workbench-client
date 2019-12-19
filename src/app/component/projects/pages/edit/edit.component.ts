@@ -88,6 +88,8 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 

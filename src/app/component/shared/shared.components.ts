@@ -14,6 +14,7 @@ import { MenuInternalLinkComponent } from "./menu/internal-link/internal-link.co
 import { MenuComponent } from "./menu/menu.component";
 import { PermissionsShieldComponent } from "./permissions-shield/permissions-shield.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
+import { TimezoneFormPipe } from "./timezone/timezone.pipe";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { WIPComponent } from "./wip/wip.component";
 
@@ -34,7 +35,8 @@ export const sharedComponents = [
   FormlyImageInput,
   FormlyTimezoneInput,
   FormlyQuestionAnswer,
-  FormlyQuestionAnswerAction
+  FormlyQuestionAnswerAction,
+  TimezoneFormPipe
 ];
 
 export const formlyAccessors = [FileValueAccessor];
