@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterContentInit, Component, OnChanges, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 import moment from "moment";
@@ -23,22 +23,20 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
           class="w-100 form-control"
           [formControl]="formControl"
           [formlyAttributes]="field"
+          (change)="calculateCurrentTime()"
         >
-          <option></option>
+          <option value=""></option>
           <ng-container *ngFor="let timezone of timezones">
             <ng-container *ngIf="timezone.zones.length === 1; else group">
               <!-- Create singular option -->
-              <option [value]="offsetOfTimezone(timezone.zones[0])">
+              <option [value]="timezone.zones[0]">
                 {{ timezone.iso | iso2CountryPipe }}
               </option>
             </ng-container>
             <ng-template #group>
               <!-- Create subgroup of countries with same timezone -->
               <optgroup [label]="timezone.iso | iso2CountryPipe">
-                <option
-                  *ngFor="let zone of timezone.zones"
-                  [value]="offsetOfTimezone(zone)"
-                >
+                <option *ngFor="let zone of timezone.zones" [value]="zone">
                   {{ timezone.iso | iso2CountryPipe }} -
                   {{ formatTimezoneString(zone) }}
                 </option>
@@ -48,10 +46,13 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
         </select>
         <div class="input-group-append">
           <div class="input-group-text">
-            <small>{{ model[key] || "(no match)" }}</small>
+            <small>{{
+              model[key] ? offsetOfTimezone(model[key]) : "(no match)"
+            }}</small>
           </div>
         </div>
       </div>
+      <small class="form-text text-muted">{{ currentTime }}</small>
     </div>
   `
 })
@@ -59,6 +60,8 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
 export class FormlyTimezoneInput extends FieldType implements OnInit {
   timezones: Timezone[];
   formControl: FormControl;
+  previousValue: string;
+  currentTime: string;
 
   constructor(public service: TimezoneService) {
     super();
@@ -66,6 +69,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
 
   ngOnInit() {
     this.timezones = this.service.getZones();
+    this.previousValue = this.model[this.key];
   }
 
   /**
@@ -90,6 +94,16 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
       return moment.tz(zone).format("(Z)");
     } else {
       return moment.tz(zone).format("z (Z)");
+    }
+  }
+
+  calculateCurrentTime() {
+    if (this.model[this.key] && this.model[this.key] !== "") {
+      this.currentTime = moment(new Date())
+        .tz(this.model[this.key])
+        .format("[Currently:] dddd, MMMM Do YYYY, h:mm:ss a z (Z)");
+    } else {
+      this.currentTime = "";
     }
   }
 }

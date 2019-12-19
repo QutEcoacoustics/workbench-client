@@ -46,7 +46,7 @@
     },
     {
       "key": "timezoneInformation",
-      "type": "input",
+      "type": "timezone",
       "templateOptions": {
         "label": "Time Zone",
         "required": false
