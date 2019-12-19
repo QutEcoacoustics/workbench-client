@@ -20,9 +20,9 @@ export interface SiteInterface {
   description: Description;
   locationObfuscated?: boolean;
   creatorId: ID;
-  createdAt?: DateTime;
+  createdAt?: DateTime | string;
   updaterId?: ID;
-  updatedAt?: DateTime;
+  updatedAt?: DateTime | string;
   projectIds: IDs;
   customLatitude?: number;
   customLongitude?: number;

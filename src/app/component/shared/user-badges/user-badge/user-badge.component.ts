@@ -17,27 +17,29 @@ import { User } from "src/app/models/User";
       <p id="notFound">User not found</p>
     </ng-container>
     <ng-template #userFound>
-      <div class="media" *ngFor="let user of users">
-        <div class="image">
-          <a id="imageLink" [routerLink]="user.url">
-            <img
-              [src]="user.getImage(imageSize)"
-              [alt]="user.userName + ' profile picture'"
-            />
-          </a>
-        </div>
-        <div class="body">
-          <a id="username" class="heading" [routerLink]="user.url">{{
-            user.userName
-          }}</a>
-          <br />
-          <p
-            id="lengthOfTime"
-            style="word-wrap: break-word"
-            *ngIf="lengthOfTime"
-          >
-            {{ lengthOfTime }}
-          </p>
+      <div id="users">
+        <div class="media" *ngFor="let user of users">
+          <div class="image">
+            <a id="imageLink" [routerLink]="user.url">
+              <img
+                [src]="user.getImage(imageSize)"
+                [alt]="user.userName + ' profile picture'"
+              />
+            </a>
+          </div>
+          <div class="body">
+            <a id="username" class="heading" [routerLink]="user.url">{{
+              user.userName
+            }}</a>
+            <br />
+            <p
+              id="lengthOfTime"
+              style="word-wrap: break-word"
+              *ngIf="lengthOfTime"
+            >
+              {{ lengthOfTime }}
+            </p>
+          </div>
         </div>
       </div>
     </ng-template>

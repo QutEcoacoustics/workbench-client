@@ -107,7 +107,9 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(
         (user: User) => {
           object["users"] = List<User>([user]);
-          object["lengthOfTime"] = this.getLengthOfTime(time);
+          if (time) {
+            object["lengthOfTime"] = this.getLengthOfTime(time);
+          }
           this.ref.detectChanges();
         },
         (err: APIErrorDetails) => {}
@@ -122,19 +124,16 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
     const now = new Date();
     const yearDiff = now.getUTCFullYear() - time.getUTCFullYear();
     const monthDiff = now.getUTCMonth() - time.getUTCMonth();
-    const dayDiff = now.getUTCDay() - time.getUTCDay();
-    const hourDiff = now.getUTCHours() - time.getUTCHours();
+    const dayDiff = now.getUTCDate() - time.getUTCDate();
 
     if (yearDiff > 0) {
-      return `${yearDiff} years ago`;
+      return `${yearDiff} year${yearDiff > 1 ? "s" : ""} ago`;
     } else if (monthDiff > 0) {
-      return `${monthDiff} months ago`;
+      return `${monthDiff} month${monthDiff > 1 ? "s" : ""} ago`;
     } else if (dayDiff > 0) {
-      return `${dayDiff} days ago`;
-    } else if (hourDiff > 0) {
-      return `${hourDiff} hours ago`;
+      return `${dayDiff} day${dayDiff > 1 ? "s" : ""} ago`;
     } else {
-      return "Less than an hour ago";
+      return "Less than a day ago";
     }
   }
 }

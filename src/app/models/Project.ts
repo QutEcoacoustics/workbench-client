@@ -17,9 +17,9 @@ export interface ProjectInterface {
   name: Name;
   imageUrl?: string;
   creatorId: ID;
-  createdAt?: DateTime;
+  createdAt?: DateTime | string;
   updaterId?: ID;
-  updatedAt?: DateTime;
+  updatedAt?: DateTime | string;
   ownerId?: ID;
   description: Description;
   siteIds: IDs;

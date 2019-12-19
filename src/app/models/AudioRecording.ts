@@ -7,7 +7,7 @@ export interface AudioRecordingInterface {
   kind?: "AudioRecording";
   id: ID;
   uuid: UUID;
-  recordedDate: DateTime;
+  recordedDate: DateTime | string;
   siteId: ID;
   durationSeconds: number;
   sampleRateHertz?: number;
