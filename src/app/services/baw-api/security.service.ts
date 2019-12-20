@@ -4,7 +4,12 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import { APIResponse, BawApiService, Filters } from "./base-api.service";
+import {
+  APIResponse,
+  apiReturnCodes,
+  BawApiService,
+  Filters
+} from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -30,33 +35,12 @@ export class SecurityService extends BawApiService {
   /**
    * Returns an observable which tracks the change in loggedIn status
    */
-  getLoggedInTrigger(): BehaviorSubject<boolean> {
+  public getLoggedInTrigger(): BehaviorSubject<boolean> {
     return this.loggedInTrigger;
   }
 
-  /**
-   * Get response from details route. Updates on logged in state change
-   * @param subject Subject to update
-   * @param callback Callback function which generates the model
-   * @param path API path
-   * @param args API arguments
-   * @param filters API parameters
-   */
-  details(
-    subject: Subject<any>,
-    callback: (data: any) => any,
-    path: string,
-    args?: any,
-    filters?: Filters
-  ) {
-    this.loggedInTrigger.subscribe({
-      next: () => super.details(subject, callback, path, args, filters),
-      error: (err: APIErrorDetails) => subject.error(err)
-    });
-  }
-
   // TODO Register account. Path needs to be checked and inputs ascertained.
-  register(details: any): Observable<boolean | string> {
+  public register(details: any): Observable<boolean | string> {
     return this.authenticateUser(this.paths.register, details);
   }
 
@@ -66,7 +50,7 @@ export class SecurityService extends BawApiService {
    * @param details Details provided by login form
    * @returns Observable (true if success, error string if failure)
    */
-  signIn(details: {
+  public signIn(details: {
     login: string;
     password: string;
   }): Observable<boolean | string> {
@@ -76,7 +60,7 @@ export class SecurityService extends BawApiService {
   /**
    * Logout user and clear session storage values
    */
-  signOut() {
+  public signOut() {
     const subject = new Subject<any>();
 
     if (!this.isLoggedIn()) {
@@ -88,7 +72,7 @@ export class SecurityService extends BawApiService {
 
     this.delete(this.paths.signOut).subscribe({
       next: (data: APIResponse) => {
-        if (data.meta.status === this.apiReturnCodes.success) {
+        if (data.meta.status === apiReturnCodes.success) {
           this.clearSessionStorage();
           this.loggedInTrigger.next(false);
           subject.complete();

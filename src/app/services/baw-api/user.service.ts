@@ -4,7 +4,6 @@ import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { User, UserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 @Injectable({
@@ -24,7 +23,7 @@ export class UserService extends BawApiService {
    * Get the account details of the current logged in user
    * @returns Observable returning current user details
    */
-  getMyAccount(): Subject<User> {
+  public getMyAccount(): Subject<User> {
     const subject = new Subject<User>();
     const callback = (user: UserInterface) => new User(user);
 
@@ -38,7 +37,7 @@ export class UserService extends BawApiService {
    * @param id User ID
    * @returns Observable returning user details
    */
-  getUserAccount(id: ID): Subject<User> {
+  public getUserAccount(id: ID): Subject<User> {
     const subject = new Subject<User>();
     const callback = (user: UserInterface) => new User(user);
 

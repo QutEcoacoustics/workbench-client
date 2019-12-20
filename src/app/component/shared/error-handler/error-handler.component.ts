@@ -3,11 +3,10 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
-  SimpleChanges
+  OnInit
 } from "@angular/core";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { apiReturnCodes } from "src/app/services/baw-api/base-api.service";
 
 @Component({
   selector: "app-error-handler",
@@ -33,7 +32,7 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
   @Input() error: APIErrorDetails;
   display = "";
 
-  constructor(private api: BawApiService) {}
+  constructor() {}
 
   ngOnInit() {
     this.evaluateError();
@@ -50,15 +49,15 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
     }
 
     switch (this.error.status) {
-      case this.api.apiReturnCodes.unauthorized:
+      case apiReturnCodes.unauthorized:
         this.display = "unauthorized";
         break;
 
-      case this.api.apiReturnCodes.notFound:
+      case apiReturnCodes.notFound:
         this.display = "notFound";
         break;
 
-      case this.api.apiReturnCodes.forbidden:
+      case apiReturnCodes.forbidden:
         this.display = "forbidden";
         break;
 
