@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { SecurityService } from "src/app/services/baw-api/security.service";
+import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
 import data from "./register.json";
 
@@ -37,31 +36,20 @@ export class RegisterComponent extends PageComponent
   errorDetails: APIErrorDetails;
   loading: boolean;
 
-  constructor(private api: SecurityService) {
+  constructor(private api: BawApiService) {
     super();
   }
 
   ngOnInit() {
     this.loading = true;
 
-    this.api
-      .getLoggedInTrigger()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        loggedIn => {
-          this.errorDetails = undefined;
-          if (loggedIn) {
-            this.loading = true;
-            this.error = "You are already logged in";
-          } else {
-            this.loading = false;
-            this.error = null;
-          }
-        },
-        (err: APIErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    if (this.api.isLoggedIn()) {
+      this.loading = true;
+      this.error = "You are already logged in";
+    } else {
+      this.loading = false;
+      this.error = null;
+    }
   }
 
   ngOnDestroy() {
