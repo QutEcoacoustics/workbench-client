@@ -98,9 +98,11 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.success = "Project was successfully updated.";
+          this.error = null;
           this.loading = false;
         },
         err => {
+          this.success = null;
           this.error = err;
           this.loading = false;
         }

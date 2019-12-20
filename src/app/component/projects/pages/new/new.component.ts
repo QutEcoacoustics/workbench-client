@@ -70,9 +70,11 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.subSink.sink = this.api.newProject($event).subscribe(
       () => {
         this.success = "Project was successfully created.";
+        this.error = null;
         this.loading = false;
       },
       (err: APIErrorDetails) => {
+        this.success = null;
         if (err.info && err.info.name && err.info.name.length === 1) {
           this.error = err.message + ": name " + err.info.name[0];
         } else {

@@ -19,22 +19,34 @@
       }
     },
     {
-      "key": "customLatitude",
-      "type": "input",
-      "templateOptions": {
-        "label": "Latitude",
-        "type": "number",
-        "required": false
-      }
-    },
-    {
-      "key": "customLongitude",
-      "type": "input",
-      "templateOptions": {
-        "label": "Longitude",
-        "type": "number",
-        "required": false
-      }
+      "key": "location",
+      "validators": {
+        "fieldMatch": {
+          "expression": "return ((control.value.customLatitude && control.value.customLongitude) || (!control.value.customLatitude && !control.value.customLongitude))",
+          "message": "Both latitude and longitude must be set or left empty",
+          "errorPath": "customLongitude"
+        }
+      },
+      "fieldGroup": [
+        {
+          "key": "customLatitude",
+          "type": "input",
+          "templateOptions": {
+            "label": "Latitude",
+            "type": "number",
+            "required": false
+          }
+        },
+        {
+          "key": "customLongitude",
+          "type": "input",
+          "templateOptions": {
+            "label": "Longitude",
+            "type": "number",
+            "required": false
+          }
+        }
+      ]
     },
     {
       "key": "image",
