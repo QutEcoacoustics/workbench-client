@@ -33,8 +33,8 @@ import data from "./edit.json";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
+      <app-error-handler [errorCode]="errorCode"></app-error-handler>
     </app-wip>
-    <app-error-handler [errorCode]="errorCode"></app-error-handler>
   `
 })
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
@@ -88,6 +88,8 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 
@@ -96,9 +98,11 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.success = "Project was successfully updated.";
+          this.error = null;
           this.loading = false;
         },
         err => {
+          this.success = null;
           this.error = err;
           this.loading = false;
         }

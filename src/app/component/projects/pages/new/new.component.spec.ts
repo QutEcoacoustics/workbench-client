@@ -6,7 +6,7 @@ import {
 } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
@@ -19,12 +19,7 @@ describe("ProjectsNewComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
-      ],
+      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
       declarations: [NewComponent],
       providers: [...testBawServices]
     }).compileComponents();
@@ -58,123 +53,77 @@ describe("ProjectsNewComponent", () => {
 
   /* Project Name Input */
 
-  it("should contain project name as first input", () => {
+  it("should contain project name input", () => {
     const input = fixture.nativeElement
       .querySelectorAll("form formly-field")[0]
       .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("project name field should have 'name' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.id).toContain("_name_");
-  });
-
-  it("project name field should be text input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.type).toBe("text");
-  });
-
-  it("project name field should be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.required).toBeTruthy();
-  });
-
-  it("project name field should have label", () => {
     const label = fixture.nativeElement
       .querySelectorAll("form formly-field")[0]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Project Name");
+    expect(input).toBeTruthy("Form should contain input as first field");
+    expect(input.id).toContain(
+      "_name_",
+      "Project name input id should be 'name'"
+    );
+    expect(input.type).toBe(
+      "text",
+      "Project name input should be of type 'text'"
+    );
+    expect(input.required).toBeTruthy("Project name input should be required");
+
+    expect(label).toBeTruthy("Project name input should have label");
+    expect(label.innerText).toContain(
+      "Project Name",
+      "Project name label should be 'Project Name'"
+    );
   });
 
   /* Project Description Textarea */
 
-  it("should contain project description as second input", () => {
+  it("should contain project description textarea", () => {
     const input = fixture.nativeElement
       .querySelectorAll("form formly-field")[1]
       .querySelector("textarea");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("project description field should have 'description' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-
-    expect(input.id).toContain("_description_");
-  });
-
-  it("project description field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("project description field should have label", () => {
     const label = fixture.nativeElement
       .querySelectorAll("form formly-field")[1]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Description");
+    expect(input).toBeTruthy("Form should contain textarea as second field");
+    expect(input.id).toContain(
+      "_description_",
+      "Project description field id should be 'description'"
+    );
+    expect(input.required).toBeFalsy(
+      "Project description field should not be required"
+    );
+
+    expect(label).toBeTruthy("Project name input should have label");
+    expect(label.innerText).toContain(
+      "Description",
+      "Project description label should be 'Description'"
+    );
   });
 
   /* Project Image Input */
 
-  it("should contain project image as third input", () => {
+  it("should contain site image input", () => {
     const input = fixture.nativeElement
       .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("project image field should have 'image' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.id).toContain("_image_");
-  });
-
-  it("project image field should be file input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.type).toBe("file");
-  });
-
-  it("project image field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("project image field should have label", () => {
+      .querySelector("formly-image-input input");
     const label = fixture.nativeElement
       .querySelectorAll("form formly-field")[2]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Image");
+    expect(input).toBeTruthy(
+      "Form should contain custom image input as third field"
+    );
+    expect(input.id).toContain("_image_", "Image input id should be 'image'");
+    expect(input.type).toBe("file", "Image input should be of type 'file'");
+    expect(input.required).toBeFalsy("Image input should not be required");
+
+    expect(label).toBeTruthy("Image input should have label");
+    expect(label.innerText).toContain("Image", "Image label should be 'Image'");
   });
 
   /* End of input typing checks */
