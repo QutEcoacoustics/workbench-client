@@ -67,7 +67,7 @@ export class SecurityService extends BawApiService {
    * @returns Observable (true if success, error string if failure)
    */
   signIn(details: {
-    email: string;
+    login: string;
     password: string;
   }): Observable<boolean | string> {
     return this.authenticateUser(this.paths.signIn, details);
@@ -115,7 +115,7 @@ export class SecurityService extends BawApiService {
    */
   private authenticateUser(
     path: string,
-    details: { email: string; password: string }
+    details: { login: string; password: string }
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {

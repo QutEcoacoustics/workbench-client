@@ -44,7 +44,7 @@ describe("LoginComponent", () => {
     fixture.detectChanges();
 
     component.schema.model = {
-      email: "",
+      login: "",
       password: ""
     };
   });
@@ -79,9 +79,9 @@ describe("LoginComponent", () => {
     ).toBeTruthy();
   });
 
-  it("username/email input should have email id", () => {
+  it("username/email input should have login id", () => {
     expect(fixture.nativeElement.querySelectorAll("input")[0].id).toContain(
-      "_input_email_"
+      "_login_"
     );
   });
 
@@ -104,14 +104,14 @@ describe("LoginComponent", () => {
     );
   });
 
-  it("should not call submit function with missing email", fakeAsync(() => {
+  it("should not call submit function with missing username", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
+    username.value = "";
+    username.dispatchEvent(new Event("input"));
 
     const button = fixture.debugElement.nativeElement.querySelector(
       "button[type='submit']"
@@ -123,14 +123,14 @@ describe("LoginComponent", () => {
     expect(component.submit).not.toHaveBeenCalled();
   }));
 
-  it("should show error message with missing email", fakeAsync(() => {
+  it("should show error message with missing username", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
+    username.value = "";
+    username.dispatchEvent(new Event("input"));
 
     const button = fixture.debugElement.nativeElement.querySelector(
       "button[type='submit']"
@@ -191,11 +191,11 @@ describe("LoginComponent", () => {
   it("should not call submit function with missing fields", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
+    username.value = "";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -214,11 +214,11 @@ describe("LoginComponent", () => {
   }));
 
   it("should show error message with missing fields", fakeAsync(() => {
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
+    username.value = "";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -244,11 +244,11 @@ describe("LoginComponent", () => {
   it("should not call submit function with password less than 6 characters long", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -269,11 +269,11 @@ describe("LoginComponent", () => {
   it("should show error message with password less than 6 characters long", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -300,11 +300,11 @@ describe("LoginComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn");
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -323,20 +323,20 @@ describe("LoginComponent", () => {
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalledWith({
-      email: "email",
+      login: "username",
       password: "password"
     });
   }));
 
-  it("should show error on bad email", fakeAsync(() => {
+  it("should show error on bad username", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callThrough();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "bad email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "bad username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -355,7 +355,7 @@ describe("LoginComponent", () => {
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalledWith({
-      email: "bad email",
+      login: "bad username",
       password: "password"
     });
 
@@ -373,11 +373,11 @@ describe("LoginComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callThrough();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -396,7 +396,7 @@ describe("LoginComponent", () => {
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalledWith({
-      email: "email",
+      login: "username",
       password: "bad password"
     });
 
@@ -414,11 +414,11 @@ describe("LoginComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callThrough();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "bad email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "bad username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -437,7 +437,7 @@ describe("LoginComponent", () => {
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalledWith({
-      email: "bad email",
+      login: "bad username",
       password: "bad password"
     });
 
@@ -452,7 +452,7 @@ describe("LoginComponent", () => {
   }));
 
   it("should show error for authenticated user", fakeAsync(() => {
-    securityService.signIn({ email: "email", password: "password" });
+    securityService.signIn({ login: "username", password: "password" });
 
     tick(5000);
     fixture.detectChanges();
@@ -465,7 +465,7 @@ describe("LoginComponent", () => {
   }));
 
   it("should disable submit button for authenticated user", fakeAsync(() => {
-    securityService.signIn({ email: "email", password: "password" });
+    securityService.signIn({ login: "username", password: "password" });
 
     tick(5000);
     fixture.detectChanges();
@@ -489,11 +489,11 @@ describe("LoginComponent", () => {
     expect(button).toBeTruthy();
     expect(button.disabled).toBeFalsy();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -514,11 +514,11 @@ describe("LoginComponent", () => {
       return new BehaviorSubject<boolean>(true);
     });
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
     )[0];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
 
     const password = fixture.debugElement.nativeElement.querySelectorAll(
       "input"

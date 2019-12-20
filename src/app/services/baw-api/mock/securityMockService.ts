@@ -7,12 +7,12 @@ export class MockSecurityService {
   private trigger = new BehaviorSubject<boolean>(false);
 
   public signIn(details: {
-    email: string;
+    login: string;
     password: string;
   }): Observable<boolean | string> {
     const subject = new Subject<boolean | string>();
 
-    if (details.email === "email" && details.password === "password") {
+    if (details.login === "username" && details.password === "password") {
       this.loggedIn = true;
       subject.next(true);
       this.trigger.next(true);

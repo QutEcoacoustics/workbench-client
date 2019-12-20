@@ -459,7 +459,7 @@ describe("RegisterComponent", () => {
   }));
 
   it("should show error for authenticated user", fakeAsync(() => {
-    securityService.signIn({ email: "email", password: "password" });
+    securityService.signIn({ login: "username", password: "password" });
 
     tick(5000);
     fixture.detectChanges();
@@ -470,7 +470,7 @@ describe("RegisterComponent", () => {
   }));
 
   it("should disable submit button for authenticated user", fakeAsync(() => {
-    securityService.signIn({ email: "email", password: "password" });
+    securityService.signIn({ login: "username", password: "password" });
 
     tick(5000);
     fixture.detectChanges();

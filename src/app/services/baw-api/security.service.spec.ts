@@ -58,14 +58,17 @@ describe("SecurityService", () => {
 
   it("login should set session cookie", () => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        authToken: "aaaaaaaaaaaaaaaaaaaaaa",
-        userName: "Test"
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+        expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
+          authToken: "aaaaaaaaaaaaaaaaaaaaaa",
+          userName: "Test"
+        });
       });
-    });
 
     const req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
@@ -94,14 +97,17 @@ describe("SecurityService", () => {
 
   it("login should update user session on second login", fakeAsync(done => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-      expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-        authToken: "aaaaaaaaaaaaaaa",
-        userName: "Test"
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+        expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
+          authToken: "aaaaaaaaaaaaaaa",
+          userName: "Test"
+        });
       });
-    });
 
     let req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
@@ -122,7 +128,7 @@ describe("SecurityService", () => {
 
     tick(2000);
 
-    service.signIn({ email: "email", password: "password" }).subscribe(
+    service.signIn({ login: "username", password: "password" }).subscribe(
       res => {
         expect(res).toBeTruthy();
         expect(sessionStorage.getItem("user")).toBeTruthy();
@@ -158,7 +164,7 @@ describe("SecurityService", () => {
   }));
 
   it("login should return error on bad credentials", () => {
-    service.signIn({ email: "email", password: "password" }).subscribe(
+    service.signIn({ login: "username", password: "password" }).subscribe(
       res => {
         expect(true).toBeFalsy();
       },
@@ -208,10 +214,13 @@ describe("SecurityService", () => {
 
   it("logout should clear session cookie", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-    });
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+      });
 
     const loginReq = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
@@ -258,10 +267,13 @@ describe("SecurityService", () => {
 
   it("logout should set getUser to null", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-    });
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+      });
 
     const req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
@@ -308,10 +320,13 @@ describe("SecurityService", () => {
 
   it("logout should set isLoggedIn to false", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-    });
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+      });
 
     const req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
@@ -358,10 +373,13 @@ describe("SecurityService", () => {
 
   it("logout should not crash when already logged out", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
-    service.signIn({ email: "email", password: "password" }).subscribe(res => {
-      expect(res).toBeTruthy();
-      expect(sessionStorage.getItem("user")).toBeTruthy();
-    });
+    service
+      .signIn({ login: "username", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
+      .subscribe(res => {
+        expect(res).toBeTruthy();
+        expect(sessionStorage.getItem("user")).toBeTruthy();
+      });
 
     const req = httpMock.expectOne({
       url: config.getConfig().environment.apiRoot + "/security",
