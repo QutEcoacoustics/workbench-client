@@ -38,4 +38,21 @@ describe("AboutEthicsComponent", () => {
     httpMock.expectOne(config.getConfig().environment.cmsRoot + "/ethics.html");
     expect(component).toBeTruthy();
   });
+
+  it("should load cms", () => {
+    const req = httpMock.expectOne(
+      config.getConfig().environment.cmsRoot + "/ethics.html"
+    );
+
+    req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    fixture.detectChanges();
+
+    const header = fixture.nativeElement.querySelector("h1");
+    const body = fixture.nativeElement.querySelector("p");
+
+    expect(header).toBeTruthy();
+    expect(header.innerText.trim()).toBe("Test Header");
+    expect(body).toBeTruthy();
+    expect(body.innerText.trim()).toBe("Test Description");
+  });
 });
