@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit
 } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
@@ -28,7 +29,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
-  blob: string;
+  blob: SafeHtml;
   error: APIErrorDetails;
   loading = true;
   notifier = new Subject();
@@ -36,7 +37,8 @@ export class CmsComponent implements OnInit, OnDestroy {
   constructor(
     private config: AppConfigService,
     private http: HttpClient,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -47,7 +49,9 @@ export class CmsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.notifier))
       .subscribe(
         data => {
-          this.blob = data;
+          // This is a bit dangerous, however cms should only load from trusted sources.
+          // May need to revise this in future.
+          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
           this.loading = false;
           this.ref.detectChanges();
         },

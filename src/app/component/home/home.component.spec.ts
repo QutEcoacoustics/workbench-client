@@ -27,5 +27,10 @@ describe("HomeComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  it("should retrieve project list", () => {});
+  it("should display single project in list", () => {});
+  it("should display three projects in list", () => {});
+  it("should link to project details page", () => {});
+
   // TODO Add unit tests
 });
