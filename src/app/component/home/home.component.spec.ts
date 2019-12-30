@@ -341,4 +341,77 @@ describe("HomeComponent", () => {
     flush();
     fixture.detectChanges();
   }));
+
+  it("should update on logout", fakeAsync(() => {
+    let count = 0;
+
+    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+      const subject = new BehaviorSubject(null);
+
+      setTimeout(() => {
+        subject.next(null);
+      }, 500);
+
+      return subject;
+    });
+    spyOn(projectApi, "getFilteredProjects").and.callFake(params => {
+      const subject = new Subject<Project[]>();
+
+      setTimeout(() => {
+        if (count === 0) {
+          count++;
+          subject.next([]);
+        } else {
+          subject.next([
+            new Project({
+              id: 1,
+              name: "Project 1",
+              creatorId: 1,
+              description: "Description 1",
+              siteIds: new Set([])
+            }),
+            new Project({
+              id: 2,
+              name: "Project 2",
+              creatorId: 1,
+              description: "Description 2",
+              siteIds: new Set([])
+            }),
+            new Project({
+              id: 3,
+              name: "Project 3",
+              creatorId: 1,
+              description: "Description 3",
+              siteIds: new Set([])
+            })
+          ]);
+        }
+      }, 50);
+
+      return subject;
+    });
+
+    tick(100);
+    fixture.detectChanges();
+
+    const req = httpMock.expectOne(
+      config.getConfig().environment.cmsRoot + "/home.html"
+    );
+    req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    tick(100);
+    fixture.detectChanges();
+
+    // Should initially have zero cards
+    let cards = fixture.nativeElement.querySelectorAll("app-card-image");
+
+    expect(cards.length).toBe(0);
+
+    flush();
+    fixture.detectChanges();
+
+    // After login status changes, should have 3
+    cards = fixture.nativeElement.querySelectorAll("app-card-image");
+
+    expect(cards.length).toBe(3);
+  }));
 });
