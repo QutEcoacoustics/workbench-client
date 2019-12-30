@@ -80,6 +80,8 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     // Load widget
     this.loadComponent();
+
+    console.log(this.filteredLinks);
   }
 
   ngOnDestroy() {

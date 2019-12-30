@@ -30,6 +30,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -78,6 +81,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -119,6 +125,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -186,6 +195,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -278,6 +290,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -345,6 +360,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -437,6 +455,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -504,6 +525,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
@@ -596,6 +620,9 @@ describe("ActionMenuComponent", () => {
         new PageInfo(ActionMenuComponent, {
           self: {
             kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
             route: this.route
           },
           category: {
