@@ -13,7 +13,11 @@
       class="col-lg-4 col-sm-6 mb-4"
     ></app-card>
   </ng-template>
-  <div class="col-lg-4 col-sm-6 mb-4 d-flex center content">
+  <div
+    *ngIf="content"
+    id="content"
+    class="col-lg-4 col-sm-6 mb-4 d-flex center content"
+  >
     <ng-content></ng-content>
   </div>
 </div>

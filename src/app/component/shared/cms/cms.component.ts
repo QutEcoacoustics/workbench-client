@@ -29,7 +29,8 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
-  blob: SafeHtml;
+  // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
+  blob: string;
   error: APIErrorDetails;
   loading = true;
   notifier = new Subject();
@@ -51,7 +52,7 @@ export class CmsComponent implements OnInit, OnDestroy {
         data => {
           // This is a bit dangerous, however cms should only load from trusted sources.
           // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
+          this.blob = this.sanitizer.bypassSecurityTrustHtml(data) as string;
           this.loading = false;
           this.ref.detectChanges();
         },

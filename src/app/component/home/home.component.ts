@@ -1,14 +1,15 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Observable } from "rxjs";
-import { flatMap, map } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { flatMap, map, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { projectsMenuItem } from "../projects/projects.menus";
+import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Page({
@@ -22,22 +23,43 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent {
+export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
   moreProjectsLink = projectsMenuItem;
-  projectList$: Observable<any> = this.securityApi.getLoggedInTrigger().pipe(
-    flatMap(() => {
-      return this.projectApi.getFilteredProjects({ items: 3 });
-    }),
-    map((data: Project[]) => {
-      return List(data.map(project => project.card));
-    })
-  );
+  projectList: List<Card> = List([]);
 
   constructor(
     private projectApi: ProjectsService,
-    private securityApi: SecurityService,
-    private appConfig: AppConfigService
+    private securityApi: SecurityService
   ) {
     super();
+  }
+
+  ngOnInit() {
+    this.securityApi
+      .getLoggedInTrigger()
+      .pipe(
+        flatMap(() => {
+          return this.projectApi.getFilteredProjects({ items: 3 });
+        }),
+        map((data: Project[]) => {
+          return List(data.map(project => project.card));
+        }),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        (cards: List<Card>) => {
+          console.log("Cards: ", cards);
+          this.projectList = cards;
+        },
+        (err: APIErrorDetails) => {
+          this.projectList = List([]);
+        }
+      );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

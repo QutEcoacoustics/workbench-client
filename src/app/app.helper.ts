@@ -91,12 +91,12 @@ export const testAppInitializer = [
 
 export const testBawServices = [
   ...testAppInitializer,
-  { provide: BawApiService, useClass: MockBawApiService },
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
   },
+  { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },
