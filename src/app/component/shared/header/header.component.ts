@@ -8,7 +8,7 @@ import {
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -18,7 +18,9 @@ import {
 import { User } from "src/app/models/User";
 import {
   AppConfigService,
-  HeaderDropDownConvertedLink
+  Configuration,
+  HeaderDropDownConvertedLink,
+  isHeaderLink
 } from "src/app/services/app-config/app-config.service";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -47,9 +49,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   activeLink: string;
   collapsed: boolean;
-  config: any;
+  config: Configuration;
   headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
-  loggedIn: boolean;
   title: string;
   user: User;
   userImage: string;
@@ -57,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isNavigableMenuItem = isNavigableMenuItem;
 
   routes: any;
-  boolean;
+
   ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
@@ -74,7 +75,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.headers = List([
       projectsMenuItem,
       ...this.config.values.content.map(header => {
-        if (header.headerTitle) {
+        if (!isHeaderLink(header)) {
           return {
             headerTitle: header.headerTitle,
             items: header.items.map(item => this.generateLink(item))
@@ -99,12 +100,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.securityApi
       .getLoggedInTrigger()
-      .pipe(
-        flatMap(() => {
-          return this.userApi.getMyAccount();
-        }),
-        takeUntil(this.unsubscribe)
-      )
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        () => this.updateUser(),
+        err => {}
+      );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
+  /**
+   * Update header user profile
+   */
+  private updateUser() {
+    this.userApi
+      .getMyAccount()
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (user: User) => {
           this.user = user;
@@ -123,11 +137,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       );
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
-
+  /**
+   * Convert header item into a menulink object
+   * @param item Item to convert
+   */
   private generateLink(item): MenuLink {
     return {
       kind: "MenuLink",
