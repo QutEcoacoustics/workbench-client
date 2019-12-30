@@ -49,7 +49,6 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         (cards: List<Card>) => {
-          console.log("Cards: ", cards);
           this.projectList = cards;
         },
         (err: APIErrorDetails) => {

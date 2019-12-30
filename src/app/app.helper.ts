@@ -48,9 +48,7 @@ export const validationMessages = [
 ];
 
 export function appInitializerFn(appConfig: AppConfigService) {
-  return () => {
-    return appConfig.loadAppConfig();
-  };
+  return () => appConfig.loadAppConfig();
 }
 
 export const providers = [

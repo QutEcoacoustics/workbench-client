@@ -431,7 +431,7 @@ describe("SecurityService", () => {
   }));
 
   // TODO Implement the following tests
-  xit("getLoggedInTrigger should return false initially", fakeAsync(() => {
+  xit("getLoggedInTrigger should be a behaviorSubject", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service.getLoggedInTrigger().subscribe(loggedIn => {
       expect(loggedIn).toBeFalsy();
