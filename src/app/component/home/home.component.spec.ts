@@ -10,7 +10,6 @@ import {
   tick
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { List } from "immutable";
 import { BehaviorSubject, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
 import { testBawServices } from "src/app/app.helper";
@@ -315,5 +314,31 @@ describe("HomeComponent", () => {
     expect(button.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       "/projects"
     );
+  }));
+
+  it("should request 3 projects", fakeAsync(() => {
+    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+      return new BehaviorSubject(null);
+    });
+    spyOn(projectApi, "getFilteredProjects").and.callFake(params => {
+      expect(params).toEqual({ items: 3 });
+      const subject = new Subject<Project[]>();
+
+      setTimeout(() => {
+        subject.next([]);
+      }, 50);
+
+      return subject;
+    });
+
+    tick(100);
+    fixture.detectChanges();
+
+    const req = httpMock.expectOne(
+      config.getConfig().environment.cmsRoot + "/home.html"
+    );
+    req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    flush();
+    fixture.detectChanges();
   }));
 });
