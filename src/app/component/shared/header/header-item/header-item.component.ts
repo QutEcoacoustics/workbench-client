@@ -17,8 +17,8 @@ import {
       <ng-container *ngIf="isInternalRoute(link)">
         <a
           class="nav-link"
-          [routerLink]="link.route.toString()"
           routerLinkActive="active"
+          [routerLink]="link.route.toString()"
         >
           {{ link.label }}
         </a>
@@ -33,7 +33,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderItemComponent implements OnInit {
-  @Input() active: boolean;
   @Input() link: NavigableMenuItem;
 
   isInternalRoute = isInternalRoute;

@@ -40,5 +40,31 @@ describe("HeaderComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  // TODO Add unit tests
+  xit("should display login/register links", () => {});
+
+  xit("should display profile on logged in", () => {});
+
+  xit("should allow logout", () => {});
+
+  xit("should display login/register after logout", () => {});
+
+  xit("should create header links from external config", () => {});
+
+  xit("should create home link", () => {});
+
+  xit("should create projects link", () => {});
+
+  xit("should create contact us link", () => {});
+
+  xit("should create brand name link", () => {});
+
+  xit("brand name link should link to home page", () => {});
+
+  xit("should collapse at bootstrap md size", () => {});
+
+  xit("should open collapsed header on click", () => {});
+
+  xit("should close opened header on click", () => {});
+
+  xit("should close opened header on navigation", () => {});
 });

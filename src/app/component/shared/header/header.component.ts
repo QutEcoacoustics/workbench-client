@@ -66,16 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
-      ...this.config.values.content.map(header => {
-        if (!isHeaderLink(header)) {
-          return {
-            headerTitle: header.headerTitle,
-            items: header.items.map(item => this.generateLink(item))
-          } as HeaderDropDownConvertedLink;
-        } else {
-          return this.generateLink(header);
-        }
-      }),
+      ...this.retrieveHeaderLinks(),
       contactUsMenuItem
     ]);
 
@@ -102,6 +93,59 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  /**
+   * Check if navbar link is active
+   * @param link Navbar link
+   * @returns True if navbar is active
+   */
+  isActive(link: string) {
+    return this.activeLink.toLowerCase() === link.toLowerCase();
+  }
+
+  /**
+   * Toggle the collapse of the navbar
+   * @param setState Set the state of the navbar
+   */
+  toggleCollapse(setState?: boolean) {
+    if (setState) {
+      this.collapsed = setState;
+    } else {
+      this.collapsed = !this.collapsed;
+    }
+  }
+
+  /**
+   * Logout user
+   * TODO Handle error by giving user a warning
+   */
+  logout() {
+    this.securityApi
+      .signOut()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        error: () => {},
+        complete: () => {
+          this.router.navigate([""]);
+        }
+      });
+  }
+
+  /**
+   * Retrieve header links from app config
+   */
+  private retrieveHeaderLinks() {
+    return this.config.values.content.map(header => {
+      if (!isHeaderLink(header)) {
+        return {
+          headerTitle: header.headerTitle,
+          items: header.items.map(item => this.generateLink(item))
+        } as HeaderDropDownConvertedLink;
+      } else {
+        return this.generateLink(header);
+      }
+    });
   }
 
   /**
@@ -133,56 +177,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * Convert header item into a menulink object
    * @param item Item to convert
    */
-  private generateLink(item): MenuLink {
+  private generateLink(item: any): MenuLink {
     return {
       kind: "MenuLink",
       label: item.title,
       uri: item.url
     } as MenuLink;
-  }
-
-  /**
-   * Check if navbar link is active
-   * @param link Navbar link
-   * @returns True if navbar is active
-   */
-  isActive(link: string) {
-    return this.activeLink.toLowerCase() === link.toLowerCase();
-  }
-
-  /**
-   * Toggle the collapse of the navbar
-   * @param setState Set the state of the navbar
-   */
-  toggleCollapse(setState?: boolean) {
-    if (setState) {
-      this.collapsed = setState;
-    } else {
-      this.collapsed = !this.collapsed;
-    }
-  }
-
-  /**
-   * Toggle the collapse of a dropdown element
-   * @param el Dropdown element
-   */
-  toggleDropdown(el: HTMLAnchorElement) {
-    el.classList.toggle("show");
-  }
-
-  /**
-   * Logout user
-   * TODO Handle error by giving user a warning
-   */
-  logout() {
-    this.securityApi
-      .signOut()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        error: () => {},
-        complete: () => {
-          this.router.navigate([""]);
-        }
-      });
   }
 }

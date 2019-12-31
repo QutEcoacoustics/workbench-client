@@ -27,8 +27,8 @@ import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-con
           <ng-container *ngIf="isInternalRoute(link)">
             <a
               ngbDropdownItem
-              routerLink="{{ link.route.toString() }}"
               routerLinkActive="active"
+              [routerLink]="link.route.toString()"
             >
               {{ link.label }}
             </a>
