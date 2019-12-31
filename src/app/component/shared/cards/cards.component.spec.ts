@@ -28,6 +28,13 @@ describe("CardsComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  it("should handle no cards", () => {
+    fixture.detectChanges();
+
+    const cards = compiled.nativeElement.querySelectorAll("app-card");
+    expect(cards.length).toBe(0);
+  });
+
   it("should create single card", () => {
     component.cards = List([{ title: "title" }]);
     fixture.detectChanges();

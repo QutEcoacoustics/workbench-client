@@ -72,6 +72,52 @@ describe("ActionMenuComponent", () => {
     );
   });
 
+  it("should handle default category", () => {
+    class MockActivatedRoute {
+      private route = StrongRoute.Base.add("/");
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(ActionMenuComponent, {
+          self: {
+            kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
+            route: this.route
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [ActionMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(ActionMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    const title = fixture.nativeElement.querySelector("h6");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
+    expect(title).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(title.innerText.trim()).toBe("HOME");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,home"
+    );
+  });
+
   it("should handle no links", () => {
     class MockActivatedRoute {
       private route = StrongRoute.Base.add("/");
@@ -93,6 +139,50 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [ActionMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(ActionMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(1);
+  });
+
+  it("should handle missing actions", () => {
+    class MockActivatedRoute {
+      private route = StrongRoute.Base.add("/");
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(ActionMenuComponent, {
+          self: {
+            kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
+            route: this.route
+          },
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.route
+          },
+          menus: {
+            actions: undefined,
             links: List<NavigableMenuItem>([])
           }
         } as PageInfoInterface)
