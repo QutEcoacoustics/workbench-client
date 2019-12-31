@@ -61,38 +61,41 @@ export class User implements UserInterface {
     this.rolesMaskNames = user.rolesMaskNames;
 
     this.imageUrls = user.imageUrls
-      ? user.imageUrls.map(image => {
-          image.url = `/assets/${image.url}`;
-          return image;
+      ? user.imageUrls.map(imageUrl => {
+          // Default values from API need to have /assets prepended
+          if (imageUrl.url.charAt(0) === "/") {
+            imageUrl.url = "/assets" + imageUrl.url;
+          }
+          return imageUrl;
         })
       : [
           {
             size: "extralarge",
-            url: "/images/user/user_span4.png",
+            url: "/assets/images/user/user_span4.png",
             width: 300,
             height: 300
           },
           {
             size: "large",
-            url: "/images/user/user_span3.png",
+            url: "/assets/images/user/user_span3.png",
             width: 220,
             height: 220
           },
           {
             size: "medium",
-            url: "/images/user/user_span2.png",
+            url: "/assets/images/user/user_span2.png",
             width: 140,
             height: 140
           },
           {
             size: "small",
-            url: "/images/user/user_span1.png",
+            url: "/assets/images/user/user_span1.png",
             width: 60,
             height: 60
           },
           {
             size: "tiny",
-            url: "/images/user/user_spanhalf.png",
+            url: "/assets/images/user/user_spanhalf.png",
             width: 30,
             height: 30
           }
@@ -122,11 +125,11 @@ export class User implements UserInterface {
    * @returns Image URL
    */
   getImage(size: ImageSizes): string {
-    this.imageUrls.forEach(imageUrl => {
+    for (const imageUrl of this.imageUrls) {
       if (imageUrl.size === size) {
         return imageUrl.url;
       }
-    });
+    }
 
     return "/assets/images/user/user_span4.png";
   }

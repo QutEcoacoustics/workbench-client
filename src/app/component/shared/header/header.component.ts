@@ -127,7 +127,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe({
         error: () => {},
         complete: () => {
-          this.router.navigate([""]);
+          this.router.navigate([homeMenuItem.route.toString()]);
         }
       });
   }
@@ -152,25 +152,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * Update header user profile
    */
   private updateUser() {
-    this.userApi
-      .getMyAccount()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-
-          // Find the small icon for the user
-          if (this.user) {
+    if (this.securityApi.isLoggedIn()) {
+      this.userApi
+        .getMyAccount()
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe(
+          (user: User) => {
+            this.user = user;
             this.userImage = this.user.getImage(ImageSizes.small);
+            this.ref.detectChanges();
+          },
+          (err: APIErrorDetails) => {
+            this.user = null;
+            this.ref.detectChanges();
           }
-
-          this.ref.detectChanges();
-        },
-        (err: APIErrorDetails) => {
-          this.user = null;
-          this.ref.detectChanges();
-        }
-      );
+        );
+    } else {
+      this.user = null;
+      this.ref.detectChanges();
+    }
   }
 
   /**

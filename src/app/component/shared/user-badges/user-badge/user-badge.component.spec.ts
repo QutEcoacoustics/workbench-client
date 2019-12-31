@@ -164,7 +164,7 @@ describe("UserBadgeComponent", () => {
     ).toBe("/user_accounts/1");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/user/user_span4.png`
+      `http://${window.location.host}/assets/images/user/user_span1.png`
     );
     expect(image.alt).toBe("custom username profile picture");
   });
@@ -286,7 +286,7 @@ describe("UserBadgeComponent", () => {
     ).toBe("/user_accounts/1");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/user/user_span4.png`
+      `http://${window.location.host}/assets/images/user/user_span1.png`
     );
     expect(image.alt).toBe("custom username 1 profile picture");
 
@@ -300,7 +300,7 @@ describe("UserBadgeComponent", () => {
     ).toBe("/user_accounts/2");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/user/user_span4.png`
+      `http://${window.location.host}/assets/images/user/user_span1.png`
     );
     expect(image.alt).toBe("custom username 2 profile picture");
   });
