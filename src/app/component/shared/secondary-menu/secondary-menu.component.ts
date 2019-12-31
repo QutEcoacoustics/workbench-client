@@ -53,10 +53,10 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
         }
 
         // with any links from route
-        const links = page?.menus?.links
+        const links = page.menus?.links
           ? page.menus.links
           : List<NavigableMenuItem>();
-        const linksWidget = page?.menus?.actions
+        const linksWidget = page.menus?.linksWidget
           ? page.menus.linksWidget
           : null;
 
@@ -66,11 +66,6 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
           List<MenuRoute>(parentMenuRoutes),
           current
         );
-
-        if (!links.isEmpty) {
-          console.log("Links menu found");
-          console.log(links);
-        }
 
         this.contextLinks = allLinks;
         this.linksWidget = linksWidget;

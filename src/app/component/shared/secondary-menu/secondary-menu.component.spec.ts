@@ -69,6 +69,48 @@ describe("SecondaryMenuComponent", () => {
     expect(title.innerText.trim()).toBe("MENU");
   });
 
+  it("should handle no links", () => {
+    class MockActivatedRoute {
+      private route = StrongRoute.Base.add("/");
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: {
+            kind: "MenuRoute",
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
+            route: this.route
+          },
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.route
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus menu title, minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(defaultLinks.count() + 2 - 2);
+  });
+
   it("should handle default links", () => {
     class MockActivatedRoute {
       private route = StrongRoute.Base.add("/");
@@ -634,6 +676,227 @@ describe("SecondaryMenuComponent", () => {
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
       "fas,tags"
+    );
+  });
+
+  it("should handle self link with parent links", () => {
+    class MockActivatedRoute {
+      private parentRoute = StrongRoute.Base.add("home");
+      private childRoute = this.parentRoute.add("house");
+      private parentLink = {
+        kind: "MenuRoute",
+        label: "ZZZCustom Label", // Force to be last link
+        icon: ["fas", "question-square"],
+        tooltip: () => "Custom Tooltip 1",
+        route: this.parentRoute
+      } as MenuRoute;
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: {
+            kind: "MenuRoute",
+            label: "ZZZZCustom Label", // Force to be last link
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip 2",
+            route: this.childRoute,
+            parent: this.parentLink
+          },
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.parentRoute
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link and parent, plus menu title,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
+
+    let item = menuElements[defaultLinks.count() + 3 - 2 - 2].querySelector(
+      "app-menu-internal-link a"
+    );
+    expect(item).toBeTruthy();
+
+    let icon = item.querySelector("fa-icon");
+    let label = item.querySelector("#label");
+
+    expect(label).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "Custom Tooltip 1"
+    );
+    expect(label.innerText.trim()).toBe("ZZZCustom Label");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,question-square"
+    );
+
+    item = menuElements[defaultLinks.count() + 3 - 2 - 1].querySelector(
+      "app-menu-internal-link a"
+    );
+    expect(item).toBeTruthy();
+
+    icon = item.querySelector("fa-icon");
+    label = item.querySelector("#label");
+
+    expect(label).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "Custom Tooltip 2"
+    );
+    expect(label.innerText.trim()).toBe("ZZZZCustom Label");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,question-circle"
+    );
+  });
+
+  it("should handle self link with grand-parent link", () => {
+    class MockActivatedRoute {
+      private grandParentRoute = StrongRoute.Base.add("home");
+      private parentRoute = this.grandParentRoute.add("house");
+      private childRoute = this.parentRoute.add("room");
+      private grandParentLink = {
+        kind: "MenuRoute",
+        label: "ZZZCustom Label", // Force to be last link
+        icon: ["fas", "tag"],
+        tooltip: () => "Custom Tooltip 1",
+        route: this.parentRoute
+      } as MenuRoute;
+      private parentLink = {
+        kind: "MenuRoute",
+        label: "ZZZZCustom Label", // Force to be last link
+        icon: ["fas", "question-square"],
+        tooltip: () => "Custom Tooltip 2",
+        route: this.parentRoute,
+        parent: this.grandParentLink
+      } as MenuRoute;
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: {
+            kind: "MenuRoute",
+            label: "ZZZZZCustom Label", // Force to be last link
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip 3",
+            route: this.childRoute,
+            parent: this.parentLink
+          },
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.parentRoute
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link and parent and grandparent, plus menu title,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(defaultLinks.count() + 4 - 2);
+
+    let item = menuElements[defaultLinks.count() + 4 - 2 - 3].querySelector(
+      "app-menu-internal-link a"
+    );
+    expect(item).toBeTruthy();
+
+    let icon = item.querySelector("fa-icon");
+    let label = item.querySelector("#label");
+
+    expect(label).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "Custom Tooltip 1"
+    );
+    expect(label.innerText.trim()).toBe("ZZZCustom Label");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,tag"
+    );
+
+    item = menuElements[defaultLinks.count() + 4 - 2 - 2].querySelector(
+      "app-menu-internal-link a"
+    );
+    expect(item).toBeTruthy();
+
+    icon = item.querySelector("fa-icon");
+    label = item.querySelector("#label");
+
+    expect(label).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "Custom Tooltip 2"
+    );
+    expect(label.innerText.trim()).toBe("ZZZZCustom Label");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,question-square"
+    );
+
+    item = menuElements[defaultLinks.count() + 4 - 2 - 1].querySelector(
+      "app-menu-internal-link a"
+    );
+    expect(item).toBeTruthy();
+
+    icon = item.querySelector("fa-icon");
+    label = item.querySelector("#label");
+
+    expect(label).toBeTruthy();
+    expect(icon).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(item.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "Custom Tooltip 3"
+    );
+    expect(label.innerText.trim()).toBe("ZZZZZCustom Label");
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+      "fas,question-circle"
     );
   });
 });
