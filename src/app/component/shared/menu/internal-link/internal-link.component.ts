@@ -39,16 +39,7 @@ export class MenuInternalLinkComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    // Replace attributes in route path (eg. /projects/:projectId => /projects/512)
-    this.linkRoute = this.link.route.toString();
-    for (const paramKey in this.linkParams) {
-      this.linkRoute = this.linkRoute.replace(
-        ":" + paramKey,
-        this.linkParams[paramKey]
-      );
-    }
-
-    // Determine if link is active
+    this.linkRoute = this.link.route.format(this.linkParams);
     this.active = this.linkRoute === window.location.pathname;
   }
 }
