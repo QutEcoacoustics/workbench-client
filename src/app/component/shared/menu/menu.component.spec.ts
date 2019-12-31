@@ -137,13 +137,12 @@ describe("MenuComponent", () => {
   it("should create internal link", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home")
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -152,13 +151,12 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "action-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "left";
     internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
@@ -184,13 +182,12 @@ describe("MenuComponent", () => {
     );
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: user => `${user.userName} tooltip`,
         route: StrongRoute.Base.add("home")
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -199,13 +196,12 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "action-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: user => `${user.userName} tooltip`,
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "left";
     internalLinkComponent.tooltip = "username tooltip";
     internalLinkFixture.detectChanges();
@@ -221,22 +217,20 @@ describe("MenuComponent", () => {
   });
 
   it("should create multiple internal links", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 2, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -282,13 +276,12 @@ describe("MenuComponent", () => {
   it("should create external link", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
+      MenuLink({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         uri: "http://brokenlink/"
-      } as MenuLink
+      })
     ]);
     fixture.detectChanges();
 
@@ -297,13 +290,12 @@ describe("MenuComponent", () => {
     );
     const externalLinkComponent = externalLinkFixture.componentInstance;
     externalLinkComponent.id = "action-tooltip-0";
-    externalLinkComponent.link = {
-      kind: "MenuLink",
+    externalLinkComponent.link = MenuLink({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/"
-    } as MenuLink;
+    });
     externalLinkComponent.placement = "left";
     externalLinkComponent.tooltip = "tooltip";
     externalLinkFixture.detectChanges();
@@ -329,13 +321,12 @@ describe("MenuComponent", () => {
     );
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
+      MenuLink({
         label: "label",
         icon: ["fas", "home"],
         tooltip: user => `${user.userName} tooltip`,
         uri: "http://brokenlink/"
-      } as MenuLink
+      })
     ]);
     fixture.detectChanges();
 
@@ -344,13 +335,12 @@ describe("MenuComponent", () => {
     );
     const externalLinkComponent = externalLinkFixture.componentInstance;
     externalLinkComponent.id = "action-tooltip-0";
-    externalLinkComponent.link = {
-      kind: "MenuLink",
+    externalLinkComponent.link = MenuLink({
       label: "label",
       icon: ["fas", "home"],
       tooltip: user => `${user.userName} tooltip`,
       uri: "http://brokenlink/"
-    } as MenuLink;
+    });
     externalLinkComponent.placement = "left";
     externalLinkComponent.tooltip = "username tooltip";
     externalLinkFixture.detectChanges();
@@ -366,22 +356,20 @@ describe("MenuComponent", () => {
   });
 
   it("should create multiple external links", () => {
-    const externalLink1Obj = {
-      kind: "MenuLink",
+    const externalLink1Obj = MenuLink({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
       order: { priority: 1, indentation: 0 }
-    } as MenuLink;
-    const externalLink2Obj = {
-      kind: "MenuLink",
+    });
+    const externalLink2Obj = MenuLink({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
       order: { priority: 2, indentation: 0 }
-    } as MenuLink;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([externalLink1Obj, externalLink2Obj]);
@@ -427,26 +415,24 @@ describe("MenuComponent", () => {
   it("should create action button", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuAction",
+      MenuAction({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         action: () => {}
-      } as MenuAction
+      })
     ]);
     fixture.detectChanges();
 
     const buttonFixture = TestBed.createComponent(MenuButtonComponent);
     const buttonComponent = buttonFixture.componentInstance;
     buttonComponent.id = "action-tooltip-0";
-    buttonComponent.link = {
-      kind: "MenuAction",
+    buttonComponent.link = MenuAction({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {}
-    } as MenuAction;
+    });
     buttonComponent.placement = "left";
     buttonComponent.tooltip = "tooltip";
     buttonFixture.detectChanges();
@@ -472,26 +458,24 @@ describe("MenuComponent", () => {
     );
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuAction",
+      MenuAction({
         label: "label",
         icon: ["fas", "home"],
         tooltip: user => `${user.userName} tooltip`,
         action: () => {}
-      } as MenuAction
+      })
     ]);
     fixture.detectChanges();
 
     const buttonFixture = TestBed.createComponent(MenuButtonComponent);
     const buttonComponent = buttonFixture.componentInstance;
     buttonComponent.id = "action-tooltip-0";
-    buttonComponent.link = {
-      kind: "MenuAction",
+    buttonComponent.link = MenuAction({
       label: "label",
       icon: ["fas", "home"],
       tooltip: user => `${user.userName} tooltip`,
       action: () => {}
-    } as MenuAction;
+    });
     buttonComponent.placement = "left";
     buttonComponent.tooltip = "username tooltip";
     buttonFixture.detectChanges();
@@ -507,22 +491,20 @@ describe("MenuComponent", () => {
   });
 
   it("should create multiple action buttons", () => {
-    const button1Obj = {
-      kind: "MenuAction",
+    const button1Obj = MenuAction({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
       order: { priority: 1, indentation: 0 }
-    } as MenuAction;
-    const button2Obj = {
-      kind: "MenuAction",
+    });
+    const button2Obj = MenuAction({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
       order: { priority: 2, indentation: 0 }
-    } as MenuAction;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([button1Obj, button2Obj]);
@@ -562,30 +544,27 @@ describe("MenuComponent", () => {
   });
 
   it("should create mixed links", () => {
-    const buttonObj = {
-      kind: "MenuAction",
+    const buttonObj = MenuAction({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
       order: { priority: 1, indentation: 0 }
-    } as MenuAction;
-    const externalLinkObj = {
-      kind: "MenuLink",
+    });
+    const externalLinkObj = MenuLink({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
       order: { priority: 2, indentation: 0 }
-    } as MenuLink;
-    const internalLinkObj = {
-      kind: "MenuRoute",
+    });
+    const internalLinkObj = MenuRoute({
       label: "label c",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 3, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
@@ -671,13 +650,12 @@ describe("MenuComponent", () => {
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -686,13 +664,12 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "action-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "left";
     internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
@@ -720,26 +697,24 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "action-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: testRoute
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "left";
     internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -757,22 +732,20 @@ describe("MenuComponent", () => {
   }));
 
   it("should order links by priority on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 2, indentation: 0 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -817,22 +790,20 @@ describe("MenuComponent", () => {
   });
 
   it("should order links by priority on action menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 2, indentation: 0 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -877,20 +848,18 @@ describe("MenuComponent", () => {
   });
 
   it("should order links by alphabetical order on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house")
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -935,20 +904,18 @@ describe("MenuComponent", () => {
   });
 
   it("should not order links by alphabetical order on action menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house")
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -993,21 +960,19 @@ describe("MenuComponent", () => {
   });
 
   it("should order links with ordered link first on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 2, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1052,21 +1017,19 @@ describe("MenuComponent", () => {
   });
 
   it("should not order links with ordered link first on action menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 2, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1111,22 +1074,20 @@ describe("MenuComponent", () => {
   });
 
   it("should not order links with duplicate priority and indentation alphabetically on action menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1171,22 +1132,20 @@ describe("MenuComponent", () => {
   });
 
   it("should order links with duplicate priority and indentation alphabetically on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1231,22 +1190,20 @@ describe("MenuComponent", () => {
   });
 
   it("should order links with duplicate priority by indentation on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 1 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1291,22 +1248,20 @@ describe("MenuComponent", () => {
   });
 
   it("should not order links with duplicate priority by indentation on action menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 1 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1351,22 +1306,20 @@ describe("MenuComponent", () => {
   });
 
   it("should order sub-links on secondary menu", () => {
-    const internalLink1Obj = {
-      kind: "MenuRoute",
+    const internalLink1Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 2 }
-    } as MenuRoute;
-    const internalLink2Obj = {
-      kind: "MenuRoute",
+    });
+    const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
       order: { priority: 1, indentation: 1 }
-    } as MenuRoute;
+    });
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
@@ -1413,22 +1366,20 @@ describe("MenuComponent", () => {
   it("should filter duplicate link labels on action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         order: { priority: 2, indentation: 0 }
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1437,14 +1388,13 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
     internalLinkComponent1.id = "action-tooltip-0";
-    internalLinkComponent1.link = {
-      kind: "MenuRoute",
+    internalLinkComponent1.link = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
     internalLinkComponent1.placement = "left";
     internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
@@ -1464,22 +1414,20 @@ describe("MenuComponent", () => {
   it("should filter duplicate link labels on secondary menu", () => {
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         order: { priority: 2, indentation: 0 }
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1488,14 +1436,13 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
     internalLinkComponent1.id = "secondary-tooltip-0";
-    internalLinkComponent1.link = {
-      kind: "MenuRoute",
+    internalLinkComponent1.link = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
     internalLinkComponent1.placement = "right";
     internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
@@ -1515,23 +1462,21 @@ describe("MenuComponent", () => {
   it("should filter links with failing predicate on action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         order: { priority: 2, indentation: 0 },
         predicate: () => false
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1540,14 +1485,13 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
     internalLinkComponent1.id = "action-tooltip-0";
-    internalLinkComponent1.link = {
-      kind: "MenuRoute",
+    internalLinkComponent1.link = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
     internalLinkComponent1.placement = "left";
     internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
@@ -1567,23 +1511,21 @@ describe("MenuComponent", () => {
   it("should filter links with failing predicate on secondary menu", () => {
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         order: { priority: 2, indentation: 0 },
         predicate: () => false
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1592,14 +1534,13 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent1 = internalLinkFixture1.componentInstance;
     internalLinkComponent1.id = "secondary-tooltip-0";
-    internalLinkComponent1.link = {
-      kind: "MenuRoute",
+    internalLinkComponent1.link = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       order: { priority: 1, indentation: 0 }
-    } as MenuRoute;
+    });
     internalLinkComponent1.placement = "right";
     internalLinkComponent1.tooltip = "tooltip";
     internalLinkFixture1.detectChanges();
@@ -1622,16 +1563,14 @@ describe("MenuComponent", () => {
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
@@ -1641,7 +1580,7 @@ describe("MenuComponent", () => {
           expect(user).toBeFalsy();
           return !user;
         }
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1657,16 +1596,14 @@ describe("MenuComponent", () => {
 
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
@@ -1676,7 +1613,7 @@ describe("MenuComponent", () => {
           expect(user).toBeFalsy();
           return !user;
         }
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1698,16 +1635,14 @@ describe("MenuComponent", () => {
 
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         order: { priority: 1, indentation: 0 }
-      } as MenuRoute,
-      {
-        kind: "MenuRoute",
+      }),
+      MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
@@ -1722,7 +1657,7 @@ describe("MenuComponent", () => {
             user.userName === "username"
           );
         }
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1735,13 +1670,12 @@ describe("MenuComponent", () => {
   it("should handle internal link action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home")
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1750,13 +1684,12 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "action-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "left";
     internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
@@ -1774,13 +1707,12 @@ describe("MenuComponent", () => {
   it("should handle internal link secondary menu", () => {
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuRoute",
+      MenuRoute({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home")
-      } as MenuRoute
+      })
     ]);
     fixture.detectChanges();
 
@@ -1789,13 +1721,12 @@ describe("MenuComponent", () => {
     );
     const internalLinkComponent = internalLinkFixture.componentInstance;
     internalLinkComponent.id = "secondary-tooltip-0";
-    internalLinkComponent.link = {
-      kind: "MenuRoute",
+    internalLinkComponent.link = MenuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     internalLinkComponent.placement = "right";
     internalLinkComponent.tooltip = "tooltip";
     internalLinkFixture.detectChanges();
@@ -1814,13 +1745,12 @@ describe("MenuComponent", () => {
   it("should handle external link action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
+      MenuLink({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         uri: "http://brokenlink/"
-      } as MenuLink
+      })
     ]);
     fixture.detectChanges();
 
@@ -1829,13 +1759,12 @@ describe("MenuComponent", () => {
     );
     const externalLinkComponent = externalLinkFixture.componentInstance;
     externalLinkComponent.id = "action-tooltip-0";
-    externalLinkComponent.link = {
-      kind: "MenuLink",
+    externalLinkComponent.link = MenuLink({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/"
-    } as MenuLink;
+    });
     externalLinkComponent.placement = "left";
     externalLinkComponent.tooltip = "tooltip";
     externalLinkFixture.detectChanges();
@@ -1853,13 +1782,12 @@ describe("MenuComponent", () => {
   it("should handle external link secondary menu", () => {
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuLink",
+      MenuLink({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         uri: "http://brokenlink/"
-      } as MenuLink
+      })
     ]);
     fixture.detectChanges();
 
@@ -1868,13 +1796,12 @@ describe("MenuComponent", () => {
     );
     const externalLinkComponent = externalLinkFixture.componentInstance;
     externalLinkComponent.id = "secondary-tooltip-0";
-    externalLinkComponent.link = {
-      kind: "MenuLink",
+    externalLinkComponent.link = MenuLink({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/"
-    } as MenuLink;
+    });
     externalLinkComponent.placement = "right";
     externalLinkComponent.tooltip = "tooltip";
     externalLinkFixture.detectChanges();
@@ -1892,26 +1819,24 @@ describe("MenuComponent", () => {
   it("should create action button action menu", () => {
     component.menuType = "action";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuAction",
+      MenuAction({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         action: () => {}
-      } as MenuAction
+      })
     ]);
     fixture.detectChanges();
 
     const buttonFixture = TestBed.createComponent(MenuButtonComponent);
     const buttonComponent = buttonFixture.componentInstance;
     buttonComponent.id = "action-tooltip-0";
-    buttonComponent.link = {
-      kind: "MenuAction",
+    buttonComponent.link = MenuAction({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {}
-    } as MenuAction;
+    });
     buttonComponent.placement = "left";
     buttonComponent.tooltip = "tooltip";
     buttonFixture.detectChanges();
@@ -1929,26 +1854,24 @@ describe("MenuComponent", () => {
   it("should create action button secondary menu", () => {
     component.menuType = "secondary";
     component.links = List<AnyMenuItem>([
-      {
-        kind: "MenuAction",
+      MenuAction({
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         action: () => {}
-      } as MenuAction
+      })
     ]);
     fixture.detectChanges();
 
     const buttonFixture = TestBed.createComponent(MenuButtonComponent);
     const buttonComponent = buttonFixture.componentInstance;
     buttonComponent.id = "secondary-tooltip-0";
-    buttonComponent.link = {
-      kind: "MenuAction",
+    buttonComponent.link = MenuAction({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {}
-    } as MenuAction;
+    });
     buttonComponent.placement = "right";
     buttonComponent.tooltip = "tooltip";
     buttonFixture.detectChanges();

@@ -23,7 +23,14 @@ describe("HeaderDropdownComponent", () => {
   it("should create", () => {
     component.links = {
       headerTitle: "test",
-      items: [{ kind: "MenuLink", label: "label", uri: "uri" } as MenuLink]
+      items: [
+        MenuLink({
+          label: "label",
+          uri: "uri",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip"
+        })
+      ]
     };
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -32,7 +39,14 @@ describe("HeaderDropdownComponent", () => {
   it("should create header title", () => {
     component.links = {
       headerTitle: "Custom Title",
-      items: [{ kind: "MenuLink", label: "label", uri: "uri" } as MenuLink]
+      items: [
+        MenuLink({
+          label: "label",
+          uri: "uri",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip"
+        })
+      ]
     };
     fixture.detectChanges();
 
@@ -44,7 +58,14 @@ describe("HeaderDropdownComponent", () => {
   it("should default as inactive state", () => {
     component.links = {
       headerTitle: "test",
-      items: [{ kind: "MenuLink", label: "label", uri: "uri" } as MenuLink]
+      items: [
+        MenuLink({
+          label: "label",
+          uri: "uri",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip"
+        })
+      ]
     };
     fixture.detectChanges();
 
@@ -59,7 +80,14 @@ describe("HeaderDropdownComponent", () => {
   it("should handle active state", () => {
     component.links = {
       headerTitle: "test",
-      items: [{ kind: "MenuLink", label: "label", uri: "uri" } as MenuLink]
+      items: [
+        MenuLink({
+          label: "label",
+          uri: "uri",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip"
+        })
+      ]
     };
     component.active = true;
     fixture.detectChanges();
@@ -80,11 +108,12 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        {
-          kind: "MenuRoute",
+        MenuRoute({
           label: "Custom Label",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           route: StrongRoute.Base.add("home")
-        } as MenuRoute
+        })
       ]
     };
     fixture.detectChanges();
@@ -104,16 +133,18 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        {
-          kind: "MenuRoute",
+        MenuRoute({
           label: "Custom Label 1",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           route: StrongRoute.Base.add("home")
-        } as MenuRoute,
-        {
-          kind: "MenuRoute",
+        }),
+        MenuRoute({
           label: "Custom Label 2",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           route: StrongRoute.Base.add("house")
-        } as MenuRoute
+        })
       ]
     };
     fixture.detectChanges();
@@ -140,11 +171,12 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        {
-          kind: "MenuLink",
+        MenuLink({
           label: "Custom Label",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           uri: "http://brokenlink/"
-        } as MenuLink
+        })
       ]
     };
     fixture.detectChanges();
@@ -159,16 +191,18 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        {
-          kind: "MenuLink",
+        MenuLink({
           label: "Custom Label 1",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           uri: "http://brokenlink/1"
-        } as MenuLink,
-        {
-          kind: "MenuLink",
+        }),
+        MenuLink({
           label: "Custom Label 2",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           uri: "http://brokenlink/2"
-        } as MenuLink
+        })
       ]
     };
     fixture.detectChanges();
@@ -185,16 +219,18 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        {
-          kind: "MenuLink",
+        MenuLink({
           label: "Custom Label 1",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           uri: "http://brokenlink/1"
-        } as MenuLink,
-        {
-          kind: "MenuRoute",
+        }),
+        MenuRoute({
           label: "Custom Label 2",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
           route: StrongRoute.Base.add("house")
-        } as MenuRoute
+        })
       ]
     };
     fixture.detectChanges();

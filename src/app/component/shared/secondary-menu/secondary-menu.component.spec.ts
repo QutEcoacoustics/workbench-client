@@ -29,13 +29,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -76,13 +75,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -118,13 +116,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -164,13 +161,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "ZZZCustom Label", // Force to be last link
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -230,13 +226,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -245,13 +240,12 @@ describe("SecondaryMenuComponent", () => {
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "ZZZCustom Label", // Force to be last link
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip",
                 route: this.route
-              } as MenuRoute
+              })
             ])
           }
         } as PageInfoInterface)
@@ -305,13 +299,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -320,20 +313,18 @@ describe("SecondaryMenuComponent", () => {
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "ZZZCustom Label 1", // Force to be last link
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 route: this.route
-              } as MenuRoute,
-              {
-                kind: "MenuRoute",
+              }),
+              MenuRoute({
                 label: "ZZZCustom Label 2", // Force to be last link
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 route: this.route
-              } as MenuRoute
+              })
             ])
           }
         } as PageInfoInterface)
@@ -407,13 +398,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -422,13 +412,12 @@ describe("SecondaryMenuComponent", () => {
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([
-              {
-                kind: "MenuLink",
+              MenuLink({
                 label: "ZZZCustom Label", // Force to be last link
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip",
                 uri: "http://brokenlink/"
-              } as MenuLink
+              })
             ])
           }
         } as PageInfoInterface)
@@ -482,13 +471,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -497,20 +485,18 @@ describe("SecondaryMenuComponent", () => {
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([
-              {
-                kind: "MenuLink",
+              MenuLink({
                 label: "ZZZCustom Label 1", // Force to be last link
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 uri: "http://brokenlink/1"
-              } as MenuLink,
-              {
-                kind: "MenuLink",
+              }),
+              MenuLink({
                 label: "ZZZCustom Label 2", // Force to be last link
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 uri: "http://brokenlink/2"
-              } as MenuLink
+              })
             ])
           }
         } as PageInfoInterface)
@@ -584,13 +570,12 @@ describe("SecondaryMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -599,20 +584,18 @@ describe("SecondaryMenuComponent", () => {
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "ZZZCustom Label 1", // Force to be last link
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 route: this.route
-              } as MenuRoute,
-              {
-                kind: "MenuLink",
+              }),
+              MenuLink({
                 label: "ZZZCustom Label 2", // Force to be last link
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 uri: "http://brokenlink/2"
-              } as MenuLink
+              })
             ])
           }
         } as PageInfoInterface)
@@ -683,25 +666,23 @@ describe("SecondaryMenuComponent", () => {
     class MockActivatedRoute {
       private parentRoute = StrongRoute.Base.add("home");
       private childRoute = this.parentRoute.add("house");
-      private parentLink = {
-        kind: "MenuRoute",
+      private parentLink = MenuRoute({
         label: "ZZZCustom Label", // Force to be last link
         icon: ["fas", "question-square"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute
-      } as MenuRoute;
+      });
 
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "ZZZZCustom Label", // Force to be last link
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip 2",
             route: this.childRoute,
             parent: this.parentLink
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -780,33 +761,30 @@ describe("SecondaryMenuComponent", () => {
       private grandParentRoute = StrongRoute.Base.add("home");
       private parentRoute = this.grandParentRoute.add("house");
       private childRoute = this.parentRoute.add("room");
-      private grandParentLink = {
-        kind: "MenuRoute",
+      private grandParentLink = MenuRoute({
         label: "ZZZCustom Label", // Force to be last link
         icon: ["fas", "tag"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute
-      } as MenuRoute;
-      private parentLink = {
-        kind: "MenuRoute",
+      });
+      private parentLink = MenuRoute({
         label: "ZZZZCustom Label", // Force to be last link
         icon: ["fas", "question-square"],
         tooltip: () => "Custom Tooltip 2",
         route: this.parentRoute,
         parent: this.grandParentLink
-      } as MenuRoute;
+      });
 
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(SecondaryMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "ZZZZZCustom Label", // Force to be last link
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip 3",
             route: this.childRoute,
             parent: this.parentLink
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],

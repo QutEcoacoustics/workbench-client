@@ -28,13 +28,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -79,13 +78,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           menus: {
             actions: List<AnyMenuItem>([]),
             links: List<NavigableMenuItem>([])
@@ -125,13 +123,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -169,13 +166,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -213,13 +209,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -227,13 +222,12 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "Custom Label",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip",
                 route: this.route
-              } as MenuRoute
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -283,13 +277,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -297,20 +290,18 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "Custom Label 1",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 route: this.route
-              } as MenuRoute,
-              {
-                kind: "MenuRoute",
+              }),
+              MenuRoute({
                 label: "Custom Label 2",
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 route: this.route
-              } as MenuRoute
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -378,13 +369,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -392,13 +382,12 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuLink",
+              MenuLink({
                 label: "Custom Label",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip",
                 uri: "http://brokenlink/"
-              } as MenuLink
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -448,13 +437,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -462,20 +450,18 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuLink",
+              MenuLink({
                 label: "Custom Label 1",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 uri: "http://brokenlink/1"
-              } as MenuLink,
-              {
-                kind: "MenuLink",
+              }),
+              MenuLink({
                 label: "Custom Label 2",
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 uri: "http://brokenlink/2"
-              } as MenuLink
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -543,13 +529,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -557,13 +542,12 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuAction",
+              MenuAction({
                 label: "Custom Label",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip",
                 action: () => console.log("action")
-              } as MenuAction
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -613,13 +597,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -627,20 +610,18 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuAction",
+              MenuAction({
                 label: "Custom Label 1",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 action: () => console.log("action")
-              } as MenuAction,
-              {
-                kind: "MenuAction",
+              }),
+              MenuAction({
                 label: "Custom Label 2",
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 action: () => console.log("action")
-              } as MenuAction
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }
@@ -708,13 +689,12 @@ describe("ActionMenuComponent", () => {
       public params = new BehaviorSubject<any>({});
       public data = new BehaviorSubject<PageInfoInterface>(
         new PageInfo(ActionMenuComponent, {
-          self: {
-            kind: "MenuRoute",
+          self: MenuRoute({
             label: "Custom Label",
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route
-          },
+          }),
           category: {
             label: "Custom Category",
             icon: ["fas", "home"],
@@ -722,27 +702,24 @@ describe("ActionMenuComponent", () => {
           },
           menus: {
             actions: List<AnyMenuItem>([
-              {
-                kind: "MenuRoute",
+              MenuRoute({
                 label: "Custom Label 1",
                 icon: ["fas", "tag"],
                 tooltip: () => "Custom Tooltip 1",
                 route: this.route
-              } as MenuRoute,
-              {
-                kind: "MenuLink",
+              }),
+              MenuLink({
                 label: "Custom Label 2",
                 icon: ["fas", "tags"],
                 tooltip: () => "Custom Tooltip 2",
                 uri: "http://brokenlink/2"
-              } as MenuLink,
-              {
-                kind: "MenuAction",
+              }),
+              MenuAction({
                 label: "Custom Label 3",
                 icon: ["fas", "home"],
                 tooltip: () => "Custom Tooltip 3",
                 action: () => console.log("action")
-              } as MenuAction
+              })
             ]),
             links: List<NavigableMenuItem>([])
           }

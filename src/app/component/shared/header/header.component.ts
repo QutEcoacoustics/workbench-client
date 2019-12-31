@@ -178,10 +178,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * @param item Item to convert
    */
   private generateLink(item: any): MenuLink {
-    return {
-      kind: "MenuLink",
+    return MenuLink({
       label: item.title,
+      icon: ["fas", "home"],
+      tooltip: () => "UPDATE ME",
       uri: item.url
-    } as MenuLink;
+    });
   }
 }

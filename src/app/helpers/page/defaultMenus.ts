@@ -9,7 +9,10 @@ import {
   registerMenuItem
 } from "src/app/component/security/security.menus";
 import { statisticsMenuItem } from "src/app/component/statistics/statistics.menus";
-import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import {
+  MenuLink,
+  NavigableMenuItem
+} from "src/app/interfaces/menusInterfaces";
 
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
@@ -17,41 +20,37 @@ export const DefaultMenu = {
     loginMenuItem,
     registerMenuItem,
     myAccountMenuItem,
-    {
-      kind: "MenuLink",
+    MenuLink({
       icon: ["fas", "border-all"],
       label: "My Annotations",
       tooltip: () => "View my recent annotations",
       predicate: user => !!user,
       order: { priority: 3, indentation: 0 },
       uri: "REPLACE_ME"
-    },
+    }),
     projectsMenuItem,
-    {
-      kind: "MenuLink",
+    MenuLink({
       icon: ["fas", "server"],
       label: "Audio Analysis",
       tooltip: () => "View audio analysis jobs",
       order: { priority: 5, indentation: 0 },
       uri: "/audio_analysis"
-    },
-    {
-      kind: "MenuLink",
+    }),
+    MenuLink({
       icon: ["fas", "book"],
       label: "Library",
       tooltip: () => "Annotation library",
       order: { priority: 6, indentation: 0 },
       uri: "/library"
-    },
+    }),
     dataRequestMenuItem,
-    {
-      kind: "MenuLink",
+    MenuLink({
       icon: ["fas", "envelope"],
       label: "Send Audio",
       tooltip: () => "Send us audio recordings to upload",
       order: { priority: 8, indentation: 0 },
       uri: "/data_upload"
-    },
+    }),
     reportProblemMenuItem,
     statisticsMenuItem
   ]),

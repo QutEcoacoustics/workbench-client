@@ -26,11 +26,12 @@ describe("HeaderItemComponent", () => {
   });
 
   it("should handle internal link", () => {
-    component.link = {
-      kind: "MenuRoute",
+    component.link = MenuRoute({
       label: "Custom Label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     fixture.detectChanges();
 
     const links = fixture.nativeElement.querySelectorAll("a");
@@ -39,11 +40,12 @@ describe("HeaderItemComponent", () => {
   });
 
   it("internal link should have router link", () => {
-    component.link = {
-      kind: "MenuRoute",
+    component.link = MenuRoute({
       label: "Custom Label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
@@ -54,11 +56,12 @@ describe("HeaderItemComponent", () => {
   });
 
   it("internal link should have router link active attribute", () => {
-    component.link = {
-      kind: "MenuRoute",
+    component.link = MenuRoute({
       label: "Custom Label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home")
-    } as MenuRoute;
+    });
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
@@ -71,11 +74,12 @@ describe("HeaderItemComponent", () => {
   });
 
   it("should handle external link", () => {
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       label: "Custom Label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
       uri: "http://brokenlink/"
-    } as MenuLink;
+    });
     fixture.detectChanges();
 
     const links = fixture.nativeElement.querySelectorAll("a");

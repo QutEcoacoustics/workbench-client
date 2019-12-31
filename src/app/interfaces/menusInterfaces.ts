@@ -172,16 +172,6 @@ export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
 }
 
 /**
- * Determines if a menu item is a link (MenuLink | MenuRoute)
- * @param menuItem Menu item
- */
-export function isAnchor(
-  menuItem: AnyMenuItem
-): menuItem is MenuLink | MenuRoute {
-  return menuItem.kind === "MenuLink" || menuItem.kind === "MenuRoute";
-}
-
-/**
  * Determines if a menu item is part of the MenuItem interface
  * @param menuItem Menu item
  */

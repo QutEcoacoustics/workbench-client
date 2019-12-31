@@ -7,7 +7,7 @@ import { ItemInterface } from "src/app/component/shared/items/item/item.componen
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
@@ -25,38 +25,34 @@ import {
   menus: {
     actions: List<AnyMenuItem>([
       editMyAccountMenuItem,
-      {
-        kind: "MenuLink",
+      MenuLink({
         icon: ["fas", "globe-asia"],
         label: "My Projects",
         uri: "BROKEN LINK",
         tooltip: user => `Projects ${user.userName} can access`,
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "map-marker-alt"],
         label: "My Sites",
         uri: "BROKEN LINK",
         tooltip: user => `Sites ${user.userName} can access`,
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "bookmark"],
         label: "My Bookmarks",
         uri: "BROKEN LINK",
         tooltip: user => `Bookmarks created by ${user.userName}`,
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "bullseye"],
         label: "My Annotations",
         uri: "BROKEN LINK",
         tooltip: user => `Annotations created by ${user.userName}`,
         predicate: user => !!user
-      }
+      })
     ]),
     links: List()
   },
@@ -131,38 +127,34 @@ export class MyAccountProfileComponent extends PageComponent
   menus: {
     actions: List<AnyMenuItem>([
       editProfileMenuItem,
-      {
-        kind: "MenuLink",
+      MenuLink({
         icon: ["fas", "globe-asia"],
         label: "Their Projects",
         uri: "BROKEN LINK",
         tooltip: () => "Projects they can access",
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "map-marker-alt"],
         label: "Their Sites",
         uri: "BROKEN LINK",
         tooltip: () => "Sites they can access",
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "bookmark"],
         label: "Their Bookmarks",
         uri: "BROKEN LINK",
         tooltip: () => "Bookmarks created by them",
         predicate: user => !!user
-      },
-      {
-        kind: "MenuLink",
+      }),
+      MenuLink({
         icon: ["fas", "bullseye"],
         label: "Their Annotations",
         uri: "BROKEN LINK",
         tooltip: () => "Annotations created by them",
         predicate: user => !!user
-      }
+      })
     ]),
     links: List()
   },
