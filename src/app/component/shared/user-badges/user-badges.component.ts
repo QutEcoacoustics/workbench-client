@@ -17,6 +17,7 @@ import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { Badge } from "./user-badge/user-badge.component";
+import moment from "moment";
 
 @Component({
   selector: "app-user-badges",
@@ -121,19 +122,25 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
       return undefined;
     }
 
-    const now = new Date();
-    const yearDiff = now.getUTCFullYear() - time.getUTCFullYear();
-    const monthDiff = now.getUTCMonth() - time.getUTCMonth();
-    const dayDiff = now.getUTCDate() - time.getUTCDate();
+    return "Some time has passed";
 
-    if (yearDiff > 0) {
-      return `${yearDiff} year${yearDiff > 1 ? "s" : ""} ago`;
-    } else if (monthDiff > 0) {
-      return `${monthDiff} month${monthDiff > 1 ? "s" : ""} ago`;
-    } else if (dayDiff > 0) {
-      return `${dayDiff} day${dayDiff > 1 ? "s" : ""} ago`;
-    } else {
-      return "Less than a day ago";
-    }
+    // console.log("Now: ", moment.utc().toDate());
+    // console.log("Then: ", time.utc().toDate());
+
+    // const now = moment.utc().toDate();
+    // const then = time.utc().toDate();
+    // const yearDiff = now.getUTCFullYear() - then.getUTCFullYear();
+    // const monthDiff = now.getUTCMonth() - then.getUTCMonth();
+    // const dayDiff = now.getUTCDate() - then.getUTCDate();
+
+    // if (yearDiff > 0) {
+    //   return `${yearDiff} year${yearDiff > 1 ? "s" : ""} ago`;
+    // } else if (monthDiff > 0) {
+    //   return `${monthDiff} month${monthDiff > 1 ? "s" : ""} ago`;
+    // } else if (dayDiff > 0) {
+    //   return `${dayDiff} day${dayDiff > 1 ? "s" : ""} ago`;
+    // } else {
+    //   return "Less than a day ago";
+    // }
   }
 }

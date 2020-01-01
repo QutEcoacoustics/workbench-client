@@ -1,5 +1,3 @@
-import { AgmCoreModule } from "@agm/core";
-import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -36,8 +34,6 @@ export const sharedModules = [
   CommonModule,
   RouterModule,
   BrowserAnimationsModule,
-  AgmCoreModule,
-  AgmSnazzyInfoWindowModule,
   LoadingBarHttpClientModule,
   NgbModule,
   FontAwesomeModule,

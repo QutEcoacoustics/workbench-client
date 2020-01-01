@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
-import { MapComponent } from "../shared/map/map.component";
+import { MapModule } from "../shared/map/map.module";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
@@ -25,8 +25,9 @@ export const ProjectsComponents = [
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [ProjectsComponents, MapComponent],
+  declarations: [ProjectsComponents],
   imports: [
+    MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
     RouterModule.forChild(routes)

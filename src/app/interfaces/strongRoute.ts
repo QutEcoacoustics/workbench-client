@@ -139,6 +139,13 @@ export class StrongRoute {
   }
 
   /**
+   * Router representation of the route
+   */
+  toRoute(): string[] {
+    return this.full.map(x => x.name).filter(x => !!x);
+  }
+
+  /**
    * Route config
    */
   get routeConfig() {

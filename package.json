@@ -59,6 +59,7 @@
     "lodash.snakecase": "^4.1.1",
     "lodash.upperfirst": "^4.3.1",
     "marked": "^0.7.0",
+    "moment": "^2.24.0",
     "rxjs": "^6.5.3",
     "snazzy-info-window": "^1.1.1",
     "tslib": "^1.9.0",

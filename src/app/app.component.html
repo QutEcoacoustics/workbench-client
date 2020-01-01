@@ -7,13 +7,22 @@
       [ngClass]="{ container: menuLayout, 'container-fluid': !menuLayout }"
     >
       <div class="d-flex flex-wrap col p-0">
-        <div [ngClass]="{ secondary: menuLayout, hidden: !menuLayout }">
+        <div
+          id="secondary"
+          [ngClass]="{ secondary: menuLayout, hidden: !menuLayout }"
+        >
           <router-outlet name="secondary"></router-outlet>
         </div>
-        <div [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }">
+        <div
+          id="page"
+          [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }"
+        >
           <router-outlet></router-outlet>
         </div>
-        <div [ngClass]="{ action: menuLayout, hidden: !menuLayout }">
+        <div
+          id="action"
+          [ngClass]="{ action: menuLayout, hidden: !menuLayout }"
+        >
           <router-outlet name="action"></router-outlet>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 /**
  * BAW API ID
  */
