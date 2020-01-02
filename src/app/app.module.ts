@@ -6,12 +6,14 @@ import {
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
 import { forwardRef, Injectable, NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { providers, validationMessages } from "./app.helper";
+import { formlyRoot, providers } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
@@ -57,9 +59,10 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
     HttpClientModule,
     AgmCoreModule.forRoot(),
     AgmSnazzyInfoWindowModule,
-    FormlyModule.forRoot({
-      validationMessages
-    }),
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule.forRoot(formlyRoot),
+    FormlyBootstrapModule,
     SharedModule,
     SecurityModule,
     AboutModule,
