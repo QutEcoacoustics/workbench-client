@@ -8,8 +8,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { validationMessages } from "src/app/app.helper";
-import { FormComponent } from "./form.component";
+import { formlyRoot } from "src/app/app.helper";
+import { flattenFields, FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
 export const ButtonClickEvents = {
@@ -41,9 +41,7 @@ describe("FormComponent", () => {
         NgbModule,
         FormsModule,
         ReactiveFormsModule,
-        FormlyModule.forRoot({
-          validationMessages
-        }),
+        FormlyModule.forRoot(formlyRoot),
         FormlyBootstrapModule
       ],
       declarations: [FormComponent]
@@ -1088,5 +1086,113 @@ describe("FormComponent", () => {
     expect(inputs[1].required).toBe(false);
     expect(textarea).toBeTruthy();
     expect(textarea.required).toBe(true);
+  });
+
+  it("should flatten empty object", () => {
+    const model = {};
+    const output = flattenFields(model);
+
+    expect(output).toEqual(model);
+  });
+
+  it("should flatten string value object", () => {
+    const model = { key: "value" };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(model);
+  });
+
+  it("should flatten number value object", () => {
+    const model = { key: 42 };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(model);
+  });
+
+  it("should flatten string field group object", () => {
+    const model = {
+      group: {
+        group1: "value1",
+        group2: "value2"
+      }
+    };
+    const flattened = {
+      group1: "value1",
+      group2: "value2"
+    };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(flattened);
+  });
+
+  it("should flatten number field group object", () => {
+    const model = {
+      group: {
+        group1: 2,
+        group2: 3
+      }
+    };
+    const flattened = {
+      group1: 2,
+      group2: 3
+    };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(flattened);
+  });
+
+  it("should remove empty field group object", () => {
+    const model = {
+      group: {}
+    };
+    const flattened = {};
+    const output = flattenFields(model);
+
+    expect(output).toEqual(flattened);
+  });
+
+  it("should flatten mixed object", () => {
+    const model = {
+      key: "value1",
+      group: {
+        group1: "value2",
+        group2: 42
+      }
+    };
+    const flattened = {
+      key: "value1",
+      group1: "value2",
+      group2: 42
+    };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(flattened);
+  });
+
+  it("should flatten multiple mixed object", () => {
+    const model = {
+      key1: "value1",
+      group: {
+        group1: "value2",
+        group2: 42
+      },
+      key2: 42,
+      section: {
+        section1: 42,
+        section2: "value3"
+      },
+      empty: {}
+    };
+    const flattened = {
+      key1: "value1",
+      group1: "value2",
+      group2: 42,
+      key2: 42,
+      section1: 42,
+      section2: "value3"
+    };
+    const output = flattenFields(model);
+
+    expect(output).toEqual(flattened);
   });
 });

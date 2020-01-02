@@ -16,10 +16,11 @@ import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
 import { MenuModule } from "./menu/menu.module";
-import { sharedComponents } from "./shared.components";
+import { formlyAccessors, sharedComponents } from "./shared.components";
+import { TimezoneService } from "./timezone/timezone.service";
 
 @NgModule({
-  declarations: [...sharedComponents],
+  declarations: [...sharedComponents, ...formlyAccessors],
   imports: [
     CommonModule,
     RouterModule,
@@ -54,7 +55,8 @@ import { sharedComponents } from "./shared.components";
     HeaderModule,
     MenuModule,
     sharedComponents
-  ]
+  ],
+  providers: [TimezoneService]
 })
 export class SharedModule {
   constructor() {
