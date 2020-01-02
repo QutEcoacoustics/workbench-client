@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { flatMap } from "rxjs/operators";
+import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
@@ -94,14 +95,18 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
+    const input = flattenFields($event);
+
     this.subSink.sink = this.api
-      .updateProjectSite(this.projectId, this.siteId, $event)
+      .updateProjectSite(this.projectId, this.siteId, input)
       .subscribe(
         () => {
           this.success = "Site was successfully updated.";
+          this.error = null;
           this.loading = false;
         },
         (err: APIErrorDetails) => {
+          this.success = null;
           this.error = err.message;
           this.loading = false;
         }

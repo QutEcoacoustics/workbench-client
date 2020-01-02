@@ -8,7 +8,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
@@ -32,9 +32,7 @@ describe("SitesNewComponent", () => {
       imports: [
         SharedModule,
         RouterTestingModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [NewComponent],
       providers: [
@@ -121,9 +119,7 @@ describe("SitesNewComponent", () => {
       imports: [
         SharedModule,
         RouterTestingModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [NewComponent],
       providers: [
@@ -179,257 +175,158 @@ describe("SitesNewComponent", () => {
   it("should contain six inputs", () => {
     expect(
       fixture.nativeElement.querySelectorAll("form formly-field").length
-    ).toBe(6);
+    ).toBe(7); // FieldGroup adds a formly-field
   });
 
   /* Site Name Input */
 
-  it("should contain site name as first input", () => {
+  it("should contain site name input", () => {
     const input = fixture.nativeElement
       .querySelectorAll("form formly-field")[0]
       .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site name field should have 'name' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.id).toContain("_name_");
-  });
-
-  it("site name field should be text input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.type).toBe("text");
-  });
-
-  it("site name field should be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-
-    expect(input.required).toBeTruthy();
-  });
-
-  it("site name field should have label", () => {
     const label = fixture.nativeElement
       .querySelectorAll("form formly-field")[0]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Site Name");
+    expect(input).toBeTruthy("Form should contain input as first field");
+    expect(input.id).toContain("_name_", "Site name input id should be 'name'");
+    expect(input.type).toBe("text", "Site name input should be of type 'text'");
+    expect(input.required).toBeTruthy("Site name input should be required");
+
+    expect(label).toBeTruthy("Site name input should have label");
+    expect(label.innerText).toContain(
+      "Site Name",
+      "Site name label should be 'Site Name'"
+    );
   });
 
   /* Site Description Textarea */
 
-  it("should contain site description as second input", () => {
+  it("should contain site description textarea", () => {
     const input = fixture.nativeElement
       .querySelectorAll("form formly-field")[1]
       .querySelector("textarea");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site description field should have 'description' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-
-    expect(input.id).toContain("_description_");
-  });
-
-  it("site description field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("site description field should have label", () => {
     const label = fixture.nativeElement
       .querySelectorAll("form formly-field")[1]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Description");
+    expect(input).toBeTruthy("Form should contain textarea as second field");
+    expect(input.id).toContain(
+      "_description_",
+      "Site description field id should be 'description'"
+    );
+    expect(input.required).toBeFalsy(
+      "Site description field should not be required"
+    );
+
+    expect(label).toBeTruthy("Site name input should have label");
+    expect(label.innerText).toContain(
+      "Description",
+      "Site description label should be 'Description'"
+    );
   });
 
   /* Site Latitude Input */
 
-  it("should contain site latitude as third input", () => {
+  it("should contain site latitude input", () => {
     const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
+      .querySelectorAll("form formly-field")[3]
       .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site latitude field should have 'customLatitude' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.id).toContain("_customLatitude_");
-  });
-
-  it("site latitude field should be number input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.type).toBe("number");
-  });
-
-  it("site latitude field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("input");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("site latitude field should have label", () => {
     const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
+      .querySelectorAll("form formly-field")[3]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Latitude");
+    expect(input).toBeTruthy("Form should contain input as third field");
+    expect(input.id).toContain(
+      "_customLatitude_",
+      "Latitude input id should be 'customLatitude'"
+    );
+    expect(input.type).toBe(
+      "number",
+      "Latitude input should be of type 'number'"
+    );
+    expect(input.required).toBeFalsy("Latitude input should not be required");
+
+    expect(label).toBeTruthy("Latitude input should have label");
+    expect(label.innerText).toContain(
+      "Latitude",
+      "Latitude label should be 'Latitude'"
+    );
   });
 
   /* Site Longitude Input */
 
-  it("should contain site longitude as fourth input", () => {
+  it("should contain site longitude input", () => {
     const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
+      .querySelectorAll("form formly-field")[4]
       .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site longitude field should have 'customLongitude' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
-      .querySelector("input");
-
-    expect(input.id).toContain("_customLongitude_");
-  });
-
-  it("site longitude field should be number input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
-      .querySelector("input");
-
-    expect(input.type).toBe("number");
-  });
-
-  it("site longitude field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
-      .querySelector("input");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("site longitude field should have label", () => {
     const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
+      .querySelectorAll("form formly-field")[4]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Longitude");
+    expect(input).toBeTruthy("Form should contain input as fourth field");
+    expect(input.id).toContain(
+      "_customLongitude_",
+      "Longitude input id should be 'customLongitude'"
+    );
+    expect(input.type).toBe(
+      "number",
+      "Longitude input should be of type 'number'"
+    );
+    expect(input.required).toBeFalsy("Longitude input should not be required");
+
+    expect(label).toBeTruthy("Longitude input should have label");
+    expect(label.innerText).toContain(
+      "Longitude",
+      "Longitude label should be 'Longitude'"
+    );
   });
 
   /* Site Image Input */
 
-  it("should contain site image as fifth input", () => {
+  it("should contain site image input", () => {
     const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site image field should have 'image' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("input");
-
-    expect(input.id).toContain("_image_");
-  });
-
-  it("site image field should be number input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("input");
-
-    expect(input.type).toBe("file");
-  });
-
-  it("site image field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("input");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("site image field should have label", () => {
+      .querySelectorAll("form formly-field")[5]
+      .querySelector("formly-image-input input");
     const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
+      .querySelectorAll("form formly-field")[5]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Image");
+    expect(input).toBeTruthy(
+      "Form should contain custom image input as fifth field"
+    );
+    expect(input.id).toContain("_image_", "Image input id should be 'image'");
+    expect(input.type).toBe("file", "Image input should be of type 'file'");
+    expect(input.required).toBeFalsy("Image input should not be required");
+
+    expect(label).toBeTruthy("Image input should have label");
+    expect(label.innerText).toContain("Image", "Image label should be 'Image'");
   });
 
   /* Site Timezone Input */
 
-  it("should contain site timezone as sixth input", () => {
+  it("should contain site timezone input", () => {
     const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("input");
-
-    expect(input).toBeTruthy();
-  });
-
-  it("site timezone field should have 'timezoneInformation' id", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("input");
-
-    expect(input.id).toContain("_timezoneInformation_");
-  });
-
-  it("site timezone field should be text input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("input");
-
-    expect(input.type).toBe("text");
-  });
-
-  it("site timezone field should not be required", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("input");
-
-    expect(input.required).toBeFalsy();
-  });
-
-  it("site timezone field should have label", () => {
+      .querySelectorAll("form formly-field")[6]
+      .querySelector("formly-timezone-input select");
     const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
+      .querySelectorAll("form formly-field")[6]
       .querySelector("label");
 
-    expect(label).toBeTruthy();
-    expect(label.innerText).toContain("Time Zone");
+    expect(input).toBeTruthy(
+      "Form should contain custom timezone input as sixth field"
+    );
+    expect(input.id).toContain(
+      "_timezoneInformation_",
+      "Timezone input id should be 'timezoneInformation'"
+    );
+    expect(input.required).toBeFalsy("Timezone input should not be required");
+
+    expect(label).toBeTruthy("Timezone input should have label");
+    expect(label.innerText).toContain(
+      "Time Zone",
+      "Timezone label should be 'Time Zone'"
+    );
   });
 
   /* End of input typing checks */

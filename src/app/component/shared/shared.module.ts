@@ -1,10 +1,14 @@
 import { NgModule } from "@angular/core";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { sharedComponents, sharedModules } from "./shared.components";
+import {
+  formlyAccessors,
+  sharedComponents,
+  sharedModules
+} from "./shared.components";
 
 @NgModule({
-  declarations: [...sharedComponents],
+  declarations: [...sharedComponents, ...formlyAccessors],
   imports: [sharedModules],
   exports: [sharedModules, sharedComponents]
 })

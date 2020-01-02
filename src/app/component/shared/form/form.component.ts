@@ -76,11 +76,7 @@ export class FormComponent implements OnInit {
     fields.forEach(field => {
       const validator = field.validators;
 
-      if (
-        validator &&
-        validator.fieldMatch &&
-        validator.fieldMatch.expression
-      ) {
+      if (typeof validator?.fieldMatch?.expression === "string") {
         validator.fieldMatch.expression = new Function(
           "control",
           validator.fieldMatch.expression
@@ -114,4 +110,22 @@ export class FormComponent implements OnInit {
       this.error = "Please fill all required fields.";
     }
   }
+}
+
+/**
+ * Used to flatten formly model field groups into an object with 1 depth
+ * @param model Formly model output
+ */
+export function flattenFields(model: any): any {
+  let output = {};
+
+  for (const key of Object.keys(model)) {
+    if (typeof model[key] === "string" || typeof model[key] === "number") {
+      output[key] = model[key];
+    } else {
+      output = { ...output, ...flattenFields(model[key]) };
+    }
+  }
+
+  return output;
 }
