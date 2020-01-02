@@ -6,7 +6,9 @@ export interface Timezone {
   zones: string[];
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class TimezoneService {
   /**
    * Convert country ISO code to country name (in english)
