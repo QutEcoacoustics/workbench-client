@@ -9,8 +9,7 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject } from "rxjs";
-import { delay } from "rxjs/operators";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
@@ -29,9 +28,7 @@ describe("LoginComponent", () => {
       imports: [
         RouterTestingModule,
         SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [LoginComponent, HomeComponent],
       providers: [...testBawServices]
@@ -383,7 +380,6 @@ describe("LoginComponent", () => {
     spyOn(securityService, "signIn").and.callFake(() => {
       const subject = new BehaviorSubject(false);
 
-      subject.pipe(delay(50));
       subject.error({
         status: 401,
         message:

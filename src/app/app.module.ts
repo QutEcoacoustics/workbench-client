@@ -11,8 +11,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { providers } from "./app.helper";
-import { validationMessages } from "./app.helper";
+import { formlyRoot, providers } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
@@ -37,9 +36,7 @@ export const appImports = [
   HttpClientModule,
   AgmCoreModule.forRoot(),
   AgmSnazzyInfoWindowModule,
-  FormlyModule.forRoot({
-    validationMessages
-  }),
+  FormlyModule.forRoot(formlyRoot),
   SharedModule,
   SecurityModule,
   AboutModule,

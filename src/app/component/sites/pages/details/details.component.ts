@@ -7,6 +7,7 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
@@ -38,12 +39,12 @@ import {
 export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  endDate: Date;
+  endDate: DateTimeTimezone;
   loadingProgress = 0;
   project: Project;
   recordings: AudioRecording[];
   site: Site;
-  startDate: Date;
+  startDate: DateTimeTimezone;
   error: APIErrorDetails;
   state = "loading";
 
@@ -131,8 +132,8 @@ export class DetailsComponent extends PageComponent
   }
 
   extremityDates(recordings: AudioRecording[]) {
-    let startDate: Date = null;
-    let endDate: Date = null;
+    let startDate: DateTimeTimezone = null;
+    let endDate: DateTimeTimezone = null;
 
     recordings.map(recording => {
       if (!startDate || recording.recordedDate < startDate) {

@@ -10,14 +10,17 @@ import {
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { DateTime, ID } from "src/app/interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  defaultDateTimeTimezone,
+  ID
+} from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { Badge } from "./user-badge/user-badge.component";
-import moment from "moment";
 
 @Component({
   selector: "app-user-badges",
@@ -101,7 +104,7 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  generateBadge(object: Badge, id: ID, time?: DateTime) {
+  generateBadge(object: Badge, id: ID, time?: DateTimeTimezone) {
     this.api
       .getUserAccount(id)
       .pipe(takeUntil(this.unsubscribe))
@@ -117,30 +120,25 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  private getLengthOfTime(time: DateTime): string {
-    if (time.toString() === new Date("1970-01-01T00:00:00.000").toString()) {
+  private getLengthOfTime(time: DateTimeTimezone): string {
+    if (time === defaultDateTimeTimezone) {
       return undefined;
     }
 
-    return "Some time has passed";
+    const diff = time.diffNow(["years", "months", "days"]);
+    const years = Math.floor(Math.abs(diff.years));
+    const months = Math.floor(Math.abs(diff.months));
+    const days = Math.floor(Math.abs(diff.days));
 
-    // console.log("Now: ", moment.utc().toDate());
-    // console.log("Then: ", time.utc().toDate());
-
-    // const now = moment.utc().toDate();
-    // const then = time.utc().toDate();
-    // const yearDiff = now.getUTCFullYear() - then.getUTCFullYear();
-    // const monthDiff = now.getUTCMonth() - then.getUTCMonth();
-    // const dayDiff = now.getUTCDate() - then.getUTCDate();
-
-    // if (yearDiff > 0) {
-    //   return `${yearDiff} year${yearDiff > 1 ? "s" : ""} ago`;
-    // } else if (monthDiff > 0) {
-    //   return `${monthDiff} month${monthDiff > 1 ? "s" : ""} ago`;
-    // } else if (dayDiff > 0) {
-    //   return `${dayDiff} day${dayDiff > 1 ? "s" : ""} ago`;
-    // } else {
-    //   return "Less than a day ago";
-    // }
+    // Diff values will be negative
+    if (years > 0) {
+      return `${years} year${years > 1 ? "s" : ""} ago`;
+    } else if (months > 0) {
+      return `${months} month${months > 1 ? "s" : ""} ago`;
+    } else if (days > 0) {
+      return `${days} day${days > 1 ? "s" : ""} ago`;
+    } else {
+      return "Less than a day ago";
+    }
   }
 }

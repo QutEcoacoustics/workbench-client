@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
+import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ID } from "src/app/interfaces/apiInterfaces";
@@ -96,15 +97,19 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
+    const input = flattenFields($event);
+
     this.api
-      .updateProjectSite(this.projectId, this.siteId, $event)
+      .updateProjectSite(this.projectId, this.siteId, input)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
           this.success = "Site was successfully updated.";
+          this.error = null;
           this.loading = false;
         },
         (err: APIErrorDetails) => {
+          this.success = null;
           this.error = err.message;
           this.loading = false;
         }

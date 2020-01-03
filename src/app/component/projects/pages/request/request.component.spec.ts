@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { RequestComponent } from "./request.component";
 
@@ -14,9 +14,7 @@ describe("ProjectsRequestComponent", () => {
       imports: [
         HttpClientModule,
         SharedModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [RequestComponent],
       providers: [...testBawServices]

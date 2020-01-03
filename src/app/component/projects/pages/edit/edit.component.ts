@@ -89,6 +89,8 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 
@@ -98,6 +100,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.success = "Project was successfully updated.";
+          this.error = null;
           this.loading = false;
         },
         (err: APIErrorDetails) => {
@@ -106,7 +109,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           } else {
             this.error = err.message;
           }
-
+          this.success = null;
           this.loading = false;
         }
       );

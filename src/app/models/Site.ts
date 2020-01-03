@@ -1,6 +1,8 @@
+import { DateTime } from "luxon";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
-  DateTime,
+  DateTimeTimezone,
+  defaultDateTimeTimezone,
   Description,
   ID,
   IDs,
@@ -20,9 +22,9 @@ export interface SiteInterface {
   description: Description;
   locationObfuscated?: boolean;
   creatorId: ID;
-  createdAt?: DateTime | string;
+  createdAt?: DateTimeTimezone | string;
   updaterId?: ID;
-  updatedAt?: DateTime | string;
+  updatedAt?: DateTimeTimezone | string;
   projectIds: IDs;
   customLatitude?: number;
   customLongitude?: number;
@@ -40,9 +42,9 @@ export class Site implements SiteInterface {
   public readonly description: Description;
   public readonly locationObfuscated: boolean;
   public readonly creatorId: ID;
-  public readonly createdAt?: DateTime;
+  public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: ID;
-  public readonly updatedAt?: DateTime;
+  public readonly updatedAt?: DateTimeTimezone;
   public readonly projectIds: IDs;
   public readonly customLatitude?: number;
   public readonly customLongitude?: number;
@@ -58,17 +60,22 @@ export class Site implements SiteInterface {
     this.projectIds = new Set(site.projectIds);
     this.creatorId = site.creatorId;
     this.createdAt = site.createdAt
-      ? new Date(site.createdAt)
-      : new Date("1970-01-01T00:00:00.000");
+      ? DateTime.fromISO(site.createdAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.updaterId = site.updaterId;
     this.updatedAt = site.updatedAt
-      ? new Date(site.updatedAt)
-      : new Date("1970-01-01T00:00:00.000");
+      ? DateTime.fromISO(site.updatedAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.customLatitude = site.customLatitude;
     this.customLongitude = site.customLongitude;
     this.timezoneInformation = site.timezoneInformation;
   }
 
+  // TODO Change this to use StrongRoute method
   getSiteUrl(project: Project): string {
     return siteMenuItem.route
       .toString()
