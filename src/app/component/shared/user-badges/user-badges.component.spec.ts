@@ -7,6 +7,7 @@ import {
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
+import { DateTime } from "luxon";
 import { Subject } from "rxjs";
 import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
@@ -179,7 +180,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -232,7 +233,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -276,7 +277,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -320,7 +321,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -364,7 +365,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -408,7 +409,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -452,7 +453,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -495,7 +496,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     });
@@ -615,7 +616,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -668,7 +669,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -712,7 +713,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -756,7 +757,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -800,7 +801,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -844,7 +845,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -888,7 +889,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -931,7 +932,7 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       siteIds: new Set([])
     } as any);
@@ -1098,9 +1099,9 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test project",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       ownerId: 1,
       description: "test description",
       siteIds: new Set([])
@@ -1141,9 +1142,9 @@ describe("UserBadgesComponent", () => {
       id: 1,
       name: "test site",
       creatorId: 1,
-      createdAt: date.toString(),
+      createdAt: DateTime.fromJSDate(date).toISO(),
       updaterId: 1,
-      updatedAt: date.toString(),
+      updatedAt: DateTime.fromJSDate(date).toISO(),
       description: "test description",
       projectIds: new Set([])
     });
