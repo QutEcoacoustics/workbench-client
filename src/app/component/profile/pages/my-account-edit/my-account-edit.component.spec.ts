@@ -7,7 +7,7 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { testBawServices, validationMessages } from "src/app/app.helper";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
@@ -23,9 +23,7 @@ describe("MyAccountEditComponent", () => {
       imports: [
         SharedModule,
         RouterTestingModule,
-        FormlyModule.forRoot({
-          validationMessages
-        })
+        FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [MyAccountEditComponent],
       providers: [...testBawServices]
@@ -57,7 +55,7 @@ describe("MyAccountEditComponent", () => {
                 height: 300
               }
             ],
-            lastSeenAt: new Date("2019-12-16T16:21:25.144+10:00"),
+            lastSeenAt: "2019-12-16T16:21:25.144+10:00",
             preferences: null
           })
         );

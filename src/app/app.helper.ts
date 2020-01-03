@@ -1,6 +1,11 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
+import { ConfigOption } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
+import { FormlyImageInput } from "./component/shared/formly/image-input.component";
+import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
+import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
+import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
   APP_CONFIG,
   AppConfigService
@@ -39,13 +44,33 @@ function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
-export const validationMessages = [
-  { name: "required", message: "This field is required" },
-  { name: "minlength", message: minLengthValidationMessage },
-  { name: "maxlength", message: maxLengthValidationMessage },
-  { name: "min", message: minValidationMessage },
-  { name: "max", message: maxValidationMessage }
-];
+export const formlyRoot = {
+  types: [
+    {
+      name: "image",
+      component: FormlyImageInput
+    },
+    {
+      name: "timezone",
+      component: FormlyTimezoneInput
+    },
+    {
+      name: "question-answer",
+      component: FormlyQuestionAnswer
+    },
+    {
+      name: "question-answer-action",
+      component: FormlyQuestionAnswerAction
+    }
+  ],
+  validationMessages: [
+    { name: "required", message: "This field is required" },
+    { name: "minlength", message: minLengthValidationMessage },
+    { name: "maxlength", message: maxLengthValidationMessage },
+    { name: "min", message: minValidationMessage },
+    { name: "max", message: maxValidationMessage }
+  ]
+} as ConfigOption;
 
 export function appInitializerFn(appConfig: AppConfigService) {
   return () => {

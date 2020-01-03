@@ -8,6 +8,7 @@ import {
   projectsMenuItem,
   requestProjectMenuItem
 } from "src/app/component/projects/projects.menus";
+import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ID } from "src/app/interfaces/apiInterfaces";
@@ -101,19 +102,23 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
+    const input = flattenFields($event);
+
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.sitesApi.newProjectSite(params.projectId, $event);
+          return this.sitesApi.newProjectSite(params.projectId, input);
         }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
         () => {
           this.success = "Site was successfully created.";
+          this.error = null;
           this.loading = false;
         },
         (err: APIErrorDetails) => {
+          this.success = null;
           this.error = err.message;
           this.loading = false;
         }

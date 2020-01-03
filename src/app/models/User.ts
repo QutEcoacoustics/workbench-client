@@ -1,7 +1,9 @@
+import { DateTime } from "luxon";
 import { profileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
-  DateTime,
+  DateTimeTimezone,
+  defaultDateTimeTimezone,
   ID,
   ImageSizes,
   ImageURL,
@@ -20,7 +22,7 @@ export interface UserInterface {
   rolesMaskNames: string[];
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageURL[];
-  lastSeenAt: DateTime | string;
+  lastSeenAt: DateTimeTimezone | string;
   preferences?: any;
   isConfirmed?: boolean;
 }
@@ -42,7 +44,7 @@ export class User implements UserInterface {
   public readonly userName: UserName;
   public readonly timezoneInformation: TimezoneInformation;
   public readonly imageUrls: ImageURL[];
-  public readonly lastSeenAt: DateTime;
+  public readonly lastSeenAt: DateTimeTimezone | string;
   public readonly preferences: any;
   public readonly isConfirmed: boolean;
   public readonly rolesMask: number;
@@ -54,7 +56,11 @@ export class User implements UserInterface {
     this.id = user.id;
     this.userName = user.userName || "Deleted User";
     this.timezoneInformation = user.timezoneInformation;
-    this.lastSeenAt = new Date(user.lastSeenAt);
+    this.lastSeenAt = user.lastSeenAt
+      ? DateTime.fromISO(user.lastSeenAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.preferences = user.preferences;
     this.isConfirmed = user.isConfirmed;
     this.rolesMask = user.rolesMask;
