@@ -26,8 +26,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -41,8 +42,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -62,8 +64,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "custom label",
       uri: "http://link/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -82,6 +85,29 @@ describe("MenuExternalLinkComponent", () => {
       uri: "http://link/",
       tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
+    component.placement = "left";
+    fixture.detectChanges();
+
+    const link = fixture.debugElement.nativeElement.querySelector("a");
+
+    expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
+    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
+    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
+      "custom tooltip"
+    );
+  });
+
+  it("should not use link tooltip", () => {
+    component.id = "id";
+    component.link = {
+      kind: "MenuLink",
+      icon: ["fas", "home"],
+      label: "home",
+      uri: "http://link/",
+      tooltip: () => "tooltip"
+    };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -103,6 +129,7 @@ describe("MenuExternalLinkComponent", () => {
       uri: "http://link/",
       tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -120,8 +147,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
-      tooltip: () => "custom tooltip"
+      tooltip: () => "tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -140,8 +168,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -161,8 +190,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
 
@@ -182,8 +212,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "http://brokenlink/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -199,8 +230,9 @@ describe("MenuExternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       uri: "/brokenlink/",
-      tooltip: () => "tooltip"
+      tooltip: () => "custom tooltip"
     };
+    component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
 

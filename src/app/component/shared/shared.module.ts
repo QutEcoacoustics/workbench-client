@@ -15,12 +15,12 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { CardsModule } from "./cards/cards.module";
 import { HeaderModule } from "./header/header.module";
+import { MenuModule } from "./menu/menu.module";
 import { formlyAccessors, sharedComponents } from "./shared.components";
 import { TimezoneService } from "./timezone/timezone.service";
-import { WidgetDirective } from "./widget/widget.directive";
 
 @NgModule({
-  declarations: [...sharedComponents, ...formlyAccessors, WidgetDirective],
+  declarations: [...sharedComponents, ...formlyAccessors],
   imports: [
     CommonModule,
     RouterModule,
@@ -36,7 +36,8 @@ import { WidgetDirective } from "./widget/widget.directive";
     FormlyBootstrapModule,
     MatProgressSpinnerModule,
     CardsModule,
-    HeaderModule
+    HeaderModule,
+    MenuModule
   ],
   exports: [
     CommonModule,
@@ -52,6 +53,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     MatProgressSpinnerModule,
     CardsModule,
     HeaderModule,
+    MenuModule,
     sharedComponents
   ],
   providers: [TimezoneService]

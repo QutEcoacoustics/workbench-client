@@ -67,9 +67,11 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
           : null;
 
       // and add it all together
-      const allLinks = defaultLinks
-        .concat(links, List<MenuRoute>(parentMenuRoutes), current)
-        .sort(this.compare);
+      const allLinks = defaultLinks.concat(
+        links,
+        List<MenuRoute>(parentMenuRoutes),
+        current
+      );
 
       if (!links.isEmpty) {
         console.log("Links menu found");
@@ -83,35 +85,5 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subsink.unsubscribe();
-  }
-
-  /**
-   * Sort function for list of menu items
-   * @param a First menu item
-   * @param b Second menu item
-   */
-  compare(a: NavigableMenuItem, b: NavigableMenuItem): number {
-    // If a does not have an order number, select b
-    if (!a.order || !a.order.priority) {
-      return 1;
-    }
-
-    // If b does not have an order number, select a
-    if (!b.order || !b.order.priority) {
-      return -1;
-    }
-
-    // If both have the same order number,
-    // prioritize based on indentation and alphabetical order
-    if (a.order.priority === b.order.priority) {
-      if (a.order.indentation === b.order.indentation) {
-        return a.label < b.label ? -1 : 1;
-      }
-
-      return a.order.indentation < b.order.indentation ? -1 : 1;
-    }
-
-    // Return the menu item with the lower order value
-    return a.order.priority < b.order.priority ? -1 : 1;
   }
 }

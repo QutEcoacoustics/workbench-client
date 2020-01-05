@@ -15,12 +15,12 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
       [ngClass]="{ active: active }"
       [routerLink]="linkRoute"
       [placement]="placement"
-      [ngbTooltip]="link.tooltip()"
+      [ngbTooltip]="tooltip"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span id="label">{{ link.label }}</span>
       <span class="d-none" [id]="id">
-        {{ link.tooltip() }}
+        {{ tooltip }}
       </span>
     </a>
   `,
@@ -32,6 +32,7 @@ export class MenuInternalLinkComponent implements OnInit {
   @Input() link: MenuRoute;
   @Input() linkParams: Params;
   @Input() placement: "left" | "right";
+  @Input() tooltip: string;
   linkRoute: string;
   active: boolean;
 
