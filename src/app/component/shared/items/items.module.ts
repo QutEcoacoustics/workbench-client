@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fontAwesomeLibraries } from "src/app/app.helper";
 import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
 
@@ -14,6 +14,6 @@ import { ItemsComponent } from "./items/items.component";
 })
 export class ItemsModule {
   constructor() {
-    library.add(fas);
+    fontAwesomeLibraries(library);
   }
 }
