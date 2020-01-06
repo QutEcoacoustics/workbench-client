@@ -110,7 +110,7 @@ describe("ErrorHandlerComponent", () => {
   });
 
   it("should handle unknown code", () => {
-    component.error = { status: 0, message: "Unknown error has occurred." };
+    component.error = { status: -1, message: "Unknown error has occurred." };
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
