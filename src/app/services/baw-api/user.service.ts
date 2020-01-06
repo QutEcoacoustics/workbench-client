@@ -28,15 +28,7 @@ export class UserService extends BawApiService {
     const subject = new Subject<User>();
     const callback = (user: UserInterface) => new User(user);
 
-    if (this.isLoggedIn()) {
-      this.details(subject, callback, this.paths.myAccount);
-    } else {
-      subject.error({
-        status: 0,
-        message: "User is not logged in."
-      } as APIErrorDetails);
-      subject.complete();
-    }
+    this.details(subject, callback, this.paths.myAccount);
 
     return subject;
   }
@@ -50,16 +42,9 @@ export class UserService extends BawApiService {
     const subject = new Subject<User>();
     const callback = (user: UserInterface) => new User(user);
 
-    if (this.isLoggedIn()) {
-      this.details(subject, callback, this.paths.userAccount, {
-        args: { userId: id }
-      });
-    } else {
-      subject.error({
-        status: 0,
-        message: "User is not logged in."
-      } as APIErrorDetails);
-    }
+    this.details(subject, callback, this.paths.userAccount, {
+      args: { userId: id }
+    });
 
     return subject;
   }

@@ -1,4 +1,17 @@
+import { AgmCoreModule } from "@agm/core";
+import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { RouterModule } from "@angular/router";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
+import { CardsModule } from "./cards/cards.module";
 import { CmsComponent } from "./cms/cms.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -8,6 +21,9 @@ import { FormlyImageInput } from "./formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./formly/question-answer.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
+import { HeaderModule } from "./header/header.module";
+import { ItemsModule } from "./items/items.module";
+import { MenuModule } from "./menu/menu.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { TimezoneFormPipe } from "./timezone/timezone.pipe";
 import { WIPComponent } from "./wip/wip.component";
@@ -27,4 +43,24 @@ export const sharedComponents = [
   TimezoneFormPipe
 ];
 
+export const sharedModules = [
+  CommonModule,
+  RouterModule,
+  BrowserAnimationsModule,
+  AgmCoreModule,
+  AgmSnazzyInfoWindowModule,
+  LoadingBarHttpClientModule,
+  NgbModule,
+  FontAwesomeModule,
+  FormsModule,
+  ReactiveFormsModule,
+  FormlyModule,
+  FormlyBootstrapModule,
+  MatProgressSpinnerModule,
+
+  CardsModule,
+  HeaderModule,
+  ItemsModule,
+  MenuModule
+];
 export const formlyAccessors = [FileValueAccessor];

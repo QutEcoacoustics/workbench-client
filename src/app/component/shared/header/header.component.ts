@@ -7,7 +7,6 @@ import {
 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
-import { flatMap } from "rxjs/operators";
 import { SubSink } from "src/app/helpers/subsink/subsink";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
@@ -24,6 +23,7 @@ import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
+import { myAccountMenuItem } from "../../profile/profile.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
@@ -66,9 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       home: homeMenuItem,
       login: loginMenuItem,
       register: registerMenuItem,
-      profile: {
-        url: "http://INTENTIONALLY_BROKEN_LINK/"
-      }
+      profile: myAccountMenuItem
     };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface

@@ -1,0 +1,79 @@
+<app-wip>
+  <ng-container *ngIf="!!user">
+    <!-- Username -->
+    <h1>{{ user.userName }}</h1>
+
+    <div class="row">
+      <!-- Left aligned content -->
+      <div class="col-sm-4">
+        <!-- User profile picture and details -->
+        <div class="thumbnail">
+          <img alt="{{ user.userName }} profile image" [src]="imageUrl" />
+          <div class="caption">
+            <p>
+              <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+              Unknown time since last logged in
+            </p>
+            <p>
+              <fa-icon [icon]="['fas', 'user']"></fa-icon>
+              Unknown membership length
+            </p>
+          </div>
+        </div>
+
+        <!-- User annotations (Disabled in third person) -->
+        <div class="row" *ngIf="!thirdPerson">
+          <div class="col-sm-12 pb-3">
+            <div class="card">
+              <div class="card-header">
+                Download
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item text-center">
+                  <a href="BROKEN LINK" class="mx-auto text-center">
+                    Annotations you've created
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right aligned content -->
+      <div class="col-sm-8">
+        <app-items [items]="userStatistics"></app-items>
+
+        <!-- Users most popular tags -->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header">
+                Most Popular Tags
+              </div>
+              <ul class="list-group list-group-flush">
+                <app-items-item
+                  [icon]="tag.icon"
+                  [name]="tag.name"
+                  [value]="tag.value"
+                  [uri]="tag.uri"
+                  *ngFor="let tag of tags"
+                >
+                </app-items-item>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Loading spinner -->
+  <div class="d-flex justify-content-center" *ngIf="!error && !user">
+    <div class="spinner-border text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <app-error-handler [error]="error"></app-error-handler>
+</app-wip>

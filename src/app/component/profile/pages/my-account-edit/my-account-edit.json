@@ -1,0 +1,88 @@
+{
+  "model": {
+    "edit": {}
+  },
+  "fields": [
+    {
+      "key": "edit",
+      "validators": {
+        "fieldMatch": {
+          "expression": "return (control.value.passwordConfirmation === control.value.password || (!control.value.passwordConfirmation || !control.value.password))",
+          "message": "Passwords do not match",
+          "errorPath": "passwordConfirmation"
+        }
+      },
+      "fieldGroup": [
+        {
+          "key": "name",
+          "type": "input",
+          "templateOptions": {
+            "label": "User name",
+            "require": true
+          }
+        },
+        {
+          "key": "email",
+          "type": "input",
+          "templateOptions": {
+            "type": "email",
+            "label": "Email",
+            "required": true
+          }
+        },
+        {
+          "key": "timezoneInformation",
+          "type": "input",
+          "templateOptions": {
+            "label": "Time Zone",
+            "required": false
+          }
+        },
+        {
+          "key": "password",
+          "type": "input",
+          "templateOptions": {
+            "type": "password",
+            "label": "Password",
+            "required": false,
+            "minLength": 6,
+            "description": "leave blank if you don't want to change it"
+          }
+        },
+        {
+          "key": "passwordConfirmation",
+          "type": "input",
+          "templateOptions": {
+            "type": "password",
+            "label": "Password Confirmation",
+            "minLength": 6,
+            "required": false
+          },
+          "expressionProperties": {
+            "templateOptions.disabled": "!model.password"
+          }
+        },
+        {
+          "key": "currentPassword",
+          "type": "input",
+          "templateOptions": {
+            "type": "password",
+            "label": "Current Password",
+            "required": true,
+            "minLength": 6,
+            "description": "we need your current password to confirm your changes"
+          }
+        },
+        {
+          "key": "userImage",
+          "type": "input",
+          "templateOptions": {
+            "label": "Image",
+            "type": "file",
+            "required": false
+          }
+        }
+      ]
+    }
+  ]
+}

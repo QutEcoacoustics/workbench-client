@@ -119,15 +119,6 @@ export class SecurityService extends BawApiService {
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
     const next = (data: Authentication) => {
-      if (!data) {
-        this.clearSessionStorage();
-        this.loggedInTrigger.next(false);
-        subject.error({
-          status: 0,
-          message: "No data returned from API"
-        } as APIErrorDetails);
-      }
-
       const user = new SessionUser({
         authToken: data.authToken,
         userName: data.userName
@@ -142,16 +133,6 @@ export class SecurityService extends BawApiService {
       this.loggedInTrigger.next(false);
       subject.error(err);
     };
-
-    // Return early if logged in
-    if (this.isLoggedIn()) {
-      this.loggedInTrigger.next(true);
-      subject.error({
-        status: 0,
-        message: "You are already logged in, try logging out first."
-      } as APIErrorDetails);
-      return subject.asObservable();
-    }
 
     this.create(next, error, path, undefined, details);
 

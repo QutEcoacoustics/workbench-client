@@ -66,7 +66,11 @@
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
         <li class="nav-item">
-          <a class="nav-link login-widget" [href]="routes.profile.url">
+          <a
+            class="nav-link login-widget"
+            [routerLink]="routes.profile.route.toString()"
+            routerLinkActive="active"
+          >
             <span>{{ user.userName }}</span>
             <img alt="Profile Icon" [src]="userImage" />
           </a>

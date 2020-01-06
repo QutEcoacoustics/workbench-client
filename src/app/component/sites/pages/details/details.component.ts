@@ -43,7 +43,7 @@ export class DetailsComponent extends PageComponent
   recordings: AudioRecording[];
   site: Site;
   startDate: Date;
-  status: number;
+  error: APIErrorDetails;
   state = "loading";
   subSink: SubSink = new SubSink();
 
@@ -76,7 +76,7 @@ export class DetailsComponent extends PageComponent
           }
         },
         (err: APIErrorDetails) => {
-          this.status = err.status;
+          this.error = err;
           this.state = "error";
         }
       );
@@ -100,7 +100,7 @@ export class DetailsComponent extends PageComponent
         (err: APIErrorDetails) => {
           // Let project error dominate
           if (this.state !== "error") {
-            this.status = err.status;
+            this.error = err;
             this.state = "error";
           }
         }

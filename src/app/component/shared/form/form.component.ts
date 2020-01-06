@@ -29,6 +29,13 @@ export class FormComponent implements OnInit {
   @Input() submitLoading: boolean;
   @Input() error?: string;
   @Input() success?: string;
+  @Input() btnColor?:
+    | "btn-danger"
+    | "btn-success"
+    | "btn-warning"
+    | "btn-primary"
+    | "btn-secondary"
+    | "btn-info" = "btn-success";
 
   // Rename is required to stop formly from hijacking the variable
   // tslint:disable-next-line: no-output-rename

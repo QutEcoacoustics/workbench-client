@@ -8,7 +8,7 @@ import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { SubSink } from "src/app/helpers/subsink/subsink";
-import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
@@ -45,7 +45,7 @@ export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
   project: Project;
   sites: Site[];
-  status: number;
+  error: APIErrorDetails;
   state = "loading";
   subSink: SubSink = new SubSink();
 
@@ -71,7 +71,7 @@ export class DetailsComponent extends PageComponent
           this.state = "ready";
         },
         (err: APIErrorDetails) => {
-          this.status = err.status;
+          this.error = err;
           this.state = "error";
         }
       );
@@ -87,7 +87,7 @@ export class DetailsComponent extends PageComponent
         sites => (this.sites = sites),
         (err: APIErrorDetails) => {
           if (this.state !== "error") {
-            this.status = err.status;
+            this.error = err;
             this.state = "error";
           }
         }

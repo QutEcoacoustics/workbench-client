@@ -101,6 +101,180 @@ describe("FormComponent", () => {
     expect(form).toBeTruthy();
   });
 
+  it("should create form with submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit).toBeTruthy();
+  });
+
+  it("should create form with danger submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-danger";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-danger");
+  });
+
+  it("should create form with success submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-success";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-success");
+  });
+
+  it("should create form with warning submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-warning";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-warning");
+  });
+
+  it("should create form with primary submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-primary";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-primary");
+  });
+
+  it("should create form with secondary submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-secondary";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-secondary");
+  });
+
+  it("should create form with info submit button", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.btnColor = "btn-info";
+    fixture.detectChanges();
+
+    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    expect(submit.classList.value).toContain("btn-info");
+  });
+
   it("should create input form", () => {
     component.schema = {
       model: {

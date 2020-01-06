@@ -44,12 +44,12 @@ import data from "./new.json";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-    <app-error-handler [errorCode]="errorCode"></app-error-handler>
+    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
-  errorCode: number;
+  errorDetails: APIErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -82,7 +82,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
           this.ready = true;
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
+          this.errorDetails = err;
           this.ready = false;
         }
       );

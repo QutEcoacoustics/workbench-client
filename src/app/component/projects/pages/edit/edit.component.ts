@@ -33,13 +33,13 @@ import data from "./edit.json";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
-      <app-error-handler [errorCode]="errorCode"></app-error-handler>
     </app-wip>
+    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   error: string;
-  errorCode: number;
+  errorDetails: APIErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -73,8 +73,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.ready = true;
         },
         (err: APIErrorDetails) => {
-          this.errorCode = err.status;
-          this.ready = false;
+          this.errorDetails = err;
         }
       );
   }
@@ -101,9 +100,13 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        err => {
+        (err: APIErrorDetails) => {
+          if (err.info && err.info.name && err.info.name.length === 1) {
+            this.error = err.message + ": name " + err.info.name[0];
+          } else {
+            this.error = err.message;
+          }
           this.success = null;
-          this.error = err;
           this.loading = false;
         }
       );

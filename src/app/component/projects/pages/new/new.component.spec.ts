@@ -296,7 +296,7 @@ describe("ProjectsNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Record could not be saved",
-          status: api.apiReturnCodes.unprocessableEntity,
+          status: 422,
           info: {
             name: ["has already been taken"],
             image: [],
@@ -342,7 +342,7 @@ describe("ProjectsNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: api.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 
@@ -412,7 +412,7 @@ describe("ProjectsNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: api.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 
@@ -476,7 +476,7 @@ describe("ProjectsNewComponent", () => {
       setTimeout(() => {
         subject.error({
           message: "Unauthorized",
-          info: api.apiReturnCodes.unauthorized
+          info: 401
         } as APIErrorDetails);
       }, 50);
 

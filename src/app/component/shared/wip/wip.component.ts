@@ -9,7 +9,7 @@ import { environment } from "src/environments/environment";
 @Component({
   selector: "app-wip",
   template: `
-    <h1 class="text-warning text-center">Work In Progress</h1>
+    <p class="h1 text-warning text-center">Work In Progress</p>
     <div
       class="wrapper"
       [ngClass]="{ prodMode: prodMode }"

@@ -20,7 +20,7 @@ export interface UserInterface {
   imageUrls: ImageURL[];
   lastSeenAt: Date;
   preferences: any;
-  isConfirmed: boolean;
+  isConfirmed?: boolean;
 }
 
 /**
