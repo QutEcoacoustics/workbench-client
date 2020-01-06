@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { flatMap, takeUntil } from "rxjs/operators";
 import { ItemInterface } from "src/app/component/shared/items/item/item.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -11,72 +12,76 @@ import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
-  editMyAccountMenuItem,
-  myAccountCategory,
-  myAccountMenuItem
+  theirEditProfileMenuItem,
+  theirProfileCategory,
+  theirProfileMenuItem
 } from "../../profile.menus";
 
 @Page({
-  category: myAccountCategory,
+  category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      editMyAccountMenuItem,
+      theirEditProfileMenuItem,
       MenuLink({
         icon: ["fas", "globe-asia"],
-        label: "My Projects",
+        label: "Their Projects",
         uri: "BROKEN LINK",
-        tooltip: user => `Projects ${user.userName} can access`,
+        tooltip: () => "Projects they can access",
         predicate: user => !!user
       }),
       MenuLink({
         icon: ["fas", "map-marker-alt"],
-        label: "My Sites",
+        label: "Their Sites",
         uri: "BROKEN LINK",
-        tooltip: user => `Sites ${user.userName} can access`,
+        tooltip: () => "Sites they can access",
         predicate: user => !!user
       }),
       MenuLink({
         icon: ["fas", "bookmark"],
-        label: "My Bookmarks",
+        label: "Their Bookmarks",
         uri: "BROKEN LINK",
-        tooltip: user => `Bookmarks created by ${user.userName}`,
+        tooltip: () => "Bookmarks created by them",
         predicate: user => !!user
       }),
       MenuLink({
         icon: ["fas", "bullseye"],
-        label: "My Annotations",
+        label: "Their Annotations",
         uri: "BROKEN LINK",
-        tooltip: user => `Annotations created by ${user.userName}`,
+        tooltip: () => "Annotations created by them",
         predicate: user => !!user
       })
     ]),
     links: List()
   },
-  self: myAccountMenuItem
+  self: theirProfileMenuItem
 })
 @Component({
-  selector: "app-my-account-profile",
+  selector: "app-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"]
 })
-export class MyAccountProfileComponent extends PageComponent
+export class TheirProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: APIErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
-  thirdPerson = false;
+  thirdPerson = true;
   user: User;
   userStatistics: ItemInterface[];
 
-  constructor(private api: UserService) {
+  constructor(private api: UserService, private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.api
-      .getMyAccount()
-      .pipe(takeUntil(this.unsubscribe))
+    this.route.params
+      .pipe(
+        flatMap(params => {
+          return this.api.getUserAccount(params.userId);
+        }),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(
         (user: User) => {
           this.user = user;

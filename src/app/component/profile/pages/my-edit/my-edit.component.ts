@@ -13,7 +13,7 @@ import {
   myAccountCategory,
   myAccountMenuItem
 } from "../../profile.menus";
-import data from "./my-account-edit.json";
+import data from "./my-edit.json";
 
 @Page({
   category: myAccountCategory,
@@ -54,7 +54,7 @@ import data from "./my-account-edit.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class MyAccountEditComponent extends PageComponent
+export class MyEditComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;

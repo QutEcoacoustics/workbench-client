@@ -15,7 +15,8 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent implements OnInit {
-  public version: string = version;
+  version: string = version;
+  year: number = new Date().getFullYear();
 
   routes = {
     contactUs: contactUsMenuItem,

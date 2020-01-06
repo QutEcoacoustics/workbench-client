@@ -37,27 +37,27 @@ export const editMyAccountMenuItem = MenuRoute({
 /**
  * Their Profile Menus
  */
-export const profileRoute = StrongRoute.Base.add("user_accounts");
+export const theirProfileRoute = StrongRoute.Base.add("user_accounts");
 
-export const profileCategory: Category = {
+export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
   label: "Their Profile",
-  route: profileRoute
+  route: theirProfileRoute
 };
 
-export const profileMenuItem = MenuRoute({
+export const theirProfileMenuItem = MenuRoute({
   icon: myAccountMenuItem.icon,
   label: "Their Profile",
-  route: profileRoute.add(":userId"),
+  route: theirProfileRoute.add(":userId"),
   tooltip: () => "View their profile",
   order: myAccountMenuItem.order
 });
 
-export const editProfileMenuItem = MenuRoute({
+export const theirEditProfileMenuItem = MenuRoute({
   icon: editMyAccountMenuItem.icon,
   label: "Edit their profile",
-  route: profileMenuItem.route.add("edit"),
-  parent: profileMenuItem,
+  route: theirProfileMenuItem.route.add("edit"),
+  parent: theirProfileMenuItem,
   tooltip: () => "Change the details for this profile",
   predicate: user => !!user,
   order: editMyAccountMenuItem.order
