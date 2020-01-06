@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
+import { MenuLink } from "src/app/interfaces/menusInterfaces";
 import { SharedModule } from "../../shared.module";
 import { MenuExternalLinkComponent } from "./external-link.component";
 
@@ -21,13 +22,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should create", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -37,13 +37,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have icon", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -59,13 +58,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have label", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "custom label",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -78,13 +76,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -100,13 +97,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should not use link tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -122,13 +118,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have id for disabled access tooltip", () => {
     component.id = "id1000";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -142,13 +137,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have disabled access tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -163,13 +157,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should handle left placement of tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -185,13 +178,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should handle right placement of tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://link/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
@@ -207,13 +199,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should link to external website", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "http://brokenlink/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -225,13 +216,12 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should convert links to AngularJS server", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuLink",
+    component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: "/brokenlink/",
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewEncapsulation
-} from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
@@ -34,9 +28,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.scss"],
-  // tslint:disable-next-line: use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
@@ -74,16 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
-      ...this.config.values.content.map(header => {
-        if (!isHeaderLink(header)) {
-          return {
-            headerTitle: header.headerTitle,
-            items: header.items.map(item => this.generateLink(item))
-          } as HeaderDropDownConvertedLink;
-        } else {
-          return this.generateLink(header);
-        }
-      }),
+      ...this.retrieveHeaderLinks(),
       contactUsMenuItem
     ]);
 
@@ -113,43 +96,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Update header user profile
-   */
-  private updateUser() {
-    this.userApi
-      .getMyAccount()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-
-          // Find the small icon for the user
-          if (this.user) {
-            this.userImage = this.user.getImage(ImageSizes.small);
-          }
-
-          this.ref.detectChanges();
-        },
-        (err: APIErrorDetails) => {
-          this.user = null;
-          this.ref.detectChanges();
-        }
-      );
-  }
-
-  /**
-   * Convert header item into a menulink object
-   * @param item Item to convert
-   */
-  private generateLink(item): MenuLink {
-    return {
-      kind: "MenuLink",
-      label: item.title,
-      uri: item.url
-    } as MenuLink;
-  }
-
-  /**
    * Check if navbar link is active
    * @param link Navbar link
    * @returns True if navbar is active
@@ -171,14 +117,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Toggle the collapse of a dropdown element
-   * @param el Dropdown element
-   */
-  toggleDropdown(el: HTMLAnchorElement) {
-    el.classList.toggle("show");
-  }
-
-  /**
    * Logout user
    * TODO Handle error by giving user a warning
    */
@@ -189,8 +127,62 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe({
         error: () => {},
         complete: () => {
-          this.router.navigate([""]);
+          this.router.navigate([homeMenuItem.route.toString()]);
         }
       });
+  }
+
+  /**
+   * Retrieve header links from app config
+   */
+  private retrieveHeaderLinks() {
+    return this.config.values.content.map(header => {
+      if (!isHeaderLink(header)) {
+        return {
+          headerTitle: header.headerTitle,
+          items: header.items.map(item => this.generateLink(item))
+        } as HeaderDropDownConvertedLink;
+      } else {
+        return this.generateLink(header);
+      }
+    });
+  }
+
+  /**
+   * Update header user profile
+   */
+  private updateUser() {
+    if (this.securityApi.isLoggedIn()) {
+      this.userApi
+        .getMyAccount()
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe(
+          (user: User) => {
+            this.user = user;
+            this.userImage = this.user.getImage(ImageSizes.small);
+            this.ref.detectChanges();
+          },
+          (err: APIErrorDetails) => {
+            this.user = null;
+            this.ref.detectChanges();
+          }
+        );
+    } else {
+      this.user = null;
+      this.ref.detectChanges();
+    }
+  }
+
+  /**
+   * Convert header item into a menulink object
+   * @param item Item to convert
+   */
+  private generateLink(item: any): MenuLink {
+    return MenuLink({
+      label: item.title,
+      icon: ["fas", "home"],
+      tooltip: () => "UPDATE ME",
+      uri: item.url
+    });
   }
 }

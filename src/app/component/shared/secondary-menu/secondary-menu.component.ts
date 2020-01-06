@@ -44,12 +44,6 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
         // and current page
         const current = page.self;
 
-        // If page does not have a component, return early
-        // This use case is only encountered by unit tests
-        if (!current) {
-          return;
-        }
-
         // and parent pages
         const parentMenuRoutes: MenuRoute[] = [];
         let menuRoute = current;
@@ -59,14 +53,12 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
         }
 
         // with any links from route
-        const links =
-          page && page.menus && page.menus.links
-            ? page.menus.links
-            : List<NavigableMenuItem>();
-        const linksWidget =
-          page && page.menus && page.menus.actions
-            ? page.menus.linksWidget
-            : null;
+        const links = page.menus?.links
+          ? page.menus.links
+          : List<NavigableMenuItem>();
+        const linksWidget = page.menus?.linksWidget
+          ? page.menus.linksWidget
+          : null;
 
         // and add it all together
         const allLinks = defaultLinks.concat(
@@ -74,11 +66,6 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
           List<MenuRoute>(parentMenuRoutes),
           current
         );
-
-        if (!links.isEmpty) {
-          console.log("Links menu found");
-          console.log(links);
-        }
 
         this.contextLinks = allLinks;
         this.linksWidget = linksWidget;

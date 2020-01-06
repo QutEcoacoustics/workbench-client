@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Observable } from "rxjs";
-import { flatMap, map } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { flatMap, map, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { projectsMenuItem } from "../projects/projects.menus";
@@ -23,56 +23,42 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent implements OnInit {
+export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
   moreProjectsLink = projectsMenuItem;
-  processList: List<Card>;
-  projectList$: Observable<any> = this.securityApi.getLoggedInTrigger().pipe(
-    flatMap(() => {
-      return this.projectApi.getFilteredProjects({ items: 3 });
-    }),
-    map((data: Project[]) => {
-      return List(data.map(project => project.card));
-    })
-  );
-
-  title: string;
-  researchAboutUrl: string;
+  projectList: List<Card> = List([]);
 
   constructor(
     private projectApi: ProjectsService,
-    private securityApi: SecurityService,
-    private appConfig: AppConfigService
+    private securityApi: SecurityService
   ) {
     super();
   }
 
   ngOnInit() {
-    const config = this.appConfig.getConfig();
-    this.title = config.values.brand.title;
+    this.securityApi
+      .getLoggedInTrigger()
+      .pipe(
+        flatMap(() => {
+          return this.projectApi.getFilteredProjects({ items: 3 });
+        }),
+        map((data: Project[]) => {
+          return List(data.map(project => project.card));
+        }),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        (cards: List<Card>) => {
+          this.projectList = cards;
+        },
+        (err: APIErrorDetails) => {
+          this.projectList = List([]);
+        }
+      );
+  }
 
-    // Find research about url
-    this.researchAboutUrl = this.appConfig.getContentUrl(
-      config.values.content,
-      ["Research", "About"]
-    );
-
-    this.processList = List([
-      {
-        title: "Environment",
-        description:
-          "Faunal vocalisations and other human-audible environmental sounds"
-      },
-      {
-        title: "Acoustic Sensors",
-        description:
-          "Acoustic sensors record sound in a wide range of environments"
-      },
-      {
-        title: "Annotated Spectrogram",
-        description:
-          "Practical identification of animal sounds by people and automated detectors. " +
-          "Ecologists use these to answer environmental questions."
-      }
-    ]);
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

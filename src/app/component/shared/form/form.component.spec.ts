@@ -101,6 +101,70 @@ describe("FormComponent", () => {
     expect(form).toBeTruthy();
   });
 
+  it("should handle clearing error messages", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.error = "Custom error";
+    fixture.detectChanges();
+
+    let alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(alert).toBeTruthy();
+    expect(alert.innerText).toContain("Custom error");
+
+    component.clearError();
+    fixture.detectChanges();
+
+    alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(alert).toBeFalsy();
+  });
+
+  it("should handle clearing success messages", () => {
+    component.schema = {
+      model: {
+        input: ""
+      },
+      fields: [
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]
+    };
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    component.success = "Custom success";
+    fixture.detectChanges();
+
+    let alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(alert).toBeTruthy();
+    expect(alert.innerText).toContain("Custom success");
+
+    component.clearSuccess();
+    fixture.detectChanges();
+
+    alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(alert).toBeFalsy();
+  });
+
   it("should create form with submit button", () => {
     component.schema = {
       model: {
@@ -1156,6 +1220,23 @@ describe("FormComponent", () => {
     );
 
     expect(req).toBeTruthy();
+  });
+
+  it("should handle schema url http request failure", () => {
+    component.schemaUrl = `http://brokenlink/`;
+    component.submitLabel = "Label";
+    component.submitLoading = false;
+    fixture.detectChanges();
+
+    const req = httpMock.expectOne(`http://brokenlink/`);
+
+    req.flush({}, { status: 404, statusText: "Resource not found" });
+
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    expect(alert).toBeTruthy();
+    expect(alert.innerText).toContain("Resource not found");
   });
 
   it("should create form with schemaUrl", () => {

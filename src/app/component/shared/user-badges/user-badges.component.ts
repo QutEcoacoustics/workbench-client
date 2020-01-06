@@ -8,7 +8,6 @@ import {
   OnInit
 } from "@angular/core";
 import { List } from "immutable";
-import { DateTime, Duration } from "luxon";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {

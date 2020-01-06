@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { MenuAction } from "src/app/interfaces/menusInterfaces";
 import { SharedModule } from "../../shared.module";
 import { MenuButtonComponent } from "./button.component";
 
@@ -19,13 +20,12 @@ describe("MenuButtonComponent", () => {
 
   it("should create", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -35,13 +35,12 @@ describe("MenuButtonComponent", () => {
 
   it("should have icon", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -57,13 +56,12 @@ describe("MenuButtonComponent", () => {
 
   it("should have label", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "custom label",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -76,13 +74,12 @@ describe("MenuButtonComponent", () => {
 
   it("should have tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -100,13 +97,12 @@ describe("MenuButtonComponent", () => {
 
   it("should not use link tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -124,13 +120,12 @@ describe("MenuButtonComponent", () => {
 
   it("should have id for disabled access tooltip", () => {
     component.id = "id1000";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -144,13 +139,12 @@ describe("MenuButtonComponent", () => {
 
   it("should have disabled access tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -165,13 +159,12 @@ describe("MenuButtonComponent", () => {
 
   it("should handle left placement of tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "left";
     fixture.detectChanges();
@@ -187,13 +180,12 @@ describe("MenuButtonComponent", () => {
 
   it("should handle right placement of tooltip", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: () => console.log("action"),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
@@ -209,13 +201,12 @@ describe("MenuButtonComponent", () => {
 
   it("should execute action", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();
@@ -227,13 +218,12 @@ describe("MenuButtonComponent", () => {
 
   it("should not execute action without button press", () => {
     component.id = "id";
-    component.link = {
-      kind: "MenuAction",
+    component.link = MenuAction({
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.placement = "right";
     fixture.detectChanges();

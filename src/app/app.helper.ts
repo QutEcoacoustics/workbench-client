@@ -73,9 +73,7 @@ export const formlyRoot = {
 } as ConfigOption;
 
 export function appInitializerFn(appConfig: AppConfigService) {
-  return () => {
-    return appConfig.loadAppConfig();
-  };
+  return () => appConfig.loadAppConfig();
 }
 
 export const providers = [
@@ -116,12 +114,12 @@ export const testAppInitializer = [
 
 export const testBawServices = [
   ...testAppInitializer,
-  { provide: BawApiService, useClass: MockBawApiService },
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
   },
+  { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },

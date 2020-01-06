@@ -15,6 +15,7 @@ import { List } from "immutable";
 })
 export class CardsComponent implements OnInit, OnChanges {
   @Input() cards: List<Card>;
+  @Input() content: boolean;
   imageCards: boolean;
 
   constructor() {}

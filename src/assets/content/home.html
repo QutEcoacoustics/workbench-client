@@ -1,0 +1,106 @@
+<style>
+  .landing-image {
+    background-image: url("/assets/images/landing/landing-image-640x360.jpg");
+    background: no-repeat center center scroll;
+    background-size: cover;
+    height: 50vh;
+  }
+
+  @media screen and (max-height: 360px) {
+    .landing-image {
+      background-image: url("/assets/images/landing/landing-image-640x360.jpg");
+    }
+  }
+  @media screen and (max-height: 720px) and (min-height: 361px) {
+    .landing-image {
+      background-image: url("/assets/images/landing/landing-image-1280x720.jpg");
+    }
+  }
+  @media screen and (max-height: 1080px) and (min-height: 721px) {
+    .landing-image {
+      background-image: url("/assets/images/landing/landing-image-1920x1080.jpg");
+    }
+  }
+  @media screen and (min-height: 1081px) {
+    .landing-image {
+      background-image: url("/assets/images/landing/landing-image-3840x2160.jpg");
+    }
+  }
+</style>
+
+<header>
+  <div class="landing-image"></div>
+</header>
+
+<div class="container-fluid" style="background-color: #e9ecef">
+  <section class="container">
+    <h1>
+      Ecosounds | Acoustic Workbench
+    </h1>
+    <p class="lead">
+      Welcome! Ecosounds is a repository of environmental audio recordings.
+    </p>
+    <p>
+      This website facilitates the management, access, visualization, and
+      analysis of environmental acoustic data. It uses the Acoustic Workbench
+      software which is is open source and available from
+      <a href="https://github.com/QutEcoacoustics">GitHub.</a><br />The website
+      is run by the QUT Ecoacoustics Research Group to
+      <a href="https://research.ecosounds.org/">
+        support bioacoustics and ecoacoustics research.
+      </a>
+    </p>
+  </section>
+</div>
+
+<div class="container-fluid">
+  <section class="container">
+    <h2>
+      Our Process
+    </h2>
+
+    <div class="justify-content-center row">
+      <div class=" col-lg-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <h4 class="card-header text-center">
+            Environment
+          </h4>
+          <div class="card-body">
+            <p class="card-text" ng-reflect-ng-class="[object Object]">
+              Faunal vocalisations and other human-audible environmental sounds
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-lg-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <h4 class="card-header text-center">
+            Acoustic Sensors
+          </h4>
+          <div class="card-body">
+            <p class="card-text">
+              Acoustic sensors record sound in a wide range of environments
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class=" col-lg-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <h4 class="card-header text-center">
+            Annotated Spectrogram
+          </h4>
+          <div class="card-body">
+            <p class="card-text">
+              Practical identification of animal sounds by people and automated
+              detectors. Ecologists use these to answer environmental questions.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="center col-lg-4 col-sm-6 content d-flex mb-4"></div>
+    </div>
+  </section>
+</div>

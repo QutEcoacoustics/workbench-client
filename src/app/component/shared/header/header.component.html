@@ -17,7 +17,7 @@
 
     <!-- Collapsible content -->
     <div
-      class="collapse navbar-collapse"
+      class="navbar-collapse"
       id="navbarNavDropdown"
       [ngClass]="{ collapse: collapsed }"
     >
@@ -33,10 +33,7 @@
           </ng-container>
 
           <ng-container *ngIf="isNavigableMenuItem(header)">
-            <app-header-item
-              [active]="isActive(title)"
-              [link]="header"
-            ></app-header-item>
+            <app-header-item [link]="header"></app-header-item>
           </ng-container>
         </ng-container>
       </ul>
@@ -52,7 +49,7 @@
             {{ routes.register.label }}
           </a>
         </li>
-        <li class="nav-item" [ngClass]="{ active: isActive('Login') }">
+        <li class="nav-item">
           <a
             class="nav-link"
             [routerLink]="routes.login.route.toString()"
@@ -75,7 +72,7 @@
             <img alt="Profile Icon" [src]="userImage" />
           </a>
         </li>
-        <li class="nav-item" [ngClass]="{ active: isActive('Logout') }">
+        <li class="nav-item">
           <button class="nav-link btn btn-link" (click)="logout()">
             Logout
           </button>

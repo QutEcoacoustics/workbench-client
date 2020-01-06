@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
@@ -20,13 +21,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should create", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -37,13 +37,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have icon", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -60,13 +59,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have label", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "custom label",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -80,13 +78,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have tooltip", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -103,13 +100,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should not use link tooltip", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -126,13 +122,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have id for disabled access tooltip", () => {
     component.id = "id1000";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -147,13 +142,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have disabled access tooltip", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "custom tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -169,13 +163,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should handle left placement of tooltip", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "left";
@@ -192,13 +185,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should handle right placement of tooltip", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
@@ -215,13 +207,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should create routerLink", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("brokenlink"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
@@ -238,13 +229,12 @@ describe("MenuInternalLinkComponent", () => {
     const baseRoute = StrongRoute.Base.add("brokenlink");
 
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: baseRoute.add(":attribute"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = { attribute: "10" };
     component.placement = "right";
@@ -259,13 +249,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should not highlight link when not active", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("brokenlink"),
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";
@@ -277,13 +266,12 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should highlight link when active", () => {
     component.id = "id";
-    component.link = {
+    component.link = MenuRoute({
       icon: ["fas", "home"],
-      kind: "MenuRoute",
       label: "home",
       route: StrongRoute.Base.add("context.html"), // This is the window.location.pathname of unit tests
       tooltip: () => "tooltip"
-    };
+    });
     component.tooltip = "custom tooltip";
     component.linkParams = {};
     component.placement = "right";

@@ -6,9 +6,7 @@ import {
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
 import { forwardRef, Injectable, NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
@@ -32,6 +30,28 @@ import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
 import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
+export const appImports = [
+  BrowserModule,
+  AppRoutingModule,
+  HttpClientModule,
+  AgmCoreModule.forRoot(),
+  AgmSnazzyInfoWindowModule,
+  FormlyModule.forRoot(formlyRoot),
+  SharedModule,
+  SecurityModule,
+  AboutModule,
+  ProjectsModule,
+  SitesModule,
+  ReportProblemsModule,
+  DataRequestModule,
+  StatisticsModule,
+  MyAccountModule,
+  ProfileModule,
+  // these last two must be last!
+  HomeModule,
+  ErrorModule
+];
+
 // tslint:disable-next-line: no-use-before-declare
 @Injectable({ providedIn: forwardRef(() => AppModule) })
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
@@ -53,30 +73,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
 
 @NgModule({
   declarations: [AppComponent, WidgetDirective],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    AgmCoreModule.forRoot(),
-    AgmSnazzyInfoWindowModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FormlyModule.forRoot(formlyRoot),
-    FormlyBootstrapModule,
-    SharedModule,
-    SecurityModule,
-    AboutModule,
-    ProjectsModule,
-    SitesModule,
-    ReportProblemsModule,
-    DataRequestModule,
-    StatisticsModule,
-    MyAccountModule,
-    ProfileModule,
-    // these last two must be last!
-    HomeModule,
-    ErrorModule
-  ],
+  imports: [...appImports],
   providers: [
     ...providers,
     { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig }

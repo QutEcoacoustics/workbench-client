@@ -316,6 +316,7 @@ describe("UserBadgesComponent", () => {
 
     const date = new Date();
     date.setMonth(date.getMonth() - 1);
+    date.setDate(date.getDate() - 5);
 
     component.model = new Project({
       id: 1,
@@ -360,6 +361,7 @@ describe("UserBadgesComponent", () => {
 
     const date = new Date();
     date.setMonth(date.getMonth() - 11);
+    date.setDate(date.getDate() - 5);
 
     component.model = new Project({
       id: 1,
@@ -752,6 +754,7 @@ describe("UserBadgesComponent", () => {
 
     const date = new Date();
     date.setMonth(date.getMonth() - 1);
+    date.setDate(date.getDate() - 5);
 
     component.model = new Project({
       id: 1,
@@ -796,6 +799,7 @@ describe("UserBadgesComponent", () => {
 
     const date = new Date();
     date.setMonth(date.getMonth() - 11);
+    date.setDate(date.getDate() - 5);
 
     component.model = new Project({
       id: 1,

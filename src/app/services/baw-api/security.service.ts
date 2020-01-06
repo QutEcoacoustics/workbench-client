@@ -4,12 +4,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import {
-  APIResponse,
-  apiReturnCodes,
-  BawApiService,
-  Filters
-} from "./base-api.service";
+import { APIResponse, apiReturnCodes, BawApiService } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -18,7 +13,7 @@ import {
   providedIn: "root"
 })
 export class SecurityService extends BawApiService {
-  protected loggedInTrigger = new BehaviorSubject<boolean>(false);
+  protected loggedInTrigger = new BehaviorSubject(null);
 
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config);
@@ -65,7 +60,7 @@ export class SecurityService extends BawApiService {
 
     if (!this.isLoggedIn()) {
       this.clearSessionStorage();
-      this.loggedInTrigger.next(false);
+      this.loggedInTrigger.next(null);
       subject.complete();
       return;
     }
@@ -74,7 +69,7 @@ export class SecurityService extends BawApiService {
       next: (data: APIResponse) => {
         if (data.meta.status === apiReturnCodes.success) {
           this.clearSessionStorage();
-          this.loggedInTrigger.next(false);
+          this.loggedInTrigger.next(null);
           subject.complete();
         } else {
           console.error("Unknown error thrown by login rest api");
@@ -109,12 +104,12 @@ export class SecurityService extends BawApiService {
       });
 
       this.setSessionUser(user);
-      this.loggedInTrigger.next(true);
+      this.loggedInTrigger.next(null);
       subject.next(true);
     };
     const error = (err: APIErrorDetails) => {
       this.clearSessionStorage();
-      this.loggedInTrigger.next(false);
+      this.loggedInTrigger.next(null);
       subject.error(err);
     };
 

@@ -120,76 +120,94 @@ There are three environments supported by this application.
 
   - Have you added `SharedModule`?
 
-  ```javascript
-  TestBed.configureTestingModule({
-    imports: [SharedModule]
-  });
-  ```
+    ```javascript
+    TestBed.configureTestingModule({
+      imports: [SharedModule]
+    });
+    ```
 
   - If the component has any form of routing (including `ActivatedRoute`):
 
-  ```javascript
-  TestBed.configureTestingModule({
-    imports: [RouterTestingModule]
-  });
-  ```
+    ```javascript
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule]
+    });
+    ```
 
   - If the component has any form of http requests:
 
-  ```javascript
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+    ```javascript
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule]
+      });
     });
-  });
 
-  afterEach(() => {
-    sessionStorage.clear();
-    httpMock.verify();
-  });
-  ```
+    afterEach(() => {
+      sessionStorage.clear();
+      httpMock.verify();
+    });
+    ```
 
   - If the component uses the Formly form building module:
 
-  ```javascript
-  TestBed.configureTestingModule({
-    imports: [
-      FormlyModule.forRoot({
-        validationMessages
-      })
-    ]
-  });
-  ```
+    ```javascript
+    TestBed.configureTestingModule({
+      imports: [
+        FormlyModule.forRoot({
+          validationMessages
+        })
+      ]
+    });
+    ```
 
   - If the component depends on the app initializer to load the environment:
 
-  ```javascript
-  TestBed.configureTestingModule({
-    providers: [...testAppInitializer]
-  });
-  ```
+    ```javascript
+    TestBed.configureTestingModule({
+      providers: [...testAppInitializer]
+    });
+    ```
 
   - If the component depends on any baw services:
 
-  ```javascript
-  TestBed.configureTestingModule({
-    providers: [...testBawServices]
-  });
-  ```
+    ```javascript
+    TestBed.configureTestingModule({
+      providers: [...testBawServices]
+    });
+    ```
 
   - If the component depends on session storage:
 
-  ```javascript
-  beforeEach(() => {
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
-  }
+    ```javascript
+    beforeEach(() => {
+      Object.defineProperty(window, "sessionStorage", {
+        value: mockSessionStorage
+      });
+    }
 
-  afterEach(() => {
-    sessionStorage.clear();
-  })
-  ```
+    afterEach(() => {
+      sessionStorage.clear();
+    })
+    ```
+
+- Need to change the size of the browser?
+
+  - Prepend the unit test file with the following:
+
+    ```javascript
+    /// <reference types="karma-viewport" />
+    ```
+
+  - Set the size of the window using the following options (sizes relate to bootstrap):
+
+    ```javascript
+    viewport.set("extra-large");
+    viewport.set("large");
+    viewport.set("medium");
+    viewport.set("small");
+    viewport.set("extra-small");
+    ```
 
 ## Licence
 

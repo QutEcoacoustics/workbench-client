@@ -71,21 +71,29 @@ export class StrongRoute {
   /**
    * Method used for templating a route with parameters.
    * Use this in a template like so:
-   * <a [routerlink]="route.Format(project.id, site,id)" />
+   * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
    */
-  format(...args: string[]): string[] {
-    if (args.length !== this.parameters.length) {
+  format(args: { [key: string]: string }): string {
+    if (!args) {
+      // Should only be unit tests which encounter this
+      console.error("Route arguments are " + args);
+      return this.fullRoute;
+    }
+
+    if (Object.keys(args).length < this.parameters.length) {
       throw new Error(
-        `Got ${args.length} route arguments but expected ${this.parameters.length}`
+        `Got ${Object.keys(args).length} route arguments but expected ${
+          this.parameters.length
+        }`
       );
     }
 
-    const params = args;
     const prepareParam = (x: StrongRoute) => {
       if (x.isParameter) {
-        const param = params.shift();
-        if (param) {
-          return param;
+        const key = x.name.substr(1, x.name.length - 1);
+
+        if (args.hasOwnProperty(key)) {
+          return args[key];
         } else {
           throw new Error(
             `Parameter named ${x.name} was not supplied a value and a default value was not given`
@@ -96,7 +104,7 @@ export class StrongRoute {
       }
     };
 
-    return this.full.map(prepareParam);
+    return this.full.map(prepareParam).join("/");
   }
 
   /**
@@ -128,6 +136,13 @@ export class StrongRoute {
    */
   toString(): string {
     return this.fullRoute;
+  }
+
+  /**
+   * Router representation of the route
+   */
+  toRoute(): string[] {
+    return this.full.map(x => x.name).filter(x => !!x);
   }
 
   /**
