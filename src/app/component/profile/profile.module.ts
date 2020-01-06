@@ -4,23 +4,21 @@ import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { EditComponent } from "./pages/edit/edit.component";
 import { MyAccountEditComponent } from "./pages/my-account-edit/my-account-edit.component";
-import {
-  MyAccountProfileComponent,
-  ProfileComponent
-} from "./pages/profile/profile.component";
+import { MyAccountProfileComponent } from "./pages/profile/my-account-profile.component copy";
+import { ProfileComponent } from "./pages/profile/profile.component";
 import { myAccountRoute, profileRoute } from "./profile.menus";
 
 export const MyAccountComponents = [
   MyAccountProfileComponent,
   MyAccountEditComponent
 ];
-export const ProfileComponents = [ProfileComponent];
+export const ProfileComponents = [ProfileComponent, EditComponent];
 
 const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
 const profileRoutes = profileRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [MyAccountComponents, EditComponent],
+  declarations: [MyAccountComponents],
   imports: [SharedModule, RouterModule.forChild(myAccountRoutes)],
   exports: [RouterModule, ...MyAccountComponents]
 })

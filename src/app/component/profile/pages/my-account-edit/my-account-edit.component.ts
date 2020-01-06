@@ -31,8 +31,8 @@ import data from "./my-account-edit.json";
         *ngIf="ready"
         [schema]="schema"
         [title]="'Profile Settings'"
-        [error]="errorEdit"
-        [success]="successEdit"
+        [error]="error"
+        [success]="success"
         [submitLabel]="'Update'"
         [submitLoading]="loading"
         [btnColor]="'btn-warning'"
@@ -44,8 +44,6 @@ import data from "./my-account-edit.json";
         [schema]="{ model: {}, fields: [] }"
         [title]="'Cancel my account'"
         [subTitle]="'Unhappy? You can permanently cancel your account.'"
-        [error]="errorDelete"
-        [success]="successDelete"
         [submitLabel]="'Cancel my account'"
         [submitLoading]="loading"
         [btnColor]="'btn-danger'"
@@ -53,20 +51,18 @@ import data from "./my-account-edit.json";
       >
       </app-form>
     </app-wip>
-    <app-error-handler [error]="error"></app-error-handler>
+    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class MyAccountEditComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  errorEdit: string;
-  errorDelete: string;
-  error: APIErrorDetails;
+  error: string;
+  errorDetails: APIErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
-  successEdit: string;
-  successDelete: string;
+  success: string;
 
   user: User;
 
@@ -89,7 +85,7 @@ export class MyAccountEditComponent extends PageComponent
           this.schema.model.edit["name"] = this.user.userName;
         },
         (err: APIErrorDetails) => {
-          this.error = err;
+          this.errorDetails = err;
         }
       );
   }

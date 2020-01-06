@@ -19,7 +19,8 @@ steps:
 
   - task: Npm@1
     inputs:
-      command: test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
+      command: custom
+      customCommand: test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
     displayName: "Run test suite"
 
   - task: PublishTestResults@2
@@ -41,7 +42,8 @@ steps:
 
   - task: Npm@1
     inputs:
-      command: run stats
+      command: custom
+      customCommand: run stats
     displayName: "Analyze workbench client bundle"
 
   - task: PublishBuildArtifacts@1
@@ -57,7 +59,8 @@ steps:
 
   - task: Npm@1
     inputs:
-      command: run build
+      command: custom
+      customCommand: run build
     displayName: "Build the workbench client"
 
   - task: ArchiveFiles@2
@@ -76,5 +79,6 @@ steps:
 
   - task: Npm@1
     inputs:
-      command: run lint
+      command: custom
+      customCommand: run lint
     displayName: "Lint project"
