@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { flatMap } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { SubSink } from "src/app/helpers/subsink/subsink";
+import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
@@ -37,15 +38,15 @@ import {
 })
 export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
-  endDate: Date;
+  private unsubscribe = new Subject();
+  endDate: DateTimeTimezone;
   loadingProgress = 0;
   project: Project;
   recordings: AudioRecording[];
   site: Site;
-  startDate: Date;
+  startDate: DateTimeTimezone;
   error: APIErrorDetails;
   state = "loading";
-  subSink: SubSink = new SubSink();
 
   constructor(
     private route: ActivatedRoute,
@@ -60,11 +61,12 @@ export class DetailsComponent extends PageComponent
     const allRequiredDataLoaded = 2;
 
     // Retrieve project details
-    this.subSink.sink = this.route.params
+    this.route.params
       .pipe(
         flatMap(params => {
           return this.projectsApi.getProject(params.projectId);
-        })
+        }),
+        takeUntil(this.unsubscribe)
       )
       .subscribe(
         project => {
@@ -82,11 +84,12 @@ export class DetailsComponent extends PageComponent
       );
 
     // Retrieve site and audio recording details
-    this.subSink.sink = this.route.params
+    this.route.params
       .pipe(
         flatMap(params => {
           return this.sitesApi.getProjectSite(params.projectId, params.siteId);
-        })
+        }),
+        takeUntil(this.unsubscribe)
       )
       .subscribe(
         site => {
@@ -107,13 +110,14 @@ export class DetailsComponent extends PageComponent
       );
 
     // Retrieve audio recording details
-    this.subSink.sink = this.route.params
+    this.route.params
       .pipe(
         flatMap(params => {
           return this.audioRecordingApi.getAudioRecordings(params.siteId, {
             items: 100
           });
-        })
+        }),
+        takeUntil(this.unsubscribe)
       )
       .subscribe(
         recordings => {
@@ -128,8 +132,8 @@ export class DetailsComponent extends PageComponent
   }
 
   extremityDates(recordings: AudioRecording[]) {
-    let startDate: Date = null;
-    let endDate: Date = null;
+    let startDate: DateTimeTimezone = null;
+    let endDate: DateTimeTimezone = null;
 
     recordings.map(recording => {
       if (!startDate || recording.recordedDate < startDate) {
@@ -145,6 +149,7 @@ export class DetailsComponent extends PageComponent
   }
 
   ngOnDestroy() {
-    this.subSink.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

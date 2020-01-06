@@ -1,6 +1,14 @@
+import { DateTime } from "luxon";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
-import { Description, ID, IDs, Name, Time } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  defaultDateTimeTimezone,
+  Description,
+  ID,
+  IDs,
+  Name
+} from "../interfaces/apiInterfaces";
 
 /**
  * A project model.
@@ -11,9 +19,9 @@ export interface ProjectInterface {
   name: Name;
   imageUrl?: string;
   creatorId: ID;
-  createdAt?: Time;
+  createdAt?: DateTimeTimezone | string;
   updaterId?: ID;
-  updatedAt?: Time;
+  updatedAt?: DateTimeTimezone | string;
   ownerId?: ID;
   description: Description;
   siteIds: IDs;
@@ -28,9 +36,9 @@ export class Project implements ProjectInterface {
   public readonly name: Name;
   public readonly imageUrl: string;
   public readonly creatorId: ID;
-  public readonly createdAt?: Time;
+  public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: ID;
-  public readonly updatedAt?: Time;
+  public readonly updatedAt?: DateTimeTimezone;
   public readonly ownerId?: ID;
   public readonly description: Description;
   public readonly siteIds: IDs;
@@ -44,23 +52,31 @@ export class Project implements ProjectInterface {
       project.imageUrl || "/assets/images/project/project_span4.png";
     this.creatorId = project.creatorId;
     this.createdAt = project.createdAt
-      ? new Date(project.createdAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      ? DateTime.fromISO(project.createdAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.updaterId = project.updaterId;
     this.updatedAt = project.updatedAt
-      ? new Date(project.updatedAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      ? DateTime.fromISO(project.updatedAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
   }
 
+  // TODO Update this to use StrongRoute method
   get projectUrl(): string {
     return projectMenuItem.route
       .toString()
       .replace(":projectId", this.id.toString());
   }
 
+  /**
+   * Generate card-item details
+   */
   get card(): Card {
     return {
       title: this.name,

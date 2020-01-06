@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -39,12 +40,14 @@ import data from "./login.json";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
+    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
-  private subs = new SubSink();
+  private unsubscribe = new Subject();
   schema = data;
   error: string;
+  errorDetails: APIErrorDetails;
   loading: boolean;
 
   constructor(
@@ -58,24 +61,33 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = true;
 
-    this.subs.sink = this.api.getLoggedInTrigger().subscribe(loggedIn => {
-      const msg = "You are already logged in";
+    this.api
+      .getLoggedInTrigger()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        loggedIn => {
+          const msg = "You are already logged in";
 
-      if (loggedIn) {
-        this.loading = true;
-        this.error = msg;
-      } else {
-        this.loading = false;
+          if (loggedIn) {
+            this.loading = true;
+            this.error = msg;
+          } else {
+            this.loading = false;
 
-        if (this.error === msg) {
-          this.error = null;
+            if (this.error === msg) {
+              this.error = null;
+            }
+          }
+        },
+        (err: APIErrorDetails) => {
+          this.errorDetails = err;
         }
-      }
-    });
+      );
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**
@@ -86,15 +98,18 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    this.subs.sink = this.api.signIn($event).subscribe(
-      () => {
-        this.router.navigate([""]);
-        this.loading = false;
-      },
-      (err: APIErrorDetails) => {
-        this.error = err.message;
-        this.loading = false;
-      }
-    );
+    this.api
+      .signIn($event)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        () => {
+          this.router.navigate([""]);
+          this.loading = false;
+        },
+        (err: APIErrorDetails) => {
+          this.error = err.message;
+          this.loading = false;
+        }
+      );
   }
 }

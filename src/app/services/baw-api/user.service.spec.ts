@@ -59,6 +59,7 @@ describe("UserService", () => {
   function login() {
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     const req = httpMock.expectOne(
@@ -139,7 +140,7 @@ describe("UserService", () => {
                 height: 300
               }
             ],
-            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
             preferences: null,
             isConfirmed: true
           })
@@ -238,7 +239,7 @@ describe("UserService", () => {
                 height: 300
               }
             ],
-            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
             preferences: null,
             isConfirmed: true
           })
@@ -299,7 +300,7 @@ describe("UserService", () => {
                 height: 300
               }
             ],
-            lastSeenAt: new Date("2019-12-05T14:11:20.366+10:00"),
+            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
             preferences: null,
             isConfirmed: true
           })

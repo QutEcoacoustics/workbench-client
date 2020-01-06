@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { SubSink } from "src/app/helpers/subsink/subsink";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
@@ -41,10 +42,10 @@ import data from "./new.json";
   `
 })
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
   error: string;
   loading: boolean;
   schema = data;
-  subSink: SubSink = new SubSink();
   success: string;
 
   constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
@@ -56,7 +57,8 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subSink.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**
@@ -67,22 +69,25 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    this.subSink.sink = this.api.newProject($event).subscribe(
-      () => {
-        this.success = "Project was successfully created.";
-        this.error = null;
-        this.loading = false;
-      },
-      (err: APIErrorDetails) => {
-        this.success = null;
-        if (err.info && err.info.name && err.info.name.length === 1) {
-          this.error = err.message + ": name " + err.info.name[0];
-        } else {
-          this.error = err.message;
-        }
+    this.api
+      .newProject($event)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        () => {
+          this.success = "Project was successfully created.";
+          this.error = null;
+          this.loading = false;
+        },
+        (err: APIErrorDetails) => {
+          this.success = null;
+          if (err.info && err.info.name && err.info.name.length === 1) {
+            this.error = err.message + ": name " + err.info.name[0];
+          } else {
+            this.error = err.message;
+          }
 
-        this.loading = false;
-      }
-    );
+          this.loading = false;
+        }
+      );
   }
 }

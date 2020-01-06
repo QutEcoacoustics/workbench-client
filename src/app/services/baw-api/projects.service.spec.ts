@@ -191,6 +191,7 @@ describe("ProjectsService", () => {
   });
 
   it("getProjects should return data", () => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
@@ -202,6 +203,7 @@ describe("ProjectsService", () => {
   });
 
   it("getProject should return data", () => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.getProject(512).subscribe(res => {
       expect(res).toEqual(projectValidConvertedResponse);
     });
@@ -591,6 +593,7 @@ describe("ProjectsService", () => {
   });
 
   it("authenticated getProjects should return data", () => {
+    // tslint:disable-next-line: rxjs-no-ignored-error
     service.getProjects().subscribe(res => {
       expect(res).toEqual(projectsValidConvertedResponse);
     });
@@ -598,6 +601,7 @@ describe("ProjectsService", () => {
     // Login
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     // Catch security check and return login details
@@ -641,6 +645,7 @@ describe("ProjectsService", () => {
     // Login
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     // Catch security check and return login details

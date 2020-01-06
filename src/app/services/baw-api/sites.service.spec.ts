@@ -174,6 +174,7 @@ describe("SitesService", () => {
     // Login
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     // Catch security check and return login details
@@ -365,6 +366,7 @@ describe("SitesService", () => {
     // Login
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     // Catch security check and return login details
@@ -640,6 +642,7 @@ describe("SitesService", () => {
     // Login
     securityService
       .signIn({ email: "email", password: "password" })
+      // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 
     // Catch security check and return login details

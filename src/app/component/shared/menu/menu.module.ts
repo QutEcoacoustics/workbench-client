@@ -6,7 +6,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PermissionsShieldComponent } from "../permissions-shield/permissions-shield.component";
-import { UserBadgeComponent } from "../user-badge/user-badge.component";
+import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
+import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -20,6 +21,7 @@ import { MenuComponent } from "./menu.component";
     MenuInternalLinkComponent,
     MenuComponent,
     PermissionsShieldComponent,
+    UserBadgesComponent,
     UserBadgeComponent,
     WidgetDirective
   ],
@@ -27,7 +29,7 @@ import { MenuComponent } from "./menu.component";
   exports: [
     MenuComponent,
     PermissionsShieldComponent,
-    UserBadgeComponent,
+    UserBadgesComponent,
     WidgetDirective
   ]
 })

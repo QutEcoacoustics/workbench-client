@@ -1,0 +1,32 @@
+h4 {
+  font-size: 1.2rem;
+}
+
+.media {
+  display: flex;
+  margin-bottom: 0.5rem;
+
+  .image {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
+
+    img {
+      max-width: 30px;
+      height: auto;
+    }
+  }
+
+  .body {
+    flex: 1;
+
+    .heading {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+p {
+  font-size: 0.9rem;
+  margin: 0px;
+}

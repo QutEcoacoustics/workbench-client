@@ -100,7 +100,7 @@ export interface Configuration {
 
 type Links = HeaderLink | HeaderDropDownLink;
 
-function isHeaderLink(link: Links): link is HeaderLink {
+export function isHeaderLink(link: Links): link is HeaderLink {
   return "title" in link;
 }
 
@@ -117,13 +117,13 @@ export interface HeaderLink {
  */
 export interface HeaderDropDownLink {
   headerTitle: string;
-  items: HeaderLink[] | NavigableMenuItem[];
+  items: HeaderLink[];
 }
 
 /**
  * Dropdown list of navigable menu items
- * @extends HeaderDropDownLink
  */
-export interface HeaderDropDownConvertedLink extends HeaderDropDownLink {
+export interface HeaderDropDownConvertedLink {
+  headerTitle: string;
   items: NavigableMenuItem[];
 }

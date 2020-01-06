@@ -3,12 +3,16 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Component({
   selector: "app-form",
@@ -17,7 +21,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
   // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
   @Input() schema: {
     model: {};
     fields: FormlyFieldConfig[];
@@ -41,6 +45,7 @@ export class FormComponent implements OnInit {
   // tslint:disable-next-line: no-output-rename
   @Output("onSubmit") submitFunction: EventEmitter<any> = new EventEmitter();
 
+  private unsubscribe = new Subject();
   form: FormGroup;
   fields: FormlyFieldConfig[];
   model: {};
@@ -57,13 +62,26 @@ export class FormComponent implements OnInit {
       this.model = this.schema.model;
       this.fields = this.schema.fields;
     } else if (this.schemaUrl) {
-      this.http.get(this.schemaUrl).subscribe((data: any) => {
-        this.convertFunctions(data.fields);
+      this.http
+        .get(this.schemaUrl)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe(
+          (data: any) => {
+            this.convertFunctions(data.fields);
 
-        this.model = data.model;
-        this.fields = data.fields;
-      });
+            this.model = data.model;
+            this.fields = data.fields;
+          },
+          (err: APIErrorDetails) => {
+            this.error = err.message;
+          }
+        );
     }
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   /**

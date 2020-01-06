@@ -55,7 +55,7 @@ describe("MyAccountEditComponent", () => {
                 height: 300
               }
             ],
-            lastSeenAt: new Date("2019-12-16T16:21:25.144+10:00"),
+            lastSeenAt: "2019-12-16T16:21:25.144+10:00",
             preferences: null
           })
         );

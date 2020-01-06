@@ -7,7 +7,8 @@ import {
 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
-import { SubSink } from "src/app/helpers/subsink/subsink";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -17,8 +18,11 @@ import {
 import { User } from "src/app/models/User";
 import {
   AppConfigService,
-  HeaderDropDownConvertedLink
+  Configuration,
+  HeaderDropDownConvertedLink,
+  isHeaderLink
 } from "src/app/services/app-config/app-config.service";
+import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
@@ -35,20 +39,6 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  activeLink: string;
-  collapsed: boolean;
-  config: any;
-  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
-  loggedIn: boolean;
-  subSink: SubSink = new SubSink();
-  title: string;
-  user: User;
-  userImage: string;
-
-  isNavigableMenuItem = isNavigableMenuItem;
-
-  routes: any;
-
   constructor(
     private router: Router,
     private securityApi: SecurityService,
@@ -56,6 +46,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private appConfig: AppConfigService,
     private ref: ChangeDetectorRef
   ) {}
+  private unsubscribe = new Subject();
+  activeLink: string;
+  collapsed: boolean;
+  config: Configuration;
+  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  title: string;
+  user: User;
+  userImage: string;
+
+  isNavigableMenuItem = isNavigableMenuItem;
+
+  routes: any;
 
   ngOnInit() {
     this.collapsed = true;
@@ -73,7 +75,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.headers = List([
       projectsMenuItem,
       ...this.config.values.content.map(header => {
-        if (header.headerTitle) {
+        if (!isHeaderLink(header)) {
           return {
             headerTitle: header.headerTitle,
             items: header.items.map(item => this.generateLink(item))
@@ -85,44 +87,60 @@ export class HeaderComponent implements OnInit, OnDestroy {
       contactUsMenuItem
     ]);
 
-    this.subSink.sink = this.router.events.subscribe(val => {
-      if (val instanceof NavigationEnd) {
-        this.toggleCollapse(true);
+    this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(
+      val => {
+        if (val instanceof NavigationEnd) {
+          this.toggleCollapse(true);
+        }
+      },
+      err => {
+        console.error("HeaderComponent: ", err);
       }
-    });
+    );
 
-    this.subSink.sink = this.securityApi
+    this.securityApi
       .getLoggedInTrigger()
-      .subscribe(loggedIn => {
-        this.subSink.sink = this.userApi.getMyAccount().subscribe(
-          user => {
-            this.user = user;
-
-            // Find the small icon for the user
-            if (this.user) {
-              this.userImage = this.user.getImage(ImageSizes.small);
-            }
-
-            this.ref.detectChanges();
-          },
-          () => {
-            this.user = null;
-
-            // If the user is logged in, but the retrieval failed. Log them out
-            if (loggedIn) {
-              this.securityApi.signOut().subscribe();
-            }
-
-            this.ref.detectChanges();
-          }
-        );
-      });
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        () => this.updateUser(),
+        err => {}
+      );
   }
 
   ngOnDestroy() {
-    this.subSink.unsubscribe();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
+  /**
+   * Update header user profile
+   */
+  private updateUser() {
+    this.userApi
+      .getMyAccount()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (user: User) => {
+          this.user = user;
+
+          // Find the small icon for the user
+          if (this.user) {
+            this.userImage = this.user.getImage(ImageSizes.small);
+          }
+
+          this.ref.detectChanges();
+        },
+        (err: APIErrorDetails) => {
+          this.user = null;
+          this.ref.detectChanges();
+        }
+      );
+  }
+
+  /**
+   * Convert header item into a menulink object
+   * @param item Item to convert
+   */
   private generateLink(item): MenuLink {
     return {
       kind: "MenuLink",
@@ -136,7 +154,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * @param link Navbar link
    * @returns True if navbar is active
    */
-  isActive(link: string): boolean {
+  isActive(link: string) {
     return this.activeLink.toLowerCase() === link.toLowerCase();
   }
 
@@ -165,11 +183,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * TODO Handle error by giving user a warning
    */
   logout() {
-    this.securityApi.signOut().subscribe({
-      error: () => {},
-      complete: () => {
-        this.router.navigate([""]);
-      }
-    });
+    this.securityApi
+      .signOut()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        error: () => {},
+        complete: () => {
+          this.router.navigate([""]);
+        }
+      });
   }
 }

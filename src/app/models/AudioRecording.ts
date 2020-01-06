@@ -1,4 +1,10 @@
-import { ID, Time, UUID } from "../interfaces/apiInterfaces";
+import { DateTime } from "luxon";
+import {
+  DateTimeTimezone,
+  defaultDateTimeTimezone,
+  ID,
+  UUID
+} from "../interfaces/apiInterfaces";
 
 /**
  * An audio recording model
@@ -7,7 +13,7 @@ export interface AudioRecordingInterface {
   kind?: "AudioRecording";
   id: ID;
   uuid: UUID;
-  recordedDate: Time;
+  recordedDate: DateTimeTimezone | string;
   siteId: ID;
   durationSeconds: number;
   sampleRateHertz?: number;
@@ -16,8 +22,8 @@ export interface AudioRecordingInterface {
   mediaType?: string;
   dataLengthBytes?: number;
   status?: "ready" | "uploading" | "corrupt";
-  createdAt?: Time;
-  updatedAt?: Time;
+  createdAt?: DateTimeTimezone | string;
+  updatedAt?: DateTimeTimezone | string;
 }
 
 /**
@@ -27,7 +33,7 @@ export class AudioRecording implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
   public readonly id: ID;
   public readonly uuid: UUID;
-  public readonly recordedDate: Time;
+  public readonly recordedDate: DateTimeTimezone;
   public readonly siteId: ID;
   public readonly durationSeconds: number;
   public readonly sampleRateHertz: number;
@@ -36,8 +42,8 @@ export class AudioRecording implements AudioRecordingInterface {
   public readonly mediaType: string;
   public readonly dataLengthBytes: number;
   public readonly status: "ready" | "uploading" | "corrupt";
-  public readonly createdAt: Time;
-  public readonly updatedAt: Time;
+  public readonly createdAt: DateTimeTimezone;
+  public readonly updatedAt: DateTimeTimezone;
 
   constructor(audioRecording: AudioRecordingInterface) {
     this.kind = "AudioRecording";
@@ -45,8 +51,10 @@ export class AudioRecording implements AudioRecordingInterface {
     this.id = audioRecording.id;
     this.uuid = audioRecording.uuid;
     this.recordedDate = audioRecording.recordedDate
-      ? new Date(audioRecording.recordedDate)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      ? DateTime.fromISO(audioRecording.recordedDate as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.siteId = audioRecording.siteId;
     this.durationSeconds = audioRecording.durationSeconds;
     this.sampleRateHertz = audioRecording.sampleRateHertz;
@@ -56,10 +64,14 @@ export class AudioRecording implements AudioRecordingInterface {
     this.dataLengthBytes = audioRecording.dataLengthBytes;
     this.status = audioRecording.status;
     this.createdAt = audioRecording.createdAt
-      ? new Date(audioRecording.createdAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      ? DateTime.fromISO(audioRecording.createdAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
     this.updatedAt = audioRecording.updatedAt
-      ? new Date(audioRecording.updatedAt)
-      : new Date("1970-01-01T00:00:00.000+10:00");
+      ? DateTime.fromISO(audioRecording.updatedAt as string, {
+          setZone: true
+        })
+      : defaultDateTimeTimezone;
   }
 }

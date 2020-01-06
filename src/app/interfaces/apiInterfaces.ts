@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 /**
  * BAW API ID
  */
@@ -27,9 +29,16 @@ export type AuthToken = string;
  */
 export type Description = string;
 /**
- * BAW API Item Time
+ * BAW API DateTime
+ * Defaults to 1970-01-01T00:00:00.000
  */
-export type Time = Date;
+export type DateTimeTimezone = DateTime;
+/**
+ * Default value for BAW API DateTime
+ */
+export const defaultDateTimeTimezone = DateTime.fromISO(
+  "1970-01-01T00:00:00.000"
+);
 /**
  * BAW API Latitude
  */
