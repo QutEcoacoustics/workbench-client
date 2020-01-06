@@ -52,12 +52,5 @@
   </app-wip>
 </ng-container>
 
+<app-loading [isLoading]="state === 'loading'"></app-loading>
 <app-error-handler [error]="error"></app-error-handler>
-
-<!-- Project Data Loading Display -->
-<ng-container *ngIf="state === 'loading'">
-  <h4 class="text-center">Loading</h4>
-  <div class="d-flex justify-content-center">
-    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
-  </div>
-</ng-container>

@@ -15,12 +15,7 @@
 
   <div class="clearfix">
     <form [formGroup]="form" (ngSubmit)="submit(model)">
-      <!-- Loading spinner -->
-      <div class="d-flex justify-content-center" *ngIf="!fields">
-        <div class="spinner-border text-success" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
+      <app-loading [isLoading]="!fields"></app-loading>
 
       <!-- Form -->
       <formly-form

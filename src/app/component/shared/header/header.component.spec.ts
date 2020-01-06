@@ -63,6 +63,10 @@ describe("HeaderComponent", () => {
     viewport.set("extra-large");
   });
 
+  afterAll(() => {
+    viewport.set("medium");
+  });
+
   it("should create", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;

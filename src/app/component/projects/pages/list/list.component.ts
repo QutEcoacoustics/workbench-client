@@ -37,15 +37,7 @@ import {
       </ng-template>
     </ng-container>
 
-    <!-- Display loading animation -->
-    <ng-container *ngIf="loading">
-      <h4 class="text-center">Loading</h4>
-      <div class="d-flex justify-content-center">
-        <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
-      </div>
-    </ng-container>
-
-    <!-- Error handler -->
+    <app-loading [isLoading]="loading"></app-loading>
     <app-error-handler [error]="error"></app-error-handler>
   `
 })

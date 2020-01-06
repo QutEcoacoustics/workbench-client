@@ -10,6 +10,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
 import { flattenFields, FormComponent } from "./form.component";
+import { LoadingComponent } from "../loading/loading.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
 export const ButtonClickEvents = {
@@ -44,7 +45,7 @@ describe("FormComponent", () => {
         FormlyModule.forRoot(formlyRoot),
         FormlyBootstrapModule
       ],
-      declarations: [FormComponent]
+      declarations: [FormComponent, LoadingComponent]
     }).compileComponents();
   }));
 
