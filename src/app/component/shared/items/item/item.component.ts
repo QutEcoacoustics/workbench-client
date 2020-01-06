@@ -18,15 +18,15 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
       <!-- Item name -->
       <span id="name">
         <ng-container *ngIf="uri; else plainText">
-          <ng-container *ngIf="isInternalRoute(); else externalLink">
+          <ng-container *ngIf="internalLink; else externalLink">
             <!-- URI is internal link -->
-            <a [routerLink]="uri.toString()">
+            <a [routerLink]="link">
               {{ name }}
             </a>
           </ng-container>
           <ng-template #externalLink>
             <!-- URI is external link -->
-            <a [href]="uri">
+            <a [href]="link">
               {{ name }}
             </a>
           </ng-template>
@@ -45,16 +45,24 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemComponent {
+export class ItemComponent implements OnInit {
   @Input() icon: IconProp;
   @Input() name: string;
   @Input() value: string | number;
   @Input() uri?: Href | StrongRoute;
+  link: string;
+  internalLink: boolean;
 
   constructor() {}
 
-  isInternalRoute() {
-    return typeof this.uri === "object";
+  ngOnInit() {
+    if (typeof this.uri === "object") {
+      this.internalLink = true;
+      this.link = this.uri.toString();
+    } else {
+      this.internalLink = false;
+      this.link = this.uri;
+    }
   }
 }
 
