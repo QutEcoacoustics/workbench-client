@@ -73,7 +73,7 @@ export class StrongRoute {
    * Use this in a template like so:
    * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
    */
-  format(args: { [key: string]: string }): string {
+  format(args: { [key: string]: string | number }): string {
     if (!args) {
       // Should only be unit tests which encounter this
       console.error("Route arguments are " + args);

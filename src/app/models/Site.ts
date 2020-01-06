@@ -75,11 +75,10 @@ export class Site implements SiteInterface {
     this.timezoneInformation = site.timezoneInformation;
   }
 
-  // TODO Change this to use StrongRoute method
   getSiteUrl(project: Project): string {
-    return siteMenuItem.route
-      .toString()
-      .replace(":projectId", project.id.toString())
-      .replace(":siteId", this.id.toString());
+    return siteMenuItem.route.format({
+      projectId: project.id,
+      siteId: this.id
+    });
   }
 }
