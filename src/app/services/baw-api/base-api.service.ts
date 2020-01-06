@@ -6,6 +6,7 @@ import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 
 export const apiReturnCodes = {
+  unknown: -1,
   success: 200,
   created: 201,
   badRequest: 400,
@@ -65,6 +66,7 @@ export abstract class BawApiService {
   }
 
   /**
+   * TODO Update this to use handleResponse
    * Get response from details route
    * @param subject Subject to update
    * @param next Callback function which generates the model
@@ -91,7 +93,7 @@ export abstract class BawApiService {
           subject.complete();
         } else {
           subject.error({
-            status: 0,
+            status: apiReturnCodes.unknown,
             message: "No data returned from API"
           } as APIErrorDetails);
         }
@@ -278,7 +280,10 @@ export abstract class BawApiService {
         if (data.data) {
           next(data.data);
         } else {
-          error("No data returned from API");
+          error({
+            status: apiReturnCodes.unknown,
+            message: "No data returned from API"
+          } as APIErrorDetails);
         }
       },
       error: (err: APIErrorDetails) => {
