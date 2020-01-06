@@ -10,16 +10,26 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: 10.x
-    displayName: Install Node.js
+    displayName: "Install Node.js"
 
   - task: Npm@1
     inputs:
       command: install
-    displayName: npm install
+    displayName: "NPM install"
 
-  - script: |
-      npm test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
-    displayName: Run the test suite
+  - task: Npm@1
+    inputs:
+      command: test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
+    displayName: "Run test suite"
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/TESTS-*.xml"
+      mergeTestResults: true
+      publishRunAttachments: true
+    displayName: "Publish test results"
 
   - task: PublishCodeCoverageResults@1
     inputs:
@@ -29,16 +39,9 @@ steps:
     condition: succeededOrFailed()
     displayName: "Publish code coverage results"
 
-  - task: PublishTestResults@2
-    condition: succeededOrFailed()
+  - task: Npm@1
     inputs:
-      testResultsFormat: "JUnit"
-      testResultsFiles: "**/TESTS-*.xml"
-      mergeTestResults: true
-      publishRunAttachments: true
-    displayName: Publish test results
-
-  - script: npm run stats
+      command: run stats
     displayName: "Analyze workbench client bundle"
 
   - task: PublishBuildArtifacts@1
@@ -52,7 +55,9 @@ steps:
       SourceFolder: "$(Build.SourcesDirectory)/dist/**/*"
     displayName: "Cleanup analysis files"
 
-  - script: npm run build
+  - task: Npm@1
+    inputs:
+      command: run build
     displayName: "Build the workbench client"
 
   - task: ArchiveFiles@2
@@ -69,6 +74,7 @@ steps:
       artifactName: workbench-client
     displayName: "Publish build files"
 
-  - script: npm run lint
-    condition: succeededOrFailed()
-    displayName: Lint project
+  - task: Npm@1
+    inputs:
+      command: run lint
+    displayName: "Lint project"
