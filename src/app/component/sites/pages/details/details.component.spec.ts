@@ -643,31 +643,3 @@ describe("SitesDetailsComponent", () => {
     expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
   }));
 });
-
-xdescribe("SitesDetailsComponent Menu", () => {
-  xit("should display projects link in menu", () => {});
-
-  xit("should display indented project link in menu", () => {});
-
-  xit("should display indented site link in menu", () => {});
-});
-
-xdescribe("SitesDetailsComponent Action Menu", () => {
-  xit("should not display edit project action when project not found", () => {});
-
-  xit("should not display edit project action when unauthorized", () => {});
-
-  xit("should display placeholder created by user details", () => {});
-
-  xit("should display created by user details", () => {});
-
-  xit("should display placeholder modified by user details", () => {});
-
-  xit("should display modified by user details", () => {});
-
-  xit("should display placeholder owned by user details", () => {});
-
-  xit("should display owned by user details", () => {});
-
-  xit("should display access level", () => {});
-});
