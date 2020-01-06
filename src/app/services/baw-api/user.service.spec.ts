@@ -58,7 +58,7 @@ describe("UserService", () => {
    */
   function login() {
     securityService
-      .signIn({ email: "email", password: "password" })
+      .signIn({ login: "username", password: "password" })
       // tslint:disable-next-line: rxjs-no-ignored-error
       .subscribe(() => {});
 

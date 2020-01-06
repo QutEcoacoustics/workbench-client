@@ -60,29 +60,18 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
+    const msg = "You are already logged in";
 
-    this.api
-      .getLoggedInTrigger()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        loggedIn => {
-          const msg = "You are already logged in";
+    if (this.api.isLoggedIn()) {
+      this.loading = true;
+      this.error = msg;
+    } else {
+      this.loading = false;
 
-          if (loggedIn) {
-            this.loading = true;
-            this.error = msg;
-          } else {
-            this.loading = false;
-
-            if (this.error === msg) {
-              this.error = null;
-            }
-          }
-        },
-        (err: APIErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+      if (this.error === msg) {
+        this.error = null;
+      }
+    }
   }
 
   ngOnDestroy() {

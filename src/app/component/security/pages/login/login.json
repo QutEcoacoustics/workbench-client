@@ -1,11 +1,11 @@
 {
   "model": {
-    "email": "",
+    "login": "",
     "password": ""
   },
   "fields": [
     {
-      "key": "email",
+      "key": "login",
       "type": "input",
       "templateOptions": {
         "label": "Username or Email Address",

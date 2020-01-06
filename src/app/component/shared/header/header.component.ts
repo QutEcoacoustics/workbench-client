@@ -39,6 +39,18 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   encapsulation: ViewEncapsulation.None
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  private unsubscribe = new Subject();
+  activeLink: string;
+  collapsed: boolean;
+  config: Configuration;
+  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  routes: any;
+  title: string;
+  user: User;
+  userImage: string;
+
+  isNavigableMenuItem = isNavigableMenuItem;
+
   constructor(
     private router: Router,
     private securityApi: SecurityService,
@@ -46,18 +58,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private appConfig: AppConfigService,
     private ref: ChangeDetectorRef
   ) {}
-  private unsubscribe = new Subject();
-  activeLink: string;
-  collapsed: boolean;
-  config: Configuration;
-  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
-  title: string;
-  user: User;
-  userImage: string;
-
-  isNavigableMenuItem = isNavigableMenuItem;
-
-  routes: any;
 
   ngOnInit() {
     this.collapsed = true;

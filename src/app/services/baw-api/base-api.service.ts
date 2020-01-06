@@ -5,6 +5,18 @@ import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 
+export const apiReturnCodes = {
+  success: 200,
+  created: 201,
+  badRequest: 400,
+  unauthorized: 401,
+  forbidden: 403,
+  notFound: 404,
+  unsupportedMediaType: 415,
+  unprocessableEntity: 422,
+  internalServerFailure: 500
+};
+
 /**
  * Interface with BAW Server Rest API
  */
@@ -22,28 +34,34 @@ export abstract class BawApiService {
     filter -> POST with filter body
   */
 
-  constructor(protected http: HttpClient, protected config: AppConfigService) {}
-
   private url = this.config.getConfig().environment.apiRoot;
-
   protected paths: Paths;
   protected userSessionStorage = "user";
 
-  public apiReturnCodes = {
-    success: 200,
-    created: 201,
-    badRequest: 400,
-    unauthorized: 401,
-    forbidden: 403,
-    notFound: 404,
-    unsupportedMediaType: 415,
-    unprocessableEntity: 422,
-    internalServerFailure: 500
-  };
+  constructor(protected http: HttpClient, protected config: AppConfigService) {}
 
+  /**
+   * Determine if the user is currently logged in
+   */
   public isLoggedIn(): boolean {
     const user = this.getSessionUser();
     return user ? !!user.authToken : false;
+  }
+
+  /**
+   * Retrieve user details from session cookie. Null if no user exists.
+   */
+  public getSessionUser(): SessionUser | null {
+    let user: SessionUser;
+    try {
+      user = new SessionUser(
+        JSON.parse(sessionStorage.getItem(this.userSessionStorage))
+      );
+    } catch (Exception) {
+      user = null;
+    }
+
+    return user;
   }
 
   /**
@@ -215,42 +233,6 @@ export abstract class BawApiService {
   }
 
   /**
-   * Handle API response
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
-   */
-  private handleResponse(next: (data: any) => void, error: (err: any) => void) {
-    return {
-      next: (data: APIResponse) => {
-        if (data.data) {
-          next(data.data);
-        } else {
-          error("No data returned from API");
-        }
-      },
-      error: (err: APIErrorDetails) => {
-        error(err);
-      }
-    };
-  }
-
-  /**
-   * Retrieve user details from session cookie. Null if no user exists.
-   */
-  public getSessionUser(): SessionUser | null {
-    let user: SessionUser;
-    try {
-      user = new SessionUser(
-        JSON.parse(sessionStorage.getItem(this.userSessionStorage))
-      );
-    } catch (Exception) {
-      user = null;
-    }
-
-    return user;
-  }
-
-  /**
    * Returns the path for the api route
    * @param path Path fragment
    * @param args Args to modify path fragment
@@ -283,6 +265,26 @@ export abstract class BawApiService {
     }
 
     return this.url + path;
+  }
+
+  /**
+   * Handle API response
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   */
+  private handleResponse(next: (data: any) => void, error: (err: any) => void) {
+    return {
+      next: (data: APIResponse) => {
+        if (data.data) {
+          next(data.data);
+        } else {
+          error("No data returned from API");
+        }
+      },
+      error: (err: APIErrorDetails) => {
+        error(err);
+      }
+    };
   }
 }
 
