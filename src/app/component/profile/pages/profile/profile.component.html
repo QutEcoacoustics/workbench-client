@@ -48,18 +48,23 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="card">
+              <!-- Header -->
               <div class="card-header">
                 Most Popular Tags
               </div>
+
+              <!-- Tags -->
               <ul class="list-group list-group-flush">
-                <app-items-item
-                  [icon]="tag.icon"
-                  [name]="tag.name"
-                  [value]="tag.value"
-                  [uri]="tag.uri"
-                  *ngFor="let tag of tags"
-                >
-                </app-items-item>
+                <li class="list-group-item">
+                  <app-items-item
+                    [icon]="tag.icon"
+                    [name]="tag.name"
+                    [value]="tag.value"
+                    [uri]="tag.uri"
+                    *ngFor="let tag of tags"
+                  >
+                  </app-items-item>
+                </li>
               </ul>
             </div>
           </div>

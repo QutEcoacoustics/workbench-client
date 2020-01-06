@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  ViewEncapsulation
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Href } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
@@ -11,7 +6,7 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 @Component({
   selector: "app-items-item",
   template: `
-    <li class="list-group-item clearfix">
+    <div class="clearfix" style="font-size: 0.925rem;">
       <fa-icon id="icon" [icon]="icon"></fa-icon>
       <span id="name">
         {{ name }}
@@ -19,15 +14,8 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
       <span id="value" class="badge badge-pill badge-secondary float-right">
         {{ value }}
       </span>
-    </li>
+    </div>
   `,
-  styles: [
-    `
-      li {
-        font-size: 0.925rem;
-      }
-    `
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent {
