@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { ItemComponent } from "./item.component";
 
 describe("ItemComponent", () => {
@@ -9,7 +11,7 @@ describe("ItemComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [SharedModule, RouterTestingModule],
       declarations: [ItemComponent]
     }).compileComponents();
   }));
@@ -107,5 +109,37 @@ describe("ItemComponent", () => {
     const value = fixture.debugElement.nativeElement.querySelector("#value");
     expect(value).toBeTruthy();
     expect(value.innerText.trim()).toBe("random");
+  });
+
+  it("should handle internal link", () => {
+    component.icon = ["fas", "home"] as IconProp;
+    component.name = "Test";
+    component.value = "unknown";
+    component.uri = StrongRoute.Base.add("home");
+
+    fixture.detectChanges();
+    const anchor = fixture.debugElement.nativeElement.querySelector("a");
+
+    expect(anchor).toBeTruthy();
+    expect(anchor.innerText.trim()).toBe("Test");
+    expect(
+      anchor.attributes.getNamedItem("ng-reflect-router-link")
+    ).toBeTruthy();
+    expect(anchor.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
+      "/home"
+    );
+  });
+
+  it("should handle external link", () => {
+    component.icon = ["fas", "home"] as IconProp;
+    component.name = "Test";
+    component.value = "unknown";
+    component.uri = "http://broken_link/";
+
+    fixture.detectChanges();
+    const anchor = fixture.debugElement.nativeElement.querySelector("a");
+    expect(anchor).toBeTruthy();
+    expect(anchor.innerText.trim()).toBe("Test");
+    expect(anchor.href).toBe("http://broken_link/");
   });
 });

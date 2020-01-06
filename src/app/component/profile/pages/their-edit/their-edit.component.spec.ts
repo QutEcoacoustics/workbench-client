@@ -1,24 +1,30 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { testBawServices } from "src/app/app.helper";
+import { FormlyModule } from "@ngx-formly/core";
+import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { ProfileComponent } from "./profile.component";
+import { TheirEditComponent } from "./their-edit.component";
 
-describe("ProfileComponent", () => {
-  let component: ProfileComponent;
-  let fixture: ComponentFixture<ProfileComponent>;
+describe("TheirProfileEditComponent", () => {
+  let component: TheirEditComponent;
+  let fixture: ComponentFixture<TheirEditComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
-      declarations: [ProfileComponent],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        FormlyModule.forRoot(formlyRoot)
+      ],
+      declarations: [TheirEditComponent],
       providers: [...testBawServices]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProfileComponent);
+    fixture = TestBed.createComponent(TheirEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

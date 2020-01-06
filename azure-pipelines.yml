@@ -10,16 +10,27 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: 10.x
-    displayName: Install Node.js
+    displayName: "Install Node.js"
 
   - task: Npm@1
     inputs:
       command: install
-    displayName: npm install
+    displayName: "NPM install"
 
-  - script: |
-      npm test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
-    displayName: Run the test suite
+  - task: Npm@1
+    inputs:
+      command: custom
+      customCommand: test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless
+    displayName: "Run test suite"
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/TESTS-*.xml"
+      mergeTestResults: true
+      publishRunAttachments: true
+    displayName: "Publish test results"
 
   - task: PublishCodeCoverageResults@1
     inputs:
@@ -29,36 +40,27 @@ steps:
     condition: succeededOrFailed()
     displayName: "Publish code coverage results"
 
-  - task: PublishTestResults@2
-    condition: succeededOrFailed()
+  - task: Npm@1
     inputs:
-      testResultsFormat: "JUnit"
-      testResultsFiles: "**/TESTS-*.xml"
-      mergeTestResults: true
-      publishRunAttachments: true
-    displayName: Publish test results
-
-  - script: npm run stats
+      command: custom
+      customCommand: run stats
     displayName: "Analyze workbench client bundle"
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es2015.json"
+      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats.json"
       artifactName: analysis
-    displayName: "Publish es2015 analysis"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es5.json"
-      artifactName: analysis
-    displayName: "Publish es5 analysis"
+    displayName: "Publish analysis"
 
   - task: DeleteFiles@1
     inputs:
       SourceFolder: "$(Build.SourcesDirectory)/dist/**/*"
     displayName: "Cleanup analysis files"
 
-  - script: npm run build
+  - task: Npm@1
+    inputs:
+      command: custom
+      customCommand: run build
     displayName: "Build the workbench client"
 
   - task: ArchiveFiles@2
@@ -75,6 +77,8 @@ steps:
       artifactName: workbench-client
     displayName: "Publish build files"
 
-  - script: npm run lint
-    condition: succeededOrFailed()
-    displayName: Lint project
+  - task: Npm@1
+    inputs:
+      command: custom
+      customCommand: run lint
+    displayName: "Lint project"

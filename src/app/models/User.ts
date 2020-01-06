@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { profileMenuItem } from "../component/profile/profile.menus";
+import { theirProfileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
   DateTimeTimezone,
@@ -109,7 +109,7 @@ export class User implements UserInterface {
   }
 
   get url(): string {
-    return profileMenuItem.route
+    return theirProfileMenuItem.route
       .toString()
       .replace(":userId", this.id.toString());
   }

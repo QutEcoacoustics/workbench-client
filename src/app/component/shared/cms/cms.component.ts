@@ -18,12 +18,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
     <ng-container *ngIf="blob">
       <div [innerHtml]="blob"></div>
     </ng-container>
-    <ng-container *ngIf="loading">
-      <h4 class="text-center">Loading</h4>
-      <div class="d-flex justify-content-center">
-        <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
-      </div>
-    </ng-container>
+    <app-loading [isLoading]="loading"></app-loading>
     <app-error-handler [error]="error"></app-error-handler>
   `
 })

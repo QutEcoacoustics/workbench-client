@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fontAwesomeLibraries } from "src/app/app.helper";
 import {
   formlyAccessors,
   sharedComponents,
@@ -14,6 +14,6 @@ import {
 })
 export class SharedModule {
   constructor() {
-    library.add(fas);
+    fontAwesomeLibraries(library);
   }
 }

@@ -2,33 +2,31 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
-import { EditComponent } from "./pages/edit/edit.component";
-import { MyAccountEditComponent } from "./pages/my-account-edit/my-account-edit.component";
-import {
-  MyAccountProfileComponent,
-  ProfileComponent
-} from "./pages/profile/profile.component";
-import { myAccountRoute, profileRoute } from "./profile.menus";
+import { MyEditComponent } from "./pages/my-edit/my-edit.component";
+import { MyProfileComponent } from "./pages/profile/my-profile.component copy";
+import { TheirProfileComponent } from "./pages/profile/their-profile.component";
+import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
+import { myAccountRoute, theirProfileRoute } from "./profile.menus";
 
-export const MyAccountComponents = [
-  MyAccountProfileComponent,
-  MyAccountEditComponent
+export const MyAccountComponents = [MyProfileComponent, MyEditComponent];
+export const TheirProfileComponents = [
+  TheirProfileComponent,
+  TheirEditComponent
 ];
-export const ProfileComponents = [ProfileComponent];
 
 const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
-const profileRoutes = profileRoute.compileRoutes(GetRouteConfigForPage);
+const profileRoutes = theirProfileRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [MyAccountComponents, EditComponent],
+  declarations: [MyAccountComponents],
   imports: [SharedModule, RouterModule.forChild(myAccountRoutes)],
   exports: [RouterModule, ...MyAccountComponents]
 })
 export class MyAccountModule {}
 
 @NgModule({
-  declarations: [ProfileComponents],
+  declarations: [TheirProfileComponents],
   imports: [SharedModule, RouterModule.forChild(profileRoutes)],
-  exports: [RouterModule, ...ProfileComponents]
+  exports: [RouterModule, ...TheirProfileComponents]
 })
 export class ProfileModule {}

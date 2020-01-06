@@ -48,18 +48,23 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="card">
+              <!-- Header -->
               <div class="card-header">
                 Most Popular Tags
               </div>
+
+              <!-- Tags -->
               <ul class="list-group list-group-flush">
-                <app-items-item
-                  [icon]="tag.icon"
-                  [name]="tag.name"
-                  [value]="tag.value"
-                  [uri]="tag.uri"
-                  *ngFor="let tag of tags"
-                >
-                </app-items-item>
+                <li class="list-group-item">
+                  <app-items-item
+                    [icon]="tag.icon"
+                    [name]="tag.name"
+                    [value]="tag.value"
+                    [uri]="tag.uri"
+                    *ngFor="let tag of tags"
+                  >
+                  </app-items-item>
+                </li>
               </ul>
             </div>
           </div>
@@ -68,12 +73,6 @@
     </div>
   </ng-container>
 
-  <!-- Loading spinner -->
-  <div class="d-flex justify-content-center" *ngIf="!error && !user">
-    <div class="spinner-border text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
-
+  <app-loading [isLoading]="!error && !user"></app-loading>
   <app-error-handler [error]="error"></app-error-handler>
 </app-wip>

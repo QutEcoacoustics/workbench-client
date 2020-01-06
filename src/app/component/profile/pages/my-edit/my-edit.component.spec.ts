@@ -11,12 +11,12 @@ import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { MyAccountEditComponent } from "./my-account-edit.component";
+import { MyEditComponent } from "./my-edit.component";
 
-describe("MyAccountEditComponent", () => {
+describe("MyProfileEditComponent", () => {
   let api: UserService;
-  let component: MyAccountEditComponent;
-  let fixture: ComponentFixture<MyAccountEditComponent>;
+  let component: MyEditComponent;
+  let fixture: ComponentFixture<MyEditComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,11 +25,11 @@ describe("MyAccountEditComponent", () => {
         RouterTestingModule,
         FormlyModule.forRoot(formlyRoot)
       ],
-      declarations: [MyAccountEditComponent],
+      declarations: [MyEditComponent],
       providers: [...testBawServices]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MyAccountEditComponent);
+    fixture = TestBed.createComponent(MyEditComponent);
     api = TestBed.get(UserService);
     component = fixture.componentInstance;
     component.schema.model = { edit: {} };

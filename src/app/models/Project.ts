@@ -67,11 +67,8 @@ export class Project implements ProjectInterface {
     this.siteIds = new Set(project.siteIds);
   }
 
-  // TODO Update this to use StrongRoute method
   get projectUrl(): string {
-    return projectMenuItem.route
-      .toString()
-      .replace(":projectId", this.id.toString());
+    return projectMenuItem.route.format({ projectId: this.id });
   }
 
   /**

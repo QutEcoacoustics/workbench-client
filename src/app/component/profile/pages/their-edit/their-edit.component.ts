@@ -10,22 +10,25 @@ import { User } from "src/app/models/User";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
-  editProfileMenuItem,
-  profileCategory,
-  profileMenuItem
+  theirEditProfileMenuItem,
+  theirProfileCategory,
+  theirProfileMenuItem
 } from "../../profile.menus";
-import data from "./edit.json";
+import data from "./their-edit.json";
 
 @Page({
-  category: profileCategory,
+  category: theirProfileCategory,
   menus: {
-    actions: List<AnyMenuItem>([profileMenuItem, editProfileMenuItem]),
+    actions: List<AnyMenuItem>([
+      theirProfileMenuItem,
+      theirEditProfileMenuItem
+    ]),
     links: List()
   },
-  self: editProfileMenuItem
+  self: theirEditProfileMenuItem
 })
 @Component({
-  selector: "app-profile-edit",
+  selector: "app-their-profile-edit",
   template: `
     <app-wip>
       <app-form
@@ -42,7 +45,8 @@ import data from "./edit.json";
     </app-wip>
   `
 })
-export class EditComponent extends PageComponent implements OnInit, OnDestroy {
+export class TheirEditComponent extends PageComponent
+  implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   errorDetails: APIErrorDetails;

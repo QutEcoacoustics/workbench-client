@@ -23,14 +23,14 @@ class TestErrorHandlerComponent implements OnInit {
     this.error = {
       status: 401,
       message: "You need to log in or register before continuing."
-    };
+    } as APIErrorDetails;
     this.ref.detectChanges();
 
     setTimeout(() => {
       this.error = {
         status: 404,
         message: "Could not find the requested item."
-      };
+      } as APIErrorDetails;
       this.ref.detectChanges();
     }, 50);
   }
@@ -63,7 +63,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 401,
       message: "You need to log in or register before continuing."
-    };
+    } as APIErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -81,7 +81,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 404,
       message: "Could not find the requested item."
-    };
+    } as APIErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -97,7 +97,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 403,
       message: "You must request access to this resource."
-    };
+    } as APIErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -109,8 +109,27 @@ describe("ErrorHandlerComponent", () => {
     expect(body.innerText).toBe("You must request access to this resource.");
   });
 
+  it("should handle zero code", () => {
+    component.error = {
+      status: 0,
+      message: "Unknown error has occurred."
+    } as APIErrorDetails;
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    expect(title).toBeTruthy();
+    expect(title.innerText).toBe("Unknown Error");
+
+    const body = fixture.debugElement.nativeElement.querySelector("p");
+    expect(body).toBeTruthy();
+    expect(body.innerText).toBe("Unknown error has occurred.");
+  });
+
   it("should handle unknown code", () => {
-    component.error = { status: -1, message: "Unknown error has occurred." };
+    component.error = {
+      status: -1,
+      message: "Unknown error has occurred."
+    } as APIErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");

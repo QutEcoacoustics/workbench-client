@@ -11,21 +11,25 @@ import { ItemInterface } from "../item/item.component";
   template: `
     <div class="row pb-3">
       <div class="col-sm-6">
-        <ul class="list-group" *ngFor="let stat of groupOne">
-          <app-items-item
-            [icon]="stat.icon"
-            [name]="stat.name"
-            [value]="stat.value"
-          ></app-items-item>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let stat of groupOne">
+            <app-items-item
+              [icon]="stat.icon"
+              [name]="stat.name"
+              [value]="stat.value"
+            ></app-items-item>
+          </li>
         </ul>
       </div>
       <div class="col-sm-6">
-        <ul class="list-group" *ngFor="let stat of groupTwo">
-          <app-items-item
-            [icon]="stat.icon"
-            [name]="stat.name"
-            [value]="stat.value"
-          ></app-items-item>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let stat of groupTwo">
+            <app-items-item
+              [icon]="stat.icon"
+              [name]="stat.name"
+              [value]="stat.value"
+            ></app-items-item>
+          </li>
         </ul>
       </div>
     </div>

@@ -31,3 +31,9 @@ section {
     line-height: 1.1;
   }
 }
+
+/* BACKWARDS COMPATIBILITY */
+.nav-pills > li > a {
+  font-size: 0.9rem;
+  border-radius: 4px;
+}

@@ -4,6 +4,10 @@ import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 
 export let APP_CONFIG = new InjectionToken("app.config");
 
+export function appInitializerFn(appConfig: AppConfigService) {
+  return () => appConfig.loadAppConfig();
+}
+
 @Injectable()
 export class AppConfigService {
   private appConfig: Configuration = undefined;

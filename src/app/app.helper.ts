@@ -1,5 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
+import { Library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
 import { environment } from "src/environments/environment";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
@@ -8,7 +10,8 @@ import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
   APP_CONFIG,
-  AppConfigService
+  AppConfigService,
+  appInitializerFn
 } from "./services/app-config/app-config.service";
 import {
   APP_CONFIG as MOCK_APP_CONFIG,
@@ -72,8 +75,8 @@ export const formlyRoot = {
   ]
 } as ConfigOption;
 
-export function appInitializerFn(appConfig: AppConfigService) {
-  return () => appConfig.loadAppConfig();
+export function fontAwesomeLibraries(library: Library) {
+  library.add(fas);
 }
 
 export const providers = [
