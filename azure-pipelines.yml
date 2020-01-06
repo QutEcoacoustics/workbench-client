@@ -43,15 +43,9 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es2015.json"
+      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats.json"
       artifactName: analysis
-    displayName: "Publish es2015 analysis"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats-es5.json"
-      artifactName: analysis
-    displayName: "Publish es5 analysis"
+    displayName: "Publish analysis"
 
   - task: DeleteFiles@1
     inputs:
