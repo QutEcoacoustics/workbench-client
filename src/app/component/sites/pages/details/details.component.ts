@@ -13,7 +13,6 @@ import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { AudioRecordingsService } from "src/app/services/baw-api/audio-recordings.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -51,8 +50,7 @@ export class DetailsComponent extends PageComponent
   constructor(
     private route: ActivatedRoute,
     private sitesApi: SitesService,
-    private projectsApi: ProjectsService,
-    private audioRecordingApi: AudioRecordingsService
+    private projectsApi: ProjectsService
   ) {
     super();
   }
@@ -109,26 +107,28 @@ export class DetailsComponent extends PageComponent
         }
       );
 
+    this.recordings = [];
+
     // Retrieve audio recording details
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.audioRecordingApi.getAudioRecordings(params.siteId, {
-            items: 100
-          });
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        recordings => {
-          this.recordings = recordings;
-          this.extremityDates(recordings);
-        },
-        () => {
-          // Doesn't break things if audio recordings don't load
-          this.recordings = [];
-        }
-      );
+    // this.route.params
+    //   .pipe(
+    //     flatMap(params => {
+    //       return this.audioRecordingApi.getAudioRecordings(params.siteId, {
+    //         items: 100
+    //       });
+    //     }),
+    //     takeUntil(this.unsubscribe)
+    //   )
+    //   .subscribe(
+    //     recordings => {
+    //       this.recordings = recordings;
+    //       this.extremityDates(recordings);
+    //     },
+    //     () => {
+    //       // Doesn't break things if audio recordings don't load
+    //       this.recordings = [];
+    //     }
+    //   );
   }
 
   extremityDates(recordings: AudioRecording[]) {

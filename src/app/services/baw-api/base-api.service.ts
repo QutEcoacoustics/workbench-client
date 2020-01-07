@@ -36,10 +36,9 @@ export abstract class BawApiService {
   */
 
   private url = this.config.getConfig().environment.apiRoot;
-  protected paths: Paths;
   protected userSessionStorage = "user";
 
-  constructor(protected http: HttpClient, protected config: AppConfigService) {}
+  constructor(private http: HttpClient, private config: AppConfigService) {}
 
   /**
    * Determine if the user is currently logged in
@@ -66,17 +65,16 @@ export abstract class BawApiService {
   }
 
   /**
-   * TODO Update this to use handleResponse
    * Get response from details route
-   * @param subject Subject to update
-   * @param next Callback function which generates the model
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
    * @param path API path
    * @param args API arguments
    * @param filters API filters
    */
   protected details(
-    subject: Subject<any>,
-    next: (data: any) => any,
+    next: (data: any) => void,
+    error: (err: any) => void,
     path: string,
     args?: PathArg,
     filters?: Filters
@@ -86,22 +84,9 @@ export abstract class BawApiService {
       params = params.set(filter, filters[filter]);
     }
 
-    this.get<APIResponse>(path, args, params).subscribe({
-      next: (data: APIResponse) => {
-        if (data.data) {
-          subject.next(next(data.data));
-          subject.complete();
-        } else {
-          subject.error({
-            status: apiReturnCodes.unknown,
-            message: "No data returned from API"
-          } as APIErrorDetails);
-        }
-      },
-      error: (err: APIErrorDetails) => {
-        subject.error(err);
-      }
-    });
+    this.get<APIResponse>(path, args, params).subscribe(
+      this.handleResponse(next, error)
+    );
   }
 
   /**
@@ -274,7 +259,10 @@ export abstract class BawApiService {
    * @param next Callback function for successful response
    * @param error Callback function for failed response
    */
-  private handleResponse(next: (data: any) => void, error: (err: any) => void) {
+  private handleResponse<T>(
+    next: (data: any) => void,
+    error: (err: any) => void
+  ) {
     return {
       next: (data: APIResponse) => {
         if (data.data) {
@@ -305,15 +293,8 @@ export interface MetaError {
  * Api path argument
  */
 export interface PathArg {
-  args?: { [key: string]: any };
+  args?: { [key: string]: string | number };
   filters?: { [key: string]: any };
-}
-
-/**
- * Api path fragment
- */
-export interface Paths {
-  [key: string]: string;
 }
 
 /**
@@ -334,6 +315,19 @@ export interface APIResponse {
     status: number;
     message: string;
     error?: MetaError;
+    sorting?: {
+      orderBy: string;
+      direction: string;
+    };
+    paging?: {
+      page: number;
+      items: number;
+      total: number;
+      maxPage: number;
+      current: string;
+      previous: string;
+      next: string;
+    };
   };
   data: any;
 }
@@ -353,29 +347,4 @@ export interface RequestOptions {
   reportProgress?: boolean;
   responseType?: "json";
   withCredentials?: boolean;
-}
-
-/**
- * API response containing a list of data
- */
-export interface APIResponseList extends APIResponse {
-  meta: {
-    status: number;
-    message: string;
-    error?: MetaError;
-    sorting: {
-      orderBy: string;
-      direction: string;
-    };
-    paging: {
-      page: number;
-      items: number;
-      total: number;
-      maxPage: number;
-      current: string;
-      previous: string;
-      next: string;
-    };
-  };
-  data: any[];
 }

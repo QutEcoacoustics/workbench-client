@@ -4,14 +4,19 @@ import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { User, UserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiService } from "./base-api.service";
+import { ModelService } from "./model.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class UserService extends BawApiService {
+export class UserService extends ModelService<User> {
+  private paths: {
+    [key: string]: string;
+  };
+
   constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+    const classBuilder = (user: UserInterface) => new User(user);
+    super(http, config, classBuilder);
 
     this.paths = {
       myAccount: "/my_account",
@@ -24,27 +29,15 @@ export class UserService extends BawApiService {
    * @returns Observable returning current user details
    */
   public getMyAccount(): Subject<User> {
-    const subject = new Subject<User>();
-    const callback = (user: UserInterface) => new User(user);
-
-    this.details(subject, callback, this.paths.myAccount);
-
-    return subject;
+    return this.modelShow(this.paths.myAccount);
   }
 
   /**
    * Get the user account details of another user
-   * @param id User ID
+   * @param userId User ID
    * @returns Observable returning user details
    */
-  public getUserAccount(id: ID): Subject<User> {
-    const subject = new Subject<User>();
-    const callback = (user: UserInterface) => new User(user);
-
-    this.details(subject, callback, this.paths.userAccount, {
-      args: { userId: id }
-    });
-
-    return subject;
+  public getUserAccount(userId: ID): Subject<User> {
+    return this.modelShow(this.paths.userAccount, userId);
   }
 }

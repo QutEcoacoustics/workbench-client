@@ -11,40 +11,55 @@ import {
 } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
+import { Filters } from "./base-api.service";
+import { ModelService } from "./model.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends BawApiService {
+export class SitesService extends ModelService<Site> {
+  private paths: {
+    [key: string]: string;
+  };
+
   constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+    const classBuilder = (site: SiteInterface) => new Site(site);
+    super(http, config, classBuilder);
 
     this.paths = {
-      list: "/projects/:projectId/sites",
-      flattened: "/sites/:siteId",
-      nested: "/projects/:projectId/sites/:siteId",
-      filter: "/sites/filter",
-      new: "/projects/:projectId/sites",
-      update: "/projects/:projectId/sites/:siteId"
+      details: "/sites",
+      nestedDetails: "/projects/:projectId/sites/",
+      show: "/projects/:projectId/sites/:siteId",
+      nestedShow: "/projects/:projectId/sites/:siteId",
+      nestedNew: "/projects/:projectId/sites",
+      nestedUpdate: "/projects/:projectId/sites/:siteId"
     };
   }
 
   /**
+   * Get list of sites
+   * @returns Observable list of sites
+   */
+  public getSites(): Subject<Site[]> {
+    return this.modelDetails(this.paths.details);
+  }
+
+  /**
    * Get site data available to the user
-   * @param id Site ID
+   * @param siteId Site ID
    * @returns Observable returning singular site
    */
-  public getSite(id: ID): Subject<Site> {
-    const subject = new Subject<Site>();
-    const callback = (site: SiteInterface) => new Site(site);
+  public getSite(siteId: ID): Subject<Site> {
+    return this.modelShow(this.paths.show, siteId);
+  }
 
-    this.details(subject, callback, this.paths.flattened, {
-      args: { siteId: id }
-    });
-
-    return subject;
+  /**
+   * Get list of sites for a project
+   * @param projectId Project ID
+   * @returns Observable list of sites for a project
+   */
+  public getProjectSites(projectId: ID): Subject<Site[]> {
+    return this.modelDetails(this.paths.nestedDetails, projectId);
   }
 
   /**
@@ -54,34 +69,7 @@ export class SitesService extends BawApiService {
    * @returns Observable returning singular site
    */
   public getProjectSite(projectId: ID, siteId: ID): Subject<Site> {
-    const subject = new Subject<Site>();
-    const callback = (site: SiteInterface) => new Site(site);
-
-    this.details(subject, callback, this.paths.nested, {
-      args: { projectId, siteId }
-    });
-
-    return subject;
-  }
-
-  /**
-   * Get list of sites for a project
-   * @returns Observable list of sites
-   * @param id Project ID
-   * @returns Observable list of sites for a project
-   */
-  public getProjectSites(id: ID): Subject<Site[]> {
-    const subject = new Subject<Site[]>();
-    const callback = (sites: SiteInterface[]) =>
-      sites.map(site => {
-        return new Site(site);
-      });
-
-    this.details(subject, callback, this.paths.list, {
-      args: { projectId: id }
-    });
-
-    return subject;
+    return this.modelShow(this.paths.nestedShow, projectId, siteId);
   }
 
   /**
@@ -99,25 +87,8 @@ export class SitesService extends BawApiService {
       customLongitude?: Longitude;
       timezoneInformation?: TimezoneInformation;
     }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => subject.error(err);
-
-    this.create(
-      next,
-      error,
-      this.paths.new,
-      { args: { projectId: id } },
-      details,
-      {}
-    );
-
-    return subject;
+  ): Subject<Site> {
+    return this.modelNew(this.paths.nestedNew, details, id);
   }
 
   /**
@@ -137,32 +108,13 @@ export class SitesService extends BawApiService {
       customLongitude?: Longitude;
       timezoneInformation?: TimezoneInformation;
     }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => {
-      // Deal with custom info
-      if (err.info && err.info.name && err.info.name.length === 1) {
-        subject.error(err.message + ": name " + err.info.name[0]);
-      } else {
-        subject.error(err.message);
-      }
-    };
-
-    this.update(
-      next,
-      error,
-      this.paths.update,
-      { args: { projectId, siteId } },
+  ): Subject<Site> {
+    return this.modelUpdate(
+      this.paths.nestedUpdate,
       details,
-      {}
+      projectId,
+      siteId
     );
-
-    return subject;
   }
 }
 
