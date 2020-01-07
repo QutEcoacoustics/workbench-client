@@ -3,7 +3,7 @@ import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Subject } from "rxjs";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService } from "./base-api.service";
+import { BawApiService, Filters } from "./base-api.service";
 
 export let MOCK_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
@@ -32,62 +32,71 @@ export class ModelService<T> extends BawApiService {
   /**
    * Get list of models
    * @param path URL path
+   * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected modelDetails(path: string, ...args: Args): Subject<T[]> {
+  protected details(
+    path: string,
+    filters: Filters,
+    ...args: Args
+  ): Subject<T[]> {
     const subject = new Subject<T[]>();
     const next = (objects: object[]) => this.subjectNextList(subject, objects);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.details(next, error, path);
+    this.apiDetails(next, error, path, filters);
 
     return subject;
   }
 
   /**
    * Get individual model
+   * @param path URL path
+   * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected modelShow(path: string, ...args: Args): Subject<T> {
+  protected show(path: string, filters: Filters, ...args: Args): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.details(next, error, path);
+    this.apiDetails(next, error, path, filters);
 
     return subject;
   }
 
   /**
    * Create a new model
+   * @param path URL path
    * @param values Form details
    * @param args URL parameter values
    */
-  protected modelNew(path: string, values: any, ...args: Args): Subject<T> {
+  protected new(path: string, values: any, ...args: Args): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.create(next, error, path, {}, values);
+    this.apiCreate(next, error, path, values);
 
     return subject;
   }
 
   /**
    * Update a model
+   * @param path URL path
    * @param values Form details
    * @param args URL parameter values
    */
-  protected modelUpdate(path: string, values: any, ...args: Args): Subject<T> {
+  protected update(path: string, values: any, ...args: Args): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.update(next, error, path, {}, values);
+    this.apiUpdate(next, error, path, values);
 
     return subject;
   }

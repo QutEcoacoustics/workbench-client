@@ -38,28 +38,20 @@ export class ProjectsService extends ModelService<Project> {
   /**
    * Get a project available to the user
    * @param projectId Project ID
+   * @param filters API filters
    * @returns Observable returning singular project
    */
-  public getProject(projectId: ID): Subject<Project> {
-    return this.modelShow(this.paths.show, projectId);
+  public getProject(projectId: ID, filters?: Filters): Subject<Project> {
+    return this.show(this.paths.show, filters, projectId);
   }
 
   /**
    * Get list of projects available to the user
+   * @param filters API filters
    * @returns Observable list of projects
    */
-  public getProjects(): Subject<Project[]> {
-    return this.modelDetails(this.paths.details);
-  }
-
-  /**
-   * TODO Fix this
-   * Get list of filtered projects available to the user
-   * @param filters Filters
-   * @returns Observable list of projects
-   */
-  public getFilteredProjects(filters: ProjectFilters): Subject<Project[]> {
-    return this.getProjects();
+  public getProjects(filters?: Filters): Subject<Project[]> {
+    return this.details(this.paths.details, filters);
   }
 
   /**
@@ -71,7 +63,7 @@ export class ProjectsService extends ModelService<Project> {
     description?: Description;
     image?: ImageURL;
   }): Subject<Project> {
-    return this.modelNew(this.paths.new, details);
+    return this.new(this.paths.new, details);
   }
 
   /**
@@ -86,7 +78,7 @@ export class ProjectsService extends ModelService<Project> {
       image?: ImageURL;
     }
   ): Subject<Project> {
-    return this.modelUpdate(this.paths.update, details, projectId);
+    return this.update(this.paths.update, details, projectId);
   }
 }
 

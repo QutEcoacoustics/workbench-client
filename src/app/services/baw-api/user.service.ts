@@ -29,7 +29,7 @@ export class UserService extends ModelService<User> {
    * @returns Observable returning current user details
    */
   public getMyAccount(): Subject<User> {
-    return this.modelShow(this.paths.myAccount);
+    return this.show(this.paths.myAccount, null);
   }
 
   /**
@@ -38,6 +38,6 @@ export class UserService extends ModelService<User> {
    * @returns Observable returning user details
    */
   public getUserAccount(userId: ID): Subject<User> {
-    return this.modelShow(this.paths.userAccount, userId);
+    return this.show(this.paths.userAccount, null, userId);
   }
 }

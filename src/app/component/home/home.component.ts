@@ -36,11 +36,13 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log("Start");
+
     this.securityApi
       .getLoggedInTrigger()
       .pipe(
         flatMap(() => {
-          return this.projectApi.getFilteredProjects({ items: 3 });
+          return this.projectApi.getProjects({ paging: { items: 3 } });
         }),
         map((data: Project[]) => {
           return List(data.map(project => project.card));
