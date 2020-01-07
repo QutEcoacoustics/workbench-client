@@ -299,303 +299,19 @@ describe("ProjectsService", () => {
     });
   });
 
-  it("getFilteredProjects should get filtered number of items", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "name",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 3,
-          total: 1,
-          max_page: 1,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
-
-    service
-      .getFilteredProjects({
-        items: 3
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/filter?items=3"
-    );
-    req.flush(dummyApiResponse);
-  });
-
-  it("getFilteredProjects should get ordered by creator id", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "creator_id",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          max_page: 1,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
-
-    service
-      .getFilteredProjects({
-        orderBy: "creatorId"
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot +
-        "/projects/filter?order_by=creator_id"
-    );
-    req.flush(dummyApiResponse);
-  });
-
-  it("getFilteredProjects should get multi filter", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "creator_id",
-          direction: "desc"
-        },
-        paging: {
-          page: 2,
-          items: 5,
-          total: 1,
-          max_page: 2,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
-
-    service
-      .getFilteredProjects({
-        direction: "desc",
-        items: 3,
-        orderBy: "creatorId",
-        page: 2
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot +
-        "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
-    );
-    req.flush(dummyApiResponse);
-  });
-
   it("newProject should create new project", done => {
     service.newProject({ name: "Testing Project #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Project({
+            id: 1,
+            name: "Testing Project #1",
+            creatorId: 1,
+            description: null,
+            siteIds: new Set([])
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -757,7 +473,16 @@ describe("ProjectsService", () => {
   it("updateProject should update project", done => {
     service.updateProject(1, { name: "Testing Project #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Project({
+            id: 1,
+            name: "Testing Project #1",
+            description: "testing description",
+            creatorId: 1,
+            siteIds: new Set([])
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -790,7 +515,16 @@ describe("ProjectsService", () => {
   it("updateProject should update project with random project id", done => {
     service.updateProject(5, { name: "Testing Project #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Project({
+            id: 5,
+            name: "Testing Project #1",
+            description: "testing description",
+            creatorId: 1,
+            siteIds: new Set([])
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");

@@ -28,8 +28,8 @@ export class SitesService extends ModelService<Site> {
 
     this.paths = {
       details: "/sites",
-      nestedDetails: "/projects/:projectId/sites/",
-      show: "/projects/:projectId/sites/:siteId",
+      nestedDetails: "/projects/:projectId/sites",
+      show: "/sites/:siteId",
       nestedShow: "/projects/:projectId/sites/:siteId",
       nestedNew: "/projects/:projectId/sites",
       nestedUpdate: "/projects/:projectId/sites/:siteId"

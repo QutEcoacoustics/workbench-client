@@ -1,9 +1,13 @@
 import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Subject } from "rxjs";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
+export let MOCK_CLASS_BUILDER = new InjectionToken("test.class.builder");
+
+@Injectable()
 export class ModelService<T> extends BawApiService {
   private subjectNext(subject: Subject<T>, data: any) {
     subject.next(this.classBuilder(data));
@@ -20,7 +24,7 @@ export class ModelService<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
-    private classBuilder: (object: any) => T
+    @Inject(MOCK_CLASS_BUILDER) private classBuilder: (object: any) => T
   ) {
     super(http, config);
   }
@@ -67,7 +71,7 @@ export class ModelService<T> extends BawApiService {
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.create(next, error, path, values);
+    this.create(next, error, path, {}, values);
 
     return subject;
   }
@@ -83,7 +87,7 @@ export class ModelService<T> extends BawApiService {
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.update(next, error, path, values);
+    this.update(next, error, path, {}, values);
 
     return subject;
   }

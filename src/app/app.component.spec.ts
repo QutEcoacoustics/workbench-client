@@ -13,7 +13,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
-import { BehaviorSubject, of, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { testBawServices } from "./app.helper";
 import { appImports } from "./app.module";

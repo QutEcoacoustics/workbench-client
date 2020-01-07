@@ -1,11 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { BawApiService } from "../base-api.service";
+import { AudioRecording } from "src/app/models/AudioRecording";
+import { MockModelService } from "./modelMockService";
 
 @Injectable({
   providedIn: "root"
 })
-export class MockAudioRecordingsService extends BawApiService {
+export class MockAudioRecordingsService extends MockModelService<
+  AudioRecording
+> {
   public getAudioRecordings() {
     return new Subject();
   }

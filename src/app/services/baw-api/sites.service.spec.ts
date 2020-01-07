@@ -616,7 +616,20 @@ describe("SitesService", () => {
   it("newProjectSite should create new site", done => {
     service.newProjectSite(1, { name: "Testing site #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Site({
+            id: 6,
+            name: "Test site #1",
+            description: null,
+            projectIds: new Set([1]),
+            creatorId: 1,
+            locationObfuscated: false,
+            customLatitude: null,
+            customLongitude: null,
+            timezoneInformation: null
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -641,6 +654,7 @@ describe("SitesService", () => {
           name: "Test site #1",
           description: null,
           project_ids: [1],
+          creator_id: 1,
           location_obfuscated: false,
           custom_latitude: null,
           custom_longitude: null,
@@ -655,7 +669,20 @@ describe("SitesService", () => {
   it("newProjectSite should create new site with random project id", done => {
     service.newProjectSite(5, { name: "Testing site #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Site({
+            id: 6,
+            name: "Test site #1",
+            description: null,
+            projectIds: new Set([5]),
+            creatorId: 1,
+            locationObfuscated: false,
+            customLatitude: null,
+            customLongitude: null,
+            timezoneInformation: null
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -680,6 +707,7 @@ describe("SitesService", () => {
           name: "Test site #1",
           description: null,
           project_ids: [5],
+          creator_id: 1,
           location_obfuscated: false,
           custom_latitude: null,
           custom_longitude: null,
@@ -770,7 +798,20 @@ describe("SitesService", () => {
   it("updateProjectSite should update site", done => {
     service.updateProjectSite(1, 1, { name: "Testing site #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Site({
+            id: 1,
+            name: "Testing site #1",
+            description: "Test site description",
+            projectIds: new Set([1]),
+            creatorId: 1,
+            locationObfuscated: false,
+            customLatitude: null,
+            customLongitude: null,
+            timezoneInformation: null
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -795,6 +836,7 @@ describe("SitesService", () => {
           name: "Testing site #1",
           description: "Test site description",
           project_ids: [1],
+          creator_id: 1,
           location_obfuscated: false,
           custom_latitude: null,
           custom_longitude: null,
@@ -809,7 +851,20 @@ describe("SitesService", () => {
   it("updateProjectSite should update site with random project id", done => {
     service.updateProjectSite(5, 1, { name: "Testing site #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Site({
+            id: 1,
+            name: "Testing site #1",
+            description: "Test site description",
+            projectIds: new Set([5]),
+            creatorId: 1,
+            locationObfuscated: false,
+            customLatitude: null,
+            customLongitude: null,
+            timezoneInformation: null
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -834,6 +889,7 @@ describe("SitesService", () => {
           name: "Testing site #1",
           description: "Test site description",
           project_ids: [5],
+          creator_id: 1,
           location_obfuscated: false,
           custom_latitude: null,
           custom_longitude: null,
@@ -848,7 +904,20 @@ describe("SitesService", () => {
   it("updateProjectSite should update site with random site id", done => {
     service.updateProjectSite(1, 5, { name: "Testing site #1" }).subscribe(
       res => {
-        expect(res).toBeTrue();
+        expect(res).toBeTruthy();
+        expect(res).toEqual(
+          new Site({
+            id: 5,
+            name: "Testing site #1",
+            description: "Test site description",
+            projectIds: new Set([1]),
+            creatorId: 1,
+            locationObfuscated: false,
+            customLatitude: null,
+            customLongitude: null,
+            timezoneInformation: null
+          })
+        );
       },
       () => {
         expect(false).toBeTruthy("Should be no error response");
@@ -869,10 +938,11 @@ describe("SitesService", () => {
           message: "OK"
         },
         data: {
-          id: 1,
+          id: 5,
           name: "Testing site #1",
           description: "Test site description",
-          project_ids: [5],
+          project_ids: [1],
+          creator_id: 1,
           location_obfuscated: false,
           custom_latitude: null,
           custom_longitude: null,

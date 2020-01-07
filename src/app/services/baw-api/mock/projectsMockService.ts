@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { BawApiService } from "../base-api.service";
+import { Project } from "src/app/models/Project";
+import { MockModelService } from "./modelMockService";
 
 @Injectable({
   providedIn: "root"
 })
-export class MockProjectsService extends BawApiService {
+export class MockProjectsService extends MockModelService<Project> {
   public getProject() {
     return new Subject();
   }
