@@ -412,7 +412,7 @@ describe("ModelService", () => {
             details: "You must log in before accessing this resource"
           }
         },
-        data: []
+        data: null
       } as APIResponse,
       { status: 401, statusText: "Unauthorized" }
     );
@@ -448,7 +448,7 @@ describe("ModelService", () => {
             details: "You must log in before accessing this resource"
           }
         },
-        data: []
+        data: null
       } as APIResponse,
       { status: 401, statusText: "Unauthorized" }
     );
@@ -552,7 +552,7 @@ describe("ModelService", () => {
             }
           }
         },
-        data: []
+        data: null
       } as APIResponse,
       { status: 422, statusText: "Unprocessable Entity" }
     );
@@ -1222,7 +1222,7 @@ describe("ModelService", () => {
             details: "You must log in before accessing this resource"
           }
         },
-        data: []
+        data: null
       } as APIResponse,
       { status: 401, statusText: "Unauthorized" }
     );
@@ -1257,7 +1257,7 @@ describe("ModelService", () => {
             details: "You must log in before accessing this resource"
           }
         },
-        data: []
+        data: null
       } as APIResponse,
       { status: 401, statusText: "Unauthorized" }
     );
@@ -1448,18 +1448,469 @@ describe("ModelService", () => {
   /**
    * New tests
    */
-  xit("new should work", () => {});
-  xit("new should have token when logged", () => {});
-  xit("new should work with single argument", () => {});
-  xit("new should work with multiple arguments", () => {});
-  xit("new should complete observable", () => {});
-  xit("new should handle empty values", () => {});
-  xit("new should handle single value", () => {});
-  xit("new should handle multiple values", () => {});
-  xit("new should handle error", () => {});
-  xit("new should handle error with info", () => {});
-  xit("new should handle empty object output", () => {});
-  xit("new should handle object output", () => {});
+  it("new should work", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should have token when logged", done => {
+    spyOn(bawApi, "isLoggedIn").and.callFake(() => {
+      return true;
+    });
+    spyOn(bawApi, "getSessionUser").and.callFake(() => {
+      return new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+    });
+
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+    expect(req.request.headers.has("Authorization")).toBeTruthy();
+    expect(req.request.headers.get("Authorization")).toBe(
+      'Token token="xxxxxxxxxxxxxxx"'
+    );
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should work with single argument", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path/:id", null, 1).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should work with multiple arguments", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path/:id/extra/:extraId", null, 1, 2).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/2",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should complete observable", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should handle empty values", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+
+    expect(req.request.body).toEqual(null);
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should handle simple single value", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", { name: "name" }).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+
+    expect(req.request.body).toEqual({ name: "name" });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should handle complex single value", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", {
+      caseConversion: {
+        testConvert: "test"
+      }
+    }).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+
+    expect(req.request.body).toEqual({
+      case_conversion: {
+        test_convert: "test"
+      }
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should handle multiple values", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", {
+      name: "name",
+      caseConversion: {
+        testConvert: "test"
+      }
+    }).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+
+    expect(req.request.body).toEqual({
+      name: "name",
+      case_conversion: {
+        test_convert: "test"
+      }
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
+
+  it("new should handle error", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You must log in before accessing this resource"
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You must log in before accessing this resource"
+          }
+        },
+        data: null
+      } as APIResponse,
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("new should handle error with info", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      } as APIResponse,
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("new should handle object output", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["new"]("/broken_path", null).subscribe(
+      (user: MockModel) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual(
+          new MockModel({
+            id: 1,
+            name: "name",
+            caseConversion: {
+              testConvert: "test"
+            }
+          })
+        );
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "POST"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: {
+        id: 1,
+        name: "name",
+        case_conversion: {
+          test_convert: "test"
+        }
+      }
+    } as APIResponse);
+  });
 
   /**
    * Update tests
