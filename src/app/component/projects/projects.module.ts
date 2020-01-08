@@ -4,6 +4,7 @@ import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { MapModule } from "../shared/map/map.module";
+import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
@@ -19,10 +20,13 @@ export const ProjectsComponents = [
   EditComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent
+  SiteCardComponent,
+  DeleteComponent
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
+
+console.log(routes);
 
 @NgModule({
   declarations: [ProjectsComponents],

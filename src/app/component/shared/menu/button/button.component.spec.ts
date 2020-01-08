@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { testBawServices } from "src/app/app.helper";
 import { MenuAction } from "src/app/interfaces/menusInterfaces";
 import { SharedModule } from "../../shared.module";
 import { MenuButtonComponent } from "./button.component";
@@ -12,9 +10,8 @@ describe("MenuButtonComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, NgbModule, RouterTestingModule],
-      declarations: [MenuButtonComponent],
-      providers: [...testBawServices]
+      imports: [SharedModule, NgbModule],
+      declarations: [MenuButtonComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuButtonComponent);

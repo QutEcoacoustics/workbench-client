@@ -1,6 +1,5 @@
 import {
   Category,
-  MenuAction,
   MenuLink,
   MenuRoute
 } from "src/app/interfaces/menusInterfaces";
@@ -91,13 +90,11 @@ export const editProjectPermissionsMenuItem = MenuLink({
   predicate: user => !!user
 });
 
-export const deleteProjectMenuItem = MenuAction({
+export const deleteProjectMenuItem = MenuRoute({
   icon: ["fas", "trash"],
   label: "Delete Project",
+  route: projectMenuItem.route.add("delete"),
+  parent: projectMenuItem,
   tooltip: () => "Delete this project",
-  predicate: user => !!user,
-  action: (services, args) => {
-    services["projects"].deleteProject(args.projectId);
-    services["router"].navigate(projectsMenuItem.route.toRoute());
-  }
+  predicate: user => !!user
 });
