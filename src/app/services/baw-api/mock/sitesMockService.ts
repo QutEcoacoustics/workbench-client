@@ -7,11 +7,11 @@ import { MockModelService } from "./modelMockService";
   providedIn: "root"
 })
 export class MockSitesService extends MockModelService<Site> {
-  public getSite() {
+  public getSites() {
     return new Subject();
   }
 
-  public getProjectSite() {
+  public getSite() {
     return new Subject();
   }
 
@@ -19,15 +19,15 @@ export class MockSitesService extends MockModelService<Site> {
     return new Subject();
   }
 
-  public getFilteredSites() {
-    return new Subject();
-  }
-
-  public updateProjectSite() {
+  public getProjectSite() {
     return new Subject();
   }
 
   public newProjectSite() {
+    return new Subject();
+  }
+
+  public updateProjectSite() {
     return new Subject();
   }
 }

@@ -15,10 +15,6 @@ export class MockProjectsService extends MockModelService<Project> {
     return new Subject();
   }
 
-  public getFilteredProjects() {
-    return new Subject();
-  }
-
   public newProject() {
     return new Subject();
   }

@@ -68,24 +68,6 @@ describe("AppComponent", () => {
     spyOn(userApi, "getSessionUser").and.callFake(() => {
       return null;
     });
-    spyOn(projectsApi, "getFilteredProjects").and.callFake(() => {
-      const subject = new Subject();
-
-      setTimeout(() => {
-        subject.next([
-          new Project({
-            id: 1,
-            name: "Project",
-            creatorId: 1,
-            description: "Description",
-            siteIds: new Set([])
-          })
-        ]);
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
     spyOn(projectsApi, "getProjects").and.callFake(() => {
       const subject = new Subject();
 
