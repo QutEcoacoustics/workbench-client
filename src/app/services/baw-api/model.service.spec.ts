@@ -393,7 +393,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -429,7 +429,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -473,7 +473,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -525,7 +525,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -628,7 +628,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -658,7 +658,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1264,7 +1264,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1299,7 +1299,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1342,7 +1342,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1393,7 +1393,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1436,7 +1436,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1466,7 +1466,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1916,7 +1916,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -1959,7 +1959,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -2002,7 +2002,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -2415,7 +2415,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -2458,7 +2458,7 @@ describe("ModelService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -2501,7 +2501,7 @@ describe("ModelService", () => {
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        });
+        } as APIErrorDetails);
         done();
       }
     );
@@ -2560,4 +2560,6 @@ describe("ModelService", () => {
       }
     } as APIResponse);
   });
+
+  // TODO Add tests for refineUrl to catch error, currently this causes Jasmine/Karma to crash
 });

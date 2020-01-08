@@ -73,7 +73,7 @@ export class ProjectsService extends ModelService<Project> {
   public updateProject(
     projectId: ID,
     details: {
-      name: Name;
+      name?: Name;
       description?: Description;
       image?: ImageURL;
     }

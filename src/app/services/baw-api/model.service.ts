@@ -129,7 +129,7 @@ export class ModelService<T> extends BawApiService {
   }
 }
 
-type Args = (string | number)[];
+export type Args = (string | number)[];
 
 /**
  * Api path fragment
