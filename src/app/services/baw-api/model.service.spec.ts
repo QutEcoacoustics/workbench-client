@@ -3,7 +3,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { fakeAsync, flush, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
@@ -1605,7 +1605,7 @@ describe("ModelService", () => {
     } as APIResponse);
   });
 
-  it("new should have token when logged", done => {
+  it("new should have token when logged in", done => {
     spyOn(bawApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
@@ -2102,7 +2102,7 @@ describe("ModelService", () => {
     } as APIResponse);
   });
 
-  it("update should have token when logged", done => {
+  it("update should have token when logged in", done => {
     spyOn(bawApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
@@ -2559,6 +2559,243 @@ describe("ModelService", () => {
         }
       }
     } as APIResponse);
+  });
+
+  /**
+   * Delete tests
+   */
+
+  it("delete should work", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush(null, { status: 204, statusText: "No Content" });
+  });
+
+  it("delete should token when logged in", done => {
+    spyOn(bawApi, "isLoggedIn").and.callFake(() => {
+      return true;
+    });
+    spyOn(bawApi, "getSessionUser").and.callFake(() => {
+      return new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+    });
+
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+    expect(req.request.headers.has("Authorization")).toBeTruthy();
+    expect(req.request.headers.get("Authorization")).toBe(
+      'Token token="xxxxxxxxxxxxxxx"'
+    );
+
+    req.flush(null, { status: 204, statusText: "No Content" });
+  });
+
+  it("delete should work with single argument", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path/:id", 1).subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1",
+      method: "DELETE"
+    });
+
+    req.flush(null, { status: 204, statusText: "No Content" });
+  });
+
+  it("delete should work with multiple arguments", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path/:id/extra/:extraId", 1, 1).subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/1",
+      method: "DELETE"
+    });
+
+    req.flush(null, { status: 204, statusText: "No Content" });
+  });
+
+  it("delete should complete observable", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+
+    req.flush(null, { status: 204, statusText: "No Content" });
+  });
+
+  it("delete should handle error", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You must log in before accessing this resource"
+        } as APIErrorDetails);
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You must log in before accessing this resource"
+          }
+        },
+        data: null
+      } as APIResponse,
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("delete should handle error with info", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: null
+      } as APIResponse,
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("delete should handle object output", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["delete"]("/broken_path").subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        expect(success).toBeTrue();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "DELETE"
+    });
+
+    req.flush(null, { status: 204, statusText: "No Content" });
   });
 
   // TODO Add tests for refineUrl to catch error, currently this causes Jasmine/Karma to crash
