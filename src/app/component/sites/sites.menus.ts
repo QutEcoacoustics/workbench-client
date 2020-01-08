@@ -46,3 +46,16 @@ export const editSiteMenuItem = MenuRoute({
     indentation: siteMenuItem.order.indentation + 1
   }
 });
+
+export const deleteSiteMenuItem = MenuRoute({
+  icon: ["fas", "trash"],
+  label: "Delete Site",
+  route: siteMenuItem.route.add("delete"),
+  parent: siteMenuItem,
+  tooltip: () => "Delete this site",
+  predicate: user => !!user,
+  order: {
+    priority: siteMenuItem.order.priority,
+    indentation: siteMenuItem.order.indentation + 1
+  }
+});

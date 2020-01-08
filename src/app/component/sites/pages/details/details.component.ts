@@ -16,6 +16,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
+  deleteSiteMenuItem,
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory
@@ -24,7 +25,7 @@ import {
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([editSiteMenuItem]),
+    actions: List<AnyMenuItem>([editSiteMenuItem, deleteSiteMenuItem]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
