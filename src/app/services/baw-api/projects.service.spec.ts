@@ -1,4 +1,3 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -6,19 +5,16 @@ import {
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
-import { Project } from "src/app/models/Project";
-import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { Project, ProjectInterface } from "src/app/models/Project";
+import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { MockModelService } from "./mock/modelMockService";
-import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { Args, ModelService } from "./model.service";
 import { ProjectsService } from "./projects.service";
 
 describe("ProjectsService", () => {
   let service: ProjectsService;
-  let config: AppConfigService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -26,28 +22,16 @@ describe("ProjectsService", () => {
       imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
-        BawApiInterceptor,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: BawApiInterceptor,
-          multi: true
-        },
         { provide: BawApiService, useClass: MockBawApiService },
         { provide: ModelService, useClass: MockModelService }
       ]
     });
 
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
-
     service = TestBed.get(ProjectsService);
-    config = TestBed.get(AppConfigService);
     httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
-    sessionStorage.clear();
     httpMock.verify();
   });
 
@@ -55,7 +39,17 @@ describe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  // TODO Build test suite for classBuilder
+  it("classBuilder should create project", () => {
+    const project: ProjectInterface = {
+      id: 1,
+      name: "Project",
+      imageUrl: "/assets/images/project/project_span4.png",
+      siteIds: new Set([]),
+      creatorId: 1
+    };
+
+    expect(service["classBuilder"](project)).toEqual(new Project(project));
+  });
 
   /**
    * getProjects
@@ -104,7 +98,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -123,7 +116,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -150,14 +142,12 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             }),
             new Project({
               id: 5,
               name: "Name",
-              description: "Description",
               creatorId: 10,
               siteIds: new Set([10, 20, 30])
             })
@@ -176,14 +166,12 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           }),
           new Project({
             id: 5,
             name: "Name",
-            description: "Description",
             creatorId: 10,
             siteIds: new Set([10, 20, 30])
           })
@@ -210,7 +198,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -229,7 +216,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -256,7 +242,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -275,7 +260,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -392,7 +376,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -411,7 +394,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -438,7 +420,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -457,7 +438,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -484,7 +464,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -503,7 +482,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -530,7 +508,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([1, 2, 3])
             })
@@ -549,7 +526,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([1, 2, 3])
           })
@@ -935,7 +911,6 @@ describe("ProjectsService", () => {
             new Project({
               id: 1,
               name: "Name",
-              description: "Description",
               creatorId: 2,
               siteIds: new Set([])
             })
@@ -954,7 +929,6 @@ describe("ProjectsService", () => {
           new Project({
             id: 1,
             name: "Name",
-            description: "Description",
             creatorId: 2,
             siteIds: new Set([])
           })

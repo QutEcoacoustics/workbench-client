@@ -81,7 +81,3 @@ export class ProjectsService extends ModelService<Project> {
     return this.update(this.paths.update, details, projectId);
   }
 }
-
-export interface ProjectFilters extends Filters {
-  orderBy?: "id" | "name" | "description" | "creatorId";
-}

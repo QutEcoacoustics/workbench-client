@@ -19,7 +19,7 @@ export interface SiteInterface {
   id: ID;
   name: Name;
   imageUrl?: string;
-  description: Description;
+  description?: Description;
   locationObfuscated?: boolean;
   creatorId: ID;
   createdAt?: DateTimeTimezone | string;

@@ -90,6 +90,7 @@ export class SitesService extends ModelService<Site> {
     details: {
       name: Name;
       description?: Description;
+      imageUrl?: string;
       locationObfuscated?: boolean;
       customLatitude?: Latitude;
       customLongitude?: Longitude;
@@ -109,8 +110,9 @@ export class SitesService extends ModelService<Site> {
     projectId: ID,
     siteId: ID,
     details: {
-      name: Name;
+      name?: Name;
       description?: Description;
+      imageUrl?: string;
       locationObfuscated?: boolean;
       customLatitude?: Latitude;
       customLongitude?: Longitude;
@@ -119,8 +121,4 @@ export class SitesService extends ModelService<Site> {
   ): Subject<Site> {
     return this.update(this.paths.nestedUpdate, details, projectId, siteId);
   }
-}
-
-export interface SiteFilters extends Filters {
-  orderBy?: "id" | "name" | "description";
 }
