@@ -96,5 +96,9 @@ export const deleteProjectMenuItem = MenuRoute({
   route: projectMenuItem.route.add("delete"),
   parent: projectMenuItem,
   tooltip: () => "Delete this project",
-  predicate: user => !!user
+  predicate: user => !!user,
+  order: {
+    priority: projectMenuItem.order.priority,
+    indentation: projectMenuItem.order.indentation + 1
+  }
 });

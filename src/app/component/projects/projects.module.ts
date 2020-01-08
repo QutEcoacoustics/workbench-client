@@ -26,8 +26,6 @@ export const ProjectsComponents = [
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
-console.log(routes);
-
 @NgModule({
   declarations: [ProjectsComponents],
   imports: [

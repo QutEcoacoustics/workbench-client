@@ -1,22 +1,39 @@
 import { Location } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
+import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   deleteProjectMenuItem,
+  editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  exploreAudioMenuItem,
   projectCategory,
+  projectMenuItem,
   projectsMenuItem
 } from "../../projects.menus";
 
 @Page({
   category: projectCategory,
-  menus: null,
+  menus: {
+    actions: List<AnyMenuItem>([
+      projectMenuItem,
+      exploreAudioMenuItem,
+      editProjectMenuItem,
+      editProjectPermissionsMenuItem,
+      newSiteMenuItem,
+      deleteProjectMenuItem
+    ]),
+    links: List()
+  },
   self: deleteProjectMenuItem
 })
 @Component({
@@ -32,7 +49,7 @@ import {
       [submitLoading]="formLoading"
       (onSubmit)="submit($event)"
     ></app-form>
-    <app-loading [isLoading="loading"></app-loading>
+    <app-loading [isLoading]="loading"></app-loading>
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
@@ -55,8 +72,6 @@ export class DeleteComponent extends PageComponent
   }
 
   ngOnInit() {
-    console.log("Initialize");
-
     this.loading = true;
     this.ready = false;
 
@@ -97,6 +112,7 @@ export class DeleteComponent extends PageComponent
           this.router.navigate(projectsMenuItem.route.toRoute());
         },
         (err: APIErrorDetails) => {
+          this.formLoading = false;
           this.error = err.message;
         }
       );
