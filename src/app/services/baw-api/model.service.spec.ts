@@ -1,29 +1,72 @@
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
-import { BawApiService } from "./base-api.service";
+import { SessionUser } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { APIResponse, BawApiService } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { MOCK_CLASS_BUILDER, ModelService } from "./model.service";
 
 describe("ModelService", () => {
-  it("should be created", () => {
+  let httpMock: HttpTestingController;
+  let config: AppConfigService;
+  let bawApi: BawApiService;
+
+  class MockModelInterface {
+    id: number;
+    name: string;
+    caseConversion: {
+      testConvert: string;
+    };
+  }
+
+  class MockModel {
+    id: number;
+    name: string;
+    caseConversion: {
+      testConvert: string;
+    };
+
+    constructor(data: MockModelInterface) {
+      this.id = data.id;
+      this.name = data.name;
+      this.caseConversion = data.caseConversion;
+    }
+  }
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
         { provide: BawApiService, useClass: MockBawApiService },
         {
           provide: MOCK_CLASS_BUILDER,
-          useValue: () => undefined
+          useValue: (data: MockModelInterface) => new MockModel(data)
         },
         ModelService
       ]
     });
-    const httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.get(HttpTestingController);
+    config = TestBed.get(AppConfigService);
+    bawApi = TestBed.get(BawApiService);
+  });
 
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it("should be created", () => {
     const service: ModelService<any> = TestBed.get(ModelService);
     expect(service).toBeTruthy();
   });
@@ -31,72 +74,805 @@ describe("ModelService", () => {
   /**
    * Detail tests
    */
-  it("details should work no filter", () => {});
-  it("details should work with filter", () => {});
-  it("details should work with single argument no filter", () => {});
-  it("details should work with single argument with filter", () => {});
-  it("details should work with multiple arguments no filter", () => {});
-  it("details should work with multiple arguments with filter", () => {});
-  it("details should complete observable no filter", () => {});
-  it("details should complete observable with filter", () => {});
-  it("details should handle error no filter", () => {});
-  it("details should handle error with filter", () => {});
-  it("details should handle error with info no filter", () => {});
-  it("details should handle error with info with filter", () => {});
-  it("details should handle empty object output no filter", () => {});
-  it("details should handle empty object output with filter", () => {});
-  it("details should handle single object output no filter", () => {});
-  it("details should handle single object output with filter", () => {});
-  it("details should handle multiple object output no filter", () => {});
-  it("details should handle multiple object output with filter", () => {});
+  it("details should work no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should work with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should have token when logged in no filter", done => {
+    spyOn(bawApi, "isLoggedIn").and.callFake(() => {
+      return true;
+    });
+    spyOn(bawApi, "getSessionUser").and.callFake(() => {
+      return new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+    });
+
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+    expect(req.request.headers.has("Authorization")).toBeTruthy();
+    expect(req.request.headers.get("Authorization")).toBe(
+      'Token token="xxxxxxxxxxxxxxx"'
+    );
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should have token when logged in with filter", done => {
+    spyOn(bawApi, "isLoggedIn").and.callFake(() => {
+      return true;
+    });
+    spyOn(bawApi, "getSessionUser").and.callFake(() => {
+      return new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+    });
+
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+    expect(req.request.headers.has("Authorization")).toBeTruthy();
+    expect(req.request.headers.get("Authorization")).toBe(
+      'Token token="xxxxxxxxxxxxxxx"'
+    );
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should work with single argument no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path/:id", null, 1).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1",
+      method: "GET"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should work with single argument with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path/:id", {}, 1).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1/filter",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should work with multiple arguments no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/5",
+      method: "GET"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should work with multiple arguments with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path/:id/extra/:extraId", {}, 1, 5).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url:
+        config.getConfig().environment.apiRoot +
+        "/broken_path/1/extra/5/filter",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should complete observable no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should complete observable with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      },
+      () => {
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should handle error no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You must log in before accessing this resource"
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You must log in before accessing this resource"
+          }
+        },
+        data: []
+      } as APIResponse,
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("details should handle error with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "You must log in before accessing this resource"
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+
+    req.flush(
+      {
+        meta: {
+          status: 401,
+          message: "Unauthorized",
+          error: {
+            details: "You must log in before accessing this resource"
+          }
+        },
+        data: []
+      } as APIResponse,
+      { status: 401, statusText: "Unauthorized" }
+    );
+  });
+
+  it("details should handle error with info no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: []
+      } as APIResponse,
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("details should handle error with info with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not generate data response");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        });
+        done();
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+
+    req.flush(
+      {
+        meta: {
+          status: 422,
+          message: "Unprocessable Entity",
+          error: {
+            details: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          }
+        },
+        data: []
+      } as APIResponse,
+      { status: 422, statusText: "Unprocessable Entity" }
+    );
+  });
+
+  it("details should handle empty object output no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should handle empty object output with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: []
+    } as APIResponse);
+  });
+
+  it("details should handle single object output no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([
+          new MockModel({
+            id: 1,
+            name: "name",
+            caseConversion: {
+              testConvert: "test"
+            }
+          })
+        ]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: [
+        {
+          id: 1,
+          name: "name",
+          case_conversion: {
+            test_convert: "test"
+          }
+        }
+      ]
+    } as APIResponse);
+  });
+
+  it("details should handle single object output with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([
+          new MockModel({
+            id: 1,
+            name: "name",
+            caseConversion: {
+              testConvert: "test"
+            }
+          })
+        ]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+    expect(req).toBeTruthy();
+    expect(req.request.headers.has("Accept")).toBeTruthy();
+    expect(req.request.headers.get("Accept")).toBe("application/json");
+    expect(req.request.headers.has("Content-Type")).toBeTruthy();
+    expect(req.request.headers.get("Content-Type")).toBe("application/json");
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: [
+        {
+          id: 1,
+          name: "name",
+          case_conversion: {
+            test_convert: "test"
+          }
+        }
+      ]
+    } as APIResponse);
+  });
+
+  it("details should handle multiple object output no filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", null).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([
+          new MockModel({
+            id: 1,
+            name: "name 1",
+            caseConversion: {
+              testConvert: "test 1"
+            }
+          }),
+          new MockModel({
+            id: 5,
+            name: "name 2",
+            caseConversion: {
+              testConvert: "test 2"
+            }
+          })
+        ]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path",
+      method: "GET"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: [
+        {
+          id: 1,
+          name: "name 1",
+          case_conversion: {
+            test_convert: "test 1"
+          }
+        },
+        {
+          id: 5,
+          name: "name 2",
+          case_conversion: {
+            test_convert: "test 2"
+          }
+        }
+      ]
+    } as APIResponse);
+  });
+
+  it("details should handle multiple object output with filter", done => {
+    const service: ModelService<MockModel> = TestBed.get(ModelService);
+    service["details"]("/broken_path", {}).subscribe(
+      (user: MockModel[]) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual([
+          new MockModel({
+            id: 1,
+            name: "name 1",
+            caseConversion: {
+              testConvert: "test 1"
+            }
+          }),
+          new MockModel({
+            id: 5,
+            name: "name 2",
+            caseConversion: {
+              testConvert: "test 2"
+            }
+          })
+        ]);
+        done();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not generate error");
+      }
+    );
+
+    const req = httpMock.expectOne({
+      url: config.getConfig().environment.apiRoot + "/broken_path/filter",
+      method: "POST"
+    });
+
+    req.flush({
+      meta: {
+        status: 200,
+        message: "OK"
+      },
+      data: [
+        {
+          id: 1,
+          name: "name 1",
+          case_conversion: {
+            test_convert: "test 1"
+          }
+        },
+        {
+          id: 5,
+          name: "name 2",
+          case_conversion: {
+            test_convert: "test 2"
+          }
+        }
+      ]
+    } as APIResponse);
+  });
 
   /**
    * Show tests
    */
-  it("show should work no filter", () => {});
-  it("show should work with filter", () => {});
-  it("show should work with single argument no filter", () => {});
-  it("show should work with single argument with filter", () => {});
-  it("show should work with multiple arguments no filter", () => {});
-  it("show should work with multiple arguments with filter", () => {});
-  it("show should complete observable no filter", () => {});
-  it("show should complete observable with filter", () => {});
-  it("show should handle error no filter", () => {});
-  it("show should handle error with filter", () => {});
-  it("show should handle error with info no filter", () => {});
-  it("show should handle error with info with filter", () => {});
-  it("show should handle empty object output no filter", () => {});
-  it("show should handle empty object output with filter", () => {});
-  it("show should handle object output no filter", () => {});
-  it("show should handle object output with filter", () => {});
+  xit("show should work no filter", () => {});
+  xit("show should work with filter", () => {});
+  xit("show should have token when logged in no filter", () => {});
+  xit("show should have token when logged in with filter", () => {});
+  xit("show should work with single argument no filter", () => {});
+  xit("show should work with single argument with filter", () => {});
+  xit("show should work with multiple arguments no filter", () => {});
+  xit("show should work with multiple arguments with filter", () => {});
+  xit("show should complete observable no filter", () => {});
+  xit("show should complete observable with filter", () => {});
+  xit("show should handle error no filter", () => {});
+  xit("show should handle error with filter", () => {});
+  xit("show should handle error with info no filter", () => {});
+  xit("show should handle error with info with filter", () => {});
+  xit("show should handle empty object output no filter", () => {});
+  xit("show should handle empty object output with filter", () => {});
+  xit("show should handle object output no filter", () => {});
+  xit("show should handle object output with filter", () => {});
 
   /**
    * New tests
    */
-  it("new should work", () => {});
-  it("new should work with single argument", () => {});
-  it("new should work with multiple arguments", () => {});
-  it("new should complete observable", () => {});
-  it("new should handle empty values", () => {});
-  it("new should handle single value", () => {});
-  it("new should handle multiple values", () => {});
-  it("new should handle error", () => {});
-  it("new should handle error with info", () => {});
-  it("new should handle empty object output", () => {});
-  it("new should handle object output", () => {});
+  xit("new should work", () => {});
+  xit("new should have token when logged", () => {});
+  xit("new should work with single argument", () => {});
+  xit("new should work with multiple arguments", () => {});
+  xit("new should complete observable", () => {});
+  xit("new should handle empty values", () => {});
+  xit("new should handle single value", () => {});
+  xit("new should handle multiple values", () => {});
+  xit("new should handle error", () => {});
+  xit("new should handle error with info", () => {});
+  xit("new should handle empty object output", () => {});
+  xit("new should handle object output", () => {});
 
   /**
    * Update tests
    */
-  it("update should work", () => {});
-  it("update should work with single argument", () => {});
-  it("update should work with multiple arguments", () => {});
-  it("update should complete observable", () => {});
-  it("update should handle empty values", () => {});
-  it("update should handle single value", () => {});
-  it("update should handle multiple values", () => {});
-  it("update should handle error", () => {});
-  it("update should handle error with info", () => {});
-  it("update should handle empty object output", () => {});
-  it("update should handle object output", () => {});
+  xit("update should work", () => {});
+  xit("update should have token when logged", () => {});
+  xit("update should work with single argument", () => {});
+  xit("update should work with multiple arguments", () => {});
+  xit("update should complete observable", () => {});
+  xit("update should handle empty values", () => {});
+  xit("update should handle single value", () => {});
+  xit("update should handle multiple values", () => {});
+  xit("update should handle error", () => {});
+  xit("update should handle error with info", () => {});
+  xit("update should handle empty object output", () => {});
+  xit("update should handle object output", () => {});
 });

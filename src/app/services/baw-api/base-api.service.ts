@@ -244,7 +244,7 @@ export interface APIResponse {
     message: string;
     error?: {
       details: string;
-      info: string;
+      info: any;
     };
     sorting?: {
       orderBy: string;
