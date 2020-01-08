@@ -1,50 +1,37 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
-import { User } from "src/app/models/User";
-import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { mockSessionStorage } from "./mock/sessionStorageMock";
-import { SecurityService } from "./security.service";
+import { User, UserInterface } from "src/app/models/User";
+import { APIErrorDetails } from "./api.interceptor";
+import { BawApiService, Filters } from "./base-api.service";
+import { MockBawApiService } from "./mock/baseApiMockService";
+import { MockModelService } from "./mock/modelMockService";
+import { Args, ModelService } from "./model.service";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
   let httpMock: HttpTestingController;
-  let config: AppConfigService;
   let service: UserService;
-  let securityService: SecurityService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        BawApiInterceptor,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: BawApiInterceptor,
-          multi: true
-        },
         ...testAppInitializer,
-        SecurityService
+        { provide: BawApiService, useClass: MockBawApiService },
+        { provide: ModelService, useClass: MockModelService }
       ]
     });
 
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
-
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
     service = TestBed.get(UserService);
-    securityService = TestBed.get(SecurityService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
-    sessionStorage.clear();
     httpMock.verify();
   });
 
@@ -52,292 +39,333 @@ describe("UserService", () => {
     expect(service).toBeTruthy();
   });
 
+  it("classBuilder should create user", () => {
+    const user: UserInterface = {
+      id: 1,
+      userName: "username",
+      rolesMask: 3,
+      rolesMaskNames: ["user"],
+      lastSeenAt: "1970-01-01T00:00:00.000"
+    };
+
+    expect(service["classBuilder"](user)).toEqual(new User(user));
+  });
+
   /**
-   * Supplementary function to login account. This should never fail without tests
-   * for security service also failing
+   * getUserAccount
    */
-  function login() {
-    securityService
-      .signIn({ login: "username", password: "password" })
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      .subscribe(() => {});
 
-    const req = httpMock.expectOne(
-      {
-        url: config.getConfig().environment.apiRoot + "/security",
-        method: "post"
-      },
-      "Supplementary function to login account. If this fails, test if unit test causes double login."
-    );
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        auth_token: "xxxxxxxxxxxxxxxxxxxx",
-        user_name: "username",
-        message: "Logged in successfully."
-      }
-    });
-  }
+  it("getMyAccount should handle response", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/my_account");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([]);
+        const subject = new Subject<User>();
 
-  it("getMyAccount should return error if user not logged in", done => {
-    service.getMyAccount().subscribe(
-      () => {
-        expect(false).toBeTruthy("Should not produce response");
-        done();
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "You need to log in or register before continuing."
-        });
-        done();
-      },
-      () => {
-        done();
+        setTimeout(() => {
+          subject.next(
+            new User({
+              id: 1,
+              userName: "username",
+              rolesMask: 3,
+              rolesMaskNames: ["user"],
+              lastSeenAt: "1970-01-01T00:00:00.000"
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
       }
     );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/my_account"
-    );
-    req.flush(
-      {
-        meta: {
-          status: 401,
-          message: "Unauthorized",
-          error: {
-            details: "You need to log in or register before continuing.",
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 401, statusText: "Unauthorized" }
-    );
-  });
-
-  it("getMyAccount should return details is user logged in", done => {
-    login();
 
     service.getMyAccount().subscribe(
-      resp => {
-        expect(resp).toEqual(
-          new User({
-            id: 7,
-            userName: "username",
-            rolesMask: 2,
-            timezoneInformation: null,
-            rolesMaskNames: ["user"],
-            imageUrls: [
-              {
-                size: "extralarge",
-                url: "/images/user/user_span4.png",
-                width: 300,
-                height: 300
-              }
-            ],
-            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
-            preferences: null,
-            isConfirmed: true
-          })
-        );
-      },
-      () => {
-        expect(false).toBeTruthy("Should not produce error response");
-        done();
-      },
-      () => {
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/my_account"
-    );
-    req.flush({
-      meta: { status: 200, message: "OK" },
-      data: {
-        id: 7,
-        user_name: "username",
-        roles_mask: 2,
-        timezone_information: null,
-        roles_mask_names: ["user"],
-        image_urls: [
-          {
-            size: "extralarge",
-            url: "/images/user/user_span4.png",
-            width: 300,
-            height: 300
-          }
-        ],
-        last_seen_at: "2019-12-05T14:11:20.366+10:00",
-        preferences: null,
-        isConfirmed: true
-      }
-    });
-  });
-
-  it("getUserAccount should return error if user is not logged in", done => {
-    service.getUserAccount(1).subscribe(
-      () => {
-        expect(false).toBeTruthy("Should not produce response");
-        done();
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "You need to log in or register before continuing."
-        });
-        done();
-      },
-      () => {
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/user_accounts/1"
-    );
-    req.flush(
-      {
-        meta: {
-          status: 401,
-          message: "Unauthorized",
-          error: {
-            details: "You need to log in or register before continuing.",
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 401, statusText: "Unauthorized" }
-    );
-  });
-
-  it("getUserAccount should return data if user is logged in", done => {
-    login();
-
-    service.getUserAccount(1).subscribe(
-      resp => {
-        expect(resp).toEqual(
+      (user: User) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual(
           new User({
             id: 1,
             userName: "username",
-            rolesMask: 2,
-            timezoneInformation: null,
+            rolesMask: 3,
             rolesMaskNames: ["user"],
-            imageUrls: [
-              {
-                size: "extralarge",
-                url: "/images/user/user_span4.png",
-                width: 300,
-                height: 300
-              }
-            ],
-            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
-            preferences: null,
-            isConfirmed: true
+            lastSeenAt: "1970-01-01T00:00:00.000"
           })
         );
       },
       () => {
-        expect(false).toBeTruthy("Should not produce error response");
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getMyAccount should handle error", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/my_account");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getMyAccount().subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getMyAccount should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/my_account");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getMyAccount().subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  /**
+   * getUserAccount
+   */
+
+  it("getUserAccount should handle response", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/user_accounts/:userId");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([1]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.next(
+            new User({
+              id: 1,
+              userName: "username",
+              rolesMask: 3,
+              rolesMaskNames: ["user"],
+              lastSeenAt: "1970-01-01T00:00:00.000"
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getUserAccount(1).subscribe(
+      (user: User) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual(
+          new User({
+            id: 1,
+            userName: "username",
+            rolesMask: 3,
+            rolesMaskNames: ["user"],
+            lastSeenAt: "1970-01-01T00:00:00.000"
+          })
+        );
       },
       () => {
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
       }
     );
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/user_accounts/1"
-    );
-    req.flush({
-      meta: { status: 200, message: "OK" },
-      data: {
-        id: 1,
-        user_name: "username",
-        roles_mask: 2,
-        timezone_information: null,
-        roles_mask_names: ["user"],
-        image_urls: [
-          {
-            size: "extralarge",
-            url: "/images/user/user_span4.png",
-            width: 300,
-            height: 300
-          }
-        ],
-        last_seen_at: "2019-12-05T14:11:20.366+10:00",
-        preferences: null,
-        isConfirmed: true
-      }
-    });
-  });
+    tick(100);
+  }));
 
-  it("getUserAccount change request based on user id", done => {
-    login();
+  it("getUserAccount should handle response with random id", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/user_accounts/:userId");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([5]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.next(
+            new User({
+              id: 5,
+              userName: "username",
+              rolesMask: 3,
+              rolesMaskNames: ["user"],
+              lastSeenAt: "1970-01-01T00:00:00.000"
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
 
     service.getUserAccount(5).subscribe(
-      resp => {
-        expect(resp).toEqual(
+      (user: User) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual(
           new User({
             id: 5,
             userName: "username",
-            rolesMask: 2,
-            timezoneInformation: null,
+            rolesMask: 3,
             rolesMaskNames: ["user"],
-            imageUrls: [
-              {
-                size: "extralarge",
-                url: "/images/user/user_span4.png",
-                width: 300,
-                height: 300
-              }
-            ],
-            lastSeenAt: "2019-12-05T14:11:20.366+10:00",
-            preferences: null,
-            isConfirmed: true
+            lastSeenAt: "1970-01-01T00:00:00.000"
           })
         );
       },
       () => {
-        expect(false).toBeTruthy("Should not produce error response");
-        done();
-      },
-      () => {
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
       }
     );
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/user_accounts/5"
-    );
-    req.flush({
-      meta: { status: 200, message: "OK" },
-      data: {
-        id: 5,
-        user_name: "username",
-        roles_mask: 2,
-        timezone_information: null,
-        roles_mask_names: ["user"],
-        image_urls: [
-          {
-            size: "extralarge",
-            url: "/images/user/user_span4.png",
-            width: 300,
-            height: 300
-          }
-        ],
-        last_seen_at: "2019-12-05T14:11:20.366+10:00",
-        preferences: null,
-        isConfirmed: true
+    tick(100);
+  }));
+
+  it("getUserAccount should handle error", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/user_accounts/:userId");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([1]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
       }
-    });
-  });
+    );
+
+    service.getUserAccount(1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getUserAccount should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/user_accounts/:userId");
+        expect(filters).toEqual(null);
+        expect(args).toEqual([1]);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getUserAccount(1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
 });

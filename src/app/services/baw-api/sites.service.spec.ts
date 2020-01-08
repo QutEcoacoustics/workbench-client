@@ -1,4 +1,3 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -7,10 +6,11 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { Site, SiteInterface } from "src/app/models/Site";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { Filters } from "./base-api.service";
-import { Args } from "./model.service";
-import { SecurityService } from "./security.service";
+import { APIErrorDetails } from "./api.interceptor";
+import { BawApiService, Filters } from "./base-api.service";
+import { MockBawApiService } from "./mock/baseApiMockService";
+import { MockModelService } from "./mock/modelMockService";
+import { Args, ModelService } from "./model.service";
 import { SitesService } from "./sites.service";
 
 describe("SitesService", () => {
@@ -21,14 +21,9 @@ describe("SitesService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        BawApiInterceptor,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: BawApiInterceptor,
-          multi: true
-        },
         ...testAppInitializer,
-        SecurityService
+        { provide: BawApiService, useClass: MockBawApiService },
+        { provide: ModelService, useClass: MockModelService }
       ]
     });
 
