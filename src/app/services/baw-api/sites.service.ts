@@ -128,7 +128,7 @@ export class SitesService extends ModelService<Site> {
    * @param projectId Project ID
    * @param siteId Site ID
    */
-  public deleteSite(projectId: ID, siteId: ID): Subject<boolean> {
+  public deleteProjectSite(projectId: ID, siteId: ID): Subject<boolean> {
     return this.delete(this.paths.delete, projectId, siteId);
   }
 }
