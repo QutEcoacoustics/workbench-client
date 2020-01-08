@@ -15,6 +15,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
+  deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   exploreAudioMenuItem,
@@ -29,7 +30,8 @@ import {
       exploreAudioMenuItem,
       editProjectMenuItem,
       editProjectPermissionsMenuItem,
-      newSiteMenuItem
+      newSiteMenuItem,
+      deleteProjectMenuItem
     ]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()

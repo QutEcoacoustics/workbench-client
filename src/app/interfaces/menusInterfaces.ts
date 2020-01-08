@@ -1,3 +1,4 @@
+import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { WidgetMenuItem } from "../component/shared/widget/widgetItem";
@@ -142,7 +143,7 @@ export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
  */
 export interface MenuAction extends MenuItem {
   kind: "MenuAction";
-  action: () => any | void;
+  action: (services: object, args: Params) => any | void;
 }
 
 export function MenuAction<T extends Omit<MenuAction, "kind">>(

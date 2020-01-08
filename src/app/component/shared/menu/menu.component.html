@@ -25,6 +25,7 @@
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
+            [params]="routerParams"
           ></app-menu-button>
         </ng-container>
         <ng-container *ngIf="isInternalLink(link)">

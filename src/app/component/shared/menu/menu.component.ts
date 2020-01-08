@@ -43,6 +43,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   routerParams: Params;
   url: string;
   user: SessionUser;
+  loading: boolean;
 
   isInternalLink = isInternalRoute;
   isExternalLink = isExternalLink;
@@ -55,6 +56,8 @@ export class MenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.loading = true;
+
     // Get user details
     this.user = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
@@ -72,6 +75,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
       params => {
         this.routerParams = params;
+        this.loading = false;
       },
       err => {
         console.error("MenuComponent: ", err);
@@ -91,7 +95,7 @@ export class MenuComponent implements OnInit, OnDestroy {
    * Determine whether to show links
    */
   linksExist() {
-    return this.filteredLinks.size > 0;
+    return this.filteredLinks.size > 0 && !this.loading;
   }
 
   /**

@@ -22,4 +22,8 @@ export class MockProjectsService extends MockModelService<Project> {
   public updateProject() {
     return new Subject();
   }
+
+  public deleteProject() {
+    return new Subject();
+  }
 }
