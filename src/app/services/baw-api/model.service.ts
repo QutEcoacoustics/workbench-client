@@ -112,20 +112,16 @@ export class ModelService<T> extends BawApiService {
     let attributes = regex.exec(path);
 
     while (attributes) {
-      if (args.length === count) {
-        throw new Error(
-          "Model service list arguments do not match path attributes."
-        );
+      if (args.length > count) {
+        path = path.replace(attributes[1], args[count].toString());
+        attributes = regex.exec(path);
       }
-
-      path = path.replace(attributes[1], args[count].toString());
-      attributes = regex.exec(path);
       count++;
     }
 
     if (count !== args.length) {
       throw new Error(
-        "Number of url parameters does not match the arguments provided."
+        `Expected ${count} arguments to satisfy url parameters for path '${path}'. Instead received ${args.length}.`
       );
     }
 
