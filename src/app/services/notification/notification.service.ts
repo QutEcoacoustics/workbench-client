@@ -44,6 +44,7 @@ export class NotificationService {
   public clearAlert(index: number) {
     if (index < this.alerts.length) {
       this.alerts.splice(index, 1);
+      this.trigger.next(this.alerts);
     }
   }
 
