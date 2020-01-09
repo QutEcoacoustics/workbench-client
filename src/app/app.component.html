@@ -17,6 +17,7 @@
           id="page"
           [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }"
         >
+          <app-notification *ngIf="menuLayout"></app-notification>
           <router-outlet></router-outlet>
         </div>
         <div
