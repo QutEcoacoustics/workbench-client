@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { ID } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
@@ -51,6 +52,7 @@ export class DeleteComponent extends PageComponent
   loading: boolean;
   projectName: string;
   ready: boolean;
+  projectId: ID;
 
   constructor(
     private router: Router,
@@ -66,7 +68,10 @@ export class DeleteComponent extends PageComponent
 
     this.route.params
       .pipe(
-        flatMap(params => this.api.getProject(params.projectId)),
+        flatMap(params => {
+          this.projectId = params.projectId;
+          return this.api.getProject(this.projectId);
+        }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
@@ -90,10 +95,12 @@ export class DeleteComponent extends PageComponent
   submit() {
     // This subscription must complete so takeuntil is ignored
     // so that it will run in the background in case the user
-    // manages to navigate too fast
+    // manages to navigate too fast. Subscription will call
+    // onComplete so it should not sit hanging in the event
+    // of component onDestroy.
     this.formLoading = true;
-    this.route.params
-      .pipe(flatMap(params => this.api.deleteProject(params.projectId)))
+    this.api
+      .deleteProject(this.projectId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {
