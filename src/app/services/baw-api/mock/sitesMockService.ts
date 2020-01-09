@@ -30,4 +30,8 @@ export class MockSitesService extends MockModelService<Site> {
   public updateProjectSite() {
     return new Subject();
   }
+
+  public deleteProjectSite() {
+    return new Subject();
+  }
 }
