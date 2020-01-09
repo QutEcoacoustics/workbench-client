@@ -9,10 +9,12 @@ import {
 @Component({
   selector: "app-notification",
   template: `
-    <p *ngFor="let alert of alerts">
-      <ngb-alert [type]="alert.type" (close)="close(alert)">
-        {{ alert.message }}
-      </ngb-alert>
+    <p *ngFor="let _ of alerts; let i = index">
+      <ng-container *ngIf="alerts[alerts.length - i - 1] as alert">
+        <ngb-alert [type]="alert.type" (close)="close(alert)">
+          {{ alert.message }}
+        </ngb-alert>
+      </ng-container>
     </p>
   `
 })
@@ -30,7 +32,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
         (alerts: Alert[]) => {
           this.alerts = alerts;
         },
-        err => {
+        () => {
           this.alerts = [
             { type: "danger", message: "Notification system failure." }
           ];
