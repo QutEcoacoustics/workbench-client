@@ -1,7 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NotificationService } from "src/app/services/notification/notification.service";
+import { BehaviorSubject } from "rxjs";
+import {
+  Alert,
+  NotificationService
+} from "src/app/services/notification/notification.service";
 import { NotificationComponent } from "./notification.component";
 
 describe("NotificationComponent", () => {
@@ -21,19 +25,21 @@ describe("NotificationComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NotificationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it("should create", () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should create with zero alerts", () => {
+    fixture.detectChanges();
     const alerts = fixture.nativeElement.querySelectorAll("ngb-alert");
     expect(alerts.length).toBe(0);
   });
 
   it("should create success alert", () => {
+    fixture.detectChanges();
     service.success("test message");
     fixture.detectChanges();
 
@@ -48,6 +54,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should create warning alert", () => {
+    fixture.detectChanges();
     service.warning("test message");
     fixture.detectChanges();
 
@@ -62,6 +69,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should create danger alert", () => {
+    fixture.detectChanges();
     service.danger("test message");
     fixture.detectChanges();
 
@@ -76,6 +84,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should create multiple alerts", () => {
+    fixture.detectChanges();
     service.success("test message 1");
     service.warning("test message 2");
     service.danger("test message 3");
@@ -89,6 +98,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy success alert", () => {
+    fixture.detectChanges();
     service.success("test message");
     fixture.detectChanges();
 
@@ -103,6 +113,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy warning alert", () => {
+    fixture.detectChanges();
     service.warning("test message");
     fixture.detectChanges();
 
@@ -117,6 +128,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy danger alert", () => {
+    fixture.detectChanges();
     service.danger("test message");
     fixture.detectChanges();
 
@@ -131,6 +143,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy multiple alerts", () => {
+    fixture.detectChanges();
     service.success("test message");
     service.warning("test message");
     service.danger("test message");
@@ -158,6 +171,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy oldest alert", () => {
+    fixture.detectChanges();
     service.success("test message 1");
     service.warning("test message 2");
     service.danger("test message 3");
@@ -174,6 +188,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy random alert", () => {
+    fixture.detectChanges();
     service.success("test message 1");
     service.warning("test message 2");
     service.danger("test message 3");
@@ -190,6 +205,7 @@ describe("NotificationComponent", () => {
   });
 
   it("should destroy newest alert", () => {
+    fixture.detectChanges();
     service.success("test message 1");
     service.warning("test message 2");
     service.danger("test message 3");
@@ -203,5 +219,24 @@ describe("NotificationComponent", () => {
     expect(alerts.length).toBe(2);
     expect(alerts[0].innerText).toContain("test message 2");
     expect(alerts[1].innerText).toContain("test message 1");
+  });
+
+  it("should handle notification trigger error", () => {
+    spyOn(service, "getTrigger").and.callFake(() => {
+      const subject = new BehaviorSubject<Alert[]>([]);
+
+      subject.error("Error");
+
+      return subject;
+    });
+
+    fixture.detectChanges();
+
+    const alerts = fixture.nativeElement.querySelectorAll("ngb-alert");
+    expect(alerts.length).toBe(1);
+
+    const alert = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
+    expect(alert).toBeTruthy();
+    expect(alert.innerText).toContain("Notification system failure.");
   });
 });
