@@ -23,16 +23,18 @@ import {
   projectsCategory
 } from "../../projects.menus";
 
+export const projectMenuItemActions = [
+  exploreAudioMenuItem,
+  editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  newSiteMenuItem,
+  deleteProjectMenuItem
+];
+
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      exploreAudioMenuItem,
-      editProjectMenuItem,
-      editProjectPermissionsMenuItem,
-      newSiteMenuItem,
-      deleteProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>(projectMenuItemActions),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

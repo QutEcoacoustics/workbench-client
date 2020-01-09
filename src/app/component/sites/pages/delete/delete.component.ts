@@ -6,7 +6,6 @@ import { flatMap, takeUntil } from "rxjs/operators";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import {
   deleteSiteMenuItem,
-  editSiteMenuItem,
   siteMenuItem,
   sitesCategory
 } from "src/app/component/sites/sites.menus";
@@ -17,15 +16,11 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Site } from "src/app/models/Site";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SitesService } from "src/app/services/baw-api/sites.service";
-
+import { siteMenuItemActions } from "../details/details.component";
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      siteMenuItem,
-      editSiteMenuItem,
-      deleteSiteMenuItem
-    ]),
+    actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
     links: List()
   },
   self: deleteSiteMenuItem

@@ -18,14 +18,21 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
+  exploreAudioMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 
+export const siteMenuItemActions = [
+  exploreAudioMenuItem,
+  editSiteMenuItem,
+  deleteSiteMenuItem
+];
+
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([editSiteMenuItem, deleteSiteMenuItem]),
+    actions: List<AnyMenuItem>(siteMenuItemActions),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

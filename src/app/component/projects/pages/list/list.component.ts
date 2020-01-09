@@ -16,10 +16,15 @@ import {
   requestProjectMenuItem
 } from "../../projects.menus";
 
+export const projectsMenuItemActions = [
+  newProjectMenuItem,
+  requestProjectMenuItem
+];
+
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([newProjectMenuItem, requestProjectMenuItem]),
+    actions: List<AnyMenuItem>(projectsMenuItemActions),
     links: List()
   },
   self: projectsMenuItem

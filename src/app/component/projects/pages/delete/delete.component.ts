@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
-import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -12,25 +11,16 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   deleteProjectMenuItem,
-  editProjectMenuItem,
-  editProjectPermissionsMenuItem,
-  exploreAudioMenuItem,
   projectCategory,
   projectMenuItem,
   projectsMenuItem
 } from "../../projects.menus";
+import { projectMenuItemActions } from "../details/details.component";
 
 @Page({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectMenuItem,
-      exploreAudioMenuItem,
-      editProjectMenuItem,
-      editProjectPermissionsMenuItem,
-      newSiteMenuItem,
-      deleteProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     links: List()
   },
   self: deleteProjectMenuItem

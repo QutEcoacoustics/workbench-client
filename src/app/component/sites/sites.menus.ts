@@ -1,4 +1,8 @@
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
+import {
+  Category,
+  MenuLink,
+  MenuRoute
+} from "src/app/interfaces/menusInterfaces";
 import { projectMenuItem } from "../projects/projects.menus";
 
 export const sitesRoute = projectMenuItem.route.add("sites");
@@ -32,6 +36,13 @@ export const siteMenuItem = MenuRoute({
     priority: projectMenuItem.order.priority,
     indentation: projectMenuItem.order.indentation + 1
   }
+});
+
+export const exploreAudioMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "map"],
+  label: "Explore audio",
+  tooltip: () => "Explore audio"
 });
 
 export const editSiteMenuItem = MenuRoute({
