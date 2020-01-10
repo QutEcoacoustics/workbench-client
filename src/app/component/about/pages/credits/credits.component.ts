@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { List } from "immutable";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { aboutCategory, creditsMenuItem } from "../../about.menus";
 
@@ -18,4 +19,8 @@ import { aboutCategory, creditsMenuItem } from "../../about.menus";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreditsComponent {}
+export class CreditsComponent extends PageComponent {
+  constructor() {
+    super();
+  }
+}

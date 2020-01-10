@@ -7,6 +7,7 @@ import { MapModule } from "../shared/map/map.module";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
+import { HarvestComponent } from "./pages/harvest/harvest.component";
 import { NewComponent } from "./pages/new/new.component";
 import { sitesRoute } from "./sites.menus";
 
@@ -14,6 +15,7 @@ export const SitesComponents = [
   DetailsComponent,
   EditComponent,
   NewComponent,
+  HarvestComponent,
   DeleteComponent
 ];
 

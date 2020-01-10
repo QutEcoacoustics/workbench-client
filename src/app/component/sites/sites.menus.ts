@@ -74,12 +74,17 @@ export const editSiteMenuItem = MenuRoute({
   }
 });
 
-export const harvestMenuItem = MenuLink({
-  uri: "REPLACE_ME",
+export const harvestMenuItem = MenuRoute({
   icon: ["fas", "file-audio"],
-  label: "How to harvest",
+  label: "Harvesting",
+  route: siteMenuItem.route.add("harvest"),
+  parent: siteMenuItem,
   tooltip: () => "Upload new audio to this site",
-  predicate: isLoggedInPredicate
+  predicate: isAdminPredicate,
+  order: {
+    priority: siteMenuItem.order.priority,
+    indentation: siteMenuItem.order.indentation + 1
+  }
 });
 
 export const assignSiteMenuItem = MenuLink({
