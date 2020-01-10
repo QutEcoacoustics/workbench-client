@@ -1,4 +1,12 @@
 import {
+  defaultDeleteIcon,
+  defaultEditIcon,
+  defaultNewIcon,
+  defaultPermissionsIcon,
+  isLoggedInPredicate,
+  isOwnerPredicate
+} from "src/app/app.menus";
+import {
   Category,
   MenuLink,
   MenuRoute
@@ -22,11 +30,11 @@ export const projectsMenuItem = MenuRoute({
 });
 
 export const newProjectMenuItem = MenuRoute({
-  icon: ["fas", "plus"],
+  icon: defaultNewIcon,
   label: "New project",
   route: projectsRoute.add("new"),
   tooltip: () => "Create a new project",
-  predicate: user => !!user,
+  predicate: isLoggedInPredicate,
   order: {
     priority: projectsMenuItem.order.priority,
     indentation: projectsMenuItem.order.indentation + 1
@@ -34,11 +42,11 @@ export const newProjectMenuItem = MenuRoute({
 });
 
 export const requestProjectMenuItem = MenuRoute({
-  icon: ["fas", "key"],
+  icon: defaultPermissionsIcon,
   label: "Request access",
   route: projectsRoute.add("request"),
   tooltip: () => "Request access to a project not listed here",
-  predicate: user => !!user,
+  predicate: isLoggedInPredicate,
   order: {
     priority: projectsMenuItem.order.priority,
     indentation: projectsMenuItem.order.indentation + 1
@@ -63,12 +71,12 @@ export const projectCategory: Category = {
 };
 
 export const editProjectMenuItem = MenuRoute({
-  icon: ["fas", "edit"],
+  icon: defaultEditIcon,
   label: "Edit this project",
   route: projectMenuItem.route.add("edit"),
   parent: projectMenuItem,
   tooltip: () => "Change the details for this project",
-  predicate: user => !!user,
+  predicate: isOwnerPredicate,
   order: {
     priority: projectMenuItem.order.priority,
     indentation: projectMenuItem.order.indentation + 1
@@ -84,19 +92,19 @@ export const exploreAudioProjectMenuItem = MenuLink({
 
 export const editProjectPermissionsMenuItem = MenuLink({
   uri: "REPLACE_ME",
-  icon: ["fas", "key"],
+  icon: defaultPermissionsIcon,
   label: "Edit permissions",
   tooltip: () => "Edit this projects permissions",
-  predicate: user => !!user
+  predicate: isOwnerPredicate
 });
 
 export const deleteProjectMenuItem = MenuRoute({
-  icon: ["fas", "trash"],
+  icon: defaultDeleteIcon,
   label: "Delete Project",
   route: projectMenuItem.route.add("delete"),
   parent: projectMenuItem,
   tooltip: () => "Delete this project",
-  predicate: user => !!user,
+  predicate: isOwnerPredicate,
   order: {
     priority: projectMenuItem.order.priority,
     indentation: projectMenuItem.order.indentation + 1

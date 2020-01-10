@@ -1,3 +1,4 @@
+import { isGuestPredicate } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
@@ -22,7 +23,7 @@ export const loginMenuItem = MenuRoute({
   label: "Log in",
   tooltip: () => "Log into the website",
   route: securityRoute.add("login"),
-  predicate: user => !user,
+  predicate: isGuestPredicate,
   order: { priority: 2, indentation: 0 }
 });
 
@@ -31,7 +32,7 @@ export const registerMenuItem = MenuRoute({
   label: "Register",
   route: securityRoute.add("register"),
   tooltip: () => "Create an account",
-  predicate: user => !user,
+  predicate: isGuestPredicate,
   order: { priority: 3, indentation: 0 }
 });
 
