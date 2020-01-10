@@ -38,11 +38,19 @@ export const siteMenuItem = MenuRoute({
   }
 });
 
-export const exploreAudioMenuItem = MenuLink({
+export const exploreAudioSiteMenuItem = MenuLink({
   uri: "REPLACE_ME",
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio"
+});
+
+export const annotationsMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "table"],
+  label: "Download annotations",
+  tooltip: () => "Download annotations for this site",
+  predicate: user => !!user
 });
 
 export const editSiteMenuItem = MenuRoute({
@@ -56,6 +64,22 @@ export const editSiteMenuItem = MenuRoute({
     priority: siteMenuItem.order.priority,
     indentation: siteMenuItem.order.indentation + 1
   }
+});
+
+export const harvestMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "file-audio"],
+  label: "How to harvest",
+  tooltip: () => "Upload new audio to this site",
+  predicate: user => !!user
+});
+
+export const assignSiteMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "toolbox"],
+  label: "Assign site",
+  tooltip: () => "Change which sites belong to this project",
+  predicate: user => !!user
 });
 
 export const deleteSiteMenuItem = MenuRoute({

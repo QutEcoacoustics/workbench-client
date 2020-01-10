@@ -5,7 +5,10 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
+import {
+  assignSiteMenuItem,
+  newSiteMenuItem
+} from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -18,16 +21,17 @@ import {
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
-  exploreAudioMenuItem,
+  exploreAudioProjectMenuItem,
   projectMenuItem,
   projectsCategory
 } from "../../projects.menus";
 
 export const projectMenuItemActions = [
-  exploreAudioMenuItem,
+  exploreAudioProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   newSiteMenuItem,
+  assignSiteMenuItem,
   deleteProjectMenuItem
 ];
 
