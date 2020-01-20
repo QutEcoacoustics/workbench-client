@@ -125,6 +125,9 @@ export class ApiCommon<T> extends BawApiService {
   }
 }
 
+/**
+ * URL path arguments
+ */
 export type Args = (string | number)[];
 
 /**
