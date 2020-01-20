@@ -7,7 +7,9 @@ import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
 import { forwardRef, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
+import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -32,11 +34,15 @@ import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
 export const appImports = [
   BrowserModule,
+  BrowserAnimationsModule,
   AppRoutingModule,
   HttpClientModule,
   AgmCoreModule.forRoot(),
   AgmSnazzyInfoWindowModule,
   FormlyModule.forRoot(formlyRoot),
+  ToastrModule.forRoot({
+    positionClass: "toast-top-center"
+  }),
   SharedModule,
   SecurityModule,
   AboutModule,
