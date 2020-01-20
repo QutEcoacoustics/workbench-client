@@ -24,7 +24,7 @@ export class ApiCommon<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
-    private type: new (object: any) => T
+    @Inject(STUB_CLASS_BUILDER) private type: new (object: any) => T
   ) {
     super(http, config);
   }

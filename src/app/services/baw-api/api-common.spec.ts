@@ -52,7 +52,7 @@ describe("ApiCommon", () => {
         { provide: BawApiService, useClass: MockBawApiService },
         {
           provide: STUB_CLASS_BUILDER,
-          useValue: (data: MockModelInterface) => new MockModel(data)
+          useValue: MockModel
         },
         ApiCommon
       ]
