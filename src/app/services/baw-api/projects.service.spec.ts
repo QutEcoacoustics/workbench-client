@@ -39,18 +39,6 @@ describe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("classBuilder should create project", () => {
-    const project: ProjectInterface = {
-      id: 1,
-      name: "Project",
-      imageUrl: "/assets/images/project/project_span4.png",
-      siteIds: new Set([]),
-      creatorId: 1
-    };
-
-    expect(service["classBuilder"](project)).toEqual(new Project(project));
-  });
-
   /**
    * getProjects
    */

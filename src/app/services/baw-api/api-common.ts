@@ -10,11 +10,11 @@ export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
 @Injectable()
 export class ApiCommon<T> extends BawApiService {
   private subjectNext(subject: Subject<T>, data: any) {
-    subject.next(this.classBuilder(data));
+    subject.next(new this.type(data));
     subject.complete();
   }
   private subjectNextList(subject: Subject<T[]>, data: any[]) {
-    subject.next(data.map(object => this.classBuilder(object)));
+    subject.next(data.map(object => new this.type(object)));
     subject.complete();
   }
   private subjectError(subject: Subject<T | T[]>, err: APIErrorDetails) {
@@ -24,7 +24,7 @@ export class ApiCommon<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
-    @Inject(STUB_CLASS_BUILDER) private classBuilder: (object: any) => T
+    private type: new (object: any) => T
   ) {
     super(http, config);
   }

@@ -9,7 +9,7 @@ import {
   Name,
   TimezoneInformation
 } from "src/app/interfaces/apiInterfaces";
-import { Site, SiteInterface } from "src/app/models/Site";
+import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
@@ -23,8 +23,7 @@ export class SitesService extends ApiCommon<Site> {
   };
 
   constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (site: SiteInterface) => new Site(site);
-    super(http, config, classBuilder);
+    super(http, config, Site);
 
     this.paths = {
       details: "/sites",

@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
-import { User, UserInterface } from "src/app/models/User";
+import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon } from "./api-common";
 
@@ -15,8 +15,7 @@ export class UserService extends ApiCommon<User> {
   };
 
   constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (user: UserInterface) => new User(user);
-    super(http, config, classBuilder);
+    super(http, config, User);
 
     this.paths = {
       myAccount: "/my_account",

@@ -7,7 +7,7 @@ import {
   ImageURL,
   Name
 } from "src/app/interfaces/apiInterfaces";
-import { Project, ProjectInterface } from "src/app/models/Project";
+import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
@@ -24,8 +24,7 @@ export class ProjectsService extends ApiCommon<Project> {
   };
 
   constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (project: ProjectInterface) => new Project(project);
-    super(http, config, classBuilder);
+    super(http, config, Project);
 
     this.paths = {
       details: "/projects",

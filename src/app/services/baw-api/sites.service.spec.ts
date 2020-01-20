@@ -39,17 +39,6 @@ describe("SitesService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("classBuilder should create site", () => {
-    const site: SiteInterface = {
-      id: 1,
-      name: "Site",
-      projectIds: new Set([]),
-      creatorId: 1
-    };
-
-    expect(service["classBuilder"](site)).toEqual(new Site(site));
-  });
-
   /**
    * getSites
    */

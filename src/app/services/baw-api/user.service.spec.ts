@@ -39,18 +39,6 @@ describe("UserService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("classBuilder should create user", () => {
-    const user: UserInterface = {
-      id: 1,
-      userName: "username",
-      rolesMask: 3,
-      rolesMaskNames: ["user"],
-      lastSeenAt: "1970-01-01T00:00:00.000"
-    };
-
-    expect(service["classBuilder"](user)).toEqual(new User(user));
-  });
-
   /**
    * getUserAccount
    */
