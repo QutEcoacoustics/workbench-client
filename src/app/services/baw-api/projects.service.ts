@@ -9,8 +9,8 @@ import {
 } from "src/app/interfaces/apiInterfaces";
 import { Project, ProjectInterface } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
+import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
-import { ModelService } from "./model.service";
 
 /**
  * Interacts with projects route in baw api
@@ -18,7 +18,7 @@ import { ModelService } from "./model.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends ModelService<Project> {
+export class ProjectsService extends ApiCommon<Project> {
   private paths: {
     [key: string]: string;
   };

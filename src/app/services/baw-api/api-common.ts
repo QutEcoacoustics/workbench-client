@@ -8,7 +8,7 @@ import { BawApiService, Filters } from "./base-api.service";
 export let MOCK_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
 @Injectable()
-export class ModelService<T> extends BawApiService {
+export class ApiCommon<T> extends BawApiService {
   private subjectNext(subject: Subject<T>, data: any) {
     subject.next(this.classBuilder(data));
     subject.complete();

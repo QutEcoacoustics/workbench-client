@@ -6,11 +6,11 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User, UserInterface } from "src/app/models/User";
+import { ApiCommon, Args } from "./api-common";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
+import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
-import { MockModelService } from "./mock/modelMockService";
-import { Args, ModelService } from "./model.service";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
@@ -23,7 +23,7 @@ describe("UserService", () => {
       providers: [
         ...testAppInitializer,
         { provide: BawApiService, useClass: MockBawApiService },
-        { provide: ModelService, useClass: MockModelService }
+        { provide: ApiCommon, useClass: MockApiCommon }
       ]
     });
 

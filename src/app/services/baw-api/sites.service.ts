@@ -11,13 +11,13 @@ import {
 } from "src/app/interfaces/apiInterfaces";
 import { Site, SiteInterface } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
+import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
-import { ModelService } from "./model.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends ModelService<Site> {
+export class SitesService extends ApiCommon<Site> {
   private paths: {
     [key: string]: string;
   };
