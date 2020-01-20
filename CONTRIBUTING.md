@@ -9,18 +9,24 @@
 - Try to work on branches if your code negatively affects production code
 - Write code in American English. Documentation may be written in Australian English.
 - Wherever possible **use un-prefixed SI units for variables**
-    1. Variables with no unit **MUST** be standard units
-        - `var duration = 30` should **always** be 30 seconds
-        - `var bandwidth = 50` should **always be hertz**
-    1. **Never** use imperial units
-    1. **Always** include the full unit in the name if it does not follow our standard
-        - avoid this if possible, see first point
-        - e.g. `var minKiloHertz = 3.5`
-        - e.g.  `var limitHours = 6`
-    1. **Do not** abbreviate units
-    1. It is **recommended** that full units be used in any user facing field name
-        - e.g. `EventEndSeconds` in a CSV file
-        
+
+  - Variables with no unit **MUST** be standard units
+
+    - `var duration = 30` should **always** be 30 seconds
+    - `var bandwidth = 50` should **always be hertz**
+
+  - **Never** use imperial units
+  - **Always** include the full unit in the name if it does not follow our standard
+
+    - avoid this if possible, see first point
+    - e.g. `var minKiloHertz = 3.5`
+    - e.g. `var limitHours = 6`
+
+  - **Do not** abbreviate units
+  - It is **recommended** that full units be used in any user facing field name
+
+    - e.g. `EventEndSeconds` in a CSV file
+
 ## Binary Large Objects (BLOBs)
 
 We use [git-lfs](https://git-lfs.github.com/) to store BLOBs for images. If you want to work on the website you need to have git-fls installed.
@@ -37,24 +43,24 @@ Third party contributions should be made by:
 
 Please do:
 
-* **DO** follow our style (enforced by StyleCop)
-* **DO** give priority to the current style of the project or file you're changing even if it diverges from the general 
+- **DO** follow our style (enforced by tslint)
+- **DO** give priority to the current style of the project or file you're changing even if it diverges from the general
   guidelines.
-* **DO** include tests when adding new features. When fixing bugs, start with adding a test that highlights how the
+- **DO** include tests when adding new features. When fixing bugs, start with adding a test that highlights how the
   current behavior is broken.
-* **DO** keep the discussions focused. When a new or related topic comes up
+- **DO** keep the discussions focused. When a new or related topic comes up
   it's often better to create new issue than to side track the discussion.
-* **DO** blog and tweet (or whatever) about your contributions, frequently!
+- **DO** blog and tweet (or whatever) about your contributions, frequently!
 
 Please do not:
 
-* **DON'T** make PRs for style changes. 
-* **DON'T** surprise us with big pull requests. Instead, file an issue and start
+- **DON'T** make PRs for style changes.
+- **DON'T** surprise us with big pull requests. Instead, file an issue and start
   a discussion so we can agree on a direction before you invest a large amount
   of time.
-* **DON'T** commit code that you didn't write. If you find code that you think is a good fit, file an issue and start a 
+- **DON'T** commit code that you didn't write. If you find code that you think is a good fit, file an issue and start a
   discussion before proceeding.
-* **DON'T** submit PRs that alter licensing related files.
+- **DON'T** submit PRs that alter licensing related files.
 
 ## Commit Messages
 
@@ -75,4 +81,3 @@ Fix #42
 
 Also do your best to factor commits appropriately, not too large with unrelated things in the same commit, and not too
 small with the same small change applied N times in N different commits.
-
