@@ -51,7 +51,7 @@ export class ProjectsService extends ModelService<Project> {
    * @returns Observable list of projects
    */
   public getProjects(filters?: Filters): Subject<Project[]> {
-    return this.details(this.paths.details, filters);
+    return this.list(this.paths.details, filters);
   }
 
   /**

@@ -35,17 +35,13 @@ export class ModelService<T> extends BawApiService {
    * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected details(
-    path: string,
-    filters: Filters,
-    ...args: Args
-  ): Subject<T[]> {
+  protected list(path: string, filters: Filters, ...args: Args): Subject<T[]> {
     const subject = new Subject<T[]>();
     const next = (objects: object[]) => this.subjectNextList(subject, objects);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.apiDetails(next, error, path, filters);
+    this.apiList(next, error, path, filters);
 
     return subject;
   }
@@ -62,7 +58,7 @@ export class ModelService<T> extends BawApiService {
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
     path = this.refineUrl(path, args);
 
-    this.apiDetails(next, error, path, filters);
+    this.apiList(next, error, path, filters);
 
     return subject;
   }

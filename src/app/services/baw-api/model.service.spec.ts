@@ -3,7 +3,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { fakeAsync, flush, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
@@ -76,7 +76,7 @@ describe("ModelService", () => {
    */
   it("details should work no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -107,7 +107,7 @@ describe("ModelService", () => {
 
   it("details should work with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -148,7 +148,7 @@ describe("ModelService", () => {
     });
 
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -193,7 +193,7 @@ describe("ModelService", () => {
     });
 
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -228,7 +228,7 @@ describe("ModelService", () => {
 
   it("details should work with single argument no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path/:id", null, 1).subscribe(
+    service["list"]("/broken_path/:id", null, 1).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -253,7 +253,7 @@ describe("ModelService", () => {
 
   it("details should work with single argument with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path/:id", {}, 1).subscribe(
+    service["list"]("/broken_path/:id", {}, 1).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -278,7 +278,7 @@ describe("ModelService", () => {
 
   it("details should work with multiple arguments no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
+    service["list"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -303,7 +303,7 @@ describe("ModelService", () => {
 
   it("details should work with multiple arguments with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path/:id/extra/:extraId", {}, 1, 5).subscribe(
+    service["list"]("/broken_path/:id/extra/:extraId", {}, 1, 5).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         done();
@@ -330,7 +330,7 @@ describe("ModelService", () => {
 
   it("details should complete observable no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
       },
@@ -357,7 +357,7 @@ describe("ModelService", () => {
 
   it("details should complete observable with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
       },
@@ -384,7 +384,7 @@ describe("ModelService", () => {
 
   it("details should handle error no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -420,7 +420,7 @@ describe("ModelService", () => {
 
   it("details should handle error with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -456,7 +456,7 @@ describe("ModelService", () => {
 
   it("details should handle error with info no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -508,7 +508,7 @@ describe("ModelService", () => {
 
   it("details should handle error with info with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -560,7 +560,7 @@ describe("ModelService", () => {
 
   it("details should handle empty object output no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([]);
@@ -587,7 +587,7 @@ describe("ModelService", () => {
 
   it("details should handle empty object output with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([]);
@@ -619,7 +619,7 @@ describe("ModelService", () => {
 
   it("details should handle error on missing output no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -649,7 +649,7 @@ describe("ModelService", () => {
 
   it("details should handle error on missing output with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
@@ -679,7 +679,7 @@ describe("ModelService", () => {
 
   it("details should handle single object output no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([
@@ -722,7 +722,7 @@ describe("ModelService", () => {
 
   it("details should handle single object output with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([
@@ -770,7 +770,7 @@ describe("ModelService", () => {
 
   it("details should handle multiple object output no filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", null).subscribe(
+    service["list"]("/broken_path", null).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([
@@ -827,7 +827,7 @@ describe("ModelService", () => {
 
   it("details should handle multiple object output with filter", done => {
     const service: ModelService<MockModel> = TestBed.get(ModelService);
-    service["details"]("/broken_path", {}).subscribe(
+    service["list"]("/broken_path", {}).subscribe(
       (user: MockModel[]) => {
         expect(user).toBeTruthy();
         expect(user).toEqual([

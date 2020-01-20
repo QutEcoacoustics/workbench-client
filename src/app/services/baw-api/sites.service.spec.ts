@@ -55,7 +55,7 @@ describe("SitesService", () => {
    */
 
   it("getSites should handle empty response", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toBeFalsy();
@@ -85,7 +85,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle single site", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toBeFalsy();
@@ -129,7 +129,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle multiple sites", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toBeFalsy();
@@ -185,7 +185,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle single site with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toEqual({});
@@ -229,7 +229,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle single site with filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toEqual({ paging: { items: 3 } });
@@ -273,7 +273,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle error", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toBeFalsy();
@@ -308,7 +308,7 @@ describe("SitesService", () => {
   }));
 
   it("getSites should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/sites");
         expect(filters).toBeFalsy();
@@ -629,7 +629,7 @@ describe("SitesService", () => {
    */
 
   it("getProjectSites should handle empty response", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();
@@ -659,7 +659,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle random project id", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();
@@ -689,7 +689,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle single site", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();
@@ -733,7 +733,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle multiple sites", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();
@@ -789,7 +789,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle single site with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toEqual({});
@@ -833,7 +833,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle single site with filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toEqual({ paging: { items: 3 } });
@@ -877,7 +877,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle error", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();
@@ -912,7 +912,7 @@ describe("SitesService", () => {
   }));
 
   it("getProjectSites should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects/:projectId/sites");
         expect(filters).toBeFalsy();

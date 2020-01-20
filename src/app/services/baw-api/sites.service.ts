@@ -42,7 +42,7 @@ export class SitesService extends ModelService<Site> {
    * @returns Observable list of sites
    */
   public getSites(filters?: Filters): Subject<Site[]> {
-    return this.details(this.paths.details, filters);
+    return this.list(this.paths.details, filters);
   }
 
   /**
@@ -62,7 +62,7 @@ export class SitesService extends ModelService<Site> {
    * @returns Observable list of sites for a project
    */
   public getProjectSites(projectId: ID, filters?: Filters): Subject<Site[]> {
-    return this.details(this.paths.nestedDetails, filters, projectId);
+    return this.list(this.paths.nestedDetails, filters, projectId);
   }
 
   /**

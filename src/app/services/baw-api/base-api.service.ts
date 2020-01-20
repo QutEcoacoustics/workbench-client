@@ -27,7 +27,7 @@ export const apiReturnCodes = {
 export abstract class BawApiService {
   /*
   Paths:
-    details -> GET
+    list -> GET
     show -> GET with id
     create -> PUT/POST
     update -> PATCH with id
@@ -69,7 +69,7 @@ export abstract class BawApiService {
    * @param args URL arguments
    * @param filters API filters
    */
-  protected apiDetails(
+  protected apiList(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
