@@ -5,7 +5,7 @@ import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 
-export let MOCK_CLASS_BUILDER = new InjectionToken("test.class.builder");
+export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
 @Injectable()
 export class ApiCommon<T> extends BawApiService {
@@ -24,7 +24,7 @@ export class ApiCommon<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
-    @Inject(MOCK_CLASS_BUILDER) private classBuilder: (object: any) => T
+    @Inject(STUB_CLASS_BUILDER) private classBuilder: (object: any) => T
   ) {
     super(http, config);
   }
