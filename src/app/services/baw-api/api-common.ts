@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { PRIMARY_OUTLET, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
@@ -24,6 +25,7 @@ export class ApiCommon<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
+    private router: Router,
     @Inject(STUB_CLASS_BUILDER) private type: new (object: any) => T
   ) {
     super(http, config);
@@ -103,25 +105,22 @@ export class ApiCommon<T> extends BawApiService {
    * @param args Arguments to insert
    */
   private refineUrl(path: string, args: Args): string {
-    const regex = /(:.*?)(\/|$)/;
-    let count = 0;
-    let attributes = regex.exec(path);
+    const tree = this.router.parseUrl(path);
+    const segments = tree.root.children[PRIMARY_OUTLET].segments.filter(
+      segment => segment.path.charAt(0) === ":"
+    );
 
-    while (attributes) {
-      if (args.length > count) {
-        path = path.replace(attributes[1], args[count].toString());
-        attributes = regex.exec(path);
-      }
-      count++;
-    }
-
-    if (count !== args.length) {
+    if (args.length !== segments.length) {
       throw new Error(
-        `Expected ${count} arguments to satisfy url parameters for path '${path}'. Instead received ${args.length}.`
+        `Expected ${segments.length} arguments to satisfy url parameters for path '${path}'. Instead received ${args.length}.`
       );
     }
 
-    return path;
+    args.forEach((arg, index) => {
+      segments[index].path = arg.toString();
+    });
+
+    return tree.toString();
   }
 }
 

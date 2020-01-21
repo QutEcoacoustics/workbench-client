@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -22,8 +23,8 @@ export class SitesService extends ApiCommon<Site> {
     [key: string]: string;
   };
 
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Site);
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, Site);
 
     this.paths = {
       details: "/sites",

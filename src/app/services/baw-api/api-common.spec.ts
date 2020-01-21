@@ -4,12 +4,12 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
-import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon, STUB_CLASS_BUILDER } from "./api-common";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { APIResponse, BawApiService } from "./base-api.service";
+import { BawApiInterceptor } from "./api.interceptor";
+import { BawApiService } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 
 describe("ApiCommon", () => {
@@ -41,7 +41,7 @@ describe("ApiCommon", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
         {
