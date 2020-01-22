@@ -23,7 +23,7 @@ export interface ProjectInterface {
   updaterId?: ID;
   updatedAt?: DateTimeTimezone | string;
   ownerId?: ID;
-  description: Description;
+  description?: Description;
   siteIds: IDs;
 }
 
@@ -35,13 +35,13 @@ export class Project implements ProjectInterface {
   public readonly id: ID;
   public readonly name: Name;
   public readonly imageUrl: string;
+  public readonly siteIds: IDs;
   public readonly creatorId: ID;
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: ID;
   public readonly updatedAt?: DateTimeTimezone;
   public readonly ownerId?: ID;
-  public readonly description: Description;
-  public readonly siteIds: IDs;
+  public readonly description?: Description;
 
   constructor(project: ProjectInterface) {
     this.kind = "Project";
@@ -86,3 +86,11 @@ export class Project implements ProjectInterface {
     };
   }
 }
+
+export const mockProject = new Project({
+  id: 1,
+  name: "name",
+  description: "description",
+  creatorId: 1,
+  siteIds: new Set([1])
+});

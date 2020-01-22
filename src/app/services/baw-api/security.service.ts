@@ -13,13 +13,15 @@ import { APIResponse, apiReturnCodes, BawApiService } from "./base-api.service";
   providedIn: "root"
 })
 export class SecurityService extends BawApiService {
-  protected loggedInTrigger = new BehaviorSubject(null);
+  private paths: {
+    [key: string]: string;
+  };
+  private loggedInTrigger = new BehaviorSubject(null);
 
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config);
 
     this.loggedInTrigger.next(this.isLoggedIn());
-
     this.paths = {
       register: "/security",
       signIn: "/security",
@@ -97,7 +99,7 @@ export class SecurityService extends BawApiService {
     details: { login: string; password: string }
   ): Observable<boolean | string> {
     const subject = new Subject<boolean>();
-    const next = (data: Authentication) => {
+    const next = (data: SessionUserInterface) => {
       const user = new SessionUser({
         authToken: data.authToken,
         userName: data.userName
@@ -113,7 +115,7 @@ export class SecurityService extends BawApiService {
       subject.error(err);
     };
 
-    this.create(next, error, path, undefined, details);
+    this.apiCreate(next, error, path, details);
 
     return subject.asObservable();
   }
@@ -132,11 +134,4 @@ export class SecurityService extends BawApiService {
   private clearSessionStorage() {
     sessionStorage.removeItem(this.userSessionStorage);
   }
-}
-
-/**
- * Login interface
- */
-interface Authentication extends SessionUserInterface {
-  message: string;
 }

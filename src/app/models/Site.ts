@@ -19,7 +19,7 @@ export interface SiteInterface {
   id: ID;
   name: Name;
   imageUrl?: string;
-  description: Description;
+  description?: Description;
   locationObfuscated?: boolean;
   creatorId: ID;
   createdAt?: DateTimeTimezone | string;
@@ -82,3 +82,12 @@ export class Site implements SiteInterface {
     });
   }
 }
+
+export const mockSite = new Site({
+  id: 1,
+  name: "name",
+  description: "description",
+  creatorId: 1,
+  projectIds: new Set([0]),
+  imageUrl: "/assets/images/site/site_span4.png"
+});

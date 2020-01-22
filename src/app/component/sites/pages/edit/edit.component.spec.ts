@@ -10,7 +10,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { Site } from "src/app/models/Site";
+import { mockSite, Site } from "src/app/models/Site";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { EditComponent } from "./edit.component";
@@ -445,10 +445,10 @@ describe("SitesEditComponent", () => {
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next(mockSite);
         subject.complete();
       }, 50);
 
@@ -479,7 +479,7 @@ describe("SitesEditComponent", () => {
   it("should show error on unauthorized", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({
@@ -515,7 +515,7 @@ describe("SitesEditComponent", () => {
   it("should show error on project not found", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({ status: 404, message: "Not Found" } as APIErrorDetails);
@@ -550,10 +550,10 @@ describe("SitesEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next(mockSite);
         subject.complete();
       }, 50);
 
@@ -582,7 +582,7 @@ describe("SitesEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({
@@ -616,10 +616,10 @@ describe("SitesEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next(mockSite);
         subject.complete();
       }, 50);
 
@@ -646,7 +646,7 @@ describe("SitesEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({

@@ -1,17 +1,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
-import { User, UserInterface } from "src/app/models/User";
+import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiService } from "./base-api.service";
+import { ApiCommon } from "./api-common";
 
 @Injectable({
   providedIn: "root"
 })
-export class UserService extends BawApiService {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+export class UserService extends ApiCommon<User> {
+  private paths: {
+    [key: string]: string;
+  };
+
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, User);
 
     this.paths = {
       myAccount: "/my_account",
@@ -24,27 +29,15 @@ export class UserService extends BawApiService {
    * @returns Observable returning current user details
    */
   public getMyAccount(): Subject<User> {
-    const subject = new Subject<User>();
-    const callback = (user: UserInterface) => new User(user);
-
-    this.details(subject, callback, this.paths.myAccount);
-
-    return subject;
+    return this.show(this.paths.myAccount, null);
   }
 
   /**
    * Get the user account details of another user
-   * @param id User ID
+   * @param userId User ID
    * @returns Observable returning user details
    */
-  public getUserAccount(id: ID): Subject<User> {
-    const subject = new Subject<User>();
-    const callback = (user: UserInterface) => new User(user);
-
-    this.details(subject, callback, this.paths.userAccount, {
-      args: { userId: id }
-    });
-
-    return subject;
+  public getUserAccount(userId: ID): Subject<User> {
+    return this.show(this.paths.userAccount, null, userId);
   }
 }

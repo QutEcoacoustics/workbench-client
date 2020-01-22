@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -9,79 +10,74 @@ import {
   Name,
   TimezoneInformation
 } from "src/app/interfaces/apiInterfaces";
-import { Site, SiteInterface } from "src/app/models/Site";
+import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
+import { ApiCommon } from "./api-common";
+import { Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends BawApiService {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+export class SitesService extends ApiCommon<Site> {
+  private paths: {
+    [key: string]: string;
+  };
+
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, Site);
 
     this.paths = {
-      list: "/projects/:projectId/sites",
-      flattened: "/sites/:siteId",
-      nested: "/projects/:projectId/sites/:siteId",
-      filter: "/sites/filter",
-      new: "/projects/:projectId/sites",
-      update: "/projects/:projectId/sites/:siteId"
+      details: "/sites",
+      nestedDetails: "/projects/:projectId/sites",
+      show: "/sites/:siteId",
+      nestedShow: "/projects/:projectId/sites/:siteId",
+      nestedNew: "/projects/:projectId/sites",
+      nestedUpdate: "/projects/:projectId/sites/:siteId"
     };
   }
 
   /**
+   * Get list of sites
+   * @param filters API filters
+   * @returns Observable list of sites
+   */
+  public getSites(filters?: Filters): Subject<Site[]> {
+    return this.list(this.paths.details, filters);
+  }
+
+  /**
    * Get site data available to the user
-   * @param id Site ID
+   * @param siteId Site ID
+   * @param filters API filters
    * @returns Observable returning singular site
    */
-  public getSite(id: ID): Subject<Site> {
-    const subject = new Subject<Site>();
-    const callback = (site: SiteInterface) => new Site(site);
+  public getSite(siteId: ID, filters?: Filters): Subject<Site> {
+    return this.show(this.paths.show, filters, siteId);
+  }
 
-    this.details(subject, callback, this.paths.flattened, {
-      args: { siteId: id }
-    });
-
-    return subject;
+  /**
+   * Get list of sites for a project
+   * @param projectId Project ID
+   * @param filters API filters
+   * @returns Observable list of sites for a project
+   */
+  public getProjectSites(projectId: ID, filters?: Filters): Subject<Site[]> {
+    return this.list(this.paths.nestedDetails, filters, projectId);
   }
 
   /**
    * Get site data available to the user
    * @param projectId Project ID
    * @param siteId Site ID
+   * @param filters API filters
    * @returns Observable returning singular site
    */
-  public getProjectSite(projectId: ID, siteId: ID): Subject<Site> {
-    const subject = new Subject<Site>();
-    const callback = (site: SiteInterface) => new Site(site);
-
-    this.details(subject, callback, this.paths.nested, {
-      args: { projectId, siteId }
-    });
-
-    return subject;
-  }
-
-  /**
-   * Get list of sites for a project
-   * @returns Observable list of sites
-   * @param id Project ID
-   * @returns Observable list of sites for a project
-   */
-  public getProjectSites(id: ID): Subject<Site[]> {
-    const subject = new Subject<Site[]>();
-    const callback = (sites: SiteInterface[]) =>
-      sites.map(site => {
-        return new Site(site);
-      });
-
-    this.details(subject, callback, this.paths.list, {
-      args: { projectId: id }
-    });
-
-    return subject;
+  public getProjectSite(
+    projectId: ID,
+    siteId: ID,
+    filters?: Filters
+  ): Subject<Site> {
+    return this.show(this.paths.nestedShow, filters, projectId, siteId);
   }
 
   /**
@@ -94,30 +90,14 @@ export class SitesService extends BawApiService {
     details: {
       name: Name;
       description?: Description;
+      imageUrl?: string;
       locationObfuscated?: boolean;
       customLatitude?: Latitude;
       customLongitude?: Longitude;
       timezoneInformation?: TimezoneInformation;
     }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => subject.error(err);
-
-    this.create(
-      next,
-      error,
-      this.paths.new,
-      { args: { projectId: id } },
-      details,
-      {}
-    );
-
-    return subject;
+  ): Subject<Site> {
+    return this.new(this.paths.nestedNew, details, id);
   }
 
   /**
@@ -130,42 +110,15 @@ export class SitesService extends BawApiService {
     projectId: ID,
     siteId: ID,
     details: {
-      name: Name;
+      name?: Name;
       description?: Description;
+      imageUrl?: string;
       locationObfuscated?: boolean;
       customLatitude?: Latitude;
       customLongitude?: Longitude;
       timezoneInformation?: TimezoneInformation;
     }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => {
-      // Deal with custom info
-      if (err.info && err.info.name && err.info.name.length === 1) {
-        subject.error(err.message + ": name " + err.info.name[0]);
-      } else {
-        subject.error(err.message);
-      }
-    };
-
-    this.update(
-      next,
-      error,
-      this.paths.update,
-      { args: { projectId, siteId } },
-      details,
-      {}
-    );
-
-    return subject;
+  ): Subject<Site> {
+    return this.update(this.paths.nestedUpdate, details, projectId, siteId);
   }
-}
-
-export interface SiteFilters extends Filters {
-  orderBy?: "id" | "name" | "description";
 }

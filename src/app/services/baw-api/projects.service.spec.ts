@@ -1,188 +1,38 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
-import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { mockSessionStorage } from "./mock/sessionStorageMock";
+import { ApiCommon, Args } from "./api-common";
+import { APIErrorDetails } from "./api.interceptor";
+import { BawApiService, Filters } from "./base-api.service";
+import { MockApiCommon } from "./mock/api-commonMock";
+import { MockBawApiService } from "./mock/baseApiMockService";
 import { ProjectsService } from "./projects.service";
-import { SecurityService } from "./security.service";
 
 describe("ProjectsService", () => {
   let service: ProjectsService;
-  let config: AppConfigService;
-  let securityService: SecurityService;
   let httpMock: HttpTestingController;
-
-  const pageNotFoundResponse = {
-    meta: {
-      status: 404,
-      message: "Not Found",
-      error: {
-        details: "Could not find the requested page.",
-        info: {
-          original_route: "dsfaggsdfg",
-          original_http_method: "GET"
-        }
-      }
-    },
-    data: null
-  };
-
-  const itemNotFoundResponse = {
-    meta: {
-      status: 404,
-      message: "Not Found",
-      error: {
-        details: "Could not find the requested item.",
-        info: null
-      }
-    },
-    data: null
-  };
-
-  const projectValidResponse = {
-    meta: {
-      status: 200,
-      message: "OK",
-      sorting: {
-        order_by: "creator_id",
-        direction: "asc"
-      },
-      paging: {
-        page: 1,
-        items: 25,
-        total: 1,
-        max_page: 1,
-        current:
-          "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    },
-    data: {
-      id: 512,
-      name: "512 Name",
-      description: "512 Description.",
-      creator_id: 138,
-      site_ids: new Set([513, 514, 519]),
-      description_html: "<p>512 Description.</p>\n"
-    }
-  };
-
-  const projectValidConvertedResponse = new Project({
-    id: 512,
-    name: "512 Name",
-    description: "512 Description.",
-    creatorId: 138,
-    siteIds: new Set([513, 514, 519])
-  });
-
-  const projectUnauthorizedResponse = {
-    meta: {
-      status: 401,
-      message: "Unauthorized",
-      error: {
-        details: "You need to log in or register before continuing.",
-        links: {
-          "Log in": "/my_account/sign_in",
-          Register: "/my_account/sign_up",
-          "Confirm account": "/my_account/confirmation/new"
-        },
-        info: null
-      }
-    },
-    data: null
-  };
-
-  const projectsValidResponse = {
-    meta: {
-      status: 200,
-      message: "OK",
-      sorting: {
-        order_by: "creator_id",
-        direction: "asc"
-      },
-      paging: {
-        page: 1,
-        items: 25,
-        total: 1,
-        max_page: 1,
-        current:
-          "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    },
-    data: [
-      {
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creator_id: 138,
-        site_ids: new Set([513, 514, 519]),
-        description_html: "<p>512 Description.</p>\n"
-      },
-      {
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creator_id: 138,
-        site_ids: new Set([513, 514, 519]),
-        description_html: "<p>513 Description.</p>\n"
-      }
-    ]
-  };
-
-  const projectsValidConvertedResponse = [
-    new Project({
-      id: 512,
-      name: "512 Name",
-      description: "512 Description.",
-      creatorId: 138,
-      siteIds: new Set([513, 514, 519])
-    }),
-    new Project({
-      id: 513,
-      name: "513 Name",
-      description: "513 Description.",
-      creatorId: 138,
-      siteIds: new Set([513, 514, 519])
-    })
-  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
-        BawApiInterceptor,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: BawApiInterceptor,
-          multi: true
-        },
-        ProjectsService,
-        SecurityService
+        { provide: BawApiService, useClass: MockBawApiService },
+        { provide: ApiCommon, useClass: MockApiCommon }
       ]
     });
 
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
-
     service = TestBed.get(ProjectsService);
-    config = TestBed.get(AppConfigService);
-    securityService = TestBed.get(SecurityService);
     httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
-    sessionStorage.clear();
     httpMock.verify();
   });
 
@@ -190,483 +40,293 @@ describe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getProjects should return data", () => {
-    // tslint:disable-next-line: rxjs-no-ignored-error
-    service.getProjects().subscribe(res => {
-      expect(res).toEqual(projectsValidConvertedResponse);
-    });
+  /**
+   * getProjects
+   */
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects"
-    );
-    req.flush(projectsValidResponse);
-  });
+  it("getProjects should handle empty response", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
 
-  it("getProject should return data", () => {
-    // tslint:disable-next-line: rxjs-no-ignored-error
-    service.getProject(512).subscribe(res => {
-      expect(res).toEqual(projectValidConvertedResponse);
-    });
+        setTimeout(() => {
+          subject.next([]);
+          subject.complete();
+        }, 50);
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/512"
-    );
-    req.flush(projectValidResponse);
-  });
-
-  it("getProject invalid project should return error", done => {
-    service.getProject(-1).subscribe(
-      () => {
-        expect(false).toBeTruthy(
-          "getProject should not return result on error"
-        );
-        done();
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 404,
-          message: "Could not find the requested item."
-        });
-        done();
-      },
-      () => {
-        done();
+        return subject;
       }
     );
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/-1"
-    );
-    req.flush(itemNotFoundResponse, { status: 404, statusText: "Not Found" });
-  });
-
-  it("getProject invalid page should return error", done => {
-    service.getProject(-1).subscribe(
-      () => {
-        expect(false).toBeTruthy(
-          "getProject should not return result on error"
-        );
-        done();
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 404,
-          message: "Could not find the requested page.",
-          info: { original_route: "dsfaggsdfg", original_http_method: "GET" }
-        });
-        done();
+    service.getProjects().subscribe(
+      (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects).toEqual([]);
       },
       () => {
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
       }
     );
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/-1"
-    );
-    req.flush(pageNotFoundResponse, { status: 404, statusText: "Not Found" });
-  });
+    tick(100);
+  }));
 
-  it("getProject unauthorized should return error", done => {
-    service.getProject(-1).subscribe(
+  it("getProjects should handle single project", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
+
+        setTimeout(() => {
+          subject.next([
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          ]);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProjects().subscribe(
+      (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects).toEqual([
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        ]);
+      },
       () => {
-        expect(false).toBeTruthy(
-          "getProject should not return result on error"
-        );
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProjects should handle multiple projects", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
+
+        setTimeout(() => {
+          subject.next([
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            }),
+            new Project({
+              id: 5,
+              name: "Name",
+              creatorId: 10,
+              siteIds: new Set([10, 20, 30])
+            })
+          ]);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProjects().subscribe(
+      (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects).toEqual([
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          }),
+          new Project({
+            id: 5,
+            name: "Name",
+            creatorId: 10,
+            siteIds: new Set([10, 20, 30])
+          })
+        ]);
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProjects should handle single project with empty filter", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toEqual({});
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
+
+        setTimeout(() => {
+          subject.next([
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          ]);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProjects({}).subscribe(
+      (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects).toEqual([
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        ]);
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProjects should handle single project with filter", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toEqual({ paging: { items: 3 } });
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
+
+        setTimeout(() => {
+          subject.next([
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          ]);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProjects({ paging: { items: 3 } }).subscribe(
+      (projects: Project[]) => {
+        expect(projects).toBeTruthy();
+        expect(projects).toEqual([
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        ]);
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProjects should handle error", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProjects().subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
       },
       (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
-          message: "You need to log in or register before continuing."
-        });
-        done();
-      },
-      () => {
-        done();
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }
     );
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/-1"
-    );
-    req.flush(projectUnauthorizedResponse, {
-      status: 401,
-      statusText: "Unauthorized"
-    });
-  });
+    tick(100);
+  }));
 
-  it("getFilteredProjects should get filtered number of items", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "name",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 3,
-          total: 1,
-          max_page: 1,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
+  it("getProjects should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "list").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([]);
+        const subject = new Subject<Project[]>();
 
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
 
-    service
-      .getFilteredProjects({
-        items: 3
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot + "/projects/filter?items=3"
-    );
-    req.flush(dummyApiResponse);
-  });
-
-  it("getFilteredProjects should get ordered by creator id", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "creator_id",
-          direction: "asc"
-        },
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          max_page: 1,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
-
-    service
-      .getFilteredProjects({
-        orderBy: "creatorId"
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot +
-        "/projects/filter?order_by=creator_id"
-    );
-    req.flush(dummyApiResponse);
-  });
-
-  it("getFilteredProjects should get multi filter", done => {
-    const dummyApiResponse = {
-      meta: {
-        status: 200,
-        message: "OK",
-        sorting: {
-          order_by: "creator_id",
-          direction: "desc"
-        },
-        paging: {
-          page: 2,
-          items: 5,
-          total: 1,
-          max_page: 2,
-          current:
-            "<BROKEN LINK>/projects?direction=asc&items=3&order_by=name&page=1",
-          previous: null,
-          next: null
-        }
-      },
-      data: [
-        {
-          id: 512,
-          name: "512 Name",
-          description: "512 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>512 Description.</p>\n"
-        },
-        {
-          id: 513,
-          name: "513 Name",
-          description: "513 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>513 Description.</p>\n"
-        },
-        {
-          id: 514,
-          name: "514 Name",
-          description: "514 Description.",
-          creator_id: 138,
-          site_ids: new Set([513, 514, 519]),
-          description_html: "<p>514 Description.</p>\n"
-        }
-      ]
-    };
-
-    const dummyApiConvertedResponse = [
-      new Project({
-        id: 512,
-        name: "512 Name",
-        description: "512 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 513,
-        name: "513 Name",
-        description: "513 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      }),
-      new Project({
-        id: 514,
-        name: "514 Name",
-        description: "514 Description.",
-        creatorId: 138,
-        siteIds: new Set([513, 514, 519])
-      })
-    ];
-
-    service
-      .getFilteredProjects({
-        direction: "desc",
-        items: 3,
-        orderBy: "creatorId",
-        page: 2
-      })
-      .subscribe(
-        res => {
-          expect(res).toEqual(dummyApiConvertedResponse);
-          done();
-        },
-        () => {
-          expect(false).toBeTruthy("No error should be reported");
-          done();
-        },
-        () => {
-          done();
-        }
-      );
-
-    const req = httpMock.expectOne(
-      config.getConfig().environment.apiRoot +
-        "/projects/filter?direction=desc&items=3&order_by=creator_id&page=2"
-    );
-    req.flush(dummyApiResponse);
-  });
-
-  it("newProject should create new project", done => {
-    service.newProject({ name: "Testing Project #1" }).subscribe(
-      res => {
-        expect(res).toBeTrue();
-      },
-      () => {
-        expect(false).toBeTruthy("Should be no error response");
-      },
-      () => {
-        done();
+        return subject;
       }
     );
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects",
-      method: "POST"
-    });
-    req.flush(
-      {
-        meta: {
-          status: 201,
-          message: "Created"
-        },
-        data: {
-          id: 1,
-          name: "Testing Project #1",
-          description: null,
-          creator_id: 1,
-          site_ids: [],
-          description_html: null
-        }
-      },
-      { status: 201, statusText: "Created" }
-    );
-  });
-
-  it("newProject should create new project with required details", () => {
-    service.newProject({ name: "Testing Project #1" }).subscribe();
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects",
-      method: "POST"
-    });
-    expect(req.request.body).toEqual({
-      name: "Testing Project #1"
-    });
-  });
-
-  it("newProject should create new project with description", () => {
-    service
-      .newProject({
-        name: "Testing Project #1",
-        description: "Custom description"
-      })
-      .subscribe();
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects",
-      method: "POST"
-    });
-    expect(req.request.body).toEqual({
-      name: "Testing Project #1",
-      description: "Custom description"
-    });
-  });
-
-  // Image option not available
-  xit("newProject should create new project with image", done => {});
-  xit("newProject should create new project with image and description", done => {});
-
-  it("newProject should return error on duplicate project", done => {
-    service.newProject({ name: "Testing Project #1" }).subscribe(
+    service.getProjects().subscribe(
       () => {
-        expect(false).toBeTruthy("Should not return result");
-        done();
+        expect(true).toBeFalsy("Service should not return data");
       },
       (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
@@ -681,205 +341,240 @@ describe("ProjectsService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        });
-        done();
+        } as APIErrorDetails);
       }
     );
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects",
-      method: "POST"
-    });
-    req.flush(
-      {
-        meta: {
-          status: 422,
-          message: "Unprocessable Entity",
-          error: {
-            details: "Record could not be saved",
-            info: {
-              name: ["has already been taken"],
-              image: [],
-              image_file_name: [],
-              image_file_size: [],
-              image_content_type: [],
-              image_updated_at: []
-            }
-          }
-        },
-        data: null
-      },
-      { status: 422, statusText: "Unprocessable Entity" }
-    );
-  });
+    tick(100);
+  }));
 
-  it("newProject should handle unauthorized", done => {
-    service.newProject({ name: "Testing Project #1" }).subscribe(
+  /**
+   * getProject
+   */
+
+  it("getProject should handle response", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProject(1).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        );
+      },
       () => {
-        expect(false).toBeTruthy("Should not return result");
-        done();
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProject should handle response with random id", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([5]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProject(5).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProject should handle response with empty filter", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toEqual({});
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProject(1, {}).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProject should handle response with filter", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toEqual({ paging: { items: 3 } });
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([1, 2, 3])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProject(1, { paging: { items: 3 } }).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([1, 2, 3])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("getProject should handle error", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.getProject(1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
       },
       (err: APIErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
-          message: "You need to log in or register before continuing."
-        });
-        done();
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }
     );
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects",
-      method: "POST"
-    });
-    req.flush(
-      {
-        meta: {
-          status: 401,
-          message: "Unauthorized",
-          error: {
-            details: "You need to log in or register before continuing.",
-            links: {
-              "Log in": "/my_account/sign_in",
-              Register: "/my_account/sign_up",
-              "Confirm account": "/my_account/confirmation/new"
-            },
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 401, statusText: "Unauthorized" }
-    );
-  });
+    tick(100);
+  }));
 
-  it("updateProject should update project", done => {
-    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
-      res => {
-        expect(res).toBeTrue();
-      },
-      () => {
-        expect(false).toBeTruthy("Should be no error response");
-      },
-      () => {
-        done();
-      }
-    );
+  it("getProject should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(filters).toBeFalsy();
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        id: 1,
-        name: "Testing Project #1",
-        description: "testing description",
-        creator_id: 1,
-        site_ids: [],
-        description_html: "<p>testing description</p>\n"
-      }
-    });
-  });
-
-  it("updateProject should update project with random project id", done => {
-    service.updateProject(5, { name: "Testing Project #1" }).subscribe(
-      res => {
-        expect(res).toBeTrue();
-      },
-      () => {
-        expect(false).toBeTruthy("Should be no error response");
-      },
-      () => {
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/5",
-      method: "PATCH"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        id: 5,
-        name: "Testing Project #1",
-        description: "testing description",
-        creator_id: 1,
-        site_ids: [],
-        description_html: "<p>testing description</p>\n"
-      }
-    });
-  });
-
-  it("updateProject should update project with required details", () => {
-    service.updateProject(1, { name: "Testing Project #1" }).subscribe();
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    expect(req.request.body).toEqual({
-      name: "Testing Project #1"
-    });
-  });
-
-  it("updateProject should update project with description", () => {
-    service
-      .updateProject(1, {
-        name: "Testing Project #1",
-        description: "Custom description"
-      })
-      .subscribe();
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    expect(req.request.body).toEqual({
-      name: "Testing Project #1",
-      description: "Custom description"
-    });
-  });
-
-  // Image option not available
-  xit("updateProject should update project with image", done => {});
-  xit("updateProject should update project with image and description", done => {});
-
-  // API Route broken for this scenario
-  xit("updateProject should return error on duplicate project", done => {
-    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
-      () => {
-        expect(false).toBeTruthy("Should not return result");
-        done();
-      },
-      err => {
-        expect(err).toBeTruthy(
-          "Record could not be saved: name has already been taken"
-        );
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    req.flush(
-      {
-        meta: {
-          status: 422,
-          message: "Unprocessable Entity",
-          error: {
-            details: "Record could not be saved",
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
             info: {
               name: ["has already been taken"],
               image: [],
@@ -888,80 +583,486 @@ describe("ProjectsService", () => {
               image_content_type: [],
               image_updated_at: []
             }
-          }
-        },
-        data: null
-      },
-      { status: 422, statusText: "Unprocessable Entity" }
-    );
-  });
+          } as APIErrorDetails);
+        }, 50);
 
-  it("updateProject should handle unauthorized", done => {
-    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
-      () => {
-        expect(false).toBeTruthy("Should not return result");
-        done();
-      },
-      err => {
-        expect(err).toBeTruthy("Unauthorized");
-        done();
+        return subject;
       }
     );
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    req.flush(
-      {
-        meta: {
+    service.getProject(1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  /**
+   * newProject
+   */
+
+  it("newProject should handle response", fakeAsync(() => {
+    spyOn<any>(service, "new").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(values).toEqual({ name: "Name" });
+        expect(args).toEqual([]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.newProject({ name: "Name" }).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("newProject should handle response with description", fakeAsync(() => {
+    spyOn<any>(service, "new").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(values).toEqual({ name: "Name", description: "Description" });
+        expect(args).toEqual([]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.newProject({ name: "Name", description: "Description" }).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  xit("newProject should handle response with image", fakeAsync(() => {}));
+  xit("newProject should handle response with all inputs", fakeAsync(() => {}));
+
+  it("newProject should handle error", fakeAsync(() => {
+    spyOn<any>(service, "new").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(values).toEqual({ name: "Name" });
+        expect(args).toEqual([]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.newProject({ name: "Name" }).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
           status: 401,
-          message: "Unauthorized",
-          error: {
-            details: "You need to log in or register before continuing.",
-            links: {
-              "Log in": "/my_account/sign_in",
-              Register: "/my_account/sign_up",
-              "Confirm account": "/my_account/confirmation/new"
-            },
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 401, statusText: "Unauthorized" }
-    );
-  });
-
-  it("updateProject should handle not found", done => {
-    service.updateProject(1, { name: "Testing Project #1" }).subscribe(
-      () => {
-        expect(false).toBeTruthy("Should not return result");
-        done();
-      },
-      err => {
-        expect(err).toBeTruthy("Not Found");
-        done();
+          message: "Unauthorized"
+        } as APIErrorDetails);
       }
     );
 
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/projects/1",
-      method: "PATCH"
-    });
-    req.flush(
-      {
-        meta: {
-          status: 404,
-          message: "Not Found",
-          error: {
-            details: "Could not find the requested item.",
-            info: null
-          }
-        },
-        data: null
-      },
-      { status: 404, statusText: "Not Found" }
+    tick(100);
+  }));
+
+  it("newProject should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "new").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects");
+        expect(values).toEqual({ name: "Name" });
+        expect(args).toEqual([]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
     );
-  });
+
+    service.newProject({ name: "Name" }).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  /**
+   * updateProject
+   */
+
+  it("updateProject should handle response", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({});
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(1, {}).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("updateProject should handle response with random id", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({});
+        expect(args).toEqual([5]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(5, {}).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("updateProject should handle response with name", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({ name: "Name" });
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(1, { name: "Name" }).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("updateProject should handle response with description", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({ description: "Description" });
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.next(
+            new Project({
+              id: 1,
+              name: "Name",
+              description: "Description",
+              creatorId: 2,
+              siteIds: new Set([])
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(1, { description: "Description" }).subscribe(
+      (project: Project) => {
+        expect(project).toBeTruthy();
+        expect(project).toEqual(
+          new Project({
+            id: 1,
+            name: "Name",
+            description: "Description",
+            creatorId: 2,
+            siteIds: new Set([])
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  xit("updateProject should handle response with image", fakeAsync(() => {}));
+  xit("updateProject should handle response with all inputs", fakeAsync(() => {}));
+
+  it("updateProject should handle error", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({});
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(1, {}).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("updateProject should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "update").and.callFake(
+      (path: string, values: any, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId");
+        expect(values).toEqual({});
+        expect(args).toEqual([1]);
+        const subject = new Subject<Project>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.updateProject(1, {}).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
 });

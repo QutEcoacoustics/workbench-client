@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
@@ -27,7 +27,7 @@ export const apiReturnCodes = {
 export abstract class BawApiService {
   /*
   Paths:
-    details -> GET
+    list -> GET
     show -> GET with id
     create -> PUT/POST
     update -> PATCH with id
@@ -36,10 +36,9 @@ export abstract class BawApiService {
   */
 
   private url = this.config.getConfig().environment.apiRoot;
-  protected paths: Paths;
   protected userSessionStorage = "user";
 
-  constructor(protected http: HttpClient, protected config: AppConfigService) {}
+  constructor(private http: HttpClient, private config: AppConfigService) {}
 
   /**
    * Determine if the user is currently logged in
@@ -53,77 +52,36 @@ export abstract class BawApiService {
    * Retrieve user details from session cookie. Null if no user exists.
    */
   public getSessionUser(): SessionUser | null {
-    let user: SessionUser;
     try {
-      user = new SessionUser(
+      return new SessionUser(
         JSON.parse(sessionStorage.getItem(this.userSessionStorage))
       );
     } catch (Exception) {
-      user = null;
+      return null;
     }
-
-    return user;
   }
 
   /**
-   * TODO Update this to use handleResponse
    * Get response from details route
-   * @param subject Subject to update
-   * @param next Callback function which generates the model
-   * @param path API path
-   * @param args API arguments
-   * @param filters API filters
-   */
-  protected details(
-    subject: Subject<any>,
-    next: (data: any) => any,
-    path: string,
-    args?: PathArg,
-    filters?: Filters
-  ) {
-    let params = new HttpParams();
-    for (const filter in filters) {
-      params = params.set(filter, filters[filter]);
-    }
-
-    this.get<APIResponse>(path, args, params).subscribe({
-      next: (data: APIResponse) => {
-        if (data.data) {
-          subject.next(next(data.data));
-          subject.complete();
-        } else {
-          subject.error({
-            status: apiReturnCodes.unknown,
-            message: "No data returned from API"
-          } as APIErrorDetails);
-        }
-      },
-      error: (err: APIErrorDetails) => {
-        subject.error(err);
-      }
-    });
-  }
-
-  /**
-   * Filtered request for API route
    * @param next Callback function for successful response
    * @param error Callback function for failed response
    * @param path API path
-   * @param args API arguments
-   * @param body Request body
-   * @param options Request options
+   * @param args URL arguments
+   * @param filters API filters
    */
-  protected filter(
+  protected apiList(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
-    args?: PathArg,
-    body?: { filter: any },
-    options?: RequestOptions
+    filters?: Filters
   ) {
-    this.post<APIResponse>(path, args, body, options).subscribe(
-      this.handleResponse(next, error)
-    );
+    if (!filters) {
+      this.get<APIResponse>(path).subscribe(this.handleResponse(next, error));
+    } else {
+      this.post<APIResponse>(path + "/filter", filters).subscribe(
+        this.handleResponse(next, error)
+      );
+    }
   }
 
   /**
@@ -131,19 +89,17 @@ export abstract class BawApiService {
    * @param next Callback function for successful response
    * @param error Callback function for failed response
    * @param path API path
-   * @param args API arguments
    * @param body Request body
    * @param options Request options
    */
-  protected create(
+  protected apiCreate(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
-    args?: PathArg,
     body?: any,
     options?: RequestOptions
   ) {
-    this.post<APIResponse>(path, args, body, options).subscribe(
+    this.post<APIResponse>(path, body, options).subscribe(
       this.handleResponse(next, error)
     );
   }
@@ -153,19 +109,17 @@ export abstract class BawApiService {
    * @param next Callback function for successful response
    * @param error Callback function for failed response
    * @param path API path
-   * @param args API arguments
    * @param body Request body
    * @param options Request options
    */
-  protected update(
+  protected apiUpdate(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
-    args?: PathArg,
-    body?: any,
+    body?: object,
     options?: RequestOptions
   ) {
-    this.patch<APIResponse>(path, args, body, options).subscribe(
+    this.patch<APIResponse>(path, body, options).subscribe(
       this.handleResponse(next, error)
     );
   }
@@ -174,64 +128,51 @@ export abstract class BawApiService {
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param args API arguments
+   * @param args URL arguments
    * @param options Request options
    */
-  protected get<T>(
-    path: string,
-    args?: PathArg,
-    params?: HttpParams
-  ): Observable<T> {
-    return this.http.get<T>(this.getPath(path, args), { params });
+  protected get<T>(path: string, params?: HttpParams): Observable<T> {
+    return this.http.get<T>(this.getPath(path), { params });
   }
 
   /**
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param args API arguments
    * @param options Request options
    */
-  protected delete<T>(
-    path: string,
-    args?: PathArg,
-    options?: RequestOptions
-  ): Observable<T> {
-    return this.http.delete<T>(this.getPath(path, args), options);
+  protected delete<T>(path: string, options?: RequestOptions): Observable<T> {
+    return this.http.delete<T>(this.getPath(path), options);
   }
 
   /**
    * Constructs a `POST` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param args API arguments
    * @param body Request body
    * @param options Request options
    */
   protected post<T>(
     path: string,
-    args?: PathArg,
-    body?: any,
+    body?: object,
     options?: RequestOptions
   ): Observable<T> {
-    return this.http.post<T>(this.getPath(path, args), body, options);
+    return this.http.post<T>(this.getPath(path), body, options);
   }
 
   /**
    * Constructs a `PATCH` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param args API arguments
    * @param body Request body
    * @param options Request options
    */
   protected patch<T>(
     path: string,
-    args?: PathArg,
-    body?: any,
+    body?: object,
     options?: RequestOptions
   ): Observable<T> {
-    return this.http.patch<T>(this.getPath(path, args), body, options);
+    return this.http.patch<T>(this.getPath(path), body, options);
   }
 
   /**
@@ -239,33 +180,7 @@ export abstract class BawApiService {
    * @param path Path fragment
    * @param args Args to modify path fragment
    */
-  protected getPath(path: string, args?: PathArg): string {
-    // If arguments are given
-    if (args) {
-      // Replace fragment inputs
-      if (args.args) {
-        for (const key in args.args) {
-          // $2 allows the replacement to add the '/' character if it exists in the original string
-          path = path.replace(
-            new RegExp(`(:${key})(\/?)`),
-            args.args[key] + "$2"
-          );
-        }
-      }
-      if (args.filters) {
-        // Append filters to end of path
-        path += "?";
-
-        for (const key in args.filters) {
-          const value = args.filters[key];
-          path += key + "=" + (value as string) + "&";
-        }
-
-        // Remove last &
-        path = path.substr(0, path.length - 1);
-      }
-    }
-
+  protected getPath(path: string): string {
     return this.url + path;
   }
 
@@ -274,11 +189,14 @@ export abstract class BawApiService {
    * @param next Callback function for successful response
    * @param error Callback function for failed response
    */
-  private handleResponse(next: (data: any) => void, error: (err: any) => void) {
+  private handleResponse<T>(
+    next: (data: any) => void,
+    error: (err: any) => void
+  ) {
     return {
-      next: (data: APIResponse) => {
-        if (data.data) {
-          next(data.data);
+      next: (response: APIResponse) => {
+        if (response.data) {
+          next(response.data);
         } else {
           error({
             status: apiReturnCodes.unknown,
@@ -294,36 +212,27 @@ export abstract class BawApiService {
 }
 
 /**
- * Api meta data error output
- */
-export interface MetaError {
-  details: string;
-  info: string;
-}
-
-/**
- * Api path argument
- */
-export interface PathArg {
-  args?: { [key: string]: any };
-  filters?: { [key: string]: any };
-}
-
-/**
- * Api path fragment
- */
-export interface Paths {
-  [key: string]: string;
-}
-
-/**
  * Default filter for routes
  */
 export interface Filters {
-  direction?: "asc" | "desc";
-  items?: number;
-  orderBy?: string;
-  page?: number;
+  filter?: any;
+  projection?: {
+    include: string[];
+    exclude: string[];
+  };
+  sort?: {
+    orderBy: string;
+    direction: "desc" | "asc";
+  };
+  paging?: {
+    page?: number;
+    items?: number;
+    total?: number;
+    maxPage?: number;
+    current?: string;
+    previous?: string;
+    next?: string;
+  };
 }
 
 /**
@@ -333,11 +242,30 @@ export interface APIResponse {
   meta: {
     status: number;
     message: string;
-    error?: MetaError;
+    error?: {
+      details: string;
+      info: any;
+    };
+    sorting?: {
+      orderBy: string;
+      direction: string;
+    };
+    paging?: {
+      page: number;
+      items: number;
+      total: number;
+      maxPage: number;
+      current: string;
+      previous: string;
+      next: string;
+    };
   };
   data: any;
 }
 
+/**
+ * HTTP Request Options
+ */
 export interface RequestOptions {
   headers?:
     | HttpHeaders
@@ -353,29 +281,4 @@ export interface RequestOptions {
   reportProgress?: boolean;
   responseType?: "json";
   withCredentials?: boolean;
-}
-
-/**
- * API response containing a list of data
- */
-export interface APIResponseList extends APIResponse {
-  meta: {
-    status: number;
-    message: string;
-    error?: MetaError;
-    sorting: {
-      orderBy: string;
-      direction: string;
-    };
-    paging: {
-      page: number;
-      items: number;
-      total: number;
-      maxPage: number;
-      current: string;
-      previous: string;
-      next: string;
-    };
-  };
-  data: any[];
 }

@@ -17,10 +17,10 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
+import { ApiCommon } from "./services/baw-api/api-common";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
-import { AudioRecordingsService } from "./services/baw-api/audio-recordings.service";
 import { BawApiService } from "./services/baw-api/base-api.service";
-import { MockAudioRecordingsService } from "./services/baw-api/mock/audioRecordingsMockService";
+import { MockApiCommon } from "./services/baw-api/mock/api-commonMock";
 import { MockBawApiService } from "./services/baw-api/mock/baseApiMockService";
 import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
 import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
@@ -123,9 +123,9 @@ export const testBawServices = [
     multi: true
   },
   { provide: BawApiService, useClass: MockBawApiService },
+  { provide: ApiCommon, useClass: MockApiCommon },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },
-  { provide: UserService, useClass: MockUserService },
-  { provide: AudioRecordingsService, useClass: MockAudioRecordingsService }
+  { provide: UserService, useClass: MockUserService }
 ];

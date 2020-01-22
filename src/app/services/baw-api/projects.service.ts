@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -7,10 +8,10 @@ import {
   ImageURL,
   Name
 } from "src/app/interfaces/apiInterfaces";
-import { Project, ProjectInterface } from "src/app/models/Project";
+import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
+import { ApiCommon } from "./api-common";
+import { Filters } from "./base-api.service";
 
 /**
  * Interacts with projects route in baw api
@@ -18,14 +19,17 @@ import { BawApiService, Filters } from "./base-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends BawApiService {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+export class ProjectsService extends ApiCommon<Project> {
+  private paths: {
+    [key: string]: string;
+  };
+
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, Project);
 
     this.paths = {
       details: "/projects",
       show: "/projects/:projectId",
-      filter: "/projects/filter",
       new: "/projects",
       update: "/projects/:projectId"
     };
@@ -33,47 +37,21 @@ export class ProjectsService extends BawApiService {
 
   /**
    * Get a project available to the user
-   * @param id Project ID
+   * @param projectId Project ID
+   * @param filters API filters
    * @returns Observable returning singular project
    */
-  public getProject(id: ID): Subject<Project> {
-    const subject = new Subject<Project>();
-    const callback = (project: ProjectInterface) => new Project(project);
-
-    this.details(subject, callback, this.paths.show, {
-      args: { projectId: id }
-    });
-
-    return subject;
+  public getProject(projectId: ID, filters?: Filters): Subject<Project> {
+    return this.show(this.paths.show, filters, projectId);
   }
 
   /**
    * Get list of projects available to the user
+   * @param filters API filters
    * @returns Observable list of projects
    */
-  public getProjects(): Subject<Project[]> {
-    const subject = new Subject<Project[]>();
-    const callback = (projects: ProjectInterface[]) =>
-      projects.map((project: ProjectInterface) => new Project(project));
-
-    this.details(subject, callback, this.paths.details);
-
-    return subject;
-  }
-
-  /**
-   * Get list of filtered projects available to the user
-   * @param filters Filters
-   * @returns Observable list of projects
-   */
-  public getFilteredProjects(filters: ProjectFilters): Subject<Project[]> {
-    const subject = new Subject<Project[]>();
-    const callback = (projects: ProjectInterface[]) =>
-      projects.map((project: ProjectInterface) => new Project(project));
-
-    this.details(subject, callback, this.paths.filter, {}, filters);
-
-    return subject;
+  public getProjects(filters?: Filters): Subject<Project[]> {
+    return this.list(this.paths.details, filters);
   }
 
   /**
@@ -84,18 +62,8 @@ export class ProjectsService extends BawApiService {
     name: Name;
     description?: Description;
     image?: ImageURL;
-  }): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => subject.error(err);
-
-    this.create(next, error, this.paths.new, {}, details, {});
-
-    return subject;
+  }): Subject<Project> {
+    return this.new(this.paths.new, details);
   }
 
   /**
@@ -103,41 +71,13 @@ export class ProjectsService extends BawApiService {
    * @param details Form details
    */
   public updateProject(
-    id: ID,
+    projectId: ID,
     details: {
-      name: Name;
+      name?: Name;
       description?: Description;
       image?: ImageURL;
     }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-
-    const next = () => {
-      subject.next(true);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => {
-      // Deal with custom info
-      if (err.info && err.info.name && err.info.name.length === 1) {
-        subject.error(err.message + ": name " + err.info.name[0]);
-      } else {
-        subject.error(err.message);
-      }
-    };
-
-    this.update(
-      next,
-      error,
-      this.paths.update,
-      { args: { projectId: id } },
-      details,
-      {}
-    );
-
-    return subject;
+  ): Subject<Project> {
+    return this.update(this.paths.update, details, projectId);
   }
-}
-
-export interface ProjectFilters extends Filters {
-  orderBy?: "id" | "name" | "description" | "creatorId";
 }

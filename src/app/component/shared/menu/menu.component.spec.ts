@@ -1,6 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";

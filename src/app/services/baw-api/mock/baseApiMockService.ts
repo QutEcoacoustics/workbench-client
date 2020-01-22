@@ -6,7 +6,11 @@ import { Injectable } from "@angular/core";
 export class MockBawApiService {
   constructor() {}
 
-  public isLoggedIn() {}
+  public isLoggedIn() {
+    return false;
+  }
 
-  public getSessionUser() {}
+  public getSessionUser() {
+    return null;
+  }
 }

@@ -10,7 +10,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
+import { mockProject, Project } from "src/app/models/Project";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
@@ -293,10 +293,10 @@ describe("ProjectsEditComponent", () => {
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProject").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Project>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next(mockProject);
         subject.complete();
       }, 50);
 
@@ -327,7 +327,7 @@ describe("ProjectsEditComponent", () => {
   it("should show error on duplicate project name", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProject").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
@@ -373,7 +373,7 @@ describe("ProjectsEditComponent", () => {
   it("should show error on duplicate project name", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProject").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
@@ -411,7 +411,7 @@ describe("ProjectsEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProject").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
@@ -445,7 +445,7 @@ describe("ProjectsEditComponent", () => {
 
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "updateProject").and.callFake(() => {
-      const subject = new Subject<boolean>();
+      const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({

@@ -1,20 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { BawApiService } from "../base-api.service";
+import { Project } from "src/app/models/Project";
+import { MockApiCommon } from "./api-commonMock";
 
 @Injectable({
   providedIn: "root"
 })
-export class MockProjectsService extends BawApiService {
+export class MockProjectsService extends MockApiCommon<Project> {
   public getProject() {
     return new Subject();
   }
 
   public getProjects() {
-    return new Subject();
-  }
-
-  public getFilteredProjects() {
     return new Subject();
   }
 

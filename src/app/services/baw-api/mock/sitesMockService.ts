@@ -1,16 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { BawApiService } from "../base-api.service";
+import { Site } from "src/app/models/Site";
+import { MockApiCommon } from "./api-commonMock";
 
 @Injectable({
   providedIn: "root"
 })
-export class MockSitesService extends BawApiService {
-  public getSite() {
+export class MockSitesService extends MockApiCommon<Site> {
+  public getSites() {
     return new Subject();
   }
 
-  public getProjectSite() {
+  public getSite() {
     return new Subject();
   }
 
@@ -18,15 +19,15 @@ export class MockSitesService extends BawApiService {
     return new Subject();
   }
 
-  public getFilteredSites() {
-    return new Subject();
-  }
-
-  public updateProjectSite() {
+  public getProjectSite() {
     return new Subject();
   }
 
   public newProjectSite() {
+    return new Subject();
+  }
+
+  public updateProjectSite() {
     return new Subject();
   }
 }

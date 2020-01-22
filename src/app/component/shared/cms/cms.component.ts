@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit
 } from "@angular/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
