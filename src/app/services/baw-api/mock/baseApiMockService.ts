@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { SessionUser } from "src/app/models/User";
 
 @Injectable({
   providedIn: "root"
@@ -7,11 +6,11 @@ import { SessionUser } from "src/app/models/User";
 export class MockBawApiService {
   constructor() {}
 
-  public isLoggedIn(): boolean {
+  public isLoggedIn() {
     return false;
   }
 
-  public getSessionUser(): SessionUser | null {
+  public getSessionUser() {
     return null;
   }
 }

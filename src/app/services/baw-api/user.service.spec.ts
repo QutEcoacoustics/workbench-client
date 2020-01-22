@@ -3,14 +3,15 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
-import { User, UserInterface } from "src/app/models/User";
+import { User } from "src/app/models/User";
+import { ApiCommon, Args } from "./api-common";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
+import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
-import { MockModelService } from "./mock/modelMockService";
-import { Args, ModelService } from "./model.service";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
@@ -19,11 +20,11 @@ describe("UserService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
         { provide: BawApiService, useClass: MockBawApiService },
-        { provide: ModelService, useClass: MockModelService }
+        { provide: ApiCommon, useClass: MockApiCommon }
       ]
     });
 
@@ -37,18 +38,6 @@ describe("UserService", () => {
 
   it("should be created", () => {
     expect(service).toBeTruthy();
-  });
-
-  it("classBuilder should create user", () => {
-    const user: UserInterface = {
-      id: 1,
-      userName: "username",
-      rolesMask: 3,
-      rolesMaskNames: ["user"],
-      lastSeenAt: "1970-01-01T00:00:00.000"
-    };
-
-    expect(service["classBuilder"](user)).toEqual(new User(user));
   });
 
   /**
