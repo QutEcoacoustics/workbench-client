@@ -17,15 +17,15 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
+import { ApiCommon } from "./services/baw-api/api-common";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
 import { BawApiService } from "./services/baw-api/base-api.service";
+import { MockApiCommon } from "./services/baw-api/mock/api-commonMock";
 import { MockBawApiService } from "./services/baw-api/mock/baseApiMockService";
-import { MockModelService } from "./services/baw-api/mock/modelMockService";
 import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
 import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
 import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
 import { MockUserService } from "./services/baw-api/mock/userMockService";
-import { ModelService } from "./services/baw-api/model.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { SitesService } from "./services/baw-api/sites.service";
@@ -123,7 +123,7 @@ export const testBawServices = [
     multi: true
   },
   { provide: BawApiService, useClass: MockBawApiService },
-  { provide: ModelService, useClass: MockModelService },
+  { provide: ApiCommon, useClass: MockApiCommon },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },

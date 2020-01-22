@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -9,22 +10,21 @@ import {
   Name,
   TimezoneInformation
 } from "src/app/interfaces/apiInterfaces";
-import { Site, SiteInterface } from "src/app/models/Site";
+import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
+import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
-import { ModelService } from "./model.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends ModelService<Site> {
+export class SitesService extends ApiCommon<Site> {
   private paths: {
     [key: string]: string;
   };
 
-  constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (site: SiteInterface) => new Site(site);
-    super(http, config, classBuilder);
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, Site);
 
     this.paths = {
       details: "/sites",
@@ -43,7 +43,7 @@ export class SitesService extends ModelService<Site> {
    * @returns Observable list of sites
    */
   public getSites(filters?: Filters): Subject<Site[]> {
-    return this.details(this.paths.details, filters);
+    return this.list(this.paths.details, filters);
   }
 
   /**
@@ -63,7 +63,7 @@ export class SitesService extends ModelService<Site> {
    * @returns Observable list of sites for a project
    */
   public getProjectSites(projectId: ID, filters?: Filters): Subject<Site[]> {
-    return this.details(this.paths.nestedDetails, filters, projectId);
+    return this.list(this.paths.nestedDetails, filters, projectId);
   }
 
   /**

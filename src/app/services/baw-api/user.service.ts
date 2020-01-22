@@ -1,22 +1,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
-import { User, UserInterface } from "src/app/models/User";
+import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ModelService } from "./model.service";
+import { ApiCommon } from "./api-common";
 
 @Injectable({
   providedIn: "root"
 })
-export class UserService extends ModelService<User> {
+export class UserService extends ApiCommon<User> {
   private paths: {
     [key: string]: string;
   };
 
-  constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (user: UserInterface) => new User(user);
-    super(http, config, classBuilder);
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, User);
 
     this.paths = {
       myAccount: "/my_account",
