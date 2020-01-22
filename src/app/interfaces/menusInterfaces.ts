@@ -143,7 +143,7 @@ export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
  */
 export interface MenuAction extends MenuItem {
   kind: "MenuAction";
-  action: (services: object, args: Params) => any | void;
+  action: () => any | void;
 }
 
 export function MenuAction<T extends Omit<MenuAction, "kind">>(
