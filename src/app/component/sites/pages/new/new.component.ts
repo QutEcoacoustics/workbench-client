@@ -3,11 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
-import {
-  newProjectMenuItem,
-  projectsMenuItem,
-  requestProjectMenuItem
-} from "src/app/component/projects/projects.menus";
+import { projectMenuItemActions } from "src/app/component/projects/pages/details/details.component";
+import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -22,11 +19,7 @@ import data from "./new.json";
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectsMenuItem,
-      newProjectMenuItem,
-      requestProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     links: List()
   },
   self: newSiteMenuItem

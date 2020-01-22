@@ -18,7 +18,11 @@ export class ApiCommon<T> extends BawApiService {
     subject.next(data.map(object => new this.type(object)));
     subject.complete();
   }
-  private subjectError(subject: Subject<T | T[]>, err: APIErrorDetails) {
+  private subjectNextBoolean(subject: Subject<boolean>, data: any) {
+    subject.next(!!data);
+    subject.complete();
+  }
+  private subjectError(subject: Subject<any>, err: APIErrorDetails) {
     subject.error(err);
   }
 
@@ -95,6 +99,23 @@ export class ApiCommon<T> extends BawApiService {
     path = this.refineUrl(path, args);
 
     this.apiUpdate(next, error, path, values);
+
+    return subject;
+  }
+
+  /**
+   * Delete a model
+   * @param path URL path
+   * @param args URL parameter values
+   */
+  protected delete(path: string, ...args: Args): Subject<boolean> {
+    const subject = new Subject<boolean>();
+    const next = (success: boolean) =>
+      this.subjectNextBoolean(subject, success);
+    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
+    path = this.refineUrl(path, args);
+
+    this.apiDelete(next, error, path);
 
     return subject;
   }

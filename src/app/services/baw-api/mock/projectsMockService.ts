@@ -22,4 +22,8 @@ export class MockProjectsService extends MockApiCommon<Project> {
   public updateProject() {
     return new Subject();
   }
+
+  public deleteProject() {
+    return new Subject();
+  }
 }

@@ -15,6 +15,7 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
+  deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   exploreAudioMenuItem,
@@ -22,15 +23,18 @@ import {
   projectsCategory
 } from "../../projects.menus";
 
+export const projectMenuItemActions = [
+  exploreAudioMenuItem,
+  editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  newSiteMenuItem,
+  deleteProjectMenuItem
+];
+
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      exploreAudioMenuItem,
-      editProjectMenuItem,
-      editProjectPermissionsMenuItem,
-      newSiteMenuItem
-    ]),
+    actions: List<AnyMenuItem>(projectMenuItemActions),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

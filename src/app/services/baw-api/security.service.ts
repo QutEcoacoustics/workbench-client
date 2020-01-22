@@ -67,7 +67,7 @@ export class SecurityService extends BawApiService {
       return;
     }
 
-    this.delete(this.paths.signOut).subscribe({
+    this.httpDelete(this.paths.signOut).subscribe({
       next: (data: APIResponse) => {
         if (data.meta.status === apiReturnCodes.success) {
           this.clearSessionStorage();

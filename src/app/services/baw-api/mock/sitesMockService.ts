@@ -30,4 +30,8 @@ export class MockSitesService extends MockApiCommon<Site> {
   public updateProjectSite() {
     return new Subject();
   }
+
+  public deleteProjectSite() {
+    return new Subject();
+  }
 }

@@ -8,21 +8,17 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
-  newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem
 } from "../../projects.menus";
+import { projectsMenuItemActions } from "../list/list.component";
 import data from "./request.json";
 
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectsMenuItem,
-      newProjectMenuItem,
-      requestProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
     links: List()
   },
   self: requestProjectMenuItem

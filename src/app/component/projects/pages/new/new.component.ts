@@ -10,19 +10,15 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
-  projectsMenuItem,
-  requestProjectMenuItem
+  projectsMenuItem
 } from "../../projects.menus";
+import { projectsMenuItemActions } from "../list/list.component";
 import data from "./new.json";
 
 @Page({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      projectsMenuItem,
-      newProjectMenuItem,
-      requestProjectMenuItem
-    ]),
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
     links: List()
   },
   self: newProjectMenuItem

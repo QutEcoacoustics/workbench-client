@@ -8,13 +8,18 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { editProjectMenuItem, projectCategory } from "../../projects.menus";
+import {
+  editProjectMenuItem,
+  projectCategory,
+  projectMenuItem
+} from "../../projects.menus";
+import { projectMenuItemActions } from "../details/details.component";
 import data from "./edit.json";
 
 @Page({
   category: projectCategory,
   menus: {
-    actions: List(),
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
     links: List()
   },
   self: editProjectMenuItem

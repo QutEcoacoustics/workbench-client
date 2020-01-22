@@ -9,13 +9,18 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SitesService } from "src/app/services/baw-api/sites.service";
-import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
+import {
+  editSiteMenuItem,
+  siteMenuItem,
+  sitesCategory
+} from "../../sites.menus";
+import { siteMenuItemActions } from "../details/details.component";
 import data from "./edit.json";
 
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List(),
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
     links: List()
   },
   self: editSiteMenuItem

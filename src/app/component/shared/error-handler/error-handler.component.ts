@@ -11,20 +11,22 @@ import { apiReturnCodes } from "src/app/services/baw-api/base-api.service";
 @Component({
   selector: "app-error-handler",
   template: `
-    <ng-container *ngIf="display === 'unauthorized'">
-      <h1>Unauthorized access</h1>
-    </ng-container>
-    <ng-container *ngIf="display === 'notFound'">
-      <h1>Not found</h1>
-    </ng-container>
-    <ng-container *ngIf="display === 'forbidden'">
-      <h1>Forbidden</h1>
-    </ng-container>
-    <ng-container *ngIf="display === 'unknown'">
-      <h1>Unknown Error</h1>
-    </ng-container>
+    <ng-container *ngIf="error">
+      <ng-container *ngIf="display === 'unauthorized'">
+        <h1>Unauthorized access</h1>
+      </ng-container>
+      <ng-container *ngIf="display === 'notFound'">
+        <h1>Not found</h1>
+      </ng-container>
+      <ng-container *ngIf="display === 'forbidden'">
+        <h1>Forbidden</h1>
+      </ng-container>
+      <ng-container *ngIf="display === 'unknown'">
+        <h1>Unknown Error</h1>
+      </ng-container>
 
-    <p *ngIf="error">{{ error.message }}</p>
+      <p *ngIf="error">{{ error.message }}</p>
+    </ng-container>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

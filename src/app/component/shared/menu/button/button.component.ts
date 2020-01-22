@@ -25,6 +25,4 @@ export class MenuButtonComponent {
   @Input() link: MenuAction;
   @Input() placement: "left" | "right";
   @Input() tooltip: string;
-
-  constructor() {}
 }

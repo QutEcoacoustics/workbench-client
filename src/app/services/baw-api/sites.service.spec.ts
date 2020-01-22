@@ -1811,4 +1811,179 @@ describe("SitesService", () => {
 
     tick(100);
   }));
+
+  /**
+   * deleteProjectSite
+   */
+
+  it("deleteProjectSite should handle response", fakeAsync(() => {
+    spyOn<any>(service, "delete").and.callFake(
+      (path: string, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId/sites/:siteId");
+        expect(args).toEqual([1, 1]);
+        const subject = new Subject<boolean>();
+
+        setTimeout(() => {
+          subject.next(true);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.deleteProjectSite(1, 1).subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        expect(success).toBeTrue();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("deleteProjectSite should handle response with random project id", fakeAsync(() => {
+    spyOn<any>(service, "delete").and.callFake(
+      (path: string, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId/sites/:siteId");
+        expect(args).toEqual([5, 1]);
+        const subject = new Subject<boolean>();
+
+        setTimeout(() => {
+          subject.next(true);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.deleteProjectSite(5, 1).subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        expect(success).toBeTrue();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("deleteProjectSite should handle response with random site id", fakeAsync(() => {
+    spyOn<any>(service, "delete").and.callFake(
+      (path: string, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId/sites/:siteId");
+        expect(args).toEqual([1, 5]);
+        const subject = new Subject<boolean>();
+
+        setTimeout(() => {
+          subject.next(true);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.deleteProjectSite(1, 5).subscribe(
+      (success: boolean) => {
+        expect(success).toBeTruthy();
+        expect(success).toBeTrue();
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("deleteProjectSite should handle error", fakeAsync(() => {
+    spyOn<any>(service, "delete").and.callFake(
+      (path: string, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId/sites/:siteId");
+        expect(args).toEqual([1, 1]);
+        const subject = new Subject<boolean>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.deleteProjectSite(1, 1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 401,
+          message: "Unauthorized"
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
+
+  it("deleteProjectSite should handle error with info", fakeAsync(() => {
+    spyOn<any>(service, "delete").and.callFake(
+      (path: string, ...args: Args) => {
+        expect(path).toBe("/projects/:projectId/sites/:siteId");
+        expect(args).toEqual([1, 1]);
+        const subject = new Subject<boolean>();
+
+        setTimeout(() => {
+          subject.error({
+            status: 422,
+            message: "Record could not be saved",
+            info: {
+              name: ["has already been taken"],
+              image: [],
+              image_file_name: [],
+              image_file_size: [],
+              image_content_type: [],
+              image_updated_at: []
+            }
+          } as APIErrorDetails);
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.deleteProjectSite(1, 1).subscribe(
+      () => {
+        expect(true).toBeFalsy("Service should not return data");
+      },
+      (err: APIErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual({
+          status: 422,
+          message: "Record could not be saved",
+          info: {
+            name: ["has already been taken"],
+            image: [],
+            image_file_name: [],
+            image_file_size: [],
+            image_content_type: [],
+            image_updated_at: []
+          }
+        } as APIErrorDetails);
+      }
+    );
+
+    tick(100);
+  }));
 });

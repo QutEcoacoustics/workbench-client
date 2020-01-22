@@ -76,9 +76,11 @@ export abstract class BawApiService {
     filters?: Filters
   ) {
     if (!filters) {
-      this.get<APIResponse>(path).subscribe(this.handleResponse(next, error));
+      this.httpGet<APIResponse>(path).subscribe(
+        this.handleResponse(next, error)
+      );
     } else {
-      this.post<APIResponse>(path + "/filter", filters).subscribe(
+      this.httpPost<APIResponse>(path + "/filter", filters).subscribe(
         this.handleResponse(next, error)
       );
     }
@@ -90,16 +92,14 @@ export abstract class BawApiService {
    * @param error Callback function for failed response
    * @param path API path
    * @param body Request body
-   * @param options Request options
    */
   protected apiCreate(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
-    body?: any,
-    options?: RequestOptions
+    body?: any
   ) {
-    this.post<APIResponse>(path, body, options).subscribe(
+    this.httpPost<APIResponse>(path, body).subscribe(
       this.handleResponse(next, error)
     );
   }
@@ -110,17 +110,31 @@ export abstract class BawApiService {
    * @param error Callback function for failed response
    * @param path API path
    * @param body Request body
-   * @param options Request options
    */
   protected apiUpdate(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
-    body?: object,
-    options?: RequestOptions
+    body?: object
   ) {
-    this.patch<APIResponse>(path, body, options).subscribe(
+    this.httpPatch<APIResponse>(path, body).subscribe(
       this.handleResponse(next, error)
+    );
+  }
+
+  /**
+   *
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   */
+  protected apiDelete(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string
+  ) {
+    this.httpDelete<APIResponse>(path).subscribe(
+      this.handleResponse(next, error, true)
     );
   }
 
@@ -128,21 +142,18 @@ export abstract class BawApiService {
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param args URL arguments
-   * @param options Request options
    */
-  protected get<T>(path: string, params?: HttpParams): Observable<T> {
-    return this.http.get<T>(this.getPath(path), { params });
+  protected httpGet<T>(path: string): Observable<T> {
+    return this.http.get<T>(this.getPath(path));
   }
 
   /**
-   * Constructs a `GET` request
+   * Constructs a `DELETE` request
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
-   * @param options Request options
    */
-  protected delete<T>(path: string, options?: RequestOptions): Observable<T> {
-    return this.http.delete<T>(this.getPath(path), options);
+  protected httpDelete<T>(path: string): Observable<T> {
+    return this.http.delete<T>(this.getPath(path));
   }
 
   /**
@@ -150,14 +161,9 @@ export abstract class BawApiService {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    * @param body Request body
-   * @param options Request options
    */
-  protected post<T>(
-    path: string,
-    body?: object,
-    options?: RequestOptions
-  ): Observable<T> {
-    return this.http.post<T>(this.getPath(path), body, options);
+  protected httpPost<T>(path: string, body?: object): Observable<T> {
+    return this.http.post<T>(this.getPath(path), body);
   }
 
   /**
@@ -165,20 +171,14 @@ export abstract class BawApiService {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    * @param body Request body
-   * @param options Request options
    */
-  protected patch<T>(
-    path: string,
-    body?: object,
-    options?: RequestOptions
-  ): Observable<T> {
-    return this.http.patch<T>(this.getPath(path), body, options);
+  protected httpPatch<T>(path: string, body?: object): Observable<T> {
+    return this.http.patch<T>(this.getPath(path), body);
   }
 
   /**
    * Returns the path for the api route
    * @param path Path fragment
-   * @param args Args to modify path fragment
    */
   protected getPath(path: string): string {
     return this.url + path;
@@ -188,15 +188,20 @@ export abstract class BawApiService {
    * Handle API response
    * @param next Callback function for successful response
    * @param error Callback function for failed response
+   * @param nullResponse True if response body can be empty. If set, next always be called with "true"
    */
-  private handleResponse<T>(
+  private handleResponse(
     next: (data: any) => void,
-    error: (err: any) => void
+    error: (err: any) => void,
+    nullResponse?: boolean
   ) {
     return {
       next: (response: APIResponse) => {
-        if (response.data) {
+        if (response?.data) {
           next(response.data);
+        } else if (!response && nullResponse) {
+          // TODO Remove if https://github.com/QutEcoacoustics/baw-server/issues/427 is fixed
+          next(true);
         } else {
           error({
             status: apiReturnCodes.unknown,
@@ -261,24 +266,4 @@ export interface APIResponse {
     };
   };
   data: any;
-}
-
-/**
- * HTTP Request Options
- */
-export interface RequestOptions {
-  headers?:
-    | HttpHeaders
-    | {
-        [header: string]: string | string[];
-      };
-  observe?: "body";
-  params?:
-    | HttpParams
-    | {
-        [param: string]: string | string[];
-      };
-  reportProgress?: boolean;
-  responseType?: "json";
-  withCredentials?: boolean;
 }

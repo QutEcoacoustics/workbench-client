@@ -1,4 +1,8 @@
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
+import {
+  Category,
+  MenuLink,
+  MenuRoute
+} from "src/app/interfaces/menusInterfaces";
 import { projectMenuItem } from "../projects/projects.menus";
 
 export const sitesRoute = projectMenuItem.route.add("sites");
@@ -34,12 +38,32 @@ export const siteMenuItem = MenuRoute({
   }
 });
 
+export const exploreAudioMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "map"],
+  label: "Explore audio",
+  tooltip: () => "Explore audio"
+});
+
 export const editSiteMenuItem = MenuRoute({
   icon: ["fas", "edit"],
   label: "Edit this site",
   route: siteMenuItem.route.add("edit"),
   parent: siteMenuItem,
   tooltip: () => "Change the details for this site",
+  predicate: user => !!user,
+  order: {
+    priority: siteMenuItem.order.priority,
+    indentation: siteMenuItem.order.indentation + 1
+  }
+});
+
+export const deleteSiteMenuItem = MenuRoute({
+  icon: ["fas", "trash"],
+  label: "Delete Site",
+  route: siteMenuItem.route.add("delete"),
+  parent: siteMenuItem,
+  tooltip: () => "Delete this site",
   predicate: user => !!user,
   order: {
     priority: siteMenuItem.order.priority,

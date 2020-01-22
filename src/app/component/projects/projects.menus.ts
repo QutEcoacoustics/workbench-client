@@ -76,7 +76,7 @@ export const editProjectMenuItem = MenuRoute({
 });
 
 export const exploreAudioMenuItem = MenuLink({
-  uri: "/listen",
+  uri: "REPLACE_ME",
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio"
@@ -86,6 +86,19 @@ export const editProjectPermissionsMenuItem = MenuLink({
   uri: "REPLACE_ME",
   icon: ["fas", "key"],
   label: "Edit Permissions",
-  tooltip: () => "REPLACE_ME",
+  tooltip: () => "Edit this projects permissions",
   predicate: user => !!user
+});
+
+export const deleteProjectMenuItem = MenuRoute({
+  icon: ["fas", "trash"],
+  label: "Delete Project",
+  route: projectMenuItem.route.add("delete"),
+  parent: projectMenuItem,
+  tooltip: () => "Delete this project",
+  predicate: user => !!user,
+  order: {
+    priority: projectMenuItem.order.priority,
+    indentation: projectMenuItem.order.indentation + 1
+  }
 });

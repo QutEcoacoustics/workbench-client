@@ -31,7 +31,8 @@ export class ProjectsService extends ApiCommon<Project> {
       details: "/projects",
       show: "/projects/:projectId",
       new: "/projects",
-      update: "/projects/:projectId"
+      update: "/projects/:projectId",
+      delete: "/projects/:projectId"
     };
   }
 
@@ -68,6 +69,7 @@ export class ProjectsService extends ApiCommon<Project> {
 
   /**
    * Update a project
+   * @param projectId Project ID
    * @param details Form details
    */
   public updateProject(
@@ -79,5 +81,13 @@ export class ProjectsService extends ApiCommon<Project> {
     }
   ): Subject<Project> {
     return this.update(this.paths.update, details, projectId);
+  }
+
+  /**
+   * Delete a project
+   * @param projectId Project ID
+   */
+  public deleteProject(projectId: ID): Subject<boolean> {
+    return this.delete(this.paths.delete, projectId);
   }
 }

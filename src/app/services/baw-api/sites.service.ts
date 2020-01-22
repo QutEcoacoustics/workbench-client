@@ -32,7 +32,8 @@ export class SitesService extends ApiCommon<Site> {
       show: "/sites/:siteId",
       nestedShow: "/projects/:projectId/sites/:siteId",
       nestedNew: "/projects/:projectId/sites",
-      nestedUpdate: "/projects/:projectId/sites/:siteId"
+      nestedUpdate: "/projects/:projectId/sites/:siteId",
+      delete: "/projects/:projectId/sites/:siteId"
     };
   }
 
@@ -120,5 +121,14 @@ export class SitesService extends ApiCommon<Site> {
     }
   ): Subject<Site> {
     return this.update(this.paths.nestedUpdate, details, projectId, siteId);
+  }
+
+  /**
+   * Delete a site
+   * @param projectId Project ID
+   * @param siteId Site ID
+   */
+  public deleteProjectSite(projectId: ID, siteId: ID): Subject<boolean> {
+    return this.delete(this.paths.delete, projectId, siteId);
   }
 }
