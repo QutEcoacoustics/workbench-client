@@ -668,7 +668,7 @@ describe("SecondaryMenuComponent", () => {
       private childRoute = this.parentRoute.add("house");
       private parentLink = MenuRoute({
         label: "ZZZCustom Label", // Force to be last link
-        icon: ["fas", "question-square"],
+        icon: ["fas", "question"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute
       });
@@ -732,7 +732,7 @@ describe("SecondaryMenuComponent", () => {
     expect(label.innerText.trim()).toBe("ZZZCustom Label");
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
-      "fas,question-square"
+      "fas,question"
     );
 
     item = menuElements[defaultLinks.count() + 3 - 2 - 1].querySelector(
@@ -769,7 +769,7 @@ describe("SecondaryMenuComponent", () => {
       });
       private parentLink = MenuRoute({
         label: "ZZZZCustom Label", // Force to be last link
-        icon: ["fas", "question-square"],
+        icon: ["fas", "question"],
         tooltip: () => "Custom Tooltip 2",
         route: this.parentRoute,
         parent: this.grandParentLink
@@ -854,7 +854,7 @@ describe("SecondaryMenuComponent", () => {
     expect(label.innerText.trim()).toBe("ZZZZCustom Label");
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
-      "fas,question-square"
+      "fas,question"
     );
 
     item = menuElements[defaultLinks.count() + 4 - 2 - 1].querySelector(
@@ -875,6 +875,373 @@ describe("SecondaryMenuComponent", () => {
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
       "fas,question-circle"
+    );
+  });
+
+  it("should create menu link with no indentation", () => {
+    class MockActivatedRoute {
+      private route = StrongRoute.Base.add("/");
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: MenuRoute({
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
+            route: this.route,
+            order: {
+              priority: 10
+            }
+          }),
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.route
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([
+              MenuRoute({
+                label: "ZZZCustom Label", // Force to be last link
+                icon: ["fas", "tag"],
+                tooltip: () => "Custom Tooltip",
+                route: this.route
+              })
+            ])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus menu title, plus added link,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
+
+    const item = menuElements[defaultLinks.count() + 3 - 2 - 1];
+    expect(item).toBeTruthy();
+    expect(item.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(item.computedStyleMap().get("padding-left").value).toBe(0);
+  });
+
+  it("should overwrite indentation value of ordered menu item", () => {
+    class MockActivatedRoute {
+      private route = StrongRoute.Base.add("/");
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: MenuRoute({
+            label: "Custom Label",
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip",
+            route: this.route,
+            order: {
+              priority: 10,
+              indentation: 5
+            }
+          }),
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.route
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([
+              MenuRoute({
+                label: "ZZZCustom Label", // Force to be last link
+                icon: ["fas", "tag"],
+                tooltip: () => "Custom Tooltip",
+                route: this.route
+              })
+            ])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus menu title, plus added link,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+    expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
+
+    const item = menuElements[defaultLinks.count() + 3 - 2 - 1];
+    expect(item).toBeTruthy();
+    expect(item.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(item.computedStyleMap().get("padding-left").value).toBe(0);
+  });
+
+  it("should should set padding on menu item with parent", () => {
+    class MockActivatedRoute {
+      private parentRoute = StrongRoute.Base.add("home");
+      private childRoute = this.parentRoute.add("house");
+      private parentLink = MenuRoute({
+        label: "ZZZCustom Label", // Force to be last link
+        icon: ["fas", "question"],
+        tooltip: () => "Custom Tooltip 1",
+        route: this.parentRoute,
+        order: { priority: 10 }
+      });
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: MenuRoute({
+            label: "ZZZZCustom Label", // Force to be last link
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip 2",
+            route: this.childRoute,
+            parent: this.parentLink,
+            order: { priority: 10 }
+          }),
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.parentRoute
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus parent, plus menu title, plus added link,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+
+    expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
+
+    const child = menuElements[defaultLinks.count() + 3 - 2 - 1];
+    expect(child).toBeTruthy();
+    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
+      0
+    );
+
+    const parent = menuElements[defaultLinks.count() + 3 - 2 - 2];
+    expect(parent).toBeTruthy();
+    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(parent.computedStyleMap().get("padding-left").value).toBe(0);
+  });
+
+  it("should should set padding on menu item with grand-parent", () => {
+    class MockActivatedRoute {
+      private grandParentRoute = StrongRoute.Base.add("home");
+      private parentRoute = this.grandParentRoute.add("house");
+      private childRoute = this.parentRoute.add("room");
+      private grandParentLink = MenuRoute({
+        label: "ZZZCustom Label", // Force to be last link
+        icon: ["fas", "tag"],
+        tooltip: () => "Custom Tooltip 1",
+        route: this.parentRoute,
+        order: {
+          priority: 10
+        }
+      });
+      private parentLink = MenuRoute({
+        label: "ZZZZCustom Label", // Force to be last link
+        icon: ["fas", "question"],
+        tooltip: () => "Custom Tooltip 2",
+        route: this.parentRoute,
+        parent: this.grandParentLink,
+        order: {
+          priority: 10
+        }
+      });
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: MenuRoute({
+            label: "ZZZZZCustom Label", // Force to be last link
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip 3",
+            route: this.childRoute,
+            parent: this.parentLink,
+            order: {
+              priority: 10
+            }
+          }),
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.parentRoute
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus parent, plus menu title, plus added link,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+
+    expect(menuElements.length).toBe(defaultLinks.count() + 4 - 2);
+
+    const grandParent = menuElements[defaultLinks.count() + 4 - 2 - 3];
+    expect(grandParent).toBeTruthy();
+    expect(grandParent.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(grandParent.computedStyleMap().get("padding-left").value).toBe(0);
+
+    const parent = menuElements[defaultLinks.count() + 4 - 2 - 2];
+    expect(parent).toBeTruthy();
+    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(parent.computedStyleMap().get("padding-left").value).toBeGreaterThan(
+      0
+    );
+    const parentPadding = parent.computedStyleMap().get("padding-left").value;
+
+    const child = menuElements[defaultLinks.count() + 4 - 2 - 1];
+    expect(child).toBeTruthy();
+    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
+      parentPadding
+    );
+  });
+
+  it("should should set padding on menu item with grand-parent without priority", () => {
+    class MockActivatedRoute {
+      private grandParentRoute = StrongRoute.Base.add("home");
+      private parentRoute = this.grandParentRoute.add("house");
+      private childRoute = this.parentRoute.add("room");
+      private grandParentLink = MenuRoute({
+        label: "ZZZCustom Label", // Force to be last link
+        icon: ["fas", "tag"],
+        tooltip: () => "Custom Tooltip 1",
+        route: this.parentRoute
+      });
+      private parentLink = MenuRoute({
+        label: "ZZZZCustom Label", // Force to be last link
+        icon: ["fas", "question"],
+        tooltip: () => "Custom Tooltip 2",
+        route: this.parentRoute,
+        parent: this.grandParentLink
+      });
+
+      public params = new BehaviorSubject<any>({});
+      public data = new BehaviorSubject<PageInfoInterface>(
+        new PageInfo(SecondaryMenuComponent, {
+          self: MenuRoute({
+            label: "ZZZZZCustom Label", // Force to be last link
+            icon: ["fas", "question-circle"],
+            tooltip: () => "Custom Tooltip 3",
+            route: this.childRoute,
+            parent: this.parentLink
+          }),
+          category: {
+            label: "Custom Category",
+            icon: ["fas", "home"],
+            route: this.parentRoute
+          },
+          menus: {
+            actions: List<AnyMenuItem>([]),
+            links: List<NavigableMenuItem>([])
+          }
+        } as PageInfoInterface)
+      );
+    }
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      declarations: [SecondaryMenuComponent],
+      providers: [
+        ...testAppInitializer,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SecondaryMenuComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    // Number of elements should be the default links,
+    // plus self link, plus parent, plus menu title, plus added link,
+    // minus 2 links which require authentication
+    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
+
+    expect(menuElements.length).toBe(defaultLinks.count() + 4 - 2);
+
+    const grandParent = menuElements[defaultLinks.count() + 4 - 2 - 3];
+    expect(grandParent).toBeTruthy();
+    expect(grandParent.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(grandParent.computedStyleMap().get("padding-left").value).toBe(0);
+
+    const parent = menuElements[defaultLinks.count() + 4 - 2 - 2];
+    expect(parent).toBeTruthy();
+    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(parent.computedStyleMap().get("padding-left").value).toBeGreaterThan(
+      0
+    );
+    const parentPadding = parent.computedStyleMap().get("padding-left").value;
+
+    const child = menuElements[defaultLinks.count() + 4 - 2 - 1];
+    expect(child).toBeTruthy();
+    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
+    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
+      parentPadding
     );
   });
 });

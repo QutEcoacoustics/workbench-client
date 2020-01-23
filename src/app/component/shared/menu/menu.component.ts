@@ -180,17 +180,17 @@ export class MenuComponent implements OnInit, OnDestroy {
    */
   private compare(a: AnyMenuItem, b: AnyMenuItem): number {
     // If no order, return alphabetical order
-    if (!a.order && !b.order) {
+    if (!a.order?.priority && !b.order?.priority) {
       return a.label < b.label ? -1 : 1;
     }
 
     // If only a has order, return a
-    if (a.order && !b.order) {
+    if (a.order && !b.order?.priority) {
       return -1;
     }
 
     // If only b has order, return b
-    if (b.order && !a.order) {
+    if (b.order && !a.order?.priority) {
       return 1;
     }
 

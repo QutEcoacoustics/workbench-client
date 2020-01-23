@@ -54,13 +54,21 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
           indentation++;
         }
 
+        // Update indentation values
         if (current.order) {
           current.order.indentation = indentation;
+        } else {
+          current.order = { indentation };
         }
 
         parentMenuRoutes.forEach(parent => {
           indentation--;
-          parent.order.indentation = indentation;
+
+          if (parent.order) {
+            parent.order.indentation = indentation;
+          } else {
+            parent.order = { indentation };
+          }
         });
 
         // with any links from route

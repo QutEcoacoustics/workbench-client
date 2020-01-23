@@ -1189,66 +1189,7 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links with duplicate priority by parent on secondary menu", () => {
-    const internalLink2Obj = MenuRoute({
-      label: "label b",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("house"),
-      order: { priority: 1 }
-    });
-    const internalLink1Obj = MenuRoute({
-      label: "label a",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
-      parent: internalLink2Obj,
-      order: { priority: 1 }
-    });
-
-    component.menuType = "secondary";
-    component.links = List<AnyMenuItem>([internalLink1Obj, internalLink2Obj]);
-    fixture.detectChanges();
-
-    const internalLinkFixture1 = TestBed.createComponent(
-      MenuInternalLinkComponent
-    );
-    const internalLinkComponent1 = internalLinkFixture1.componentInstance;
-    internalLinkComponent1.id = "secondary-tooltip-1";
-    internalLinkComponent1.link = internalLink1Obj;
-    internalLinkComponent1.placement = "right";
-    internalLinkComponent1.tooltip = "tooltip";
-    internalLinkFixture1.detectChanges();
-
-    const internalLinkFixture2 = TestBed.createComponent(
-      MenuInternalLinkComponent
-    );
-    const internalLinkComponent2 = internalLinkFixture2.componentInstance;
-    internalLinkComponent2.id = "secondary-tooltip-0";
-    internalLinkComponent2.link = internalLink2Obj;
-    internalLinkComponent2.placement = "right";
-    internalLinkComponent2.tooltip = "tooltip";
-    internalLinkFixture2.detectChanges();
-
-    const links = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-menu-internal-link"
-    );
-    expect(links.length).toBe(2, "Should be two internal links");
-
-    const internalLink1 = internalLinkFixture1.debugElement.nativeElement;
-    const internalLink2 = internalLinkFixture2.debugElement.nativeElement;
-
-    expect(links[0].innerHTML).toEqual(
-      internalLink2.innerHTML,
-      "First internal link HTML should match"
-    );
-    expect(links[1].innerHTML).toEqual(
-      internalLink1.innerHTML,
-      "Second internal link HTML should match"
-    );
-  });
-
-  it("should not order links with duplicate priority by parent on action menu", () => {
+  it("should not order links with duplicate priority on action menu", () => {
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
@@ -1313,7 +1254,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1 }
+      order: { priority: 1, indentation: 1 }
     });
     const internalLink1Obj = MenuRoute({
       label: "label a",
@@ -1321,7 +1262,7 @@ describe("MenuComponent", () => {
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
       parent: internalLink2Obj,
-      order: { priority: 1 }
+      order: { priority: 1, indentation: 2 }
     });
 
     component.menuType = "secondary";

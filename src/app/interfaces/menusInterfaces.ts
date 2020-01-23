@@ -53,7 +53,7 @@ export interface Order {
    * Priority of link
    * The lower the value, the greater the importance.
    */
-  priority: number;
+  priority?: number;
 
   /**
    * Indentation of link. Value is calculated by SecondaryMenuComponent
