@@ -16,16 +16,20 @@ import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
+  annotationsMenuItem,
   deleteSiteMenuItem,
   editSiteMenuItem,
-  exploreAudioMenuItem,
+  exploreAudioSiteMenuItem,
+  harvestMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
-  exploreAudioMenuItem,
+  exploreAudioSiteMenuItem,
+  annotationsMenuItem,
   editSiteMenuItem,
+  harvestMenuItem,
   deleteSiteMenuItem
 ];
 

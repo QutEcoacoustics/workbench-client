@@ -1,4 +1,12 @@
 import {
+  defaultDeleteIcon,
+  defaultEditIcon,
+  defaultNewIcon,
+  isAdminPredicate,
+  isLoggedInPredicate,
+  isOwnerPredicate
+} from "src/app/app.menus";
+import {
   Category,
   MenuLink,
   MenuRoute
@@ -14,11 +22,11 @@ export const sitesCategory: Category = {
 };
 
 export const newSiteMenuItem = MenuRoute({
-  icon: ["fas", "plus"],
+  icon: defaultNewIcon,
   label: "New site",
   route: sitesRoute.add("new"),
   tooltip: () => "Create a new site",
-  predicate: user => !!user,
+  predicate: isLoggedInPredicate,
   parent: projectMenuItem,
   order: {
     priority: projectMenuItem.order.priority,
@@ -38,33 +46,62 @@ export const siteMenuItem = MenuRoute({
   }
 });
 
-export const exploreAudioMenuItem = MenuLink({
+export const exploreAudioSiteMenuItem = MenuLink({
   uri: "REPLACE_ME",
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio"
 });
 
+export const annotationsMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "table"],
+  label: "Download annotations",
+  tooltip: () => "Download annotations for this site",
+  predicate: isLoggedInPredicate
+});
+
 export const editSiteMenuItem = MenuRoute({
-  icon: ["fas", "edit"],
+  icon: defaultEditIcon,
   label: "Edit this site",
   route: siteMenuItem.route.add("edit"),
   parent: siteMenuItem,
   tooltip: () => "Change the details for this site",
-  predicate: user => !!user,
+  predicate: isOwnerPredicate,
   order: {
     priority: siteMenuItem.order.priority,
     indentation: siteMenuItem.order.indentation + 1
   }
 });
 
+export const harvestMenuItem = MenuRoute({
+  icon: ["fas", "file-audio"],
+  label: "Harvesting",
+  route: siteMenuItem.route.add("harvest"),
+  parent: siteMenuItem,
+  tooltip: () => "Upload new audio to this site",
+  predicate: isAdminPredicate,
+  order: {
+    priority: siteMenuItem.order.priority,
+    indentation: siteMenuItem.order.indentation + 1
+  }
+});
+
+export const assignSiteMenuItem = MenuLink({
+  uri: "REPLACE_ME",
+  icon: ["fas", "toolbox"],
+  label: "Assign site",
+  tooltip: () => "Change which sites belong to this project",
+  predicate: isAdminPredicate
+});
+
 export const deleteSiteMenuItem = MenuRoute({
-  icon: ["fas", "trash"],
+  icon: defaultDeleteIcon,
   label: "Delete Site",
   route: siteMenuItem.route.add("delete"),
   parent: siteMenuItem,
   tooltip: () => "Delete this site",
-  predicate: user => !!user,
+  predicate: isOwnerPredicate,
   order: {
     priority: siteMenuItem.order.priority,
     indentation: siteMenuItem.order.indentation + 1

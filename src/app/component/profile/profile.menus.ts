@@ -1,3 +1,8 @@
+import {
+  defaultEditIcon,
+  isAdminPredicate,
+  isLoggedInPredicate
+} from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
@@ -17,17 +22,17 @@ export const myAccountMenuItem = MenuRoute({
   label: "My Profile",
   route: myAccountRoute,
   tooltip: () => "View profile",
-  predicate: user => !!user,
+  predicate: isLoggedInPredicate,
   order: { priority: 2, indentation: 0 }
 });
 
 export const editMyAccountMenuItem = MenuRoute({
-  icon: ["fas", "edit"],
+  icon: defaultEditIcon,
   label: "Edit my profile",
   route: myAccountMenuItem.route.add("edit"),
   parent: myAccountMenuItem,
   tooltip: () => "Change the details for your profile",
-  predicate: user => !!user,
+  predicate: isLoggedInPredicate,
   order: {
     priority: myAccountMenuItem.order.priority,
     indentation: myAccountMenuItem.order.indentation + 1
@@ -50,15 +55,16 @@ export const theirProfileMenuItem = MenuRoute({
   label: "Their Profile",
   route: theirProfileRoute.add(":userId"),
   tooltip: () => "View their profile",
+  predicate: isLoggedInPredicate,
   order: myAccountMenuItem.order
 });
 
 export const theirEditProfileMenuItem = MenuRoute({
-  icon: editMyAccountMenuItem.icon,
+  icon: defaultEditIcon,
   label: "Edit their profile",
   route: theirProfileMenuItem.route.add("edit"),
   parent: theirProfileMenuItem,
   tooltip: () => "Change the details for this profile",
-  predicate: user => !!user,
+  predicate: isAdminPredicate,
   order: editMyAccountMenuItem.order
 });
