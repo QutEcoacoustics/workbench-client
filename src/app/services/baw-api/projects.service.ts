@@ -10,7 +10,7 @@ import {
 } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiCommon } from "./api-common";
+import { ApiCommon, CommonApiPaths } from "./api-common";
 import { Filters } from "./base-api.service";
 
 /**
@@ -20,22 +20,17 @@ import { Filters } from "./base-api.service";
   providedIn: "root"
 })
 export class ProjectsService extends ApiCommon<Project> {
-  private paths: {
-    [key: string]: string;
-  };
+  private paths: CommonApiPaths;
 
   constructor(http: HttpClient, config: AppConfigService, router: Router) {
     super(http, config, router, Project);
 
-    const url = this.makeTemplate`/projects/${this.id}/sites/${this.id}`;
-    console.log(url(1, 1));
-
     this.paths = {
-      details: "/projects",
-      show: "/projects/:projectId",
-      new: "/projects",
-      update: "/projects/:projectId",
-      delete: "/projects/:projectId"
+      details: this.makeTemplate`/projects`,
+      show: this.makeTemplate`/projects/${this.id}`,
+      new: this.makeTemplate`/projects`,
+      update: this.makeTemplate`/projects/${this.id}`,
+      delete: this.makeTemplate`/projects/${this.id}`
     };
   }
 
@@ -46,7 +41,7 @@ export class ProjectsService extends ApiCommon<Project> {
    * @returns Observable returning singular project
    */
   public getProject(projectId: ID, filters?: Filters): Subject<Project> {
-    return this.show(this.paths.show, filters, projectId);
+    return this.show(this.paths.show(projectId), filters);
   }
 
   /**
@@ -55,7 +50,7 @@ export class ProjectsService extends ApiCommon<Project> {
    * @returns Observable list of projects
    */
   public getProjects(filters?: Filters): Subject<Project[]> {
-    return this.list(this.paths.details, filters);
+    return this.list(this.paths.details(), filters);
   }
 
   /**
@@ -67,7 +62,7 @@ export class ProjectsService extends ApiCommon<Project> {
     description?: Description;
     image?: ImageURL;
   }): Subject<Project> {
-    return this.new(this.paths.new, details);
+    return this.new(this.paths.new(), details);
   }
 
   /**
@@ -83,7 +78,7 @@ export class ProjectsService extends ApiCommon<Project> {
       image?: ImageURL;
     }
   ): Subject<Project> {
-    return this.update(this.paths.update, details, projectId);
+    return this.update(this.paths.update(projectId), details);
   }
 
   /**
@@ -91,6 +86,6 @@ export class ProjectsService extends ApiCommon<Project> {
    * @param projectId Project ID
    */
   public deleteProject(projectId: ID): Subject<boolean> {
-    return this.delete(this.paths.delete, projectId);
+    return this.delete(this.paths.delete(projectId));
   }
 }

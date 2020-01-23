@@ -4,7 +4,7 @@ import { PRIMARY_OUTLET, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
+import { BawApiService, Filters, Path } from "./base-api.service";
 
 export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
@@ -151,12 +151,17 @@ export class ApiCommon<T> extends BawApiService {
 export type Args = (string | number)[];
 
 /**
- * Api path fragment
+ * Default api paths
  */
-export interface Paths {
-  details?: string;
-  show?: string;
-  new?: string;
-  update?: string;
-  delete?: string;
+export interface CommonApiPaths {
+  details?: Path;
+  nestedDetails?: Path;
+  show?: Path;
+  nestedShow?: Path;
+  new?: Path;
+  nestedNew?: Path;
+  update?: Path;
+  nestedUpdate?: Path;
+  delete?: Path;
+  nestedDelete?: Path;
 }

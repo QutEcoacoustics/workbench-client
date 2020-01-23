@@ -7,7 +7,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
-import { ApiCommon, Args } from "./api-common";
+import { ApiCommon } from "./api-common";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 import { MockApiCommon } from "./mock/api-commonMock";
@@ -46,10 +46,9 @@ describe("UserService", () => {
 
   it("getMyAccount should handle response", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
+      (path: string, filters: Filters) => {
         expect(path).toBe("/my_account");
         expect(filters).toEqual(null);
-        expect(args).toEqual([]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -92,10 +91,9 @@ describe("UserService", () => {
 
   it("getMyAccount should handle error", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
+      (path: string, filters: Filters) => {
         expect(path).toBe("/my_account");
         expect(filters).toEqual(null);
-        expect(args).toEqual([]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -127,10 +125,9 @@ describe("UserService", () => {
 
   it("getMyAccount should handle error with info", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
+      (path: string, filters: Filters) => {
         expect(path).toBe("/my_account");
         expect(filters).toEqual(null);
-        expect(args).toEqual([]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -182,10 +179,9 @@ describe("UserService", () => {
 
   it("getUserAccount should handle response", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
-        expect(path).toBe("/user_accounts/:userId");
+      (path: string, filters: Filters) => {
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
-        expect(args).toEqual([1]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -228,10 +224,9 @@ describe("UserService", () => {
 
   it("getUserAccount should handle response with random id", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
-        expect(path).toBe("/user_accounts/:userId");
+      (path: string, filters: Filters) => {
+        expect(path).toBe("/user_accounts/5");
         expect(filters).toEqual(null);
-        expect(args).toEqual([5]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -274,10 +269,9 @@ describe("UserService", () => {
 
   it("getUserAccount should handle error", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
-        expect(path).toBe("/user_accounts/:userId");
+      (path: string, filters: Filters) => {
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
-        expect(args).toEqual([1]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
@@ -309,10 +303,9 @@ describe("UserService", () => {
 
   it("getUserAccount should handle error with info", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters, ...args: Args) => {
-        expect(path).toBe("/user_accounts/:userId");
+      (path: string, filters: Filters) => {
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
-        expect(args).toEqual([1]);
         const subject = new Subject<User>();
 
         setTimeout(() => {
