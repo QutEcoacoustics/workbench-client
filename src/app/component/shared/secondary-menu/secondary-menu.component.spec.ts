@@ -891,7 +891,7 @@ describe("SecondaryMenuComponent", () => {
             tooltip: () => "Custom Tooltip",
             route: this.route,
             order: {
-              priority: 10
+              priority: 100
             }
           }),
           category: {
@@ -935,8 +935,8 @@ describe("SecondaryMenuComponent", () => {
 
     const item = menuElements[defaultLinks.count() + 3 - 2 - 1];
     expect(item).toBeTruthy();
-    expect(item.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(item.computedStyleMap().get("padding-left").value).toBe(0);
+    expect(item.attributes.style).toBeTruthy();
+    expect(item.attributes.style.value).toBe("padding-left: 0em;");
   });
 
   it("should overwrite indentation value of ordered menu item", () => {
@@ -952,7 +952,7 @@ describe("SecondaryMenuComponent", () => {
             tooltip: () => "Custom Tooltip",
             route: this.route,
             order: {
-              priority: 10,
+              priority: 100,
               indentation: 5
             }
           }),
@@ -997,11 +997,11 @@ describe("SecondaryMenuComponent", () => {
 
     const item = menuElements[defaultLinks.count() + 3 - 2 - 1];
     expect(item).toBeTruthy();
-    expect(item.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(item.computedStyleMap().get("padding-left").value).toBe(0);
+    expect(item.attributes.style).toBeTruthy();
+    expect(item.attributes.style.value).toBe("padding-left: 0em;");
   });
 
-  it("should should set padding on menu item with parent", () => {
+  it("should set padding on menu item with parent", () => {
     class MockActivatedRoute {
       private parentRoute = StrongRoute.Base.add("home");
       private childRoute = this.parentRoute.add("house");
@@ -1010,7 +1010,7 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "question"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute,
-        order: { priority: 10 }
+        order: { priority: 100 }
       });
 
       public params = new BehaviorSubject<any>({});
@@ -1022,7 +1022,7 @@ describe("SecondaryMenuComponent", () => {
             tooltip: () => "Custom Tooltip 2",
             route: this.childRoute,
             parent: this.parentLink,
-            order: { priority: 10 }
+            order: { priority: 100 }
           }),
           category: {
             label: "Custom Category",
@@ -1058,16 +1058,15 @@ describe("SecondaryMenuComponent", () => {
     expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
 
     const child = menuElements[defaultLinks.count() + 3 - 2 - 1];
-    expect(child).toBeTruthy();
-    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
-      0
-    );
-
     const parent = menuElements[defaultLinks.count() + 3 - 2 - 2];
+
+    expect(child).toBeTruthy();
+    expect(child.attributes.style).toBeTruthy();
+    expect(child.attributes.style.value).toBe("padding-left: 1em;");
+
     expect(parent).toBeTruthy();
-    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(parent.computedStyleMap().get("padding-left").value).toBe(0);
+    expect(parent.attributes.style).toBeTruthy();
+    expect(parent.attributes.style.value).toBe("padding-left: 0em;");
   });
 
   it("should should set padding on menu item with grand-parent", () => {
@@ -1081,7 +1080,7 @@ describe("SecondaryMenuComponent", () => {
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute,
         order: {
-          priority: 10
+          priority: 100
         }
       });
       private parentLink = MenuRoute({
@@ -1091,7 +1090,7 @@ describe("SecondaryMenuComponent", () => {
         route: this.parentRoute,
         parent: this.grandParentLink,
         order: {
-          priority: 10
+          priority: 100
         }
       });
 
@@ -1105,7 +1104,7 @@ describe("SecondaryMenuComponent", () => {
             route: this.childRoute,
             parent: this.parentLink,
             order: {
-              priority: 10
+              priority: 100
             }
           }),
           category: {
@@ -1142,24 +1141,20 @@ describe("SecondaryMenuComponent", () => {
     expect(menuElements.length).toBe(defaultLinks.count() + 4 - 2);
 
     const grandParent = menuElements[defaultLinks.count() + 4 - 2 - 3];
-    expect(grandParent).toBeTruthy();
-    expect(grandParent.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(grandParent.computedStyleMap().get("padding-left").value).toBe(0);
-
     const parent = menuElements[defaultLinks.count() + 4 - 2 - 2];
-    expect(parent).toBeTruthy();
-    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(parent.computedStyleMap().get("padding-left").value).toBeGreaterThan(
-      0
-    );
-    const parentPadding = parent.computedStyleMap().get("padding-left").value;
-
     const child = menuElements[defaultLinks.count() + 4 - 2 - 1];
+
     expect(child).toBeTruthy();
-    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
-      parentPadding
-    );
+    expect(child.attributes.style).toBeTruthy();
+    expect(child.attributes.style.value).toBe("padding-left: 2em;");
+
+    expect(parent).toBeTruthy();
+    expect(parent.attributes.style).toBeTruthy();
+    expect(parent.attributes.style.value).toBe("padding-left: 1em;");
+
+    expect(grandParent).toBeTruthy();
+    expect(grandParent.attributes.style).toBeTruthy();
+    expect(grandParent.attributes.style.value).toBe("padding-left: 0em;");
   });
 
   it("should should set padding on menu item with grand-parent without priority", () => {
@@ -1225,23 +1220,19 @@ describe("SecondaryMenuComponent", () => {
     expect(menuElements.length).toBe(defaultLinks.count() + 4 - 2);
 
     const grandParent = menuElements[defaultLinks.count() + 4 - 2 - 3];
-    expect(grandParent).toBeTruthy();
-    expect(grandParent.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(grandParent.computedStyleMap().get("padding-left").value).toBe(0);
-
     const parent = menuElements[defaultLinks.count() + 4 - 2 - 2];
-    expect(parent).toBeTruthy();
-    expect(parent.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(parent.computedStyleMap().get("padding-left").value).toBeGreaterThan(
-      0
-    );
-    const parentPadding = parent.computedStyleMap().get("padding-left").value;
-
     const child = menuElements[defaultLinks.count() + 4 - 2 - 1];
+
     expect(child).toBeTruthy();
-    expect(child.computedStyleMap().has("padding-left")).toBeTruthy();
-    expect(child.computedStyleMap().get("padding-left").value).toBeGreaterThan(
-      parentPadding
-    );
+    expect(child.attributes.style).toBeTruthy();
+    expect(child.attributes.style.value).toBe("padding-left: 2em;");
+
+    expect(parent).toBeTruthy();
+    expect(parent.attributes.style).toBeTruthy();
+    expect(parent.attributes.style.value).toBe("padding-left: 1em;");
+
+    expect(grandParent).toBeTruthy();
+    expect(grandParent.attributes.style).toBeTruthy();
+    expect(grandParent.attributes.style.value).toBe("padding-left: 0em;");
   });
 });
