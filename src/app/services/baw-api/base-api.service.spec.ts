@@ -66,5 +66,57 @@ describe("BawApiService", () => {
     expect(service.getSessionUser().userName).toBe("username");
   });
 
-  // TODO Add tests for makeTemplate
+  it("makeTemplate should handle no tokens", () => {
+    const template = service["makeTemplate"]`/broken_link`;
+
+    expect(template).toBeTruthy();
+    expect(template()).toBe("/broken_link");
+  });
+
+  it("makeTemplate should handle string token", () => {
+    const stringCallback = (x: string) => x;
+    const template = service["makeTemplate"]`/broken_link/${stringCallback}`;
+
+    expect(template).toBeTruthy();
+    expect(template("string")).toBe("/broken_link/string");
+  });
+
+  it("makeTemplate should handle number token", () => {
+    const numberCallback = (x: number) => x;
+    const template = service["makeTemplate"]`/broken_link/${numberCallback}`;
+
+    expect(template).toBeTruthy();
+    expect(template(42)).toBe("/broken_link/42");
+  });
+
+  it("makeTemplate should handle multiple string tokens", () => {
+    const stringCallback = (x: string) => x;
+    const template = service[
+      "makeTemplate"
+    ]`/broken_link/${stringCallback}/${stringCallback}`;
+
+    expect(template).toBeTruthy();
+    expect(template("ping", "pong")).toBe("/broken_link/ping/pong");
+  });
+
+  it("makeTemplate should handle multiple number tokens", () => {
+    const numberCallback = (x: number) => x;
+    const template = service[
+      "makeTemplate"
+    ]`/broken_link/${numberCallback}/${numberCallback}`;
+
+    expect(template).toBeTruthy();
+    expect(template(1, 2)).toBe("/broken_link/1/2");
+  });
+
+  it("makeTemplate should handle multiple different tokens", () => {
+    const stringCallback = (x: string) => x;
+    const numberCallback = (x: number) => x;
+    const template = service[
+      "makeTemplate"
+    ]`/broken_link/${stringCallback}/${numberCallback}`;
+
+    expect(template).toBeTruthy();
+    expect(template("string", 42)).toBe("/broken_link/string/42");
+  });
 });
