@@ -56,9 +56,9 @@ export interface Order {
   priority: number;
 
   /**
-   * Indentation of link
+   * Indentation of link. Value is calculated by SecondaryMenuComponent
    */
-  indentation: number;
+  indentation?: number;
 }
 
 /**

@@ -11,5 +11,5 @@ export const statisticsMenuItem = MenuRoute({
   label: "Statistics",
   route: statisticsRoute,
   tooltip: () => "Annotation and audio recording statistics",
-  order: { priority: 10, indentation: 0 }
+  order: { priority: 10 }
 });

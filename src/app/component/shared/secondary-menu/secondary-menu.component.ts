@@ -42,6 +42,7 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
         const defaultLinks = DefaultMenu.contextLinks;
 
         // and current page
+        let indentation = 0;
         const current = page.self;
 
         // and parent pages
@@ -50,7 +51,17 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
         while (menuRoute.parent) {
           menuRoute = menuRoute.parent;
           parentMenuRoutes.push(menuRoute);
+          indentation++;
         }
+
+        if (current.order) {
+          current.order.indentation = indentation;
+        }
+
+        parentMenuRoutes.forEach(parent => {
+          indentation--;
+          parent.order.indentation = indentation;
+        });
 
         // with any links from route
         const links = page.menus?.links

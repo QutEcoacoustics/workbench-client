@@ -23,7 +23,7 @@ export const myAccountMenuItem = MenuRoute({
   route: myAccountRoute,
   tooltip: () => "View profile",
   predicate: isLoggedInPredicate,
-  order: { priority: 2, indentation: 0 }
+  order: { priority: 2 }
 });
 
 export const editMyAccountMenuItem = MenuRoute({
@@ -34,8 +34,7 @@ export const editMyAccountMenuItem = MenuRoute({
   tooltip: () => "Change the details for your profile",
   predicate: isLoggedInPredicate,
   order: {
-    priority: myAccountMenuItem.order.priority,
-    indentation: myAccountMenuItem.order.indentation + 1
+    priority: myAccountMenuItem.order.priority
   }
 });
 

@@ -13,12 +13,16 @@ import {
   myAccountCategory,
   myAccountMenuItem
 } from "../../profile.menus";
+import { myProfileMenuItemActions } from "../profile/my-profile.component copy";
 import data from "./my-edit.json";
 
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, editMyAccountMenuItem]),
+    actions: List<AnyMenuItem>([
+      myAccountMenuItem,
+      ...myProfileMenuItemActions
+    ]),
     links: List()
   },
   self: editMyAccountMenuItem

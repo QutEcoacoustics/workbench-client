@@ -222,14 +222,14 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
 
     component.menuType = "action";
@@ -361,14 +361,14 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const externalLink2Obj = MenuLink({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
 
     component.menuType = "action";
@@ -496,14 +496,14 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const button2Obj = MenuAction({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
 
     component.menuType = "action";
@@ -549,21 +549,21 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const externalLinkObj = MenuLink({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: "http://brokenlink/",
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
     const internalLinkObj = MenuRoute({
       label: "label c",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 3, indentation: 0 }
+      order: { priority: 3 }
     });
 
     component.menuType = "action";
@@ -737,14 +737,14 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
 
     component.menuType = "secondary";
@@ -795,14 +795,14 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
 
     component.menuType = "action";
@@ -971,7 +971,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
 
     component.menuType = "secondary";
@@ -1028,7 +1028,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 2, indentation: 0 }
+      order: { priority: 2 }
     });
 
     component.menuType = "action";
@@ -1073,20 +1073,20 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should not order links with duplicate priority and indentation alphabetically on action menu", () => {
+  it("should not order links with duplicate priority alphabetically on action menu", () => {
     const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
 
     component.menuType = "action";
@@ -1131,20 +1131,20 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links with duplicate priority and indentation alphabetically on secondary menu", () => {
+  it("should order links with duplicate priority alphabetically on secondary menu", () => {
     const internalLink1Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     const internalLink2Obj = MenuRoute({
       label: "label a",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
 
     component.menuType = "secondary";
@@ -1189,20 +1189,21 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should order links with duplicate priority by indentation on secondary menu", () => {
-    const internalLink1Obj = MenuRoute({
-      label: "label a",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 1 }
-    });
+  it("should order links with duplicate priority by parent on secondary menu", () => {
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
+    });
+    const internalLink1Obj = MenuRoute({
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      parent: internalLink2Obj,
+      order: { priority: 1 }
     });
 
     component.menuType = "secondary";
@@ -1247,20 +1248,21 @@ describe("MenuComponent", () => {
     );
   });
 
-  it("should not order links with duplicate priority by indentation on action menu", () => {
-    const internalLink1Obj = MenuRoute({
-      label: "label a",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 1 }
-    });
+  it("should not order links with duplicate priority by parent on action menu", () => {
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
+    });
+    const internalLink1Obj = MenuRoute({
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      parent: internalLink2Obj,
+      order: { priority: 1 }
     });
 
     component.menuType = "action";
@@ -1306,19 +1308,20 @@ describe("MenuComponent", () => {
   });
 
   it("should order sub-links on secondary menu", () => {
-    const internalLink1Obj = MenuRoute({
-      label: "label a",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 2 }
-    });
     const internalLink2Obj = MenuRoute({
       label: "label b",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("house"),
-      order: { priority: 1, indentation: 1 }
+      order: { priority: 1 }
+    });
+    const internalLink1Obj = MenuRoute({
+      label: "label a",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+      parent: internalLink2Obj,
+      order: { priority: 1 }
     });
 
     component.menuType = "secondary";
@@ -1371,14 +1374,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 }
+        order: { priority: 2 }
       })
     ]);
     fixture.detectChanges();
@@ -1393,7 +1396,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     internalLinkComponent1.placement = "left";
     internalLinkComponent1.tooltip = "tooltip";
@@ -1419,14 +1422,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 }
+        order: { priority: 2 }
       })
     ]);
     fixture.detectChanges();
@@ -1441,7 +1444,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     internalLinkComponent1.placement = "right";
     internalLinkComponent1.tooltip = "tooltip";
@@ -1467,14 +1470,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 },
+        order: { priority: 2 },
         predicate: () => false
       })
     ]);
@@ -1490,7 +1493,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     internalLinkComponent1.placement = "left";
     internalLinkComponent1.tooltip = "tooltip";
@@ -1516,14 +1519,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 },
+        order: { priority: 2 },
         predicate: () => false
       })
     ]);
@@ -1539,7 +1542,7 @@ describe("MenuComponent", () => {
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       route: StrongRoute.Base.add("home"),
-      order: { priority: 1, indentation: 0 }
+      order: { priority: 1 }
     });
     internalLinkComponent1.placement = "right";
     internalLinkComponent1.tooltip = "tooltip";
@@ -1568,14 +1571,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 },
+        order: { priority: 2 },
         predicate: user => {
           expect(user).toBeFalsy();
           return !user;
@@ -1601,14 +1604,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 },
+        order: { priority: 2 },
         predicate: user => {
           expect(user).toBeFalsy();
           return !user;
@@ -1640,14 +1643,14 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: { priority: 1, indentation: 0 }
+        order: { priority: 1 }
       }),
       MenuRoute({
         label: "label b",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: { priority: 2, indentation: 0 },
+        order: { priority: 2 },
         predicate: user => {
           expect(user).toBeTruthy();
           expect(user.authToken).toBe("xxxxxxxxxxxxxxxxxxxx");

@@ -29,8 +29,7 @@ export const newSiteMenuItem = MenuRoute({
   predicate: isLoggedInPredicate,
   parent: projectMenuItem,
   order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
+    priority: projectMenuItem.order.priority
   }
 });
 
@@ -41,8 +40,7 @@ export const siteMenuItem = MenuRoute({
   tooltip: () => "The current site",
   parent: projectMenuItem,
   order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
+    priority: projectMenuItem.order.priority
   }
 });
 
@@ -69,8 +67,7 @@ export const editSiteMenuItem = MenuRoute({
   tooltip: () => "Change the details for this site",
   predicate: isOwnerPredicate,
   order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
+    priority: siteMenuItem.order.priority
   }
 });
 
@@ -82,8 +79,7 @@ export const harvestMenuItem = MenuRoute({
   tooltip: () => "Upload new audio to this site",
   predicate: isAdminPredicate,
   order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
+    priority: siteMenuItem.order.priority
   }
 });
 
@@ -103,7 +99,6 @@ export const deleteSiteMenuItem = MenuRoute({
   tooltip: () => "Delete this site",
   predicate: isOwnerPredicate,
   order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
+    priority: siteMenuItem.order.priority
   }
 });

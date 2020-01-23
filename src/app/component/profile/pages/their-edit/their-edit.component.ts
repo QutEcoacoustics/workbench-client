@@ -14,6 +14,7 @@ import {
   theirProfileCategory,
   theirProfileMenuItem
 } from "../../profile.menus";
+import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 import data from "./their-edit.json";
 
 @Page({
@@ -21,7 +22,7 @@ import data from "./their-edit.json";
   menus: {
     actions: List<AnyMenuItem>([
       theirProfileMenuItem,
-      theirEditProfileMenuItem
+      ...theirProfileMenuItemActions
     ]),
     links: List()
   },

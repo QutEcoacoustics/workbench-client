@@ -26,7 +26,7 @@ export const projectsMenuItem = MenuRoute({
   label: "Projects",
   route: projectsRoute,
   tooltip: () => "View projects I have access too",
-  order: { priority: 4, indentation: 0 }
+  order: { priority: 4 }
 });
 
 export const newProjectMenuItem = MenuRoute({
@@ -36,8 +36,7 @@ export const newProjectMenuItem = MenuRoute({
   tooltip: () => "Create a new project",
   predicate: isLoggedInPredicate,
   order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
+    priority: projectsMenuItem.order.priority
   }
 });
 
@@ -48,8 +47,7 @@ export const requestProjectMenuItem = MenuRoute({
   tooltip: () => "Request access to a project not listed here",
   predicate: isLoggedInPredicate,
   order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
+    priority: projectsMenuItem.order.priority
   }
 });
 
@@ -58,9 +56,9 @@ export const projectMenuItem = MenuRoute({
   label: "Project",
   route: projectsRoute.add(":projectId"),
   tooltip: () => "The current project",
+  parent: projectsMenuItem,
   order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
+    priority: projectsMenuItem.order.priority
   }
 });
 
@@ -78,8 +76,7 @@ export const editProjectMenuItem = MenuRoute({
   tooltip: () => "Change the details for this project",
   predicate: isOwnerPredicate,
   order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
+    priority: projectMenuItem.order.priority
   }
 });
 
@@ -106,7 +103,6 @@ export const deleteProjectMenuItem = MenuRoute({
   tooltip: () => "Delete this project",
   predicate: isOwnerPredicate,
   order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
+    priority: projectMenuItem.order.priority
   }
 });
