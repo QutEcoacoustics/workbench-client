@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { ID } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
@@ -16,8 +15,8 @@ export class UserService extends ApiCommon<User> {
     [key: string]: Path;
   };
 
-  constructor(http: HttpClient, config: AppConfigService, router: Router) {
-    super(http, config, router, User);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, User);
 
     this.paths = {
       myAccount: this.makeTemplate`/my_account`,

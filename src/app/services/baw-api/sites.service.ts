@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -21,8 +20,8 @@ import { Filters } from "./base-api.service";
 export class SitesService extends ApiCommon<Site> {
   private paths: CommonApiPaths;
 
-  constructor(http: HttpClient, config: AppConfigService, router: Router) {
-    super(http, config, router, Site);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, Site);
 
     this.paths = {
       details: this.makeTemplate`/sites`,
@@ -127,6 +126,6 @@ export class SitesService extends ApiCommon<Site> {
    * @param siteId Site ID
    */
   public deleteProjectSite(projectId: ID, siteId: ID): Subject<boolean> {
-    return this.delete(this.paths.nestedDelete(projectId, siteId), projectId);
+    return this.delete(this.paths.nestedDelete(projectId, siteId));
   }
 }

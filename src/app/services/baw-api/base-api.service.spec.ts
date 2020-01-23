@@ -65,4 +65,6 @@ describe("BawApiService", () => {
     expect(service.getSessionUser().authToken).toBe("aaaaaaaaaaaaaaaaaaaaaa");
     expect(service.getSessionUser().userName).toBe("username");
   });
+
+  // TODO Add tests for makeTemplate
 });

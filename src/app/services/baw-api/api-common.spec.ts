@@ -4,7 +4,6 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon, STUB_CLASS_BUILDER } from "./api-common";
@@ -41,7 +40,7 @@ describe("ApiCommon", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
         {
@@ -70,6 +69,4 @@ describe("ApiCommon", () => {
     const service: ApiCommon<any> = TestBed.get(ApiCommon);
     expect(service).toBeTruthy();
   });
-
-  // TODO Add tests for refineUrl to catch error, currently this causes Jasmine/Karma to crash
 });
