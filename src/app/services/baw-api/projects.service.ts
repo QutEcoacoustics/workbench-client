@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import {
   Description,
   ID,
@@ -25,11 +26,11 @@ export class ProjectsService extends ApiCommon<Project> {
     super(http, config, Project);
 
     this.paths = {
-      details: this.makeTemplate`/projects`,
-      show: this.makeTemplate`/projects/${this.id}`,
-      new: this.makeTemplate`/projects`,
-      update: this.makeTemplate`/projects/${this.id}`,
-      delete: this.makeTemplate`/projects/${this.id}`
+      details: stringTemplate`/projects`,
+      show: stringTemplate`/projects/${this.id}`,
+      new: stringTemplate`/projects`,
+      update: stringTemplate`/projects/${this.id}`,
+      delete: stringTemplate`/projects/${this.id}`
     };
   }
 

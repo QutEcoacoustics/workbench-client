@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import {
   Description,
   ID,
@@ -24,13 +25,13 @@ export class SitesService extends ApiCommon<Site> {
     super(http, config, Site);
 
     this.paths = {
-      details: this.makeTemplate`/sites`,
-      nestedDetails: this.makeTemplate`/projects/${this.id}/sites`,
-      show: this.makeTemplate`/sites/${this.id}`,
-      nestedShow: this.makeTemplate`/projects/${this.id}/sites/${this.id}`,
-      nestedNew: this.makeTemplate`/projects/${this.id}/sites`,
-      nestedUpdate: this.makeTemplate`/projects/${this.id}/sites/${this.id}`,
-      nestedDelete: this.makeTemplate`/projects/${this.id}/sites/${this.id}`
+      details: stringTemplate`/sites`,
+      nestedDetails: stringTemplate`/projects/${this.id}/sites`,
+      show: stringTemplate`/sites/${this.id}`,
+      nestedShow: stringTemplate`/projects/${this.id}/sites/${this.id}`,
+      nestedNew: stringTemplate`/projects/${this.id}/sites`,
+      nestedUpdate: stringTemplate`/projects/${this.id}/sites/${this.id}`,
+      nestedDelete: stringTemplate`/projects/${this.id}/sites/${this.id}`
     };
   }
 
