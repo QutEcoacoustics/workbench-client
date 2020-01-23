@@ -1,3 +1,4 @@
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -5,7 +6,9 @@ import {
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
+import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { BawApiService } from "./base-api.service";
+import { MockBawApiService } from "./mock/baseApiMockService";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
 import { SecurityService } from "./security.service";
 
@@ -17,7 +20,16 @@ describe("SecurityService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [...testAppInitializer, SecurityService]
+      providers: [
+        ...testAppInitializer,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        { provide: BawApiService, useClass: MockBawApiService },
+        SecurityService
+      ]
     });
 
     service = TestBed.get(SecurityService);
@@ -46,7 +58,7 @@ describe("SecurityService", () => {
     expect(service.getSessionUser()).toBe(null);
   });
 
-  xit("login should set session cookie", () => {
+  it("login should set session cookie", () => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
@@ -85,7 +97,7 @@ describe("SecurityService", () => {
     });
   });
 
-  xit("login should update user session on second login", fakeAsync(done => {
+  it("login should update user session on second login", fakeAsync(done => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
@@ -153,7 +165,7 @@ describe("SecurityService", () => {
     });
   }));
 
-  xit("login should return error on bad credentials", () => {
+  it("login should return error on bad credentials", () => {
     service.signIn({ login: "username", password: "password" }).subscribe(
       res => {
         expect(true).toBeFalsy();
@@ -202,7 +214,7 @@ describe("SecurityService", () => {
     );
   });
 
-  xit("logout should clear session cookie", fakeAsync(() => {
+  it("logout should clear session cookie", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
@@ -255,7 +267,7 @@ describe("SecurityService", () => {
     expect(sessionStorage.getItem("user")).toBeFalsy();
   }));
 
-  xit("logout should set getUser to null", fakeAsync(() => {
+  it("logout should set getUser to null", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
@@ -308,7 +320,7 @@ describe("SecurityService", () => {
     expect(service.getSessionUser()).toBeFalsy();
   }));
 
-  xit("logout should set isLoggedIn to false", fakeAsync(() => {
+  it("logout should set isLoggedIn to false", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
@@ -361,7 +373,7 @@ describe("SecurityService", () => {
     expect(service.isLoggedIn()).toBeFalsy();
   }));
 
-  xit("logout should not crash when already logged out", fakeAsync(() => {
+  it("logout should not crash when already logged out", fakeAsync(() => {
     // tslint:disable-next-line: rxjs-no-ignored-error
     service
       .signIn({ login: "username", password: "password" })
