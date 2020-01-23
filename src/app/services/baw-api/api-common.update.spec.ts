@@ -157,7 +157,7 @@ describe("ApiCommon Update", () => {
 
   it("update should work with single argument", done => {
     const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["update"]("/broken_path/:id", null, 1).subscribe(
+    service["update"]("/broken_path/1", null).subscribe(
       (user: MockModel) => {
         expect(user).toBeTruthy();
         done();
@@ -189,7 +189,7 @@ describe("ApiCommon Update", () => {
 
   it("update should work with multiple arguments", done => {
     const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["update"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
+    service["update"]("/broken_path/1/extra/5", null).subscribe(
       (user: MockModel) => {
         expect(user).toBeTruthy();
         done();
