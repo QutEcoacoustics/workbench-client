@@ -74,19 +74,12 @@ export class SecurityService extends BawApiService {
 
     this.httpDelete(this.paths.signOut()).subscribe({
       next: (data: APIResponse) => {
-        if (data.meta.status === apiReturnCodes.success) {
-          this.clearSessionStorage();
-          this.loggedInTrigger.next(null);
-          subject.complete();
-        } else {
-          console.error("Unknown error thrown by login rest api");
-          console.error(data);
-          subject.error(data);
-        }
+        this.clearSessionStorage();
+        this.loggedInTrigger.next(null);
+        subject.complete();
       },
       error: (err: APIErrorDetails) => {
-        console.error("Unknown error thrown by login rest api");
-        console.error(err);
+        console.error("Unknown error thrown: ", err);
         subject.error(err);
       }
     });
