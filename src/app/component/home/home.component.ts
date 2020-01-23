@@ -36,8 +36,6 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log("Start");
-
     this.securityApi
       .getLoggedInTrigger()
       .pipe(

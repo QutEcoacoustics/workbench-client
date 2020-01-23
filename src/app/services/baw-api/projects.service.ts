@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -7,10 +8,10 @@ import {
   ImageURL,
   Name
 } from "src/app/interfaces/apiInterfaces";
-import { Project, ProjectInterface } from "src/app/models/Project";
+import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
+import { ApiCommon } from "./api-common";
 import { Filters } from "./base-api.service";
-import { ModelService } from "./model.service";
 
 /**
  * Interacts with projects route in baw api
@@ -18,14 +19,13 @@ import { ModelService } from "./model.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends ModelService<Project> {
+export class ProjectsService extends ApiCommon<Project> {
   private paths: {
     [key: string]: string;
   };
 
-  constructor(http: HttpClient, config: AppConfigService) {
-    const classBuilder = (project: ProjectInterface) => new Project(project);
-    super(http, config, classBuilder);
+  constructor(http: HttpClient, config: AppConfigService, router: Router) {
+    super(http, config, router, Project);
 
     this.paths = {
       details: "/projects",
@@ -52,7 +52,7 @@ export class ProjectsService extends ModelService<Project> {
    * @returns Observable list of projects
    */
   public getProjects(filters?: Filters): Subject<Project[]> {
-    return this.details(this.paths.details, filters);
+    return this.list(this.paths.details, filters);
   }
 
   /**

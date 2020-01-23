@@ -3,14 +3,15 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
-import { Project, ProjectInterface } from "src/app/models/Project";
+import { Project } from "src/app/models/Project";
+import { ApiCommon, Args } from "./api-common";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
+import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
-import { MockModelService } from "./mock/modelMockService";
-import { Args, ModelService } from "./model.service";
 import { ProjectsService } from "./projects.service";
 
 describe("ProjectsService", () => {
@@ -19,11 +20,11 @@ describe("ProjectsService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
         { provide: BawApiService, useClass: MockBawApiService },
-        { provide: ModelService, useClass: MockModelService }
+        { provide: ApiCommon, useClass: MockApiCommon }
       ]
     });
 
@@ -39,24 +40,12 @@ describe("ProjectsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("classBuilder should create project", () => {
-    const project: ProjectInterface = {
-      id: 1,
-      name: "Project",
-      imageUrl: "/assets/images/project/project_span4.png",
-      siteIds: new Set([]),
-      creatorId: 1
-    };
-
-    expect(service["classBuilder"](project)).toEqual(new Project(project));
-  });
-
   /**
    * getProjects
    */
 
   it("getProjects should handle empty response", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toBeFalsy();
@@ -86,7 +75,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle single project", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toBeFalsy();
@@ -130,7 +119,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle multiple projects", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toBeFalsy();
@@ -186,7 +175,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle single project with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toEqual({});
@@ -230,7 +219,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle single project with filter", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toEqual({ paging: { items: 3 } });
@@ -274,7 +263,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle error", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toBeFalsy();
@@ -309,7 +298,7 @@ describe("ProjectsService", () => {
   }));
 
   it("getProjects should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "details").and.callFake(
+    spyOn<any>(service, "list").and.callFake(
       (path: string, filters: Filters, ...args: Args) => {
         expect(path).toBe("/projects");
         expect(filters).toBeFalsy();
