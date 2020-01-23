@@ -12,28 +12,26 @@ import {
 } from "src/app/interfaces/apiInterfaces";
 import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiCommon } from "./api-common";
+import { ApiCommon, CommonApiPaths } from "./api-common";
 import { Filters } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class SitesService extends ApiCommon<Site> {
-  private paths: {
-    [key: string]: string;
-  };
+  private paths: CommonApiPaths;
 
   constructor(http: HttpClient, config: AppConfigService, router: Router) {
     super(http, config, router, Site);
 
     this.paths = {
-      details: "/sites",
-      nestedDetails: "/projects/:projectId/sites",
-      show: "/sites/:siteId",
-      nestedShow: "/projects/:projectId/sites/:siteId",
-      nestedNew: "/projects/:projectId/sites",
-      nestedUpdate: "/projects/:projectId/sites/:siteId",
-      delete: "/projects/:projectId/sites/:siteId"
+      details: this.makeTemplate`/sites`,
+      nestedDetails: this.makeTemplate`/projects/${this.id}/sites`,
+      show: this.makeTemplate`/sites/${this.id}`,
+      nestedShow: this.makeTemplate`/projects/${this.id}/sites/${this.id}`,
+      nestedNew: this.makeTemplate`/projects/${this.id}/sites`,
+      nestedUpdate: this.makeTemplate`/projects/${this.id}/sites/${this.id}`,
+      nestedDelete: this.makeTemplate`/projects/${this.id}/sites/${this.id}`
     };
   }
 
@@ -43,7 +41,7 @@ export class SitesService extends ApiCommon<Site> {
    * @returns Observable list of sites
    */
   public getSites(filters?: Filters): Subject<Site[]> {
-    return this.list(this.paths.details, filters);
+    return this.list(this.paths.details(), filters);
   }
 
   /**
@@ -53,7 +51,7 @@ export class SitesService extends ApiCommon<Site> {
    * @returns Observable returning singular site
    */
   public getSite(siteId: ID, filters?: Filters): Subject<Site> {
-    return this.show(this.paths.show, filters, siteId);
+    return this.show(this.paths.show(siteId), filters);
   }
 
   /**
@@ -63,7 +61,7 @@ export class SitesService extends ApiCommon<Site> {
    * @returns Observable list of sites for a project
    */
   public getProjectSites(projectId: ID, filters?: Filters): Subject<Site[]> {
-    return this.list(this.paths.nestedDetails, filters, projectId);
+    return this.list(this.paths.nestedDetails(projectId), filters);
   }
 
   /**
@@ -78,16 +76,16 @@ export class SitesService extends ApiCommon<Site> {
     siteId: ID,
     filters?: Filters
   ): Subject<Site> {
-    return this.show(this.paths.nestedShow, filters, projectId, siteId);
+    return this.show(this.paths.nestedShow(projectId, siteId), filters);
   }
 
   /**
    * Create a new site
-   * @param id Project ID
+   * @param projectId Project ID
    * @param details Form details
    */
   public newProjectSite(
-    id: ID,
+    projectId: ID,
     details: {
       name: Name;
       description?: Description;
@@ -98,7 +96,7 @@ export class SitesService extends ApiCommon<Site> {
       timezoneInformation?: TimezoneInformation;
     }
   ): Subject<Site> {
-    return this.new(this.paths.nestedNew, details, id);
+    return this.new(this.paths.nestedNew(projectId), details);
   }
 
   /**
@@ -120,7 +118,7 @@ export class SitesService extends ApiCommon<Site> {
       timezoneInformation?: TimezoneInformation;
     }
   ): Subject<Site> {
-    return this.update(this.paths.nestedUpdate, details, projectId, siteId);
+    return this.update(this.paths.nestedUpdate(projectId, siteId), details);
   }
 
   /**
@@ -129,6 +127,6 @@ export class SitesService extends ApiCommon<Site> {
    * @param siteId Site ID
    */
   public deleteProjectSite(projectId: ID, siteId: ID): Subject<boolean> {
-    return this.delete(this.paths.delete, projectId, siteId);
+    return this.delete(this.paths.nestedDelete(projectId, siteId), projectId);
   }
 }

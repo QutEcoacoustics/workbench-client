@@ -4,7 +4,12 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import { APIResponse, apiReturnCodes, BawApiService } from "./base-api.service";
+import {
+  APIResponse,
+  apiReturnCodes,
+  BawApiService,
+  Path
+} from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -14,7 +19,7 @@ import { APIResponse, apiReturnCodes, BawApiService } from "./base-api.service";
 })
 export class SecurityService extends BawApiService {
   private paths: {
-    [key: string]: string;
+    [key: string]: Path;
   };
   private loggedInTrigger = new BehaviorSubject(null);
 
@@ -23,9 +28,9 @@ export class SecurityService extends BawApiService {
 
     this.loggedInTrigger.next(this.isLoggedIn());
     this.paths = {
-      register: "/security",
-      signIn: "/security",
-      signOut: "/security"
+      register: this.makeTemplate`/security`,
+      signIn: this.makeTemplate`/security`,
+      signOut: this.makeTemplate`/security`
     };
   }
 
@@ -38,7 +43,7 @@ export class SecurityService extends BawApiService {
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
   public register(details: any): Observable<boolean | string> {
-    return this.authenticateUser(this.paths.register, details);
+    return this.authenticateUser(this.paths.register(), details);
   }
 
   /**
@@ -51,7 +56,7 @@ export class SecurityService extends BawApiService {
     login: string;
     password: string;
   }): Observable<boolean | string> {
-    return this.authenticateUser(this.paths.signIn, details);
+    return this.authenticateUser(this.paths.signIn(), details);
   }
 
   /**
@@ -67,7 +72,7 @@ export class SecurityService extends BawApiService {
       return;
     }
 
-    this.httpDelete(this.paths.signOut).subscribe({
+    this.httpDelete(this.paths.signOut()).subscribe({
       next: (data: APIResponse) => {
         if (data.meta.status === apiReturnCodes.success) {
           this.clearSessionStorage();

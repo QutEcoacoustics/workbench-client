@@ -6,21 +6,22 @@ import { ID } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon } from "./api-common";
+import { Path } from "./base-api.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserService extends ApiCommon<User> {
   private paths: {
-    [key: string]: string;
+    [key: string]: Path;
   };
 
   constructor(http: HttpClient, config: AppConfigService, router: Router) {
     super(http, config, router, User);
 
     this.paths = {
-      myAccount: "/my_account",
-      userAccount: "/user_accounts/:userId"
+      myAccount: this.makeTemplate`/my_account`,
+      userAccount: this.makeTemplate`/user_accounts/${this.id}`
     };
   }
 
@@ -29,7 +30,7 @@ export class UserService extends ApiCommon<User> {
    * @returns Observable returning current user details
    */
   public getMyAccount(): Subject<User> {
-    return this.show(this.paths.myAccount, null);
+    return this.show(this.paths.myAccount(), null);
   }
 
   /**
@@ -38,6 +39,6 @@ export class UserService extends ApiCommon<User> {
    * @returns Observable returning user details
    */
   public getUserAccount(userId: ID): Subject<User> {
-    return this.show(this.paths.userAccount, null, userId);
+    return this.show(this.paths.userAccount(userId), null);
   }
 }

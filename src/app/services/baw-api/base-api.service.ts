@@ -250,6 +250,11 @@ export abstract class BawApiService {
 type ParamType<T> = T extends (arg: infer R) => any ? R : never;
 
 /**
+ * Template URL path
+ */
+export type Path = (...tokens: (string | number)[]) => string;
+
+/**
  * Default filter for routes
  */
 export interface Filters {
