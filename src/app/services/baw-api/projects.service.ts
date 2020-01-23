@@ -27,6 +27,9 @@ export class ProjectsService extends ApiCommon<Project> {
   constructor(http: HttpClient, config: AppConfigService, router: Router) {
     super(http, config, router, Project);
 
+    const url = this.makeTemplate`/projects/${this.id}/sites/${this.id}`;
+    console.log(url(1, 1));
+
     this.paths = {
       details: "/projects",
       show: "/projects/:projectId",
