@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { PRIMARY_OUTLET, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
@@ -29,7 +28,6 @@ export class ApiCommon<T> extends BawApiService {
   constructor(
     http: HttpClient,
     config: AppConfigService,
-    private router: Router,
     @Inject(STUB_CLASS_BUILDER) private type: new (object: any) => T
   ) {
     super(http, config);
@@ -41,11 +39,10 @@ export class ApiCommon<T> extends BawApiService {
    * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected list(path: string, filters: Filters, ...args: Args): Subject<T[]> {
+  protected list(path: string, filters: Filters): Subject<T[]> {
     const subject = new Subject<T[]>();
     const next = (objects: object[]) => this.subjectNextList(subject, objects);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-    path = this.refineUrl(path, args);
 
     this.apiList(next, error, path, filters);
 
@@ -58,11 +55,10 @@ export class ApiCommon<T> extends BawApiService {
    * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected show(path: string, filters: Filters, ...args: Args): Subject<T> {
+  protected show(path: string, filters: Filters): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-    path = this.refineUrl(path, args);
 
     this.apiList(next, error, path, filters);
 
@@ -75,11 +71,10 @@ export class ApiCommon<T> extends BawApiService {
    * @param values Form details
    * @param args URL parameter values
    */
-  protected new(path: string, values: any, ...args: Args): Subject<T> {
+  protected new(path: string, values: any): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-    path = this.refineUrl(path, args);
 
     this.apiCreate(next, error, path, values);
 
@@ -92,11 +87,10 @@ export class ApiCommon<T> extends BawApiService {
    * @param values Form details
    * @param args URL parameter values
    */
-  protected update(path: string, values: any, ...args: Args): Subject<T> {
+  protected update(path: string, values: any): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-    path = this.refineUrl(path, args);
 
     this.apiUpdate(next, error, path, values);
 
@@ -108,40 +102,15 @@ export class ApiCommon<T> extends BawApiService {
    * @param path URL path
    * @param args URL parameter values
    */
-  protected delete(path: string, ...args: Args): Subject<boolean> {
+  protected delete(path: string): Subject<boolean> {
     const subject = new Subject<boolean>();
     const next = (success: boolean) =>
       this.subjectNextBoolean(subject, success);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-    path = this.refineUrl(path, args);
 
     this.apiDelete(next, error, path);
 
     return subject;
-  }
-
-  /**
-   * Replace URL parameters with argument values
-   * @param path URL path
-   * @param args Arguments to insert
-   */
-  private refineUrl(path: string, args: Args): string {
-    const tree = this.router.parseUrl(path);
-    const segments = tree.root.children[PRIMARY_OUTLET].segments.filter(
-      segment => segment.path.charAt(0) === ":"
-    );
-
-    if (args.length !== segments.length) {
-      throw new Error(
-        `Expected ${segments.length} arguments to satisfy url parameters for path '${path}'. Instead received ${args.length}.`
-      );
-    }
-
-    args.forEach((arg, index) => {
-      segments[index].path = arg.toString();
-    });
-
-    return tree.toString();
   }
 }
 

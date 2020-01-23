@@ -4,7 +4,6 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
@@ -42,7 +41,7 @@ describe("ApiCommon List", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
         {
@@ -210,108 +209,6 @@ describe("ApiCommon List", () => {
       'Token token="xxxxxxxxxxxxxxx"'
     );
 
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: []
-    } as APIResponse);
-  });
-
-  it("list should work with single argument no filter", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["list"]("/broken_path/:id", null, 1).subscribe(
-      (user: MockModel[]) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1",
-      method: "GET"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: []
-    } as APIResponse);
-  });
-
-  it("list should work with single argument with filter", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["list"]("/broken_path/:id", {}, 1).subscribe(
-      (user: MockModel[]) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1/filter",
-      method: "POST"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: []
-    } as APIResponse);
-  });
-
-  it("list should work with multiple arguments no filter", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["list"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
-      (user: MockModel[]) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/5",
-      method: "GET"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: []
-    } as APIResponse);
-  });
-
-  it("list should work with multiple arguments with filter", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["list"]("/broken_path/:id/extra/:extraId", {}, 1, 5).subscribe(
-      (user: MockModel[]) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url:
-        config.getConfig().environment.apiRoot +
-        "/broken_path/1/extra/5/filter",
-      method: "POST"
-    });
     req.flush({
       meta: {
         status: 200,

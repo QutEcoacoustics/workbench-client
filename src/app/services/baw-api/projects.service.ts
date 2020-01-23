@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import {
   Description,
@@ -22,8 +21,8 @@ import { Filters } from "./base-api.service";
 export class ProjectsService extends ApiCommon<Project> {
   private paths: CommonApiPaths;
 
-  constructor(http: HttpClient, config: AppConfigService, router: Router) {
-    super(http, config, router, Project);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, Project);
 
     this.paths = {
       details: this.makeTemplate`/projects`,

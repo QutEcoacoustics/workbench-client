@@ -4,7 +4,6 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
@@ -42,7 +41,7 @@ describe("ApiCommon New", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
         {
@@ -140,68 +139,6 @@ describe("ApiCommon New", () => {
       'Token token="xxxxxxxxxxxxxxx"'
     );
 
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        id: 1,
-        name: "name",
-        case_conversion: {
-          test_convert: "test"
-        }
-      }
-    } as APIResponse);
-  });
-
-  it("new should work with single argument", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["new"]("/broken_path/:id", null, 1).subscribe(
-      (user: MockModel) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1",
-      method: "POST"
-    });
-    req.flush({
-      meta: {
-        status: 200,
-        message: "OK"
-      },
-      data: {
-        id: 1,
-        name: "name",
-        case_conversion: {
-          test_convert: "test"
-        }
-      }
-    } as APIResponse);
-  });
-
-  it("new should work with multiple arguments", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["new"]("/broken_path/:id/extra/:extraId", null, 1, 5).subscribe(
-      (user: MockModel) => {
-        expect(user).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/5",
-      method: "POST"
-    });
     req.flush({
       meta: {
         status: 200,

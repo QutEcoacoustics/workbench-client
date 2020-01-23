@@ -4,7 +4,6 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
@@ -42,7 +41,7 @@ describe("ApiCommon List", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
         {
@@ -127,46 +126,6 @@ describe("ApiCommon List", () => {
     expect(req.request.headers.get("Authorization")).toBe(
       'Token token="xxxxxxxxxxxxxxx"'
     );
-
-    req.flush(null, { status: 204, statusText: "No Content" });
-  });
-
-  it("delete should work with single argument", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["delete"]("/broken_path/:id", 1).subscribe(
-      (success: boolean) => {
-        expect(success).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1",
-      method: "DELETE"
-    });
-
-    req.flush(null, { status: 204, statusText: "No Content" });
-  });
-
-  it("delete should work with multiple arguments", done => {
-    const service: ApiCommon<MockModel> = TestBed.get(ApiCommon);
-    service["delete"]("/broken_path/:id/extra/:extraId", 1, 1).subscribe(
-      (success: boolean) => {
-        expect(success).toBeTruthy();
-        done();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not generate error");
-      }
-    );
-
-    const req = httpMock.expectOne({
-      url: config.getConfig().environment.apiRoot + "/broken_path/1/extra/1",
-      method: "DELETE"
-    });
 
     req.flush(null, { status: 204, statusText: "No Content" });
   });
