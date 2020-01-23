@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
+import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
@@ -23,9 +24,9 @@ export class SecurityService extends BawApiService {
 
     this.loggedInTrigger.next(this.isLoggedIn());
     this.paths = {
-      register: this.makeTemplate`/security`,
-      signIn: this.makeTemplate`/security`,
-      signOut: this.makeTemplate`/security`
+      register: stringTemplate`/security`,
+      signIn: stringTemplate`/security`,
+      signOut: stringTemplate`/security`
     };
   }
 
