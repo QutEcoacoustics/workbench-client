@@ -85,6 +85,9 @@ export abstract class BawApiService {
           .get<APIResponse>(path)
           .subscribe(this.handleResponse(next, error));
       case "FILTER":
+        return this.http
+          .post<APIResponse>(path + "/filter", body)
+          .subscribe(this.handleResponse(next, error));
       case "CREATE":
         return this.http
           .post<APIResponse>(path, body)
