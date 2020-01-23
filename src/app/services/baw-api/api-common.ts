@@ -44,7 +44,11 @@ export class ApiCommon<T> extends BawApiService {
     const next = (objects: object[]) => this.subjectNextList(subject, objects);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiList(next, error, path, filters);
+    if (filters) {
+      this.apiRequest("FILTER", next, error, path, filters);
+    } else {
+      this.apiRequest("LIST", next, error, path);
+    }
 
     return subject;
   }
@@ -60,7 +64,11 @@ export class ApiCommon<T> extends BawApiService {
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiList(next, error, path, filters);
+    if (filters) {
+      this.apiRequest("FILTER", next, error, path, filters);
+    } else {
+      this.apiRequest("SHOW", next, error, path);
+    }
 
     return subject;
   }
@@ -76,7 +84,7 @@ export class ApiCommon<T> extends BawApiService {
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiCreate(next, error, path, values);
+    this.apiRequest("CREATE", next, error, path, values);
 
     return subject;
   }
@@ -92,7 +100,7 @@ export class ApiCommon<T> extends BawApiService {
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiUpdate(next, error, path, values);
+    this.apiRequest("UPDATE", next, error, path, values);
 
     return subject;
   }
@@ -108,7 +116,7 @@ export class ApiCommon<T> extends BawApiService {
       this.subjectNextBoolean(subject, success);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiDelete(next, error, path);
+    this.apiRequest("DELETE", next, error, path);
 
     return subject;
   }

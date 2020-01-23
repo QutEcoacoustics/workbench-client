@@ -1,15 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { APIErrorDetails } from "./api.interceptor";
-import {
-  APIResponse,
-  apiReturnCodes,
-  BawApiService,
-  Path
-} from "./base-api.service";
+import { BawApiService, Path } from "./base-api.service";
 
 /**
  * Interacts with security based routes in baw api
@@ -35,14 +30,14 @@ export class SecurityService extends BawApiService {
   }
 
   /**
-   * Returns an observable which tracks the change in loggedIn status
+   * Returns a subject which tracks the change in loggedIn status
    */
   public getLoggedInTrigger(): BehaviorSubject<boolean> {
     return this.loggedInTrigger;
   }
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
-  public register(details: any): Observable<boolean | string> {
+  public register(details: any): Subject<boolean> {
     return this.authenticateUser(this.paths.register(), details);
   }
 
@@ -50,12 +45,11 @@ export class SecurityService extends BawApiService {
    * Login the user, this function can only be called if user
    * is not logged in.
    * @param details Details provided by login form
-   * @returns Observable (true if success, error string if failure)
    */
   public signIn(details: {
     login: string;
     password: string;
-  }): Observable<boolean | string> {
+  }): Subject<boolean> {
     return this.authenticateUser(this.paths.signIn(), details);
   }
 
@@ -72,17 +66,17 @@ export class SecurityService extends BawApiService {
       return;
     }
 
-    this.httpDelete(this.paths.signOut()).subscribe({
-      next: (data: APIResponse) => {
-        this.clearSessionStorage();
-        this.loggedInTrigger.next(null);
-        subject.complete();
-      },
-      error: (err: APIErrorDetails) => {
-        console.error("Unknown error thrown: ", err);
-        subject.error(err);
-      }
-    });
+    const next = () => {
+      this.clearSessionStorage();
+      this.loggedInTrigger.next(null);
+      subject.complete();
+    };
+    const error = (err: APIErrorDetails) => {
+      console.error("Unknown error thrown: ", err);
+      subject.error(err);
+    };
+
+    this.apiRequest("DELETE", next, error, this.paths.signOut());
 
     return subject;
   }
@@ -95,7 +89,7 @@ export class SecurityService extends BawApiService {
   private authenticateUser(
     path: string,
     details: { login: string; password: string }
-  ): Observable<boolean | string> {
+  ): Subject<boolean> {
     const subject = new Subject<boolean>();
     const next = (data: SessionUserInterface) => {
       const user = new SessionUser({
@@ -113,9 +107,9 @@ export class SecurityService extends BawApiService {
       subject.error(err);
     };
 
-    this.apiCreate(next, error, path, details);
+    this.apiRequest("CREATE", next, error, path, details);
 
-    return subject.asObservable();
+    return subject;
   }
 
   /**
