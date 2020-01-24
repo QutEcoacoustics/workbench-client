@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { ID } from "src/app/interfaces/apiInterfaces";
-import { Project } from "src/app/models/Project";
+import { Project, ProjectInterface } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
-import { AbstractApi } from "./api-common";
+import { StandardApi } from "./api-common";
 import { Filters } from "./base-api.service";
 
 /**
@@ -13,7 +14,7 @@ import { Filters } from "./base-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends AbstractApi<Project> {
+export class ProjectsService extends StandardApi<Project> {
   constructor(http: HttpClient, config: AppConfigService) {
     const id = (x: ID) => x;
     super(
@@ -25,27 +26,10 @@ export class ProjectsService extends AbstractApi<Project> {
     );
   }
 
-  list() {
-    return super.list();
-  }
-
-  filter(filters: Filters) {
-    return super.filter(filters);
-  }
-
-  show(projectId: ID) {
-    return super.show(projectId);
-  }
-
-  new(values: any) {
-    return super.new(values);
-  }
-
-  update(values: any, projectId: ID) {
-    return super.update(values, projectId);
-  }
-
-  delete(projectId: ID) {
-    return super.delete(projectId);
-  }
+  public list: () => Subject<Project[]>;
+  public filter: (filters: Filters) => Subject<Project[]>;
+  public show: (projectId: ID) => Subject<Project>;
+  public new: (values: ProjectInterface) => Subject<Project>;
+  public update: (values: ProjectInterface, projectId: ID) => Subject<Project>;
+  public delete: (projectId: ID) => Subject<boolean>;
 }

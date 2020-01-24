@@ -58,7 +58,12 @@ export abstract class AbstractApi<T> extends BawApiService {
   protected subjectError(subject: Subject<any>, err: APIErrorDetails) {
     subject.error(err);
   }
+}
 
+/**
+ * API List functionality
+ */
+class ApiList<T> extends AbstractApi<T> {
   /**
    * Get list of models
    * @param args URL parameter values
@@ -72,7 +77,12 @@ export abstract class AbstractApi<T> extends BawApiService {
 
     return subject;
   }
+}
 
+/**
+ * API Filter functionality
+ */
+class ApiFilter<T> extends AbstractApi<T> {
   /**
    * Get filtered list of models
    * @param filters Api Filters
@@ -87,7 +97,12 @@ export abstract class AbstractApi<T> extends BawApiService {
 
     return subject;
   }
+}
 
+/**
+ * API Show functionality
+ */
+class ApiShow<T> extends AbstractApi<T> {
   /**
    * Get individual model
    * @param id Model ID
@@ -102,7 +117,12 @@ export abstract class AbstractApi<T> extends BawApiService {
 
     return subject;
   }
+}
 
+/**
+ * API New functionality
+ */
+class ApiNew<T> extends AbstractApi<T> {
   /**
    * Create a new model
    * @param values Form details
@@ -117,7 +137,12 @@ export abstract class AbstractApi<T> extends BawApiService {
 
     return subject;
   }
+}
 
+/**
+ * API Update functionality
+ */
+class ApiUpdate<T> extends AbstractApi<T> {
   /**
    * Update a model
    * @param values Form details
@@ -133,7 +158,12 @@ export abstract class AbstractApi<T> extends BawApiService {
 
     return subject;
   }
+}
 
+/**
+ * API Delete functionality
+ */
+class ApiDelete<T> extends AbstractApi<T> {
   /**
    * Delete a model
    * @param id Model ID
@@ -151,45 +181,23 @@ export abstract class AbstractApi<T> extends BawApiService {
   }
 }
 
-// /**
-//  * API List functionality
-//  */
-// class ApiList<T> extends AbstractApi<T> {
-// }
-
-// /**
-//  * API Show functionality
-//  */
-// class ApiShow<T> extends AbstractApi<T> {
-// }
-
-// /**
-//  * API New functionality
-//  */
-// class ApiNew<T> extends AbstractApi<T> {
-// }
-
-// /**
-//  * API Update functionality
-//  */
-// class ApiUpdate<T> extends AbstractApi<T> {
-// }
-
-// /**
-//  * API Delete functionality
-//  */
-// class ApiDelete<T> extends AbstractApi<T> {
-// }
-
-// class StandardApi<T> extends AbstractApi<T>
-//   implements ApiList<T>, ApiShow<T>, ApiNew<T>, ApiUpdate<T>, ApiDelete<T> {
-//   list: (...args: (string | number)[]) => Subject<T[]>;
-//   show: (...args: (string | number)[]) => Subject<T>;
-//   new: (values: any, ...args: (string | number)[]) => Subject<T>;
-//   update: (values: any, ...args: (string | number)[]) => Subject<T>;
-//   delete: (...args: (string | number)[]) => Subject<boolean>;
-// }
-// applyMixins(StandardApi, [ApiList, ApiShow, ApiNew, ApiUpdate, ApiDelete]);
+export abstract class StandardApi<T> extends AbstractApi<T>
+  implements ApiList<T>, ApiShow<T>, ApiNew<T>, ApiUpdate<T>, ApiDelete<T> {
+  public list: (...args: Args) => Subject<T[]>;
+  public filter: (filters: Filters, ...args: Args) => Subject<T[]>;
+  public show: (...args: Args) => Subject<T>;
+  public new: (values: any, ...args: Args) => Subject<T>;
+  public update: (values: any, ...args: Args) => Subject<T>;
+  public delete: (id: ID, ...args: Args) => Subject<boolean>;
+}
+applyMixins(StandardApi, [
+  ApiList,
+  ApiFilter,
+  ApiShow,
+  ApiNew,
+  ApiUpdate,
+  ApiDelete
+]);
 
 export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
@@ -321,6 +329,11 @@ export interface CommonApiPaths {
   nestedDelete?: Path;
 }
 
+/**
+ * Apply mixins to derived class. This add implementations to class functions.
+ * @param derivedCtor Derived Class
+ * @param baseCtors Base Class
+ */
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach(baseCtor => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
