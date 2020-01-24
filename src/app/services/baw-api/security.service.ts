@@ -77,7 +77,7 @@ export class SecurityService extends BawApiService {
       subject.error(err);
     };
 
-    this.apiRequest("DELETE", next, error, this.paths.signOut());
+    this.apiDelete(next, error, this.paths.signOut());
 
     return subject;
   }
@@ -108,7 +108,7 @@ export class SecurityService extends BawApiService {
       subject.error(err);
     };
 
-    this.apiRequest("CREATE", next, error, path, details);
+    this.apiCreate(next, error, path, details);
 
     return subject;
   }
