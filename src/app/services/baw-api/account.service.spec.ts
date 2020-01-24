@@ -7,6 +7,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
+import { AccountService } from "./account.service";
 import { ApiCommon } from "./api-common";
 import { APIErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
@@ -14,9 +15,9 @@ import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { UserService } from "./user.service";
 
-describe("UserService", () => {
+describe("AccountService", () => {
   let httpMock: HttpTestingController;
-  let service: UserService;
+  let service: AccountService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -47,7 +48,7 @@ describe("UserService", () => {
   it("should handle response", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
       (path: string, filters: Filters) => {
-        expect(path).toBe("/my_account");
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
         const subject = new Subject<User>();
 
@@ -68,7 +69,7 @@ describe("UserService", () => {
       }
     );
 
-    service.show().subscribe(
+    service.show(1).subscribe(
       (user: User) => {
         expect(user).toBeTruthy();
         expect(user).toEqual(
@@ -89,10 +90,55 @@ describe("UserService", () => {
     tick(100);
   }));
 
+  it("should handle response with random id", fakeAsync(() => {
+    spyOn<any>(service, "show").and.callFake(
+      (path: string, filters: Filters) => {
+        expect(path).toBe("/user_accounts/5");
+        expect(filters).toEqual(null);
+        const subject = new Subject<User>();
+
+        setTimeout(() => {
+          subject.next(
+            new User({
+              id: 5,
+              userName: "username",
+              rolesMask: 3,
+              rolesMaskNames: ["user"],
+              lastSeenAt: "1970-01-01T00:00:00.000"
+            })
+          );
+          subject.complete();
+        }, 50);
+
+        return subject;
+      }
+    );
+
+    service.show(5).subscribe(
+      (user: User) => {
+        expect(user).toBeTruthy();
+        expect(user).toEqual(
+          new User({
+            id: 5,
+            userName: "username",
+            rolesMask: 3,
+            rolesMaskNames: ["user"],
+            lastSeenAt: "1970-01-01T00:00:00.000"
+          })
+        );
+      },
+      () => {
+        expect(true).toBeFalsy("Service should not return an error");
+      }
+    );
+
+    tick(100);
+  }));
+
   it("should handle error", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
       (path: string, filters: Filters) => {
-        expect(path).toBe("/my_account");
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
         const subject = new Subject<User>();
 
@@ -107,7 +153,7 @@ describe("UserService", () => {
       }
     );
 
-    service.show().subscribe(
+    service.show(1).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not return data");
       },
@@ -126,7 +172,7 @@ describe("UserService", () => {
   it("should handle error with info", fakeAsync(() => {
     spyOn<any>(service, "show").and.callFake(
       (path: string, filters: Filters) => {
-        expect(path).toBe("/my_account");
+        expect(path).toBe("/user_accounts/1");
         expect(filters).toEqual(null);
         const subject = new Subject<User>();
 
@@ -149,7 +195,7 @@ describe("UserService", () => {
       }
     );
 
-    service.show().subscribe(
+    service.show(1).subscribe(
       () => {
         expect(true).toBeFalsy("Service should not return data");
       },

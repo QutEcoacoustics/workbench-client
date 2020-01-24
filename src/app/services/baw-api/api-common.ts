@@ -63,7 +63,7 @@ export abstract class AbstractApi<T> extends BawApiService {
 /**
  * API List functionality
  */
-class ApiList<T> extends AbstractApi<T> {
+export class ApiList<T> extends AbstractApi<T> {
   /**
    * Get list of models
    * @param args URL parameter values
@@ -82,7 +82,7 @@ class ApiList<T> extends AbstractApi<T> {
 /**
  * API Filter functionality
  */
-class ApiFilter<T> extends AbstractApi<T> {
+export class ApiFilter<T> extends AbstractApi<T> {
   /**
    * Get filtered list of models
    * @param filters Api Filters
@@ -102,18 +102,17 @@ class ApiFilter<T> extends AbstractApi<T> {
 /**
  * API Show functionality
  */
-class ApiShow<T> extends AbstractApi<T> {
+export class ApiShow<T> extends AbstractApi<T> {
   /**
    * Get individual model
-   * @param id Model ID
    * @param args URL parameter values
    */
-  public show(id: ID, ...args: Args): Subject<T> {
+  public show(...args: Args): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiList(next, error, this.idPath(id, ...args));
+    this.apiList(next, error, this.idPath(...args));
 
     return subject;
   }
@@ -122,7 +121,7 @@ class ApiShow<T> extends AbstractApi<T> {
 /**
  * API New functionality
  */
-class ApiNew<T> extends AbstractApi<T> {
+export class ApiNew<T> extends AbstractApi<T> {
   /**
    * Create a new model
    * @param values Form details
@@ -142,19 +141,18 @@ class ApiNew<T> extends AbstractApi<T> {
 /**
  * API Update functionality
  */
-class ApiUpdate<T> extends AbstractApi<T> {
+export class ApiUpdate<T> extends AbstractApi<T> {
   /**
    * Update a model
    * @param values Form details
-   * @param id Model ID
    * @param args URL parameter values
    */
-  public update(values: any, id: ID, ...args: Args): Subject<T> {
+  public update(values: any, ...args: Args): Subject<T> {
     const subject = new Subject<T>();
     const next = (object: object) => this.subjectNext(subject, object);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiUpdate(next, error, this.idPath(id, ...args), values);
+    this.apiUpdate(next, error, this.idPath(...args), values);
 
     return subject;
   }
@@ -163,24 +161,26 @@ class ApiUpdate<T> extends AbstractApi<T> {
 /**
  * API Delete functionality
  */
-class ApiDelete<T> extends AbstractApi<T> {
+export class ApiDelete<T> extends AbstractApi<T> {
   /**
    * Delete a model
-   * @param id Model ID
    * @param args URL parameter values
    */
-  public delete(id: ID, ...args: Args): Subject<boolean> {
+  public delete(...args: Args): Subject<boolean> {
     const subject = new Subject<boolean>();
     const next = (success: boolean) =>
       this.subjectNextBoolean(subject, success);
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
-    this.apiDelete(next, error, this.idPath(id, ...args));
+    this.apiDelete(next, error, this.idPath(...args));
 
     return subject;
   }
 }
 
+/**
+ * Api Class with all abilities enabled
+ */
 export abstract class StandardApi<T> extends AbstractApi<T>
   implements ApiList<T>, ApiShow<T>, ApiNew<T>, ApiUpdate<T>, ApiDelete<T> {
   public list: (...args: Args) => Subject<T[]>;
@@ -188,7 +188,7 @@ export abstract class StandardApi<T> extends AbstractApi<T>
   public show: (...args: Args) => Subject<T>;
   public new: (values: any, ...args: Args) => Subject<T>;
   public update: (values: any, ...args: Args) => Subject<T>;
-  public delete: (id: ID, ...args: Args) => Subject<boolean>;
+  public delete: (...args: Args) => Subject<boolean>;
 }
 applyMixins(StandardApi, [
   ApiList,
