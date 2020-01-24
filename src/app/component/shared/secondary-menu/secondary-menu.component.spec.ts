@@ -890,71 +890,8 @@ describe("SecondaryMenuComponent", () => {
             icon: ["fas", "question-circle"],
             tooltip: () => "Custom Tooltip",
             route: this.route,
-            order: {
-              priority: 100
-            }
-          }),
-          category: {
-            label: "Custom Category",
-            icon: ["fas", "home"],
-            route: this.route
-          },
-          menus: {
-            actions: List<AnyMenuItem>([]),
-            links: List<NavigableMenuItem>([
-              MenuRoute({
-                label: "ZZZCustom Label", // Force to be last link
-                icon: ["fas", "tag"],
-                tooltip: () => "Custom Tooltip",
-                route: this.route
-              })
-            ])
-          }
-        } as PageInfoInterface)
-      );
-    }
-
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule, SharedModule],
-      declarations: [SecondaryMenuComponent],
-      providers: [
-        ...testAppInitializer,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(SecondaryMenuComponent);
-    component = fixture.componentInstance;
-
-    fixture.detectChanges();
-
-    // Number of elements should be the default links,
-    // plus self link, plus menu title, plus added link,
-    // minus 2 links which require authentication
-    const menuElements = fixture.nativeElement.querySelectorAll("li.nav-item");
-    expect(menuElements.length).toBe(defaultLinks.count() + 3 - 2);
-
-    const item = menuElements[defaultLinks.count() + 3 - 2 - 1];
-    expect(item).toBeTruthy();
-    expect(item.attributes.style).toBeTruthy();
-    expect(item.attributes.style.value).toBe("padding-left: 0em;");
-  });
-
-  it("should overwrite indentation value of ordered menu item", () => {
-    class MockActivatedRoute {
-      private route = StrongRoute.Base.add("/");
-
-      public params = new BehaviorSubject<any>({});
-      public data = new BehaviorSubject<PageInfoInterface>(
-        new PageInfo(SecondaryMenuComponent, {
-          self: MenuRoute({
-            label: "Custom Label",
-            icon: ["fas", "question-circle"],
-            tooltip: () => "Custom Tooltip",
-            route: this.route,
-            order: {
-              priority: 100,
-              indentation: 5
-            }
+            order: 100,
+            indentation: 0
           }),
           category: {
             label: "Custom Category",
@@ -1010,7 +947,8 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "question"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute,
-        order: { priority: 100 }
+        order: 100,
+        indentation: 0
       });
 
       public params = new BehaviorSubject<any>({});
@@ -1022,7 +960,8 @@ describe("SecondaryMenuComponent", () => {
             tooltip: () => "Custom Tooltip 2",
             route: this.childRoute,
             parent: this.parentLink,
-            order: { priority: 100 }
+            order: 100,
+            indentation: 1
           }),
           category: {
             label: "Custom Category",
@@ -1079,9 +1018,8 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "tag"],
         tooltip: () => "Custom Tooltip 1",
         route: this.parentRoute,
-        order: {
-          priority: 100
-        }
+        order: 100,
+        indentation: 0
       });
       private parentLink = MenuRoute({
         label: "ZZZZCustom Label", // Force to be last link
@@ -1089,9 +1027,8 @@ describe("SecondaryMenuComponent", () => {
         tooltip: () => "Custom Tooltip 2",
         route: this.parentRoute,
         parent: this.grandParentLink,
-        order: {
-          priority: 100
-        }
+        order: 100,
+        indentation: 1
       });
 
       public params = new BehaviorSubject<any>({});
@@ -1103,9 +1040,8 @@ describe("SecondaryMenuComponent", () => {
             tooltip: () => "Custom Tooltip 3",
             route: this.childRoute,
             parent: this.parentLink,
-            order: {
-              priority: 100
-            }
+            order: 100,
+            indentation: 2
           }),
           category: {
             label: "Custom Category",
