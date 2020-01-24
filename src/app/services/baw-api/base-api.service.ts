@@ -64,43 +64,125 @@ export abstract class BawApiService {
   }
 
   /**
-   * Create a http request
-   * @param method Method to use
-   * @param path API Path
-   * @param body Optional body content
+   * Get response from details route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param filters API filters
    */
-  protected apiRequest(
-    method: "LIST" | "FILTER" | "SHOW" | "CREATE" | "UPDATE" | "DELETE",
+  protected apiList(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    filters?: Filters
+  ) {
+    if (!filters) {
+      this.httpGet<APIResponse>(path).subscribe(
+        this.handleResponse(next, error)
+      );
+    } else {
+      this.httpPost<APIResponse>(path + "/filter", filters).subscribe(
+        this.handleResponse(next, error)
+      );
+    }
+  }
+
+  /**
+   * Create request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param body Request body
+   */
+  protected apiCreate(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string,
+    body?: any
+  ) {
+    this.httpPost<APIResponse>(path, body).subscribe(
+      this.handleResponse(next, error)
+    );
+  }
+
+  /**
+   * Update request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   * @param body Request body
+   */
+  protected apiUpdate(
     next: (data: any) => void,
     error: (err: any) => void,
     path: string,
     body?: object
   ) {
-    path = this.url + path;
+    this.httpPatch<APIResponse>(path, body).subscribe(
+      this.handleResponse(next, error)
+    );
+  }
 
-    switch (method) {
-      case "LIST":
-      case "SHOW":
-        return this.http
-          .get<APIResponse>(path)
-          .subscribe(this.handleResponse(next, error));
-      case "FILTER":
-        return this.http
-          .post<APIResponse>(path + "/filter", body)
-          .subscribe(this.handleResponse(next, error));
-      case "CREATE":
-        return this.http
-          .post<APIResponse>(path, body)
-          .subscribe(this.handleResponse(next, error));
-      case "UPDATE":
-        return this.http
-          .patch<APIResponse>(path, body)
-          .subscribe(this.handleResponse(next, error));
-      case "DELETE":
-        return this.http
-          .delete<APIResponse>(path)
-          .subscribe(this.handleResponse(next, error, true));
-    }
+  /**
+   * Delete request for API route
+   * @param next Callback function for successful response
+   * @param error Callback function for failed response
+   * @param path API path
+   */
+  protected apiDelete(
+    next: (data: any) => void,
+    error: (err: any) => void,
+    path: string
+  ) {
+    this.httpDelete<APIResponse>(path).subscribe(
+      this.handleResponse(next, error, true)
+    );
+  }
+
+  /**
+   * Constructs a `GET` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   */
+  protected httpGet<T>(path: string): Observable<T> {
+    return this.http.get<T>(this.getPath(path));
+  }
+
+  /**
+   * Constructs a `DELETE` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   */
+  protected httpDelete<T>(path: string): Observable<T> {
+    return this.http.delete<T>(this.getPath(path));
+  }
+
+  /**
+   * Constructs a `POST` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   * @param body Request body
+   */
+  protected httpPost<T>(path: string, body?: object): Observable<T> {
+    return this.http.post<T>(this.getPath(path), body);
+  }
+
+  /**
+   * Constructs a `PATCH` request
+   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * @param path API path
+   * @param body Request body
+   */
+  protected httpPatch<T>(path: string, body?: object): Observable<T> {
+    return this.http.patch<T>(this.getPath(path), body);
+  }
+
+  /**
+   * Returns the path for the api route
+   * @param path Path fragment
+   */
+  private getPath(path: string): string {
+    return this.url + path;
   }
 
   /**
