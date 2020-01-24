@@ -11,5 +11,5 @@ export const reportProblemMenuItem = MenuRoute({
   label: "Report Problem",
   route: reportProblemsRoute,
   tooltip: () => "Report a problem with the website",
-  order: { priority: 9 }
+  order: 9
 });

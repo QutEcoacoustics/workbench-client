@@ -46,22 +46,6 @@ export interface Category extends LabelAndIcon {
 }
 
 /**
- * Defines order and indentation for `MenuItems`
- */
-export interface Order {
-  /**
-   * Priority of link
-   * The lower the value, the greater the importance.
-   */
-  priority?: number;
-
-  /**
-   * Indentation of link. Value is calculated by SecondaryMenuComponent
-   */
-  indentation?: number;
-}
-
-/**
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
@@ -91,7 +75,11 @@ export interface MenuItem extends LabelAndIcon {
   /**
    * The order position of this link in comparison to others.
    */
-  order?: Order;
+  order?: number;
+  /**
+   * The indentation of this link
+   */
+  indentation?: number;
 }
 
 /**
@@ -109,7 +97,10 @@ export interface MenuLink extends MenuItem {
 }
 
 export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
-  return Object.assign(item, { kind: "MenuLink" as "MenuLink" });
+  return Object.assign(item, {
+    kind: "MenuLink" as "MenuLink",
+    indentation: 0
+  });
 }
 
 /**
@@ -133,7 +124,11 @@ export interface MenuRoute extends MenuItem {
 export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
   item: T
 ): MenuRoute {
-  return Object.assign(item, { kind: "MenuRoute" as "MenuRoute" });
+  return Object.assign(item, {
+    kind: "MenuRoute" as "MenuRoute",
+    indentation: item.parent ? item.parent.indentation + 1 : 0,
+    order: item.parent ? item.parent.order : item.order
+  });
 }
 
 /**
@@ -149,7 +144,10 @@ export interface MenuAction extends MenuItem {
 export function MenuAction<T extends Omit<MenuAction, "kind">>(
   item: T
 ): MenuAction {
-  return Object.assign(item, { kind: "MenuAction" as "MenuAction" });
+  return Object.assign(item, {
+    kind: "MenuAction" as "MenuAction",
+    indentation: 0
+  });
 }
 
 /**

@@ -23,7 +23,7 @@ export const myAccountMenuItem = MenuRoute({
   route: myAccountRoute,
   tooltip: () => "View profile",
   predicate: isLoggedInPredicate,
-  order: { priority: 2 }
+  order: 2
 });
 
 export const editMyAccountMenuItem = MenuRoute({
@@ -32,10 +32,7 @@ export const editMyAccountMenuItem = MenuRoute({
   route: myAccountMenuItem.route.add("edit"),
   parent: myAccountMenuItem,
   tooltip: () => "Change the details for your profile",
-  predicate: isLoggedInPredicate,
-  order: {
-    priority: myAccountMenuItem.order.priority
-  }
+  predicate: isLoggedInPredicate
 });
 
 /**
@@ -64,6 +61,5 @@ export const theirEditProfileMenuItem = MenuRoute({
   route: theirProfileMenuItem.route.add("edit"),
   parent: theirProfileMenuItem,
   tooltip: () => "Change the details for this profile",
-  predicate: isAdminPredicate,
-  order: editMyAccountMenuItem.order
+  predicate: isAdminPredicate
 });
