@@ -5,6 +5,7 @@ import { ID } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
 import { AbstractApi } from "./api-common";
+import { Filters } from "./base-api.service";
 
 /**
  * Interacts with projects route in baw api
@@ -22,5 +23,29 @@ export class ProjectsService extends AbstractApi<Project> {
       stringTemplate`/projects/${id}`,
       Project
     );
+  }
+
+  list() {
+    return super.list();
+  }
+
+  filter(filters: Filters) {
+    return super.filter(filters);
+  }
+
+  show(projectId: ID) {
+    return super.show(projectId);
+  }
+
+  new(values: any) {
+    return super.new(values);
+  }
+
+  update(values: any, projectId: ID) {
+    return super.update(values, projectId);
+  }
+
+  delete(projectId: ID) {
+    return super.delete(projectId);
   }
 }

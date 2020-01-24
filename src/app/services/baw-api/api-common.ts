@@ -61,8 +61,6 @@ export abstract class AbstractApi<T> extends BawApiService {
 
   /**
    * Get list of models
-   * @param path URL path
-   * @param filters Api Filters
    * @param args URL parameter values
    */
   public list(...args: Args): Subject<T[]> {
@@ -76,9 +74,23 @@ export abstract class AbstractApi<T> extends BawApiService {
   }
 
   /**
-   * Get individual model
-   * @param path URL path
+   * Get filtered list of models
    * @param filters Api Filters
+   * @param args URL parameter values
+   */
+  public filter(filters: Filters, ...args: Args): Subject<T[]> {
+    const subject = new Subject<T[]>();
+    const next = (objects: object[]) => this.subjectNextList(subject, objects);
+    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
+
+    this.apiList(next, error, this.allPath(...args), filters);
+
+    return subject;
+  }
+
+  /**
+   * Get individual model
+   * @param id Model ID
    * @param args URL parameter values
    */
   public show(id: ID, ...args: Args): Subject<T> {
@@ -109,6 +121,7 @@ export abstract class AbstractApi<T> extends BawApiService {
   /**
    * Update a model
    * @param values Form details
+   * @param id Model ID
    * @param args URL parameter values
    */
   public update(values: any, id: ID, ...args: Args): Subject<T> {
@@ -123,7 +136,7 @@ export abstract class AbstractApi<T> extends BawApiService {
 
   /**
    * Delete a model
-   * @param path URL path
+   * @param id Model ID
    * @param args URL parameter values
    */
   public delete(id: ID, ...args: Args): Subject<boolean> {
@@ -133,22 +146,6 @@ export abstract class AbstractApi<T> extends BawApiService {
     const error = (err: APIErrorDetails) => this.subjectError(subject, err);
 
     this.apiDelete(next, error, this.idPath(id, ...args));
-
-    return subject;
-  }
-
-  /**
-   * Get filtered list of models
-   * @param path URL path
-   * @param filters Api Filters
-   * @param args URL parameter values
-   */
-  public filter(filters: Filters, ...args: Args): Subject<T[]> {
-    const subject = new Subject<T[]>();
-    const next = (objects: object[]) => this.subjectNextList(subject, objects);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiList(next, error, this.allPath(...args), filters);
 
     return subject;
   }
