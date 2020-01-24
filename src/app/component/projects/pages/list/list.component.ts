@@ -60,7 +60,7 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.api
-      .getProjects()
+      .list()
       .pipe(
         map((data: Project[]) => {
           return List(data.map(project => project.card));

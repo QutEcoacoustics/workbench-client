@@ -73,7 +73,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.projectId = params.projectId;
           this.siteId = params.siteId;
 
-          return this.api.getProjectSite(this.projectId, this.siteId);
+          return this.api.show(this.projectId, this.siteId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -105,7 +105,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     const input = flattenFields($event);
 
     this.api
-      .updateProjectSite(this.projectId, this.siteId, input)
+      .update(this.projectId, this.siteId, input)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

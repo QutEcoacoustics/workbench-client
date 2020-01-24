@@ -74,7 +74,7 @@ export class DetailsComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.projectsApi.getProject(params.projectId);
+          return this.projectsApi.show(params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -97,7 +97,7 @@ export class DetailsComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.sitesApi.getProjectSite(params.projectId, params.siteId);
+          return this.sitesApi.show(params.projectId, params.siteId);
         }),
         takeUntil(this.unsubscribe)
       )

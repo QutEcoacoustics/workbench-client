@@ -49,12 +49,9 @@ export class PermissionsShieldComponent
       .pipe(
         flatMap((params: Params) => {
           if (params.siteId && params.projectId) {
-            return this.sitesApi.getProjectSite(
-              params.projectId,
-              params.siteId
-            );
+            return this.sitesApi.show(params.projectId, params.siteId);
           } else if (params.projectId) {
-            return this.projectsApi.getProject(params.projectId);
+            return this.projectsApi.show(params.projectId);
           }
         }),
         takeUntil(this.unsubscribe)

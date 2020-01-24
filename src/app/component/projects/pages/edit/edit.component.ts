@@ -69,7 +69,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       .pipe(
         flatMap(params => {
           this.projectId = params.projectId;
-          return this.api.getProject(this.projectId);
+          return this.api.show(this.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -100,7 +100,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     this.ref.detectChanges();
 
     this.api
-      .updateProject(this.projectId, $event)
+      .update(this.projectId, $event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

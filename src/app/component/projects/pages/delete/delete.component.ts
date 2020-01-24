@@ -70,7 +70,7 @@ export class DeleteComponent extends PageComponent
       .pipe(
         flatMap(params => {
           this.projectId = params.projectId;
-          return this.api.getProject(this.projectId);
+          return this.api.show(this.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -100,7 +100,7 @@ export class DeleteComponent extends PageComponent
     // of component onDestroy.
     this.formLoading = true;
     this.api
-      .deleteProject(this.projectId)
+      .delete(this.projectId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {

@@ -40,7 +40,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
       .getLoggedInTrigger()
       .pipe(
         flatMap(() => {
-          return this.projectApi.getProjects({ paging: { items: 3 } });
+          return this.projectApi.filter({ paging: { items: 3 } });
         }),
         map((data: Project[]) => {
           return List(data.map(project => project.card));

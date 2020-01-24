@@ -71,7 +71,7 @@ export class DeleteComponent extends PageComponent
         flatMap(params => {
           this.projectId = params.projectId;
           this.siteId = params.siteId;
-          return this.api.getProjectSite(this.projectId, this.siteId);
+          return this.api.show(this.projectId, this.siteId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -99,7 +99,7 @@ export class DeleteComponent extends PageComponent
     // manages to navigate too fast
     this.formLoading = true;
     this.api
-      .deleteProjectSite(this.projectId, this.siteId)
+      .delete(this.projectId, this.siteId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {

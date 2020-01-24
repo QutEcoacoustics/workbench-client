@@ -57,7 +57,7 @@ export class RequestComponent extends PageComponent
     // TODO Change this to the list of projects a user does not have access to
     this.schema = data;
     this.api
-      .getProjects()
+      .list()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         projects => {

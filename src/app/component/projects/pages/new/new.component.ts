@@ -66,7 +66,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.ref.detectChanges();
 
     this.api
-      .newProject($event)
+      .new($event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
