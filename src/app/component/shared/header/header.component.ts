@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private updateUser() {
     if (this.securityApi.isLoggedIn()) {
       this.userApi
-        .getMyAccount()
+        .show()
         .pipe(takeUntil(this.unsubscribe))
         .subscribe(
           (user: User) => {

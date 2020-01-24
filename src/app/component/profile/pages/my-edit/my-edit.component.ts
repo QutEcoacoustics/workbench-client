@@ -75,7 +75,7 @@ export class MyEditComponent extends PageComponent
     this.loading = false;
 
     this.api
-      .getMyAccount()
+      .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (user: User) => {

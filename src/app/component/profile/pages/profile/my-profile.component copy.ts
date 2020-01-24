@@ -75,7 +75,7 @@ export class MyProfileComponent extends PageComponent
 
   ngOnInit() {
     this.api
-      .getMyAccount()
+      .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (user: User) => {

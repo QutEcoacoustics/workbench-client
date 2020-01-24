@@ -100,7 +100,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     this.ref.detectChanges();
 
     this.api
-      .update(this.projectId, $event)
+      .update($event, this.projectId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

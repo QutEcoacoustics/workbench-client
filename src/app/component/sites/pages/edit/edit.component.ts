@@ -105,7 +105,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     const input = flattenFields($event);
 
     this.api
-      .update(this.projectId, this.siteId, input)
+      .update(input, this.projectId, this.siteId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

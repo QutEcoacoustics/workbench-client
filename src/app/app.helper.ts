@@ -17,7 +17,6 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
-import { ApiCommon } from "./services/baw-api/api-common";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
 import { BawApiService } from "./services/baw-api/base-api.service";
 import { MockApiCommon } from "./services/baw-api/mock/api-commonMock";
@@ -123,7 +122,6 @@ export const testBawServices = [
     multi: true
   },
   { provide: BawApiService, useClass: MockBawApiService },
-  { provide: ApiCommon, useClass: MockApiCommon },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },

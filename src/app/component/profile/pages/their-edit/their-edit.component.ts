@@ -7,8 +7,8 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { AccountService } from "src/app/services/baw-api/account.service";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { UserService } from "src/app/services/baw-api/user.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
@@ -57,7 +57,7 @@ export class TheirEditComponent extends PageComponent
 
   user: User;
 
-  constructor(private api: UserService, private route: ActivatedRoute) {
+  constructor(private api: AccountService, private route: ActivatedRoute) {
     super();
   }
 
@@ -68,7 +68,7 @@ export class TheirEditComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.getUserAccount(params.userId);
+          return this.api.show(params.userId);
         }),
         takeUntil(this.unsubscribe)
       )
