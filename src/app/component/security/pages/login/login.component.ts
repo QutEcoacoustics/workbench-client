@@ -1,13 +1,16 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { homeMenuItem } from "src/app/component/home/home.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import url from "url";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
@@ -44,15 +47,18 @@ import data from "./login.json";
   `
 })
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
+  public schema = data;
+  public error: string;
+  public errorDetails: APIErrorDetails;
+  public loading: boolean;
+  public redirectUrl: string;
   private unsubscribe = new Subject();
-  schema = data;
-  error: string;
-  errorDetails: APIErrorDetails;
-  loading: boolean;
 
   constructor(
     private api: SecurityService,
+    private config: AppConfigService,
     private router: Router,
+    private route: ActivatedRoute,
     private ref: ChangeDetectorRef
   ) {
     super();
@@ -60,6 +66,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
+    this.redirectUrl = homeMenuItem.route.toString();
     const msg = "You are already logged in";
 
     if (this.api.isLoggedIn()) {
@@ -72,6 +79,27 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         this.error = null;
       }
     }
+
+    // Update redirect url
+    this.route.queryParams.pipe(takeUntil(this.unsubscribe)).subscribe(
+      params => {
+        const redirect: string = params.redirect;
+        if (redirect) {
+          const redirectUrl = url.parse(redirect);
+          const validUrl = url.parse(
+            this.config.getConfig().environment.apiRoot
+          );
+
+          if (
+            redirect.charAt(0) === "/" ||
+            redirectUrl.href === validUrl.href
+          ) {
+            this.redirectUrl = redirect;
+          }
+        }
+      },
+      err => {}
+    );
   }
 
   ngOnDestroy() {
@@ -92,7 +120,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.router.navigate([""]);
+          this.router.navigateByUrl(this.redirectUrl);
           this.loading = false;
         },
         (err: APIErrorDetails) => {
