@@ -5,13 +5,14 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
@@ -20,8 +21,20 @@ describe("LoginComponent", () => {
   let component: LoginComponent;
   let securityService: SecurityService;
   let router: Router;
+  let route: ActivatedRoute;
   let location: Location;
+  let config: AppConfigService;
   let fixture: ComponentFixture<LoginComponent>;
+
+  class MockActivatedRoute {
+    public queryParams: BehaviorSubject<Params> = new BehaviorSubject<Params>(
+      {}
+    );
+
+    public setRedirectUrl(url: string) {
+      this.queryParams = new BehaviorSubject<Params>({ redirect: url });
+    }
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -31,14 +44,19 @@ describe("LoginComponent", () => {
         FormlyModule.forRoot(formlyRoot)
       ],
       declarations: [LoginComponent, HomeComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     securityService = TestBed.get(SecurityService);
     router = TestBed.get(Router);
+    route = TestBed.get(ActivatedRoute);
     location = TestBed.get(Location);
+    config = TestBed.get(AppConfigService);
 
     component.schema.model = {
       login: "",
@@ -482,7 +500,7 @@ describe("LoginComponent", () => {
   }));
 
   it("should redirect to home page on successful login", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
       return new BehaviorSubject<boolean>(true);
@@ -510,7 +528,113 @@ describe("LoginComponent", () => {
     tick();
     fixture.detectChanges();
 
-    expect(router.navigate).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith([""]);
+    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith("/");
+  }));
+
+  it("should handle internal redirect url", () => {
+    route["setRedirectUrl"]("/broken_link");
+
+    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
+    spyOn(securityService, "isLoggedIn").and.callFake(() => false);
+    fixture.detectChanges();
+
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    fixture.detectChanges();
+
+    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith("/broken_link");
+  });
+
+  it("should handle staging.ecosounds redirect url", () => {
+    route["setRedirectUrl"](
+      config.getConfig().environment.apiRoot + "/broken_link"
+    );
+
+    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
+    spyOn(securityService, "isLoggedIn").and.callFake(() => false);
+    fixture.detectChanges();
+
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    fixture.detectChanges();
+
+    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      config.getConfig().environment.apiRoot + "/broken_link"
+    );
+  });
+
+  it("should ignore non-ecosounds redirect url", fakeAsync(() => {
+    route["setRedirectUrl"]("http://broken_link");
+
+    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
+    spyOn(securityService, "isLoggedIn").and.callFake(() => false);
+    fixture.detectChanges();
+
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    fixture.detectChanges();
+
+    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith("/");
   }));
 });

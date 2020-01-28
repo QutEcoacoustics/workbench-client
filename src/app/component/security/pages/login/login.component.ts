@@ -92,7 +92,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
 
           if (
             redirect.charAt(0) === "/" ||
-            redirectUrl.href === validUrl.href
+            redirectUrl.protocol + "//" + redirectUrl.hostname ===
+              validUrl.protocol + "//" + validUrl.hostname
           ) {
             this.redirectUrl = redirect;
           }
