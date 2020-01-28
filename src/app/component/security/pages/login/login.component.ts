@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
@@ -59,7 +66,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     private config: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -121,7 +129,12 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.router.navigateByUrl(this.redirectUrl);
+          if (this.redirectUrl.charAt(0) === "/") {
+            this.router.navigateByUrl(this.redirectUrl);
+          } else {
+            this.externalRedirect(this.redirectUrl);
+          }
+
           this.loading = false;
         },
         (err: APIErrorDetails) => {
@@ -129,5 +142,15 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       );
+  }
+
+  /**
+   * Redirect to an external website.
+   * ! Do not change, this is inside a function to stop unit tests from redirecting
+   * TODO Remove this once website is entirely moved to workbench-client
+   * @param redirect Redirect url
+   */
+  public externalRedirect(redirect: string) {
+    this.document.location.href = redirect;
   }
 }

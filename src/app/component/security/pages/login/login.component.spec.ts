@@ -532,7 +532,7 @@ describe("LoginComponent", () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith("/");
   }));
 
-  it("should handle internal redirect url", () => {
+  it("should handle redirect url", () => {
     route["setRedirectUrl"]("/broken_link");
 
     spyOn(router, "navigateByUrl").and.stub();
@@ -566,7 +566,7 @@ describe("LoginComponent", () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith("/broken_link");
   });
 
-  it("should handle staging.ecosounds redirect url", () => {
+  it("should handle ecosounds redirect url", () => {
     route["setRedirectUrl"](
       config.getConfig().environment.apiRoot + "/broken_link"
     );
@@ -577,6 +577,7 @@ describe("LoginComponent", () => {
       return new BehaviorSubject<boolean>(true);
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
+    spyOn(component, "externalRedirect").and.stub();
     fixture.detectChanges();
 
     const username = fixture.debugElement.nativeElement.querySelectorAll(
@@ -598,8 +599,9 @@ describe("LoginComponent", () => {
 
     fixture.detectChanges();
 
-    expect(router.navigateByUrl).toHaveBeenCalled();
-    expect(router.navigateByUrl).toHaveBeenCalledWith(
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(component.externalRedirect).toHaveBeenCalled();
+    expect(component.externalRedirect).toHaveBeenCalledWith(
       config.getConfig().environment.apiRoot + "/broken_link"
     );
   });
