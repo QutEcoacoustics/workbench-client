@@ -566,6 +566,41 @@ describe("LoginComponent", () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith("/broken_link");
   });
 
+  it("should handle redirect back", () => {
+    route["setRedirectUrl"](true);
+
+    spyOn(location, "back").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(component, "submit").and.callThrough();
+    spyOn(securityService, "signIn").and.callFake(() => {
+      return new BehaviorSubject<boolean>(true);
+    });
+    spyOn(securityService, "isLoggedIn").and.callFake(() => false);
+    fixture.detectChanges();
+
+    const username = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[0];
+    username.value = "username";
+    username.dispatchEvent(new Event("input"));
+
+    const password = fixture.debugElement.nativeElement.querySelectorAll(
+      "input"
+    )[1];
+    password.value = "password";
+    password.dispatchEvent(new Event("input"));
+
+    const button = fixture.debugElement.nativeElement.querySelector(
+      "button[type='submit']"
+    );
+    button.click();
+
+    fixture.detectChanges();
+
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(location.back).toHaveBeenCalled();
+  });
+
   it("should handle ecosounds redirect url", () => {
     route["setRedirectUrl"](
       config.getConfig().environment.apiRoot + "/broken_link"

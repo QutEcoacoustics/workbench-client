@@ -1,4 +1,4 @@
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT, Location } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
@@ -58,7 +58,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   public error: string;
   public errorDetails: APIErrorDetails;
   public loading: boolean;
-  public redirectUrl: string;
+  private redirectUrl: string;
+  private redirectBack: boolean;
   private unsubscribe = new Subject();
 
   constructor(
@@ -66,6 +67,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     private config: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
     private ref: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -91,8 +93,18 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     // Update redirect url
     this.route.queryParams.pipe(takeUntil(this.unsubscribe)).subscribe(
       params => {
-        const redirect: string = params.redirect;
-        if (redirect) {
+        const redirect: string | boolean = params.redirect;
+
+        if (!redirect) {
+          return;
+        }
+
+        if (typeof redirect === "boolean" && redirect) {
+          this.redirectBack = true;
+          return;
+        }
+
+        if (typeof redirect === "string") {
           const redirectUrl = url.parse(redirect);
           const validUrl = url.parse(
             this.config.getConfig().environment.apiRoot
@@ -129,7 +141,9 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          if (this.redirectUrl.charAt(0) === "/") {
+          if (this.redirectBack) {
+            this.location.back();
+          } else if (this.redirectUrl.charAt(0) === "/") {
             this.router.navigateByUrl(this.redirectUrl);
           } else {
             this.externalRedirect(this.redirectUrl);
