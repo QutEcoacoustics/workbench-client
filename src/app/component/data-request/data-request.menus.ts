@@ -11,5 +11,5 @@ export const dataRequestMenuItem = MenuRoute({
   label: "Data Request",
   route: dataRequestRoute,
   tooltip: () => "Request customized data from the website",
-  order: { priority: 7, indentation: 0 }
+  order: 7
 });

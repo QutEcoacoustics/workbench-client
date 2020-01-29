@@ -104,15 +104,11 @@ export class MenuComponent implements OnInit, OnDestroy {
    */
   calculatePadding(link: AnyMenuItem) {
     // Only the secondary menu implements this option
-    if (
-      this.menuType !== "secondary" ||
-      !link.order ||
-      !link.order.indentation
-    ) {
+    if (this.menuType !== "secondary" || !link.indentation) {
       return "0em";
     }
 
-    return `${link.order.indentation}em`;
+    return `${link.indentation}em`;
   }
 
   /**
@@ -196,15 +192,15 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     // If both have the same order number,
     // prioritize based on indentation and alphabetical order
-    if (a.order.priority === b.order.priority) {
-      if (a.order.indentation === b.order.indentation) {
+    if (a.order === b.order) {
+      if (a.indentation === b.indentation) {
         return a.label < b.label ? -1 : 1;
       }
 
-      return a.order.indentation < b.order.indentation ? -1 : 1;
+      return a.indentation < b.indentation ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return a.order.priority < b.order.priority ? -1 : 1;
+    return a.order < b.order ? -1 : 1;
   }
 }

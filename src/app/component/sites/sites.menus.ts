@@ -27,11 +27,7 @@ export const newSiteMenuItem = MenuRoute({
   route: sitesRoute.add("new"),
   tooltip: () => "Create a new site",
   predicate: isLoggedInPredicate,
-  parent: projectMenuItem,
-  order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
-  }
+  parent: projectMenuItem
 });
 
 export const siteMenuItem = MenuRoute({
@@ -39,11 +35,7 @@ export const siteMenuItem = MenuRoute({
   label: "Site",
   route: sitesRoute.add(":siteId"),
   tooltip: () => "The current site",
-  parent: projectMenuItem,
-  order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
-  }
+  parent: projectMenuItem
 });
 
 export const exploreAudioSiteMenuItem = MenuLink({
@@ -67,11 +59,7 @@ export const editSiteMenuItem = MenuRoute({
   route: siteMenuItem.route.add("edit"),
   parent: siteMenuItem,
   tooltip: () => "Change the details for this site",
-  predicate: isOwnerPredicate,
-  order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
-  }
+  predicate: isOwnerPredicate
 });
 
 export const harvestMenuItem = MenuRoute({
@@ -80,11 +68,7 @@ export const harvestMenuItem = MenuRoute({
   route: siteMenuItem.route.add("harvest"),
   parent: siteMenuItem,
   tooltip: () => "Upload new audio to this site",
-  predicate: isAdminPredicate,
-  order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
-  }
+  predicate: isAdminPredicate
 });
 
 export const assignSiteMenuItem = MenuLink({
@@ -101,9 +85,5 @@ export const deleteSiteMenuItem = MenuRoute({
   route: siteMenuItem.route.add("delete"),
   parent: siteMenuItem,
   tooltip: () => "Delete this site",
-  predicate: isOwnerPredicate,
-  order: {
-    priority: siteMenuItem.order.priority,
-    indentation: siteMenuItem.order.indentation + 1
-  }
+  predicate: isOwnerPredicate
 });
