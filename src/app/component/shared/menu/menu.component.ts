@@ -63,13 +63,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
-    this.filteredLinks = this.removeDuplicates(
-      this.links
-        ? this.menuType === "secondary"
-          ? this.links.filter(link => this.filter(link)).sort(this.compare)
-          : this.links.filter(link => this.filter(link))
-        : List<AnyMenuItem>([])
-    );
+    this.filteredLinks = new Set(this
+      .links
+      .filter(this.filter)
+      .sort(this.compare));
 
     // Retrieve router parameters to override link attributes
     this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -99,19 +96,6 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Calculate the left padding of a secondary link item
-   * @param link Link to calculate padding for
-   */
-  calculatePadding(link: AnyMenuItem) {
-    // Only the secondary menu implements this option
-    if (this.menuType !== "secondary" || !link.indentation) {
-      return "0em";
-    }
-
-    return `${link.indentation}em`;
-  }
-
-  /**
    * Load widget component
    */
   loadComponent() {
@@ -138,35 +122,9 @@ export class MenuComponent implements OnInit, OnDestroy {
   private filter(link: AnyMenuItem) {
     // If link has predicate function, test if returns true
     if (link.predicate) {
-      return link.predicate(this.user);
+      return link.predicate(this?.user);
     }
     return true;
-  }
-
-  /**
-   * Remove duplicate links
-   * @param list List of links
-   * @returns Set of non-duplicate links
-   */
-  private removeDuplicates(list: List<AnyMenuItem>): Set<AnyMenuItem> {
-    const set: Set<AnyMenuItem> = new Set([]);
-
-    // List through each link and check if it matches the label of a link in the set
-    list.forEach(link => {
-      let match = false;
-      set.forEach(setLink => {
-        if (setLink.label === link.label) {
-          match = true;
-          return;
-        }
-      });
-
-      if (!match) {
-        set.add(link);
-      }
-    });
-
-    return set;
   }
 
   /**
