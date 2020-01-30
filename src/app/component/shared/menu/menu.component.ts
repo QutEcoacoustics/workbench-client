@@ -64,9 +64,12 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     // Filter links
     this.filteredLinks = new Set(this
-      .links
-      .filter(this.filter)
-      .sort(this.compare));
+      ?.links
+      ?.filter((link) => {
+          // If link has predicate function, test if returns true
+          return link.predicate ? link.predicate(this?.user) : true;
+      })
+      ?.sort(this.compare));
 
     // Retrieve router parameters to override link attributes
     this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -115,35 +118,22 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filters a list of links / buttons used by the action and secondary menus.
-   * @param link Link to display
-   * @returns True if filter is passed
-   */
-  private filter(link: AnyMenuItem) {
-    // If link has predicate function, test if returns true
-    if (link.predicate) {
-      return link.predicate(this?.user);
-    }
-    return true;
-  }
-
-  /**
    * Sort function for list of menu items
    * @param a First menu item
    * @param b Second menu item
    */
   private compare(a: AnyMenuItem, b: AnyMenuItem): number {
-    // If no order, return alphabetical order
+    // If no order, return equal - i.e. a stable sort!
     if (!a.order && !b.order) {
-      return a.label < b.label ? -1 : 1;
+      return 0;
     }
 
-    // If only a has order, return a
+    // If only a has order, return a is less than b
     if (a.order && !b.order) {
       return -1;
     }
 
-    // If only b has order, return b
+    // If only b has order, return b is greater than a
     if (b.order && !a.order) {
       return 1;
     }
@@ -152,7 +142,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     // prioritize based on indentation and alphabetical order
     if (a.order === b.order) {
       if (a.indentation === b.indentation) {
-        return a.label < b.label ? -1 : 1;
+        return a?.label.localeCompare(b.label);
       }
 
       return a.indentation < b.indentation ? -1 : 1;
