@@ -1,5 +1,7 @@
 <div *ngIf="ready">
   <h2 class="text-center">{{ project.name }} Permissions</h2>
+
+  <!-- Permission Explanation -->
   <p>
     This page allows you to change who can view or modify this project and the
     sites it contains. As an owner, you can assign one of four levels of
@@ -34,6 +36,7 @@
     </li>
   </ul>
 
+  <!-- Global Permissions -->
   <div class="row">
     <div class="col-md-6">
       <app-selectable-items
@@ -52,6 +55,19 @@
       ></app-selectable-items>
     </div>
   </div>
+
+  <!-- Individual Permissions -->
+  <h3>Individual Users</h3>
+  <p>
+    You can assign permissions to individual logged in users. Individual
+    permissions are the most important permissions - they override
+    <em>Logged In Users</em> permissions.
+  </p>
+  <p>
+    <strong>
+      If you only want some users to have access, use this section only.
+    </strong>
+  </p>
 </div>
 
 <app-error-handler [error]="errorDetails"></app-error-handler>
