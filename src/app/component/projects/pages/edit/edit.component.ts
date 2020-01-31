@@ -25,7 +25,7 @@ import data from "./edit.json";
   self: editProjectMenuItem
 })
 @Component({
-  selector: "app-projects-edit",
+  selector: "app-project-edit",
   template: `
     <app-wip>
       <app-form

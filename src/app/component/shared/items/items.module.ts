@@ -6,11 +6,12 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
+import { SelectableItemsComponent } from "./selectable-items/selectable-items.component";
 
 @NgModule({
-  declarations: [ItemsComponent, ItemComponent],
+  declarations: [ItemsComponent, ItemComponent, SelectableItemsComponent],
   imports: [CommonModule, RouterModule, FontAwesomeModule],
-  exports: [ItemsComponent, ItemComponent]
+  exports: [ItemsComponent, ItemComponent, SelectableItemsComponent]
 })
 export class ItemsModule {
   constructor() {

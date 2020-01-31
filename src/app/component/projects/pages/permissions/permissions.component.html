@@ -1,0 +1,57 @@
+<div *ngIf="ready">
+  <h2 class="text-center">{{ project.name }} Permissions</h2>
+  <p>
+    This page allows you to change who can view or modify this project and the
+    sites it contains. As an owner, you can assign one of four levels of
+    permissions.
+  </p>
+  <ul>
+    <li>
+      <strong>
+        No access (none)
+      </strong>
+      prevents users from viewing anything in this project.
+    </li>
+    <li>
+      <strong>
+        Reader
+      </strong>
+      allows users to view anything in this project.
+    </li>
+    <li>
+      <strong>
+        Writer
+      </strong>
+      allows users to add and change annotations, in addition to reader
+      permission.
+    </li>
+    <li>
+      <strong>
+        Owner
+      </strong>
+      allows users to modify and delete this project and its sites, in addition
+      to writer permission.
+    </li>
+  </ul>
+
+  <div class="row">
+    <div class="col-md-6">
+      <app-selectable-items
+        title="Visitors"
+        description="Visitors are public (anonymous) users that are either not logged in or have not registered."
+        [options]="visitorOptions"
+        [selected]="visitorOptions[1]"
+      ></app-selectable-items>
+    </div>
+    <div class="col-md-6">
+      <app-selectable-items
+        title="Users"
+        description="Users are people that have registered and have logged into the website. "
+        [options]="userOptions"
+        [selected]="userOptions[1]"
+      ></app-selectable-items>
+    </div>
+  </div>
+</div>
+
+<app-error-handler [error]="errorDetails"></app-error-handler>

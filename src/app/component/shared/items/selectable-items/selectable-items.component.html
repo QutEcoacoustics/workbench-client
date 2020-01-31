@@ -1,0 +1,22 @@
+<h3 *ngIf="title">
+  {{ title }}
+</h3>
+<p *ngIf="description">
+  {{ description }}
+</p>
+<div class="list-group">
+  <button
+    *ngFor="let option of options"
+    class="list-group-item d-flex justify-content-between align-items-center"
+    [disabled]="isSelected(option)"
+    (click)="changeSelection(option)"
+  >
+    {{ option.label }}
+
+    <fa-icon
+      *ngIf="isSelected(option)"
+      class="text-success"
+      [icon]="['fas', 'check']"
+    ></fa-icon>
+  </button>
+</div>
