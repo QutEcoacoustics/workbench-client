@@ -73,7 +73,7 @@ describe("MenuComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h6");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("MENU");
+    expect(title.innerText).toContain("MENU");
   });
 
   it("should create title when provided", () => {
@@ -83,7 +83,7 @@ describe("MenuComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h6");
     expect(title).toBeTruthy();
-    expect(title.innerText.trim()).toBe("SECONDARY");
+    expect(title.innerText).toContain("SECONDARY");
   });
 
   it("should create title icon when provided", () => {
@@ -106,7 +106,7 @@ describe("MenuComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h6");
     expect(title).toBeTruthy("Title should exist");
-    expect(title.innerText.trim()).toBe(
+    expect(title.innerText).toContain(
       "SECONDARY",
       "Title text should be capitalized"
     );
@@ -118,7 +118,7 @@ describe("MenuComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h6");
     expect(title).toBeTruthy("Title should exist");
-    expect(title.innerText.trim()).toBe("MENU");
+    expect(title.innerText).toContain("MENU");
 
     const internalLinks = fixture.debugElement.nativeElement.querySelectorAll(
       "app-menu-internal-link"

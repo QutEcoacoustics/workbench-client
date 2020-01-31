@@ -65,7 +65,7 @@ describe("SiteCardComponent", () => {
 
     const name = fixture.debugElement.nativeElement.querySelector("h5#name");
     expect(name).toBeTruthy();
-    expect(name.innerText).toBe("Test Site");
+    expect(name.innerText).toContain("Test Site");
   });
 
   it("should navigate user to site when clicking site name", fakeAsync(() => {

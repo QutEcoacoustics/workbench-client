@@ -620,7 +620,7 @@ describe("FormComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h2");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Title");
+    expect(title.innerText).toContain("Title");
   });
 
   it("should create form with subtitle", () => {
@@ -646,7 +646,7 @@ describe("FormComponent", () => {
 
     const subtitle = fixture.debugElement.nativeElement.querySelector("h6");
     expect(subtitle).toBeTruthy();
-    expect(subtitle.innerText).toBe("Sub Title");
+    expect(subtitle.innerText).toContain("Sub Title");
   });
 
   it("should create form with submit button label", () => {
@@ -671,7 +671,7 @@ describe("FormComponent", () => {
 
     const button = fixture.debugElement.nativeElement.querySelector("button");
     expect(button).toBeTruthy();
-    expect(button.innerText).toBe("Label");
+    expect(button.innerText).toContain("Label");
   });
 
   it("should call submit function OnClick", () => {

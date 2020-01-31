@@ -48,7 +48,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h4");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Loading");
+    expect(title.innerText).toContain("Loading");
   });
 
   it("should initially display loading animation", () => {
@@ -74,7 +74,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
+    expect(title.innerText).toContain("Not found");
   });
 
   it("should handle unauthorized project", () => {
@@ -91,7 +91,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
+    expect(title.innerText).toContain("Unauthorized access");
   });
 
   it("should handle site not found", () => {
@@ -108,7 +108,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
+    expect(title.innerText).toContain("Not found");
   });
 
   it("should handle unauthorized site", () => {
@@ -125,7 +125,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
+    expect(title.innerText).toContain("Unauthorized access");
   });
 
   it("should show project error instead of site error when project loads first", fakeAsync(() => {
@@ -154,7 +154,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
+    expect(title.innerText).toContain("Unauthorized access");
   }));
 
   it("should show project error instead of site error when site loads first", fakeAsync(() => {
@@ -183,7 +183,7 @@ describe("SitesDetailsComponent", () => {
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
+    expect(title.innerText).toContain("Unauthorized access");
   }));
 
   it("should show loading until project returns", fakeAsync(() => {
@@ -231,14 +231,17 @@ describe("SitesDetailsComponent", () => {
     fixture.detectChanges();
     const loading = fixture.debugElement.nativeElement.querySelector("h4");
     expect(loading).toBeTruthy();
-    expect(loading.innerText).toBe("Loading");
+    expect(loading.innerText).toContain("Loading");
 
     // Return project data
     flush();
     fixture.detectChanges();
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Project: Test project\nTest Site");
+    expect(title.innerText).toContain("Test Site");
+    expect(title.querySelector("small").innerText).toContain(
+      "Project: Test project"
+    );
   }));
 
   it("should show loading until site returns", fakeAsync(() => {
@@ -286,14 +289,17 @@ describe("SitesDetailsComponent", () => {
     fixture.detectChanges();
     const loading = fixture.debugElement.nativeElement.querySelector("h4");
     expect(loading).toBeTruthy();
-    expect(loading.innerText).toBe("Loading");
+    expect(loading.innerText).toContain("Loading");
 
     // Return project data
     flush();
     fixture.detectChanges();
     const title = fixture.debugElement.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Project: Test project\nTest Site");
+    expect(title.innerText).toContain("Test Site");
+    expect(title.querySelector("small").innerText).toContain(
+      "Project: Test project"
+    );
   }));
 
   it("should display project name", fakeAsync(() => {
@@ -540,7 +546,7 @@ describe("SitesDetailsComponent", () => {
       "p#site_description"
     );
     expect(description).toBeTruthy();
-    expect(description.innerText).toBe("A sample site");
+    expect(description.innerText).toContain("A sample site");
   }));
 
   it("should display google maps placeholder box when no location found", fakeAsync(() => {
@@ -588,7 +594,7 @@ describe("SitesDetailsComponent", () => {
       "app-map"
     );
     expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("span").innerText).toBe(
+    expect(googleMaps.querySelector("span").innerText).toContain(
       "No locations specified"
     );
   }));
@@ -640,6 +646,6 @@ describe("SitesDetailsComponent", () => {
       "app-map"
     );
     expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
+    expect(googleMaps.querySelector("p").innerText).toContain("Lat: 0 Long: 1");
   }));
 });
