@@ -83,12 +83,44 @@
 
   <ngx-datatable
     #table
-    class="material"
+    class="bootstrap"
     [rows]="rows"
     [columns]="columns"
     [limit]="25"
+    [rowHeight]="'auto'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [reorderable]="false"
   >
   </ngx-datatable>
 </div>
 
 <app-error-handler [error]="errorDetails"></app-error-handler>
+
+<!-- User Header Template -->
+<ng-template #userTemplate let-column="column">
+  <fa-icon [icon]="userIcon"></fa-icon><strong>{{ column.name }}</strong>
+</ng-template>
+
+<!-- Individual Header Template -->
+<ng-template #individualTemplate let-column="column">
+  <strong>{{ column.name }}</strong>
+</ng-template>
+
+<!-- Visitor Permissions Header Template -->
+<ng-template #visitorPermissionTemplate let-column="column">
+  <strong>{{ column.name }}</strong>
+  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+</ng-template>
+
+<!-- User Permissions Header Template -->
+<ng-template #userPermissionTemplate let-column="column">
+  <strong>{{ column.name }}</strong>
+  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+</ng-template>
+
+<!-- Overall Permissions Header Template -->
+<ng-template #overallPermissionTemplate let-column="column">
+  <strong>{{ column.name }}</strong>
+  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+</ng-template>

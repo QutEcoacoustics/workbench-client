@@ -1,5 +1,12 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   ColumnMode,
   DatatableComponent,
@@ -8,6 +15,7 @@ import {
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
+import { theirProfileMenuItem } from "src/app/component/profile/profile.menus";
 import { ISelectableItem } from "src/app/component/shared/items/selectable-items/selectable-items.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -32,12 +40,30 @@ import { projectMenuItemActions } from "../details/details.component";
 })
 @Component({
   selector: "app-project-permissions",
-  templateUrl: "permissions.component.html"
+  templateUrl: "permissions.component.html",
+  styles: [
+    `
+      fa-icon {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+    `
+  ]
 })
 export class PermissionsComponent extends PageComponent
   implements OnInit, OnDestroy {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild("userTemplate", { static: true }) userTemplate: TemplateRef<any>;
+  @ViewChild("individualTemplate", { static: true })
+  individualTemplate: TemplateRef<any>;
+  @ViewChild("visitorPermissionTemplate", { static: true })
+  visitorPermissionTemplate: TemplateRef<any>;
+  @ViewChild("userPermissionTemplate", { static: true })
+  userPermissionTemplate: TemplateRef<any>;
+  @ViewChild("overallPermissionTemplate", { static: true })
+  overallPermissionTemplate: TemplateRef<any>;
 
+  public userIcon: IconProp = theirProfileMenuItem.icon;
   public errorDetails: APIErrorDetails;
   public loading: boolean;
   public ready: boolean;
@@ -47,13 +73,7 @@ export class PermissionsComponent extends PageComponent
   public users: User[];
   public ColumnMode = ColumnMode;
   public SelectionType = SelectionType;
-  public columns = [
-    { name: "User" },
-    { name: "Individual" },
-    { name: "Visitors" },
-    { name: "Users" },
-    { name: "Overall" }
-  ];
+  public columns = [];
   public temp: {
     user: string;
     individual: string;
@@ -77,9 +97,30 @@ export class PermissionsComponent extends PageComponent
   ngOnInit() {
     this.ready = false;
 
+    this.columns = [
+      { headerTemplate: this.userTemplate, name: "User" },
+      { headerTemplate: this.individualTemplate, name: "Individual" },
+      { headerTemplate: this.visitorPermissionTemplate, name: "Visitors" },
+      { headerTemplate: this.userPermissionTemplate, name: "Users" },
+      { headerTemplate: this.overallPermissionTemplate, name: "Overall" }
+    ];
     this.rows = [
       {
         user: "allcharles",
+        individual: "testing",
+        visitors: "Reader",
+        users: "Reader",
+        overall: "Reader"
+      },
+      {
+        user: "anthony",
+        individual: "testing",
+        visitors: "Reader",
+        users: "Reader",
+        overall: "Reader"
+      },
+      {
+        user: "phil",
         individual: "testing",
         visitors: "Reader",
         users: "Reader",
