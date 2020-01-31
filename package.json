@@ -26,7 +26,7 @@
     "test:firefox": "ng test -- --code-coverage --browsers Firefox",
     "test:edge": "ng test -- --code-coverage --browsers Edge",
     "test:all": "test -- --code-coverage --browsers Firefox,Chrome,Edge",
-    "test:pipeline": "test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless,EdgeHeadless"
+    "test:pipeline": "test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless,Edge"
   },
   "private": true,
   "dependencies": {
