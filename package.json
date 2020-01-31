@@ -64,6 +64,7 @@
     "marked": "^0.7.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
+    "ngx-datatable": "^1.0.3",
     "ngx-toastr": "^11.3.2",
     "rxjs": "^6.5.4",
     "snazzy-info-window": "^1.1.1",
