@@ -21,7 +21,12 @@
     "start:fr": "ng serve --configuration=fr",
     "start": "ng serve",
     "stats": "ng build --stats-json",
-    "test": "ng test"
+    "test": "npm run test:chrome",
+    "test:chrome": "ng test -- --code-coverage --browsers Chrome",
+    "test:firefox": "ng test -- --code-coverage --browsers Firefox",
+    "test:edge": "ng test -- --code-coverage --browsers Edge",
+    "test:all": "test -- --code-coverage --browsers Firefox,Chrome,Edge",
+    "test:pipeline": "test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless,EdgeHeadless"
   },
   "private": true,
   "dependencies": {
