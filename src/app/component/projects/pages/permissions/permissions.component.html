@@ -68,6 +68,27 @@
       If you only want some users to have access, use this section only.
     </strong>
   </p>
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Filter</span>
+    </div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter Analysis Types"
+      (keyup)="updateFilter($event)"
+    />
+  </div>
+
+  <ngx-datatable
+    #table
+    class="material"
+    [rows]="rows"
+    [columns]="columns"
+    [limit]="25"
+  >
+  </ngx-datatable>
 </div>
 
 <app-error-handler [error]="errorDetails"></app-error-handler>

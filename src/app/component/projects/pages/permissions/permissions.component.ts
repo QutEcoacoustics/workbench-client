@@ -1,5 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import {
+  ColumnMode,
+  DatatableComponent,
+  SelectionType
+} from "@swimlane/ngx-datatable";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
@@ -31,6 +36,8 @@ import { projectMenuItemActions } from "../details/details.component";
 })
 export class PermissionsComponent extends PageComponent
   implements OnInit, OnDestroy {
+  @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+
   public errorDetails: APIErrorDetails;
   public loading: boolean;
   public ready: boolean;
@@ -38,6 +45,8 @@ export class PermissionsComponent extends PageComponent
   public visitorOptions: ISelectableItem[];
   public userOptions: ISelectableItem[];
   public users: User[];
+  public ColumnMode = ColumnMode;
+  public SelectionType = SelectionType;
   public columns = [
     { name: "User" },
     { name: "Individual" },
@@ -45,6 +54,13 @@ export class PermissionsComponent extends PageComponent
     { name: "Users" },
     { name: "Overall" }
   ];
+  public temp: {
+    user: string;
+    individual: string;
+    visitors: "None" | "Reader" | "Owner";
+    users: "None" | "Reader" | "Owner";
+    overall: "None" | "Reader" | "Owner";
+  }[];
   public rows: {
     user: string;
     individual: string;
@@ -70,6 +86,7 @@ export class PermissionsComponent extends PageComponent
         overall: "Reader"
       }
     ];
+    this.temp = [...this.rows];
 
     this.visitorOptions = [
       { label: "No access (none)", value: "none" },
@@ -106,7 +123,21 @@ export class PermissionsComponent extends PageComponent
     this.unsubscribe.complete();
   }
 
-  submit($event: any) {
+  public updateFilter($event): void {
+    const val = $event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(d => {
+      return d.user.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.rows = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
+  }
+
+  public submit($event: any) {
     console.log($event);
   }
 }
