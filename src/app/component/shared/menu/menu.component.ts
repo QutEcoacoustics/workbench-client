@@ -99,6 +99,19 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Calculate the indentation of a secondary link item
+   * @param link Link to calculate padding for
+   */
+  calculateIndentation(link: AnyMenuItem) {
+      // Only the secondary menu implements this option
+      if (this.menuType !== "secondary" || !link.indentation) {
+        return 0;
+      }
+
+      return link.indentation;
+  }
+
+  /**
    * Load widget component
    */
   loadComponent() {
@@ -128,16 +141,6 @@ export class MenuComponent implements OnInit, OnDestroy {
       return 0;
     }
 
-    // If only a has order, return a is less than b
-    if (a.order && !b.order) {
-      return -1;
-    }
-
-    // If only b has order, return b is greater than a
-    if (b.order && !a.order) {
-      return 1;
-    }
-
     // If both have the same order number,
     // prioritize based on indentation and alphabetical order
     if (a.order === b.order) {
@@ -149,6 +152,6 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     // Return the menu item with the lower order value
-    return a.order < b.order ? -1 : 1;
+    return (a?.order || 0) < (b?.order || 0) ? -1 : 1;
   }
 }

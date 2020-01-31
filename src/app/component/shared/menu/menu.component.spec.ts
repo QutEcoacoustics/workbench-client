@@ -822,7 +822,7 @@ describe("MenuComponent", () => {
     });
 
     it("should order links with ordered link first on secondary menu", () => {
-      arrange(undefined, undefined, 3, "secondary");
+      arrange(undefined, undefined, -3, "secondary");
 
       const linksText = getText(componentElement, "app-menu-internal-link span");
 
@@ -831,7 +831,7 @@ describe("MenuComponent", () => {
     });
 
     it("should order links with ordered link first on action menu", () => {
-      arrange(undefined, undefined, 3, "action");
+      arrange(undefined, undefined, -3, "action");
 
       const linksText = getText(componentElement, "app-menu-internal-link span");
 
