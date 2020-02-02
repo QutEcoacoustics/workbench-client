@@ -17,12 +17,6 @@ steps:
       command: install
     displayName: "NPM install"
 
-  - task: Powershell@2
-    inputs:
-      script: Get-AppXPackage -AllUsers -Name Microsoft.MicrosoftEdge | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml" -Verbose}
-      pwsh: true
-    displayName: "Install Edge"
-
   - task: Npm@1
     inputs:
       command: custom
