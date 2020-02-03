@@ -12,7 +12,7 @@ import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { SiteCardComponent } from "../../site-card/site-card.component";
@@ -66,7 +66,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 404,
         message: "Project Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -83,7 +83,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -100,7 +100,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 404,
         message: "Project Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -117,7 +117,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -134,7 +134,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
     spyOn(sitesApi, "getProjectSite").and.callFake(() => {
@@ -143,7 +143,7 @@ describe("ProjectDetailsComponent", () => {
         subject.error({
           status: 404,
           message: "Site Not Found"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
       return subject;
     });
@@ -164,7 +164,7 @@ describe("ProjectDetailsComponent", () => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
       return subject;
     });
@@ -173,7 +173,7 @@ describe("ProjectDetailsComponent", () => {
       subject.error({
         status: 404,
         message: "Site Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 

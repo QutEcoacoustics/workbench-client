@@ -8,8 +8,8 @@ import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon, STUB_CLASS_BUILDER } from "./api-common";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { APIResponse, BawApiService } from "./base-api.service";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiResponse, BawApiService } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 
 describe("ApiCommon Show", () => {
@@ -100,7 +100,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should work with filter", done => {
@@ -137,7 +137,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should have token when logged in no filter", done => {
@@ -188,7 +188,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should have token when logged in with filter", done => {
@@ -239,7 +239,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should complete observable no filter", done => {
@@ -272,7 +272,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should complete observable with filter", done => {
@@ -305,7 +305,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should handle error no filter", done => {
@@ -314,12 +314,12 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -338,7 +338,7 @@ describe("ApiCommon Show", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 401, statusText: "Unauthorized" }
     );
   });
@@ -349,12 +349,12 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -373,7 +373,7 @@ describe("ApiCommon Show", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 401, statusText: "Unauthorized" }
     );
   });
@@ -384,7 +384,7 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 422,
@@ -397,7 +397,7 @@ describe("ApiCommon Show", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -424,7 +424,7 @@ describe("ApiCommon Show", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 422, statusText: "Unprocessable Entity" }
     );
   });
@@ -435,7 +435,7 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 422,
@@ -448,7 +448,7 @@ describe("ApiCommon Show", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -475,7 +475,7 @@ describe("ApiCommon Show", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 422, statusText: "Unprocessable Entity" }
     );
   });
@@ -486,12 +486,12 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -507,7 +507,7 @@ describe("ApiCommon Show", () => {
         message: "OK"
       },
       data: null
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should handle error on missing output with filter", done => {
@@ -516,12 +516,12 @@ describe("ApiCommon Show", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -537,7 +537,7 @@ describe("ApiCommon Show", () => {
         message: "OK"
       },
       data: null
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should handle object output no filter", done => {
@@ -577,7 +577,7 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("show should handle object output with filter", done => {
@@ -617,6 +617,6 @@ describe("ApiCommon Show", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 });

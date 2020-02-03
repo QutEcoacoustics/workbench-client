@@ -1,36 +1,72 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import { Project } from "src/app/models/Project";
 import { Site, SiteInterface } from "src/app/models/Site";
-import { AppConfigService } from "../app-config/app-config.service";
-import { StandardApi } from "./api-common";
+import { Empty, Filter, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "./api-common";
 import { Filters } from "./base-api.service";
+
+const projectId: IdParam<Project> = id;
+const siteId: IdParamOptional<Site> = id;
+const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 
 @Injectable({
   providedIn: "root"
 })
-export class SitesService extends StandardApi<Site> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    const id = (x: ID) => x;
-    super(
-      http,
-      config,
-      stringTemplate`/projects/${id}/sites`,
-      stringTemplate`/projects/${id}/sites/${id}`,
-      Site
-    );
+export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
+
+  constructor(http: HttpClient, apiRoot: string) {
+    super(http, apiRoot, Site);
   }
 
-  public list: (projectId: ID) => Subject<Site[]>;
-  public filter: (filters: Filters, projectId: ID) => Subject<Site[]>;
-  public show: (projectId: ID, siteId: ID) => Subject<Site>;
-  public new: (values: SiteInterface, projectId: ID) => Subject<Site>;
-  public update: (
-    values: SiteInterface,
-    projectId: ID,
-    siteId: ID
-  ) => Subject<Site>;
-  public delete: (projectId: ID, siteId: ID) => Subject<boolean>;
+  list(project: IdOr<Project>): Observable<Site[]> {
+    return this.apiList(endpoint(project, Empty, Empty));
+  }
+  filter(filters: Filters, project: IdOr<Project>): Observable<Site[]> {
+    return this.apiFilter(endpoint(project, Empty, Filter), filters);
+  }
+  show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
+    return this.apiShow(endpoint(project, model, Empty));
+  }
+  create(model: Site, project: IdOr<Project>): Observable<Site> {
+    return this.apiCreate(endpoint(project, model, Empty), model);
+  }
+  update(model: Site, project: IdOr<Project>): Observable<Site> {
+    return this.apiUpdate(endpoint(project, model, Empty), model);
+  }
+  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
+    return this.apiDestroy(endpoint(project, model, Empty));
+  }
+}
+
+const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
+
+@Injectable({
+  providedIn: "root"
+})
+export class SitesServiceShallow extends StandardApi<Site, []> {
+
+  constructor(http: HttpClient, apiRoot: string) {
+    super(http, apiRoot, Site);
+  }
+
+  list(): Observable<Site[]> {
+    return this.apiList(endpointShallow(Empty, Empty));
+  }
+  filter(filters: Filters): Observable<Site[]> {
+    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+  }
+  show(model: IdOr<Site>): Observable<Site> {
+    return this.apiShow(endpointShallow(model, Empty));
+  }
+  create(model: Site): Observable<Site> {
+    return this.apiCreate(endpointShallow(model, Empty), model);
+  }
+  update(model: Site): Observable<Site> {
+    return this.apiUpdate(endpointShallow(model, Empty), model);
+  }
+  destroy(model: IdOr<Site>): Observable<Site> {
+    return this.apiDestroy(endpointShallow(model, Empty));
+  }
 }

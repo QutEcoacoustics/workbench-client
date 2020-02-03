@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { SessionUser, SessionUserInterface } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
+import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService, Path } from "./base-api.service";
 
 /**
@@ -15,7 +15,7 @@ import { BawApiService, Path } from "./base-api.service";
 })
 export class SecurityService extends BawApiService {
   private paths: {
-    [key: string]: Path;
+    [key: string]: any;
   };
   private loggedInTrigger = new BehaviorSubject(null);
 
@@ -72,7 +72,7 @@ export class SecurityService extends BawApiService {
       this.loggedInTrigger.next(null);
       subject.complete();
     };
-    const error = (err: APIErrorDetails) => {
+    const error = (err: ApiErrorDetails) => {
       console.error("Unknown error thrown: ", err);
       subject.error(err);
     };
@@ -102,7 +102,7 @@ export class SecurityService extends BawApiService {
       this.loggedInTrigger.next(null);
       subject.next(true);
     };
-    const error = (err: APIErrorDetails) => {
+    const error = (err: ApiErrorDetails) => {
       this.clearSessionStorage();
       this.loggedInTrigger.next(null);
       subject.error(err);

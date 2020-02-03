@@ -11,7 +11,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 
 describe("BawApiInterceptor", () => {
@@ -63,7 +63,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 401,
             message:
@@ -113,7 +113,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 422,
             message: "Record could not be saved",
@@ -171,7 +171,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${

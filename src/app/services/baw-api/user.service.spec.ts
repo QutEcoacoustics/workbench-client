@@ -8,7 +8,7 @@ import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
 import { ApiCommon } from "./api-common";
-import { APIErrorDetails } from "./api.interceptor";
+import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
 import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
@@ -100,7 +100,7 @@ describe("UserService", () => {
           subject.error({
             status: 401,
             message: "Unauthorized"
-          } as APIErrorDetails);
+          } as ApiErrorDetails);
         }, 50);
 
         return subject;
@@ -111,12 +111,12 @@ describe("UserService", () => {
       () => {
         expect(true).toBeFalsy("Service should not return data");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }
     );
 
@@ -142,7 +142,7 @@ describe("UserService", () => {
               image_content_type: [],
               image_updated_at: []
             }
-          } as APIErrorDetails);
+          } as ApiErrorDetails);
         }, 50);
 
         return subject;
@@ -153,7 +153,7 @@ describe("UserService", () => {
       () => {
         expect(true).toBeFalsy("Service should not return data");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 422,
@@ -166,7 +166,7 @@ describe("UserService", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }
     );
 

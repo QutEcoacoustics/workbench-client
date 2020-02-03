@@ -8,7 +8,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
@@ -62,7 +62,7 @@ import {
 export class MyProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
   thirdPerson = false;
@@ -82,7 +82,7 @@ export class MyProfileComponent extends PageComponent
           this.user = user;
           this.imageUrl = user.getImage(ImageSizes.large);
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
         }
       );

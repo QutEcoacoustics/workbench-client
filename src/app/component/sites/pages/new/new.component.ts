@@ -8,9 +8,9 @@ import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import { Id } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem, sitesCategory } from "../../sites.menus";
@@ -43,13 +43,13 @@ import data from "./new.json";
 export class NewComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
   success: string;
 
-  projectId: ID;
+  projectId: Id;
 
   constructor(
     private sitesApi: SitesService,
@@ -75,7 +75,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
         () => {
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
           this.ready = false;
         }
@@ -110,7 +110,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.success = null;
           this.error = err.message;
           this.loading = false;

@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { projectsMenuItem } from "../../projects.menus";
 import { DeleteComponent } from "./delete.component";
@@ -151,7 +151,7 @@ describe("ProjectsDeleteComponent", () => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -181,7 +181,7 @@ describe("ProjectsDeleteComponent", () => {
         subject.error({
           status: 404,
           message: "Project not found"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -373,7 +373,7 @@ describe("ProjectsDeleteComponent", () => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -514,7 +514,7 @@ describe("ProjectsDeleteComponent", () => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;

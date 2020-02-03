@@ -8,7 +8,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
@@ -49,7 +49,7 @@ export class TheirEditComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -79,7 +79,7 @@ export class TheirEditComponent extends PageComponent
 
           this.schema.model["name"] = this.user.userName;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );

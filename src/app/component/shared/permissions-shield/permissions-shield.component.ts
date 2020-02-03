@@ -10,7 +10,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { WidgetComponent } from "../widget/widget.component";
@@ -62,7 +62,7 @@ export class PermissionsShieldComponent
           this.ready = true;
           this.ref.detectChanges();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           console.error("PermissionsShieldComponent: ", err);
         }
       );

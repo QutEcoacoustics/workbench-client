@@ -1,12 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { ID } from "src/app/interfaces/apiInterfaces";
-import { Project, ProjectInterface } from "src/app/models/Project";
-import { AppConfigService } from "../app-config/app-config.service";
-import { StandardApi } from "./api-common";
+import { Project } from "src/app/models/Project";
+import { Empty, Filter, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "./api-common";
 import { Filters } from "./base-api.service";
+
+const projectId: IdParamOptional<Project> = id;
+const endpoint = stringTemplate`/projects/${projectId}${option}`;
 
 /**
  * Interacts with projects route in baw api
@@ -14,22 +15,28 @@ import { Filters } from "./base-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends StandardApi<Project> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    const id = (x: ID) => x;
-    super(
-      http,
-      config,
-      stringTemplate`/projects`,
-      stringTemplate`/projects/${id}`,
-      Project
-    );
+export class ProjectsService extends StandardApi<Project, []> {
+
+  constructor(http: HttpClient, apiRoot: string) {
+    super(http, apiRoot, Project);
   }
 
-  public list: () => Subject<Project[]>;
-  public filter: (filters: Filters) => Subject<Project[]>;
-  public show: (projectId: ID) => Subject<Project>;
-  public new: (values: ProjectInterface) => Subject<Project>;
-  public update: (values: ProjectInterface, projectId: ID) => Subject<Project>;
-  public delete: (projectId: ID) => Subject<boolean>;
+  list(): Observable<Project[]> {
+    return this.apiList(endpoint(Empty, Empty));
+  }
+  filter(filters: Filters): Observable<Project[]> {
+    return this.apiFilter(endpoint(Empty, Filter), filters);
+  }
+  show(model: IdOr<Project>): Observable<Project> {
+    return this.apiShow(endpoint(model, Empty));
+  }
+  create(model: Project): Observable<Project> {
+    return this.apiCreate(endpoint(model, Empty), model);
+  }
+  update(model: Project): Observable<Project> {
+    return this.apiUpdate(endpoint(model, Empty), model);
+  }
+  destroy(model: IdOr<Project>): Observable<Project> {
+    return this.apiDestroy(endpoint(model, Empty));
+  }
 }

@@ -5,7 +5,7 @@ import { flatMap, map, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { projectsMenuItem } from "../projects/projects.menus";
@@ -51,7 +51,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
         (cards: List<Card>) => {
           this.projectList = cards;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.projectList = List([]);
         }
       );

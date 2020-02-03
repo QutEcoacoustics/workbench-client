@@ -5,7 +5,7 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
@@ -74,7 +74,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.success = null;
           if (err.info && err.info.name && err.info.name.length === 1) {
             this.error = err.message + ": name " + err.info.name[0];

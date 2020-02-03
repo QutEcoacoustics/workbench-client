@@ -9,7 +9,7 @@ import { Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { NewComponent } from "./new.component";
 
@@ -306,7 +306,7 @@ describe("ProjectsNewComponent", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -344,7 +344,7 @@ describe("ProjectsNewComponent", () => {
         subject.error({
           message: "Unauthorized",
           info: 401
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -414,7 +414,7 @@ describe("ProjectsNewComponent", () => {
         subject.error({
           message: "Unauthorized",
           info: 401
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -478,7 +478,7 @@ describe("ProjectsNewComponent", () => {
         subject.error({
           message: "Unauthorized",
           info: 401
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;

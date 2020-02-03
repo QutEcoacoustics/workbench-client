@@ -12,7 +12,7 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -56,7 +56,7 @@ export class DetailsComponent extends PageComponent
   recordings: AudioRecording[];
   site: Site;
   startDate: DateTimeTimezone;
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
   state = "loading";
 
   constructor(
@@ -87,7 +87,7 @@ export class DetailsComponent extends PageComponent
             this.state = "ready";
           }
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
           this.state = "error";
         }
@@ -110,7 +110,7 @@ export class DetailsComponent extends PageComponent
             this.state = "ready";
           }
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           // Let project error dominate
           if (this.state !== "error") {
             this.error = err;

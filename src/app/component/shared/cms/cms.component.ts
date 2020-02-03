@@ -10,7 +10,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Component({
   selector: "app-cms",
@@ -26,7 +26,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
   // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
   blob: string;
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
   loading = true;
   notifier = new Subject();
 
@@ -51,7 +51,7 @@ export class CmsComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.ref.detectChanges();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
           this.loading = false;
           this.ref.detectChanges();

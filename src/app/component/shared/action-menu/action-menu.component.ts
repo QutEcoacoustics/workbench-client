@@ -6,7 +6,7 @@ import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { PageInfo } from "src/app/helpers/page/pageInfo";
 import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 @Component({
@@ -47,7 +47,7 @@ export class ActionMenuComponent implements OnInit, OnDestroy {
         this.actionLinks = actionMenu;
         this.actionWidget = actionWidget;
       },
-      (err: APIErrorDetails) => console.error("ActionMenuComponent", err)
+      (err: ApiErrorDetails) => console.error("ActionMenuComponent", err)
     );
   }
 

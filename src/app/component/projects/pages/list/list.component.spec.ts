@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
 import { testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { ListComponent } from "./list.component";
 
@@ -195,7 +195,7 @@ describe("ProjectsListComponent", () => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
-        subject.error({ status: 404, message: "Not Found" } as APIErrorDetails);
+        subject.error({ status: 404, message: "Not Found" } as ApiErrorDetails);
       }, 50);
 
       return subject;

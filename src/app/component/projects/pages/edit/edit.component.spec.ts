@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
 
@@ -341,7 +341,7 @@ describe("ProjectsEditComponent", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -379,7 +379,7 @@ describe("ProjectsEditComponent", () => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -417,7 +417,7 @@ describe("ProjectsEditComponent", () => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -451,7 +451,7 @@ describe("ProjectsEditComponent", () => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;

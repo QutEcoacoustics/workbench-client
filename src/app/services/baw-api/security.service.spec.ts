@@ -6,7 +6,7 @@ import {
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { testAppInitializer } from "src/app/app.helper";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { mockSessionStorage } from "./mock/sessionStorageMock";
@@ -139,7 +139,7 @@ describe("SecurityService", () => {
           userName: "Test"
         });
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(false).toBeTruthy("Should not return error message");
       },
       () => {
@@ -170,7 +170,7 @@ describe("SecurityService", () => {
       res => {
         expect(true).toBeFalsy();
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,

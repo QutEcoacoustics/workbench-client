@@ -6,7 +6,7 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import {
   confirmAccountMenuItem,
@@ -47,7 +47,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   schema = data;
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
 
   constructor(
@@ -95,7 +95,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
           this.router.navigate([""]);
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err.message;
           this.loading = false;
         }

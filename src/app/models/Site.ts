@@ -4,9 +4,9 @@ import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
   Description,
-  ID,
-  IDs,
-  Name,
+  Id,
+  Ids,
+  Param,
   TimezoneInformation
 } from "../interfaces/apiInterfaces";
 import { Project } from "./Project";
@@ -16,16 +16,16 @@ import { Project } from "./Project";
  */
 export interface SiteInterface {
   kind?: "Site";
-  id: ID;
-  name: Name;
+  id: Id;
+  name: Param;
   imageUrl?: string;
   description?: Description;
   locationObfuscated?: boolean;
-  creatorId: ID;
+  creatorId: Id;
   createdAt?: DateTimeTimezone | string;
-  updaterId?: ID;
+  updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
-  projectIds: IDs;
+  projectIds: Ids;
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
@@ -36,16 +36,16 @@ export interface SiteInterface {
  */
 export class Site implements SiteInterface {
   public readonly kind: "Site";
-  public readonly id: ID;
-  public readonly name: Name;
+  public readonly id: Id;
+  public readonly name: Param;
   public readonly imageUrl: string;
   public readonly description: Description;
   public readonly locationObfuscated: boolean;
-  public readonly creatorId: ID;
+  public readonly creatorId: Id;
   public readonly createdAt?: DateTimeTimezone;
-  public readonly updaterId?: ID;
+  public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  public readonly projectIds: IDs;
+  public readonly projectIds: Ids;
   public readonly customLatitude?: number;
   public readonly customLongitude?: number;
   public readonly timezoneInformation?: TimezoneInformation;

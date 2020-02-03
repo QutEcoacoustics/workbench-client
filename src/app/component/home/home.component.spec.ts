@@ -15,7 +15,7 @@ import { delay } from "rxjs/operators";
 import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { Filters } from "src/app/services/baw-api/base-api.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
@@ -115,7 +115,7 @@ describe("HomeComponent", () => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
-        subject.error({ status: 404, message: "Not Found" } as APIErrorDetails);
+        subject.error({ status: 404, message: "Not Found" } as ApiErrorDetails);
       }, 50);
 
       return subject;

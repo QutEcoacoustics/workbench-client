@@ -13,15 +13,15 @@ import { takeUntil } from "rxjs/operators";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
-  ID
+  Id
 } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { Badge } from "./user-badge/user-badge.component";
-import { AccountService } from "src/app/services/baw-api/account.service";
 
 @Component({
   selector: "app-user-badges",
@@ -105,7 +105,7 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  generateBadge(object: Badge, id: ID, time?: DateTimeTimezone) {
+  generateBadge(object: Badge, id: Id, time?: DateTimeTimezone) {
     this.api
       .show(id)
       .pipe(takeUntil(this.unsubscribe))
@@ -117,7 +117,7 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
           }
           this.ref.detectChanges();
         },
-        (err: APIErrorDetails) => {}
+        (err: ApiErrorDetails) => {}
       );
   }
 

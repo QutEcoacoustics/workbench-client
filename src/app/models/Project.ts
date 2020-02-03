@@ -5,47 +5,50 @@ import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
   Description,
-  ID,
-  IDs,
-  Name
+  Id,
+  Ids,
+  Param
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A project model.
  */
 export interface ProjectInterface {
   kind?: "Project";
-  id: ID;
-  name: Name;
+  id: Id;
+  name: Param;
   imageUrl?: string;
-  creatorId: ID;
+  creatorId: Id;
   createdAt?: DateTimeTimezone | string;
-  updaterId?: ID;
+  updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
-  ownerId?: ID;
+  ownerId?: Id;
   description?: Description;
-  siteIds: IDs;
+  siteIds: Ids;
 }
 
 /**
  * A project model.
  */
-export class Project implements ProjectInterface {
-  public readonly kind: "Project";
-  public readonly id: ID;
-  public readonly name: Name;
+export class Project extends AbstractModel implements ProjectInterface {
+  public readonly kind: "Project" = "Project";
+  public readonly id: Id;
+  public readonly name: Param;
   public readonly imageUrl: string;
-  public readonly siteIds: IDs;
-  public readonly creatorId: ID;
+  public readonly siteIds: Ids;
+  public readonly creatorId: Id;
   public readonly createdAt?: DateTimeTimezone;
-  public readonly updaterId?: ID;
+  public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  public readonly ownerId?: ID;
+  public readonly ownerId?: Id;
   public readonly description?: Description;
 
   constructor(project: ProjectInterface) {
-    this.kind = "Project";
 
+    super(project);
+
+    // TODO: most of these are redundant - reimplement with properties?
     this.id = project.id;
     this.name = project.name;
     this.imageUrl =
@@ -65,6 +68,7 @@ export class Project implements ProjectInterface {
     this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
+
   }
 
   get projectUrl(): string {

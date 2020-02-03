@@ -12,7 +12,7 @@ import { BehaviorSubject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
 
@@ -384,7 +384,7 @@ describe("LoginComponent", () => {
         status: 401,
         message:
           "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
 
       return subject;
     });

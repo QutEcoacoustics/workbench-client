@@ -4,7 +4,7 @@ import {
   AuthToken,
   DateTimeTimezone,
   defaultDateTimeTimezone,
-  ID,
+  Id,
   ImageSizes,
   ImageURL,
   TimezoneInformation,
@@ -16,7 +16,7 @@ import {
  */
 export interface UserInterface {
   kind?: "User";
-  id: ID;
+  id: Id;
   userName: UserName;
   rolesMask: number;
   rolesMaskNames: string[];
@@ -40,7 +40,7 @@ export interface SessionUserInterface {
  */
 export class User implements UserInterface {
   public readonly kind: "User";
-  public readonly id: ID;
+  public readonly id: Id;
   public readonly userName: UserName;
   public readonly timezoneInformation: TimezoneInformation;
   public readonly imageUrls: ImageURL[];

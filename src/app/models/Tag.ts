@@ -1,4 +1,4 @@
-import { ID } from "../interfaces/apiInterfaces";
+import { Id } from "../interfaces/apiInterfaces";
 
 type TypeOfTag =
   | "commonName"
@@ -11,7 +11,7 @@ type TypeOfTag =
  * A tag model.
  */
 export interface TagInterface {
-  id: ID;
+  id: Id;
   text: string;
   isTaxanomic: boolean;
   typeOfTag: TypeOfTag;
@@ -31,7 +31,7 @@ export class Tag implements TagInterface {
    * @param retired Is tag retired
    */
   constructor(
-    public readonly id: ID,
+    public readonly id: Id,
     public readonly text: string,
     public readonly isTaxanomic: boolean,
     public readonly typeOfTag: TypeOfTag,

@@ -15,7 +15,7 @@ import {
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
 import { AppConfigService } from "../app-config/app-config.service";
-import { BawApiService } from "./base-api.service";
+import { ApiResponse, BawApiService } from "./base-api.service";
 
 /**
  * BAW API Interceptor.
@@ -38,8 +38,8 @@ export class BawApiInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (
-      !request.url.includes(this.config.getConfig().environment.apiRoot) &&
-      !request.url.includes(this.config.getConfig().environment.cmsRoot)
+      !request.url.includes(this.config.config.environment.apiRoot) &&
+      !request.url.includes(this.config.config.environment.cmsRoot)
     ) {
       return next.handle(request);
     }
@@ -108,12 +108,12 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @throws Observable<never>
    */
   private handleError(
-    response: HttpErrorResponse | APIErrorResponse | APIErrorDetails
+    response: HttpErrorResponse | ApiErrorResponse | ApiErrorDetails
   ): Observable<never> {
     if (isErrorDetails(response)) {
       return throwError(response);
     } else if (isErrorResponse(response)) {
-      const error: APIErrorDetails = {
+      const error: ApiErrorDetails = {
         status: response.status,
         message: response.error.meta.error.details
       };
@@ -127,7 +127,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       return throwError({
         status: response.status,
         message: response.message
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
     }
   }
 }
@@ -135,7 +135,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 /**
  * API Service error response
  */
-export interface APIErrorDetails {
+export interface ApiErrorDetails {
   status: number;
   message: string;
   info?: any;
@@ -144,18 +144,8 @@ export interface APIErrorDetails {
 /**
  * BAW API raw error response
  */
-interface APIErrorResponse extends HttpErrorResponse {
-  error: {
-    meta: {
-      status: number;
-      message: string;
-      error: {
-        details: string;
-        info?: any;
-      };
-    };
-    data: null;
-  };
+interface ApiErrorResponse extends HttpErrorResponse {
+  error: ApiResponse<null>;
 }
 
 /**
@@ -163,8 +153,8 @@ interface APIErrorResponse extends HttpErrorResponse {
  * @param errorResponse Error response
  */
 function isErrorDetails(
-  errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
-): errorResponse is APIErrorDetails {
+  errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
+): errorResponse is ApiErrorDetails {
   return (
     errorResponse["status"] &&
     errorResponse["message"] &&
@@ -177,8 +167,8 @@ function isErrorDetails(
  * @param errorResponse Error response
  */
 function isErrorResponse(
-  errorResponse: APIErrorResponse | APIErrorDetails | HttpErrorResponse
-): errorResponse is APIErrorResponse {
+  errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
+): errorResponse is ApiErrorResponse {
   return (
     errorResponse["error"] &&
     errorResponse["error"]["meta"] &&

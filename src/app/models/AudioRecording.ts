@@ -2,8 +2,8 @@ import { DateTime } from "luxon";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
-  ID,
-  UUID
+  Id,
+  Uuid
 } from "../interfaces/apiInterfaces";
 
 /**
@@ -11,10 +11,10 @@ import {
  */
 export interface AudioRecordingInterface {
   kind?: "AudioRecording";
-  id: ID;
-  uuid: UUID;
+  id: Id;
+  uuid: Uuid;
   recordedDate: DateTimeTimezone | string;
-  siteId: ID;
+  siteId: Id;
   durationSeconds: number;
   sampleRateHertz?: number;
   channels?: number;
@@ -31,10 +31,10 @@ export interface AudioRecordingInterface {
  */
 export class AudioRecording implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
-  public readonly id: ID;
-  public readonly uuid: UUID;
+  public readonly id: Id;
+  public readonly uuid: Uuid;
   public readonly recordedDate: DateTimeTimezone;
-  public readonly siteId: ID;
+  public readonly siteId: Id;
   public readonly durationSeconds: number;
   public readonly sampleRateHertz: number;
   public readonly channels: number;

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
 import data from "./register.json";
@@ -33,7 +33,7 @@ export class RegisterComponent extends PageComponent
   private unsubscribe = new Subject();
   schema = data;
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
 
   constructor(private api: BawApiService) {

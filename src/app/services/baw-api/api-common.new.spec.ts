@@ -8,8 +8,8 @@ import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiCommon, STUB_CLASS_BUILDER } from "./api-common";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { APIResponse, BawApiService } from "./base-api.service";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiResponse, BawApiService } from "./base-api.service";
 import { MockBawApiService } from "./mock/baseApiMockService";
 
 describe("ApiCommon New", () => {
@@ -100,7 +100,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should have token when logged", done => {
@@ -151,7 +151,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should complete observable", done => {
@@ -184,7 +184,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle empty values", done => {
@@ -218,7 +218,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle simple single value", done => {
@@ -252,7 +252,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle complex single value", done => {
@@ -294,7 +294,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle multiple values", done => {
@@ -338,7 +338,7 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle error", done => {
@@ -347,12 +347,12 @@ describe("ApiCommon New", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 401,
           message: "You must log in before accessing this resource"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -371,7 +371,7 @@ describe("ApiCommon New", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 401, statusText: "Unauthorized" }
     );
   });
@@ -382,7 +382,7 @@ describe("ApiCommon New", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: 422,
@@ -395,7 +395,7 @@ describe("ApiCommon New", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -422,7 +422,7 @@ describe("ApiCommon New", () => {
           }
         },
         data: null
-      } as APIResponse,
+      } as ApiResponse,
       { status: 422, statusText: "Unprocessable Entity" }
     );
   });
@@ -433,12 +433,12 @@ describe("ApiCommon New", () => {
       () => {
         expect(true).toBeFalsy("Service should not generate data response");
       },
-      (err: APIErrorDetails) => {
+      (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual({
           status: -1,
           message: "No data returned from API"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
         done();
       }
     );
@@ -454,7 +454,7 @@ describe("ApiCommon New", () => {
         message: "OK"
       },
       data: null
-    } as APIResponse);
+    } as ApiResponse);
   });
 
   it("new should handle object output", done => {
@@ -495,6 +495,6 @@ describe("ApiCommon New", () => {
           test_convert: "test"
         }
       }
-    } as APIResponse);
+    } as ApiResponse);
   });
 });

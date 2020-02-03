@@ -6,7 +6,7 @@ import {
   tick
 } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
@@ -15,7 +15,7 @@ import { ErrorHandlerComponent } from "./error-handler.component";
   template: "<app-error-handler [error]='error'></app-error-handler>"
 })
 class TestErrorHandlerComponent implements OnInit {
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
 
   constructor(private ref: ChangeDetectorRef) {}
 
@@ -23,14 +23,14 @@ class TestErrorHandlerComponent implements OnInit {
     this.error = {
       status: 401,
       message: "You need to log in or register before continuing."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     this.ref.detectChanges();
 
     setTimeout(() => {
       this.error = {
         status: 404,
         message: "Could not find the requested item."
-      } as APIErrorDetails;
+      } as ApiErrorDetails;
       this.ref.detectChanges();
     }, 50);
   }
@@ -63,7 +63,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 401,
       message: "You need to log in or register before continuing."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -81,7 +81,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 404,
       message: "Could not find the requested item."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -97,7 +97,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 403,
       message: "You must request access to this resource."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -113,7 +113,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: 0,
       message: "Unknown error has occurred."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");
@@ -129,7 +129,7 @@ describe("ErrorHandlerComponent", () => {
     component.error = {
       status: -1,
       message: "Unknown error has occurred."
-    } as APIErrorDetails;
+    } as ApiErrorDetails;
     fixture.detectChanges();
 
     const title = fixture.debugElement.nativeElement.querySelector("h1");

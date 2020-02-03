@@ -5,7 +5,7 @@ import {
   OnChanges,
   OnInit
 } from "@angular/core";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { apiReturnCodes } from "src/app/services/baw-api/base-api.service";
 
 @Component({
@@ -31,7 +31,7 @@ import { apiReturnCodes } from "src/app/services/baw-api/base-api.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorHandlerComponent implements OnInit, OnChanges {
-  @Input() error: APIErrorDetails;
+  @Input() error: ApiErrorDetails;
   display = "";
 
   constructor() {}

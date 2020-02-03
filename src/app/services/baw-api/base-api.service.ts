@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -24,7 +24,7 @@ export const apiReturnCodes = {
 @Injectable({
   providedIn: "root"
 })
-export abstract class BawApiService {
+export abstract class BawApiService<T extends AbstractModel> {
   /*
   Paths:
     list -> GET
@@ -35,12 +35,56 @@ export abstract class BawApiService {
     filter -> POST with filter body
   */
 
-  private url = this.config.getConfig().environment.apiRoot;
-  protected userSessionStorage = "user";
-  protected id = (x: number) => x;
-  protected param = (x: string) => x;
+  protected userSessionStorage = "baw.client.user";
 
-  constructor(private http: HttpClient, private config: AppConfigService) {}
+  /**
+   * Handle API response
+   */
+  private handleResponse: (_: ApiResponse<T>) => T[];
+  private handleSingleResponse: (_: ApiResponse<T>) => T;
+
+  // * @param nullResponse True if response body can be empty. If set, next always be called with "true"
+  // {
+
+  // next: <T>(response: ApiResponse<T>) => {
+  //   if (response?.data) {
+  //     next(response.data);
+  //   } else if (!response && nullResponse) {
+  //     // TODO Remove if https://github.com/QutEcoacoustics/baw-server/issues/427 is fixed
+  //     next(true);
+  //   } else {
+  //     error({
+  //       status: apiReturnCodes.unknown,
+  //       message: "No data returned from API"
+  //     } as ApiErrorDetails);
+  //   }
+  // },
+  // error: (err: ApiErrorDetails) => {
+  //   error(err);
+  // }
+  // };
+
+  constructor(
+    protected http: HttpClient,
+    private apiRoot: string,
+    _new: new (_: object) => T) {
+
+    this.handleSingleResponse = (response: ApiResponse<T>) => {
+      if (response.data instanceof Array) {
+        throw new Error("Received an array of API results when only a single result was expected");
+      }
+
+      return new _new(response.data);
+    };
+
+    this.handleResponse = (response: ApiResponse<T>): T[] => {
+      if (response.data instanceof Array) {
+        return response.data.map(x => new _new(x));
+      } else {
+        return [new _new(response.data)];
+      }
+    };
+  }
 
   /**
    * Determine if the user is currently logged in
@@ -59,84 +103,52 @@ export abstract class BawApiService {
         JSON.parse(sessionStorage.getItem(this.userSessionStorage))
       );
     } catch (Exception) {
+      // FIX: (AT) never swallow exceptions!
       return null;
     }
   }
 
   /**
    * Get response from details route
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
    * @param path API path
    * @param filters API filters
    */
-  protected apiList(
-    next: (data: any) => void,
-    error: (err: any) => void,
-    path: string,
-    filters?: Filters
-  ) {
-    if (!filters) {
-      this.httpGet<APIResponse>(path).subscribe(
-        this.handleResponse(next, error)
-      );
-    } else {
-      this.httpPost<APIResponse>(path + "/filter", filters).subscribe(
-        this.handleResponse(next, error)
-      );
-    }
+  protected apiList(path: string) {
+    return this.httpGet(path).pipe(map(this.handleResponse));
+  }
+
+  protected apiFilter(path: string, filters: Filters) {
+    return this.httpPost(path, filters).pipe(map(this.handleResponse));
+  }
+
+  protected apiShow(path: string) {
+    return this.httpGet(path).pipe(map(this.handleSingleResponse));
   }
 
   /**
    * Create request for API route
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
    * @param path API path
    * @param body Request body
    */
-  protected apiCreate(
-    next: (data: any) => void,
-    error: (err: any) => void,
-    path: string,
-    body?: any
-  ) {
-    this.httpPost<APIResponse>(path, body).subscribe(
-      this.handleResponse(next, error)
-    );
+  protected apiCreate(path: string, body: T) {
+    return this.httpPost(path, body as object).pipe(map(this.handleSingleResponse));
   }
 
   /**
    * Update request for API route
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
    * @param path API path
    * @param body Request body
    */
-  protected apiUpdate(
-    next: (data: any) => void,
-    error: (err: any) => void,
-    path: string,
-    body?: object
-  ) {
-    this.httpPatch<APIResponse>(path, body).subscribe(
-      this.handleResponse(next, error)
-    );
+  protected apiUpdate(path: string, body: object) {
+    return this.httpPatch(path, body).pipe(map(this.handleSingleResponse));
   }
 
   /**
    * Delete request for API route
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
    * @param path API path
    */
-  protected apiDelete(
-    next: (data: any) => void,
-    error: (err: any) => void,
-    path: string
-  ) {
-    this.httpDelete<APIResponse>(path).subscribe(
-      this.handleResponse(next, error, true)
-    );
+  protected apiDestroy(path: string) {
+    return this.httpDelete(path).pipe(map(this.handleSingleResponse));
   }
 
   /**
@@ -144,8 +156,8 @@ export abstract class BawApiService {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
-  protected httpGet<T>(path: string): Observable<T> {
-    return this.http.get<T>(this.getPath(path));
+  protected httpGet(path: string): Observable<ApiResponse<T>> {
+    return this.http.get<ApiResponse<T>>(this.getPath(path));
   }
 
   /**
@@ -153,8 +165,8 @@ export abstract class BawApiService {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
-  protected httpDelete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(this.getPath(path));
+  protected httpDelete(path: string): Observable<ApiResponse<T>> {
+    return this.http.delete<ApiResponse<T>>(this.getPath(path));
   }
 
   /**
@@ -163,8 +175,8 @@ export abstract class BawApiService {
    * @param path API path
    * @param body Request body
    */
-  protected httpPost<T>(path: string, body?: object): Observable<T> {
-    return this.http.post<T>(this.getPath(path), body);
+  protected httpPost(path: string, body?: object): Observable<ApiResponse<T>> {
+    return this.http.post<ApiResponse<T>>(this.getPath(path), body);
   }
 
   /**
@@ -173,54 +185,19 @@ export abstract class BawApiService {
    * @param path API path
    * @param body Request body
    */
-  protected httpPatch<T>(path: string, body?: object): Observable<T> {
-    return this.http.patch<T>(this.getPath(path), body);
+  protected httpPatch(path: string, body?: object): Observable<ApiResponse<T>> {
+    return this.http.patch<ApiResponse<T>>(this.getPath(path), body);
   }
 
   /**
-   * Returns the path for the api route
+   * Concatenates path with apiRoot to form a full URL.
    * @param path Path fragment
    */
   private getPath(path: string): string {
-    return this.url + path;
+    return this.apiRoot + path;
   }
 
-  /**
-   * Handle API response
-   * @param next Callback function for successful response
-   * @param error Callback function for failed response
-   * @param nullResponse True if response body can be empty. If set, next always be called with "true"
-   */
-  private handleResponse(
-    next: (data: any) => void,
-    error: (err: any) => void,
-    nullResponse?: boolean
-  ) {
-    return {
-      next: (response: APIResponse) => {
-        if (response?.data) {
-          next(response.data);
-        } else if (!response && nullResponse) {
-          // TODO Remove if https://github.com/QutEcoacoustics/baw-server/issues/427 is fixed
-          next(true);
-        } else {
-          error({
-            status: apiReturnCodes.unknown,
-            message: "No data returned from API"
-          } as APIErrorDetails);
-        }
-      },
-      error: (err: APIErrorDetails) => {
-        error(err);
-      }
-    };
-  }
 }
-
-/**
- * Template URL path
- */
-export type Path = (...tokens: (string | number)[]) => string;
 
 /**
  * Default filter for routes
@@ -246,30 +223,19 @@ export interface Filters {
   };
 }
 
+export interface Meta extends Filters {
+  status: number;
+  message: string;
+  error?: {
+    details: string;
+    info?: any;
+  };
+}
+
 /**
  * API response
  */
-export interface APIResponse {
-  meta: {
-    status: number;
-    message: string;
-    error?: {
-      details: string;
-      info: any;
-    };
-    sorting?: {
-      orderBy: string;
-      direction: string;
-    };
-    paging?: {
-      page: number;
-      items: number;
-      total: number;
-      maxPage: number;
-      current: string;
-      previous: string;
-      next: string;
-    };
-  };
-  data: any;
+export interface ApiResponse<T> {
+  meta: Meta;
+  data: T[] | T;
 }

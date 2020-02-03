@@ -5,8 +5,8 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ID } from "src/app/interfaces/apiInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { Id } from "src/app/interfaces/apiInterfaces";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   editProjectMenuItem,
@@ -45,13 +45,13 @@ import data from "./edit.json";
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
   success: string;
 
-  projectId: ID;
+  projectId: Id;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,7 +78,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.schema.model["name"] = project.name;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );
@@ -108,7 +108,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           if (err.info && err.info.name && err.info.name.length === 1) {
             this.error = err.message + ": name " + err.info.name[0];
           } else {

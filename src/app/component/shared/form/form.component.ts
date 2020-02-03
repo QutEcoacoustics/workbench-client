@@ -12,7 +12,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 
 @Component({
   selector: "app-form",
@@ -72,7 +72,7 @@ export class FormComponent implements OnInit, OnDestroy {
             this.model = data.model;
             this.fields = data.fields;
           },
-          (err: APIErrorDetails) => {
+          (err: ApiErrorDetails) => {
             this.error = err.message;
           }
         );

@@ -1,6 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Url } from "url";
 
 export let APP_CONFIG = new InjectionToken("app.config");
 
@@ -12,8 +13,14 @@ export function appInitializerFn(appConfig: AppConfigService) {
 export class AppConfigService {
   private appConfig: Configuration = undefined;
 
+  /**
+   * A promise that will resolve to a config when it completes.
+   * Used as a debounce flag.
+   */
+  private loading: Promise<Configuration>;
+
   constructor(
-    @Inject(APP_CONFIG) private config: string,
+    @Inject(APP_CONFIG) private configUrl: string,
     private titleService: Title
   ) {}
 
@@ -21,19 +28,28 @@ export class AppConfigService {
    * Load the application config from the ecosounds website
    */
   async loadAppConfig(): Promise<any> {
+    // debounce
+    if (this.loading) {
+      return this.loading;
+    }
+
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
-    return retrieveAppConfig(
-      this.config,
+    this.loading = retrieveAppConfig(
+      this.configUrl,
       data => {
         this.appConfig = data;
         this.titleService.setTitle(data.values.brand.name);
+        return this.appConfig;
       },
       () => {
         this.appConfig = null;
+        return null;
       }
-    );
+    ).finally(() => this.loading = undefined);
+
+    return this.loading;
   }
 
   /**
@@ -41,8 +57,17 @@ export class AppConfigService {
    * Returned undefined if config has not loaded yet.
    * Returns null if an error has occurred
    */
-  getConfig(): Configuration {
+  get config(): Configuration {
     return this.appConfig;
+  }
+
+  /**
+   * Get the application config.
+   * Will load if not yet loaded.
+   * Returns null if an error has occurred
+   */
+  getConfig(): Promise<Configuration> {
+    return this.appConfig !== undefined ? Promise.resolve(this.appConfig) : this.loadAppConfig();
   }
 
   /**
@@ -68,8 +93,8 @@ export class AppConfigService {
 
 export async function retrieveAppConfig(
   config: string,
-  dataFunc: (data: any) => void,
-  catchFunc: (err: any) => void
+  dataFunc: (data: any) => Configuration,
+  catchFunc: (err: any) => null
 ) {
   return await fetch(config)
     .then(response => response.json())
