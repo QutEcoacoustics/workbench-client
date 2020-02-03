@@ -71,14 +71,6 @@ export const harvestMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
-export const assignSiteMenuItem = MenuLink({
-  uri: "REPLACE_ME",
-  icon: ["fas", "toolbox"],
-  label: "Assign site",
-  tooltip: () => "Change which sites belong to this project",
-  predicate: isAdminPredicate
-});
-
 export const deleteSiteMenuItem = MenuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Site",

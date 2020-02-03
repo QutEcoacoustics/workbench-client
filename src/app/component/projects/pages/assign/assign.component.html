@@ -1,0 +1,48 @@
+<ng-container *ngIf="ready">
+  <h1>{{ project.name }}</h1>
+
+  <h2>Assign Sites</h2>
+
+  <p>
+    Select the sites to be part of this project, and click 'Update' at the
+    bottom of this page.
+  </p>
+  <p>Only the selected sites will be part of this project.</p>
+
+  <ngx-datatable
+    #table
+    class="bootstrap"
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [draggable]="false"
+    [footerHeight]="50"
+    [headerCheckboxable]="true"
+    [headerHeight]="50"
+    [limit]="25"
+    [reorderable]="false"
+    [resizeable]="false"
+    [rowHeight]="'auto'"
+    [rows]="rows"
+    [scrollbarH]="true"
+    [sortable]="false"
+  >
+    <ngx-datatable-column
+      [width]="30"
+      [sortable]="false"
+      [canAutoResize]="false"
+      [draggable]="false"
+      [resizeable]="false"
+      [headerCheckboxable]="true"
+      [checkboxable]="true"
+    >
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Site Id"></ngx-datatable-column>
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
+    <ngx-datatable-column name="Description"></ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-loading [isLoading]="!ready && !error"></app-loading>
+<app-error-handler [error]="error"></app-error-handler>

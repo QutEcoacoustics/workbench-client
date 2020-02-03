@@ -3,6 +3,7 @@ import {
   defaultEditIcon,
   defaultNewIcon,
   defaultPermissionsIcon,
+  isAdminPredicate,
   isLoggedInPredicate,
   isOwnerPredicate
 } from "src/app/app.menus";
@@ -84,6 +85,15 @@ export const editProjectPermissionsMenuItem = MenuRoute({
   parent: projectMenuItem,
   tooltip: () => "Edit this projects permissions",
   predicate: isOwnerPredicate
+});
+
+export const assignSiteMenuItem = MenuRoute({
+  icon: ["fas", "toolbox"],
+  label: "Assign sites",
+  route: projectMenuItem.route.add("assign"),
+  parent: projectMenuItem,
+  tooltip: () => "Change which sites belong to this project",
+  predicate: isAdminPredicate
 });
 
 export const deleteProjectMenuItem = MenuRoute({
