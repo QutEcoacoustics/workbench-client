@@ -1,47 +1,49 @@
-<ng-container *ngIf="ready">
-  <h1>{{ project.name }}</h1>
+<app-wip>
+  <ng-container *ngIf="ready">
+    <h1>{{ project.name }}</h1>
 
-  <h2>Assign Sites</h2>
+    <h2>Assign Sites</h2>
 
-  <p>
-    Select the sites to be part of this project, and click 'Update' at the
-    bottom of this page.
-  </p>
-  <p>Only the selected sites will be part of this project.</p>
+    <p>
+      Select the sites to be part of this project, and click 'Update' at the
+      bottom of this page.
+    </p>
+    <p>Only the selected sites will be part of this project.</p>
 
-  <ngx-datatable
-    #table
-    class="bootstrap"
-    [columnMode]="ColumnMode.force"
-    [columns]="columns"
-    [draggable]="false"
-    [footerHeight]="50"
-    [headerHeight]="50"
-    [limit]="25"
-    [reorderable]="false"
-    [rowHeight]="'auto'"
-    [rows]="rows"
-    [scrollbarH]="true"
-    [selectAllRowsOnPage]="false"
-    [selected]="selected"
-    [selectionType]="SelectionType.checkbox"
-    (select)="onSelect($event)"
-  >
-    <ngx-datatable-column
-      [canAutoResize]="false"
-      [checkboxable]="true"
+    <ngx-datatable
+      #table
+      class="bootstrap"
+      [columnMode]="ColumnMode.force"
+      [columns]="columns"
       [draggable]="false"
-      [headerCheckboxable]="false"
-      [resizeable]="false"
-      [sortable]="false"
-      [width]="30"
+      [footerHeight]="50"
+      [headerHeight]="50"
+      [limit]="25"
+      [reorderable]="false"
+      [rowHeight]="'auto'"
+      [rows]="rows"
+      [scrollbarH]="true"
+      [selectAllRowsOnPage]="false"
+      [selected]="selected"
+      [selectionType]="SelectionType.checkbox"
+      (select)="onSelect($event)"
     >
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Site Id"></ngx-datatable-column>
-    <ngx-datatable-column name="Name"></ngx-datatable-column>
-    <ngx-datatable-column name="Description"></ngx-datatable-column>
-  </ngx-datatable>
-</ng-container>
+      <ngx-datatable-column
+        [canAutoResize]="false"
+        [checkboxable]="true"
+        [draggable]="false"
+        [headerCheckboxable]="false"
+        [resizeable]="false"
+        [sortable]="false"
+        [width]="30"
+      >
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Site Id"></ngx-datatable-column>
+      <ngx-datatable-column name="Name"></ngx-datatable-column>
+      <ngx-datatable-column name="Description"></ngx-datatable-column>
+    </ngx-datatable>
+  </ng-container>
 
-<app-loading [isLoading]="!ready && !error"></app-loading>
-<app-error-handler [error]="error"></app-error-handler>
+  <app-loading [isLoading]="!ready && !error"></app-loading>
+  <app-error-handler [error]="error"></app-error-handler>
+</app-wip>
