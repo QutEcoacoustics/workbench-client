@@ -43,7 +43,7 @@
         title="Visitors"
         description="Visitors are public (anonymous) users that are either not logged in or have not registered."
         [options]="visitorOptions"
-        [selected]="visitorOptions[1]"
+        [selected]="1"
       ></app-selectable-items>
     </div>
     <div class="col-md-6">
@@ -51,7 +51,7 @@
         title="Users"
         description="Users are people that have registered and have logged into the website. "
         [options]="userOptions"
-        [selected]="userOptions[1]"
+        [selected]="1"
       ></app-selectable-items>
     </div>
   </div>
@@ -86,7 +86,7 @@
     class="bootstrap"
     [rows]="rows"
     [columns]="columns"
-    [ColumnMode]="ColumnMode.force"
+    [columnMode]="ColumnMode.force"
     [limit]="25"
     [rowHeight]="'auto'"
     [headerHeight]="50"
@@ -106,21 +106,22 @@
     </ngx-datatable-column>
 
     <!-- Individual Template -->
-    <ngx-datatable-column name="Individual">
+    <ngx-datatable-column name="Individual" [width]="275">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
       </ng-template>
 
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <button>None</button>
-        <button>Reader</button>
-        <button>Writer</button>
-        <button>Owner</button>
+        <app-selectable-items
+          [options]="individualOptions"
+          [selected]="1"
+          [inline]="true"
+        ></app-selectable-items>
       </ng-template>
     </ngx-datatable-column>
 
     <!-- Visitor Permissions Template -->
-    <ngx-datatable-column name="Visitor">
+    <ngx-datatable-column name="Visitors" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
         <fa-icon
@@ -136,7 +137,7 @@
     </ngx-datatable-column>
 
     <!-- Users Permissions Template -->
-    <ngx-datatable-column name="Users">
+    <ngx-datatable-column name="Users" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
         <fa-icon
@@ -152,7 +153,7 @@
     </ngx-datatable-column>
 
     <!-- Overall Permissions Template -->
-    <ngx-datatable-column name="Overall">
+    <ngx-datatable-column name="Overall" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
         <fa-icon

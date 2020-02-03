@@ -15,20 +15,21 @@ export class SelectableItemsComponent implements OnInit {
   @Input() title: string;
   @Input() description: string;
   @Input() options: ISelectableItem[];
-  @Input() selected: ISelectableItem;
-  @Output() change = new EventEmitter<any>();
+  @Input() selected: number;
+  @Input() inline = false;
+  @Output() change = new EventEmitter<number>();
 
   constructor() {}
 
   ngOnInit() {}
 
-  changeSelection(option: ISelectableItem) {
-    this.selected = option;
+  changeSelection(index: number) {
+    this.selected = index;
     this.change.next(this.selected);
   }
 
-  isSelected(option: ISelectableItem) {
-    return this.selected === option;
+  isSelected(index: number): boolean {
+    return this.selected === index;
   }
 }
 

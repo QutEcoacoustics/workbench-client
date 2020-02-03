@@ -46,6 +46,7 @@ export class PermissionsComponent extends PageComponent
   public loading: boolean;
   public ready: boolean;
   public project: Project;
+  public individualOptions: ISelectableItem[];
   public visitorOptions: ISelectableItem[];
   public userOptions: ISelectableItem[];
   public users: User[];
@@ -116,6 +117,13 @@ export class PermissionsComponent extends PageComponent
       { label: "No access (none)", value: "none" },
       { label: "Reader access", value: "reader" },
       { label: "Writer access", value: "writer" }
+    ];
+
+    this.individualOptions = [
+      { label: "None", value: "none" },
+      { label: "Reader", value: "reader" },
+      { label: "Writer", value: "writer" },
+      { label: "Owner", value: "owner" }
     ];
 
     this.route.params
