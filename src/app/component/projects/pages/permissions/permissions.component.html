@@ -86,41 +86,87 @@
     class="bootstrap"
     [rows]="rows"
     [columns]="columns"
+    [ColumnMode]="ColumnMode.force"
     [limit]="25"
     [rowHeight]="'auto'"
     [headerHeight]="50"
     [footerHeight]="50"
     [reorderable]="false"
+    [scrollbarH]="true"
   >
+    <!-- User Template -->
+    <ngx-datatable-column name="User">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <fa-icon [icon]="userIcon"></fa-icon><strong>{{ column.name }}</strong>
+      </ng-template>
+
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- Individual Template -->
+    <ngx-datatable-column name="Individual">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <strong>{{ column.name }}</strong>
+      </ng-template>
+
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <button>None</button>
+        <button>Reader</button>
+        <button>Writer</button>
+        <button>Owner</button>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- Visitor Permissions Template -->
+    <ngx-datatable-column name="Visitor">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <strong>{{ column.name }}</strong>
+        <fa-icon
+          [icon]="['fas', 'question-circle']"
+          placement="left"
+          ngbTooltip="The Visitors user permission (Reader) comes from above."
+        ></fa-icon>
+      </ng-template>
+
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- Users Permissions Template -->
+    <ngx-datatable-column name="Users">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <strong>{{ column.name }}</strong>
+        <fa-icon
+          [icon]="['fas', 'question-circle']"
+          placement="left"
+          ngbTooltip="The Users permission (Reader) for logged in users comes from above."
+        ></fa-icon>
+      </ng-template>
+
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- Overall Permissions Template -->
+    <ngx-datatable-column name="Overall">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <strong>{{ column.name }}</strong>
+        <fa-icon
+          [icon]="['fas', 'question-circle']"
+          placement="left"
+          ngbTooltip="The overall permission is a combination of Individual, Visitor, and User permissions."
+        ></fa-icon>
+      </ng-template>
+
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
   </ngx-datatable>
 </div>
 
 <app-error-handler [error]="errorDetails"></app-error-handler>
-
-<!-- User Header Template -->
-<ng-template #userTemplate let-column="column">
-  <fa-icon [icon]="userIcon"></fa-icon><strong>{{ column.name }}</strong>
-</ng-template>
-
-<!-- Individual Header Template -->
-<ng-template #individualTemplate let-column="column">
-  <strong>{{ column.name }}</strong>
-</ng-template>
-
-<!-- Visitor Permissions Header Template -->
-<ng-template #visitorPermissionTemplate let-column="column">
-  <strong>{{ column.name }}</strong>
-  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-</ng-template>
-
-<!-- User Permissions Header Template -->
-<ng-template #userPermissionTemplate let-column="column">
-  <strong>{{ column.name }}</strong>
-  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-</ng-template>
-
-<!-- Overall Permissions Header Template -->
-<ng-template #overallPermissionTemplate let-column="column">
-  <strong>{{ column.name }}</strong>
-  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-</ng-template>

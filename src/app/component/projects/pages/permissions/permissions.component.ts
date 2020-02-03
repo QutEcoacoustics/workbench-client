@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild
-} from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -41,27 +35,11 @@ import { projectMenuItemActions } from "../details/details.component";
 @Component({
   selector: "app-project-permissions",
   templateUrl: "permissions.component.html",
-  styles: [
-    `
-      fa-icon {
-        margin-left: 5px;
-        margin-right: 5px;
-      }
-    `
-  ]
+  styleUrls: ["permissions.component.scss"]
 })
 export class PermissionsComponent extends PageComponent
   implements OnInit, OnDestroy {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  @ViewChild("userTemplate", { static: true }) userTemplate: TemplateRef<any>;
-  @ViewChild("individualTemplate", { static: true })
-  individualTemplate: TemplateRef<any>;
-  @ViewChild("visitorPermissionTemplate", { static: true })
-  visitorPermissionTemplate: TemplateRef<any>;
-  @ViewChild("userPermissionTemplate", { static: true })
-  userPermissionTemplate: TemplateRef<any>;
-  @ViewChild("overallPermissionTemplate", { static: true })
-  overallPermissionTemplate: TemplateRef<any>;
 
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public errorDetails: APIErrorDetails;
@@ -98,11 +76,11 @@ export class PermissionsComponent extends PageComponent
     this.ready = false;
 
     this.columns = [
-      { headerTemplate: this.userTemplate, name: "User" },
-      { headerTemplate: this.individualTemplate, name: "Individual" },
-      { headerTemplate: this.visitorPermissionTemplate, name: "Visitors" },
-      { headerTemplate: this.userPermissionTemplate, name: "Users" },
-      { headerTemplate: this.overallPermissionTemplate, name: "Overall" }
+      { name: "User" },
+      { name: "Individual" },
+      { name: "Visitors" },
+      { name: "Users" },
+      { name: "Overall" }
     ];
     this.rows = [
       {
