@@ -67,7 +67,7 @@ $ npm run e2e
 
 #### Unit tests
 
-This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge.
+This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge, Opera, Safari.
 
 Development Testing:
 
@@ -91,6 +91,12 @@ Edge Browser Testing:
 
 ```bash
 $ npm run test:edge
+```
+
+Opera Browser Testing:
+
+```bash
+$ npm run test:opera
 ```
 
 All Supported Browsers Testing:
