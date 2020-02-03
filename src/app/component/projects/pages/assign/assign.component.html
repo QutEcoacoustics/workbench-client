@@ -12,30 +12,29 @@
   <ngx-datatable
     #table
     class="bootstrap"
-    [canAutoResize]="false"
-    [checkboxable]="true"
     [columnMode]="ColumnMode.force"
     [columns]="columns"
     [draggable]="false"
     [footerHeight]="50"
-    [headerCheckboxable]="true"
     [headerHeight]="50"
     [limit]="25"
     [reorderable]="false"
-    [resizeable]="false"
     [rowHeight]="'auto'"
     [rows]="rows"
     [scrollbarH]="true"
-    [sortable]="false"
+    [selectAllRowsOnPage]="false"
+    [selected]="selected"
+    [selectionType]="SelectionType.checkbox"
+    (select)="onSelect($event)"
   >
     <ngx-datatable-column
-      [width]="30"
-      [sortable]="false"
       [canAutoResize]="false"
-      [draggable]="false"
-      [resizeable]="false"
-      [headerCheckboxable]="true"
       [checkboxable]="true"
+      [draggable]="false"
+      [headerCheckboxable]="false"
+      [resizeable]="false"
+      [sortable]="false"
+      [width]="30"
     >
     </ngx-datatable-column>
     <ngx-datatable-column name="Site Id"></ngx-datatable-column>

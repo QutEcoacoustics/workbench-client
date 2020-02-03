@@ -48,6 +48,7 @@ export class AssignComponent extends PageComponent
     { name: "Description" }
   ];
   public rows: { siteId: number; name: string; description: string }[] = [];
+  public selected: { siteId: number; name: string; description: string }[] = [];
 
   public ColumnMode = ColumnMode;
   public SelectionType = SelectionType;
@@ -89,12 +90,18 @@ export class AssignComponent extends PageComponent
 
           this.ready = true;
         },
-        (err: APIErrorDetails) => {}
+        (err: APIErrorDetails) => {
+          this.error = err;
+        }
       );
   }
 
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  public onSelect(event) {
+    console.log("Select: ", event);
   }
 }
