@@ -104,7 +104,6 @@
     "karma-viewport": "^1.0.4",
     "protractor": "~5.4.0",
     "puppeteer": "^2.0.0",
-    "puppeteer-firefox": "^0.5.0",
     "rxjs-tslint-rules": "^4.28.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.1",
