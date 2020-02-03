@@ -9,13 +9,6 @@
 
 /* Overwrite bootstrap maximum window size */
 
-// Allow tooltips to escape datatable
-ngx-datatable,
-datatable-header,
-datatable-header-cell {
-  overflow: visible !important;
-}
-
 /* You can add global styles to this file, and also import other style files */
 html,
 body {

@@ -76,7 +76,7 @@
     <input
       type="text"
       class="form-control"
-      placeholder="Filter Analysis Types"
+      placeholder="Filter users"
       (keyup)="updateFilter($event)"
     />
   </div>
@@ -124,11 +124,6 @@
     <ngx-datatable-column name="Visitors" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
-        <fa-icon
-          [icon]="['fas', 'question-circle']"
-          placement="top"
-          ngbTooltip="The Visitors user permission (Reader) comes from above."
-        ></fa-icon>
       </ng-template>
 
       <ng-template let-value="value" ngx-datatable-cell-template>
@@ -140,11 +135,6 @@
     <ngx-datatable-column name="Users" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
-        <fa-icon
-          [icon]="['fas', 'question-circle']"
-          placement="top"
-          ngbTooltip="The Users permission (Reader) for logged in users comes from above."
-        ></fa-icon>
       </ng-template>
 
       <ng-template let-value="value" ngx-datatable-cell-template>
@@ -156,11 +146,6 @@
     <ngx-datatable-column name="Overall" [width]="100">
       <ng-template let-column="column" ngx-datatable-header-template>
         <strong>{{ column.name }}</strong>
-        <fa-icon
-          [icon]="['fas', 'question-circle']"
-          placement="top"
-          ngbTooltip="The overall permission is a combination of Individual, Visitor, and User permissions."
-        ></fa-icon>
       </ng-template>
 
       <ng-template let-value="value" ngx-datatable-cell-template>
