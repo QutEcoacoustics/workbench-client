@@ -2,6 +2,10 @@
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "~ngx-toastr/toastr";
+@import "~@swimlane/ngx-datatable/index.css";
+@import "~@swimlane/ngx-datatable/themes/material.scss";
+@import "~@swimlane/ngx-datatable/themes/bootstrap.scss";
+@import "~@swimlane/ngx-datatable/assets/icons.css";
 
 /* Overwrite bootstrap maximum window size */
 
