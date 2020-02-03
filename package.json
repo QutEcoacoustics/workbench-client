@@ -100,6 +100,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.1",
     "karma-junit-reporter": "^2.0.1",
+    "karma-opera-launcher": "^1.0.0",
     "karma-viewport": "^1.0.4",
     "protractor": "~5.4.0",
     "puppeteer": "^2.0.0",
