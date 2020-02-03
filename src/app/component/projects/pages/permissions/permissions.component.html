@@ -155,4 +155,5 @@
   </ngx-datatable>
 </div>
 
+<app-loading [isLoading]="!ready && !errorDetails"></app-loading>
 <app-error-handler [error]="errorDetails"></app-error-handler>

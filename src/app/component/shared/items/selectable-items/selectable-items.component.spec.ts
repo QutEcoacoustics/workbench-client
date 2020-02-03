@@ -20,4 +20,6 @@ describe("SelectableItemsComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Write unit tests
 });
