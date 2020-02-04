@@ -99,7 +99,7 @@ export class DeleteComponent extends PageComponent
     // manages to navigate too fast
     this.formLoading = true;
     this.api
-      .delete(this.projectId, this.siteId)
+      .destroy(this.projectId, this.siteId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {

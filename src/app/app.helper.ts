@@ -18,9 +18,6 @@ import {
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
-import { BawApiService } from "./services/baw-api/base-api.service";
-import { MockApiCommon } from "./services/baw-api/mock/api-commonMock";
-import { MockBawApiService } from "./services/baw-api/mock/baseApiMockService";
 import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
 import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
 import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
@@ -121,7 +118,6 @@ export const testBawServices = [
     useClass: BawApiInterceptor,
     multi: true
   },
-  { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: ProjectsService, useClass: MockProjectsService },
   { provide: SitesService, useClass: MockSitesService },

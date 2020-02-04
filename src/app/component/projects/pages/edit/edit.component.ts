@@ -95,12 +95,13 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    */
   submit($event: any) {
     console.log($event);
+    const project = { ...$event, id: this.projectId };
 
     this.loading = true;
     this.ref.detectChanges();
 
     this.api
-      .update($event, this.projectId)
+      .update(project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

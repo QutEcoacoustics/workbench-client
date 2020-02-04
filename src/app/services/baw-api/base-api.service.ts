@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -21,9 +21,6 @@ export const apiReturnCodes = {
 /**
  * Interface with BAW Server Rest API
  */
-@Injectable({
-  providedIn: "root"
-})
 export abstract class BawApiService<T extends AbstractModel> {
   /*
   Paths:
@@ -36,53 +33,52 @@ export abstract class BawApiService<T extends AbstractModel> {
   */
 
   protected userSessionStorage = "baw.client.user";
+  private apiRoot: string;
 
   /**
-   * Handle API response
+   * Handle API collection response
+   * @param response Api Response
    */
-  private handleResponse: (_: ApiResponse<T>) => T[];
-  private handleSingleResponse: (_: ApiResponse<T>) => T;
+  private handleCollectionResponse: (response: ApiResponse<T>) => T[];
 
-  // * @param nullResponse True if response body can be empty. If set, next always be called with "true"
-  // {
+  /**
+   * Handle API single model response
+   * @param response Api Response
+   */
+  private handleSingleResponse: (response: ApiResponse<T>) => T;
 
-  // next: <T>(response: ApiResponse<T>) => {
-  //   if (response?.data) {
-  //     next(response.data);
-  //   } else if (!response && nullResponse) {
-  //     // TODO Remove if https://github.com/QutEcoacoustics/baw-server/issues/427 is fixed
-  //     next(true);
-  //   } else {
-  //     error({
-  //       status: apiReturnCodes.unknown,
-  //       message: "No data returned from API"
-  //     } as ApiErrorDetails);
-  //   }
-  // },
-  // error: (err: ApiErrorDetails) => {
-  //   error(err);
-  // }
-  // };
+  /**
+   * Handle API empty response
+   */
+  private handleEmptyResponse(): null {
+    return null;
+  }
 
   constructor(
     protected http: HttpClient,
-    private apiRoot: string,
-    _new: new (_: object) => T) {
+    config: AppConfigService,
+    classBuilder: new (_: object) => T
+  ) {
+    this.apiRoot = config.getConfig().environment.apiRoot;
+
+    // Create pure functions to prevent rebinding of 'this'
+
+    this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
+      if (response.data instanceof Array) {
+        return response.data.map(x => new classBuilder(x));
+      } else {
+        return [new classBuilder(response.data)];
+      }
+    };
 
     this.handleSingleResponse = (response: ApiResponse<T>) => {
       if (response.data instanceof Array) {
-        throw new Error("Received an array of API results when only a single result was expected");
+        throw new Error(
+          "Received an array of API results when only a single result was expected"
+        );
       }
 
-      return new _new(response.data);
-    };
-
-    this.handleResponse = (response: ApiResponse<T>): T[] => {
-      if (response.data instanceof Array) {
-        return response.data.map(x => new _new(x));
-      } else {
-        return [new _new(response.data)];
-      }
+      return new classBuilder(response.data);
     };
   }
 
@@ -98,44 +94,75 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Retrieve user details from session cookie. Null if no user exists.
    */
   public getSessionUser(): SessionUser | null {
-    try {
-      return new SessionUser(
-        JSON.parse(sessionStorage.getItem(this.userSessionStorage))
-      );
-    } catch (Exception) {
-      // FIX: (AT) never swallow exceptions!
-      return null;
+    // Will return null if no item exists
+    const userData = sessionStorage.getItem(this.userSessionStorage);
+
+    if (userData) {
+      // Try create session user
+      try {
+        return new SessionUser(JSON.parse(userData));
+      } catch (err) {
+        console.error("Failed to create session user: ", err);
+        this.clearSessionUser();
+      }
     }
+
+    return null;
   }
 
   /**
-   * Get response from details route
+   * Add user details to the session storage
+   * @param user User details
+   */
+  protected setSessionUser(user: SessionUser): void {
+    sessionStorage.setItem(this.userSessionStorage, JSON.stringify(user));
+  }
+
+  /**
+   * Clear session storage
+   */
+  protected clearSessionUser(): void {
+    sessionStorage.removeItem(this.userSessionStorage);
+  }
+
+  /**
+   * Get response from list route
+   * @param path API path
+   */
+  protected apiList(path: string) {
+    return this.httpGet(path).pipe(map(this.handleCollectionResponse));
+  }
+
+  /**
+   * Get response from filter route
    * @param path API path
    * @param filters API filters
    */
-  protected apiList(path: string) {
-    return this.httpGet(path).pipe(map(this.handleResponse));
-  }
-
   protected apiFilter(path: string, filters: Filters) {
-    return this.httpPost(path, filters).pipe(map(this.handleResponse));
+    return this.httpPost(path, filters).pipe(
+      map(this.handleCollectionResponse)
+    );
   }
 
+  /**
+   * Get response from show route
+   * @param path API path
+   */
   protected apiShow(path: string) {
     return this.httpGet(path).pipe(map(this.handleSingleResponse));
   }
 
   /**
-   * Create request for API route
+   * Get response from create route
    * @param path API path
    * @param body Request body
    */
-  protected apiCreate(path: string, body: T) {
-    return this.httpPost(path, body as object).pipe(map(this.handleSingleResponse));
+  protected apiCreate(path: string, body: object) {
+    return this.httpPost(path, body).pipe(map(this.handleSingleResponse));
   }
 
   /**
-   * Update request for API route
+   * Get response from update route
    * @param path API path
    * @param body Request body
    */
@@ -144,11 +171,11 @@ export abstract class BawApiService<T extends AbstractModel> {
   }
 
   /**
-   * Delete request for API route
+   * Get response from destroy route
    * @param path API path
    */
   protected apiDestroy(path: string) {
-    return this.httpDelete(path).pipe(map(this.handleSingleResponse));
+    return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
   }
 
   /**
@@ -165,8 +192,8 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
-  protected httpDelete(path: string): Observable<ApiResponse<T>> {
-    return this.http.delete<ApiResponse<T>>(this.getPath(path));
+  protected httpDelete(path: string): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(this.getPath(path));
   }
 
   /**
@@ -196,11 +223,10 @@ export abstract class BawApiService<T extends AbstractModel> {
   private getPath(path: string): string {
     return this.apiRoot + path;
   }
-
 }
 
 /**
- * Default filter for routes
+ * Filter metadata from api response
  */
 export interface Filters {
   filter?: any;
@@ -223,6 +249,9 @@ export interface Filters {
   };
 }
 
+/**
+ * Metadata from api response
+ */
 export interface Meta extends Filters {
   status: number;
   message: string;

@@ -20,6 +20,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
@@ -50,7 +51,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   isAction = isButton;
 
   constructor(
-    private api: BawApiService,
+    private api: SecurityService,
     private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}

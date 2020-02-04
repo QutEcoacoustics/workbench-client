@@ -1,5 +1,3 @@
-import { type } from "os";
-
 /**
  * Templates a string by substituting placeholders for tokens later in execution.
  * It is designed to work as the tag function for tagged interpolated strings.

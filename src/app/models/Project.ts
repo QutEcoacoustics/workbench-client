@@ -45,7 +45,6 @@ export class Project extends AbstractModel implements ProjectInterface {
   public readonly description?: Description;
 
   constructor(project: ProjectInterface) {
-
     super(project);
 
     // TODO: most of these are redundant - reimplement with properties?
@@ -68,7 +67,6 @@ export class Project extends AbstractModel implements ProjectInterface {
     this.ownerId = project.ownerId;
     this.description = project.description;
     this.siteIds = new Set(project.siteIds);
-
   }
 
   get projectUrl(): string {
@@ -77,6 +75,7 @@ export class Project extends AbstractModel implements ProjectInterface {
 
   /**
    * Generate card-item details
+   * TODO Extract this out, should not be implemented here
    */
   get card(): Card {
     return {

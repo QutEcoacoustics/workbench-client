@@ -1,7 +1,6 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Url } from "url";
 
 export let APP_CONFIG = new InjectionToken("app.config");
 
@@ -11,6 +10,9 @@ export function appInitializerFn(appConfig: AppConfigService) {
 
 @Injectable()
 export class AppConfigService {
+  /**
+   * App external config
+   */
   private appConfig: Configuration = undefined;
 
   /**
@@ -47,7 +49,9 @@ export class AppConfigService {
         this.appConfig = null;
         return null;
       }
-    ).finally(() => this.loading = undefined);
+    ).finally(() => {
+      this.loading = undefined;
+    });
 
     return this.loading;
   }
@@ -57,17 +61,8 @@ export class AppConfigService {
    * Returned undefined if config has not loaded yet.
    * Returns null if an error has occurred
    */
-  get config(): Configuration {
+  getConfig(): Configuration {
     return this.appConfig;
-  }
-
-  /**
-   * Get the application config.
-   * Will load if not yet loaded.
-   * Returns null if an error has occurred
-   */
-  getConfig(): Promise<Configuration> {
-    return this.appConfig !== undefined ? Promise.resolve(this.appConfig) : this.loadAppConfig();
   }
 
   /**
@@ -91,9 +86,15 @@ export class AppConfigService {
   }
 }
 
+/**
+ * Retrieve app external config
+ * @param config Config location
+ * @param dataFunc Handle config
+ * @param catchFunc Handle failure
+ */
 export async function retrieveAppConfig(
   config: string,
-  dataFunc: (data: any) => Configuration,
+  dataFunc: (data: Configuration) => Configuration,
   catchFunc: (err: any) => null
 ) {
   return await fetch(config)

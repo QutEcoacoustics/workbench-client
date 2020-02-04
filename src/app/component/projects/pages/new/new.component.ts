@@ -62,11 +62,13 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 
     this.api
-      .new($event)
+      .create($event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

@@ -100,7 +100,7 @@ export class DeleteComponent extends PageComponent
     // of component onDestroy.
     this.formLoading = true;
     this.api
-      .delete(this.projectId)
+      .destroy(this.projectId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {

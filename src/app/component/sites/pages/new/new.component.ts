@@ -100,7 +100,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.sitesApi.new(params.projectId, input);
+          return this.sitesApi.create(input, params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )

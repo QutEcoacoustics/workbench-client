@@ -35,15 +35,13 @@ describe("AboutCreditsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/credits.html"
-    );
+    httpMock.expectOne(config.getConfig.environment.cmsRoot + "/credits.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/credits.html"
+      config.getConfig.environment.cmsRoot + "/credits.html"
     );
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");

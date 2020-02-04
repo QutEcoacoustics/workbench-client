@@ -10,6 +10,7 @@ import {
   TimezoneInformation,
   UserName
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A user model.
@@ -144,7 +145,8 @@ export class User implements UserInterface {
 /**
  * A user model for the website user
  */
-export class SessionUser implements SessionUserInterface {
+export class SessionUser extends AbstractModel implements SessionUserInterface {
+  public readonly kind: "SessionUser" = "SessionUser";
   public readonly authToken: AuthToken;
   public readonly userName: UserName;
 
@@ -152,6 +154,8 @@ export class SessionUser implements SessionUserInterface {
    * Constructor
    */
   constructor(user: SessionUserInterface) {
+    super(user);
+
     this.authToken = user.authToken;
     this.userName = user.userName;
   }

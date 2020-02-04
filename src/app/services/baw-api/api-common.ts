@@ -6,7 +6,9 @@ import { BawApiService, Filters } from "./base-api.service";
 
 export type IdOr<T extends AbstractModel> = T | number;
 export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
-export type IdParamOptional<T extends AbstractModel> = (_: IdOr<T> | Empty) => string;
+export type IdParamOptional<T extends AbstractModel> = (
+  _: IdOr<T> | Empty
+) => string;
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
   if (x === Empty) {
     return Empty;
@@ -14,7 +16,9 @@ export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
 
   return (x instanceof AbstractModel ? x.id : x).toString();
 }
-export function param(x: Param) { return x; }
+export function param(x: Param) {
+  return x;
+}
 export function option(x?: "new" | "filter" | "") {
   if (x === "new") {
     return "/new";
@@ -51,7 +55,11 @@ export interface ApiFilter<M extends AbstractModel, P extends any[]> {
 /**
  * API Show functionality
  */
-export interface ApiShow<M extends AbstractModel, P extends any[], I extends IdOr<M>> {
+export interface ApiShow<
+  M extends AbstractModel,
+  P extends any[],
+  I extends IdOr<M>
+> {
   /**
    * Get individual model
    * @param args URL parameter values
@@ -83,30 +91,46 @@ export interface ApiUpdate<M extends AbstractModel, P extends any[]> {
 /**
  * API Delete functionality
  */
-export interface ApiDestroy<M extends AbstractModel, P extends any[], I extends IdOr<M>> {
+export interface ApiDestroy<
+  M extends AbstractModel,
+  P extends any[],
+  I extends IdOr<M>
+> {
   /**
    * destroy  individual model
    * @param args URL parameter values
    */
-  destroy(model: I, ...urlParameters: P): Observable<M>;
+  destroy(model: I, ...urlParameters: P): Observable<null>;
 }
 
 /**
  * Api Class with all abilities enabled
  */
-export abstract class StandardApi<
-  M extends AbstractModel,
-  P extends any[]> extends BawApiService<M> implements
-  ApiList<M, P>,
-  ApiFilter<M, P>,
-  ApiShow<M, P, IdOr<M>>,
-  ApiCreate<M, P>,
-  ApiUpdate<M, P>,
-  ApiDestroy<M, P, IdOr<M>> {
+export abstract class StandardApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements
+    ApiList<M, P>,
+    ApiFilter<M, P>,
+    ApiShow<M, P, IdOr<M>>,
+    ApiCreate<M, P>,
+    ApiUpdate<M, P>,
+    ApiDestroy<M, P, IdOr<M>> {
   abstract list(...urlParameters: P): Observable<M[]>;
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract create(model: M, ...urlParameters: P): Observable<M>;
-  abstract update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
-  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract update(
+    model: PartialWith<M, "id">,
+    ...urlParameters: P
+  ): Observable<M>;
+  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<null>;
+}
+
+/**
+ * Api class with only the show route enabled
+ */
+export abstract class ShowApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements ApiShow<M, P, IdOr<M>> {
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
 }

@@ -1,10 +1,20 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
-import { Site, SiteInterface } from "src/app/models/Site";
-import { Empty, Filter, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "./api-common";
+import { Site } from "src/app/models/Site";
+import { AppConfigService } from "../app-config/app-config.service";
+import {
+  Empty,
+  Filter,
+  id,
+  IdOr,
+  IdParam,
+  IdParamOptional,
+  option,
+  StandardApi
+} from "./api-common";
 import { Filters } from "./base-api.service";
 
 const projectId: IdParam<Project> = id;
@@ -15,9 +25,8 @@ const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`
   providedIn: "root"
 })
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
-
-  constructor(http: HttpClient, apiRoot: string) {
-    super(http, apiRoot, Site);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, Site);
   }
 
   list(project: IdOr<Project>): Observable<Site[]> {
@@ -35,7 +44,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, Empty), model);
   }
-  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
+  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<null> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
@@ -46,9 +55,8 @@ const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
   providedIn: "root"
 })
 export class SitesServiceShallow extends StandardApi<Site, []> {
-
-  constructor(http: HttpClient, apiRoot: string) {
-    super(http, apiRoot, Site);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, Site);
   }
 
   list(): Observable<Site[]> {
@@ -66,7 +74,7 @@ export class SitesServiceShallow extends StandardApi<Site, []> {
   update(model: Site): Observable<Site> {
     return this.apiUpdate(endpointShallow(model, Empty), model);
   }
-  destroy(model: IdOr<Site>): Observable<Site> {
+  destroy(model: IdOr<Site>): Observable<null> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
 }

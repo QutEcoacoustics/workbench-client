@@ -4,6 +4,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
 import data from "./register.json";
 
@@ -36,7 +37,7 @@ export class RegisterComponent extends PageComponent
   errorDetails: ApiErrorDetails;
   loading: boolean;
 
-  constructor(private api: BawApiService) {
+  constructor(private api: SecurityService) {
     super();
   }
 

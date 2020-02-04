@@ -99,13 +99,15 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 
-    const input = flattenFields($event);
+    const site = { id: this.siteId, ...flattenFields($event) };
 
     this.api
-      .update(input, this.projectId, this.siteId)
+      .update(site, this.projectId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

@@ -3,7 +3,16 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
-import { Empty, Filter, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "./api-common";
+import { AppConfigService } from "../app-config/app-config.service";
+import {
+  Empty,
+  Filter,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi
+} from "./api-common";
 import { Filters } from "./base-api.service";
 
 const projectId: IdParamOptional<Project> = id;
@@ -16,9 +25,8 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
   providedIn: "root"
 })
 export class ProjectsService extends StandardApi<Project, []> {
-
-  constructor(http: HttpClient, apiRoot: string) {
-    super(http, apiRoot, Project);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, Project);
   }
 
   list(): Observable<Project[]> {
@@ -36,7 +44,7 @@ export class ProjectsService extends StandardApi<Project, []> {
   update(model: Project): Observable<Project> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Project>): Observable<Project> {
+  destroy(model: IdOr<Project>): Observable<null> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }
