@@ -11,7 +11,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  StandardApi
+  ReadonlyApi
 } from "./api-common";
 import { Filters } from "./base-api.service";
 
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 @Injectable({
   providedIn: "root"
 })
-export class AccountService extends StandardApi<User, []> {
+export class AccountService extends ReadonlyApi<User, []> {
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config, User);
   }
@@ -34,14 +34,5 @@ export class AccountService extends StandardApi<User, []> {
   }
   show(model: IdOr<User>): Observable<User> {
     return this.apiShow(endpoint(model, Empty));
-  }
-  create(model: User): Observable<User> {
-    return this.apiCreate(endpoint(model, Empty), model);
-  }
-  update(model: User): Observable<User> {
-    return this.apiUpdate(endpoint(model, Empty), model);
-  }
-  destroy(model: IdOr<User>): Observable<null> {
-    return this.apiDestroy(endpoint(model, Empty));
   }
 }

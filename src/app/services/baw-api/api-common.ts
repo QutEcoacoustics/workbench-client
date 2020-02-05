@@ -119,3 +119,11 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
   ): Observable<M>;
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<null>;
 }
+
+export abstract class ReadonlyApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P, IdOr<M>> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+}
