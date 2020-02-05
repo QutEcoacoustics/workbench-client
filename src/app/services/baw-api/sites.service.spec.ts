@@ -628,12 +628,6 @@ describe("SitesService", () => {
       tick(100);
     }));
 
-    xit("should handle response with image", fakeAsync(() => {}));
-    xit("should handle response with location obfuscated", fakeAsync(() => {}));
-    xit("should handle response with custom location", fakeAsync(() => {}));
-    xit("should handle response with timezone information", fakeAsync(() => {}));
-    xit("should handle response with all inputs", fakeAsync(() => {}));
-
     it("should handle error", fakeAsync(() => {
       const siteModel = new Site({
         id: 1,
@@ -797,11 +791,7 @@ describe("SitesService", () => {
       tick(100);
     }));
 
-    xit("should handle response with image", fakeAsync(() => {}));
-    xit("should handle response with location obfuscated", fakeAsync(() => {}));
-    xit("should handle response with custom location", fakeAsync(() => {}));
-    xit("should handle response with timezone information", fakeAsync(() => {}));
-    xit("should handle response with all inputs", fakeAsync(() => {}));
+    // TODO Write tests for all input types
 
     it("should handle error", fakeAsync(() => {
       const siteModel = new Site({
