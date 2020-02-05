@@ -7,10 +7,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
-import { ApiCommon } from "./api-common";
 import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
-import { MockApiCommon } from "./mock/api-commonMock";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { UserService } from "./user.service";
 
@@ -23,8 +21,7 @@ describe("UserService", () => {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
-        { provide: BawApiService, useClass: MockBawApiService },
-        { provide: ApiCommon, useClass: MockApiCommon }
+        { provide: BawApiService, useClass: MockBawApiService }
       ]
     });
 

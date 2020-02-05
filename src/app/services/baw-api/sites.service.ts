@@ -38,8 +38,8 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.apiShow(endpoint(project, model, Empty));
   }
-  create(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiCreate(endpoint(project, model, Empty), model);
+  create(model: object, project: IdOr<Project>): Observable<Site> {
+    return this.apiCreate(endpoint(project, Empty, Empty), model);
   }
   update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, Empty), model);
@@ -68,8 +68,8 @@ export class SitesServiceShallow extends StandardApi<Site, []> {
   show(model: IdOr<Site>): Observable<Site> {
     return this.apiShow(endpointShallow(model, Empty));
   }
-  create(model: Site): Observable<Site> {
-    return this.apiCreate(endpointShallow(model, Empty), model);
+  create(model: object): Observable<Site> {
+    return this.apiCreate(endpointShallow(Empty, Empty), model);
   }
   update(model: Site): Observable<Site> {
     return this.apiUpdate(endpointShallow(model, Empty), model);

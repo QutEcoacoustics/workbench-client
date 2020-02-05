@@ -36,14 +36,14 @@ describe("AboutDisclaimersComponent", () => {
 
   it("should create", () => {
     httpMock.expectOne(
-      config.getConfig.environment.cmsRoot + "/disclaimers.html"
+      config.getConfig().environment.cmsRoot + "/disclaimers.html"
     );
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      config.getConfig.environment.cmsRoot + "/disclaimers.html"
+      config.getConfig().environment.cmsRoot + "/disclaimers.html"
     );
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");

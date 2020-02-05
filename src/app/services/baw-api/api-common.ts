@@ -125,12 +125,3 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
   ): Observable<M>;
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<null>;
 }
-
-/**
- * Api class with only the show route enabled
- */
-export abstract class ShowApi<M extends AbstractModel, P extends any[]>
-  extends BawApiService<M>
-  implements ApiShow<M, P, IdOr<M>> {
-  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
-}
