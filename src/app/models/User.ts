@@ -39,7 +39,7 @@ export interface SessionUserInterface {
  * A user model.
  */
 export class User extends AbstractModel implements UserInterface {
-  public readonly kind: "User";
+  public readonly kind: "User" = "User";
   public readonly id?: Id;
   public readonly userName?: UserName;
   public readonly timezoneInformation?: TimezoneInformation;
@@ -53,20 +53,12 @@ export class User extends AbstractModel implements UserInterface {
   constructor(user: UserInterface) {
     super(user);
 
-    this.kind = "User";
-
-    this.id = user.id;
     this.userName = user.userName || "Deleted User";
-    this.timezoneInformation = user.timezoneInformation;
     this.lastSeenAt = user.lastSeenAt
       ? DateTime.fromISO(user.lastSeenAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.preferences = user.preferences;
-    this.isConfirmed = user.isConfirmed;
-    this.rolesMask = user.rolesMask;
-    this.rolesMaskNames = user.rolesMaskNames;
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {

@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
-import { Site, SiteInterface } from "src/app/models/Site";
+import { Site } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
 import {
   Empty,

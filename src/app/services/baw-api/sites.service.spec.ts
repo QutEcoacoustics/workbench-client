@@ -48,7 +48,7 @@ describe("SitesService", () => {
   ) {
     spyOn<any>(service as any, func).and.callFake((path: string) => {
       expect(path).toBe(url);
-      const subject = new Subject<Site[]>();
+      const subject = new Subject();
 
       setTimeout(() => {
         subject.error(error);
