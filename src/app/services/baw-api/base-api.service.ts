@@ -258,7 +258,7 @@ export interface Filters {
     include: string[];
     exclude: string[];
   };
-  sort?: {
+  sorting?: {
     orderBy: string;
     direction: "desc" | "asc";
   };

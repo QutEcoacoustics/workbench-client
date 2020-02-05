@@ -45,7 +45,11 @@ describe("BawApiService", () => {
   let config: AppConfigService;
   let httpMock: HttpTestingController;
 
-  const okMeta = { status: 200, message: "OK" } as Meta;
+  const singleMeta = {
+    status: 200,
+    message: "OK"
+  } as Meta;
+  let multiMeta: Meta;
   const errorMeta = {
     status: 401,
     message: "Unauthorized",
@@ -155,6 +159,26 @@ describe("BawApiService", () => {
     Object.defineProperty(window, "sessionStorage", {
       value: mockSessionStorage
     });
+
+    multiMeta = {
+      status: 200,
+      message: "OK",
+      sorting: {
+        orderBy: "name",
+        direction: "asc"
+      },
+      paging: {
+        page: 1,
+        items: 1,
+        total: 1,
+        maxPage: 1,
+        current:
+          config.getConfig().environment.apiRoot +
+          "/projects?direction=asc&items=25&order_by=name&page=1",
+        previous: null,
+        next: null
+      }
+    };
   });
 
   afterEach(() => {
@@ -246,7 +270,7 @@ describe("BawApiService", () => {
 
         it("should return single response", () => {
           const response = {
-            meta: okMeta,
+            meta: singleMeta,
             data: singleResponse
           } as ApiResponse<MockModel>;
 
@@ -261,7 +285,7 @@ describe("BawApiService", () => {
 
         it("should return multi response", () => {
           const response = {
-            meta: okMeta,
+            meta: singleMeta,
             data: [singleResponse]
           } as ApiResponse<MockModel[]>;
 
@@ -308,7 +332,7 @@ describe("BawApiService", () => {
 
         it("should complete on success", done => {
           const response = {
-            meta: okMeta,
+            meta: singleMeta,
             data: singleResponse
           } as ApiResponse<MockModel>;
 
@@ -366,35 +390,38 @@ describe("BawApiService", () => {
   });
 
   describe("API Request Methods", () => {
+    function errorRequest(
+      method: "httpGet" | "httpDelete" | "httpPost" | "httpPatch",
+      error: ApiErrorDetails
+    ) {
+      return spyOn(service as any, method).and.callFake(() => {
+        const subject = new Subject<ApiResponse<MockModel[]>>();
+        subject.error(error);
+        return subject;
+      });
+    }
+    function successRequest<T>(
+      method: "httpGet" | "httpDelete" | "httpPost" | "httpPatch",
+      response: ApiResponse<T>
+    ): jasmine.Spy {
+      return spyOn(service as any, method).and.callFake(() => {
+        const subject = new BehaviorSubject<ApiResponse<T>>(response);
+
+        setTimeout(() => {
+          subject.complete();
+        }, 10);
+
+        return subject;
+      });
+    }
+
     describe("apiList", () => {
-      function successRequest(response: ApiResponse<MockModel[]>): jasmine.Spy {
-        return spyOn(service as any, "httpGet").and.callFake(() => {
-          const subject = new BehaviorSubject<ApiResponse<MockModel[]>>(
-            response
-          );
-
-          setTimeout(() => {
-            subject.complete();
-          }, 10);
-
-          return subject;
-        });
-      }
-
-      function errorRequest(error: ApiErrorDetails) {
-        return spyOn(service as any, "httpGet").and.callFake(() => {
-          const subject = new Subject<ApiResponse<MockModel[]>>();
-          subject.error(error);
-          return subject;
-        });
-      }
-
       it("should call httpGet", () => {
         const response = {
-          meta: okMeta,
+          meta: multiMeta,
           data: []
         } as ApiResponse<MockModel[]>;
-        const spy = successRequest(response);
+        const spy = successRequest("httpGet", response);
 
         service["apiList"]("/broken_link").subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link");
@@ -402,10 +429,10 @@ describe("BawApiService", () => {
 
       it("should handle empty response", () => {
         const response = {
-          meta: okMeta,
+          meta: multiMeta,
           data: []
         } as ApiResponse<MockModel[]>;
-        successRequest(response);
+        successRequest("httpGet", response);
 
         service["apiList"]("/broken_link").subscribe(data => {
           expect(data).toEqual([]);
@@ -414,10 +441,10 @@ describe("BawApiService", () => {
 
       it("should handle response", () => {
         const response = {
-          meta: okMeta,
+          meta: multiMeta,
           data: multiResponse
         } as ApiResponse<MockModel[]>;
-        successRequest(response);
+        successRequest("httpGet", response);
 
         service["apiList"]("/broken_link").subscribe(data => {
           expect(data).toEqual(
@@ -427,7 +454,7 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest(errorResponse);
+        errorRequest("httpGet", errorResponse);
 
         service["apiList"]("/broken_link").subscribe(
           shouldNotSucceed,
@@ -438,7 +465,7 @@ describe("BawApiService", () => {
       });
 
       it("should handle error info response", () => {
-        errorRequest(errorInfoResponse);
+        errorRequest("httpGet", errorInfoResponse);
 
         service["apiList"]("/broken_link").subscribe(
           shouldNotSucceed,
@@ -450,12 +477,377 @@ describe("BawApiService", () => {
 
       it("should complete on success", done => {
         const response = {
-          meta: okMeta,
+          meta: multiMeta,
           data: multiResponse
         } as ApiResponse<MockModel[]>;
-        successRequest(response);
+        successRequest("httpGet", response);
 
         service["apiList"]("/broken_link").subscribe(
+          () => {},
+          shouldNotFail,
+          () => {
+            expect(true).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    describe("apiFilter", () => {
+      it("should call httpPost", () => {
+        const response = {
+          meta: multiMeta,
+          data: multiResponse
+        } as ApiResponse<MockModel[]>;
+        const spy = successRequest("httpPost", response);
+
+        service["apiFilter"]("/broken_link", {}).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {});
+      });
+
+      it("should call httpPost with body", () => {
+        const response = {
+          meta: multiMeta,
+          data: multiResponse
+        } as ApiResponse<MockModel[]>;
+        const spy = successRequest("httpPost", response);
+
+        service["apiFilter"]("/broken_link", {
+          paging: { items: 3 }
+        }).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          paging: { items: 3 }
+        });
+      });
+
+      it("should handle response", () => {
+        const response = {
+          meta: multiMeta,
+          data: multiResponse
+        } as ApiResponse<MockModel[]>;
+        successRequest("httpPost", response);
+
+        service["apiFilter"]("/broken_link", {}).subscribe(data => {
+          expect(data).toEqual([new MockModel(singleResponse)]);
+        }, shouldNotFail);
+      });
+
+      it("should handle error response", () => {
+        errorRequest("httpPost", errorResponse);
+
+        service["apiFilter"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorResponse);
+          }
+        );
+      });
+
+      it("should handle error info response", () => {
+        errorRequest("httpPost", errorInfoResponse);
+
+        service["apiFilter"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorInfoResponse);
+          }
+        );
+      });
+
+      it("should complete on success", done => {
+        const response = {
+          meta: multiMeta,
+          data: multiResponse
+        } as ApiResponse<MockModel[]>;
+        successRequest("httpPost", response);
+
+        service["apiFilter"]("/broken_link", {}).subscribe(
+          () => {},
+          shouldNotFail,
+          () => {
+            expect(true).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    describe("apiShow", () => {
+      it("should call httpGet", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpGet", response);
+
+        service["apiShow"]("/broken_link").subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link");
+      });
+
+      it("should handle response", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpGet", response);
+
+        service["apiShow"]("/broken_link").subscribe(data => {
+          expect(data).toEqual(new MockModel(singleResponse));
+        }, shouldNotFail);
+      });
+
+      it("should handle error response", () => {
+        errorRequest("httpGet", errorResponse);
+
+        service["apiShow"]("/broken_link").subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorResponse);
+          }
+        );
+      });
+
+      it("should handle error info response", () => {
+        errorRequest("httpGet", errorInfoResponse);
+
+        service["apiShow"]("/broken_link").subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorInfoResponse);
+          }
+        );
+      });
+
+      it("should complete on success", done => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpGet", response);
+
+        service["apiShow"]("/broken_link").subscribe(
+          () => {},
+          shouldNotFail,
+          () => {
+            expect(true).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    describe("apiCreate", () => {
+      it("should call httpPost", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPost", response);
+
+        service["apiCreate"]("/broken_link", {}).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {});
+      });
+
+      it("should call httpPost with body", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPost", response);
+
+        service["apiCreate"]("/broken_link", {
+          name: "Custom Name"
+        }).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          name: "Custom Name"
+        });
+      });
+
+      it("should handle response", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpPost", response);
+
+        service["apiCreate"]("/broken_link", {}).subscribe(data => {
+          expect(data).toEqual(new MockModel(singleResponse));
+        }, shouldNotFail);
+      });
+
+      it("should handle error response", () => {
+        errorRequest("httpPost", errorResponse);
+
+        service["apiCreate"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorResponse);
+          }
+        );
+      });
+
+      it("should handle error info response", () => {
+        errorRequest("httpPost", errorInfoResponse);
+
+        service["apiCreate"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorInfoResponse);
+          }
+        );
+      });
+
+      it("should complete on success", done => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpPost", response);
+
+        service["apiCreate"]("/broken_link", {}).subscribe(
+          () => {},
+          shouldNotFail,
+          () => {
+            expect(true).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    describe("apiUpdate", () => {
+      it("should call httpPatch", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPatch", response);
+
+        service["apiUpdate"]("/broken_link", {}).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {});
+      });
+
+      it("should call httpPost with body", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPatch", response);
+
+        service["apiUpdate"]("/broken_link", {
+          name: "Custom Name"
+        }).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          name: "Custom Name"
+        });
+      });
+
+      it("should handle response", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpPatch", response);
+
+        service["apiUpdate"]("/broken_link", {}).subscribe(data => {
+          expect(data).toEqual(new MockModel(singleResponse));
+        }, shouldNotFail);
+      });
+
+      it("should handle error response", () => {
+        errorRequest("httpPatch", errorResponse);
+
+        service["apiUpdate"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorResponse);
+          }
+        );
+      });
+
+      it("should handle error info response", () => {
+        errorRequest("httpPatch", errorInfoResponse);
+
+        service["apiUpdate"]("/broken_link", {}).subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorInfoResponse);
+          }
+        );
+      });
+
+      it("should complete on success", done => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpPatch", response);
+
+        service["apiUpdate"]("/broken_link", {}).subscribe(
+          () => {},
+          shouldNotFail,
+          () => {
+            expect(true).toBeTruthy();
+            done();
+          }
+        );
+      });
+    });
+
+    describe("apiDestroy", () => {
+      it("should call httpDelete", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpDelete", response);
+
+        service["apiDestroy"]("/broken_link").subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link");
+      });
+
+      it("should handle response", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpDelete", response);
+
+        service["apiDestroy"]("/broken_link").subscribe(data => {
+          expect(data).toBe(null);
+        }, shouldNotFail);
+      });
+
+      it("should handle error response", () => {
+        errorRequest("httpDelete", errorResponse);
+
+        service["apiDestroy"]("/broken_link").subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorResponse);
+          }
+        );
+      });
+
+      it("should handle error info response", () => {
+        errorRequest("httpDelete", errorInfoResponse);
+
+        service["apiDestroy"]("/broken_link").subscribe(
+          shouldNotSucceed,
+          (err: ApiErrorDetails) => {
+            expect(err).toEqual(errorInfoResponse);
+          }
+        );
+      });
+
+      it("should complete on success", done => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse
+        } as ApiResponse<MockModel>;
+        successRequest("httpDelete", response);
+
+        service["apiDestroy"]("/broken_link").subscribe(
           () => {},
           shouldNotFail,
           () => {
