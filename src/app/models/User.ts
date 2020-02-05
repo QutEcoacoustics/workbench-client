@@ -16,14 +16,13 @@ import { AbstractModel } from "./AbstractModel";
  * A user model.
  */
 export interface UserInterface {
-  kind?: "User";
-  id: Id;
-  userName: UserName;
-  rolesMask: number;
-  rolesMaskNames: string[];
+  id?: Id;
+  userName?: UserName;
+  rolesMask?: number;
+  rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageURL[];
-  lastSeenAt: DateTimeTimezone | string;
+  lastSeenAt?: DateTimeTimezone | string;
   preferences?: any;
   isConfirmed?: boolean;
 }
@@ -32,26 +31,28 @@ export interface UserInterface {
  * A user model for the website user
  */
 export interface SessionUserInterface {
-  userName: UserName;
-  authToken: AuthToken;
+  userName?: UserName;
+  authToken?: AuthToken;
 }
 
 /**
  * A user model.
  */
-export class User implements UserInterface {
+export class User extends AbstractModel implements UserInterface {
   public readonly kind: "User";
-  public readonly id: Id;
-  public readonly userName: UserName;
-  public readonly timezoneInformation: TimezoneInformation;
-  public readonly imageUrls: ImageURL[];
-  public readonly lastSeenAt: DateTimeTimezone | string;
-  public readonly preferences: any;
-  public readonly isConfirmed: boolean;
-  public readonly rolesMask: number;
-  public readonly rolesMaskNames: string[];
+  public readonly id?: Id;
+  public readonly userName?: UserName;
+  public readonly timezoneInformation?: TimezoneInformation;
+  public readonly imageUrls?: ImageURL[];
+  public readonly lastSeenAt?: DateTimeTimezone | string;
+  public readonly preferences?: any;
+  public readonly isConfirmed?: boolean;
+  public readonly rolesMask?: number;
+  public readonly rolesMaskNames?: string[];
 
   constructor(user: UserInterface) {
+    super(user);
+
     this.kind = "User";
 
     this.id = user.id;

@@ -15,7 +15,6 @@ import { AbstractModel } from "./AbstractModel";
  * A project model.
  */
 export interface ProjectInterface {
-  kind?: "Project";
   id?: Id;
   name?: Param;
   imageUrl?: string;
@@ -48,24 +47,18 @@ export class Project extends AbstractModel implements ProjectInterface {
     super(project);
 
     // TODO: most of these are redundant - reimplement with properties?
-    this.id = project.id;
-    this.name = project.name;
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
-    this.creatorId = project.creatorId;
     this.createdAt = project.createdAt
       ? DateTime.fromISO(project.createdAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.updaterId = project.updaterId;
     this.updatedAt = project.updatedAt
       ? DateTime.fromISO(project.updatedAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.ownerId = project.ownerId;
-    this.description = project.description;
     this.siteIds = new Set(project.siteIds);
   }
 

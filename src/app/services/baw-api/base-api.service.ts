@@ -1,4 +1,5 @@
 import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
@@ -18,9 +19,12 @@ export const apiReturnCodes = {
   internalServerFailure: 500
 };
 
+export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
+
 /**
  * Interface with BAW Server Rest API
  */
+@Injectable()
 export abstract class BawApiService<T extends AbstractModel> {
   /*
   Paths:
@@ -58,7 +62,7 @@ export abstract class BawApiService<T extends AbstractModel> {
   constructor(
     protected http: HttpClient,
     config: AppConfigService,
-    classBuilder: new (_: object) => T
+    @Inject(STUB_CLASS_BUILDER) classBuilder: new (_: object) => T
   ) {
     this.apiRoot = config.getConfig().environment.apiRoot;
 

@@ -16,7 +16,6 @@ import { Project } from "./Project";
  * A site model.
  */
 export interface SiteInterface {
-  kind?: "Site";
   id?: Id;
   name?: Param;
   imageUrl?: string;
@@ -54,34 +53,19 @@ export class Site extends AbstractModel implements SiteInterface {
   constructor(site: SiteInterface) {
     super(site);
 
-    this.id = site.id;
-    this.name = site.name;
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
-    this.description = site.description;
     this.locationObfuscated = site.locationObfuscated || false;
     this.projectIds = new Set(site.projectIds);
-    this.creatorId = site.creatorId;
     this.createdAt = site.createdAt
       ? DateTime.fromISO(site.createdAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.updaterId = site.updaterId;
     this.updatedAt = site.updatedAt
       ? DateTime.fromISO(site.updatedAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.customLatitude = site.customLatitude;
-    this.customLongitude = site.customLongitude;
-    this.timezoneInformation = site.timezoneInformation;
-  }
-
-  getSiteUrl(project: Project): string {
-    return siteMenuItem.route.format({
-      projectId: project.id,
-      siteId: this.id
-    });
   }
 }
 

@@ -5,17 +5,17 @@ import {
   Id,
   Uuid
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * An audio recording model
  */
 export interface AudioRecordingInterface {
-  kind?: "AudioRecording";
-  id: Id;
-  uuid: Uuid;
-  recordedDate: DateTimeTimezone | string;
-  siteId: Id;
-  durationSeconds: number;
+  id?: Id;
+  uuid?: Uuid;
+  recordedDate?: DateTimeTimezone | string;
+  siteId?: Id;
+  durationSeconds?: number;
   sampleRateHertz?: number;
   channels?: number;
   bitRateBps?: number;
@@ -29,23 +29,26 @@ export interface AudioRecordingInterface {
 /**
  * An audio recording model
  */
-export class AudioRecording implements AudioRecordingInterface {
+export class AudioRecording extends AbstractModel
+  implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
-  public readonly id: Id;
-  public readonly uuid: Uuid;
-  public readonly recordedDate: DateTimeTimezone;
-  public readonly siteId: Id;
-  public readonly durationSeconds: number;
-  public readonly sampleRateHertz: number;
-  public readonly channels: number;
-  public readonly bitRateBps: number;
-  public readonly mediaType: string;
-  public readonly dataLengthBytes: number;
-  public readonly status: "ready" | "uploading" | "corrupt";
-  public readonly createdAt: DateTimeTimezone;
-  public readonly updatedAt: DateTimeTimezone;
+  public readonly id?: Id;
+  public readonly uuid?: Uuid;
+  public readonly recordedDate?: DateTimeTimezone;
+  public readonly siteId?: Id;
+  public readonly durationSeconds?: number;
+  public readonly sampleRateHertz?: number;
+  public readonly channels?: number;
+  public readonly bitRateBps?: number;
+  public readonly mediaType?: string;
+  public readonly dataLengthBytes?: number;
+  public readonly status?: "ready" | "uploading" | "corrupt";
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly updatedAt?: DateTimeTimezone;
 
   constructor(audioRecording: AudioRecordingInterface) {
+    super(audioRecording);
+
     this.kind = "AudioRecording";
 
     this.id = audioRecording.id;
