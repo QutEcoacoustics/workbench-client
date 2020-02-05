@@ -16,16 +16,16 @@ import { AbstractModel } from "./AbstractModel";
  */
 export interface ProjectInterface {
   kind?: "Project";
-  id: Id;
-  name: Param;
+  id?: Id;
+  name?: Param;
   imageUrl?: string;
-  creatorId: Id;
+  creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
   ownerId?: Id;
   description?: Description;
-  siteIds: Ids;
+  siteIds?: Ids;
 }
 
 /**
@@ -33,11 +33,11 @@ export interface ProjectInterface {
  */
 export class Project extends AbstractModel implements ProjectInterface {
   public readonly kind: "Project" = "Project";
-  public readonly id: Id;
-  public readonly name: Param;
-  public readonly imageUrl: string;
-  public readonly siteIds: Ids;
-  public readonly creatorId: Id;
+  public readonly id?: Id;
+  public readonly name?: Param;
+  public readonly imageUrl?: string;
+  public readonly siteIds?: Ids;
+  public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;

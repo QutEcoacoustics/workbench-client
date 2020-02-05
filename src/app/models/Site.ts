@@ -17,16 +17,16 @@ import { Project } from "./Project";
  */
 export interface SiteInterface {
   kind?: "Site";
-  id: Id;
-  name: Param;
+  id?: Id;
+  name?: Param;
   imageUrl?: string;
   description?: Description;
   locationObfuscated?: boolean;
-  creatorId: Id;
+  creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
-  projectIds: Ids;
+  projectIds?: Ids;
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
@@ -37,16 +37,16 @@ export interface SiteInterface {
  */
 export class Site extends AbstractModel implements SiteInterface {
   public readonly kind: "Site" = "Site";
-  public readonly id: Id;
-  public readonly name: Param;
-  public readonly imageUrl: string;
-  public readonly description: Description;
-  public readonly locationObfuscated: boolean;
-  public readonly creatorId: Id;
+  public readonly id?: Id;
+  public readonly name?: Param;
+  public readonly imageUrl?: string;
+  public readonly description?: Description;
+  public readonly locationObfuscated?: boolean;
+  public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  public readonly projectIds: Ids;
+  public readonly projectIds?: Ids;
   public readonly customLatitude?: number;
   public readonly customLongitude?: number;
   public readonly timezoneInformation?: TimezoneInformation;

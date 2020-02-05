@@ -172,7 +172,7 @@ describe("ProjectsNewComponent", () => {
 
   it("should create new project on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject");
+    spyOn(api, "create");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -189,15 +189,17 @@ describe("ProjectsNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalledWith({
-      name: "test project"
-    });
+    expect(api.create).toHaveBeenCalled();
+    expect(api.create).toHaveBeenCalledWith(
+      new Project({
+        name: "test project"
+      })
+    );
   }));
 
   it("should create new project containing emoji on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject");
+    spyOn(api, "create");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -214,15 +216,17 @@ describe("ProjectsNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalledWith({
-      name: "test project 😀"
-    });
+    expect(api.create).toHaveBeenCalled();
+    expect(api.create).toHaveBeenCalledWith(
+      new Project({
+        name: "test project 😀"
+      })
+    );
   }));
 
   it("should create new project on submit with description", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject");
+    spyOn(api, "create");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -245,11 +249,13 @@ describe("ProjectsNewComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalled();
-    expect(api.newProject).toHaveBeenCalledWith({
-      name: "test project",
-      description: "test description"
-    });
+    expect(api.create).toHaveBeenCalled();
+    expect(api.create).toHaveBeenCalledWith(
+      new Project({
+        name: "test project",
+        description: "test description"
+      })
+    );
   }));
 
   xit("should create new project on submit with image", fakeAsync(() => {}));
@@ -257,7 +263,7 @@ describe("ProjectsNewComponent", () => {
 
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -291,7 +297,7 @@ describe("ProjectsNewComponent", () => {
 
   it("should show error on duplicate project name", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -337,7 +343,7 @@ describe("ProjectsNewComponent", () => {
 
   it("should show error on unauthorized", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -375,7 +381,7 @@ describe("ProjectsNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -407,7 +413,7 @@ describe("ProjectsNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -441,7 +447,7 @@ describe("ProjectsNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -471,7 +477,7 @@ describe("ProjectsNewComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "newProject").and.callFake(() => {
+    spyOn(api, "create").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {

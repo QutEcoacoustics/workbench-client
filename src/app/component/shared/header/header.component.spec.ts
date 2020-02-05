@@ -225,7 +225,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -264,7 +264,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -303,7 +303,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -372,7 +372,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -406,7 +406,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -453,7 +453,7 @@ describe("HeaderComponent", () => {
 
       return subject;
     });
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -500,7 +500,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     router.navigate = spy;
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -549,7 +549,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     spyOn(router, "navigate").and.stub();
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -607,7 +607,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     spyOn(router, "navigate").and.stub();
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {

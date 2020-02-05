@@ -35,7 +35,7 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should display loading animation", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       return new Subject();
     });
 
@@ -48,7 +48,7 @@ describe("ProjectsListComponent", () => {
   }));
 
   it("should remove loading animation on project load", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -77,7 +77,7 @@ describe("ProjectsListComponent", () => {
   }));
 
   it("should handle zero projects", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -97,7 +97,7 @@ describe("ProjectsListComponent", () => {
   }));
 
   it("should display one project", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -131,7 +131,7 @@ describe("ProjectsListComponent", () => {
   }));
 
   it("should display multiple projects", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -191,7 +191,7 @@ describe("ProjectsListComponent", () => {
   }));
 
   it("should handle api error", fakeAsync(() => {
-    spyOn(api, "getProjects").and.callFake(() => {
+    spyOn(api, "list").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {

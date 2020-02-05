@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
+import { Site, SiteInterface } from "src/app/models/Site";
 import { AppConfigService } from "../app-config/app-config.service";
 import {
   Empty,
@@ -38,7 +38,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.apiShow(endpoint(project, model, Empty));
   }
-  create(model: object, project: IdOr<Project>): Observable<Site> {
+  create(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiCreate(endpoint(project, Empty, Empty), model);
   }
   update(model: Site, project: IdOr<Project>): Observable<Site> {
@@ -68,7 +68,7 @@ export class SitesServiceShallow extends StandardApi<Site, []> {
   show(model: IdOr<Site>): Observable<Site> {
     return this.apiShow(endpointShallow(model, Empty));
   }
-  create(model: object): Observable<Site> {
+  create(model: Site): Observable<Site> {
     return this.apiCreate(endpointShallow(Empty, Empty), model);
   }
   update(model: Site): Observable<Site> {

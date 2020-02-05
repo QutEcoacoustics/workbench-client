@@ -8,10 +8,11 @@ import {
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { SessionUser } from "src/app/models/User";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
@@ -341,7 +342,9 @@ describe("LoginComponent", () => {
   it("should login account on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();
@@ -378,7 +381,7 @@ describe("LoginComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     spyOn(securityService, "signIn").and.callFake(() => {
-      const subject = new BehaviorSubject(false);
+      const subject = new Subject<SessionUser>();
 
       subject.error({
         status: 401,
@@ -457,7 +460,9 @@ describe("LoginComponent", () => {
       expect(button).toBeTruthy();
       expect(button.disabled).toBeTruthy();
 
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
 
     expect(button).toBeTruthy();
@@ -485,7 +490,9 @@ describe("LoginComponent", () => {
     spyOn(router, "navigate").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();

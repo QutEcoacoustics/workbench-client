@@ -62,7 +62,7 @@ describe("SitesDeleteComponent", () => {
   });
 
   it("should hide loading spinner on form load", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -91,7 +91,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -118,7 +118,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should getProject with route param id", fakeAsync(() => {
-    const getSiteSpy = spyOn(api, "getProjectSite").and.callFake(() => {
+    const getSiteSpy = spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -144,7 +144,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should handle unauthorized", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -174,7 +174,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should handle not found", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -200,7 +200,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form with project name in title", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -228,7 +228,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form with red delete button", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -257,7 +257,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should delete project on submit", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -275,11 +275,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    const deleteSpy = spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    const deleteSpy = spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -302,7 +302,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should navigate on successful submit", fakeAsync(() => {
     const navigateSpy = spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -320,11 +320,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -350,7 +350,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should display form error on failure to submit", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -368,8 +368,8 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
         subject.error({
@@ -401,7 +401,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should disable submit button while submitting", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -419,11 +419,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -446,7 +446,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should re-enable submit button after submission success", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -464,11 +464,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -491,7 +491,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should re-enable submit button after submission failure", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -509,8 +509,8 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
         subject.error({

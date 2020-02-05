@@ -7,7 +7,6 @@ import {
 } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
@@ -37,7 +36,6 @@ class TestErrorHandlerComponent implements OnInit {
 }
 
 describe("ErrorHandlerComponent", () => {
-  let api: BawApiService;
   let component: ErrorHandlerComponent;
   let fixture: ComponentFixture<ErrorHandlerComponent>;
 
@@ -49,7 +47,6 @@ describe("ErrorHandlerComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
-    api = TestBed.get(BawApiService);
 
     component = fixture.componentInstance;
   });

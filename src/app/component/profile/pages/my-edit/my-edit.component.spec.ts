@@ -36,7 +36,7 @@ describe("MyProfileEditComponent", () => {
   });
 
   it("should create", fakeAsync(() => {
-    spyOn(api, "getMyAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {

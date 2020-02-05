@@ -13,8 +13,8 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
 import { mockSessionStorage } from "src/app/services/baw-api/mock/sessionStorageMock";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -175,7 +175,7 @@ describe("MenuComponent", () => {
   });
 
   it("should create internal link with user dependant tooltip", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(
       () =>
         new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
@@ -314,7 +314,7 @@ describe("MenuComponent", () => {
   });
 
   it("should create external link with user dependant tooltip", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(
       () =>
         new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
@@ -451,7 +451,7 @@ describe("MenuComponent", () => {
   });
 
   it("should create action button with user dependant tooltip", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(
       () =>
         new SessionUser({ userName: "username", authToken: "xxxxxxxxxxxxxxx" })
@@ -1558,7 +1558,7 @@ describe("MenuComponent", () => {
   });
 
   it("filter should not provide user details on action menu", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(() => null);
 
     component.menuType = "action";
@@ -1591,7 +1591,7 @@ describe("MenuComponent", () => {
   });
 
   it("filter should not provide user details on secondary menu", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(() => null);
 
     component.menuType = "secondary";
@@ -1624,7 +1624,7 @@ describe("MenuComponent", () => {
   });
 
   it("filter should provide user details when logged in", () => {
-    const api: BawApiService = TestBed.get(BawApiService);
+    const api: SecurityService = TestBed.get(SecurityService);
     spyOn(api, "getSessionUser").and.callFake(
       () =>
         new SessionUser({

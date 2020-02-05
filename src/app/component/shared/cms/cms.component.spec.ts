@@ -6,12 +6,12 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
-  let api: BawApiService;
+  let api: SecurityService;
   let httpMock: HttpTestingController;
   let config: AppConfigService;
   let component: CmsComponent;
@@ -29,7 +29,7 @@ describe("CmsComponent", () => {
     fixture = TestBed.createComponent(CmsComponent);
     httpMock = TestBed.get(HttpTestingController);
     config = TestBed.get(AppConfigService);
-    api = TestBed.get(BawApiService);
+    api = TestBed.get(SecurityService);
     component = fixture.componentInstance;
   });
 

@@ -53,7 +53,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       subject.pipe(delay(50));
@@ -79,7 +79,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       subject.pipe(delay(50));
@@ -107,11 +107,11 @@ describe("HomeComponent", () => {
     expect(body.innerText.trim()).toBe("Test Description");
   }));
 
-  it("should handle getProjects error", fakeAsync(() => {
+  it("should handle filter error", fakeAsync(() => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -142,7 +142,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(filter => {
+    spyOn(projectApi, "filter").and.callFake(filter => {
       expect(filter).toBeTruthy();
       expect(filter).toEqual({ paging: { items: 3 } } as Filters);
 
@@ -166,11 +166,11 @@ describe("HomeComponent", () => {
     fixture.detectChanges();
   }));
 
-  it("should display empty project in list", fakeAsync(() => {
+  it("should display empty project in filter", fakeAsync(() => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -197,11 +197,11 @@ describe("HomeComponent", () => {
     expect(button).toBeTruthy();
   }));
 
-  it("should display single project in list", fakeAsync(() => {
+  it("should display single project in filter", fakeAsync(() => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -241,11 +241,11 @@ describe("HomeComponent", () => {
     expect(button).toBeTruthy();
   }));
 
-  it("should display three projects in list", fakeAsync(() => {
+  it("should display three projects in filter", fakeAsync(() => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -315,7 +315,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -349,7 +349,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake(params => {
       expect(params).toEqual({ paging: { items: 3 } } as Filters);
       const subject = new Subject<Project[]>();
 
@@ -383,7 +383,7 @@ describe("HomeComponent", () => {
 
       return subject;
     });
-    spyOn(projectApi, "getProjects").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake(params => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
