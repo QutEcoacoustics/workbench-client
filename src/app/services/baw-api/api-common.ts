@@ -20,13 +20,7 @@ export function param(x: Param) {
   return x;
 }
 export function option(x?: "new" | "filter" | "") {
-  if (x === "new") {
-    return "/new";
-  } else if (x === "filter") {
-    return "/filter";
-  } else {
-    return "";
-  }
+  return x ? x : "";
 }
 export type Empty = "";
 export const Empty = "";
