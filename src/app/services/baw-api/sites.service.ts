@@ -54,7 +54,7 @@ const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 @Injectable({
   providedIn: "root"
 })
-export class SitesServiceShallow extends StandardApi<Site, []> {
+export class ShallowSitesService extends StandardApi<Site, []> {
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config, Site);
   }
