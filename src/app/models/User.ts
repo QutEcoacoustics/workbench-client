@@ -102,12 +102,6 @@ export class User extends AbstractModel implements UserInterface {
         ];
   }
 
-  get url(): string {
-    return theirProfileMenuItem.route
-      .toString()
-      .replace(":userId", this.id.toString());
-  }
-
   /**
    * Determines if user is admin. Role mask stores user roles
    * as a power of 2 integer so that roles can be combined.
@@ -148,8 +142,5 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
    */
   constructor(user: SessionUserInterface) {
     super(user);
-
-    this.authToken = user.authToken;
-    this.userName = user.userName;
   }
 }

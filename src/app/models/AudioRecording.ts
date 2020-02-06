@@ -50,22 +50,11 @@ export class AudioRecording extends AbstractModel
     super(audioRecording);
 
     this.kind = "AudioRecording";
-
-    this.id = audioRecording.id;
-    this.uuid = audioRecording.uuid;
     this.recordedDate = audioRecording.recordedDate
       ? DateTime.fromISO(audioRecording.recordedDate as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.siteId = audioRecording.siteId;
-    this.durationSeconds = audioRecording.durationSeconds;
-    this.sampleRateHertz = audioRecording.sampleRateHertz;
-    this.channels = audioRecording.channels;
-    this.bitRateBps = audioRecording.bitRateBps;
-    this.mediaType = audioRecording.mediaType;
-    this.dataLengthBytes = audioRecording.dataLengthBytes;
-    this.status = audioRecording.status;
     this.createdAt = audioRecording.createdAt
       ? DateTime.fromISO(audioRecording.createdAt as string, {
           setZone: true

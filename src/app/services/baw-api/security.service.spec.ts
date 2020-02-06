@@ -7,8 +7,6 @@
 // import { testAppInitializer } from "src/app/app.helper";
 // import { AppConfigService } from "../app-config/app-config.service";
 // import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
-// import { BawApiService } from "./base-api.service";
-// import { MockBawApiService } from "./mock/baseApiMockService";
 // import { mockSessionStorage } from "./mock/sessionStorageMock";
 // import { SecurityService } from "./security.service";
 
@@ -27,7 +25,6 @@
 //           useClass: BawApiInterceptor,
 //           multi: true
 //         },
-//         { provide: BawApiService, useClass: MockBawApiService },
 //         SecurityService
 //       ]
 //     });
@@ -54,7 +51,7 @@
 //     expect(service.isLoggedIn()).toBeFalsy();
 //   });
 
-//   it("getUser should return null initially", () => {
+//   it("getSessionUser should return null initially", () => {
 //     expect(service.getSessionUser()).toBe(null);
 //   });
 
@@ -267,7 +264,7 @@
 //     expect(sessionStorage.getItem("user")).toBeFalsy();
 //   }));
 
-//   it("logout should set getUser to null", fakeAsync(() => {
+//   it("logout should set getSessionUser to null", fakeAsync(() => {
 //     // tslint:disable-next-line: rxjs-no-ignored-error
 //     service
 //       .signIn({ login: "username", password: "password" })

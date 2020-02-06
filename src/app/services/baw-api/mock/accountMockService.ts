@@ -3,12 +3,12 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { User } from "src/app/models/User";
 import { AppConfigService } from "../../app-config/app-config.service";
-import { StandardApi } from "../api-common";
+import { ReadonlyApi } from "../api-common";
 
 @Injectable({
   providedIn: "root"
 })
-export class AccountService extends StandardApi<User, []> {
+export class MockAccountService extends ReadonlyApi<User, []> {
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config, User);
   }
@@ -23,17 +23,5 @@ export class AccountService extends StandardApi<User, []> {
 
   public show() {
     return new Observable<User>();
-  }
-
-  public create() {
-    return new Observable<User>();
-  }
-
-  public update() {
-    return new Observable<User>();
-  }
-
-  public destroy() {
-    return new Observable<null>();
   }
 }

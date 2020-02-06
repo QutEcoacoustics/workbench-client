@@ -68,7 +68,7 @@ describe("AppComponent", () => {
     spyOn(userApi, "getSessionUser").and.callFake(() => {
       return null;
     });
-    spyOn(projectsApi, "getProjects").and.callFake(() => {
+    spyOn(projectsApi, "list").and.callFake(() => {
       const subject = new Subject();
 
       setTimeout(() => {

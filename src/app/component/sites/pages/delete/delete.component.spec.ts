@@ -117,8 +117,8 @@ describe("SitesDeleteComponent", () => {
     expect(form).toBeTruthy();
   }));
 
-  it("should getProject with route param id", fakeAsync(() => {
-    const getSiteSpy = spyOn(api, "show").and.callFake(() => {
+  it("should show with route param id", fakeAsync(() => {
+    const showSpy = spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -140,7 +140,7 @@ describe("SitesDeleteComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    expect(getSiteSpy).toHaveBeenCalledWith(5, 10);
+    expect(showSpy).toHaveBeenCalledWith(5, 10);
   }));
 
   it("should handle unauthorized", fakeAsync(() => {

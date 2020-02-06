@@ -59,11 +59,7 @@ export class Project extends AbstractModel implements ProjectInterface {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.siteIds = new Set(project.siteIds);
-  }
-
-  get projectUrl(): string {
-    return projectMenuItem.route.format({ projectId: this.id });
+    this.siteIds = new Set(project.siteIds || []);
   }
 
   /**
@@ -78,7 +74,7 @@ export class Project extends AbstractModel implements ProjectInterface {
         url: this.imageUrl,
         alt: this.name
       },
-      route: this.projectUrl
+      route: projectMenuItem.route.format({ projectId: this.id })
     };
   }
 }

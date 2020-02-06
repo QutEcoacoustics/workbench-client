@@ -55,7 +55,7 @@ export class Site extends AbstractModel implements SiteInterface {
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
-    this.projectIds = new Set(site.projectIds);
+    this.projectIds = new Set(site.projectIds || []);
     this.createdAt = site.createdAt
       ? DateTime.fromISO(site.createdAt as string, {
           setZone: true

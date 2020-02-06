@@ -45,7 +45,7 @@ describe("ProjectsEditComponent", () => {
     component = fixture.componentInstance;
     component.schema.model = {};
 
-    spyOn(api, "update").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
