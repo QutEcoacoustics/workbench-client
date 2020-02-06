@@ -10,30 +10,18 @@ import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
+import {
+  apiErrorDetails,
+  apiErrorInfoDetails,
+  shouldNotFail,
+  shouldNotSucceed
+} from "./base-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { SitesService } from "./sites.service";
 
 describe("SitesService", () => {
   let service: SitesService;
   let httpMock: HttpTestingController;
-
-  const errorResponse = {
-    status: 401,
-    message: "Unauthorized"
-  } as ApiErrorDetails;
-
-  const errorInfoResponse = {
-    status: 422,
-    message: "Record could not be saved",
-    info: {
-      name: ["has already been taken"],
-      image: [],
-      image_file_name: [],
-      image_file_size: [],
-      image_content_type: [],
-      image_updated_at: []
-    }
-  } as ApiErrorDetails;
 
   function createError(
     func:
@@ -57,14 +45,6 @@ describe("SitesService", () => {
       return subject;
     });
   }
-
-  const shouldNotSucceed = () => {
-    fail("Service should not produce a data output");
-  };
-
-  const shouldNotFail = () => {
-    fail("Service should not produce an error");
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -191,22 +171,22 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiList", "/projects/1/sites/", errorResponse);
+      createError("apiList", "/projects/1/sites/", apiErrorDetails);
 
       service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiList", "/projects/1/sites/", errorInfoResponse);
+      createError("apiList", "/projects/1/sites/", apiErrorInfoDetails);
 
       service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorInfoResponse);
+        expect(err).toEqual(apiErrorInfoDetails);
       });
 
       tick(100);
@@ -330,13 +310,13 @@ describe("SitesService", () => {
 
     it("should handle error", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/projects/1/sites/filter", errorResponse);
+      createError("apiFilter", "/projects/1/sites/filter", apiErrorDetails);
 
       service
         .filter(filters, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
@@ -344,13 +324,13 @@ describe("SitesService", () => {
 
     it("should handle error with info", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/projects/1/sites/filter", errorInfoResponse);
+      createError("apiFilter", "/projects/1/sites/filter", apiErrorInfoDetails);
 
       service
         .filter(filters, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorInfoResponse);
+          expect(err).toEqual(apiErrorInfoDetails);
         });
 
       tick(100);
@@ -490,22 +470,22 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiShow", "/projects/1/sites/1", errorResponse);
+      createError("apiShow", "/projects/1/sites/1", apiErrorDetails);
 
       service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiShow", "/projects/1/sites/1", errorInfoResponse);
+      createError("apiShow", "/projects/1/sites/1", apiErrorInfoDetails);
 
       service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorInfoResponse);
+        expect(err).toEqual(apiErrorInfoDetails);
       });
 
       tick(100);
@@ -636,13 +616,13 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createError("apiCreate", "/projects/1/sites/", errorResponse);
+      createError("apiCreate", "/projects/1/sites/", apiErrorDetails);
 
       service
         .create(siteModel, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
@@ -656,13 +636,13 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createError("apiCreate", "/projects/1/sites/", errorInfoResponse);
+      createError("apiCreate", "/projects/1/sites/", apiErrorInfoDetails);
 
       service
         .create(siteModel, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorInfoResponse);
+          expect(err).toEqual(apiErrorInfoDetails);
         });
 
       tick(100);
@@ -798,13 +778,13 @@ describe("SitesService", () => {
         id: 1
       });
 
-      createError("apiUpdate", "/projects/1/sites/1", errorResponse);
+      createError("apiUpdate", "/projects/1/sites/1", apiErrorDetails);
 
       service
         .update(siteModel, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
@@ -815,13 +795,13 @@ describe("SitesService", () => {
         id: 1
       });
 
-      createError("apiUpdate", "/projects/1/sites/1", errorInfoResponse);
+      createError("apiUpdate", "/projects/1/sites/1", apiErrorInfoDetails);
 
       service
         .update(siteModel, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorInfoResponse);
+          expect(err).toEqual(apiErrorInfoDetails);
         });
 
       tick(100);
@@ -919,26 +899,26 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiDestroy", "/projects/1/sites/1", errorResponse);
+      createError("apiDestroy", "/projects/1/sites/1", apiErrorDetails);
 
       service
         .destroy(1, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiDestroy", "/projects/1/sites/1", errorInfoResponse);
+      createError("apiDestroy", "/projects/1/sites/1", apiErrorInfoDetails);
 
       service
         .destroy(1, 1)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorInfoResponse);
+          expect(err).toEqual(apiErrorInfoDetails);
         });
 
       tick(100);

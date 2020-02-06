@@ -10,29 +10,17 @@ import { User } from "src/app/models/User";
 import { AccountService } from "./account.service";
 import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService, Filters } from "./base-api.service";
+import {
+  apiErrorDetails,
+  apiErrorInfoDetails,
+  shouldNotFail,
+  shouldNotSucceed
+} from "./base-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMockService";
 
 describe("AccountService", () => {
   let httpMock: HttpTestingController;
   let service: AccountService;
-
-  const errorResponse = {
-    status: 401,
-    message: "Unauthorized"
-  } as ApiErrorDetails;
-
-  const errorInfoResponse = {
-    status: 422,
-    message: "Record could not be saved",
-    info: {
-      name: ["has already been taken"],
-      image: [],
-      image_file_name: [],
-      image_file_size: [],
-      image_content_type: [],
-      image_updated_at: []
-    }
-  } as ApiErrorDetails;
 
   function createError(
     func:
@@ -56,14 +44,6 @@ describe("AccountService", () => {
       return subject;
     });
   }
-
-  const shouldNotSucceed = () => {
-    fail("Service should not produce a data output");
-  };
-
-  const shouldNotFail = () => {
-    fail("Service should not produce an error");
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -152,22 +132,22 @@ describe("AccountService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiList", "/user_accounts/", errorResponse);
+      createError("apiList", "/user_accounts/", apiErrorDetails);
 
       service.list().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiList", "/user_accounts/", errorInfoResponse);
+      createError("apiList", "/user_accounts/", apiErrorInfoDetails);
 
       service.list().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorInfoResponse);
+        expect(err).toEqual(apiErrorInfoDetails);
       });
 
       tick(100);
@@ -251,13 +231,13 @@ describe("AccountService", () => {
 
     it("should handle error", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/user_accounts/filter", errorResponse);
+      createError("apiFilter", "/user_accounts/filter", apiErrorDetails);
 
       service
         .filter(filters)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
@@ -265,13 +245,13 @@ describe("AccountService", () => {
 
     it("should handle error with info", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/user_accounts/filter", errorInfoResponse);
+      createError("apiFilter", "/user_accounts/filter", apiErrorInfoDetails);
 
       service
         .filter(filters)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorInfoResponse);
+          expect(err).toEqual(apiErrorInfoDetails);
         });
 
       tick(100);
@@ -361,22 +341,22 @@ describe("AccountService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiShow", "/user_accounts/1", errorResponse);
+      createError("apiShow", "/user_accounts/1", apiErrorDetails);
 
       service.show(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiShow", "/user_accounts/1", errorInfoResponse);
+      createError("apiShow", "/user_accounts/1", apiErrorInfoDetails);
 
       service.show(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorInfoResponse);
+        expect(err).toEqual(apiErrorInfoDetails);
       });
 
       tick(100);

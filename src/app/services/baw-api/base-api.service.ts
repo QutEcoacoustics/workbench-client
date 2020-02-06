@@ -37,7 +37,6 @@ export abstract class BawApiService<T extends AbstractModel> {
   */
 
   protected userSessionStorage = "baw.client.user";
-  private metaKey = Symbol("meta");
   private apiRoot: string;
 
   /**
@@ -59,6 +58,7 @@ export abstract class BawApiService<T extends AbstractModel> {
     return null;
   }
 
+  // TODO Replace config: AppConfigService with apiRoot: string
   constructor(
     protected http: HttpClient,
     config: AppConfigService,
@@ -70,9 +70,11 @@ export abstract class BawApiService<T extends AbstractModel> {
 
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
       if (response.data instanceof Array) {
-        return response.data.map(
-          model => new classBuilder(this.addMetadata(model, response.meta))
-        );
+        return response.data.map(data => {
+          const model = new classBuilder(data);
+          model.addMetadata(response.meta);
+          return model;
+        });
       } else {
         return [this.handleSingleResponse(response)];
       }
@@ -85,16 +87,10 @@ export abstract class BawApiService<T extends AbstractModel> {
         );
       }
 
-      return new classBuilder(this.addMetadata(response.data, response.meta));
+      const model = new classBuilder(response.data);
+      model.addMetadata(response.meta);
+      return model;
     };
-  }
-
-  /**
-   * Retrieve metadata from model
-   * @param model Model
-   */
-  public retrieveMetadata(model: AbstractModel): Meta {
-    return model[this.metaKey];
   }
 
   /**
@@ -237,15 +233,6 @@ export abstract class BawApiService<T extends AbstractModel> {
    */
   private getPath(path: string): string {
     return this.apiRoot + path;
-  }
-
-  /**
-   * Append metadata to model data
-   * @param model Model
-   * @param meta Metadata
-   */
-  private addMetadata(model: object, meta: Meta): object {
-    return { ...model, [this.metaKey]: meta };
   }
 }
 

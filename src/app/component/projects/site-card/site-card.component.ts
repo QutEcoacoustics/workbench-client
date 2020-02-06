@@ -14,13 +14,13 @@ import { siteMenuItem } from "../../sites/sites.menus";
     <li class="list-group-item">
       <div class="site">
         <div class="image">
-          <a id="imageLink" [routerLink]="getUrl()">
+          <a id="imageLink" [routerLink]="site.redirectPath(project)">
             <img id="image" [src]="site.imageUrl" [alt]="site.name + ' alt'" />
           </a>
         </div>
         <div class="body">
           <div class="heading">
-            <a id="nameLink" [routerLink]="getUrl()">
+            <a id="nameLink" [routerLink]="site.redirectPath(project)">
               <h5 id="name">
                 {{ site.name }}
               </h5>
@@ -29,7 +29,11 @@ import { siteMenuItem } from "../../sites/sites.menus";
 
           <ul class="nav nav-pills float-right">
             <li class="nav-item">
-              <a id="details" class="nav-link" [routerLink]="getUrl()">
+              <a
+                id="details"
+                class="nav-link"
+                [routerLink]="site.redirectPath(project)"
+              >
                 <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
                 Details
               </a>
@@ -61,11 +65,4 @@ export class SiteCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
-
-  public getUrl(): string {
-    return siteMenuItem.route.format({
-      projectId: this.project.id,
-      siteId: this.site.id
-    });
-  }
 }

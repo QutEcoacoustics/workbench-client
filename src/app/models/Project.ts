@@ -62,11 +62,24 @@ export class Project extends AbstractModel implements ProjectInterface {
     this.siteIds = new Set(project.siteIds || []);
   }
 
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new Project(obj);
+  };
+
+  // TODO Implement
+  toJSON = () => {
+    return { test: true };
+  };
+
   /**
    * Generate card-item details
    * TODO Extract this out, should not be implemented here
    */
-  get card(): Card {
+  getCard(): Card {
     return {
       title: this.name,
       description: this.description,
@@ -74,10 +87,18 @@ export class Project extends AbstractModel implements ProjectInterface {
         url: this.imageUrl,
         alt: this.name
       },
-      route: projectMenuItem.route.format({ projectId: this.id })
+      route: this.redirectPath()
     };
   }
+
+  redirectPath(): string {
+    return projectMenuItem.route.format({ projectId: this.id });
+  }
 }
+
+Project.prototype.toJSON = () => {
+  return this.toJSON();
+};
 
 export const mockProject = new Project({
   id: 1,

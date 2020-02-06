@@ -9,30 +9,18 @@ import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import {
+  apiErrorDetails,
+  shouldNotComplete,
+  shouldNotFail,
+  shouldNotSucceed
+} from "./base-api.service.spec";
 import { LoginDetails, SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
   let config: AppConfigService;
-
-  const errorResponse = {
-    status: 401,
-    message: "Unauthorized"
-  } as ApiErrorDetails;
-
-  const errorInfoResponse = {
-    status: 422,
-    message: "Record could not be saved",
-    info: {
-      name: ["has already been taken"],
-      image: [],
-      image_file_name: [],
-      image_file_size: [],
-      image_content_type: [],
-      image_updated_at: []
-    }
-  } as ApiErrorDetails;
 
   function createError(
     func:
@@ -56,18 +44,6 @@ describe("SecurityService", () => {
       return subject;
     });
   }
-
-  const shouldNotSucceed = () => {
-    fail("Service should not produce a data output");
-  };
-
-  const shouldNotFail = () => {
-    fail("Service should not produce an error");
-  };
-
-  const shouldNotComplete = () => {
-    fail("Service should not complete");
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -197,12 +173,12 @@ describe("SecurityService", () => {
 
     it("should handle error", fakeAsync(() => {
       const details = { login: "username", password: "password" };
-      createError("apiCreate", "/security/", errorResponse);
+      createError("apiCreate", "/security/", apiErrorDetails);
       service
         .signIn(details)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
-          expect(err).toEqual(errorResponse);
+          expect(err).toEqual(apiErrorDetails);
         });
 
       tick(100);
@@ -266,10 +242,10 @@ describe("SecurityService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiDestroy", "/security/", errorResponse);
+      createError("apiDestroy", "/security/", apiErrorDetails);
       service.signOut().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);

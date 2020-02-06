@@ -19,7 +19,6 @@
     "**/vscode-extension/**",
     "**/.git/objects/**",
     ".vscode",
-    ".tsling.json",
-  ],
-  
+    ".tsling.json"
+  ]
 }

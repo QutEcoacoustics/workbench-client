@@ -67,6 +67,13 @@ export class Site extends AbstractModel implements SiteInterface {
         })
       : defaultDateTimeTimezone;
   }
+
+  redirectPath(project: Project): string {
+    return siteMenuItem.route.format({
+      projectId: project.id,
+      siteId: this.id
+    });
+  }
 }
 
 export const mockSite = new Site({

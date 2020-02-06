@@ -10,11 +10,7 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.tslint": true
     },
-    "cSpell.words": [
-      "Formly",
-      "fontawesome",
-      "fortawesome"
-    ],
+    "cSpell.words": ["Formly", "fontawesome", "fortawesome"],
     "cSpell.ignorePaths": [
       "**/package-lock.json",
       "**/node_modules/**",
@@ -49,6 +45,6 @@
       "cyrilletuzi.angular-schematics",
       "ms-vscode.vscode-typescript-tslint-plugin",
       "streetsidesoftware.code-spell-checker"
-    ],
+    ]
   }
 }

@@ -127,6 +127,12 @@ export class User extends AbstractModel implements UserInterface {
 
     return "/assets/images/user/user_span4.png";
   }
+
+  redirectPath(): string {
+    return theirProfileMenuItem.route
+      .toString()
+      .replace(":userId", this.id.toString());
+  }
 }
 
 /**

@@ -63,7 +63,7 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
       .list()
       .pipe(
         map((data: Project[]) => {
-          return List(data.map(project => project.card));
+          return List(data.map(project => project.getCard()));
         }),
         takeUntil(this.unsubscribe)
       )

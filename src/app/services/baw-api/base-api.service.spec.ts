@@ -18,7 +18,40 @@ import {
   STUB_CLASS_BUILDER
 } from "./base-api.service";
 
+export const shouldNotSucceed = () => {
+  fail("Service should not produce a data output");
+};
+
+export const shouldNotFail = () => {
+  fail("Service should not produce an error");
+};
+
+export const shouldNotComplete = () => {
+  fail("Service should not complete");
+};
+
+export const apiErrorDetails = {
+  status: 401,
+  message: "Unauthorized"
+} as ApiErrorDetails;
+
+export const apiErrorInfoDetails = {
+  status: 422,
+  message: "Record could not be saved",
+  info: {
+    name: ["has already been taken"],
+    image: [],
+    imageFileName: [],
+    imageFileSize: [],
+    imageContentType: [],
+    imageUpdatedAt: []
+  }
+} as ApiErrorDetails;
+
 describe("BawApiService", () => {
+  /**
+   * Mock model interface
+   */
   class MockModelInterface {
     id: number;
     name: string;
@@ -27,6 +60,9 @@ describe("BawApiService", () => {
     };
   }
 
+  /**
+   * Mock model to simulate abstract model
+   */
   class MockModel extends AbstractModel {
     public readonly id: number;
     public readonly name: string;
@@ -43,25 +79,28 @@ describe("BawApiService", () => {
   let config: AppConfigService;
   let httpMock: HttpTestingController;
 
+  // Multi response metadata
+  let multiMeta: Meta;
+
+  // Single response metadata
   const singleMeta = {
     status: 200,
     message: "OK"
   } as Meta;
-  let multiMeta: Meta;
+
+  // Api error metadata
   const errorMeta = {
-    status: 401,
+    status: apiErrorDetails.status,
     message: "Unauthorized",
-    error: { details: "Unauthorized access" }
+    error: { details: apiErrorDetails.message }
   } as Meta;
-  const errorResponse = {
-    status: errorMeta.status,
-    message: errorMeta.error.details
-  } as ApiErrorDetails;
+
+  // Api error metadata with info
   const errorInfoMeta = {
-    status: 522,
+    status: apiErrorInfoDetails.status,
     message: "Unprocessable Entity",
     error: {
-      details: "Record could not be saved",
+      details: apiErrorInfoDetails.message,
       info: {
         name: ["has already been taken"],
         image: [],
@@ -72,11 +111,8 @@ describe("BawApiService", () => {
       }
     }
   } as Meta;
-  const errorInfoResponse = {
-    status: errorInfoMeta.status,
-    message: errorInfoMeta.error.details,
-    info: errorInfoMeta.error.info
-  } as ApiErrorDetails;
+
+  // Single model response
   const singleResponse = {
     id: 1,
     name: "name",
@@ -84,15 +120,9 @@ describe("BawApiService", () => {
       testConvert: "converted"
     }
   };
+
+  // Multi model response
   const multiResponse = [singleResponse];
-
-  const shouldNotSucceed = () => {
-    fail("Service should not produce a data output");
-  };
-
-  const shouldNotFail = () => {
-    fail("Service should not produce an error");
-  };
 
   function signIn(authToken: string, userName: string) {
     const user = new SessionUser({ authToken, userName });
@@ -243,7 +273,7 @@ describe("BawApiService", () => {
 
     httpMethods.forEach(httpMethod => {
       describe(httpMethod.functionName, () => {
-        it("should create patch request", () => {
+        it(`should create ${httpMethod.method} request`, () => {
           service[httpMethod.functionName]("/broken_link").subscribe();
           const req = catchRequest("/broken_link", httpMethod.method);
           expect(req).toBeTruthy();
@@ -301,7 +331,7 @@ describe("BawApiService", () => {
             "/broken_link",
             {}
           ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) =>
-            expect(err).toEqual(errorResponse)
+            expect(err).toEqual(apiErrorDetails)
           );
 
           const req = catchRequest("/broken_link", httpMethod.method);
@@ -317,7 +347,7 @@ describe("BawApiService", () => {
             "/broken_link",
             {}
           ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) =>
-            expect(err).toEqual(errorInfoResponse)
+            expect(err).toEqual(apiErrorInfoDetails)
           );
 
           const req = catchRequest("/broken_link", httpMethod.method);
@@ -448,23 +478,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpGet", errorResponse);
+        errorRequest("httpGet", apiErrorDetails);
 
         service["apiList"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpGet", errorInfoResponse);
+        errorRequest("httpGet", apiErrorInfoDetails);
 
         service["apiList"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });
@@ -527,23 +557,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpPost", errorResponse);
+        errorRequest("httpPost", apiErrorDetails);
 
         service["apiFilter"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpPost", errorInfoResponse);
+        errorRequest("httpPost", apiErrorInfoDetails);
 
         service["apiFilter"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });
@@ -591,23 +621,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpGet", errorResponse);
+        errorRequest("httpGet", apiErrorDetails);
 
         service["apiShow"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpGet", errorInfoResponse);
+        errorRequest("httpGet", apiErrorInfoDetails);
 
         service["apiShow"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });
@@ -670,23 +700,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpPost", errorResponse);
+        errorRequest("httpPost", apiErrorDetails);
 
         service["apiCreate"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpPost", errorInfoResponse);
+        errorRequest("httpPost", apiErrorInfoDetails);
 
         service["apiCreate"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });
@@ -749,23 +779,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpPatch", errorResponse);
+        errorRequest("httpPatch", apiErrorDetails);
 
         service["apiUpdate"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpPatch", errorInfoResponse);
+        errorRequest("httpPatch", apiErrorInfoDetails);
 
         service["apiUpdate"]("/broken_link", {}).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });
@@ -813,23 +843,23 @@ describe("BawApiService", () => {
       });
 
       it("should handle error response", () => {
-        errorRequest("httpDelete", errorResponse);
+        errorRequest("httpDelete", apiErrorDetails);
 
         service["apiDestroy"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorResponse);
+            expect(err).toEqual(apiErrorDetails);
           }
         );
       });
 
       it("should handle error info response", () => {
-        errorRequest("httpDelete", errorInfoResponse);
+        errorRequest("httpDelete", apiErrorInfoDetails);
 
         service["apiDestroy"]("/broken_link").subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
-            expect(err).toEqual(errorInfoResponse);
+            expect(err).toEqual(apiErrorInfoDetails);
           }
         );
       });

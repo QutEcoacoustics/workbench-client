@@ -9,30 +9,18 @@ import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
 import { ApiErrorDetails } from "./api.interceptor";
 import { BawApiService } from "./base-api.service";
+import {
+  apiErrorDetails,
+  apiErrorInfoDetails,
+  shouldNotFail,
+  shouldNotSucceed
+} from "./base-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMockService";
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
   let httpMock: HttpTestingController;
   let service: UserService;
-
-  const errorResponse = {
-    status: 401,
-    message: "Unauthorized"
-  } as ApiErrorDetails;
-
-  const errorInfoResponse = {
-    status: 422,
-    message: "Record could not be saved",
-    info: {
-      name: ["has already been taken"],
-      image: [],
-      image_file_name: [],
-      image_file_size: [],
-      image_content_type: [],
-      image_updated_at: []
-    }
-  } as ApiErrorDetails;
 
   function createError(
     func:
@@ -56,14 +44,6 @@ describe("UserService", () => {
       return subject;
     });
   }
-
-  const shouldNotSucceed = () => {
-    fail("Service should not produce a data output");
-  };
-
-  const shouldNotFail = () => {
-    fail("Service should not produce an error");
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -115,22 +95,22 @@ describe("UserService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiShow", "/my_account", errorResponse);
+      createError("apiShow", "/my_account", apiErrorDetails);
 
       service.show().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorResponse);
+        expect(err).toEqual(apiErrorDetails);
       });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiShow", "/my_account", errorInfoResponse);
+      createError("apiShow", "/my_account", apiErrorInfoDetails);
 
       service.show().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual(errorInfoResponse);
+        expect(err).toEqual(apiErrorInfoDetails);
       });
 
       tick(100);

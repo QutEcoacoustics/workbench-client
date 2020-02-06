@@ -104,6 +104,7 @@ export class DeleteComponent extends PageComponent
       .subscribe(
         () => {
           this.formLoading = false;
+          // TODO Get redirect path from Project.redirectPath()
           this.router.navigate([
             projectMenuItem.route.format({ projectId: this.projectId })
           ]);
