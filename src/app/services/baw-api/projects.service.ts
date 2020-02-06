@@ -2,20 +2,20 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Project } from "src/app/models/Project";
+import { Project, ProjectInterface } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
 import {
   Empty,
   Filter,
-  id,
   IdOr,
   IdParamOptional,
+  modelId,
   option,
   StandardApi
 } from "./api-common";
 import { Filters } from "./base-api.service";
 
-const projectId: IdParamOptional<Project> = id;
+const projectId: IdParamOptional<Project> = modelId;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
 
 /**
@@ -24,7 +24,11 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends StandardApi<Project, []> {
+export class ProjectsService extends StandardApi<
+  Project,
+  ProjectInterface,
+  []
+> {
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config, Project);
   }
@@ -38,11 +42,11 @@ export class ProjectsService extends StandardApi<Project, []> {
   show(model: IdOr<Project>): Observable<Project> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Project): Observable<Project> {
+  create(model: ProjectInterface): Observable<Project> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Project): Observable<Project> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+  update(id: IdOr<Project>, model: ProjectInterface): Observable<Project> {
+    return this.apiUpdate(endpoint(id, Empty), model);
   }
   destroy(model: IdOr<Project>): Observable<null> {
     return this.apiDestroy(endpoint(model, Empty));

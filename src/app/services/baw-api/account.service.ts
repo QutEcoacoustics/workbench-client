@@ -7,15 +7,15 @@ import { AppConfigService } from "../app-config/app-config.service";
 import {
   Empty,
   Filter,
-  id,
   IdOr,
   IdParamOptional,
+  modelId,
   option,
   ReadonlyApi
 } from "./api-common";
 import { Filters } from "./base-api.service";
 
-const userId: IdParamOptional<User> = id;
+const userId: IdParamOptional<User> = modelId;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 
 @Injectable({

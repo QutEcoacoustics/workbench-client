@@ -3,8 +3,6 @@ export abstract class AbstractModel {
     return Object.assign(this, raw);
   }
 
-  public readonly id?: number;
-
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,
     raw: object
@@ -12,3 +10,5 @@ export abstract class AbstractModel {
     return new _new(raw);
   }
 }
+
+export abstract class AbstractInterface {}

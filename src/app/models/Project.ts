@@ -9,12 +9,12 @@ import {
   Ids,
   Param
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractInterface, AbstractModel } from "./AbstractModel";
 
 /**
  * A project model.
  */
-export interface ProjectInterface {
+export interface ProjectInterface extends AbstractInterface {
   id?: Id;
   name?: Param;
   imageUrl?: string;

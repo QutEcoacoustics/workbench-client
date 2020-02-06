@@ -1,7 +1,6 @@
 import { Observable } from "rxjs";
-import { PartialWith } from "src/app/helpers/advancedTypes";
 import { Param } from "src/app/interfaces/apiInterfaces";
-import { AbstractModel } from "src/app/models/AbstractModel";
+import { AbstractInterface, AbstractModel } from "src/app/models/AbstractModel";
 import { BawApiService, Filters } from "./base-api.service";
 
 export type IdOr<T extends AbstractModel> = T | number;
@@ -9,7 +8,7 @@ export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
 export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
-export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
+export function modelId<T extends AbstractModel>(x: IdOr<T> | Empty) {
   if (x === Empty) {
     return Empty;
   }
@@ -28,10 +27,6 @@ export const New = "new";
 export const Filter = "filter";
 
 export interface ApiList<M, P extends any[]> {
-  /**
-   * Get list of models
-   * @param args URL parameter values
-   */
   list(...urlParameters: P): Observable<M[]>;
 }
 
@@ -39,10 +34,6 @@ export interface ApiList<M, P extends any[]> {
  * API Filter functionality
  */
 export interface ApiFilter<M extends AbstractModel, P extends any[]> {
-  /**
-   * Get list of models, but filtered using the filter API
-   * @param args URL parameter values
-   */
   filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
 }
 
@@ -54,33 +45,30 @@ export interface ApiShow<
   P extends any[],
   I extends IdOr<M>
 > {
-  /**
-   * Get individual model
-   * @param args URL parameter values
-   */
   show(model: M | I, ...urlParameters: P): Observable<M>;
 }
 
 /**
  * API Create functionality
  */
-export interface ApiCreate<M extends AbstractModel, P extends any[]> {
-  /**
-   * Get individual model
-   * @param args URL parameter values
-   */
-  create(model: M, ...urlParameters: P): Observable<M>;
+export interface ApiCreate<
+  M extends AbstractModel,
+  D extends AbstractInterface,
+  P extends any[]
+> {
+  create(model: D, ...urlParameters: P): Observable<M>;
 }
 
 /**
  * API Update functionality
  */
-export interface ApiUpdate<M extends AbstractModel, P extends any[]> {
-  /**
-   * Get individual model
-   * @param args URL parameter values
-   */
-  update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
+export interface ApiUpdate<
+  M extends AbstractModel,
+  D extends AbstractInterface,
+  P extends any[],
+  I extends IdOr<M>
+> {
+  update(id: M | I, model: D, ...urlParameters: P): Observable<M>;
 }
 /**
  * API Delete functionality
@@ -90,33 +78,29 @@ export interface ApiDestroy<
   P extends any[],
   I extends IdOr<M>
 > {
-  /**
-   * destroy  individual model
-   * @param args URL parameter values
-   */
   destroy(model: I, ...urlParameters: P): Observable<null>;
 }
 
 /**
  * Api Class with all abilities enabled
  */
-export abstract class StandardApi<M extends AbstractModel, P extends any[]>
-  extends BawApiService<M>
+export abstract class StandardApi<
+  M extends AbstractModel,
+  D extends AbstractInterface,
+  P extends any[]
+> extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,
     ApiShow<M, P, IdOr<M>>,
-    ApiCreate<M, P>,
-    ApiUpdate<M, P>,
+    ApiCreate<M, D, P>,
+    ApiUpdate<M, D, P, IdOr<M>>,
     ApiDestroy<M, P, IdOr<M>> {
   abstract list(...urlParameters: P): Observable<M[]>;
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
-  abstract create(model: M, ...urlParameters: P): Observable<M>;
-  abstract update(
-    model: PartialWith<M, "id">,
-    ...urlParameters: P
-  ): Observable<M>;
+  abstract create(model: D, ...urlParameters: P): Observable<M>;
+  abstract update(id: IdOr<M>, model: D, ...urlParameters: P): Observable<M>;
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<null>;
 }
 
