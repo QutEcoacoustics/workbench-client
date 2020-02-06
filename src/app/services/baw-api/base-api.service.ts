@@ -76,7 +76,9 @@ export abstract class BawApiService<T extends AbstractModel> {
           return model;
         });
       } else {
-        return [this.handleSingleResponse(response)];
+        const model = new classBuilder(response.data);
+        model.addMetadata(response.meta);
+        return [model];
       }
     };
 
