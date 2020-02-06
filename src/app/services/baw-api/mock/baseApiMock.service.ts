@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
+import { AbstractModel } from "src/app/models/AbstractModel";
 
-@Injectable({
-  providedIn: "root"
-})
+export class MockModel extends AbstractModel {}
+
+@Injectable()
 export class MockBawApiService {
   constructor() {}
 

@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import { MockBawApiService } from "./baseApiMockService";
+import { BawApiService } from "../base-api.service";
 
-@Injectable({
-  providedIn: "root"
-})
-export class MockSecurityService extends MockBawApiService {
+@Injectable()
+export class MockSecurityService extends BawApiService<SessionUser> {
   public register() {
     return new Observable<SessionUser>();
   }
@@ -19,7 +17,7 @@ export class MockSecurityService extends MockBawApiService {
     return new Observable<void>();
   }
 
-  public getLoggedInTrigger() {
+  public getAuthTrigger() {
     return new BehaviorSubject(null);
   }
 }

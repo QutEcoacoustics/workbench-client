@@ -16,7 +16,7 @@ import {
   shouldNotFail,
   shouldNotSucceed
 } from "./base-api.service.spec";
-import { MockBawApiService } from "./mock/baseApiMockService";
+import { MockBawApiService } from "./mock/baseApiMock.service";
 
 describe("AccountService", () => {
   let httpMock: HttpTestingController;

@@ -13,13 +13,13 @@ import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
-import { UserService } from "src/app/services/baw-api/user.service";
+import { AccountService } from "src/app/services/baw-api/account.service";
 import { MenuModule } from "../menu/menu.module";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
 describe("UserBadgesComponent", () => {
-  let api: UserService;
+  let api: AccountService;
   let component: UserBadgesComponent;
   let fixture: ComponentFixture<UserBadgesComponent>;
 
@@ -31,7 +31,7 @@ describe("UserBadgesComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserBadgesComponent);
-    api = TestBed.get(UserService);
+    api = TestBed.get(AccountService);
     component = fixture.componentInstance;
   });
 

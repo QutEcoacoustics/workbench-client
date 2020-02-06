@@ -1,27 +1,25 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { User } from "src/app/models/User";
 import { AppConfigService } from "../../app-config/app-config.service";
 import { ReadonlyApi } from "../api-common";
+import { MockModel } from "./baseApiMock.service";
 
-@Injectable({
-  providedIn: "root"
-})
-export class MockAccountService extends ReadonlyApi<User, []> {
+@Injectable()
+export class MockReadonlyApiService extends ReadonlyApi<MockModel, []> {
   constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, User);
+    super(http, config, MockModel);
   }
 
   public list() {
-    return new Observable<User[]>();
+    return new Observable<MockModel[]>();
   }
 
   public filter() {
-    return new Observable<User[]>();
+    return new Observable<MockModel[]>();
   }
 
   public show() {
-    return new Observable<User>();
+    return new Observable<MockModel>();
   }
 }
