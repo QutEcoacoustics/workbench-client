@@ -643,15 +643,20 @@ describe("ProjectsService", () => {
   });
 
   describe("destroy", () => {
-    function createSuccess(path: string) {
+    function createSuccess(path: string, model?: Project) {
       return spyOn(service as any, "apiDestroy").and.callFake(
         (_path: string) => {
           expect(_path).toBe(path);
 
-          const subject = new Subject<void>();
+          const subject = new Subject<Project | void>();
 
           setTimeout(() => {
-            subject.next();
+            if (model) {
+              subject.next(model);
+            } else {
+              subject.next();
+            }
+
             subject.complete();
           }, 50);
 
@@ -700,6 +705,20 @@ describe("ProjectsService", () => {
 
       service.destroy(5).subscribe(() => {
         expect(true).toBeTruthy();
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle non-void response", fakeAsync(() => {
+      const model = new Project({
+        id: 1,
+        name: "name"
+      });
+      createSuccess("/projects/1", model);
+
+      service.destroy(model).subscribe(_model => {
+        expect(_model).toEqual(model);
       }, shouldNotFail);
 
       tick(100);

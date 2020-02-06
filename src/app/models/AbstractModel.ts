@@ -5,8 +5,8 @@ export abstract class AbstractModel {
     return Object.assign(this, raw);
   }
 
+  private static metaKey = Symbol("meta");
   public readonly id?: number;
-  private metaKey = Symbol("meta");
 
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,
@@ -16,10 +16,10 @@ export abstract class AbstractModel {
   }
 
   public addMetadata(meta: Meta) {
-    this[this.metaKey] = meta;
+    this[AbstractModel.metaKey] = meta;
   }
 
   public getMetadata(): Meta {
-    return this[this.metaKey];
+    return this[AbstractModel.metaKey];
   }
 }

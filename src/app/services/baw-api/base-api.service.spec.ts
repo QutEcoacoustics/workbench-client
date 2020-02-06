@@ -41,10 +41,10 @@ export const apiErrorInfoDetails = {
   info: {
     name: ["has already been taken"],
     image: [],
-    imageFileName: [],
-    imageFileSize: [],
-    imageContentType: [],
-    imageUpdatedAt: []
+    image_file_name: [],
+    image_file_size: [],
+    image_content_type: [],
+    image_updated_at: []
   }
 } as ApiErrorDetails;
 

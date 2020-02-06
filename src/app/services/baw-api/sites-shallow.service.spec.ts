@@ -624,14 +624,18 @@ describe("ShallowSitesService", () => {
   });
 
   describe("destroy", () => {
-    function createSuccess(path: string) {
+    function createSuccess(path: string, model?: Site) {
       spyOn(service as any, "apiDestroy").and.callFake((_path: string) => {
         expect(_path).toBe(path);
 
-        const subject = new Subject<void>();
+        const subject = new Subject<Site | void>();
 
         setTimeout(() => {
-          subject.next();
+          if (model) {
+            subject.next(model);
+          } else {
+            subject.next();
+          }
           subject.complete();
         }, 50);
 
@@ -671,6 +675,20 @@ describe("ShallowSitesService", () => {
 
       service.destroy(5).subscribe(() => {
         expect(true).toBeTruthy();
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle non-void response", fakeAsync(() => {
+      const model = new Site({
+        id: 1,
+        name: "name"
+      });
+      createSuccess("/sites/1", model);
+
+      service.destroy(model).subscribe(_model => {
+        expect(_model).toEqual(model);
       }, shouldNotFail);
 
       tick(100);

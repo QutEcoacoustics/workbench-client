@@ -35,7 +35,7 @@ export class MockSitesService extends StandardApi<Site, [IdOr<Project>]> {
   }
 
   public destroy() {
-    return new Observable<null>();
+    return new Observable<Site | void>();
   }
 }
 
@@ -71,6 +71,6 @@ export class MockSitesServiceShallow extends StandardApi<
   }
 
   public destroy() {
-    return new Observable<null>();
+    return new Observable<Site | void>();
   }
 }

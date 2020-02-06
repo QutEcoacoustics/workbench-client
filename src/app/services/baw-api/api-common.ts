@@ -94,7 +94,7 @@ export interface ApiDestroy<
    * destroy  individual model
    * @param args URL parameter values
    */
-  destroy(model: I, ...urlParameters: P): Observable<null>;
+  destroy(model: I, ...urlParameters: P): Observable<M | void>;
 }
 
 /**
@@ -117,7 +117,7 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
     model: PartialWith<M, "id">,
     ...urlParameters: P
   ): Observable<M>;
-  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<null>;
+  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
 }
 
 export abstract class ReadonlyApi<M extends AbstractModel, P extends any[]>

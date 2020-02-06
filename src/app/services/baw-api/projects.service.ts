@@ -44,7 +44,7 @@ export class ProjectsService extends StandardApi<Project, []> {
   update(model: Project): Observable<Project> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Project>): Observable<null> {
+  destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

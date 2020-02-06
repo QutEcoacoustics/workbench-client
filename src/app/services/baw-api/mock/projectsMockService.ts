@@ -34,6 +34,6 @@ export class MockProjectsService extends StandardApi<Project, []> {
   }
 
   public destroy() {
-    return new Observable<null>();
+    return new Observable<Project | void>();
   }
 }

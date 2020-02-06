@@ -140,7 +140,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from list route
    * @param path API path
    */
-  protected apiList(path: string) {
+  protected apiList(path: string): Observable<T[]> {
     return this.httpGet(path).pipe(map(this.handleCollectionResponse));
   }
 
@@ -149,7 +149,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param filters API filters
    */
-  protected apiFilter(path: string, filters: Filters) {
+  protected apiFilter(path: string, filters: Filters): Observable<T[]> {
     return this.httpPost(path, filters).pipe(
       map(this.handleCollectionResponse)
     );
@@ -159,7 +159,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from show route
    * @param path API path
    */
-  protected apiShow(path: string) {
+  protected apiShow(path: string): Observable<T> {
     return this.httpGet(path).pipe(map(this.handleSingleResponse));
   }
 
@@ -168,7 +168,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiCreate(path: string, body: object) {
+  protected apiCreate(path: string, body: object): Observable<T> {
     return this.httpPost(path, body).pipe(map(this.handleSingleResponse));
   }
 
@@ -177,7 +177,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiUpdate(path: string, body: object) {
+  protected apiUpdate(path: string, body: object): Observable<T> {
     return this.httpPatch(path, body).pipe(map(this.handleSingleResponse));
   }
 
@@ -185,7 +185,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from destroy route
    * @param path API path
    */
-  protected apiDestroy(path: string) {
+  protected apiDestroy(path: string): Observable<T | void> {
     return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
   }
 
@@ -194,7 +194,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
-  protected httpGet(path: string): Observable<ApiResponse<T>> {
+  protected httpGet(path: string): Observable<ApiResponse<T | T[]>> {
     return this.http.get<ApiResponse<T>>(this.getPath(path));
   }
 
@@ -203,7 +203,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Conversion of data types and error handling are performed by the base-api interceptor class.
    * @param path API path
    */
-  protected httpDelete(path: string): Observable<ApiResponse<null>> {
+  protected httpDelete(path: string): Observable<ApiResponse<T | void>> {
     return this.http.delete<ApiResponse<null>>(this.getPath(path));
   }
 

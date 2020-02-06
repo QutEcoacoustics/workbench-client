@@ -44,7 +44,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, Empty), model);
   }
-  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<null> {
+  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site | void> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
@@ -74,7 +74,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   update(model: Site): Observable<Site> {
     return this.apiUpdate(endpointShallow(model, Empty), model);
   }
-  destroy(model: IdOr<Site>): Observable<null> {
+  destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
 }
