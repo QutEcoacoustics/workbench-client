@@ -5,12 +5,12 @@ import {
   Id,
   Uuid
 } from "../interfaces/apiInterfaces";
-import { AbstractInterface, AbstractModel } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * An audio recording model
  */
-export interface AudioRecordingInterface extends AbstractInterface {
+export interface AudioRecordingInterface {
   id?: Id;
   uuid?: Uuid;
   recordedDate?: DateTimeTimezone | string;

@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { theirProfileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
   DateTimeTimezone,
@@ -9,12 +10,12 @@ import {
   TimezoneInformation,
   UserName
 } from "../interfaces/apiInterfaces";
-import { AbstractInterface, AbstractModel } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A user model.
  */
-export interface UserInterface extends AbstractInterface {
+export interface UserInterface {
   id?: Id;
   userName?: UserName;
   rolesMask?: number;
@@ -29,7 +30,7 @@ export interface UserInterface extends AbstractInterface {
 /**
  * A user model for the website user
  */
-export interface SessionUserInterface extends AbstractInterface {
+export interface SessionUserInterface {
   userName?: UserName;
   authToken?: AuthToken;
 }

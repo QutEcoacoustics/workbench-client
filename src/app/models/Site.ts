@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
@@ -8,12 +9,13 @@ import {
   Param,
   TimezoneInformation
 } from "../interfaces/apiInterfaces";
-import { AbstractInterface, AbstractModel } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Project } from "./Project";
 
 /**
  * A site model.
  */
-export interface SiteInterface extends AbstractInterface {
+export interface SiteInterface {
   id?: Id;
   name?: Param;
   imageUrl?: string;
