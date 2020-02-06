@@ -50,7 +50,7 @@ describe("HomeComponent", () => {
   });
 
   it("should create", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -76,7 +76,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should load cms", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -108,7 +108,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should handle filter error", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -139,7 +139,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should filter projects to have 3 items", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(filter => {
@@ -167,7 +167,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should display empty project in filter", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -198,7 +198,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should display single project in filter", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -242,7 +242,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should display three projects in filter", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -312,7 +312,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should link to project details page", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(() => {
@@ -346,7 +346,7 @@ describe("HomeComponent", () => {
   }));
 
   it("should request 3 projects", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
     spyOn(projectApi, "filter").and.callFake(params => {
@@ -374,7 +374,7 @@ describe("HomeComponent", () => {
   it("should update on logout", fakeAsync(() => {
     let count = 0;
 
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       const subject = new BehaviorSubject(null);
 
       setTimeout(() => {

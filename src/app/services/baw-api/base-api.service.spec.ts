@@ -4,9 +4,8 @@ import {
   HttpTestingController,
   TestRequest
 } from "@angular/common/http/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Subject } from "rxjs";
-import { single } from "rxjs/operators";
 import { testAppInitializer } from "src/app/app.helper";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
@@ -18,7 +17,6 @@ import {
   Meta,
   STUB_CLASS_BUILDER
 } from "./base-api.service";
-import { mockSessionStorage } from "./mock/sessionStorageMock";
 
 describe("BawApiService", () => {
   class MockModelInterface {
@@ -155,10 +153,6 @@ describe("BawApiService", () => {
     service = TestBed.get(BawApiService);
     config = TestBed.get(AppConfigService);
     httpMock = TestBed.get(HttpTestingController);
-
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
 
     multiMeta = {
       status: 200,

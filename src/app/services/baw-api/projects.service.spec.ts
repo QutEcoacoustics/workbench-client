@@ -84,7 +84,7 @@ describe("ProjectsService", () => {
 
   describe("list", () => {
     function createSuccess(path: string, model: Project[]) {
-      spyOn(service as any, "apiList").and.callFake((_path: string) => {
+      return spyOn(service as any, "apiList").and.callFake((_path: string) => {
         expect(_path).toBe(path);
 
         const subject = new Subject<Project[]>();
@@ -97,6 +97,13 @@ describe("ProjectsService", () => {
         return subject;
       });
     }
+
+    it("should call apiList", () => {
+      const models = [];
+      const spy = createSuccess("/projects/", models);
+      service.list().subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/");
+    });
 
     it("should handle empty response", fakeAsync(() => {
       const models = [];
@@ -176,7 +183,7 @@ describe("ProjectsService", () => {
 
   describe("filter", () => {
     function createSuccess(path: string, filters: Filters, models: Project[]) {
-      spyOn(service as any, "apiFilter").and.callFake(
+      return spyOn(service as any, "apiFilter").and.callFake(
         (_path: string, _filters: Filters) => {
           expect(_path).toBe(path);
           expect(_filters).toBe(filters);
@@ -192,6 +199,14 @@ describe("ProjectsService", () => {
         }
       );
     }
+
+    it("should call apiFilter", () => {
+      const filters = {} as Filters;
+      const models = [];
+      const spy = createSuccess("/projects/filter", filters, models);
+      service.filter(filters).subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/filter", filters);
+    });
 
     it("should handle empty filter response", fakeAsync(() => {
       const filters = {} as Filters;
@@ -282,7 +297,7 @@ describe("ProjectsService", () => {
 
   describe("show", () => {
     function createSuccess(url: string, output: Project) {
-      spyOn(service as any, "apiShow").and.callFake((path: string) => {
+      return spyOn(service as any, "apiShow").and.callFake((path: string) => {
         expect(path).toBe(url);
 
         const subject = new Subject<Project>();
@@ -295,6 +310,16 @@ describe("ProjectsService", () => {
         return subject;
       });
     }
+
+    it("should call apiShow", () => {
+      const model = new Project({
+        id: 1,
+        name: "name"
+      });
+      const spy = createSuccess("/projects/1", model);
+      service.show(model).subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/1");
+    });
 
     it("should handle project input", fakeAsync(() => {
       const model = new Project({
@@ -385,7 +410,7 @@ describe("ProjectsService", () => {
 
   describe("create", () => {
     function createSuccess(path: string, model: Project) {
-      spyOn(service as any, "apiCreate").and.callFake(
+      return spyOn(service as any, "apiCreate").and.callFake(
         (_path: string, _model: object) => {
           expect(_path).toBe(path);
           expect(_model).toEqual(model);
@@ -401,6 +426,16 @@ describe("ProjectsService", () => {
         }
       );
     }
+
+    it("should call apiCreate", () => {
+      const model = new Project({
+        id: 1,
+        name: "name"
+      });
+      const spy = createSuccess("/projects/", model);
+      service.create(model).subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/", model);
+    });
 
     it("should handle response", fakeAsync(() => {
       const model = new Project({
@@ -492,7 +527,7 @@ describe("ProjectsService", () => {
 
   describe("update", () => {
     function createSuccess(path: string, model: Project) {
-      spyOn(service as any, "apiUpdate").and.callFake(
+      return spyOn(service as any, "apiUpdate").and.callFake(
         (_path: string, _model: object) => {
           expect(_path).toBe(path);
           expect(_model).toEqual(model);
@@ -508,6 +543,15 @@ describe("ProjectsService", () => {
         }
       );
     }
+
+    it("should call apiUpdate", () => {
+      const model = new Project({
+        id: 1
+      });
+      const spy = createSuccess("/projects/1", model);
+      service.update(model).subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/1", model);
+    });
 
     it("should handle response", fakeAsync(() => {
       const model = new Project({
@@ -620,19 +664,31 @@ describe("ProjectsService", () => {
 
   describe("destroy", () => {
     function createSuccess(path: string) {
-      spyOn(service as any, "apiDestroy").and.callFake((_path: string) => {
-        expect(_path).toBe(path);
+      return spyOn(service as any, "apiDestroy").and.callFake(
+        (_path: string) => {
+          expect(_path).toBe(path);
 
-        const subject = new Subject<void>();
+          const subject = new Subject<void>();
 
-        setTimeout(() => {
-          subject.next();
-          subject.complete();
-        }, 50);
+          setTimeout(() => {
+            subject.next();
+            subject.complete();
+          }, 50);
 
-        return subject;
-      });
+          return subject;
+        }
+      );
     }
+
+    it("should call apiDestroy", () => {
+      const model = new Project({
+        id: 1,
+        name: "name"
+      });
+      const spy = createSuccess("/projects/1");
+      service.destroy(model).subscribe();
+      expect(spy).toHaveBeenCalledWith("/projects/1");
+    });
 
     it("should handle project input", fakeAsync(() => {
       const model = new Project({

@@ -37,7 +37,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.securityApi
-      .getLoggedInTrigger()
+      .getAuthTrigger()
       .pipe(
         flatMap(() => {
           return this.projectApi.filter({ paging: { items: 3 } });

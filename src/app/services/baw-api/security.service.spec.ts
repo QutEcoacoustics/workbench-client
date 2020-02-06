@@ -1,474 +1,278 @@
-// import { HTTP_INTERCEPTORS } from "@angular/common/http";
-// import {
-//   HttpClientTestingModule,
-//   HttpTestingController
-// } from "@angular/common/http/testing";
-// import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-// import { testAppInitializer } from "src/app/app.helper";
-// import { AppConfigService } from "../app-config/app-config.service";
-// import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
-// import { mockSessionStorage } from "./mock/sessionStorageMock";
-// import { SecurityService } from "./security.service";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { Subject } from "rxjs";
+import { testAppInitializer } from "src/app/app.helper";
+import { SessionUser } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { LoginDetails, SecurityService } from "./security.service";
 
-// describe("SecurityService", () => {
-//   let service: SecurityService;
-//   let httpMock: HttpTestingController;
-//   let config: AppConfigService;
+describe("SecurityService", () => {
+  let service: SecurityService;
+  let httpMock: HttpTestingController;
+  let config: AppConfigService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       imports: [HttpClientTestingModule],
-//       providers: [
-//         ...testAppInitializer,
-//         {
-//           provide: HTTP_INTERCEPTORS,
-//           useClass: BawApiInterceptor,
-//           multi: true
-//         },
-//         SecurityService
-//       ]
-//     });
+  const errorResponse = {
+    status: 401,
+    message: "Unauthorized"
+  } as ApiErrorDetails;
 
-//     service = TestBed.get(SecurityService);
-//     config = TestBed.get(AppConfigService);
-//     httpMock = TestBed.get(HttpTestingController);
+  const errorInfoResponse = {
+    status: 422,
+    message: "Record could not be saved",
+    info: {
+      name: ["has already been taken"],
+      image: [],
+      image_file_name: [],
+      image_file_size: [],
+      image_content_type: [],
+      image_updated_at: []
+    }
+  } as ApiErrorDetails;
 
-//     Object.defineProperty(window, "sessionStorage", {
-//       value: mockSessionStorage
-//     });
-//   });
+  function createError(
+    func:
+      | "apiList"
+      | "apiFilter"
+      | "apiShow"
+      | "apiCreate"
+      | "apiUpdate"
+      | "apiDestroy",
+    url: string,
+    error: ApiErrorDetails
+  ) {
+    spyOn<any>(service as any, func).and.callFake((path: string) => {
+      expect(path).toBe(url);
+      const subject = new Subject();
 
-//   afterEach(() => {
-//     sessionStorage.clear();
-//     httpMock.verify();
-//   });
+      setTimeout(() => {
+        subject.error(error);
+      }, 50);
 
-//   it("should be created", () => {
-//     expect(service).toBeTruthy();
-//   });
+      return subject;
+    });
+  }
 
-//   it("isLoggedIn should return false initially", () => {
-//     expect(service.isLoggedIn()).toBeFalsy();
-//   });
+  const shouldNotSucceed = () => {
+    fail("Service should not produce a data output");
+  };
 
-//   it("getSessionUser should return null initially", () => {
-//     expect(service.getSessionUser()).toBe(null);
-//   });
+  const shouldNotFail = () => {
+    fail("Service should not produce an error");
+  };
 
-//   it("login should set session cookie", () => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//         expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-//           authToken: "aaaaaaaaaaaaaaaaaaaaaa",
-//           userName: "Test"
-//         });
-//       });
+  const shouldNotComplete = () => {
+    fail("Service should not complete");
+  };
 
-//     const req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     expect(req.request.headers.has("Authorization")).toBeFalsy();
-//     expect(req.request.headers.has("Accept")).toBeTruthy();
-//     expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-//     expect(req.request.headers.has("Content-Type")).toBeTruthy();
-//     expect(req.request.headers.get("Content-Type")).toBeTruthy(
-//       "application/json"
-//     );
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        ...testAppInitializer,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: BawApiInterceptor,
+          multi: true
+        },
+        SecurityService
+      ]
+    });
 
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
-//   });
+    service = TestBed.get(SecurityService);
+    config = TestBed.get(AppConfigService);
+    httpMock = TestBed.get(HttpTestingController);
+  });
 
-//   it("login should update user session on second login", fakeAsync(done => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//         expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-//           authToken: "aaaaaaaaaaaaaaa",
-//           userName: "Test"
-//         });
-//       });
+  afterEach(() => {
+    sessionStorage.clear();
+    httpMock.verify();
+  });
 
-//     let req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
+  describe("Authentication Tracking", () => {
+    it("isLoggedIn should return false initially", () => {
+      expect(service.isLoggedIn()).toBeFalse();
+    });
 
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
+    it("getSessionUser should return null initially", () => {
+      expect(service.getSessionUser()).toBeFalsy();
+    });
 
-//     tick(2000);
+    it("authTrigger should contain default value", () => {
+      const spy = jasmine.createSpy();
 
-//     service.signIn({ login: "username", password: "password" }).subscribe(
-//       res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//         expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
-//           authToken: "bbbbbbbbbbbbbbb",
-//           userName: "Test"
-//         });
-//       },
-//       (err: ApiErrorDetails) => {
-//         expect(false).toBeTruthy("Should not return error message");
-//       },
-//       () => {
-//         done();
-//       }
-//     );
+      service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
 
-//     req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
 
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "bbbbbbbbbbbbbbb",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
-//   }));
+  describe("signIn", () => {
+    function createSuccess(
+      path: string,
+      details: LoginDetails,
+      model: SessionUser
+    ) {
+      return spyOn(service as any, "apiCreate").and.callFake(
+        (_path: string, _details: object) => {
+          expect(_path).toBe(path);
+          expect(_details).toEqual(details);
 
-//   it("login should return error on bad credentials", () => {
-//     service.signIn({ login: "username", password: "password" }).subscribe(
-//       res => {
-//         expect(true).toBeFalsy();
-//       },
-//       (err: ApiErrorDetails) => {
-//         expect(err).toBeTruthy();
-//         expect(err).toEqual({
-//           status: 401,
-//           message:
-//             "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
-//         });
-//       }
-//     );
+          const subject = new Subject<SessionUser>();
 
-//     const req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     expect(req.request.headers.has("Authorization")).toBeFalsy();
-//     expect(req.request.headers.has("Accept")).toBeTruthy();
-//     expect(req.request.headers.get("Accept")).toBeTruthy("application/json");
-//     expect(req.request.headers.has("Content-Type")).toBeTruthy();
-//     expect(req.request.headers.get("Content-Type")).toBeTruthy(
-//       "application/json"
-//     );
+          setTimeout(() => {
+            subject.next(model);
+            subject.complete();
+          }, 50);
 
-//     req.flush(
-//       {
-//         meta: {
-//           status: 401,
-//           message: "Unauthorized",
-//           error: {
-//             details:
-//               "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
-//             links: {
-//               "Confirm account": "/my_account/confirmation/new",
-//               "Reset password": "/my_account/password/new",
-//               "Unlock account": "/my_account/unlock/new"
-//             },
-//             info: null
-//           }
-//         },
-//         data: null
-//       },
-//       { status: 401, statusText: "Unauthorized" }
-//     );
-//   });
+          return subject;
+        }
+      );
+    }
 
-//   it("logout should clear session cookie", fakeAsync(() => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//       });
+    it("should call apiCreate", fakeAsync(() => {
+      const details = { login: "username", password: "password" };
+      const model = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+      const spy = createSuccess("/security/", details, model);
+      service.signIn(details).subscribe();
+      expect(spy).toHaveBeenCalledWith("/security/", details);
 
-//     const loginReq = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     loginReq.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
+      tick(100);
+    }));
 
-//     service.signOut();
+    it("should handle response", fakeAsync(() => {
+      const details = { login: "username", password: "password" };
+      const model = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+      createSuccess("/security/", details, model);
+      service.signIn(details).subscribe((_model: SessionUser) => {
+        expect(_model).toBeTruthy();
+        expect(_model).toEqual(model);
+      }, shouldNotFail);
 
-//     const logoutReq = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "DELETE"
-//     });
-//     logoutReq.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK",
-//         error: {
-//           links: {
-//             "Log in": "/my_account/sign_in",
-//             Register: "/my_account/sign_up"
-//           },
-//           info: null
-//         }
-//       },
-//       data: {
-//         user_name: "Test",
-//         message: "Logged out successfully."
-//       }
-//     });
+      tick(100);
+    }));
 
-//     expect(sessionStorage.getItem("user")).toBeFalsy();
-//   }));
+    it("set session user", fakeAsync(() => {
+      const details = { login: "username", password: "password" };
+      const model = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+      createSuccess("/security/", details, model);
+      service
+        .signIn(details)
+        .subscribe((_model: SessionUser) => {}, shouldNotFail);
 
-//   it("logout should set getSessionUser to null", fakeAsync(() => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//       });
+      tick(100);
 
-//     const req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
+      expect(service.getSessionUser()).toEqual(model);
+    }));
 
-//     service.signOut();
+    it("should update authTrigger trigger", fakeAsync(() => {
+      const details = { login: "username", password: "password" };
+      const model = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxx",
+        userName: "username"
+      });
+      const spy = jasmine.createSpy();
+      createSuccess("/security/", details, model);
 
-//     const logoutReq = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "DELETE"
-//     });
-//     logoutReq.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK",
-//         error: {
-//           links: {
-//             "Log in": "/my_account/sign_in",
-//             Register: "/my_account/sign_up"
-//           },
-//           info: null
-//         }
-//       },
-//       data: {
-//         user_name: "Test",
-//         message: "Logged out successfully."
-//       }
-//     });
+      service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
+      service.signIn(details).subscribe();
 
-//     expect(service.getSessionUser()).toBeFalsy();
-//   }));
+      tick(100);
 
-//   it("logout should set isLoggedIn to false", fakeAsync(() => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//       });
+      expect(spy).toHaveBeenCalledTimes(2);
+    }));
 
-//     const req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
+    it("should handle error", fakeAsync(() => {
+      const details = { login: "username", password: "password" };
+      createError("apiCreate", "/security/", errorResponse);
+      service
+        .signIn(details)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(errorResponse);
+        });
 
-//     service.signOut();
+      tick(100);
+    }));
+  });
 
-//     const logoutReq = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "DELETE"
-//     });
-//     logoutReq.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK",
-//         error: {
-//           links: {
-//             "Log in": "/my_account/sign_in",
-//             Register: "/my_account/sign_up"
-//           },
-//           info: null
-//         }
-//       },
-//       data: {
-//         user_name: "Test",
-//         message: "Logged out successfully."
-//       }
-//     });
+  describe("signOut", () => {
+    function createSuccess(path: string) {
+      return spyOn(service as any, "apiDestroy").and.callFake(
+        (_path: string) => {
+          expect(_path).toBe(path);
 
-//     expect(service.isLoggedIn()).toBeFalsy();
-//   }));
+          const subject = new Subject<SessionUser>();
 
-//   it("logout should not crash when already logged out", fakeAsync(() => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service
-//       .signIn({ login: "username", password: "password" })
-//       // tslint:disable-next-line: rxjs-no-ignored-error
-//       .subscribe(res => {
-//         expect(res).toBeTruthy();
-//         expect(sessionStorage.getItem("user")).toBeTruthy();
-//       });
+          setTimeout(() => {
+            subject.next(null);
+            subject.complete();
+          }, 50);
 
-//     const req = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "POST"
-//     });
-//     req.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK"
-//       },
-//       data: {
-//         auth_token: "aaaaaaaaaaaaaaaaaaaaaa",
-//         user_name: "Test",
-//         message: "Logged in successfully."
-//       }
-//     });
+          return subject;
+        }
+      );
+    }
 
-//     service.signOut();
+    it("should call apiDestroy", fakeAsync(() => {
+      const spy = createSuccess("/security/");
+      service.signOut().subscribe();
+      expect(spy).toHaveBeenCalledWith("/security/");
 
-//     const logoutReq = httpMock.expectOne({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "DELETE"
-//     });
-//     logoutReq.flush({
-//       meta: {
-//         status: 200,
-//         message: "OK",
-//         error: {
-//           links: {
-//             "Log in": "/my_account/sign_in",
-//             Register: "/my_account/sign_up"
-//           },
-//           info: null
-//         }
-//       },
-//       data: {
-//         user_name: "Test",
-//         message: "Logged out successfully."
-//       }
-//     });
+      tick(100);
+    }));
 
-//     service.signOut();
+    it("should handle response", fakeAsync(() => {
+      createSuccess("/security/");
+      service
+        .signOut()
+        .subscribe(() => expect(true).toBeTruthy(), shouldNotFail);
 
-//     httpMock.expectNone({
-//       url: config.getConfig().environment.apiRoot + "/security",
-//       method: "DELETE"
-//     });
-//     expect(service.isLoggedIn()).toBeFalsy();
-//   }));
+      tick(100);
+    }));
 
-//   // TODO Implement the following tests
-//   xit("getLoggedInTrigger should be a behaviorSubject", fakeAsync(() => {
-//     // tslint:disable-next-line: rxjs-no-ignored-error
-//     service.getLoggedInTrigger().subscribe(loggedIn => {
-//       expect(loggedIn).toBeFalsy();
-//     });
-//   }));
+    it("should clear session user", fakeAsync(() => {
+      createSuccess("/security/");
+      service.signOut().subscribe(() => {}, shouldNotFail);
 
-//   xit("getLoggedInTrigger should trigger on login", () => {});
+      tick(100);
 
-//   xit("getLoggedInTrigger should trigger on register", () => {});
+      expect(service.getSessionUser()).toBeFalsy();
+    }));
 
-//   xit("getLoggedInTrigger should trigger on logout", () => {});
+    it("should update authTrigger trigger", fakeAsync(() => {
+      const spy = jasmine.createSpy();
+      createSuccess("/security/");
 
-//   // TODO Implement when register route is completed
-//   xit("register should set session cookie", () => {
-//     expect(false).toBe(true);
-//   });
+      service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
+      service.signOut().subscribe();
 
-//   xit("register should receive token", () => {
-//     expect(false).toBe(true);
-//   });
+      tick(100);
 
-//   xit("register should do nothing when already logged in", () => {
-//     expect(false).toBe(true);
-//   });
+      expect(spy).toHaveBeenCalledTimes(2);
+    }));
 
-//   xit("register should return error on bad password", () => {
-//     expect(false).toBe(true);
-//   });
+    it("should handle error", fakeAsync(() => {
+      createError("apiDestroy", "/security/", errorResponse);
+      service.signOut().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual(errorResponse);
+      });
 
-//   xit("register should return error on bad username", () => {
-//     expect(false).toBe(true);
-//   });
-
-//   xit("register should return error on bad credentials", () => {
-//     expect(false).toBe(true);
-//   });
-
-//   xit("register should return error on missing credentials", () => {
-//     expect(false).toBe(true);
-//   });
-// });
+      tick(100);
+    }));
+  });
+});

@@ -133,9 +133,9 @@ export class User extends AbstractModel implements UserInterface {
  * A user model for the website user
  */
 export class SessionUser extends AbstractModel implements SessionUserInterface {
-  public readonly kind: "SessionUser" = "SessionUser";
-  public readonly authToken: AuthToken;
-  public readonly userName: UserName;
+  public readonly kind?: "SessionUser" = "SessionUser";
+  public readonly authToken?: AuthToken;
+  public readonly userName?: UserName;
 
   /**
    * Constructor

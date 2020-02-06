@@ -13,7 +13,6 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
-import { mockSessionStorage } from "src/app/services/baw-api/mock/sessionStorageMock";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
@@ -54,10 +53,6 @@ describe("MenuComponent", () => {
     api = TestBed.get(SecurityService);
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
-
-    Object.defineProperty(window, "sessionStorage", {
-      value: mockSessionStorage
-    });
   });
 
   afterEach(() => {

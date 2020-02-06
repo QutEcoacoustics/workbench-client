@@ -71,7 +71,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -83,7 +83,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -105,7 +105,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -125,7 +125,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -143,7 +143,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -157,7 +157,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -171,7 +171,7 @@ describe("HeaderComponent", () => {
   });
 
   it("should create contact us link", () => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -189,7 +189,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -204,7 +204,7 @@ describe("HeaderComponent", () => {
   });
 
   it("should display login link", () => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -222,7 +222,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "show").and.callFake(() => {
@@ -261,7 +261,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "show").and.callFake(() => {
@@ -300,7 +300,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "show").and.callFake(() => {
@@ -369,7 +369,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "show").and.callFake(() => {
@@ -403,7 +403,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "show").and.callFake(() => {
@@ -439,7 +439,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(securityApi, "signOut").and.callFake(() => {
@@ -487,7 +487,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(securityApi, "signOut").and.callFake(() => {
@@ -536,9 +536,7 @@ describe("HeaderComponent", () => {
       count++;
       return count === 1;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
-      () => loggedInTrigger
-    );
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
     spyOn(securityApi, "signOut").and.callFake(() => {
       const subject = new Subject<any>();
 
@@ -594,9 +592,7 @@ describe("HeaderComponent", () => {
       count++;
       return count === 1;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
-      () => loggedInTrigger
-    );
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
     spyOn(securityApi, "signOut").and.callFake(() => {
       const subject = new Subject<any>();
 
@@ -650,7 +646,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -664,7 +660,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -684,7 +680,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();

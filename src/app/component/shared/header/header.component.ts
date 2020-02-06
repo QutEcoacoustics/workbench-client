@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
 
     this.securityApi
-      .getLoggedInTrigger()
+      .getAuthTrigger()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => this.updateUser(),
