@@ -70,9 +70,14 @@ export class Project extends AbstractModel implements ProjectInterface {
     return new Project(obj);
   };
 
-  // TODO Implement
   toJSON = () => {
-    return { test: true };
+    // TODO Add image key
+
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description
+    };
   };
 
   /**

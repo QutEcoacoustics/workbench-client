@@ -5,8 +5,10 @@ export abstract class AbstractModel {
     return Object.assign(this, raw);
   }
 
+  public static fromJSON: (obj: any) => AbstractModel;
   private static metaKey = Symbol("meta");
   public readonly id?: number;
+  public abstract toJSON: () => object;
 
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,

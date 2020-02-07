@@ -28,14 +28,6 @@ export interface UserInterface {
 }
 
 /**
- * A user model for the website user
- */
-export interface SessionUserInterface {
-  userName?: UserName;
-  authToken?: AuthToken;
-}
-
-/**
  * A user model.
  */
 export class User extends AbstractModel implements UserInterface {
@@ -113,6 +105,23 @@ export class User extends AbstractModel implements UserInterface {
     return (this.rolesMask & 1) === 1;
   }
 
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new User(obj);
+  };
+
+  toJSON = () => {
+    // TODO Add register details
+
+    return {
+      id: this.id,
+      userName: this.userName
+    };
+  };
+
   /**
    * Get image from imageUrls which relates to the given size
    * @param size Size of image
@@ -138,8 +147,18 @@ export class User extends AbstractModel implements UserInterface {
 /**
  * A user model for the website user
  */
+export interface SessionUserInterface {
+  id?: Id;
+  userName?: UserName;
+  authToken?: AuthToken;
+}
+
+/**
+ * A user model for the website user
+ */
 export class SessionUser extends AbstractModel implements SessionUserInterface {
   public readonly kind?: "SessionUser" = "SessionUser";
+  public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
 
@@ -149,4 +168,28 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
   constructor(user: SessionUserInterface) {
     super(user);
   }
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new SessionUser(obj);
+  };
+
+  toJSON = () => {
+    return {
+      id: this.id,
+      authToken: this.authToken,
+      userName: this.userName
+    };
+  };
 }
+
+User.prototype.toJSON = () => {
+  return this.toJSON();
+};
+
+SessionUser.prototype.toJSON = () => {
+  return this.toJSON();
+};

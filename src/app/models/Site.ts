@@ -68,6 +68,24 @@ export class Site extends AbstractModel implements SiteInterface {
       : defaultDateTimeTimezone;
   }
 
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new Site(obj);
+  };
+
+  toJSON = () => {
+    // TODO Add image, latitude, longitude, timezone
+
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description
+    };
+  };
+
   redirectPath(project: Project): string {
     return siteMenuItem.route.format({
       projectId: project.id,
@@ -75,6 +93,10 @@ export class Site extends AbstractModel implements SiteInterface {
     });
   }
 }
+
+Site.prototype.toJSON = () => {
+  return this.toJSON();
+};
 
 export const mockSite = new Site({
   id: 1,

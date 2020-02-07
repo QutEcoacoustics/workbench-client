@@ -66,4 +66,24 @@ export class AudioRecording extends AbstractModel
         })
       : defaultDateTimeTimezone;
   }
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new AudioRecording(obj);
+  };
+
+  toJSON = () => {
+    // TODO Implement
+
+    return {
+      id: this.id
+    };
+  };
 }
+
+AudioRecording.prototype.toJSON = () => {
+  return this.toJSON();
+};
