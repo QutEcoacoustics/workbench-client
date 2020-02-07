@@ -15,8 +15,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
-import { BawApiService } from "src/app/services/baw-api/baw-api.service";
-import { mockSessionStorage } from "src/app/services/baw-api/mock/sessionStorageMock";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { getText } from "src/testHelpers";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
@@ -28,6 +27,7 @@ describe("MenuComponent", () => {
   let router: ActivatedRoute;
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
+  let api: SecurityService;
   let componentElement: DebugElement;
 
   class MockActivatedRoute {
@@ -54,6 +54,7 @@ describe("MenuComponent", () => {
     }).compileComponents();
 
     router = TestBed.get(ActivatedRoute);
+    api = TestBed.get(SecurityService);
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
     componentElement = fixture.debugElement;
@@ -731,7 +732,6 @@ describe("MenuComponent", () => {
   }));
 
   describe("item ordering", () => {
-
     function arrange(a, b, c, menuType) {
       const link1 = MenuRoute({
         label: "label b",
@@ -763,73 +763,145 @@ describe("MenuComponent", () => {
     it("should order links on secondary menu", () => {
       arrange(3, 2, 1, "secondary");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label z", "tooltip", "label a", "tooltip", "label b", "tooltip"]);
+      expect(linksText).toEqual([
+        "label z",
+        "tooltip",
+        "label a",
+        "tooltip",
+        "label b",
+        "tooltip"
+      ]);
     });
 
     it("should order links on action menu", () => {
       arrange(2, 3, 1, "action");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label z", "tooltip", "label b", "tooltip", "label a", "tooltip"]);
+      expect(linksText).toEqual([
+        "label z",
+        "tooltip",
+        "label b",
+        "tooltip",
+        "label a",
+        "tooltip"
+      ]);
     });
 
     it("ensures order is stable if not specified for the secondary menu", async () => {
       arrange(undefined, undefined, undefined, "secondary");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label b", "tooltip", "label a", "tooltip", "label z", "tooltip"]);
+      expect(linksText).toEqual([
+        "label b",
+        "tooltip",
+        "label a",
+        "tooltip",
+        "label z",
+        "tooltip"
+      ]);
     });
 
     it("ensures order is stable if not specified for the action menu", async () => {
       arrange(undefined, undefined, undefined, "action");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label b", "tooltip", "label a", "tooltip", "label z", "tooltip"]);
+      expect(linksText).toEqual([
+        "label b",
+        "tooltip",
+        "label a",
+        "tooltip",
+        "label z",
+        "tooltip"
+      ]);
     });
 
     it("should sort lexicographically only if order is equal on secondary menu", () => {
       arrange(3, 3, 3, "action");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label a", "tooltip", "label b", "tooltip", "label z", "tooltip"]);
+      expect(linksText).toEqual([
+        "label a",
+        "tooltip",
+        "label b",
+        "tooltip",
+        "label z",
+        "tooltip"
+      ]);
     });
 
     it("should sort lexicographically only if order is equal on action menu", () => {
       arrange(3, 3, 3, "action");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label a", "tooltip", "label b", "tooltip", "label z", "tooltip"]);
+      expect(linksText).toEqual([
+        "label a",
+        "tooltip",
+        "label b",
+        "tooltip",
+        "label z",
+        "tooltip"
+      ]);
     });
 
     it("should order links with ordered link first on secondary menu", () => {
       arrange(undefined, undefined, -3, "secondary");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label z", "tooltip", "label b", "tooltip", "label a", "tooltip"]);
+      expect(linksText).toEqual([
+        "label z",
+        "tooltip",
+        "label b",
+        "tooltip",
+        "label a",
+        "tooltip"
+      ]);
     });
 
     it("should order links with ordered link first on action menu", () => {
       arrange(undefined, undefined, -3, "action");
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["label z", "tooltip", "label b", "tooltip", "label a", "tooltip"]);
+      expect(linksText).toEqual([
+        "label z",
+        "tooltip",
+        "label b",
+        "tooltip",
+        "label a",
+        "tooltip"
+      ]);
     });
 
     it("should order sub-links on secondary menu", () => {
@@ -848,14 +920,16 @@ describe("MenuComponent", () => {
         parent,
         order: 1
       });
-      component.links =  List<AnyMenuItem>([link2, parent]);
+      component.links = List<AnyMenuItem>([link2, parent]);
       component.menuType = "secondary";
       fixture.detectChanges();
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["parent", "tooltip", "label a", "tooltip"]);
+      expect(linksText).toEqual(["parent", "tooltip", "label a", "tooltip"]);
     });
 
     it("should order sub-links inside a parent on secondary menu", () => {
@@ -882,16 +956,24 @@ describe("MenuComponent", () => {
         parent,
         order: 1
       });
-      component.links =  List<AnyMenuItem>([link2, link1, parent]);
+      component.links = List<AnyMenuItem>([link2, link1, parent]);
       component.menuType = "secondary";
       fixture.detectChanges();
 
-      const linksText = getText(componentElement, "app-menu-internal-link span");
+      const linksText = getText(
+        componentElement,
+        "app-menu-internal-link span"
+      );
 
-      expect(linksText)
-        .toEqual(["parent", "tooltip", "label a", "tooltip", "label b", "tooltip"]);
+      expect(linksText).toEqual([
+        "parent",
+        "tooltip",
+        "label a",
+        "tooltip",
+        "label b",
+        "tooltip"
+      ]);
     });
-
   });
 
   it("should filter duplicate menu items on action menu (by object identity)", () => {
@@ -908,7 +990,10 @@ describe("MenuComponent", () => {
 
     const linksText = getText(componentElement, "app-menu-internal-link span");
 
-    expect(linksText.length).toBe(2, "Should be only one internal link and one tooltip");
+    expect(linksText.length).toBe(
+      2,
+      "Should be only one internal link and one tooltip"
+    );
 
     expect(linksText[0]).toEqual("label a");
   });
@@ -927,7 +1012,10 @@ describe("MenuComponent", () => {
 
     const linksText = getText(componentElement, "app-menu-internal-link span");
 
-    expect(linksText.length).toBe(2, "Should be only one internal link and one tooltip");
+    expect(linksText.length).toBe(
+      2,
+      "Should be only one internal link and one tooltip"
+    );
 
     expect(linksText[0]).toEqual("label a");
   });
