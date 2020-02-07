@@ -6,7 +6,6 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
-import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService, Filters } from "./baw-api.service";
@@ -17,10 +16,10 @@ import {
   shouldNotSucceed
 } from "./baw-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMock.service";
-import { SitesService } from "./sites.service";
+import { ShallowSitesService } from "./sites.service";
 
-describe("SitesService", () => {
-  let service: SitesService;
+describe("ShallowSitesService", () => {
+  let service: ShallowSitesService;
   let httpMock: HttpTestingController;
 
   function createError(
@@ -55,7 +54,7 @@ describe("SitesService", () => {
       ]
     });
 
-    service = TestBed.get(SitesService);
+    service = TestBed.get(ShallowSitesService);
     httpMock = TestBed.get(HttpTestingController);
   });
 
@@ -79,44 +78,12 @@ describe("SitesService", () => {
       });
     }
 
-    it("should handle project input", fakeAsync(() => {
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-      const siteModels = [];
-
-      createSuccess("/projects/1/sites/", siteModels);
-
-      service.list(projectModel).subscribe((sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual(siteModels);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
     it("should handle empty response", fakeAsync(() => {
       const siteModels = [];
 
-      createSuccess("/projects/1/sites/", siteModels);
+      createSuccess("/sites/", siteModels);
 
-      service.list(1).subscribe((sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual(siteModels);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle random project id", fakeAsync(() => {
-      const siteModels = [];
-
-      createSuccess("/projects/5/sites/", siteModels);
-
-      service.list(5).subscribe((sites: Site[]) => {
+      service.list().subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -134,9 +101,9 @@ describe("SitesService", () => {
         })
       ];
 
-      createSuccess("/projects/1/sites/", siteModels);
+      createSuccess("/sites/", siteModels);
 
-      service.list(1).subscribe((sites: Site[]) => {
+      service.list().subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -160,9 +127,9 @@ describe("SitesService", () => {
         })
       ];
 
-      createSuccess("/projects/1/sites/", siteModels);
+      createSuccess("/sites/", siteModels);
 
-      service.list(1).subscribe((sites: Site[]) => {
+      service.list().subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -171,9 +138,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiList", "/projects/1/sites/", apiErrorDetails);
+      createError("apiList", "/sites/", apiErrorDetails);
 
-      service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+      service.list().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual(apiErrorDetails);
       });
@@ -182,9 +149,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiList", "/projects/1/sites/", apiErrorInfoDetails);
+      createError("apiList", "/sites/", apiErrorInfoDetails);
 
-      service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+      service.list().subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual(apiErrorInfoDetails);
       });
@@ -212,47 +179,13 @@ describe("SitesService", () => {
       );
     }
 
-    it("should handle project input", fakeAsync(() => {
-      const filters = {} as Filters;
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-      const siteModels = [];
-
-      createSuccess("/projects/1/sites/filter", filters, siteModels);
-
-      service.filter(filters, projectModel).subscribe((sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual(siteModels);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
     it("should handle empty filter response", fakeAsync(() => {
       const filters = {} as Filters;
       const siteModels = [];
 
-      createSuccess("/projects/1/sites/filter", filters, siteModels);
+      createSuccess("/sites/filter", filters, siteModels);
 
-      service.filter(filters, 1).subscribe((sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual(siteModels);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle random project id", fakeAsync(() => {
-      const filters = {} as Filters;
-      const siteModels = [];
-
-      createSuccess("/projects/5/sites/filter", filters, siteModels);
-
-      service.filter(filters, 5).subscribe((sites: Site[]) => {
+      service.filter(filters).subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -271,9 +204,9 @@ describe("SitesService", () => {
         })
       ];
 
-      createSuccess("/projects/1/sites/filter", filters, siteModels);
+      createSuccess("/sites/filter", filters, siteModels);
 
-      service.filter(filters, 1).subscribe((sites: Site[]) => {
+      service.filter(filters).subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -298,9 +231,9 @@ describe("SitesService", () => {
         })
       ];
 
-      createSuccess("/projects/1/sites/filter", filters, siteModels);
+      createSuccess("/sites/filter", filters, siteModels);
 
-      service.filter(filters, 1).subscribe((sites: Site[]) => {
+      service.filter(filters).subscribe((sites: Site[]) => {
         expect(sites).toBeTruthy();
         expect(sites).toEqual(siteModels);
       }, shouldNotFail);
@@ -310,10 +243,10 @@ describe("SitesService", () => {
 
     it("should handle error", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/projects/1/sites/filter", apiErrorDetails);
+      createError("apiFilter", "/sites/filter", apiErrorDetails);
 
       service
-        .filter(filters, 1)
+        .filter(filters)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorDetails);
@@ -324,10 +257,10 @@ describe("SitesService", () => {
 
     it("should handle error with info", fakeAsync(() => {
       const filters = {} as Filters;
-      createError("apiFilter", "/projects/1/sites/filter", apiErrorInfoDetails);
+      createError("apiFilter", "/sites/filter", apiErrorInfoDetails);
 
       service
-        .filter(filters, 1)
+        .filter(filters)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorInfoDetails);
@@ -363,9 +296,9 @@ describe("SitesService", () => {
         projectIds: new Set([1, 2, 3])
       });
 
-      createSuccess("/projects/1/sites/1", siteModel);
+      createSuccess("/sites/1", siteModel);
 
-      service.show(siteModel, 1).subscribe((site: Site) => {
+      service.show(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -381,51 +314,9 @@ describe("SitesService", () => {
         projectIds: new Set([1, 2, 3])
       });
 
-      createSuccess("/projects/1/sites/1", siteModel);
+      createSuccess("/sites/1", siteModel);
 
-      service.show(1, 1).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle project input", fakeAsync(() => {
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-      const siteModel = new Site({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        projectIds: new Set([1, 2, 3])
-      });
-
-      createSuccess("/projects/1/sites/1", siteModel);
-
-      service.show(1, projectModel).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle response with random project id", fakeAsync(() => {
-      const siteModel = new Site({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        projectIds: new Set([1, 2, 3])
-      });
-
-      createSuccess("/projects/5/sites/1", siteModel);
-
-      service.show(siteModel, 5).subscribe((site: Site) => {
+      service.show(1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -441,9 +332,9 @@ describe("SitesService", () => {
         projectIds: new Set([1, 2, 3])
       });
 
-      createSuccess("/projects/1/sites/5", siteModel);
+      createSuccess("/sites/5", siteModel);
 
-      service.show(siteModel, 1).subscribe((site: Site) => {
+      service.show(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -459,9 +350,9 @@ describe("SitesService", () => {
         projectIds: new Set([1, 2, 3])
       });
 
-      createSuccess("/projects/1/sites/5", siteModel);
+      createSuccess("/sites/5", siteModel);
 
-      service.show(5, 1).subscribe((site: Site) => {
+      service.show(5).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -470,9 +361,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiShow", "/projects/1/sites/1", apiErrorDetails);
+      createError("apiShow", "/sites/1", apiErrorDetails);
 
-      service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+      service.show(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual(apiErrorDetails);
       });
@@ -481,9 +372,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiShow", "/projects/1/sites/1", apiErrorInfoDetails);
+      createError("apiShow", "/sites/1", apiErrorInfoDetails);
 
-      service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+      service.show(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
         expect(err).toEqual(apiErrorInfoDetails);
       });
@@ -519,51 +410,9 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createSuccess("/projects/1/sites/", siteModel);
+      createSuccess("/sites/", siteModel);
 
-      service.create(siteModel, 1).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle project input", fakeAsync(() => {
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-      const siteModel = new Site({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        projectIds: new Set([])
-      });
-
-      createSuccess("/projects/1/sites/", siteModel);
-
-      service.create(siteModel, projectModel).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle response with random project id", fakeAsync(() => {
-      const siteModel = new Site({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        projectIds: new Set([])
-      });
-
-      createSuccess("/projects/5/sites/", siteModel);
-
-      service.create(siteModel, 5).subscribe((site: Site) => {
+      service.create(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -579,9 +428,9 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createSuccess("/projects/1/sites/", siteModel);
+      createSuccess("/sites/", siteModel);
 
-      service.create(siteModel, 1).subscribe((site: Site) => {
+      service.create(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -598,15 +447,17 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createSuccess("/projects/1/sites/", siteModel);
+      createSuccess("/sites/", siteModel);
 
-      service.create(siteModel, 1).subscribe((site: Site) => {
+      service.create(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
 
       tick(100);
     }));
+
+    // TODO Write tests for all input types
 
     it("should handle error", fakeAsync(() => {
       const siteModel = new Site({
@@ -616,10 +467,10 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createError("apiCreate", "/projects/1/sites/", apiErrorDetails);
+      createError("apiCreate", "/sites/", apiErrorDetails);
 
       service
-        .create(siteModel, 1)
+        .create(siteModel)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorDetails);
@@ -636,10 +487,10 @@ describe("SitesService", () => {
         projectIds: new Set([])
       });
 
-      createError("apiCreate", "/projects/1/sites/", apiErrorInfoDetails);
+      createError("apiCreate", "/sites/", apiErrorInfoDetails);
 
       service
-        .create(siteModel, 1)
+        .create(siteModel)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorInfoDetails);
@@ -673,9 +524,9 @@ describe("SitesService", () => {
         id: 1
       });
 
-      createSuccess("/projects/1/sites/1", siteModel);
+      createSuccess("/sites/1", siteModel);
 
-      service.update(siteModel, 1).subscribe(
+      service.update(siteModel).subscribe(
         (site: Site) => {
           expect(site).toBeTruthy();
           expect(site).toEqual(siteModel);
@@ -688,50 +539,14 @@ describe("SitesService", () => {
       tick(100);
     }));
 
-    it("should handle project input", fakeAsync(() => {
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-      const siteModel = new Site({
-        id: 1
-      });
-
-      createSuccess("/projects/1/sites/1", siteModel);
-
-      service.update(siteModel, projectModel).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle response with random project id", fakeAsync(() => {
-      const siteModel = new Site({
-        id: 1
-      });
-
-      createSuccess("/projects/5/sites/1", siteModel);
-
-      service.update(siteModel, 5).subscribe((site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(siteModel);
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
     it("should handle response with random site id", fakeAsync(() => {
       const siteModel = new Site({
         id: 5
       });
 
-      createSuccess("/projects/1/sites/5", siteModel);
+      createSuccess("/sites/5", siteModel);
 
-      service.update(siteModel, 1).subscribe((site: Site) => {
+      service.update(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -745,9 +560,9 @@ describe("SitesService", () => {
         name: "Custom Name"
       });
 
-      createSuccess("/projects/1/sites/1", siteModel);
+      createSuccess("/sites/1", siteModel);
 
-      service.update(siteModel, 1).subscribe((site: Site) => {
+      service.update(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -761,9 +576,9 @@ describe("SitesService", () => {
         description: "Custom Description"
       });
 
-      createSuccess("/projects/1/sites/1", siteModel);
+      createSuccess("/sites/1", siteModel);
 
-      service.update(siteModel, 1).subscribe((site: Site) => {
+      service.update(siteModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
         expect(site).toEqual(siteModel);
       }, shouldNotFail);
@@ -778,10 +593,10 @@ describe("SitesService", () => {
         id: 1
       });
 
-      createError("apiUpdate", "/projects/1/sites/1", apiErrorDetails);
+      createError("apiUpdate", "/sites/1", apiErrorDetails);
 
       service
-        .update(siteModel, 1)
+        .update(siteModel)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorDetails);
@@ -795,10 +610,10 @@ describe("SitesService", () => {
         id: 1
       });
 
-      createError("apiUpdate", "/projects/1/sites/1", apiErrorInfoDetails);
+      createError("apiUpdate", "/sites/1", apiErrorInfoDetails);
 
       service
-        .update(siteModel, 1)
+        .update(siteModel)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorInfoDetails);
@@ -821,7 +636,6 @@ describe("SitesService", () => {
           } else {
             subject.next();
           }
-
           subject.complete();
         }, 50);
 
@@ -837,9 +651,9 @@ describe("SitesService", () => {
         projectIds: new Set([1])
       });
 
-      createSuccess("/projects/1/sites/1");
+      createSuccess("/sites/1");
 
-      service.destroy(siteModel, 1).subscribe(() => {
+      service.destroy(siteModel).subscribe(() => {
         expect(true).toBeTruthy();
       }, shouldNotFail);
 
@@ -847,46 +661,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle site id input", fakeAsync(() => {
-      createSuccess("/projects/1/sites/1");
+      createSuccess("/sites/1");
 
-      service.destroy(1, 1).subscribe(() => {
-        expect(true).toBeTruthy();
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle project input", fakeAsync(() => {
-      const projectModel = new Project({
-        id: 1,
-        name: "name",
-        creatorId: 2,
-        siteIds: new Set([1])
-      });
-
-      createSuccess("/projects/1/sites/1");
-
-      service.destroy(1, projectModel).subscribe(() => {
-        expect(true).toBeTruthy();
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle project id input", fakeAsync(() => {
-      createSuccess("/projects/1/sites/1");
-
-      service.destroy(1, 1).subscribe(() => {
-        expect(true).toBeTruthy();
-      }, shouldNotFail);
-
-      tick(100);
-    }));
-
-    it("should handle response with random project id", fakeAsync(() => {
-      createSuccess("/projects/5/sites/1");
-
-      service.destroy(1, 5).subscribe(() => {
+      service.destroy(1).subscribe(() => {
         expect(true).toBeTruthy();
       }, shouldNotFail);
 
@@ -894,9 +671,9 @@ describe("SitesService", () => {
     }));
 
     it("should handle response with random site id", fakeAsync(() => {
-      createSuccess("/projects/1/sites/5");
+      createSuccess("/sites/5");
 
-      service.destroy(5, 1).subscribe(() => {
+      service.destroy(5).subscribe(() => {
         expect(true).toBeTruthy();
       }, shouldNotFail);
 
@@ -908,9 +685,9 @@ describe("SitesService", () => {
         id: 1,
         name: "name"
       });
-      createSuccess("/projects/1/sites/1", model);
+      createSuccess("/sites/1", model);
 
-      service.destroy(model, 1).subscribe(_model => {
+      service.destroy(model).subscribe(_model => {
         expect(_model).toEqual(model);
       }, shouldNotFail);
 
@@ -918,27 +695,23 @@ describe("SitesService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      createError("apiDestroy", "/projects/1/sites/1", apiErrorDetails);
+      createError("apiDestroy", "/sites/1", apiErrorDetails);
 
-      service
-        .destroy(1, 1)
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toBeTruthy();
-          expect(err).toEqual(apiErrorDetails);
-        });
+      service.destroy(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual(apiErrorDetails);
+      });
 
       tick(100);
     }));
 
     it("should handle error with info", fakeAsync(() => {
-      createError("apiDestroy", "/projects/1/sites/1", apiErrorInfoDetails);
+      createError("apiDestroy", "/sites/1", apiErrorInfoDetails);
 
-      service
-        .destroy(1, 1)
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toBeTruthy();
-          expect(err).toEqual(apiErrorInfoDetails);
-        });
+      service.destroy(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual(apiErrorInfoDetails);
+      });
 
       tick(100);
     }));

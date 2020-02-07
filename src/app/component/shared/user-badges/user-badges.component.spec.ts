@@ -13,13 +13,13 @@ import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
-import { UserService } from "src/app/services/baw-api/user.service";
+import { AccountService } from "src/app/services/baw-api/account.service";
 import { MenuModule } from "../menu/menu.module";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
 describe("UserBadgesComponent", () => {
-  let api: UserService;
+  let api: AccountService;
   let component: UserBadgesComponent;
   let fixture: ComponentFixture<UserBadgesComponent>;
 
@@ -31,7 +31,7 @@ describe("UserBadgesComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserBadgesComponent);
-    api = TestBed.get(UserService);
+    api = TestBed.get(AccountService);
     component = fixture.componentInstance;
   });
 
@@ -79,7 +79,7 @@ describe("UserBadgesComponent", () => {
   });
 
   it("should handle creator user badge", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -116,7 +116,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user badge title", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -155,7 +155,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user badge users", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -208,7 +208,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user year length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -252,7 +252,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user years length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -296,7 +296,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user month length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -341,7 +341,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user months length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -386,7 +386,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user day length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -430,7 +430,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user days length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -474,7 +474,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle creator user less than one day length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -517,7 +517,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user badge", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -554,7 +554,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user badge title", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -593,7 +593,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user badge users", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -646,7 +646,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user year length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -690,7 +690,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user years length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -734,7 +734,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user month length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -779,7 +779,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user months length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -824,7 +824,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user day length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -868,7 +868,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user days length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -912,7 +912,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle updater user less than one day length of time", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -955,7 +955,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle owner user badge", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -991,7 +991,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle owner user badge title", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -1029,7 +1029,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle owner user badge users", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -1078,7 +1078,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle all badges for project", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -1121,7 +1121,7 @@ describe("UserBadgesComponent", () => {
   }));
 
   it("should handle all badges for site", fakeAsync(() => {
-    spyOn(api, "getUserAccount").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {

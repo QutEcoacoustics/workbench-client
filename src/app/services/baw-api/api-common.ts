@@ -1,136 +1,129 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { Subject } from "rxjs";
-import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters, Path } from "./base-api.service";
+import { Observable } from "rxjs";
+import { PartialWith } from "src/app/helpers/advancedTypes";
+import { Param } from "src/app/interfaces/apiInterfaces";
+import { AbstractModel } from "src/app/models/AbstractModel";
+import { BawApiService, Filters } from "./baw-api.service";
 
-export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
-
-@Injectable()
-export class ApiCommon<T> extends BawApiService {
-  private subjectNext(subject: Subject<T>, data: any) {
-    subject.next(new this.type(data));
-    subject.complete();
-  }
-  private subjectNextList(subject: Subject<T[]>, data: any[]) {
-    subject.next(data.map(object => new this.type(object)));
-    subject.complete();
-  }
-  private subjectNextBoolean(subject: Subject<boolean>, data: any) {
-    subject.next(!!data);
-    subject.complete();
-  }
-  private subjectError(subject: Subject<any>, err: APIErrorDetails) {
-    subject.error(err);
+export type IdOr<T extends AbstractModel> = T | number;
+export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
+export type IdParamOptional<T extends AbstractModel> = (
+  _: IdOr<T> | Empty
+) => string;
+export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
+  if (x === Empty) {
+    return Empty;
   }
 
-  constructor(
-    http: HttpClient,
-    config: AppConfigService,
-    @Inject(STUB_CLASS_BUILDER) private type: new (object: any) => T
-  ) {
-    super(http, config);
-  }
+  return (x instanceof AbstractModel ? x.id : x).toString();
+}
+export function param(x: Param) {
+  return x;
+}
+export function option(x?: "new" | "filter" | "") {
+  return x ? x : "";
+}
+export type Empty = "";
+export const Empty = "";
+export const New = "new";
+export const Filter = "filter";
 
+export interface ApiList<M, P extends any[]> {
   /**
    * Get list of models
-   * @param path URL path
-   * @param filters Api Filters
    * @param args URL parameter values
    */
-  protected list(path: string, filters: Filters): Subject<T[]> {
-    const subject = new Subject<T[]>();
-    const next = (objects: object[]) => this.subjectNextList(subject, objects);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiList(next, error, path, filters);
-
-    return subject;
-  }
-
-  /**
-   * Get individual model
-   * @param path URL path
-   * @param filters Api Filters
-   * @param args URL parameter values
-   */
-  protected show(path: string, filters: Filters): Subject<T> {
-    const subject = new Subject<T>();
-    const next = (object: object) => this.subjectNext(subject, object);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiList(next, error, path, filters);
-
-    return subject;
-  }
-
-  /**
-   * Create a new model
-   * @param path URL path
-   * @param values Form details
-   * @param args URL parameter values
-   */
-  protected new(path: string, values: any): Subject<T> {
-    const subject = new Subject<T>();
-    const next = (object: object) => this.subjectNext(subject, object);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiCreate(next, error, path, values);
-
-    return subject;
-  }
-
-  /**
-   * Update a model
-   * @param path URL path
-   * @param values Form details
-   * @param args URL parameter values
-   */
-  protected update(path: string, values: any): Subject<T> {
-    const subject = new Subject<T>();
-    const next = (object: object) => this.subjectNext(subject, object);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiUpdate(next, error, path, values);
-
-    return subject;
-  }
-
-  /**
-   * Delete a model
-   * @param path URL path
-   * @param args URL parameter values
-   */
-  protected delete(path: string): Subject<boolean> {
-    const subject = new Subject<boolean>();
-    const next = (success: boolean) =>
-      this.subjectNextBoolean(subject, success);
-    const error = (err: APIErrorDetails) => this.subjectError(subject, err);
-
-    this.apiDelete(next, error, path);
-
-    return subject;
-  }
+  list(...urlParameters: P): Observable<M[]>;
 }
 
 /**
- * URL path arguments
+ * API Filter functionality
  */
-export type Args = (string | number)[];
+export interface ApiFilter<M extends AbstractModel, P extends any[]> {
+  /**
+   * Get list of models, but filtered using the filter API
+   * @param args URL parameter values
+   */
+  filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+}
 
 /**
- * Default api paths
+ * API Show functionality
  */
-export interface CommonApiPaths {
-  details?: Path;
-  nestedDetails?: Path;
-  show?: Path;
-  nestedShow?: Path;
-  new?: Path;
-  nestedNew?: Path;
-  update?: Path;
-  nestedUpdate?: Path;
-  delete?: Path;
-  nestedDelete?: Path;
+export interface ApiShow<
+  M extends AbstractModel,
+  P extends any[],
+  I extends IdOr<M>
+> {
+  /**
+   * Get individual model
+   * @param args URL parameter values
+   */
+  show(model: M | I, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * API Create functionality
+ */
+export interface ApiCreate<M extends AbstractModel, P extends any[]> {
+  /**
+   * Get individual model
+   * @param args URL parameter values
+   */
+  create(model: M, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * API Update functionality
+ */
+export interface ApiUpdate<M extends AbstractModel, P extends any[]> {
+  /**
+   * Get individual model
+   * @param args URL parameter values
+   */
+  update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
+}
+/**
+ * API Delete functionality
+ */
+export interface ApiDestroy<
+  M extends AbstractModel,
+  P extends any[],
+  I extends IdOr<M>
+> {
+  /**
+   * destroy  individual model
+   * @param args URL parameter values
+   */
+  destroy(model: I, ...urlParameters: P): Observable<M | void>;
+}
+
+/**
+ * Api Class with all abilities enabled
+ */
+export abstract class StandardApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements
+    ApiList<M, P>,
+    ApiFilter<M, P>,
+    ApiShow<M, P, IdOr<M>>,
+    ApiCreate<M, P>,
+    ApiUpdate<M, P>,
+    ApiDestroy<M, P, IdOr<M>> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract create(model: M, ...urlParameters: P): Observable<M>;
+  abstract update(
+    model: PartialWith<M, "id">,
+    ...urlParameters: P
+  ): Observable<M>;
+  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
+}
+
+export abstract class ReadonlyApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P, IdOr<M>> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
 }

@@ -10,12 +10,13 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
+import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails, BawApiInterceptor } from "./api.interceptor";
-import { BawApiService } from "./base-api.service";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
+import { SecurityService } from "./security.service";
 
 describe("BawApiInterceptor", () => {
-  let api: BawApiService;
+  let api: SecurityService;
   let config: AppConfigService;
   let http: HttpClient;
   let httpMock: HttpTestingController;
@@ -34,7 +35,7 @@ describe("BawApiInterceptor", () => {
       ]
     });
 
-    api = TestBed.get(BawApiService);
+    api = TestBed.get(SecurityService);
     config = TestBed.get(AppConfigService);
     http = TestBed.get(HttpClient);
     httpMock = TestBed.get(HttpTestingController);
@@ -42,11 +43,6 @@ describe("BawApiInterceptor", () => {
 
   afterEach(() => {
     httpMock.verify();
-  });
-
-  it("should be created", () => {
-    const service: BawApiService = TestBed.get(BawApiService);
-    expect(service).toBeTruthy();
   });
 
   it("should handle api error response", done => {
@@ -63,7 +59,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 401,
             message:
@@ -113,7 +109,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 422,
             message: "Record could not be saved",
@@ -171,7 +167,7 @@ describe("BawApiInterceptor", () => {
           );
           done();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${
@@ -214,10 +210,10 @@ describe("BawApiInterceptor", () => {
       return true;
     });
     spyOn(api, "getSessionUser").and.callFake(() => {
-      return {
+      return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
         userName: "username"
-      };
+      });
     });
 
     http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
@@ -428,10 +424,10 @@ describe("BawApiInterceptor", () => {
       return true;
     });
     spyOn(api, "getSessionUser").and.callFake(() => {
-      return {
+      return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
         userName: "username"
-      };
+      });
     });
 
     http

@@ -3,12 +3,14 @@
   "cSpell.words": [
     "Ecosounds",
     "Formly",
+    "Mixins",
     "dropdown",
     "fontawesome",
     "fortawesome",
     "routerlink",
     "subsink",
     "templating",
+    "unprocessable",
     "vocalisations"
   ],
   "cSpell.ignorePaths": [
@@ -17,7 +19,6 @@
     "**/vscode-extension/**",
     "**/.git/objects/**",
     ".vscode",
-    ".tsling.json",
-  ],
-  
+    ".tsling.json"
+  ]
 }

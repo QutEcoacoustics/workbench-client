@@ -20,7 +20,7 @@ import { User } from "src/app/models/User";
       <div id="users">
         <div class="media" *ngFor="let user of users">
           <div class="image">
-            <a id="imageLink" [routerLink]="user.url">
+            <a id="imageLink" [routerLink]="user.redirectPath()">
               <img
                 [src]="user.getImage(imageSize)"
                 [alt]="user.userName + ' profile picture'"
@@ -28,9 +28,12 @@ import { User } from "src/app/models/User";
             </a>
           </div>
           <div class="body">
-            <a id="username" class="heading" [routerLink]="user.url">{{
-              user.userName
-            }}</a>
+            <a
+              id="username"
+              class="heading"
+              [routerLink]="user.redirectPath()"
+              >{{ user.userName }}</a
+            >
             <br />
             <p
               id="lengthOfTime"

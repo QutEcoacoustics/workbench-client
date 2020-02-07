@@ -17,7 +17,7 @@
       <li
         class="nav-item"
         *ngFor="let link of filteredLinks; let i = index"
-        [ngStyle]="{ 'padding-left': calculatePadding(link) }"
+        [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
       >
         <ng-container *ngIf="isAction(link)">
           <app-menu-button

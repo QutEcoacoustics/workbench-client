@@ -1,21 +1,17 @@
 import { DateTime } from "luxon";
 
-/**
- * BAW API ID
- */
-export type ID = number;
-/**
- * BAW API List of IDs
- */
-export type IDs = Set<ID>;
+export type Id = number;
+
+export type Ids = Set<number>;
+
 /**
  * BAW API UUID
  */
-export type UUID = string;
+export type Uuid = string;
 /**
  * BAW API Item Name
  */
-export type Name = string;
+export type Param = string;
 /**
  * BAW API Username
  */

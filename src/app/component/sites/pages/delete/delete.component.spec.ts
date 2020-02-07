@@ -12,7 +12,7 @@ import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { DeleteComponent } from "./delete.component";
 
@@ -62,7 +62,7 @@ describe("SitesDeleteComponent", () => {
   });
 
   it("should hide loading spinner on form load", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -91,7 +91,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -117,8 +117,8 @@ describe("SitesDeleteComponent", () => {
     expect(form).toBeTruthy();
   }));
 
-  it("should getProject with route param id", fakeAsync(() => {
-    const getSiteSpy = spyOn(api, "getProjectSite").and.callFake(() => {
+  it("should show with route param id", fakeAsync(() => {
+    const showSpy = spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -140,18 +140,18 @@ describe("SitesDeleteComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    expect(getSiteSpy).toHaveBeenCalledWith(5, 10);
+    expect(showSpy).toHaveBeenCalledWith(5, 10);
   }));
 
   it("should handle unauthorized", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -174,14 +174,14 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should handle not found", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
         subject.error({
           status: 404,
           message: "Project not found"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -200,7 +200,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form with project name in title", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -228,7 +228,7 @@ describe("SitesDeleteComponent", () => {
   }));
 
   it("should display form with red delete button", fakeAsync(() => {
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -257,7 +257,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should delete project on submit", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -275,11 +275,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    const deleteSpy = spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    const deleteSpy = spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -302,7 +302,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should navigate on successful submit", fakeAsync(() => {
     const navigateSpy = spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -320,11 +320,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -350,7 +350,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should display form error on failure to submit", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -368,14 +368,14 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -401,7 +401,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should disable submit button while submitting", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -419,11 +419,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -446,7 +446,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should re-enable submit button after submission success", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -464,11 +464,11 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
-        subject.next(true);
+        subject.next();
         subject.complete();
       }, 50);
 
@@ -491,7 +491,7 @@ describe("SitesDeleteComponent", () => {
 
   it("should re-enable submit button after submission failure", fakeAsync(() => {
     spyOn(router, "navigate").and.stub();
-    spyOn(api, "getProjectSite").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {
@@ -509,14 +509,14 @@ describe("SitesDeleteComponent", () => {
       return subject;
     });
 
-    spyOn(api, "deleteProjectSite").and.callFake(() => {
-      const subject = new Subject<boolean>();
+    spyOn(api, "destroy").and.callFake(() => {
+      const subject = new Subject<null>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
