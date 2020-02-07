@@ -4,67 +4,53 @@ import {
   AuthToken,
   DateTimeTimezone,
   defaultDateTimeTimezone,
-  ID,
+  Id,
   ImageSizes,
   ImageURL,
   TimezoneInformation,
   UserName
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A user model.
  */
 export interface UserInterface {
-  kind?: "User";
-  id: ID;
-  userName: UserName;
-  rolesMask: number;
-  rolesMaskNames: string[];
+  id?: Id;
+  userName?: UserName;
+  rolesMask?: number;
+  rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageURL[];
-  lastSeenAt: DateTimeTimezone | string;
+  lastSeenAt?: DateTimeTimezone | string;
   preferences?: any;
   isConfirmed?: boolean;
 }
 
 /**
- * A user model for the website user
- */
-export interface SessionUserInterface {
-  userName: UserName;
-  authToken: AuthToken;
-}
-
-/**
  * A user model.
  */
-export class User implements UserInterface {
-  public readonly kind: "User";
-  public readonly id: ID;
-  public readonly userName: UserName;
-  public readonly timezoneInformation: TimezoneInformation;
-  public readonly imageUrls: ImageURL[];
-  public readonly lastSeenAt: DateTimeTimezone | string;
-  public readonly preferences: any;
-  public readonly isConfirmed: boolean;
-  public readonly rolesMask: number;
-  public readonly rolesMaskNames: string[];
+export class User extends AbstractModel implements UserInterface {
+  public readonly kind: "User" = "User";
+  public readonly id?: Id;
+  public readonly userName?: UserName;
+  public readonly timezoneInformation?: TimezoneInformation;
+  public readonly imageUrls?: ImageURL[];
+  public readonly lastSeenAt?: DateTimeTimezone | string;
+  public readonly preferences?: any;
+  public readonly isConfirmed?: boolean;
+  public readonly rolesMask?: number;
+  public readonly rolesMaskNames?: string[];
 
   constructor(user: UserInterface) {
-    this.kind = "User";
+    super(user);
 
-    this.id = user.id;
     this.userName = user.userName || "Deleted User";
-    this.timezoneInformation = user.timezoneInformation;
     this.lastSeenAt = user.lastSeenAt
       ? DateTime.fromISO(user.lastSeenAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.preferences = user.preferences;
-    this.isConfirmed = user.isConfirmed;
-    this.rolesMask = user.rolesMask;
-    this.rolesMaskNames = user.rolesMaskNames;
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {
@@ -108,12 +94,6 @@ export class User implements UserInterface {
         ];
   }
 
-  get url(): string {
-    return theirProfileMenuItem.route
-      .toString()
-      .replace(":userId", this.id.toString());
-  }
-
   /**
    * Determines if user is admin. Role mask stores user roles
    * as a power of 2 integer so that roles can be combined.
@@ -123,6 +103,23 @@ export class User implements UserInterface {
   get isAdmin(): boolean {
     // tslint:disable-next-line: no-bitwise
     return (this.rolesMask & 1) === 1;
+  }
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new User(obj);
+  };
+
+  toJSON() {
+    // TODO Add register details
+
+    return {
+      id: this.id,
+      userName: this.userName
+    };
   }
 
   /**
@@ -139,20 +136,52 @@ export class User implements UserInterface {
 
     return "/assets/images/user/user_span4.png";
   }
+
+  redirectPath(): string {
+    return theirProfileMenuItem.route
+      .toString()
+      .replace(":userId", this.id.toString());
+  }
 }
 
 /**
  * A user model for the website user
  */
-export class SessionUser implements SessionUserInterface {
-  public readonly authToken: AuthToken;
-  public readonly userName: UserName;
+export interface SessionUserInterface {
+  id?: Id;
+  userName?: UserName;
+  authToken?: AuthToken;
+}
+
+/**
+ * A user model for the website user
+ */
+export class SessionUser extends AbstractModel implements SessionUserInterface {
+  public readonly kind?: "SessionUser" = "SessionUser";
+  public readonly id?: Id;
+  public readonly authToken?: AuthToken;
+  public readonly userName?: UserName;
 
   /**
    * Constructor
    */
   constructor(user: SessionUserInterface) {
-    this.authToken = user.authToken;
-    this.userName = user.userName;
+    super(user);
+  }
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new SessionUser(obj);
+  };
+
+  toJSON() {
+    return {
+      id: this.id,
+      authToken: this.authToken,
+      userName: this.userName
+    };
   }
 }

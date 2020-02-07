@@ -7,13 +7,14 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { UserService } from "src/app/services/baw-api/user.service";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
   theirProfileMenuItem
 } from "../../profile.menus";
+import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 import data from "./their-edit.json";
 
 @Page({
@@ -21,7 +22,7 @@ import data from "./their-edit.json";
   menus: {
     actions: List<AnyMenuItem>([
       theirProfileMenuItem,
-      theirEditProfileMenuItem
+      ...theirProfileMenuItemActions
     ]),
     links: List()
   },
@@ -49,7 +50,7 @@ export class TheirEditComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -57,7 +58,7 @@ export class TheirEditComponent extends PageComponent
 
   user: User;
 
-  constructor(private api: UserService, private route: ActivatedRoute) {
+  constructor(private api: AccountService, private route: ActivatedRoute) {
     super();
   }
 
@@ -68,7 +69,7 @@ export class TheirEditComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.getUserAccount(params.userId);
+          return this.api.show(params.userId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -79,7 +80,7 @@ export class TheirEditComponent extends PageComponent
 
           this.schema.model["name"] = this.user.userName;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );

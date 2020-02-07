@@ -10,10 +10,19 @@ export function appInitializerFn(appConfig: AppConfigService) {
 
 @Injectable()
 export class AppConfigService {
+  /**
+   * App external config
+   */
   private appConfig: Configuration = undefined;
 
+  /**
+   * A promise that will resolve to a config when it completes.
+   * Used as a debounce flag.
+   */
+  private loading: Promise<Configuration>;
+
   constructor(
-    @Inject(APP_CONFIG) private config: string,
+    @Inject(APP_CONFIG) private configUrl: string,
     private titleService: Title
   ) {}
 
@@ -21,19 +30,30 @@ export class AppConfigService {
    * Load the application config from the ecosounds website
    */
   async loadAppConfig(): Promise<any> {
+    // debounce
+    if (this.loading) {
+      return this.loading;
+    }
+
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
-    return retrieveAppConfig(
-      this.config,
+    this.loading = retrieveAppConfig(
+      this.configUrl,
       data => {
         this.appConfig = data;
         this.titleService.setTitle(data.values.brand.name);
+        return this.appConfig;
       },
       () => {
         this.appConfig = null;
+        return null;
       }
-    );
+    ).finally(() => {
+      this.loading = undefined;
+    });
+
+    return this.loading;
   }
 
   /**
@@ -66,10 +86,16 @@ export class AppConfigService {
   }
 }
 
+/**
+ * Retrieve app external config
+ * @param config Config location
+ * @param dataFunc Handle config
+ * @param catchFunc Handle failure
+ */
 export async function retrieveAppConfig(
   config: string,
-  dataFunc: (data: any) => void,
-  catchFunc: (err: any) => void
+  dataFunc: (data: Configuration) => Configuration,
+  catchFunc: (err: any) => null
 ) {
   return await fetch(config)
     .then(response => response.json())

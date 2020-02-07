@@ -26,7 +26,7 @@ export const projectsMenuItem = MenuRoute({
   label: "Projects",
   route: projectsRoute,
   tooltip: () => "View projects I have access too",
-  order: { priority: 4, indentation: 0 }
+  order: 4
 });
 
 export const newProjectMenuItem = MenuRoute({
@@ -35,10 +35,7 @@ export const newProjectMenuItem = MenuRoute({
   route: projectsRoute.add("new"),
   tooltip: () => "Create a new project",
   predicate: isLoggedInPredicate,
-  order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
-  }
+  parent: projectsMenuItem
 });
 
 export const requestProjectMenuItem = MenuRoute({
@@ -47,10 +44,7 @@ export const requestProjectMenuItem = MenuRoute({
   route: projectsRoute.add("request"),
   tooltip: () => "Request access to a project not listed here",
   predicate: isLoggedInPredicate,
-  order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
-  }
+  parent: projectsMenuItem
 });
 
 export const projectMenuItem = MenuRoute({
@@ -58,10 +52,7 @@ export const projectMenuItem = MenuRoute({
   label: "Project",
   route: projectsRoute.add(":projectId"),
   tooltip: () => "The current project",
-  order: {
-    priority: projectsMenuItem.order.priority,
-    indentation: projectsMenuItem.order.indentation + 1
-  }
+  parent: projectsMenuItem
 });
 
 export const projectCategory: Category = {
@@ -76,11 +67,7 @@ export const editProjectMenuItem = MenuRoute({
   route: projectMenuItem.route.add("edit"),
   parent: projectMenuItem,
   tooltip: () => "Change the details for this project",
-  predicate: isOwnerPredicate,
-  order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
-  }
+  predicate: isOwnerPredicate
 });
 
 export const exploreAudioProjectMenuItem = MenuLink({
@@ -104,9 +91,5 @@ export const deleteProjectMenuItem = MenuRoute({
   route: projectMenuItem.route.add("delete"),
   parent: projectMenuItem,
   tooltip: () => "Delete this project",
-  predicate: isOwnerPredicate,
-  order: {
-    priority: projectMenuItem.order.priority,
-    indentation: projectMenuItem.order.indentation + 1
-  }
+  predicate: isOwnerPredicate
 });

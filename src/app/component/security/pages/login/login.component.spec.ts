@@ -8,13 +8,17 @@ import {
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { SecurityService } from "src/app/services/baw-api/security.service";
+import { SessionUser } from "src/app/models/User";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  LoginDetails,
+  SecurityService
+} from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
 
 describe("LoginComponent", () => {
@@ -359,7 +363,9 @@ describe("LoginComponent", () => {
   it("should login account on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();
@@ -386,23 +392,25 @@ describe("LoginComponent", () => {
 
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
-    expect(securityService.signIn).toHaveBeenCalledWith({
-      login: "username",
-      password: "password"
-    });
+    expect(securityService.signIn).toHaveBeenCalledWith(
+      new LoginDetails({
+        login: "username",
+        password: "password"
+      })
+    );
   }));
 
   it("should show error on bad credentials", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     spyOn(securityService, "signIn").and.callFake(() => {
-      const subject = new BehaviorSubject(false);
+      const subject = new Subject<SessionUser>();
 
       subject.error({
         status: 401,
         message:
           "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
 
       return subject;
     });
@@ -430,10 +438,12 @@ describe("LoginComponent", () => {
 
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
-    expect(securityService.signIn).toHaveBeenCalledWith({
-      login: "bad username",
-      password: "bad password"
-    });
+    expect(securityService.signIn).toHaveBeenCalledWith(
+      new LoginDetails({
+        login: "bad username",
+        password: "bad password"
+      })
+    );
 
     const msg = fixture.debugElement.nativeElement.querySelector(
       "ngb-alert.alert-danger"
@@ -475,7 +485,9 @@ describe("LoginComponent", () => {
       expect(button).toBeTruthy();
       expect(button.disabled).toBeTruthy();
 
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
 
     expect(button).toBeTruthy();
@@ -503,7 +515,9 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<SessionUser>(
+        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
+      );
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();

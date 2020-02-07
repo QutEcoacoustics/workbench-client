@@ -8,7 +8,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
@@ -16,40 +16,42 @@ import {
   myAccountMenuItem
 } from "../../profile.menus";
 
+export const myProfileMenuItemActions = [
+  editMyAccountMenuItem,
+  MenuLink({
+    icon: ["fas", "globe-asia"],
+    label: "My Projects",
+    uri: "BROKEN LINK",
+    tooltip: user => `Projects ${user.userName} can access`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "map-marker-alt"],
+    label: "My Sites",
+    uri: "BROKEN LINK",
+    tooltip: user => `Sites ${user.userName} can access`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bookmark"],
+    label: "My Bookmarks",
+    uri: "BROKEN LINK",
+    tooltip: user => `Bookmarks created by ${user.userName}`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bullseye"],
+    label: "My Annotations",
+    uri: "BROKEN LINK",
+    tooltip: user => `Annotations created by ${user.userName}`,
+    predicate: user => !!user
+  })
+];
+
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      editMyAccountMenuItem,
-      MenuLink({
-        icon: ["fas", "globe-asia"],
-        label: "My Projects",
-        uri: "BROKEN LINK",
-        tooltip: user => `Projects ${user.userName} can access`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "map-marker-alt"],
-        label: "My Sites",
-        uri: "BROKEN LINK",
-        tooltip: user => `Sites ${user.userName} can access`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bookmark"],
-        label: "My Bookmarks",
-        uri: "BROKEN LINK",
-        tooltip: user => `Bookmarks created by ${user.userName}`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bullseye"],
-        label: "My Annotations",
-        uri: "BROKEN LINK",
-        tooltip: user => `Annotations created by ${user.userName}`,
-        predicate: user => !!user
-      })
-    ]),
+    actions: List<AnyMenuItem>(myProfileMenuItemActions),
     links: List()
   },
   self: myAccountMenuItem
@@ -62,7 +64,7 @@ import {
 export class MyProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
   thirdPerson = false;
@@ -75,14 +77,14 @@ export class MyProfileComponent extends PageComponent
 
   ngOnInit() {
     this.api
-      .getMyAccount()
+      .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (user: User) => {
           this.user = user;
           this.imageUrl = user.getImage(ImageSizes.large);
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
         }
       );

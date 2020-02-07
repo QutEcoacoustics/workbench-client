@@ -15,8 +15,11 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { SecurityService } from "src/app/services/baw-api/security.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  LoginDetails,
+  SecurityService
+} from "src/app/services/baw-api/security.service";
 import url from "url";
 import {
   confirmAccountMenuItem,
@@ -137,7 +140,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     this.ref.detectChanges();
 
     this.api
-      .signIn($event)
+      .signIn(new LoginDetails($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
@@ -151,7 +154,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
 
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err.message;
           this.loading = false;
         }

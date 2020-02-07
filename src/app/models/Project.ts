@@ -5,76 +5,88 @@ import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
   Description,
-  ID,
-  IDs,
-  Name
+  Id,
+  Ids,
+  Param
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A project model.
  */
 export interface ProjectInterface {
-  kind?: "Project";
-  id: ID;
-  name: Name;
+  id?: Id;
+  name?: Param;
   imageUrl?: string;
-  creatorId: ID;
+  creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
-  updaterId?: ID;
+  updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
-  ownerId?: ID;
+  ownerId?: Id;
   description?: Description;
-  siteIds: IDs;
+  siteIds?: Ids;
 }
 
 /**
  * A project model.
  */
-export class Project implements ProjectInterface {
-  public readonly kind: "Project";
-  public readonly id: ID;
-  public readonly name: Name;
-  public readonly imageUrl: string;
-  public readonly siteIds: IDs;
-  public readonly creatorId: ID;
+export class Project extends AbstractModel implements ProjectInterface {
+  public readonly kind: "Project" = "Project";
+  public readonly id?: Id;
+  public readonly name?: Param;
+  public readonly imageUrl?: string;
+  public readonly siteIds?: Ids;
+  public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
-  public readonly updaterId?: ID;
+  public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  public readonly ownerId?: ID;
+  public readonly ownerId?: Id;
   public readonly description?: Description;
 
   constructor(project: ProjectInterface) {
-    this.kind = "Project";
+    super(project);
 
-    this.id = project.id;
-    this.name = project.name;
+    // TODO: most of these are redundant - reimplement with properties?
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
-    this.creatorId = project.creatorId;
     this.createdAt = project.createdAt
       ? DateTime.fromISO(project.createdAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.updaterId = project.updaterId;
     this.updatedAt = project.updatedAt
       ? DateTime.fromISO(project.updatedAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.ownerId = project.ownerId;
-    this.description = project.description;
-    this.siteIds = new Set(project.siteIds);
+    this.siteIds = new Set(project.siteIds || []);
   }
 
-  get projectUrl(): string {
-    return projectMenuItem.route.format({ projectId: this.id });
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new Project(obj);
+  };
+
+  toJSON() {
+    // TODO Add image key
+
+    const json = {};
+
+    this.addIfExists(json, "id", this.id);
+    this.addIfExists(json, "name", this.name);
+    this.addIfExists(json, "description", this.description);
+
+    return json;
   }
 
   /**
    * Generate card-item details
+   * TODO Extract this out, should not be implemented here
    */
-  get card(): Card {
+  getCard(): Card {
     return {
       title: this.name,
       description: this.description,
@@ -82,8 +94,12 @@ export class Project implements ProjectInterface {
         url: this.imageUrl,
         alt: this.name
       },
-      route: this.projectUrl
+      route: this.redirectPath()
     };
+  }
+
+  redirectPath(): string {
+    return projectMenuItem.route.format({ projectId: this.id });
   }
 }
 

@@ -8,7 +8,7 @@
       "severity": "warning"
     },
     "indent": [true, "spaces", 2],
-    "semicolon": [true, "always"],
+    "semicolon": false,
     "component-class-suffix": true,
     "contextual-lifecycle": true,
     "directive-class-suffix": true,

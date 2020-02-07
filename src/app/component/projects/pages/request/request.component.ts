@@ -5,7 +5,7 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   projectsCategory,
@@ -44,7 +44,7 @@ export class RequestComponent extends PageComponent
   private unsubscribe = new Subject();
   schema: any;
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
 
   constructor(private api: ProjectsService) {
@@ -57,7 +57,7 @@ export class RequestComponent extends PageComponent
     // TODO Change this to the list of projects a user does not have access to
     this.schema = data;
     this.api
-      .getProjects()
+      .list()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         projects => {
@@ -70,7 +70,7 @@ export class RequestComponent extends PageComponent
             }
           );
         },
-        (err: APIErrorDetails) => (this.errorDetails = err)
+        (err: ApiErrorDetails) => (this.errorDetails = err)
       );
   }
 
