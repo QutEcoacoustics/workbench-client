@@ -111,7 +111,10 @@ describe("SecurityService", () => {
     }
 
     it("should call apiCreate", fakeAsync(() => {
-      const details = { login: "username", password: "password" };
+      const details = new LoginDetails({
+        login: "username",
+        password: "password"
+      });
       const model = new SessionUser({
         authToken: "xxxxxxxxxxxxxxx",
         userName: "username"
@@ -124,7 +127,10 @@ describe("SecurityService", () => {
     }));
 
     it("should handle response", fakeAsync(() => {
-      const details = { login: "username", password: "password" };
+      const details = new LoginDetails({
+        login: "username",
+        password: "password"
+      });
       const model = new SessionUser({
         authToken: "xxxxxxxxxxxxxxx",
         userName: "username"
@@ -139,7 +145,10 @@ describe("SecurityService", () => {
     }));
 
     it("set session user", fakeAsync(() => {
-      const details = { login: "username", password: "password" };
+      const details = new LoginDetails({
+        login: "username",
+        password: "password"
+      });
       const model = new SessionUser({
         authToken: "xxxxxxxxxxxxxxx",
         userName: "username"
@@ -155,7 +164,10 @@ describe("SecurityService", () => {
     }));
 
     it("should update authTrigger trigger", fakeAsync(() => {
-      const details = { login: "username", password: "password" };
+      const details = new LoginDetails({
+        login: "username",
+        password: "password"
+      });
       const model = new SessionUser({
         authToken: "xxxxxxxxxxxxxxx",
         userName: "username"
@@ -172,7 +184,10 @@ describe("SecurityService", () => {
     }));
 
     it("should handle error", fakeAsync(() => {
-      const details = { login: "username", password: "password" };
+      const details = new LoginDetails({
+        login: "username",
+        password: "password"
+      });
       createError("apiCreate", "/security/", apiErrorDetails);
       service
         .signIn(details)

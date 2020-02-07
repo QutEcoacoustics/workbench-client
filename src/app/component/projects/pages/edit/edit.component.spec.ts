@@ -227,6 +227,7 @@ describe("ProjectsEditComponent", () => {
     expect(api.update).toHaveBeenCalled();
     expect(api.update).toHaveBeenCalledWith(
       new Project({
+        id: 1,
         name: "test project"
       })
     );

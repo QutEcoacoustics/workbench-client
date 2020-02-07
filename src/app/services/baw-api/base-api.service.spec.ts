@@ -53,10 +53,10 @@ describe("BawApiService", () => {
    * Mock model interface
    */
   class MockModelInterface {
-    id: number;
-    name: string;
-    caseConversion: {
-      testConvert: string;
+    id?: number;
+    name?: string;
+    caseConversion?: {
+      testConvert?: string;
     };
   }
 
@@ -64,31 +64,33 @@ describe("BawApiService", () => {
    * Mock model to simulate abstract model
    */
   class MockModel extends AbstractModel {
-    public readonly id: number;
-    public readonly name: string;
-    public readonly caseConversion: {
-      testConvert: string;
+    public readonly id?: number;
+    public readonly name?: string;
+    public readonly caseConversion?: {
+      testConvert?: string;
     };
 
     constructor(data: MockModelInterface) {
       super(data);
     }
 
-    static fromJSON = (obj: any) => {
+    static fromJSON(obj: any) {
       if (typeof obj === "string") {
         obj = JSON.parse(obj);
       }
 
       return new MockModel(obj);
-    };
+    }
 
-    public toJSON = () => {
-      return {
-        id: this.id,
-        name: this.name,
-        caseConversion: this.caseConversion
-      };
-    };
+    public toJSON() {
+      const json = {};
+
+      this.addIfExists(json, "id", this.id);
+      this.addIfExists(json, "name", this.name);
+      this.addIfExists(json, "caseConversion", this.caseConversion);
+
+      return json;
+    }
   }
 
   let service: BawApiService<MockModel>;
@@ -684,7 +686,7 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", {}).subscribe();
+        service["apiCreate"]("/broken_link", new MockModel({})).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {});
       });
 
@@ -695,9 +697,12 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", {
-          name: "Custom Name"
-        }).subscribe();
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({
+            name: "Custom Name"
+          })
+        ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
           name: "Custom Name"
         });
@@ -710,15 +715,18 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", {}).subscribe(data => {
-          expect(data).toEqual(new MockModel(singleResponse));
-        }, shouldNotFail);
+        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
+          data => {
+            expect(data).toEqual(new MockModel(singleResponse));
+          },
+          shouldNotFail
+        );
       });
 
       it("should handle error response", () => {
         errorRequest("httpPost", apiErrorDetails);
 
-        service["apiCreate"]("/broken_link", {}).subscribe(
+        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
             expect(err).toEqual(apiErrorDetails);
@@ -729,7 +737,7 @@ describe("BawApiService", () => {
       it("should handle error info response", () => {
         errorRequest("httpPost", apiErrorInfoDetails);
 
-        service["apiCreate"]("/broken_link", {}).subscribe(
+        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
             expect(err).toEqual(apiErrorInfoDetails);
@@ -744,7 +752,7 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", {}).subscribe(
+        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
           () => {},
           shouldNotFail,
           () => {
@@ -763,7 +771,7 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", {}).subscribe();
+        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {});
       });
 
@@ -774,9 +782,12 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", {
-          name: "Custom Name"
-        }).subscribe();
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({
+            name: "Custom Name"
+          })
+        ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
           name: "Custom Name"
         });
@@ -789,15 +800,18 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", {}).subscribe(data => {
-          expect(data).toEqual(new MockModel(singleResponse));
-        }, shouldNotFail);
+        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
+          data => {
+            expect(data).toEqual(new MockModel(singleResponse));
+          },
+          shouldNotFail
+        );
       });
 
       it("should handle error response", () => {
         errorRequest("httpPatch", apiErrorDetails);
 
-        service["apiUpdate"]("/broken_link", {}).subscribe(
+        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
             expect(err).toEqual(apiErrorDetails);
@@ -808,7 +822,7 @@ describe("BawApiService", () => {
       it("should handle error info response", () => {
         errorRequest("httpPatch", apiErrorInfoDetails);
 
-        service["apiUpdate"]("/broken_link", {}).subscribe(
+        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
           shouldNotSucceed,
           (err: ApiErrorDetails) => {
             expect(err).toEqual(apiErrorInfoDetails);
@@ -823,7 +837,7 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", {}).subscribe(
+        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
           () => {},
           shouldNotFail,
           () => {

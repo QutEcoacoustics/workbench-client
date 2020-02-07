@@ -76,7 +76,7 @@ export class Site extends AbstractModel implements SiteInterface {
     return new Site(obj);
   };
 
-  toJSON = () => {
+  toJSON() {
     // TODO Add image, latitude, longitude, timezone
 
     return {
@@ -84,7 +84,7 @@ export class Site extends AbstractModel implements SiteInterface {
       name: this.name,
       description: this.description
     };
-  };
+  }
 
   redirectPath(project: Project): string {
     return siteMenuItem.route.format({
@@ -93,10 +93,6 @@ export class Site extends AbstractModel implements SiteInterface {
     });
   }
 }
-
-Site.prototype.toJSON = () => {
-  return this.toJSON();
-};
 
 export const mockSite = new Site({
   id: 1,

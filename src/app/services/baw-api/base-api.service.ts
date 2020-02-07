@@ -170,8 +170,10 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiCreate(path: string, body: object): Observable<T> {
-    return this.httpPost(path, body).pipe(map(this.handleSingleResponse));
+  protected apiCreate(path: string, body: AbstractModel): Observable<T> {
+    return this.httpPost(path, body.toJSON()).pipe(
+      map(this.handleSingleResponse)
+    );
   }
 
   /**
@@ -179,8 +181,10 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiUpdate(path: string, body: object): Observable<T> {
-    return this.httpPatch(path, body).pipe(map(this.handleSingleResponse));
+  protected apiUpdate(path: string, body: AbstractModel): Observable<T> {
+    return this.httpPatch(path, body.toJSON()).pipe(
+      map(this.handleSingleResponse)
+    );
   }
 
   /**

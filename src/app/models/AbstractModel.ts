@@ -8,7 +8,6 @@ export abstract class AbstractModel {
   public static fromJSON: (obj: any) => AbstractModel;
   private static metaKey = Symbol("meta");
   public readonly id?: number;
-  public abstract toJSON: () => object;
 
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,
@@ -16,6 +15,7 @@ export abstract class AbstractModel {
   ): T {
     return new _new(raw);
   }
+  public abstract toJSON(): object;
 
   public addMetadata(meta: Meta) {
     this[AbstractModel.metaKey] = meta;
@@ -23,5 +23,11 @@ export abstract class AbstractModel {
 
   public getMetadata(): Meta {
     return this[AbstractModel.metaKey];
+  }
+
+  protected addIfExists(object: any, key: string, value: any) {
+    if (value) {
+      object[key] = value;
+    }
   }
 }

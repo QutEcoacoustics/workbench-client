@@ -14,7 +14,10 @@ import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SessionUser } from "src/app/models/User";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { SecurityService } from "src/app/services/baw-api/security.service";
+import {
+  LoginDetails,
+  SecurityService
+} from "src/app/services/baw-api/security.service";
 import { LoginComponent } from "./login.component";
 
 describe("LoginComponent", () => {
@@ -371,10 +374,12 @@ describe("LoginComponent", () => {
 
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
-    expect(securityService.signIn).toHaveBeenCalledWith({
-      login: "username",
-      password: "password"
-    });
+    expect(securityService.signIn).toHaveBeenCalledWith(
+      new LoginDetails({
+        login: "username",
+        password: "password"
+      })
+    );
   }));
 
   it("should show error on bad credentials", fakeAsync(() => {
@@ -415,10 +420,12 @@ describe("LoginComponent", () => {
 
     expect(component.submit).toHaveBeenCalled();
     expect(securityService.signIn).toHaveBeenCalled();
-    expect(securityService.signIn).toHaveBeenCalledWith({
-      login: "bad username",
-      password: "bad password"
-    });
+    expect(securityService.signIn).toHaveBeenCalledWith(
+      new LoginDetails({
+        login: "bad username",
+        password: "bad password"
+      })
+    );
 
     const msg = fixture.debugElement.nativeElement.querySelector(
       "ngb-alert.alert-danger"

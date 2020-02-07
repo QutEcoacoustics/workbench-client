@@ -6,6 +6,7 @@ import { flatMap, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
+import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
@@ -95,7 +96,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    */
   submit($event: any) {
     console.log($event);
-    const project = { ...$event, id: this.projectId };
+    const project = new Project({ ...$event, id: this.projectId });
 
     this.loading = true;
     this.ref.detectChanges();

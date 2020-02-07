@@ -113,14 +113,14 @@ export class User extends AbstractModel implements UserInterface {
     return new User(obj);
   };
 
-  toJSON = () => {
+  toJSON() {
     // TODO Add register details
 
     return {
       id: this.id,
       userName: this.userName
     };
-  };
+  }
 
   /**
    * Get image from imageUrls which relates to the given size
@@ -177,19 +177,11 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
     return new SessionUser(obj);
   };
 
-  toJSON = () => {
+  toJSON() {
     return {
       id: this.id,
       authToken: this.authToken,
       userName: this.userName
     };
-  };
+  }
 }
-
-User.prototype.toJSON = () => {
-  return this.toJSON();
-};
-
-SessionUser.prototype.toJSON = () => {
-  return this.toJSON();
-};

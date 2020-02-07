@@ -10,6 +10,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
@@ -95,7 +96,7 @@ export class NewComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    const input = flattenFields($event);
+    const input = new Site(flattenFields($event));
 
     this.route.params
       .pipe(

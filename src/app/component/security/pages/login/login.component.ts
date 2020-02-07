@@ -7,7 +7,10 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { SecurityService } from "src/app/services/baw-api/security.service";
+import {
+  LoginDetails,
+  SecurityService
+} from "src/app/services/baw-api/security.service";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
@@ -88,7 +91,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
     this.ref.detectChanges();
 
     this.api
-      .signIn($event)
+      .signIn(new LoginDetails($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {

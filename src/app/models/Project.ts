@@ -70,15 +70,17 @@ export class Project extends AbstractModel implements ProjectInterface {
     return new Project(obj);
   };
 
-  toJSON = () => {
+  toJSON() {
     // TODO Add image key
 
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description
-    };
-  };
+    const json = {};
+
+    this.addIfExists(json, "id", this.id);
+    this.addIfExists(json, "name", this.name);
+    this.addIfExists(json, "description", this.description);
+
+    return json;
+  }
 
   /**
    * Generate card-item details
@@ -100,10 +102,6 @@ export class Project extends AbstractModel implements ProjectInterface {
     return projectMenuItem.route.format({ projectId: this.id });
   }
 }
-
-Project.prototype.toJSON = () => {
-  return this.toJSON();
-};
 
 export const mockProject = new Project({
   id: 1,

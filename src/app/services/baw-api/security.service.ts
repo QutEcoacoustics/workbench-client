@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
+import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails } from "./api.interceptor";
@@ -59,7 +60,7 @@ export class SecurityService extends BawApiService<SessionUser> {
    */
   public signIn(details: LoginDetails): Observable<SessionUser> {
     return this.apiCreate(signInEndpoint(), details).pipe(
-      map(user => {
+      map((user: SessionUser) => {
         this.setSessionUser(user);
         this.authTrigger.next(null);
         return user;
@@ -82,7 +83,24 @@ export class SecurityService extends BawApiService<SessionUser> {
   }
 }
 
-export interface LoginDetails {
+export interface LoginDetailsInterface {
   login: string;
   password: string;
+}
+
+export class LoginDetails extends AbstractModel
+  implements LoginDetailsInterface {
+  login: string;
+  password: string;
+
+  constructor(details: LoginDetailsInterface) {
+    super(details);
+  }
+
+  public toJSON(): object {
+    return {
+      login: this.login,
+      password: this.password
+    };
+  }
 }

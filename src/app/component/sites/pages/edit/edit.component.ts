@@ -7,6 +7,7 @@ import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
+import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -104,7 +105,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ref.detectChanges();
 
-    const site = { id: this.siteId, ...flattenFields($event) };
+    const site = new Site({ id: this.siteId, ...flattenFields($event) });
 
     this.api
       .update(site, this.projectId)

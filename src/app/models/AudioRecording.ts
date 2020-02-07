@@ -75,15 +75,11 @@ export class AudioRecording extends AbstractModel
     return new AudioRecording(obj);
   };
 
-  toJSON = () => {
+  toJSON() {
     // TODO Implement
 
     return {
       id: this.id
     };
-  };
+  }
 }
-
-AudioRecording.prototype.toJSON = () => {
-  return this.toJSON();
-};
