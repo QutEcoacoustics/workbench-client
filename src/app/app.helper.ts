@@ -17,18 +17,26 @@ import {
   APP_CONFIG as MOCK_APP_CONFIG,
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
-import { ApiCommon } from "./services/baw-api/api-common";
-import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
-import { BawApiService } from "./services/baw-api/base-api.service";
-import { MockApiCommon } from "./services/baw-api/mock/api-commonMock";
-import { MockBawApiService } from "./services/baw-api/mock/baseApiMockService";
-import { MockProjectsService } from "./services/baw-api/mock/projectsMockService";
-import { MockSecurityService } from "./services/baw-api/mock/securityMockService";
-import { MockSitesService } from "./services/baw-api/mock/sitesMockService";
-import { MockUserService } from "./services/baw-api/mock/userMockService";
+import { AccountService } from "./services/baw-api/account.service";
+import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import {
+  BawApiService,
+  STUB_CLASS_BUILDER
+} from "./services/baw-api/baw-api.service";
+import {
+  MockBawApiService,
+  MockModel
+} from "./services/baw-api/mock/baseApiMock.service";
+import { MockReadonlyApiService } from "./services/baw-api/mock/readonlyApiMock.service";
+import { MockSecurityService } from "./services/baw-api/mock/securityMock.service";
+import { MockShowApiService } from "./services/baw-api/mock/showApiMock.service";
+import { MockStandardApiService } from "./services/baw-api/mock/standardApiMock.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
-import { SitesService } from "./services/baw-api/sites.service";
+import {
+  ShallowSitesService,
+  SitesService
+} from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
 function minLengthValidationMessage(err, field) {
@@ -122,10 +130,12 @@ export const testBawServices = [
     useClass: BawApiInterceptor,
     multi: true
   },
+  { provide: STUB_CLASS_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
-  { provide: ApiCommon, useClass: MockApiCommon },
   { provide: SecurityService, useClass: MockSecurityService },
-  { provide: ProjectsService, useClass: MockProjectsService },
-  { provide: SitesService, useClass: MockSitesService },
-  { provide: UserService, useClass: MockUserService }
+  { provide: AccountService, useClass: MockReadonlyApiService },
+  { provide: ProjectsService, useClass: MockStandardApiService },
+  { provide: SitesService, useClass: MockStandardApiService },
+  { provide: ShallowSitesService, useClass: MockStandardApiService },
+  { provide: UserService, useClass: MockShowApiService }
 ];

@@ -4,28 +4,28 @@ import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
   Description,
-  ID,
-  IDs,
-  Name,
+  Id,
+  Ids,
+  Param,
   TimezoneInformation
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 import { Project } from "./Project";
 
 /**
  * A site model.
  */
 export interface SiteInterface {
-  kind?: "Site";
-  id: ID;
-  name: Name;
+  id?: Id;
+  name?: Param;
   imageUrl?: string;
   description?: Description;
   locationObfuscated?: boolean;
-  creatorId: ID;
+  creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
-  updaterId?: ID;
+  updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
-  projectIds: IDs;
+  projectIds?: Ids;
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
@@ -34,48 +34,59 @@ export interface SiteInterface {
 /**
  * A site model.
  */
-export class Site implements SiteInterface {
-  public readonly kind: "Site";
-  public readonly id: ID;
-  public readonly name: Name;
-  public readonly imageUrl: string;
-  public readonly description: Description;
-  public readonly locationObfuscated: boolean;
-  public readonly creatorId: ID;
+export class Site extends AbstractModel implements SiteInterface {
+  public readonly kind: "Site" = "Site";
+  public readonly id?: Id;
+  public readonly name?: Param;
+  public readonly imageUrl?: string;
+  public readonly description?: Description;
+  public readonly locationObfuscated?: boolean;
+  public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
-  public readonly updaterId?: ID;
+  public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  public readonly projectIds: IDs;
+  public readonly projectIds?: Ids;
   public readonly customLatitude?: number;
   public readonly customLongitude?: number;
   public readonly timezoneInformation?: TimezoneInformation;
 
   constructor(site: SiteInterface) {
-    this.kind = "Site";
-    this.id = site.id;
-    this.name = site.name;
+    super(site);
+
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
-    this.description = site.description;
     this.locationObfuscated = site.locationObfuscated || false;
-    this.projectIds = new Set(site.projectIds);
-    this.creatorId = site.creatorId;
+    this.projectIds = new Set(site.projectIds || []);
     this.createdAt = site.createdAt
       ? DateTime.fromISO(site.createdAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.updaterId = site.updaterId;
     this.updatedAt = site.updatedAt
       ? DateTime.fromISO(site.updatedAt as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.customLatitude = site.customLatitude;
-    this.customLongitude = site.customLongitude;
-    this.timezoneInformation = site.timezoneInformation;
   }
 
-  getSiteUrl(project: Project): string {
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new Site(obj);
+  };
+
+  toJSON() {
+    // TODO Add image, latitude, longitude, timezone
+
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description
+    };
+  }
+
+  redirectPath(project: Project): string {
     return siteMenuItem.route.format({
       projectId: project.id,
       siteId: this.id

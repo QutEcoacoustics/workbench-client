@@ -1,11 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { SessionUser, SessionUserInterface } from "src/app/models/User";
+import { AbstractModel } from "src/app/models/AbstractModel";
+import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Path } from "./base-api.service";
+import { ApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService } from "./baw-api.service";
+
+const registerEndpoint = stringTemplate`/security/`;
+const signInEndpoint = stringTemplate`/security/`;
+const signOutEndpoint = stringTemplate`/security/`;
 
 /**
  * Interacts with security based routes in baw api
@@ -13,33 +19,38 @@ import { BawApiService, Path } from "./base-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class SecurityService extends BawApiService {
-  private paths: {
-    [key: string]: Path;
-  };
-  private loggedInTrigger = new BehaviorSubject(null);
+export class SecurityService extends BawApiService<SessionUser> {
+  private authTrigger = new BehaviorSubject(null);
+  private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
   constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config);
+    super(http, config, SessionUser);
 
-    this.loggedInTrigger.next(this.isLoggedIn());
-    this.paths = {
-      register: stringTemplate`/security`,
-      signIn: stringTemplate`/security`,
-      signOut: stringTemplate`/security`
+    this.authTrigger.next(this.isLoggedIn());
+    this.handleError = (err: ApiErrorDetails) => {
+      this.clearSessionUser();
+      this.authTrigger.next(null);
+      return throwError(err);
     };
   }
 
   /**
    * Returns a subject which tracks the change in loggedIn status
    */
-  public getLoggedInTrigger(): BehaviorSubject<boolean> {
-    return this.loggedInTrigger;
+  public getAuthTrigger(): BehaviorSubject<boolean> {
+    return this.authTrigger;
   }
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
-  public register(details: any): Subject<boolean> {
-    return this.authenticateUser(this.paths.register(), details);
+  public register(details: any): Observable<SessionUser> {
+    return this.apiCreate(registerEndpoint(), details).pipe(
+      map(user => {
+        this.setSessionUser(user);
+        this.authTrigger.next(null);
+        return user;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -47,84 +58,49 @@ export class SecurityService extends BawApiService {
    * is not logged in.
    * @param details Details provided by login form
    */
-  public signIn(details: {
-    login: string;
-    password: string;
-  }): Subject<boolean> {
-    return this.authenticateUser(this.paths.signIn(), details);
+  public signIn(details: LoginDetails): Observable<SessionUser> {
+    return this.apiCreate(signInEndpoint(), details).pipe(
+      map((user: SessionUser) => {
+        this.setSessionUser(user);
+        this.authTrigger.next(null);
+        return user;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Logout user and clear session storage values
    */
-  public signOut() {
-    const subject = new Subject<any>();
+  public signOut(): Observable<void> {
+    return this.apiDestroy(signOutEndpoint()).pipe(
+      map(() => {
+        this.clearSessionUser();
+        this.authTrigger.next(null);
+      }),
+      catchError(this.handleError)
+    );
+  }
+}
 
-    if (!this.isLoggedIn()) {
-      this.clearSessionStorage();
-      this.loggedInTrigger.next(null);
-      subject.complete();
-      return;
-    }
+export interface LoginDetailsInterface {
+  login: string;
+  password: string;
+}
 
-    const next = () => {
-      this.clearSessionStorage();
-      this.loggedInTrigger.next(null);
-      subject.complete();
-    };
-    const error = (err: APIErrorDetails) => {
-      console.error("Unknown error thrown: ", err);
-      subject.error(err);
-    };
+export class LoginDetails extends AbstractModel
+  implements LoginDetailsInterface {
+  login: string;
+  password: string;
 
-    this.apiDelete(next, error, this.paths.signOut());
-
-    return subject;
+  constructor(details: LoginDetailsInterface) {
+    super(details);
   }
 
-  /**
-   * Authenticate a user
-   * @param path API Route
-   * @param details Form details to pass to API
-   */
-  private authenticateUser(
-    path: string,
-    details: { login: string; password: string }
-  ): Subject<boolean> {
-    const subject = new Subject<boolean>();
-    const next = (data: SessionUserInterface) => {
-      const user = new SessionUser({
-        authToken: data.authToken,
-        userName: data.userName
-      });
-
-      this.setSessionUser(user);
-      this.loggedInTrigger.next(null);
-      subject.next(true);
+  public toJSON(): object {
+    return {
+      login: this.login,
+      password: this.password
     };
-    const error = (err: APIErrorDetails) => {
-      this.clearSessionStorage();
-      this.loggedInTrigger.next(null);
-      subject.error(err);
-    };
-
-    this.apiCreate(next, error, path, details);
-
-    return subject;
-  }
-
-  /**
-   * Add user details to the session storage
-   * @param user User details
-   */
-  private setSessionUser(user: SessionUser) {
-    sessionStorage.setItem(this.userSessionStorage, JSON.stringify(user));
-  }
-
-  /**
-   * Clear session storage
-   */
-  private clearSessionStorage() {
-    sessionStorage.removeItem(this.userSessionStorage);
   }
 }

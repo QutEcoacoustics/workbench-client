@@ -10,7 +10,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { WidgetComponent } from "../widget/widget.component";
@@ -49,12 +49,9 @@ export class PermissionsShieldComponent
       .pipe(
         flatMap((params: Params) => {
           if (params.siteId && params.projectId) {
-            return this.sitesApi.getProjectSite(
-              params.projectId,
-              params.siteId
-            );
+            return this.sitesApi.show(params.projectId, params.siteId);
           } else if (params.projectId) {
-            return this.projectsApi.getProject(params.projectId);
+            return this.projectsApi.show(params.projectId);
           }
         }),
         takeUntil(this.unsubscribe)
@@ -65,7 +62,7 @@ export class PermissionsShieldComponent
           this.ready = true;
           this.ref.detectChanges();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           console.error("PermissionsShieldComponent: ", err);
         }
       );

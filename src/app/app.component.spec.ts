@@ -48,6 +48,7 @@ describe("AppComponent", () => {
       providers: [...testBawServices]
     }).compileComponents();
   }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -62,13 +63,13 @@ describe("AppComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(userApi, "getSessionUser").and.callFake(() => {
       return null;
     });
-    spyOn(projectsApi, "getProjects").and.callFake(() => {
+    spyOn(projectsApi, "list").and.callFake(() => {
       const subject = new Subject();
 
       setTimeout(() => {

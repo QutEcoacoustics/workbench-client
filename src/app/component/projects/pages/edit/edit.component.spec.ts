@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
 
@@ -45,7 +45,7 @@ describe("ProjectsEditComponent", () => {
     component = fixture.componentInstance;
     component.schema.model = {};
 
-    spyOn(api, "getProject").and.callFake(() => {
+    spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -207,7 +207,7 @@ describe("ProjectsEditComponent", () => {
 
   it("should update project on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject");
+    spyOn(api, "update");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -224,15 +224,18 @@ describe("ProjectsEditComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalledWith(1, {
-      name: "test project"
-    });
+    expect(api.update).toHaveBeenCalled();
+    expect(api.update).toHaveBeenCalledWith(
+      new Project({
+        id: 1,
+        name: "test project"
+      })
+    );
   }));
 
   it("should update project containing emoji on submit", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject");
+    spyOn(api, "update");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -249,15 +252,18 @@ describe("ProjectsEditComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalledWith(1, {
-      name: "test project 😀"
-    });
+    expect(api.update).toHaveBeenCalled();
+    expect(api.update).toHaveBeenCalledWith(
+      new Project({
+        id: 1,
+        name: "test project 😀"
+      })
+    );
   }));
 
   it("should update project on submit with description", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject");
+    spyOn(api, "update");
 
     const name = fixture.debugElement.nativeElement.querySelectorAll(
       "input"
@@ -280,11 +286,14 @@ describe("ProjectsEditComponent", () => {
     fixture.detectChanges();
 
     expect(component.submit).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalled();
-    expect(api.updateProject).toHaveBeenCalledWith(1, {
-      name: "test project",
-      description: "test description"
-    });
+    expect(api.update).toHaveBeenCalled();
+    expect(api.update).toHaveBeenCalledWith(
+      new Project({
+        id: 1,
+        name: "test project",
+        description: "test description"
+      })
+    );
   }));
 
   xit("should update project on submit with image", fakeAsync(() => {}));
@@ -292,7 +301,7 @@ describe("ProjectsEditComponent", () => {
 
   it("should show success on successful submission", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject").and.callFake(() => {
+    spyOn(api, "update").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -326,7 +335,7 @@ describe("ProjectsEditComponent", () => {
 
   it("should show error on duplicate project name", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject").and.callFake(() => {
+    spyOn(api, "update").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -341,7 +350,7 @@ describe("ProjectsEditComponent", () => {
             image_content_type: [],
             image_updated_at: []
           }
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -372,14 +381,14 @@ describe("ProjectsEditComponent", () => {
 
   it("should show error on duplicate project name", fakeAsync(() => {
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject").and.callFake(() => {
+    spyOn(api, "update").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -410,14 +419,14 @@ describe("ProjectsEditComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject").and.callFake(() => {
+    spyOn(api, "update").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -444,14 +453,14 @@ describe("ProjectsEditComponent", () => {
     const button = fixture.nativeElement.querySelector("button[type='submit']");
 
     spyOn(component, "submit").and.callThrough();
-    spyOn(api, "updateProject").and.callFake(() => {
+    spyOn(api, "update").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
 
       return subject;

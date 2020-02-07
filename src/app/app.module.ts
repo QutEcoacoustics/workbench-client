@@ -68,10 +68,12 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
       environment.appConfig,
       data => {
         this.apiKey = data.values.keys.googleMaps;
+        return data;
       },
       err => {
-        this.apiKey = "";
         console.error("Failed to load google api key: ", err);
+        this.apiKey = "";
+        return null;
       }
     );
   }

@@ -7,7 +7,7 @@ export let APP_CONFIG = new InjectionToken("app.config");
 @Injectable()
 export class MockAppConfigService {
   constructor(
-    @Inject(APP_CONFIG) private config: string,
+    @Inject(APP_CONFIG) private configUrl: string,
     private titleService: Title
   ) {}
 

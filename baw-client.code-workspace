@@ -43,7 +43,8 @@
   "extensions": {
     "recommendations": [
       "cyrilletuzi.angular-schematics",
-      "ms-vscode.vscode-typescript-tslint-plugin"
+      "ms-vscode.vscode-typescript-tslint-plugin",
+      "streetsidesoftware.code-spell-checker"
     ]
   }
 }
