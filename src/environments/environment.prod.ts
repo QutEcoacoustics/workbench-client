@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  routerEnableTracing: false,
-  appConfig: "assets/config/production.json"
+  environmentUrl: "assets/environment.json",
+  configUrl: ""
 };

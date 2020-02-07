@@ -65,7 +65,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
 
   constructor() {
     retrieveAppConfig(
-      environment.appConfig,
+      environment.configUrl,
       data => {
         this.apiKey = data.values.keys.googleMaps;
         return data;

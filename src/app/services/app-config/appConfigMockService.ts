@@ -1,15 +1,10 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { Configuration } from "./app-config.service.js";
-
-export let APP_CONFIG = new InjectionToken("app.config");
+import { Configuration, Environment } from "./app-config.service";
 
 @Injectable()
 export class MockAppConfigService {
-  constructor(
-    @Inject(APP_CONFIG) private configUrl: string,
-    private titleService: Title
-  ) {}
+  constructor(private titleService: Title) {}
 
   /**
    * Load the application config from the ecosounds website
@@ -67,6 +62,13 @@ export class MockAppConfigService {
           }
         ]
       }
+    };
+  }
+
+  getEnvironment(): Environment {
+    return {
+      production: false,
+      configUrl: "brokenUrl"
     };
   }
 

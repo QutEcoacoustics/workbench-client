@@ -1,8 +1,7 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
-
-export let APP_CONFIG = new InjectionToken("app.config");
+import { environment } from "src/environments/environment";
 
 export function appInitializerFn(appConfig: AppConfigService) {
   return () => appConfig.loadAppConfig();
@@ -13,53 +12,35 @@ export class AppConfigService {
   /**
    * App external config
    */
-  private appConfig: Configuration = undefined;
+  private appConfig: Configuration;
 
-  /**
-   * A promise that will resolve to a config when it completes.
-   * Used as a debounce flag.
-   */
-  private loading: Promise<Configuration>;
-
-  constructor(
-    @Inject(APP_CONFIG) private configUrl: string,
-    private titleService: Title
-  ) {}
+  constructor(private titleService: Title) {}
 
   /**
    * Load the application config from the ecosounds website
    */
   async loadAppConfig(): Promise<any> {
-    // debounce
-    if (this.loading) {
-      return this.loading;
-    }
-
     // Using fetch because HttpClient fails. Could be an issue due
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
-    this.loading = retrieveAppConfig(
-      this.configUrl,
-      data => {
-        this.appConfig = data;
-        this.titleService.setTitle(data.values.brand.name);
-        return this.appConfig;
-      },
-      () => {
-        this.appConfig = null;
-        return null;
-      }
-    ).finally(() => {
-      this.loading = undefined;
-    });
 
-    return this.loading;
+    const handleData = (data: Configuration) => {
+      this.appConfig = data;
+      this.titleService.setTitle(data.values.brand.name);
+      return this.appConfig;
+    };
+
+    const handleError = (err: any) => {
+      this.appConfig = undefined;
+      console.error("AppConfigService: ", err);
+      throw new Error("AppConfigService: Failed to load configuration file");
+    };
+    return retrieveAppConfig(environment.configUrl, handleData, handleError);
   }
 
   /**
    * Get the application config.
-   * Returned undefined if config has not loaded yet.
-   * Returns null if an error has occurred
+   * If config unknown/null, error has occurred.
    */
   getConfig(): Configuration {
     return this.appConfig;
@@ -97,10 +78,36 @@ export async function retrieveAppConfig(
   dataFunc: (data: Configuration) => Configuration,
   catchFunc: (err: any) => null
 ) {
-  return await fetch(config)
-    .then(response => response.json())
-    .then(dataFunc)
-    .catch(catchFunc);
+  if (environment.production) {
+    return await fetch((environment as any).environmentUrl)
+      .then(response => response.json())
+      .then(options => {
+        environment.configUrl = options.configUrl;
+      })
+      .then(() =>
+        fetch(config)
+          .then(response => response.json())
+          .then(dataFunc)
+          .catch(catchFunc)
+      )
+      .catch(err => {
+        console.error("AppConfigService: ", err);
+        throw new Error("AppConfigService: Failed to load environment");
+      });
+  } else {
+    return await fetch(config)
+      .then(response => response.json())
+      .then(dataFunc)
+      .catch(catchFunc);
+  }
+}
+
+/**
+ * Internal configuration file contents
+ */
+export interface Environment {
+  production: boolean;
+  configUrl: string;
 }
 
 /**

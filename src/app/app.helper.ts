@@ -3,20 +3,15 @@ import { APP_INITIALIZER } from "@angular/core";
 import { Library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
-import { environment } from "src/environments/environment";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
-  APP_CONFIG,
   AppConfigService,
   appInitializerFn
 } from "./services/app-config/app-config.service";
-import {
-  APP_CONFIG as MOCK_APP_CONFIG,
-  MockAppConfigService
-} from "./services/app-config/appConfigMockService";
+import { MockAppConfigService } from "./services/app-config/appConfigMockService";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
@@ -95,10 +90,6 @@ export const providers = [
     multi: true
   },
   {
-    provide: APP_CONFIG,
-    useValue: environment.appConfig
-  },
-  {
     provide: APP_INITIALIZER,
     useFactory: appInitializerFn,
     multi: true,
@@ -110,10 +101,6 @@ export const testAppInitializer = [
   {
     provide: AppConfigService,
     useClass: MockAppConfigService
-  },
-  {
-    provide: MOCK_APP_CONFIG,
-    useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
   },
   {
     provide: APP_INITIALIZER,

@@ -1,12 +1,12 @@
 const fs = require("fs");
-const environmentPath = "./dist/environment";
+const environmentPath = "./dist/workbench-client/assets/environment";
 
 buildEnvironment("staging");
 buildEnvironment("production");
 
 function buildEnvironment(stage) {
   path = `${environmentPath}.${stage}.json`;
-  environment = { appConfig: `assets/config/${stage}.json` };
+  environment = { configUrl: `assets/config/${stage}.json` };
 
   try {
     const stat = fs.statSync(path);
