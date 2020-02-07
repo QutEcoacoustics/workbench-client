@@ -1,7 +1,7 @@
 {
   "environment": {
-    "apiRoot": "http://staging.ecosounds.org",
-    "siteRoot": "http://staging.ecosounds.org/system/listen_to",
+    "apiRoot": "https://staging.ecosounds.org",
+    "siteRoot": "https://staging.ecosounds.org/system/listen_to",
     "siteDir": "/system/listen_to/",
     "cmsRoot": "/assets/content",
     "ga": {
