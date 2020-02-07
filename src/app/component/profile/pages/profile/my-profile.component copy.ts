@@ -16,40 +16,42 @@ import {
   myAccountMenuItem
 } from "../../profile.menus";
 
+export const myProfileMenuItemActions = [
+  editMyAccountMenuItem,
+  MenuLink({
+    icon: ["fas", "globe-asia"],
+    label: "My Projects",
+    uri: "BROKEN LINK",
+    tooltip: user => `Projects ${user.userName} can access`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "map-marker-alt"],
+    label: "My Sites",
+    uri: "BROKEN LINK",
+    tooltip: user => `Sites ${user.userName} can access`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bookmark"],
+    label: "My Bookmarks",
+    uri: "BROKEN LINK",
+    tooltip: user => `Bookmarks created by ${user.userName}`,
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bullseye"],
+    label: "My Annotations",
+    uri: "BROKEN LINK",
+    tooltip: user => `Annotations created by ${user.userName}`,
+    predicate: user => !!user
+  })
+];
+
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      editMyAccountMenuItem,
-      MenuLink({
-        icon: ["fas", "globe-asia"],
-        label: "My Projects",
-        uri: "BROKEN LINK",
-        tooltip: user => `Projects ${user.userName} can access`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "map-marker-alt"],
-        label: "My Sites",
-        uri: "BROKEN LINK",
-        tooltip: user => `Sites ${user.userName} can access`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bookmark"],
-        label: "My Bookmarks",
-        uri: "BROKEN LINK",
-        tooltip: user => `Bookmarks created by ${user.userName}`,
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bullseye"],
-        label: "My Annotations",
-        uri: "BROKEN LINK",
-        tooltip: user => `Annotations created by ${user.userName}`,
-        predicate: user => !!user
-      })
-    ]),
+    actions: List<AnyMenuItem>(myProfileMenuItemActions),
     links: List()
   },
   self: myAccountMenuItem

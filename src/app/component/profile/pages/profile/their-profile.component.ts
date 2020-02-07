@@ -17,40 +17,42 @@ import {
   theirProfileMenuItem
 } from "../../profile.menus";
 
+export const theirProfileMenuItemActions = [
+  theirEditProfileMenuItem,
+  MenuLink({
+    icon: ["fas", "globe-asia"],
+    label: "Their Projects",
+    uri: "BROKEN LINK",
+    tooltip: () => "Projects they can access",
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "map-marker-alt"],
+    label: "Their Sites",
+    uri: "BROKEN LINK",
+    tooltip: () => "Sites they can access",
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bookmark"],
+    label: "Their Bookmarks",
+    uri: "BROKEN LINK",
+    tooltip: () => "Bookmarks created by them",
+    predicate: user => !!user
+  }),
+  MenuLink({
+    icon: ["fas", "bullseye"],
+    label: "Their Annotations",
+    uri: "BROKEN LINK",
+    tooltip: () => "Annotations created by them",
+    predicate: user => !!user
+  })
+];
+
 @Page({
   category: theirProfileCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      theirEditProfileMenuItem,
-      MenuLink({
-        icon: ["fas", "globe-asia"],
-        label: "Their Projects",
-        uri: "BROKEN LINK",
-        tooltip: () => "Projects they can access",
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "map-marker-alt"],
-        label: "Their Sites",
-        uri: "BROKEN LINK",
-        tooltip: () => "Sites they can access",
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bookmark"],
-        label: "Their Bookmarks",
-        uri: "BROKEN LINK",
-        tooltip: () => "Bookmarks created by them",
-        predicate: user => !!user
-      }),
-      MenuLink({
-        icon: ["fas", "bullseye"],
-        label: "Their Annotations",
-        uri: "BROKEN LINK",
-        tooltip: () => "Annotations created by them",
-        predicate: user => !!user
-      })
-    ]),
+    actions: List<AnyMenuItem>(theirProfileMenuItemActions),
     links: List()
   },
   self: theirProfileMenuItem

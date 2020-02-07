@@ -63,13 +63,13 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
-    this.filteredLinks = this.removeDuplicates(
-      this.links
-        ? this.menuType === "secondary"
-          ? this.links.filter(link => this.filter(link)).sort(this.compare)
-          : this.links.filter(link => this.filter(link))
-        : List<AnyMenuItem>([])
-    );
+    this.filteredLinks = new Set(this
+      ?.links
+      ?.filter((link) => {
+          // If link has predicate function, test if returns true
+          return link.predicate ? link.predicate(this?.user) : true;
+      })
+      ?.sort(this.compare));
 
     // Retrieve router parameters to override link attributes
     this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -99,20 +99,16 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Calculate the left padding of a secondary link item
+   * Calculate the indentation of a secondary link item
    * @param link Link to calculate padding for
    */
-  calculatePadding(link: AnyMenuItem) {
-    // Only the secondary menu implements this option
-    if (
-      this.menuType !== "secondary" ||
-      !link.order ||
-      !link.order.indentation
-    ) {
-      return "0em";
-    }
+  calculateIndentation(link: AnyMenuItem) {
+      // Only the secondary menu implements this option
+      if (this.menuType !== "secondary" || !link.indentation) {
+        return 0;
+      }
 
-    return `${link.order.indentation}em`;
+      return link.indentation;
   }
 
   /**
@@ -135,76 +131,27 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filters a list of links / buttons used by the action and secondary menus.
-   * @param link Link to display
-   * @returns True if filter is passed
-   */
-  private filter(link: AnyMenuItem) {
-    // If link has predicate function, test if returns true
-    if (link.predicate) {
-      return link.predicate(this.user);
-    }
-    return true;
-  }
-
-  /**
-   * Remove duplicate links
-   * @param list List of links
-   * @returns Set of non-duplicate links
-   */
-  private removeDuplicates(list: List<AnyMenuItem>): Set<AnyMenuItem> {
-    const set: Set<AnyMenuItem> = new Set([]);
-
-    // List through each link and check if it matches the label of a link in the set
-    list.forEach(link => {
-      let match = false;
-      set.forEach(setLink => {
-        if (setLink.label === link.label) {
-          match = true;
-          return;
-        }
-      });
-
-      if (!match) {
-        set.add(link);
-      }
-    });
-
-    return set;
-  }
-
-  /**
    * Sort function for list of menu items
    * @param a First menu item
    * @param b Second menu item
    */
   private compare(a: AnyMenuItem, b: AnyMenuItem): number {
-    // If no order, return alphabetical order
+    // If no order, return equal - i.e. a stable sort!
     if (!a.order && !b.order) {
-      return a.label < b.label ? -1 : 1;
-    }
-
-    // If only a has order, return a
-    if (a.order && !b.order) {
-      return -1;
-    }
-
-    // If only b has order, return b
-    if (b.order && !a.order) {
-      return 1;
+      return 0;
     }
 
     // If both have the same order number,
     // prioritize based on indentation and alphabetical order
-    if (a.order.priority === b.order.priority) {
-      if (a.order.indentation === b.order.indentation) {
-        return a.label < b.label ? -1 : 1;
+    if (a.order === b.order) {
+      if (a.indentation === b.indentation) {
+        return a?.label.localeCompare(b.label);
       }
 
-      return a.order.indentation < b.order.indentation ? -1 : 1;
+      return a.indentation < b.indentation ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return a.order.priority < b.order.priority ? -1 : 1;
+    return (a?.order || 0) < (b?.order || 0) ? -1 : 1;
   }
 }
