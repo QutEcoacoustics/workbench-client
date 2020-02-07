@@ -35,7 +35,7 @@ export class AppConfigService {
       console.error("AppConfigService: ", err);
       throw new Error("AppConfigService: Failed to load configuration file");
     };
-    return retrieveAppConfig(environment.configUrl, handleData, handleError);
+    return retrieveAppConfig(handleData, handleError, environment.configUrl);
   }
 
   /**
@@ -74,27 +74,31 @@ export class AppConfigService {
  * @param catchFunc Handle failure
  */
 export async function retrieveAppConfig(
-  config: string,
   dataFunc: (data: Configuration) => Configuration,
-  catchFunc: (err: any) => null
+  catchFunc: (err: any) => null,
+  config?: string
 ) {
-  if (environment.production) {
-    return await fetch((environment as any).environmentUrl)
+  if (true || environment.production) {
+    console.log("Production Detected, log options");
+
+    return await fetch(environment.environmentUrl)
       .then(response => response.json())
       .then(options => {
+        console.log(options);
+
         environment.configUrl = options.configUrl;
+        return options.configUrl;
       })
-      .then(() =>
-        fetch(config)
-          .then(response => response.json())
-          .then(dataFunc)
-          .catch(catchFunc)
-      )
+      .then((configUrl: string) => fetch(configUrl))
+      .then(response => response.json())
+      .then(dataFunc)
       .catch(err => {
         console.error("AppConfigService: ", err);
         throw new Error("AppConfigService: Failed to load environment");
       });
   } else {
+    console.log("Development Detected. Retrieving config");
+
     return await fetch(config)
       .then(response => response.json())
       .then(dataFunc)
