@@ -73,6 +73,22 @@ describe("BawApiService", () => {
     constructor(data: MockModelInterface) {
       super(data);
     }
+
+    static fromJSON = (obj: any) => {
+      if (typeof obj === "string") {
+        obj = JSON.parse(obj);
+      }
+
+      return new MockModel(obj);
+    };
+
+    public toJSON = () => {
+      return {
+        id: this.id,
+        name: this.name,
+        caseConversion: this.caseConversion
+      };
+    };
   }
 
   let service: BawApiService<MockModel>;

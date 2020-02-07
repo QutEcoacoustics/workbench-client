@@ -1,7 +1,24 @@
 import { Injectable } from "@angular/core";
+import { Id } from "src/app/interfaces/apiInterfaces";
 import { AbstractModel } from "src/app/models/AbstractModel";
 
-export class MockModel extends AbstractModel {}
+export class MockModel extends AbstractModel {
+  public readonly id: Id;
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new MockModel(obj);
+  };
+
+  public toJSON = () => {
+    return {
+      id: this.id
+    };
+  };
+}
 
 @Injectable()
 export class MockBawApiService {
