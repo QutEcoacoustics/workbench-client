@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AppConfigService } from "../../app-config/app-config.service";
 import { ApiShow, IdOr } from "../api-common";
-import { BawApiService } from "../base-api.service";
+import { BawApiService } from "../baw-api.service";
 import { MockModel } from "./baseApiMock.service";
 
 @Injectable()

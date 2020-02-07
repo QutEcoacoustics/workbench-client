@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { PartialWith } from "src/app/helpers/advancedTypes";
 import { Param } from "src/app/interfaces/apiInterfaces";
 import { AbstractModel } from "src/app/models/AbstractModel";
-import { BawApiService, Filters } from "./base-api.service";
+import { BawApiService, Filters } from "./baw-api.service";
 
 export type IdOr<T extends AbstractModel> = T | number;
 export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;

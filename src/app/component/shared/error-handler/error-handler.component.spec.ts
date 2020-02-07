@@ -6,7 +6,7 @@ import {
   tick
 } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 

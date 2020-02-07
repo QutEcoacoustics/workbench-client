@@ -6,7 +6,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,

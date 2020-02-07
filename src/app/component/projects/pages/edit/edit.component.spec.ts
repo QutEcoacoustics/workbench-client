@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { EditComponent } from "./edit.component";
 

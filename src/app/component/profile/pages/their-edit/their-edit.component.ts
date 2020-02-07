@@ -8,7 +8,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,

@@ -8,14 +8,14 @@ import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { User } from "src/app/models/User";
 import { AccountService } from "./account.service";
-import { ApiErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
+import { ApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService, Filters } from "./baw-api.service";
 import {
   apiErrorDetails,
   apiErrorInfoDetails,
   shouldNotFail,
   shouldNotSucceed
-} from "./base-api.service.spec";
+} from "./baw-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMock.service";
 
 describe("AccountService", () => {

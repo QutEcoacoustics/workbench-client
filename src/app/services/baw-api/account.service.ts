@@ -13,7 +13,7 @@ import {
   option,
   ReadonlyApi
 } from "./api-common";
-import { Filters } from "./base-api.service";
+import { Filters } from "./baw-api.service";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;

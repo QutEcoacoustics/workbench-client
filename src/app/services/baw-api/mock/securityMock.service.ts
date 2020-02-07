@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SessionUser } from "src/app/models/User";
-import { BawApiService } from "../base-api.service";
+import { BawApiService } from "../baw-api.service";
 
 @Injectable()
 export class MockSecurityService extends BawApiService<SessionUser> {

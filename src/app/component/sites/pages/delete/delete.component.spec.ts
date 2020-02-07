@@ -12,7 +12,7 @@ import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { DeleteComponent } from "./delete.component";
 

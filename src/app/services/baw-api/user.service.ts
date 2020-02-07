@@ -5,7 +5,7 @@ import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiShow, IdOr } from "./api-common";
-import { BawApiService } from "./base-api.service";
+import { BawApiService } from "./baw-api.service";
 
 const endpoint = stringTemplate`/my_account`;
 

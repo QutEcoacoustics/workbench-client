@@ -12,7 +12,7 @@ import { TestBed } from "@angular/core/testing";
 import { testBawServices } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import { SecurityService } from "./security.service";
 
 describe("BawApiInterceptor", () => {

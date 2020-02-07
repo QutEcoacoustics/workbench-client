@@ -12,7 +12,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({
   selector: "app-form",

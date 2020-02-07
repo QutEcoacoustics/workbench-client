@@ -8,13 +8,13 @@ import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   apiErrorDetails,
   shouldNotComplete,
   shouldNotFail,
   shouldNotSucceed
-} from "./base-api.service.spec";
+} from "./baw-api.service.spec";
 import { LoginDetails, SecurityService } from "./security.service";
 
 describe("SecurityService", () => {

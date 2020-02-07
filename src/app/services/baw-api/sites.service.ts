@@ -15,7 +15,7 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters } from "./base-api.service";
+import { Filters } from "./baw-api.service";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;

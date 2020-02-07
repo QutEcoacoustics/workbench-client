@@ -13,7 +13,7 @@ import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SessionUser } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   LoginDetails,
   SecurityService

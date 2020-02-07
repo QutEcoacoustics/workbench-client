@@ -6,8 +6,8 @@ import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiErrorDetails } from "./api.interceptor";
-import { BawApiService } from "./base-api.service";
+import { ApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService } from "./baw-api.service";
 
 const registerEndpoint = stringTemplate`/security/`;
 const signInEndpoint = stringTemplate`/security/`;

@@ -18,11 +18,11 @@ import {
   MockAppConfigService
 } from "./services/app-config/appConfigMockService";
 import { AccountService } from "./services/baw-api/account.service";
-import { BawApiInterceptor } from "./services/baw-api/api.interceptor";
+import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
   BawApiService,
   STUB_CLASS_BUILDER
-} from "./services/baw-api/base-api.service";
+} from "./services/baw-api/baw-api.service";
 import {
   MockBawApiService,
   MockModel

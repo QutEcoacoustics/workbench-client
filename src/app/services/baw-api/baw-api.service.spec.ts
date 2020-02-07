@@ -10,13 +10,13 @@ import { testAppInitializer } from "src/app/app.helper";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor";
+import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
   Meta,
   STUB_CLASS_BUILDER
-} from "./base-api.service";
+} from "./baw-api.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");

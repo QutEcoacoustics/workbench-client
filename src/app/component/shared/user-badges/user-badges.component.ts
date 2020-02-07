@@ -19,7 +19,7 @@ import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Badge } from "./user-badge/user-badge.component";
 
 @Component({

@@ -197,7 +197,7 @@ export abstract class BawApiService<T extends AbstractModel> {
 
   /**
    * Constructs a `GET` request
-   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<T | T[]>> {
@@ -206,7 +206,7 @@ export abstract class BawApiService<T extends AbstractModel> {
 
   /**
    * Constructs a `DELETE` request
-   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<T | void>> {
@@ -215,7 +215,7 @@ export abstract class BawApiService<T extends AbstractModel> {
 
   /**
    * Constructs a `POST` request
-   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    * @param body Request body
    */
@@ -225,7 +225,7 @@ export abstract class BawApiService<T extends AbstractModel> {
 
   /**
    * Constructs a `PATCH` request
-   * Conversion of data types and error handling are performed by the base-api interceptor class.
+   * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    * @param body Request body
    */

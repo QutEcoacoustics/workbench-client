@@ -1,4 +1,4 @@
-import { Meta } from "../services/baw-api/base-api.service";
+import { Meta } from "../services/baw-api/baw-api.service";
 
 export abstract class AbstractModel {
   constructor(raw: object) {

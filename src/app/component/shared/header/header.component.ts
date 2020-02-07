@@ -16,7 +16,7 @@ import {
   HeaderDropDownConvertedLink,
   isHeaderLink
 } from "src/app/services/app-config/app-config.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";

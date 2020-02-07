@@ -15,7 +15,7 @@ import {
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiResponse, BawApiService } from "./base-api.service";
+import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 
 /**

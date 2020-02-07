@@ -13,7 +13,7 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters } from "./base-api.service";
+import { Filters } from "./baw-api.service";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
