@@ -59,7 +59,7 @@ import data from "./login.json";
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   public schema = data;
   public error: string;
-  public errorDetails: APIErrorDetails;
+  public errorDetails: ApiErrorDetails;
   public loading: boolean;
   private redirectUrl: string;
   private redirectBack: boolean;

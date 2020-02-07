@@ -12,8 +12,8 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SessionUser } from "src/app/models/User";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   LoginDetails,
@@ -552,7 +552,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<null>(null);
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();
@@ -587,7 +587,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<null>(null);
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();
@@ -623,7 +623,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<null>(null);
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     spyOn(component, "externalRedirect").and.stub();
@@ -661,7 +661,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(component, "submit").and.callThrough();
     spyOn(securityService, "signIn").and.callFake(() => {
-      return new BehaviorSubject<boolean>(true);
+      return new BehaviorSubject<null>(null);
     });
     spyOn(securityService, "isLoggedIn").and.callFake(() => false);
     fixture.detectChanges();
