@@ -3,6 +3,8 @@ import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
+const environmentUrl = "assets/environment/environment.json";
+
 export function appInitializerFn(appConfig: AppConfigService) {
   return () => appConfig.loadAppConfig();
 }
@@ -77,7 +79,7 @@ export async function retrieveAppConfig(
   dataFunc: (data: Configuration) => Configuration,
   catchFunc: (err: any) => null
 ) {
-  return await fetch("assets/environment/environment.json")
+  return await fetch(environmentUrl)
     .then(response => response.json())
     .then(options => {
       environment.configUrl = options.configUrl;
