@@ -2,26 +2,35 @@ import { ViewChild } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,
-  SortType
+  SelectionType,
+  SortType,
+  TableColumn
 } from "@swimlane/ngx-datatable";
 import { PageComponent } from "../page/pageComponent";
 
-export abstract class ListTemplate<T> extends PageComponent {
+export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
 
   // Table variables
   public ColumnMode = ColumnMode;
   public SortType = SortType;
-  public columns: { name?: string; prop?: string }[];
-  public rows: T[];
-  public temp: T[];
+  public SelectionType = SelectionType;
+  public columns: TableColumn[] = [];
+  public rows: T[] = [];
+  public temp: T[] = [];
   public tableClass = "bootstrap";
   public defaultTableLimit = 25;
   public headerHeight = 50;
   public footerHeight = 50;
+  public selected: T[] = [];
+
+  // State variable
+  public ready: boolean;
 
   constructor(private filterMatch: (val: string, row: T) => boolean) {
     super();
+
+    this.ready = false;
   }
 
   /**
@@ -66,5 +75,6 @@ export abstract class ListTemplate<T> extends PageComponent {
   protected loadTable() {
     this.createRows();
     this.temp = [...this.rows];
+    this.ready = true;
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { ListTemplate } from "./tableTemplate";
+import { TableTemplate } from "./tableTemplate";
 
 @Component({
   selector: "app-test-component",
@@ -18,7 +18,7 @@ import { ListTemplate } from "./tableTemplate";
     </ngx-datatable>
   `
 })
-class MockComponent extends ListTemplate<any> {
+class MockComponent extends TableTemplate<any> {
   constructor() {
     super(() => true);
 

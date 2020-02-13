@@ -11,24 +11,24 @@ import { HarvestComponent } from "./pages/harvest/harvest.component";
 import { NewComponent } from "./pages/new/new.component";
 import { sitesRoute } from "./sites.menus";
 
-export const SitesComponents = [
+export const sitesComponents = [
+  DeleteComponent,
   DetailsComponent,
   EditComponent,
-  NewComponent,
   HarvestComponent,
-  DeleteComponent
+  NewComponent
 ];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [SitesComponents],
+  declarations: sitesComponents,
   imports: [
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
     RouterModule.forChild(routes)
   ],
-  exports: [RouterModule, ...SitesComponents]
+  exports: [RouterModule, ...sitesComponents]
 })
 export class SitesModule {}

@@ -9,7 +9,7 @@ import { ISelectableItem } from "src/app/component/shared/items/selectable-items
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ListTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
+import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { Project } from "src/app/models/Project";
 import { User } from "src/app/models/User";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -35,12 +35,11 @@ import { projectMenuItemActions } from "../details/details.component";
   templateUrl: "permissions.component.html",
   styleUrls: ["permissions.component.scss"]
 })
-export class PermissionsComponent extends ListTemplate<TableRow>
+export class PermissionsComponent extends TableTemplate<TableRow>
   implements OnInit, OnDestroy {
   public errorDetails: ApiErrorDetails;
   public loading: boolean;
   public project: Project;
-  public ready: boolean;
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public users: User[];
 
@@ -55,8 +54,6 @@ export class PermissionsComponent extends ListTemplate<TableRow>
   }
 
   ngOnInit() {
-    this.ready = false;
-
     this.columns = [
       { name: "User" },
       { name: "Individual" },
@@ -94,14 +91,12 @@ export class PermissionsComponent extends ListTemplate<TableRow>
         project => {
           // Do something
           this.project = project;
-          this.ready = true;
+          this.loadTable();
         },
         (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );
-
-    this.loadTable();
   }
 
   ngOnDestroy() {
