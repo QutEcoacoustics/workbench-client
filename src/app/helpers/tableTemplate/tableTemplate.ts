@@ -24,10 +24,17 @@ export abstract class ListTemplate<T> extends PageComponent {
     super();
   }
 
+  /**
+   * Create table rows
+   */
   protected abstract createRows(): void;
 
+  /**
+   * Update table with filtered results
+   * @param $event Update event
+   */
   public updateFilter($event: any): void {
-    const val: string = $event.target.value.toLowerCase();
+    const val: string = $event.target.value;
 
     // filter our data
     const temp = this.temp.filter(row => {
@@ -40,14 +47,22 @@ export abstract class ListTemplate<T> extends PageComponent {
     this.table.offset = 0;
   }
 
-  protected checkMatch(val: string, field: string | null): boolean {
-    if (!field) {
+  /**
+   * Check if val contains field. Case insensitive.
+   * @param filter Filter value
+   * @param cell Cell value to compare
+   */
+  protected checkMatch(filter: string, cell: string | null): boolean {
+    if (!cell) {
       return false;
     }
 
-    return field.toLowerCase().indexOf(val) !== -1;
+    return cell.toLocaleLowerCase().indexOf(filter.toLocaleLowerCase()) !== -1;
   }
 
+  /**
+   * Load table rows
+   */
   protected loadTable() {
     this.createRows();
     this.temp = [...this.rows];
