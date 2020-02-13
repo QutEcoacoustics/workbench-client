@@ -15,8 +15,8 @@ import { delay } from "rxjs/operators";
 import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { Filters } from "src/app/services/baw-api/base-api.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { SharedModule } from "../shared/shared.module";
@@ -50,10 +50,10 @@ describe("HomeComponent", () => {
   });
 
   it("should create", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       subject.pipe(delay(50));
@@ -76,10 +76,10 @@ describe("HomeComponent", () => {
   }));
 
   it("should load cms", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       subject.pipe(delay(50));
@@ -107,15 +107,15 @@ describe("HomeComponent", () => {
     expect(body.innerText.trim()).toBe("Test Description");
   }));
 
-  it("should handle getProjects error", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+  it("should handle filter error", fakeAsync(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
-        subject.error({ status: 404, message: "Not Found" } as APIErrorDetails);
+        subject.error({ status: 404, message: "Not Found" } as ApiErrorDetails);
       }, 50);
 
       return subject;
@@ -139,10 +139,10 @@ describe("HomeComponent", () => {
   }));
 
   it("should filter projects to have 3 items", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(filter => {
+    spyOn(projectApi, "filter").and.callFake(filter => {
       expect(filter).toBeTruthy();
       expect(filter).toEqual({ paging: { items: 3 } } as Filters);
 
@@ -166,11 +166,11 @@ describe("HomeComponent", () => {
     fixture.detectChanges();
   }));
 
-  it("should display empty project in list", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+  it("should display empty project in filter", fakeAsync(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -197,11 +197,11 @@ describe("HomeComponent", () => {
     expect(button).toBeTruthy();
   }));
 
-  it("should display single project in list", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+  it("should display single project in filter", fakeAsync(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -241,11 +241,11 @@ describe("HomeComponent", () => {
     expect(button).toBeTruthy();
   }));
 
-  it("should display three projects in list", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+  it("should display three projects in filter", fakeAsync(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -312,10 +312,10 @@ describe("HomeComponent", () => {
   }));
 
   it("should link to project details page", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(() => {
+    spyOn(projectApi, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -346,10 +346,10 @@ describe("HomeComponent", () => {
   }));
 
   it("should request 3 projects", fakeAsync(() => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "getProjects").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake(params => {
       expect(params).toEqual({ paging: { items: 3 } } as Filters);
       const subject = new Subject<Project[]>();
 
@@ -374,7 +374,7 @@ describe("HomeComponent", () => {
   it("should update on logout", fakeAsync(() => {
     let count = 0;
 
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(() => {
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       const subject = new BehaviorSubject(null);
 
       setTimeout(() => {
@@ -383,7 +383,7 @@ describe("HomeComponent", () => {
 
       return subject;
     });
-    spyOn(projectApi, "getProjects").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake(params => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {

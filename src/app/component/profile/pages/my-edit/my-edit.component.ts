@@ -6,7 +6,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
@@ -62,7 +62,7 @@ export class MyEditComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
@@ -79,7 +79,7 @@ export class MyEditComponent extends PageComponent
     this.loading = false;
 
     this.api
-      .getMyAccount()
+      .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (user: User) => {
@@ -88,7 +88,7 @@ export class MyEditComponent extends PageComponent
 
           this.schema.model.edit["name"] = this.user.userName;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );

@@ -9,8 +9,8 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
-import { UserService } from "src/app/services/baw-api/user.service";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
@@ -65,14 +65,14 @@ export const theirProfileMenuItemActions = [
 export class TheirProfileComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
   thirdPerson = true;
   user: User;
   userStatistics: ItemInterface[];
 
-  constructor(private api: UserService, private route: ActivatedRoute) {
+  constructor(private api: AccountService, private route: ActivatedRoute) {
     super();
   }
 
@@ -80,7 +80,7 @@ export class TheirProfileComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.getUserAccount(params.userId);
+          return this.api.show(params.userId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -89,7 +89,7 @@ export class TheirProfileComponent extends PageComponent
           this.user = user;
           this.imageUrl = user.getImage(ImageSizes.large);
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
         }
       );

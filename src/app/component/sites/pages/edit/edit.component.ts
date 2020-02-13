@@ -8,8 +8,9 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ID } from "src/app/interfaces/apiInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { Id } from "src/app/interfaces/apiInterfaces";
+import { Site } from "src/app/models/Site";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   editSiteMenuItem,
@@ -49,14 +50,14 @@ import data from "./edit.json";
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
   success: string;
 
-  projectId: ID;
-  siteId: ID;
+  projectId: Id;
+  siteId: Id;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,7 +77,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.projectId = params.projectId;
           this.siteId = params.siteId;
 
-          return this.api.getProjectSite(this.projectId, this.siteId);
+          return this.api.show(this.projectId, this.siteId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -85,7 +86,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.schema.model["name"] = site.name;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
           this.ready = false;
         }
@@ -102,13 +103,15 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
+    console.log($event);
+
     this.loading = true;
     this.ref.detectChanges();
 
-    const input = flattenFields($event);
+    const site = new Site({ id: this.siteId, ...flattenFields($event) });
 
     this.api
-      .updateProjectSite(this.projectId, this.siteId, input)
+      .update(site, this.projectId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
@@ -116,7 +119,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.success = null;
           this.error = err.message;
           this.loading = false;

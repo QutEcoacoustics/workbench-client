@@ -16,7 +16,7 @@ import {
   HeaderDropDownConvertedLink,
   isHeaderLink
 } from "src/app/services/app-config/app-config.service";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
 
     this.securityApi
-      .getLoggedInTrigger()
+      .getAuthTrigger()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => this.updateUser(),
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private updateUser() {
     if (this.securityApi.isLoggedIn()) {
       this.userApi
-        .getMyAccount()
+        .show()
         .pipe(takeUntil(this.unsubscribe))
         .subscribe(
           (user: User) => {
@@ -162,7 +162,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.userImage = this.user.getImage(ImageSizes.small);
             this.ref.detectChanges();
           },
-          (err: APIErrorDetails) => {
+          (err: ApiErrorDetails) => {
             this.user = null;
             this.ref.detectChanges();
           }

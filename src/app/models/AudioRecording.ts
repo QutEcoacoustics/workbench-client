@@ -2,20 +2,20 @@ import { DateTime } from "luxon";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
-  ID,
-  UUID
+  Id,
+  Uuid
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * An audio recording model
  */
 export interface AudioRecordingInterface {
-  kind?: "AudioRecording";
-  id: ID;
-  uuid: UUID;
-  recordedDate: DateTimeTimezone | string;
-  siteId: ID;
-  durationSeconds: number;
+  id?: Id;
+  uuid?: Uuid;
+  recordedDate?: DateTimeTimezone | string;
+  siteId?: Id;
+  durationSeconds?: number;
   sampleRateHertz?: number;
   channels?: number;
   bitRateBps?: number;
@@ -29,40 +29,32 @@ export interface AudioRecordingInterface {
 /**
  * An audio recording model
  */
-export class AudioRecording implements AudioRecordingInterface {
+export class AudioRecording extends AbstractModel
+  implements AudioRecordingInterface {
   public readonly kind: "AudioRecording";
-  public readonly id: ID;
-  public readonly uuid: UUID;
-  public readonly recordedDate: DateTimeTimezone;
-  public readonly siteId: ID;
-  public readonly durationSeconds: number;
-  public readonly sampleRateHertz: number;
-  public readonly channels: number;
-  public readonly bitRateBps: number;
-  public readonly mediaType: string;
-  public readonly dataLengthBytes: number;
-  public readonly status: "ready" | "uploading" | "corrupt";
-  public readonly createdAt: DateTimeTimezone;
-  public readonly updatedAt: DateTimeTimezone;
+  public readonly id?: Id;
+  public readonly uuid?: Uuid;
+  public readonly recordedDate?: DateTimeTimezone;
+  public readonly siteId?: Id;
+  public readonly durationSeconds?: number;
+  public readonly sampleRateHertz?: number;
+  public readonly channels?: number;
+  public readonly bitRateBps?: number;
+  public readonly mediaType?: string;
+  public readonly dataLengthBytes?: number;
+  public readonly status?: "ready" | "uploading" | "corrupt";
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly updatedAt?: DateTimeTimezone;
 
   constructor(audioRecording: AudioRecordingInterface) {
-    this.kind = "AudioRecording";
+    super(audioRecording);
 
-    this.id = audioRecording.id;
-    this.uuid = audioRecording.uuid;
+    this.kind = "AudioRecording";
     this.recordedDate = audioRecording.recordedDate
       ? DateTime.fromISO(audioRecording.recordedDate as string, {
           setZone: true
         })
       : defaultDateTimeTimezone;
-    this.siteId = audioRecording.siteId;
-    this.durationSeconds = audioRecording.durationSeconds;
-    this.sampleRateHertz = audioRecording.sampleRateHertz;
-    this.channels = audioRecording.channels;
-    this.bitRateBps = audioRecording.bitRateBps;
-    this.mediaType = audioRecording.mediaType;
-    this.dataLengthBytes = audioRecording.dataLengthBytes;
-    this.status = audioRecording.status;
     this.createdAt = audioRecording.createdAt
       ? DateTime.fromISO(audioRecording.createdAt as string, {
           setZone: true
@@ -73,5 +65,21 @@ export class AudioRecording implements AudioRecordingInterface {
           setZone: true
         })
       : defaultDateTimeTimezone;
+  }
+
+  static fromJSON = (obj: any) => {
+    if (typeof obj === "string") {
+      obj = JSON.parse(obj);
+    }
+
+    return new AudioRecording(obj);
+  };
+
+  toJSON() {
+    // TODO Implement
+
+    return {
+      id: this.id
+    };
   }
 }

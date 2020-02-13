@@ -1,17 +1,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import {
-  Description,
-  ID,
-  ImageURL,
-  Name
-} from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "../app-config/app-config.service";
-import { ApiCommon, CommonApiPaths } from "./api-common";
-import { Filters } from "./base-api.service";
+import {
+  Empty,
+  Filter,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi
+} from "./api-common";
+import { Filters } from "./baw-api.service";
+
+const projectId: IdParamOptional<Project> = id;
+const endpoint = stringTemplate`/projects/${projectId}${option}`;
 
 /**
  * Interacts with projects route in baw api
@@ -19,73 +24,27 @@ import { Filters } from "./base-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsService extends ApiCommon<Project> {
-  private paths: CommonApiPaths;
-
+export class ProjectsService extends StandardApi<Project, []> {
   constructor(http: HttpClient, config: AppConfigService) {
     super(http, config, Project);
-
-    this.paths = {
-      details: stringTemplate`/projects`,
-      show: stringTemplate`/projects/${this.id}`,
-      new: stringTemplate`/projects`,
-      update: stringTemplate`/projects/${this.id}`,
-      delete: stringTemplate`/projects/${this.id}`
-    };
   }
 
-  /**
-   * Get a project available to the user
-   * @param projectId Project ID
-   * @param filters API filters
-   * @returns Observable returning singular project
-   */
-  public getProject(projectId: ID, filters?: Filters): Subject<Project> {
-    return this.show(this.paths.show(projectId), filters);
+  list(): Observable<Project[]> {
+    return this.apiList(endpoint(Empty, Empty));
   }
-
-  /**
-   * Get list of projects available to the user
-   * @param filters API filters
-   * @returns Observable list of projects
-   */
-  public getProjects(filters?: Filters): Subject<Project[]> {
-    return this.list(this.paths.details(), filters);
+  filter(filters: Filters): Observable<Project[]> {
+    return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-
-  /**
-   * Create a new project
-   * @param details Form details
-   */
-  public newProject(details: {
-    name: Name;
-    description?: Description;
-    image?: ImageURL;
-  }): Subject<Project> {
-    return this.new(this.paths.new(), details);
+  show(model: IdOr<Project>): Observable<Project> {
+    return this.apiShow(endpoint(model, Empty));
   }
-
-  /**
-   * Update a project
-   * @param projectId Project ID
-   * @param details Form details
-   */
-  public updateProject(
-    projectId: ID,
-    details: {
-      name?: Name;
-      description?: Description;
-      image?: ImageURL;
-    }
-  ): Subject<Project> {
-    return this.update(this.paths.update(projectId), details);
+  create(model: Project): Observable<Project> {
+    return this.apiCreate(endpoint(Empty, Empty), model);
   }
-
-  /**
-   * Delete a project
-   * @param projectId Project ID
-   */
-  public deleteProject(projectId: ID): Subject<boolean> {
-    return this.delete(this.paths.delete(projectId));
+  update(model: Project): Observable<Project> {
+    return this.apiUpdate(endpoint(model, Empty), model);
+  }
+  destroy(model: IdOr<Project>): Observable<Project | void> {
+    return this.apiDestroy(endpoint(model, Empty));
   }
 }

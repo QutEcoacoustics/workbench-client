@@ -6,25 +6,52 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
 import { testAppInitializer } from "src/app/app.helper";
+import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiCommon } from "./api-common";
-import { APIErrorDetails } from "./api.interceptor";
-import { BawApiService, Filters } from "./base-api.service";
-import { MockApiCommon } from "./mock/api-commonMock";
-import { MockBawApiService } from "./mock/baseApiMockService";
+import { ApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService, Filters } from "./baw-api.service";
+import {
+  apiErrorDetails,
+  apiErrorInfoDetails,
+  shouldNotFail,
+  shouldNotSucceed
+} from "./baw-api.service.spec";
+import { MockBawApiService } from "./mock/baseApiMock.service";
 import { SitesService } from "./sites.service";
 
 describe("SitesService", () => {
   let service: SitesService;
   let httpMock: HttpTestingController;
 
+  function createError(
+    func:
+      | "apiList"
+      | "apiFilter"
+      | "apiShow"
+      | "apiCreate"
+      | "apiUpdate"
+      | "apiDestroy",
+    url: string,
+    error: ApiErrorDetails
+  ) {
+    spyOn<any>(service as any, func).and.callFake((path: string) => {
+      expect(path).toBe(url);
+      const subject = new Subject();
+
+      setTimeout(() => {
+        subject.error(error);
+      }, 50);
+
+      return subject;
+    });
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
-        { provide: BawApiService, useClass: MockBawApiService },
-        { provide: ApiCommon, useClass: MockApiCommon }
+        { provide: BawApiService, useClass: MockBawApiService }
       ]
     });
 
@@ -36,1889 +63,884 @@ describe("SitesService", () => {
     httpMock.verify();
   });
 
-  it("should be created", () => {
-    expect(service).toBeTruthy();
+  describe("list", () => {
+    function createSuccess(path: string, model: Site[]) {
+      spyOn(service as any, "apiList").and.callFake((_path: string) => {
+        expect(_path).toBe(path);
+
+        const subject = new Subject<Site[]>();
+
+        setTimeout(() => {
+          subject.next(model);
+          subject.complete();
+        }, 50);
+
+        return subject;
+      });
+    }
+
+    it("should handle project input", fakeAsync(() => {
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
+      const siteModels = [];
+
+      createSuccess("/projects/1/sites/", siteModels);
+
+      service.list(projectModel).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle empty response", fakeAsync(() => {
+      const siteModels = [];
+
+      createSuccess("/projects/1/sites/", siteModels);
+
+      service.list(1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle random project id", fakeAsync(() => {
+      const siteModels = [];
+
+      createSuccess("/projects/5/sites/", siteModels);
+
+      service.list(5).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle single site", fakeAsync(() => {
+      const siteModels = [
+        new Site({
+          id: 1,
+          name: "name",
+          creatorId: 2,
+          projectIds: new Set([1, 2, 3])
+        })
+      ];
+
+      createSuccess("/projects/1/sites/", siteModels);
+
+      service.list(1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle multiple sites", fakeAsync(() => {
+      const siteModels = [
+        new Site({
+          id: 1,
+          name: "name",
+          creatorId: 2,
+          projectIds: new Set([1, 2, 3])
+        }),
+        new Site({
+          id: 5,
+          name: "name",
+          creatorId: 10,
+          projectIds: new Set([10, 20, 30])
+        })
+      ];
+
+      createSuccess("/projects/1/sites/", siteModels);
+
+      service.list(1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle error", fakeAsync(() => {
+      createError("apiList", "/projects/1/sites/", apiErrorDetails);
+
+      service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual(apiErrorDetails);
+      });
+
+      tick(100);
+    }));
+
+    it("should handle error with info", fakeAsync(() => {
+      createError("apiList", "/projects/1/sites/", apiErrorInfoDetails);
+
+      service.list(1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        expect(err).toBeTruthy();
+        expect(err).toEqual(apiErrorInfoDetails);
+      });
+
+      tick(100);
+    }));
   });
 
-  /**
-   * getSites
-   */
+  describe("filter", () => {
+    function createSuccess(path: string, filters: Filters, models: Site[]) {
+      spyOn(service as any, "apiFilter").and.callFake(
+        (_path: string, _filters: Filters) => {
+          expect(_path).toBe(path);
+          expect(_filters).toBe(filters);
 
-  it("getSites should handle empty response", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
+          const subject = new Subject<Site[]>();
+
+          setTimeout(() => {
+            subject.next(models);
+            subject.complete();
+          }, 50);
+
+          return subject;
+        }
+      );
+    }
+
+    it("should handle project input", fakeAsync(() => {
+      const filters = {} as Filters;
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
+      const siteModels = [];
+
+      createSuccess("/projects/1/sites/filter", filters, siteModels);
+
+      service.filter(filters, projectModel).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle empty filter response", fakeAsync(() => {
+      const filters = {} as Filters;
+      const siteModels = [];
+
+      createSuccess("/projects/1/sites/filter", filters, siteModels);
+
+      service.filter(filters, 1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle random project id", fakeAsync(() => {
+      const filters = {} as Filters;
+      const siteModels = [];
+
+      createSuccess("/projects/5/sites/filter", filters, siteModels);
+
+      service.filter(filters, 5).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle single site", fakeAsync(() => {
+      const filters = {} as Filters;
+      const siteModels = [
+        new Site({
+          id: 1,
+          name: "name",
+          creatorId: 2,
+          projectIds: new Set([1, 2, 3])
+        })
+      ];
+
+      createSuccess("/projects/1/sites/filter", filters, siteModels);
+
+      service.filter(filters, 1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle multiple sites", fakeAsync(() => {
+      const filters = {} as Filters;
+      const siteModels = [
+        new Site({
+          id: 1,
+          name: "name",
+          creatorId: 2,
+          projectIds: new Set([1, 2, 3])
+        }),
+        new Site({
+          id: 5,
+          name: "name",
+          creatorId: 10,
+          projectIds: new Set([10, 20, 30])
+        })
+      ];
+
+      createSuccess("/projects/1/sites/filter", filters, siteModels);
+
+      service.filter(filters, 1).subscribe((sites: Site[]) => {
+        expect(sites).toBeTruthy();
+        expect(sites).toEqual(siteModels);
+      }, shouldNotFail);
+
+      tick(100);
+    }));
+
+    it("should handle error", fakeAsync(() => {
+      const filters = {} as Filters;
+      createError("apiFilter", "/projects/1/sites/filter", apiErrorDetails);
+
+      service
+        .filter(filters, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
+
+      tick(100);
+    }));
+
+    it("should handle error with info", fakeAsync(() => {
+      const filters = {} as Filters;
+      createError("apiFilter", "/projects/1/sites/filter", apiErrorInfoDetails);
+
+      service
+        .filter(filters, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
+
+      tick(100);
+    }));
+
+    // TODO Add tests for various types of filters
+  });
+
+  describe("show", () => {
+    function createSuccess(url: string, output: Site) {
+      spyOn(service as any, "apiShow").and.callFake((path: string) => {
+        expect(path).toBe(url);
+
+        const subject = new Subject<Site>();
 
         setTimeout(() => {
-          subject.next([]);
+          subject.next(output);
           subject.complete();
         }, 50);
 
         return subject;
-      }
-    );
+      });
+    }
 
-    service.getSites().subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+    it("should handle site input", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-    tick(100);
-  }));
+      createSuccess("/projects/1/sites/1", siteModel);
 
-  it("getSites should handle single site", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
+      service.show(siteModel, 1).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
+      tick(100);
+    }));
 
-        return subject;
-      }
-    );
+    it("should handle site id input", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-    service.getSites().subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      createSuccess("/projects/1/sites/1", siteModel);
 
-    tick(100);
-  }));
+      service.show(1, 1).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-  it("getSites should handle multiple sites", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
+      tick(100);
+    }));
 
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            }),
-            new Site({
-              id: 5,
-              name: "Name",
-              creatorId: 10,
-              projectIds: new Set([10, 20, 30])
-            })
-          ]);
-          subject.complete();
-        }, 50);
+    it("should handle project input", fakeAsync(() => {
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-        return subject;
-      }
-    );
+      createSuccess("/projects/1/sites/1", siteModel);
 
-    service.getSites().subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          }),
-          new Site({
-            id: 5,
-            name: "Name",
-            creatorId: 10,
-            projectIds: new Set([10, 20, 30])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      service.show(1, projectModel).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSites should handle single site with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toEqual({});
-        const subject = new Subject<Site[]>();
+    it("should handle response with random project id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
+      createSuccess("/projects/5/sites/1", siteModel);
 
-        return subject;
-      }
-    );
+      service.show(siteModel, 5).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    service.getSites({}).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      tick(100);
+    }));
 
-    tick(100);
-  }));
+    it("should handle response with random site model id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 5,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-  it("getSites should handle single site with filter", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toEqual({ paging: { items: 3 } });
-        const subject = new Subject<Site[]>();
+      createSuccess("/projects/1/sites/5", siteModel);
 
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
+      service.show(siteModel, 1).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-        return subject;
-      }
-    );
+      tick(100);
+    }));
 
-    service.getSites({ paging: { items: 3 } }).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+    it("should handle response with random site id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 5,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1, 2, 3])
+      });
 
-    tick(100);
-  }));
+      createSuccess("/projects/1/sites/5", siteModel);
 
-  it("getSites should handle error", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
+      service.show(5, 1).subscribe((site: Site) => {
+        expect(site).toBeTruthy();
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-        setTimeout(() => {
-          subject.error({
-            status: 401,
-            message: "Unauthorized"
-          } as APIErrorDetails);
-        }, 50);
+      tick(100);
+    }));
 
-        return subject;
-      }
-    );
+    it("should handle error", fakeAsync(() => {
+      createError("apiShow", "/projects/1/sites/1", apiErrorDetails);
 
-    service.getSites().subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
+      service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
+        expect(err).toEqual(apiErrorDetails);
+      });
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSites should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
+    it("should handle error with info", fakeAsync(() => {
+      createError("apiShow", "/projects/1/sites/1", apiErrorInfoDetails);
 
-        setTimeout(() => {
-          subject.error({
-            status: 422,
-            message: "Record could not be saved",
-            info: {
-              name: ["has already been taken"],
-              image: [],
-              image_file_name: [],
-              image_file_size: [],
-              image_content_type: [],
-              image_updated_at: []
-            }
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getSites().subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
+      service.show(1, 1).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
         expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
+        expect(err).toEqual(apiErrorInfoDetails);
+      });
 
-    tick(100);
-  }));
+      tick(100);
+    }));
+  });
 
-  /**
-   * getSite
-   */
+  describe("create", () => {
+    function createSuccess(path: string, model: Site) {
+      spyOn(service as any, "apiCreate").and.callFake(
+        (_path: string, _model: object) => {
+          expect(_path).toBe(path);
+          expect(_model).toEqual(model);
 
-  it("getSite should handle response", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/1");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
+          const subject = new Subject<Site>();
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+          setTimeout(() => {
+            subject.next(model);
+            subject.complete();
+          }, 50);
 
-        return subject;
-      }
-    );
+          return subject;
+        }
+      );
+    }
 
-    service.getSite(1).subscribe(
-      (site: Site) => {
+    it("should handle response", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
+
+      createSuccess("/projects/1/sites/", siteModel);
+
+      service.create(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSite should handle response with random id", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/5");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
+    it("should handle project input", fakeAsync(() => {
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+      createSuccess("/projects/1/sites/", siteModel);
 
-        return subject;
-      }
-    );
-
-    service.getSite(5).subscribe(
-      (site: Site) => {
+      service.create(siteModel, projectModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSite should handle response with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/1");
-        expect(filters).toEqual({});
-        const subject = new Subject<Site>();
+    it("should handle response with random project id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+      createSuccess("/projects/5/sites/", siteModel);
 
-        return subject;
-      }
-    );
-
-    service.getSite(1, {}).subscribe(
-      (site: Site) => {
+      service.create(siteModel, 5).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSite should handle response with filter", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/1");
-        expect(filters).toEqual({ paging: { items: 3 } });
-        const subject = new Subject<Site>();
+    it("should handle response with name", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "Custom Name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+      createSuccess("/projects/1/sites/", siteModel);
 
-        return subject;
-      }
-    );
-
-    service.getSite(1, { paging: { items: 3 } }).subscribe(
-      (site: Site) => {
+      service.create(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getSite should handle error", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/1");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
+    it("should handle response with description", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        description: "Custom Description",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-        setTimeout(() => {
-          subject.error({
-            status: 401,
-            message: "Unauthorized"
-          } as APIErrorDetails);
-        }, 50);
+      createSuccess("/projects/1/sites/", siteModel);
 
-        return subject;
-      }
-    );
-
-    service.getSite(1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getSite should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/sites/1");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
-
-        setTimeout(() => {
-          subject.error({
-            status: 422,
-            message: "Record could not be saved",
-            info: {
-              name: ["has already been taken"],
-              image: [],
-              image_file_name: [],
-              image_file_size: [],
-              image_content_type: [],
-              image_updated_at: []
-            }
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getSite(1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  /**
-   * getProjectSite
-   */
-
-  it("getProjectSites should handle empty response", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle random project id", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/5/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(5).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle single site", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle multiple sites", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            }),
-            new Site({
-              id: 5,
-              name: "Name",
-              creatorId: 10,
-              projectIds: new Set([10, 20, 30])
-            })
-          ]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          }),
-          new Site({
-            id: 5,
-            name: "Name",
-            creatorId: 10,
-            projectIds: new Set([10, 20, 30])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle single site with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toEqual({});
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1, {}).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle single site with filter", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toEqual({ paging: { items: 3 } });
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.next([
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          ]);
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1, { paging: { items: 3 } }).subscribe(
-      (sites: Site[]) => {
-        expect(sites).toBeTruthy();
-        expect(sites).toEqual([
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        ]);
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle error", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.error({
-            status: 401,
-            message: "Unauthorized"
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSites should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "list").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site[]>();
-
-        setTimeout(() => {
-          subject.error({
-            status: 422,
-            message: "Record could not be saved",
-            info: {
-              name: ["has already been taken"],
-              image: [],
-              image_file_name: [],
-              image_file_size: [],
-              image_content_type: [],
-              image_updated_at: []
-            }
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSites(1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  /**
-   * getProjectSite
-   */
-
-  it("getProjectSite should handle response", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/1");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
-
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSite(1, 1).subscribe(
-      (site: Site) => {
+      service.create(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("getProjectSite should handle response with random project id", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/5/sites/1");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
+    it("should handle error", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+      createError("apiCreate", "/projects/1/sites/", apiErrorDetails);
 
-        return subject;
-      }
-    );
+      service
+        .create(siteModel, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
 
-    service.getProjectSite(5, 1).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      tick(100);
+    }));
 
-    tick(100);
-  }));
+    it("should handle error with info", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([])
+      });
 
-  it("getProjectSite should handle response with random site id", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/5");
-        expect(filters).toBeFalsy();
-        const subject = new Subject<Site>();
+      createError("apiCreate", "/projects/1/sites/", apiErrorInfoDetails);
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+      service
+        .create(siteModel, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
 
-        return subject;
-      }
-    );
+      tick(100);
+    }));
+  });
 
-    service.getProjectSite(1, 5).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+  describe("update", () => {
+    function createSuccess(path: string, model: Site) {
+      spyOn(service as any, "apiUpdate").and.callFake(
+        (_path: string, _model: object) => {
+          expect(_path).toBe(path);
+          expect(_model).toEqual(model);
 
-    tick(100);
-  }));
+          const subject = new Subject<Site>();
 
-  it("getProjectSite should handle response with empty filter", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/1");
-        expect(filters).toEqual({});
-        const subject = new Subject<Site>();
+          setTimeout(() => {
+            subject.next(model);
+            subject.complete();
+          }, 50);
 
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
+          return subject;
+        }
+      );
+    }
 
-        return subject;
-      }
-    );
+    it("should handle response", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1
+      });
 
-    service.getProjectSite(1, 1, {}).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      createSuccess("/projects/1/sites/1", siteModel);
 
-    tick(100);
-  }));
-
-  it("getProjectSite should handle response with filter", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/1");
-        expect(filters).toEqual({ paging: { items: 3 } });
-        const subject = new Subject<Site>();
-
-        setTimeout(() => {
-          subject.next(
-            new Site({
-              id: 1,
-              name: "Name",
-              creatorId: 2,
-              projectIds: new Set([1, 2, 3])
-            })
-          );
-          subject.complete();
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSite(1, 1, { paging: { items: 3 } }).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([1, 2, 3])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSite should handle error", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/1");
-        expect(filters).toBeFalsy();
-
-        const subject = new Subject<Site>();
-
-        setTimeout(() => {
-          subject.error({
-            status: 401,
-            message: "Unauthorized"
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSite(1, 1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("getProjectSite should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "show").and.callFake(
-      (path: string, filters: Filters) => {
-        expect(path).toBe("/projects/1/sites/1");
-        expect(filters).toBeFalsy();
-
-        const subject = new Subject<Site>();
-
-        setTimeout(() => {
-          subject.error({
-            status: 422,
-            message: "Record could not be saved",
-            info: {
-              name: ["has already been taken"],
-              image: [],
-              image_file_name: [],
-              image_file_size: [],
-              image_content_type: [],
-              image_updated_at: []
-            }
-          } as APIErrorDetails);
-        }, 50);
-
-        return subject;
-      }
-    );
-
-    service.getProjectSite(1, 1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  /**
-   * newProjectSite
-   */
-
-  it("newProjectSite should handle response", fakeAsync(() => {
-    spyOn<any>(service, "new").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites");
-      expect(values).toEqual({ name: "Name" });
-
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service.newProjectSite(1, { name: "Name" }).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("newProjectSite should handle response with random project id", fakeAsync(() => {
-    spyOn<any>(service, "new").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/5/sites");
-      expect(values).toEqual({ name: "Name" });
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service.newProjectSite(5, { name: "Name" }).subscribe(
-      (site: Site) => {
-        expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("newProjectSite should handle response with description", fakeAsync(() => {
-    spyOn<any>(service, "new").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites");
-      expect(values).toEqual({ name: "Name", description: "Description" });
-
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            description: "Description",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service
-      .newProjectSite(1, { name: "Name", description: "Description" })
-      .subscribe(
+      service.update(siteModel, 1).subscribe(
         (site: Site) => {
           expect(site).toBeTruthy();
-          expect(site).toEqual(
-            new Site({
-              id: 1,
-              name: "Name",
-              description: "Description",
-              creatorId: 2,
-              projectIds: new Set([])
-            })
-          );
+          expect(site).toEqual(siteModel);
         },
         () => {
           expect(true).toBeFalsy("Service should not return an error");
         }
       );
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  xit("newProjectSite should handle response with image", fakeAsync(() => {}));
-  xit("newProjectSite should handle response with location obfuscated", fakeAsync(() => {}));
-  xit("newProjectSite should handle response with custom location", fakeAsync(() => {}));
-  xit("newProjectSite should handle response with timezone information", fakeAsync(() => {}));
-  xit("newProjectSite should handle response with all inputs", fakeAsync(() => {}));
+    it("should handle project input", fakeAsync(() => {
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
+      const siteModel = new Site({
+        id: 1
+      });
 
-  it("newProjectSite should handle error", fakeAsync(() => {
-    spyOn<any>(service, "new").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites");
-      expect(values).toEqual({ name: "Name" });
+      createSuccess("/projects/1/sites/1", siteModel);
 
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    service.newProjectSite(1, { name: "Name" }).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  it("newProjectSite should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "new").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites");
-      expect(values).toEqual({ name: "Name" });
-
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    service.newProjectSite(1, { name: "Name" }).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
-
-  /**
-   * updateProjectSite
-   */
-
-  it("updateProjectSite should handle response", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/1");
-      expect(values).toEqual({});
-
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service.updateProjectSite(1, 1, {}).subscribe(
-      (site: Site) => {
+      service.update(siteModel, projectModel).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("updateProjectSite should handle response with random project id", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/5/sites/1");
-      expect(values).toEqual({});
-      const subject = new Subject<Site>();
+    it("should handle response with random project id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1
+      });
 
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
+      createSuccess("/projects/5/sites/1", siteModel);
 
-      return subject;
-    });
-
-    service.updateProjectSite(5, 1, {}).subscribe(
-      (site: Site) => {
+      service.update(siteModel, 5).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("updateProjectSite should handle response with random site id", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/5");
-      expect(values).toEqual({});
-      const subject = new Subject<Site>();
+    it("should handle response with random site id", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 5
+      });
 
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
+      createSuccess("/projects/1/sites/5", siteModel);
 
-      return subject;
-    });
-
-    service.updateProjectSite(1, 5, {}).subscribe(
-      (site: Site) => {
+      service.update(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("updateProjectSite should handle response with name", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/1");
-      expect(values).toEqual({ name: "Name" });
+    it("should handle response with name", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "Custom Name"
+      });
 
-      const subject = new Subject<Site>();
+      createSuccess("/projects/1/sites/1", siteModel);
 
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service.updateProjectSite(1, 1, { name: "Name" }).subscribe(
-      (site: Site) => {
+      service.update(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  it("updateProjectSite should handle response with description", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/1");
-      expect(values).toEqual({ description: "Description" });
+    it("should handle response with description", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        description: "Custom Description"
+      });
 
-      const subject = new Subject<Site>();
+      createSuccess("/projects/1/sites/1", siteModel);
 
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Name",
-            description: "Description",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    service.updateProjectSite(1, 1, { description: "Description" }).subscribe(
-      (site: Site) => {
+      service.update(siteModel, 1).subscribe((site: Site) => {
         expect(site).toBeTruthy();
-        expect(site).toEqual(
-          new Site({
-            id: 1,
-            name: "Name",
-            description: "Description",
-            creatorId: 2,
-            projectIds: new Set([])
-          })
-        );
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+        expect(site).toEqual(siteModel);
+      }, shouldNotFail);
 
-    tick(100);
-  }));
+      tick(100);
+    }));
 
-  xit("updateProjectSite should handle response with image", fakeAsync(() => {}));
-  xit("updateProjectSite should handle response with location obfuscated", fakeAsync(() => {}));
-  xit("updateProjectSite should handle response with custom location", fakeAsync(() => {}));
-  xit("updateProjectSite should handle response with timezone information", fakeAsync(() => {}));
-  xit("updateProjectSite should handle response with all inputs", fakeAsync(() => {}));
+    // TODO Write tests for all input types
 
-  it("updateProjectSite should handle error", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/1");
-      expect(values).toEqual({});
+    it("should handle error", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1
+      });
 
-      const subject = new Subject<Site>();
+      createError("apiUpdate", "/projects/1/sites/1", apiErrorDetails);
 
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }, 50);
+      service
+        .update(siteModel, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
 
-      return subject;
-    });
+      tick(100);
+    }));
 
-    service.updateProjectSite(1, 1, {}).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
+    it("should handle error with info", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1
+      });
 
-    tick(100);
-  }));
+      createError("apiUpdate", "/projects/1/sites/1", apiErrorInfoDetails);
 
-  it("updateProjectSite should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "update").and.callFake((path: string, values: any) => {
-      expect(path).toBe("/projects/1/sites/1");
-      expect(values).toEqual({});
+      service
+        .update(siteModel, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
 
-      const subject = new Subject<Site>();
+      tick(100);
+    }));
+  });
 
-      setTimeout(() => {
-        subject.error({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
+  describe("destroy", () => {
+    function createSuccess(path: string, model?: Site) {
+      spyOn(service as any, "apiDestroy").and.callFake((_path: string) => {
+        expect(_path).toBe(path);
+
+        const subject = new Subject<Site | void>();
+
+        setTimeout(() => {
+          if (model) {
+            subject.next(model);
+          } else {
+            subject.next();
           }
-        } as APIErrorDetails);
-      }, 50);
 
-      return subject;
-    });
+          subject.complete();
+        }, 50);
 
-    service.updateProjectSite(1, 1, {}).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
+        return subject;
+      });
+    }
 
-    tick(100);
-  }));
+    it("should handle site input", fakeAsync(() => {
+      const siteModel = new Site({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        projectIds: new Set([1])
+      });
 
-  /**
-   * deleteProjectSite
-   */
+      createSuccess("/projects/1/sites/1");
 
-  it("deleteProjectSite should handle response", fakeAsync(() => {
-    spyOn<any>(service, "delete").and.callFake((path: string) => {
-      expect(path).toBe("/projects/1/sites/1");
+      service.destroy(siteModel, 1).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-      const subject = new Subject<boolean>();
+      tick(100);
+    }));
 
-      setTimeout(() => {
-        subject.next(true);
-        subject.complete();
-      }, 50);
+    it("should handle site id input", fakeAsync(() => {
+      createSuccess("/projects/1/sites/1");
 
-      return subject;
-    });
+      service.destroy(1, 1).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-    service.deleteProjectSite(1, 1).subscribe(
-      (success: boolean) => {
-        expect(success).toBeTruthy();
-        expect(success).toBeTrue();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      tick(100);
+    }));
 
-    tick(100);
-  }));
+    it("should handle project input", fakeAsync(() => {
+      const projectModel = new Project({
+        id: 1,
+        name: "name",
+        creatorId: 2,
+        siteIds: new Set([1])
+      });
 
-  it("deleteProjectSite should handle response with random project id", fakeAsync(() => {
-    spyOn<any>(service, "delete").and.callFake((path: string) => {
-      expect(path).toBe("/projects/5/sites/1");
-      const subject = new Subject<boolean>();
+      createSuccess("/projects/1/sites/1");
 
-      setTimeout(() => {
-        subject.next(true);
-        subject.complete();
-      }, 50);
+      service.destroy(1, projectModel).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-      return subject;
-    });
+      tick(100);
+    }));
 
-    service.deleteProjectSite(5, 1).subscribe(
-      (success: boolean) => {
-        expect(success).toBeTruthy();
-        expect(success).toBeTrue();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+    it("should handle project id input", fakeAsync(() => {
+      createSuccess("/projects/1/sites/1");
 
-    tick(100);
-  }));
+      service.destroy(1, 1).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-  it("deleteProjectSite should handle response with random site id", fakeAsync(() => {
-    spyOn<any>(service, "delete").and.callFake((path: string) => {
-      expect(path).toBe("/projects/1/sites/5");
-      const subject = new Subject<boolean>();
+      tick(100);
+    }));
 
-      setTimeout(() => {
-        subject.next(true);
-        subject.complete();
-      }, 50);
+    it("should handle response with random project id", fakeAsync(() => {
+      createSuccess("/projects/5/sites/1");
 
-      return subject;
-    });
+      service.destroy(1, 5).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-    service.deleteProjectSite(1, 5).subscribe(
-      (success: boolean) => {
-        expect(success).toBeTruthy();
-        expect(success).toBeTrue();
-      },
-      () => {
-        expect(true).toBeFalsy("Service should not return an error");
-      }
-    );
+      tick(100);
+    }));
 
-    tick(100);
-  }));
+    it("should handle response with random site id", fakeAsync(() => {
+      createSuccess("/projects/1/sites/5");
 
-  it("deleteProjectSite should handle error", fakeAsync(() => {
-    spyOn<any>(service, "delete").and.callFake((path: string) => {
-      expect(path).toBe("/projects/1/sites/1");
+      service.destroy(5, 1).subscribe(() => {
+        expect(true).toBeTruthy();
+      }, shouldNotFail);
 
-      const subject = new Subject<boolean>();
+      tick(100);
+    }));
 
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }, 50);
+    it("should handle non-void response", fakeAsync(() => {
+      const model = new Site({
+        id: 1,
+        name: "name"
+      });
+      createSuccess("/projects/1/sites/1", model);
 
-      return subject;
-    });
+      service.destroy(model, 1).subscribe(_model => {
+        expect(_model).toEqual(model);
+      }, shouldNotFail);
 
-    service.deleteProjectSite(1, 1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 401,
-          message: "Unauthorized"
-        } as APIErrorDetails);
-      }
-    );
+      tick(100);
+    }));
 
-    tick(100);
-  }));
+    it("should handle error", fakeAsync(() => {
+      createError("apiDestroy", "/projects/1/sites/1", apiErrorDetails);
 
-  it("deleteProjectSite should handle error with info", fakeAsync(() => {
-    spyOn<any>(service, "delete").and.callFake((path: string) => {
-      expect(path).toBe("/projects/1/sites/1");
+      service
+        .destroy(1, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
 
-      const subject = new Subject<boolean>();
+      tick(100);
+    }));
 
-      setTimeout(() => {
-        subject.error({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }, 50);
+    it("should handle error with info", fakeAsync(() => {
+      createError("apiDestroy", "/projects/1/sites/1", apiErrorInfoDetails);
 
-      return subject;
-    });
+      service
+        .destroy(1, 1)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
 
-    service.deleteProjectSite(1, 1).subscribe(
-      () => {
-        expect(true).toBeFalsy("Service should not return data");
-      },
-      (err: APIErrorDetails) => {
-        expect(err).toBeTruthy();
-        expect(err).toEqual({
-          status: 422,
-          message: "Record could not be saved",
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: []
-          }
-        } as APIErrorDetails);
-      }
-    );
-
-    tick(100);
-  }));
+      tick(100);
+    }));
+  });
 });

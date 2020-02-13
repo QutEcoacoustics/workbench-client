@@ -36,7 +36,7 @@ describe("CardComponent", () => {
 
     const titles = fixture.debugElement.nativeElement.querySelectorAll("h4");
     expect(titles.length).toBe(1);
-    expect(titles[0].innerText).toBe("title");
+    expect(titles[0].innerText).toContain("title");
   });
 
   it("should have default description when non provided", () => {
@@ -49,7 +49,7 @@ describe("CardComponent", () => {
       "p"
     );
     expect(description.length).toBe(1);
-    expect(description[0].innerText).toBe("No description given");
+    expect(description[0].innerText).toContain("No description given");
   });
 
   it("should have description when provided", () => {
@@ -63,7 +63,7 @@ describe("CardComponent", () => {
       "p"
     );
     expect(description.length).toBe(1);
-    expect(description[0].innerText).toBe("description");
+    expect(description[0].innerText).toContain("description");
   });
 
   it("should not have link if no link or route provided", () => {
@@ -85,7 +85,7 @@ describe("CardComponent", () => {
 
     const links = fixture.debugElement.nativeElement.querySelectorAll("a");
     expect(links.length).toBe(1);
-    expect(links[0].innerText).toBe("title");
+    expect(links[0].innerText).toContain("title");
     expect(links[0].href).toBe("https://brokenlink/");
     expect(
       links[0].attributes.getNamedItem("ng-reflect-router-link")
@@ -102,7 +102,7 @@ describe("CardComponent", () => {
     const links = fixture.debugElement.nativeElement.querySelectorAll("a");
 
     expect(links.length).toBe(1);
-    expect(links[0].innerText).toBe("title");
+    expect(links[0].innerText).toContain("title");
     expect(links[0].getAttribute("href")).toBe("/brokenlink");
     expect(
       links[0].attributes.getNamedItem("ng-reflect-router-link")
