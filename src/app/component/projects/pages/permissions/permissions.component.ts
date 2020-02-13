@@ -12,7 +12,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ListTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { Project } from "src/app/models/Project";
 import { User } from "src/app/models/User";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   editProjectPermissionsMenuItem,
@@ -37,7 +37,7 @@ import { projectMenuItemActions } from "../details/details.component";
 })
 export class PermissionsComponent extends ListTemplate<TableRow>
   implements OnInit, OnDestroy {
-  public errorDetails: APIErrorDetails;
+  public errorDetails: ApiErrorDetails;
   public loading: boolean;
   public project: Project;
   public ready: boolean;
@@ -86,7 +86,7 @@ export class PermissionsComponent extends ListTemplate<TableRow>
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.api.getProject(params.projectId);
+          return this.api.show(params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -96,7 +96,7 @@ export class PermissionsComponent extends ListTemplate<TableRow>
           this.project = project;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );
