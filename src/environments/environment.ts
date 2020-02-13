@@ -5,6 +5,7 @@ export const environment = {
   version,
 
   // These keys will be edited during runtime
+  environment: "",
   configUrl: ""
 };
 

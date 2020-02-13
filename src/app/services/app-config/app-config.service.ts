@@ -27,6 +27,12 @@ export class AppConfigService {
     // https://github.com/rfreedman/angular-configuration-service/issues/1
 
     const handleData = (data: Configuration) => {
+      if (data.environment.environment !== environment.environment) {
+        throw new Error(
+          `AppConfigService: Deployment environment (${environment.environment}) and config environment (${data.environment.environment}) do not match.`
+        );
+      }
+
       this.appConfig = data;
       this.titleService.setTitle(data.values.brand.name);
       return this.appConfig;
@@ -83,6 +89,7 @@ export async function retrieveAppConfig(
     .then(response => response.json())
     .then(options => {
       environment.configUrl = options.configUrl;
+      environment.environment = options.environment;
       return options.configUrl;
     })
     .then((configUrl: string) => fetch(configUrl))
@@ -104,6 +111,7 @@ export interface Environment {
  */
 export interface Configuration {
   environment: {
+    environment: string;
     apiRoot: string;
     siteRoot: string;
     siteDir: string;

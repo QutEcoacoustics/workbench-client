@@ -1,1 +1,4 @@
-{ "configUrl": "assets/config/development.json" }
+{
+  "environment": "development",
+  "configUrl": "assets/config/development.json"
+}

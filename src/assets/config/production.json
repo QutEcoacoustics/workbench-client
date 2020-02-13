@@ -1,5 +1,6 @@
 {
   "environment": {
+    "environment": "production",
     "apiRoot": "https://www.ecosounds.org",
     "siteRoot": "https://www.ecosounds.org/listen_to",
     "siteDir": "/listen_to/",

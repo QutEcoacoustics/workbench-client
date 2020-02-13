@@ -1,5 +1,6 @@
 {
   "environment": {
+    "environment": "staging",
     "apiRoot": "https://staging.ecosounds.org",
     "siteRoot": "https://staging.ecosounds.org/system/listen_to",
     "siteDir": "/system/listen_to/",
