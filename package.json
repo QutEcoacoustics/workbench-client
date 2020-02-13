@@ -21,7 +21,13 @@
     "start:fr": "ng serve --configuration=fr",
     "start": "ng serve",
     "stats": "ng build --stats-json",
-    "test": "ng test"
+    "test": "npm run test:chrome",
+    "test:chrome": "ng test -- --code-coverage --browsers Chrome",
+    "test:firefox": "ng test -- --code-coverage --browsers Firefox",
+    "test:edge": "ng test -- --code-coverage --browsers Edge",
+    "test:opera": "ng test -- --code-coverage --browsers Opera",
+    "test:all": "ng test -- --code-coverage --browsers Firefox,Chrome,Edge",
+    "test:pipeline": "ng test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless"
   },
   "private": true,
   "dependencies": {
@@ -95,6 +101,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.1",
     "karma-junit-reporter": "^2.0.1",
+    "karma-opera-launcher": "^1.0.0",
     "karma-viewport": "^1.0.4",
     "protractor": "~5.4.0",
     "puppeteer": "^2.0.0",
