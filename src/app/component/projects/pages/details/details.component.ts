@@ -11,7 +11,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -52,7 +52,8 @@ export class DetailsComponent extends PageComponent
   private unsubscribe = new Subject();
   project: Project;
   sites: Site[];
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
+  state = "loading";
   ready: boolean;
 
   constructor(
@@ -70,7 +71,7 @@ export class DetailsComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.projectsApi.getProject(params.projectId);
+          return this.projectsApi.show(params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -79,7 +80,7 @@ export class DetailsComponent extends PageComponent
           this.project = project;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
         }
       );
@@ -88,14 +89,14 @@ export class DetailsComponent extends PageComponent
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.sitesApi.getProjectSites(params.projectId);
+          return this.sitesApi.list(params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
         sites => (this.sites = sites),
-        (err: APIErrorDetails) => {
-          if (!this.error) {
+        (err: ApiErrorDetails) => {
+          if (this.state !== "error") {
             this.error = err;
           }
         }

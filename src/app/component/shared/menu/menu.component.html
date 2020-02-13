@@ -4,10 +4,10 @@
       <h6 class="nav-link disabled m-0">
         <ng-container *ngIf="title; else linksTitle">
           <fa-icon [icon]="title.icon"></fa-icon>
-          {{ title.label }}
+          {{ title.label.toUpperCase() }}
         </ng-container>
         <ng-template #linksTitle>
-          Menu
+          MENU
         </ng-template>
       </h6>
     </li>
@@ -17,7 +17,7 @@
       <li
         class="nav-item"
         *ngFor="let link of filteredLinks; let i = index"
-        [ngStyle]="{ 'padding-left': calculatePadding(link) }"
+        [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
       >
         <ng-container *ngIf="isAction(link)">
           <app-menu-button

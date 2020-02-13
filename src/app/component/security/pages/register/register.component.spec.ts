@@ -10,12 +10,12 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { formlyRoot, testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { BawApiService } from "src/app/services/baw-api/base-api.service";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { RegisterComponent } from "./register.component";
 
 describe("RegisterComponent", () => {
   let component: RegisterComponent;
-  let api: BawApiService;
+  let api: SecurityService;
   let router: Router;
   let fixture: ComponentFixture<RegisterComponent>;
 
@@ -34,7 +34,7 @@ describe("RegisterComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    api = TestBed.get(BawApiService);
+    api = TestBed.get(SecurityService);
     router = TestBed.get(Router);
 
     component.schema.model = {};

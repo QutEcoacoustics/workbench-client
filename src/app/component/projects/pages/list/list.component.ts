@@ -7,7 +7,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
@@ -50,7 +50,7 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   cardList: List<Card>;
   loading: boolean;
-  error: APIErrorDetails;
+  error: ApiErrorDetails;
 
   constructor(private api: ProjectsService) {
     super();
@@ -60,10 +60,10 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.api
-      .getProjects()
+      .list()
       .pipe(
         map((data: Project[]) => {
-          return List(data.map(project => project.card));
+          return List(data.map(project => project.getCard()));
         }),
         takeUntil(this.unsubscribe)
       )
@@ -72,7 +72,7 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
           this.cardList = projects;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.loading = false;
           this.error = err;
         }

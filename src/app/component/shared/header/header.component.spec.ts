@@ -71,7 +71,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -83,7 +83,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -105,14 +105,14 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const brand = fixture.nativeElement.querySelector("a.navbar-brand");
     expect(brand).toBeTruthy();
-    expect(brand.innerText).toBe(config.getConfig().values.brand.name);
+    expect(brand.innerText).toContain(config.getConfig().values.brand.name);
     expect(
       brand.attributes.getNamedItem("ng-reflect-router-link")
     ).toBeTruthy();
@@ -125,14 +125,14 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[0];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(projectsMenuItem.label);
+    expect(link.innerText).toContain(projectsMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       projectsMenuItem.route.toString()
@@ -143,21 +143,21 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[1];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe("<< content1 >>");
+    expect(link.innerText).toContain("<< content1 >>");
   });
 
   it("should create header dropdown links from external config", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -171,14 +171,14 @@ describe("HeaderComponent", () => {
   });
 
   it("should create contact us link", () => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[2];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(contactUsMenuItem.label);
+    expect(link.innerText).toContain(contactUsMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       contactUsMenuItem.route.toString()
@@ -189,14 +189,14 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[3];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(registerMenuItem.label);
+    expect(link.innerText).toContain(registerMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       registerMenuItem.route.toString()
@@ -204,14 +204,14 @@ describe("HeaderComponent", () => {
   });
 
   it("should display login link", () => {
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[4];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(loginMenuItem.label);
+    expect(link.innerText).toContain(loginMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       loginMenuItem.route.toString()
@@ -222,10 +222,10 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -261,10 +261,10 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -300,10 +300,10 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -369,10 +369,10 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -403,10 +403,10 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -439,7 +439,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(securityApi, "signOut").and.callFake(() => {
@@ -453,7 +453,7 @@ describe("HeaderComponent", () => {
 
       return subject;
     });
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -487,7 +487,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     spyOn(securityApi, "signOut").and.callFake(() => {
@@ -500,7 +500,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     router.navigate = spy;
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -536,9 +536,7 @@ describe("HeaderComponent", () => {
       count++;
       return count === 1;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
-      () => loggedInTrigger
-    );
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
     spyOn(securityApi, "signOut").and.callFake(() => {
       const subject = new Subject<any>();
 
@@ -549,7 +547,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     spyOn(router, "navigate").and.stub();
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -580,7 +578,7 @@ describe("HeaderComponent", () => {
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[3];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(registerMenuItem.label);
+    expect(link.innerText).toContain(registerMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       registerMenuItem.route.toString()
@@ -594,9 +592,7 @@ describe("HeaderComponent", () => {
       count++;
       return count === 1;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
-      () => loggedInTrigger
-    );
+    spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
     spyOn(securityApi, "signOut").and.callFake(() => {
       const subject = new Subject<any>();
 
@@ -607,7 +603,7 @@ describe("HeaderComponent", () => {
       return subject;
     });
     spyOn(router, "navigate").and.stub();
-    spyOn(userApi, "getMyAccount").and.callFake(() => {
+    spyOn(userApi, "show").and.callFake(() => {
       const subject = new Subject<User>();
 
       setTimeout(() => {
@@ -638,7 +634,7 @@ describe("HeaderComponent", () => {
 
     const link = fixture.nativeElement.querySelectorAll("a.nav-link")[4];
     expect(link).toBeTruthy();
-    expect(link.innerText).toBe(loginMenuItem.label);
+    expect(link.innerText).toContain(loginMenuItem.label);
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       loginMenuItem.route.toString()
@@ -650,7 +646,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -664,7 +660,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();
@@ -684,7 +680,7 @@ describe("HeaderComponent", () => {
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;
     });
-    spyOn(securityApi, "getLoggedInTrigger").and.callFake(
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
     fixture.detectChanges();

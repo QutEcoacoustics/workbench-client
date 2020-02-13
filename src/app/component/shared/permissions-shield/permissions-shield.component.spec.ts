@@ -57,11 +57,11 @@ describe("PermissionsShieldComponent", () => {
     projectsApi = TestBed.get(ProjectsService);
     component = fixture.componentInstance;
 
-    projectsApi.getProject = jasmine.createSpy();
+    projectsApi.show = jasmine.createSpy();
 
     fixture.detectChanges();
 
-    expect(projectsApi.getProject).toHaveBeenCalled();
+    expect(projectsApi.show).toHaveBeenCalled();
   });
 
   it("should detect site url", () => {
@@ -83,11 +83,11 @@ describe("PermissionsShieldComponent", () => {
     sitesApi = TestBed.get(SitesService);
     component = fixture.componentInstance;
 
-    sitesApi.getProjectSite = jasmine.createSpy();
+    sitesApi.show = jasmine.createSpy();
 
     fixture.detectChanges();
 
-    expect(sitesApi.getProjectSite).toHaveBeenCalled();
+    expect(sitesApi.show).toHaveBeenCalled();
   });
 
   it("should create three user badges for profile", fakeAsync(() => {
@@ -109,7 +109,7 @@ describe("PermissionsShieldComponent", () => {
     projectsApi = TestBed.get(ProjectsService);
     component = fixture.componentInstance;
 
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -159,7 +159,7 @@ describe("PermissionsShieldComponent", () => {
     sitesApi = TestBed.get(SitesService);
     component = fixture.componentInstance;
 
-    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "show").and.callFake(() => {
       const subject = new Subject<Site>();
 
       setTimeout(() => {

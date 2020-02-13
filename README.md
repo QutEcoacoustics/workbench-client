@@ -65,17 +65,45 @@ To run the application end to end test suite:
 $ npm run e2e
 ```
 
-This will run the entire test suite in both Mozilla Firefox and Google Chrome browsers. End to end tests are used to determine if an application is working across multiple user actions over multiple pages.
-
 #### Unit tests
 
-To run the application unit test suite:
+This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge, Opera, Safari.
+
+Development Testing:
 
 ```bash
 $ npm test
 ```
 
-This will run the entire test suite in both Mozilla Firefox and Google Chrome browsers. Unit tests are used to determine if singular segments of the application are functioning correctly.
+Chrome Browser Testing:
+
+```bash
+$ npm run test:chrome
+```
+
+Firefox Browser Testing:
+
+```bash
+$ npm run test:firefox
+```
+
+Edge Browser Testing:
+
+```bash
+$ npm run test:edge
+```
+
+Opera Browser Testing:
+
+```bash
+$ npm run test:opera
+```
+
+All Supported Browsers Testing:
+
+```bash
+$ npm run test:all
+```
 
 #### Code Coverage
 

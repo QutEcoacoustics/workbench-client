@@ -13,10 +13,10 @@ import {
 } from "src/app/component/sites/sites.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ID } from "src/app/interfaces/apiInterfaces";
+import { Id } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 @Page({
@@ -49,13 +49,13 @@ export class DeleteComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject<any>();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   formLoading: boolean;
   loading: boolean;
   siteName: string;
   ready: boolean;
-  projectId: ID;
-  siteId: ID;
+  projectId: Id;
+  siteId: Id;
 
   constructor(
     private router: Router,
@@ -74,7 +74,7 @@ export class DeleteComponent extends PageComponent
         flatMap(params => {
           this.projectId = params.projectId;
           this.siteId = params.siteId;
-          return this.api.getProjectSite(this.projectId, this.siteId);
+          return this.api.show(this.projectId, this.siteId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -84,7 +84,7 @@ export class DeleteComponent extends PageComponent
           this.ready = true;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
           this.loading = false;
         }
@@ -102,16 +102,17 @@ export class DeleteComponent extends PageComponent
     // manages to navigate too fast
     this.formLoading = true;
     this.api
-      .deleteProjectSite(this.projectId, this.siteId)
+      .destroy(this.projectId, this.siteId)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {
           this.formLoading = false;
+          // TODO Get redirect path from Project.redirectPath()
           this.router.navigate([
             projectMenuItem.route.format({ projectId: this.projectId })
           ]);
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.formLoading = false;
           this.error = err.message;
         }

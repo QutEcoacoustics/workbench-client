@@ -12,7 +12,7 @@ import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { SiteCardComponent } from "../../site-card/site-card.component";
@@ -61,12 +61,12 @@ describe("ProjectDetailsComponent", () => {
   });
 
   it("should handle project not found", () => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
         status: 404,
         message: "Project Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -78,12 +78,12 @@ describe("ProjectDetailsComponent", () => {
   });
 
   it("should handle unauthorized project", () => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -95,12 +95,12 @@ describe("ProjectDetailsComponent", () => {
   });
 
   it("should handle site not found", () => {
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
       subject.error({
         status: 404,
         message: "Project Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -112,12 +112,12 @@ describe("ProjectDetailsComponent", () => {
   });
 
   it("should handle unauthorized site", () => {
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -129,21 +129,21 @@ describe("ProjectDetailsComponent", () => {
   });
 
   it("should show project error instead of site error when project loads first", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
       subject.error({
         status: 401,
         message: "Unauthorized"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
-    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "show").and.callFake(() => {
       const subject = new Subject<Site>();
       setTimeout(() => {
         subject.error({
           status: 404,
           message: "Site Not Found"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
       return subject;
     });
@@ -158,22 +158,22 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should show project error instead of site error when site loads first", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
       setTimeout(() => {
         subject.error({
           status: 401,
           message: "Unauthorized"
-        } as APIErrorDetails);
+        } as ApiErrorDetails);
       }, 50);
       return subject;
     });
-    spyOn(sitesApi, "getProjectSite").and.callFake(() => {
+    spyOn(sitesApi, "show").and.callFake(() => {
       const subject = new Subject<Site>();
       subject.error({
         status: 404,
         message: "Site Not Found"
-      } as APIErrorDetails);
+      } as ApiErrorDetails);
       return subject;
     });
 
@@ -187,7 +187,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should show loading until project returns", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -204,7 +204,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -231,7 +231,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display project name", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -248,7 +248,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -268,7 +268,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display default project image", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -285,7 +285,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -308,7 +308,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display custom project image", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -326,7 +326,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -347,7 +347,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display description", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -364,7 +364,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -386,7 +386,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display no sites found message", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -403,7 +403,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -444,7 +444,7 @@ describe("ProjectDetailsComponent", () => {
       creatorId: 1,
       siteIds: new Set([1])
     });
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -453,7 +453,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -510,7 +510,7 @@ describe("ProjectDetailsComponent", () => {
       creatorId: 1,
       siteIds: new Set([1, 2])
     });
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -519,7 +519,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -558,7 +558,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display google maps placeholder box when no sites found", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -575,7 +575,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -599,7 +599,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display google maps with pin for single site", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -616,7 +616,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {
@@ -649,7 +649,7 @@ describe("ProjectDetailsComponent", () => {
   }));
 
   it("should display google maps with pins for multiple sites", fakeAsync(() => {
-    spyOn(projectsApi, "getProject").and.callFake(() => {
+    spyOn(projectsApi, "show").and.callFake(() => {
       const subject = new Subject<Project>();
 
       setTimeout(() => {
@@ -666,7 +666,7 @@ describe("ProjectDetailsComponent", () => {
 
       return subject;
     });
-    spyOn(sitesApi, "getProjectSites").and.callFake(() => {
+    spyOn(sitesApi, "list").and.callFake(() => {
       const subject = new Subject<Site[]>();
 
       setTimeout(() => {

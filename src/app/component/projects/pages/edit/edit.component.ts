@@ -7,8 +7,9 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { ID } from "src/app/interfaces/apiInterfaces";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { Id } from "src/app/interfaces/apiInterfaces";
+import { Project } from "src/app/models/Project";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   editProjectMenuItem,
@@ -48,13 +49,13 @@ import data from "./edit.json";
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
-  errorDetails: APIErrorDetails;
+  errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = data;
   success: string;
 
-  projectId: ID;
+  projectId: Id;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,7 +73,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       .pipe(
         flatMap(params => {
           this.projectId = params.projectId;
-          return this.api.getProject(this.projectId);
+          return this.api.show(this.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
@@ -81,7 +82,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.schema.model["name"] = project.name;
           this.ready = true;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.errorDetails = err;
         }
       );
@@ -98,12 +99,13 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    */
   submit($event: any) {
     console.log($event);
+    const project = new Project({ ...$event, id: this.projectId });
 
     this.loading = true;
     this.ref.detectChanges();
 
     this.api
-      .updateProject(this.projectId, $event)
+      .update(project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
@@ -111,7 +113,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loading = false;
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           if (err.info && err.info.name && err.info.name.length === 1) {
             this.error = err.message + ": name " + err.info.name[0];
           } else {
