@@ -4,37 +4,38 @@ import { RouterModule } from "@angular/router";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { MapModule } from "../shared/map/map.module";
-import { newSiteMenuItem } from "../sites/sites.menus";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
+import { PermissionsComponent } from "./pages/permissions/permissions.component";
 import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.menus";
 import { SiteCardComponent } from "./site-card/site-card.component";
 
-export const ProjectsComponents = [
-  ListComponent,
+export const projectsComponents = [
+  DeleteComponent,
   DetailsComponent,
-  NewComponent,
   EditComponent,
+  ListComponent,
+  NewComponent,
+  PermissionsComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent,
-  DeleteComponent
+  SiteCardComponent
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [ProjectsComponents],
+  declarations: projectsComponents,
   imports: [
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
     RouterModule.forChild(routes)
   ],
-  exports: [RouterModule, ...ProjectsComponents]
+  exports: [RouterModule, ...projectsComponents]
 })
 export class ProjectsModule {}

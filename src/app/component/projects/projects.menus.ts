@@ -77,10 +77,11 @@ export const exploreAudioProjectMenuItem = MenuLink({
   tooltip: () => "Explore audio"
 });
 
-export const editProjectPermissionsMenuItem = MenuLink({
-  uri: "REPLACE_ME",
+export const editProjectPermissionsMenuItem = MenuRoute({
   icon: defaultPermissionsIcon,
   label: "Edit permissions",
+  route: projectMenuItem.route.add("permissions"),
+  parent: projectMenuItem,
   tooltip: () => "Edit this projects permissions",
   predicate: isOwnerPredicate
 });

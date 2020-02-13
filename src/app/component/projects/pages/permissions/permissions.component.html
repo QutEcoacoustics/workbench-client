@@ -1,0 +1,162 @@
+<app-wip>
+  <div *ngIf="ready">
+    <h2 class="text-center">{{ project.name }} Permissions</h2>
+
+    <!-- Permission Explanation -->
+    <p>
+      This page allows you to change who can view or modify this project and the
+      sites it contains. As an owner, you can assign one of four levels of
+      permissions.
+    </p>
+    <ul>
+      <li>
+        <strong>
+          No access (none)
+        </strong>
+        prevents users from viewing anything in this project.
+      </li>
+      <li>
+        <strong>
+          Reader
+        </strong>
+        allows users to view anything in this project.
+      </li>
+      <li>
+        <strong>
+          Writer
+        </strong>
+        allows users to add and change annotations, in addition to reader
+        permission.
+      </li>
+      <li>
+        <strong>
+          Owner
+        </strong>
+        allows users to modify and delete this project and its sites, in
+        addition to writer permission.
+      </li>
+    </ul>
+
+    <!-- Global Permissions -->
+    <div class="row">
+      <div class="col-md-6">
+        <app-selectable-items
+          title="Visitors"
+          description="Visitors are public (anonymous) users that are either not logged in or have not registered."
+          [options]="visitorOptions"
+          [selected]="1"
+        ></app-selectable-items>
+      </div>
+      <div class="col-md-6">
+        <app-selectable-items
+          title="Users"
+          description="Users are people that have registered and have logged into the website. "
+          [options]="userOptions"
+          [selected]="1"
+        ></app-selectable-items>
+      </div>
+    </div>
+
+    <!-- Individual Permissions -->
+    <h3>Individual Users</h3>
+    <p>
+      You can assign permissions to individual logged in users. Individual
+      permissions are the most important permissions - they override
+      <em>Logged In Users</em> permissions.
+    </p>
+    <p>
+      <strong>
+        If you only want some users to have access, use this section only.
+      </strong>
+    </p>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Filter</span>
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter users"
+        (keyup)="updateFilter($event)"
+      />
+    </div>
+
+    <ngx-datatable
+      #table
+      [class]="tableClass"
+      [rows]="rows"
+      [columns]="columns"
+      [columnMode]="ColumnMode.force"
+      [limit]="defaultTableLimit"
+      [rowHeight]="'auto'"
+      [headerHeight]="headerHeight"
+      [footerHeight]="footerHeight"
+      [reorderable]="false"
+      [scrollbarH]="true"
+    >
+      <!-- User Template -->
+      <ngx-datatable-column name="User">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <fa-icon [icon]="userIcon"></fa-icon
+          ><strong>{{ column.name }}</strong>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Individual Template -->
+      <ngx-datatable-column name="Individual" [width]="275">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <app-selectable-items
+            [options]="individualOptions"
+            [selected]="1"
+            [inline]="true"
+          ></app-selectable-items>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Visitor Permissions Template -->
+      <ngx-datatable-column name="Visitors" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Users Permissions Template -->
+      <ngx-datatable-column name="Users" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Overall Permissions Template -->
+      <ngx-datatable-column name="Overall" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+
+  <app-loading [isLoading]="!ready && !errorDetails"></app-loading>
+  <app-error-handler [error]="errorDetails"></app-error-handler>
+</app-wip>

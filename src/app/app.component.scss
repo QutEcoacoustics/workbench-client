@@ -1,4 +1,4 @@
-@import '../styles.scss';
+@import "../styles.scss";
 
 .app {
   min-height: 100vh;
@@ -31,7 +31,8 @@ div.container {
   @extend .order-3;
   @extend .col-lg-8;
   @extend .col-sm-12;
-  @extend .pt-4;
+  @extend .pt-3;
+  @extend .pb-3;
 }
 
 .action {

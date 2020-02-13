@@ -4,6 +4,8 @@ import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
+import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   deleteSiteMenuItem,
   siteMenuItem,
@@ -21,6 +23,7 @@ import { siteMenuItemActions } from "../details/details.component";
   category: sitesCategory,
   menus: {
     actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
   self: deleteSiteMenuItem

@@ -1,0 +1,41 @@
+<h3 *ngIf="title">
+  {{ title }}
+</h3>
+<p *ngIf="description">
+  {{ description }}
+</p>
+
+<ng-container *ngIf="inline; else list">
+  <button
+    *ngFor="let option of options; let i = index"
+    class="btn btn-default btn-sm inline-spread"
+    [disabled]="isSelected(i)"
+    (click)="changeSelection(i)"
+  >
+    {{ option.label }}
+
+    <fa-icon
+      *ngIf="isSelected(i)"
+      class="text-success"
+      [icon]="['fas', 'check']"
+    ></fa-icon>
+  </button>
+</ng-container>
+<ng-template #list>
+  <div class="list-group">
+    <button
+      *ngFor="let option of options; let i = index"
+      class="list-group-item d-flex justify-content-between align-items-center"
+      [disabled]="isSelected(i)"
+      (click)="changeSelection(i)"
+    >
+      {{ option.label }}
+
+      <fa-icon
+        *ngIf="isSelected(i)"
+        class="text-success"
+        [icon]="['fas', 'check']"
+      ></fa-icon>
+    </button>
+  </div>
+</ng-template>
