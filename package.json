@@ -7,7 +7,7 @@
   "description": "Client-side website for online ecoacoustic analysis.",
   "version": "3.0.0",
   "scripts": {
-    "build": "ng build --prod && node ./tools/EnvironmentBuilder.js",
+    "build": "ng build --prod",
     "code-coverage": "npm test -- --watch=false && http-server -c-1 -o -p 9875 ./coverage/workbench-client",
     "documentation:generate": "compodoc -p tsconfig.app.json",
     "documentation": "npm run documentation:generate && http-server -c-1 -o -p 9876 ./documentation",

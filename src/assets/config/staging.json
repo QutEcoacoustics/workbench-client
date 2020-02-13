@@ -13,16 +13,36 @@
       "googleMaps": ""
     },
     "brand": {
-      "name": "<<brand name here>>",
-      "title": "<<brand name here>> | Acoustic Workbench"
+      "name": "Ecosounds",
+      "title": "Ecosounds | Acoustic Workbench"
     },
     "content": [
       {
-        "headerTitle": "Custom Menu",
+        "title": "Listen",
+        "url": "https://www.ecosounds.org/listen"
+      },
+      {
+        "title": "Library",
+        "url": "https://www.ecosounds.org/library"
+      },
+      {
+        "headerTitle": "Research",
         "items": [
           {
-            "title": "Example",
-            "url": "http://www.EXAMPLE.org/awebpage"
+            "title": "About",
+            "url": "http://research.ecosounds.org/"
+          },
+          {
+            "title": "Articles",
+            "url": "http://research.ecosounds.org/articles.html"
+          },
+          {
+            "title": "People",
+            "url": "http://research.ecosounds.org/people/people.html"
+          },
+          {
+            "title": "Publications",
+            "url": "http://research.ecosounds.org/publications/publications.html"
           }
         ]
       }
