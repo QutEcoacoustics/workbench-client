@@ -39,14 +39,16 @@ section {
 
 /* BACKWARDS COMPATIBILITY */
 
-// Create a grey coloured bootstrap button
+// Create a grey coloured bootstrap button. This is used by the selectable-items component
+// to create standard looking buttons.
 .btn-default {
   color: #333;
   background-color: white;
   border-color: #ccc;
 }
 
-// Creates blue pill shaped anchor links. Used heavily by the navigation system
+// Creates blue pill shaped anchor links. Used heavily by the navigation system. Should be
+// replaced by the button class eventually.
 .nav-pills > li > a {
   font-size: 0.9rem;
   border-radius: 4px;
