@@ -11,7 +11,7 @@ import {
   AppConfigService,
   appInitializerFn
 } from "./services/app-config/app-config.service";
-import { MockAppConfigService } from "./services/app-config/appConfigMockService";
+import { MockAppConfigService } from "./services/app-config/appConfigMock.service";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {

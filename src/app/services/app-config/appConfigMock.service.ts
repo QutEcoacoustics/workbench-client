@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { Configuration, Environment } from "./app-config.service";
+import { environment } from "src/environments/environment";
+import { Configuration } from "./app-config.service";
 
 @Injectable()
 export class MockAppConfigService {
@@ -11,6 +12,9 @@ export class MockAppConfigService {
    */
   async loadAppConfig(): Promise<any> {
     this.titleService.setTitle("TESTING");
+    environment.environment = "testing";
+    environment.configUrl = "testing.json";
+
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
@@ -26,6 +30,7 @@ export class MockAppConfigService {
   getConfig(): Configuration {
     return {
       environment: {
+        environment: "testing",
         apiRoot: "http://apiroot",
         siteRoot: "<< siteRoot >>",
         siteDir: "<< siteDir >>",
@@ -62,13 +67,6 @@ export class MockAppConfigService {
           }
         ]
       }
-    };
-  }
-
-  getEnvironment(): Environment {
-    return {
-      production: false,
-      configUrl: "brokenUrl"
     };
   }
 

@@ -99,14 +99,6 @@ export async function retrieveAppConfig(
 }
 
 /**
- * Internal configuration file contents
- */
-export interface Environment {
-  production: boolean;
-  configUrl: string;
-}
-
-/**
  * External configuration file contents
  */
 export interface Configuration {
