@@ -12,13 +12,13 @@
 
     <ngx-datatable
       #table
-      class="bootstrap"
+      [class]="tableClass"
       [columnMode]="ColumnMode.force"
       [columns]="columns"
       [draggable]="false"
-      [footerHeight]="50"
-      [headerHeight]="50"
-      [limit]="25"
+      [footerHeight]="footerHeight"
+      [headerHeight]="headerHeight"
+      [limit]="defaultTableLimit"
       [reorderable]="false"
       [rowHeight]="'auto'"
       [rows]="rows"

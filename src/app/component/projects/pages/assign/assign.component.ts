@@ -1,17 +1,16 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ColumnMode, SelectionType } from "@swimlane/ngx-datatable";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { APIErrorDetails } from "src/app/services/baw-api/api.interceptor";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   assignSiteMenuItem,
@@ -34,63 +33,44 @@ import { projectMenuItemActions } from "../details/details.component";
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"]
 })
-export class AssignComponent extends PageComponent
+export class AssignComponent extends TableTemplate<TableRow>
   implements OnInit, OnDestroy {
   // TODO Move this back into the admin dashboard
 
   public ready: boolean;
-  public error: APIErrorDetails;
+  public error: ApiErrorDetails;
   public project: Project;
   public sites: Site[];
-  public columns = [
-    { name: "Site Id" },
-    { name: "Name" },
-    { name: "Description" }
-  ];
-  public rows: { siteId: number; name: string; description: string }[] = [];
-  public selected: { siteId: number; name: string; description: string }[] = [];
 
-  public ColumnMode = ColumnMode;
-  public SelectionType = SelectionType;
   private unsubscribe = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private projectsApi: ProjectsService
   ) {
-    super();
+    super(() => true);
   }
 
   ngOnInit() {
-    this.ready = false;
+    this.columns = [
+      { name: "Site Id" },
+      { name: "Name" },
+      { name: "Description" }
+    ];
 
     this.route.params
       .pipe(
         flatMap(params => {
-          return this.projectsApi.getProject(params.projectId);
+          return this.projectsApi.show(params.projectId);
         }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
         project => {
           this.project = project;
-
-          this.rows = [
-            {
-              siteId: -1,
-              name: "Name",
-              description: null
-            },
-            {
-              siteId: -1,
-              name: "Name",
-              description: "Custom description"
-            }
-          ];
-
-          this.ready = true;
+          this.loadTable();
         },
-        (err: APIErrorDetails) => {
+        (err: ApiErrorDetails) => {
           this.error = err;
         }
       );
@@ -104,4 +84,25 @@ export class AssignComponent extends PageComponent
   public onSelect(event) {
     console.log("Select: ", event);
   }
+
+  protected createRows() {
+    this.rows = [
+      {
+        siteId: -1,
+        name: "Name",
+        description: null
+      },
+      {
+        siteId: -1,
+        name: "Name",
+        description: "Custom description"
+      }
+    ];
+  }
+}
+
+interface TableRow {
+  siteId: number;
+  name: string;
+  description: string;
 }
