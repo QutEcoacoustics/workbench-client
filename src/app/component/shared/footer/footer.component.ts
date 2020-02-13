@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { version } from "package.json";
+import { environment } from "src/environments/environment";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -15,7 +15,7 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent implements OnInit {
-  version: string = version;
+  version: string = environment.version;
   year: number = new Date().getFullYear();
 
   routes = {

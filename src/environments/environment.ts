@@ -1,5 +1,8 @@
+import { version } from "../../package.json";
+
 export const environment = {
   production: false,
+  version,
 
   // These keys will be edited during runtime
   configUrl: ""
