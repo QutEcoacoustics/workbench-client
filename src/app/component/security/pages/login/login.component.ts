@@ -57,7 +57,7 @@ import data from "./login.json";
   `
 })
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
-  public schema = data;
+  public schema = { model: {}, fields: data.fields };
   public error: string;
   public errorDetails: ApiErrorDetails;
   public loading: boolean;
@@ -78,41 +78,29 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loading = true;
+    this.loading = false;
     this.redirectUrl = homeMenuItem.route.toString();
-    const msg = "You are already logged in";
+    const noHistory = 1;
+    const state: LocationState = this.location.getState() as LocationState;
 
-    if (this.api.isLoggedIn()) {
-      this.loading = true;
-      this.error = msg;
-    } else {
-      this.loading = false;
-
-      if (this.error === msg) {
-        this.error = null;
-      }
-    }
-
-    // Update redirect url
     this.route.queryParams.pipe(takeUntil(this.unsubscribe)).subscribe(
-      params => {
-        const redirect: string | boolean = params.redirect;
+      (params: { redirect: string | boolean | undefined }) => {
+        const redirect = params.redirect;
 
-        if (!redirect) {
+        // If no redirect, redirect home
+        if (redirect === false) {
+          this.redirectUrl = homeMenuItem.route.toString();
           return;
         }
 
-        if (typeof redirect === "boolean" && redirect) {
-          this.redirectBack = true;
-          return;
-        }
-
+        // If external redirect
         if (typeof redirect === "string") {
           const redirectUrl = url.parse(redirect);
           const validUrl = url.parse(
             this.config.getConfig().environment.apiRoot
           );
 
+          // Check if redirect url is safe
           if (
             redirect.charAt(0) === "/" ||
             redirectUrl.protocol + "//" + redirectUrl.hostname ===
@@ -120,6 +108,11 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
           ) {
             this.redirectUrl = redirect;
           }
+        }
+
+        // Redirect to previous page unless there is no router history
+        if (state.navigationId !== noHistory) {
+          this.redirectBack = true;
         }
       },
       err => {}
@@ -170,4 +163,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   public externalRedirect(redirect: string) {
     this.document.location.href = redirect;
   }
+}
+
+interface LocationState {
+  navigationId: 1;
 }
