@@ -84,14 +84,14 @@
 
     <ngx-datatable
       #table
-      class="bootstrap"
+      [class]="tableClass"
       [rows]="rows"
       [columns]="columns"
       [columnMode]="ColumnMode.force"
-      [limit]="25"
+      [limit]="defaultTableLimit"
       [rowHeight]="'auto'"
-      [headerHeight]="50"
-      [footerHeight]="50"
+      [headerHeight]="headerHeight"
+      [footerHeight]="footerHeight"
       [reorderable]="false"
       [scrollbarH]="true"
     >
