@@ -40,7 +40,7 @@ import { projectMenuItemActions } from "../details/details.component";
       [error]="error"
       [submitLabel]="'Delete'"
       [submitLoading]="formLoading"
-      (onSubmit)="submit($event)"
+      (onSubmit)="submit()"
     ></app-form>
     <app-loading [isLoading]="loading"></app-loading>
     <app-error-handler [error]="errorDetails"></app-error-handler>

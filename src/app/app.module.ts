@@ -27,7 +27,6 @@ import { ReportProblemsModule } from "./component/report-problem/report-problem.
 import { SecurityModule } from "./component/security/security.module";
 import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./component/shared/shared.module";
-import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
 import { retrieveAppConfig } from "./services/app-config/app-config.service";
@@ -79,7 +78,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
 }
 
 @NgModule({
-  declarations: [AppComponent, WidgetDirective],
+  declarations: [AppComponent],
   imports: [...appImports],
   providers: [
     ...providers,

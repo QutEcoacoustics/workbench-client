@@ -1,4 +1,4 @@
-import { ViewChild } from "@angular/core";
+import { ViewChild, Directive } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,
@@ -8,8 +8,9 @@ import {
 } from "@swimlane/ngx-datatable";
 import { PageComponent } from "../page/pageComponent";
 
+@Directive()
 export abstract class TableTemplate<T> extends PageComponent {
-  @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // Table variables
   public ColumnMode = ColumnMode;
