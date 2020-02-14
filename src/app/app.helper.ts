@@ -1,6 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
-import { Library } from "@fortawesome/fontawesome-svg-core";
+import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
@@ -57,8 +57,8 @@ export const formlyRoot = {
   ]
 } as ConfigOption;
 
-export function fontAwesomeLibraries(library: Library) {
-  library.add(fas);
+export function fontAwesomeLibraries(library: FaIconLibrary) {
+  library.addIconPacks(fas);
 }
 
 export const providers = [

@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { library } from "@fortawesome/fontawesome-svg-core";
+import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import {
   formlyAccessors,
@@ -13,7 +13,7 @@ import {
   exports: [sharedModules, sharedComponents]
 })
 export class SharedModule {
-  constructor() {
+  constructor(library: FaIconLibrary) {
     fontAwesomeLibraries(library);
   }
 }
