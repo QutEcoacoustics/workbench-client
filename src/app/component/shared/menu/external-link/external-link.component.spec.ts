@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { testAppInitializer } from "src/app/app.helper";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
+import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../../shared.module";
 import { MenuExternalLinkComponent } from "./external-link.component";
 

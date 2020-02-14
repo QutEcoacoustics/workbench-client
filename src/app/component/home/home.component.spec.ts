@@ -12,13 +12,13 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
-import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { testBawServices } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
 

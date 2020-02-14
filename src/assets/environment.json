@@ -1,11 +1,12 @@
 {
   "environment": {
-    "apiRoot": "https://www.ecosounds.org",
-    "siteRoot": "https://www.ecosounds.org/listen_to",
-    "siteDir": "/listen_to/",
+    "environment": "development",
+    "apiRoot": "https://staging.ecosounds.org",
+    "siteRoot": "http://localhost:4200",
+    "siteDir": "/build/",
     "cmsRoot": "/assets/content",
     "ga": {
-      "trackingId": "<<PLACEHOLDER>>"
+      "trackingId": ""
     }
   },
   "values": {
@@ -13,17 +14,17 @@
       "googleMaps": ""
     },
     "brand": {
-      "name": "Ecosounds",
-      "title": "Ecosounds | Acoustic Workbench"
+      "name": "<< brandName >>",
+      "title": "<< brandName >> | Acoustic Workbench"
     },
     "content": [
       {
         "title": "Listen",
-        "url": "https://www.ecosounds.org/listen"
+        "url": "https://staging.ecosounds.org/listen"
       },
       {
         "title": "Library",
-        "url": "https://www.ecosounds.org/library"
+        "url": "https://staging.ecosounds.org/library"
       },
       {
         "headerTitle": "Research",

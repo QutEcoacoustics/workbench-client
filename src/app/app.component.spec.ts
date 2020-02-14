@@ -15,7 +15,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
-import { testBawServices } from "./app.helper";
 import { appImports } from "./app.module";
 import { homeMenuItem } from "./component/home/home.menus";
 import { projectsMenuItem } from "./component/projects/projects.menus";
@@ -24,6 +23,7 @@ import { AppConfigService } from "./services/app-config/app-config.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { UserService } from "./services/baw-api/user.service";
+import { testBawServices } from "./test.helper";
 
 describe("AppComponent", () => {
   let component: AppComponent;

@@ -5,9 +5,9 @@ import {
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
-import { testAppInitializer } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { testAppInitializer } from "src/app/test.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService, Filters } from "./baw-api.service";
 import {

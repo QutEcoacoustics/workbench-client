@@ -8,11 +8,11 @@ import {
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
-import { testBawServices } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { testBawServices } from "src/app/test.helper";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {

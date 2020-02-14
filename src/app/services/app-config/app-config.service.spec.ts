@@ -1,40 +1,28 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Title } from "@angular/platform-browser";
-import {
-  environment,
-  values
-} from "../../../assets/tests/remoteEnvironment.json";
-import { APP_CONFIG, AppConfigService } from "./app-config.service";
+import { environment, values } from "../../../assets/environment.json";
+import { AppConfigService } from "./app-config.service";
 
 describe("AppConfigService", () => {
-  const remoteEnvironment = { environment, values };
+  const remoteEnvironment = {
+    environment,
+    values
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [AppConfigService]
+    });
+  });
 
   it("should be created", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     expect(service).toBeTruthy();
   });
 
   it("should load app config data", done => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     service.loadAppConfig().then(() => {
       expect(true).toEqual(true);
@@ -43,16 +31,6 @@ describe("AppConfigService", () => {
   });
 
   it("should update website title", done => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const titleService: Title = TestBed.get(Title);
     service.loadAppConfig().then(() => {
@@ -62,16 +40,6 @@ describe("AppConfigService", () => {
   });
 
   it("should return config data", done => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     service.loadAppConfig().then(() => {
       expect(service.getConfig()).toEqual(remoteEnvironment);
@@ -79,68 +47,7 @@ describe("AppConfigService", () => {
     });
   });
 
-  it("should return null on failure to download environment", done => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment-BROKEN.json`
-        }
-      ]
-    });
-
-    const service: AppConfigService = TestBed.get(AppConfigService);
-    service.loadAppConfig().then(() => {
-      expect(service.getConfig()).toEqual(null);
-      done();
-    });
-  });
-
-  it("should return null on malformed response", done => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment-MALFORMED.json`
-        }
-      ]
-    });
-
-    const service: AppConfigService = TestBed.get(AppConfigService);
-    service.loadAppConfig().then(() => {
-      expect(service.getConfig()).toEqual(null);
-      done();
-    });
-  });
-
-  it("should return undefined if config file has not loaded yet", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment-MALFORMED.json`
-        }
-      ]
-    });
-
-    const service: AppConfigService = TestBed.get(AppConfigService);
-    expect(service.getConfig()).toEqual(undefined);
-  });
-
   it("should get content url start of array", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const content = [
       {
@@ -176,16 +83,6 @@ describe("AppConfigService", () => {
   });
 
   it("should get content url end of array", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const content = [
       {
@@ -221,16 +118,6 @@ describe("AppConfigService", () => {
   });
 
   it("should get content url for dropdown title", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const content = [
       {
@@ -283,16 +170,6 @@ describe("AppConfigService", () => {
   });
 
   it("should return # url for missing title", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const content = [
       {
@@ -326,16 +203,6 @@ describe("AppConfigService", () => {
   });
 
   it("should return # url for missing dropdown title", () => {
-    TestBed.configureTestingModule({
-      providers: [
-        AppConfigService,
-        {
-          provide: APP_CONFIG,
-          useValue: `http://${window.location.host}/assets/tests/remoteEnvironment.json`
-        }
-      ]
-    });
-
     const service: AppConfigService = TestBed.get(AppConfigService);
     const content = [
       {
@@ -369,4 +236,7 @@ describe("AppConfigService", () => {
       "#"
     );
   });
+
+  // TODO Modify environmentUrl variable in app-config to allow unit tests to change
+  // the environment and config
 });

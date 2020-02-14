@@ -4,7 +4,6 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";
-import { testAppInitializer } from "src/app/app.helper";
 import { PageInfo, PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import {
   AnyMenuItem,
@@ -14,6 +13,7 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 

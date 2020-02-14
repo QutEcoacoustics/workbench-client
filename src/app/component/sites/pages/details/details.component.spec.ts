@@ -8,7 +8,6 @@ import {
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Subject } from "rxjs";
-import { testBawServices } from "src/app/app.helper";
 import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
@@ -16,6 +15,7 @@ import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
+import { testBawServices } from "src/app/test.helper";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {
