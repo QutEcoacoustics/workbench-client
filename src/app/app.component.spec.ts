@@ -70,7 +70,7 @@ describe("AppComponent", () => {
       return null;
     });
     spyOn(projectsApi, "list").and.callFake(() => {
-      const subject = new Subject();
+      const subject = new Subject<Project[]>();
 
       setTimeout(() => {
         subject.next([
