@@ -64,7 +64,7 @@ describe("HeaderComponent", () => {
   });
 
   afterAll(() => {
-    viewport.set("medium");
+    viewport.reset();
   });
 
   it("should create", () => {

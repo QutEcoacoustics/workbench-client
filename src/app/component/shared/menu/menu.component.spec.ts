@@ -41,10 +41,8 @@ describe("MenuComponent", () => {
   function assertIcon(target: HTMLElement, prop: string) {
     const icon: HTMLElement = target.querySelector("fa-icon");
     expect(icon).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
-      prop
-    );
+    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(prop);
   }
 
   function assertTitle(target: HTMLElement, header: string) {

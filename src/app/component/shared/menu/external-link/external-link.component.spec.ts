@@ -50,8 +50,8 @@ describe("MenuExternalLinkComponent", () => {
     const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
 
     expect(icon).toBeTruthy("Should contain <fa-icon> element");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
       "fas,home"
     );
   });
