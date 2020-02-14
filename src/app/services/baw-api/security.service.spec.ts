@@ -5,8 +5,8 @@ import {
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Subject } from "rxjs";
-import { testAppInitializer } from "src/app/app.helper";
 import { SessionUser } from "src/app/models/User";
+import { testAppInitializer } from "src/app/test.helper";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {

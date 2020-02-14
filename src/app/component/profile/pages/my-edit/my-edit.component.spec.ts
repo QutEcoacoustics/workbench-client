@@ -7,10 +7,11 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { formlyRoot, testBawServices } from "src/app/app.helper";
+import { formlyRoot } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { testBawServices } from "src/app/test.helper";
 import { MyEditComponent } from "./my-edit.component";
 
 describe("MyProfileEditComponent", () => {

@@ -8,12 +8,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { formlyRoot, testBawServices } from "src/app/app.helper";
+import { formlyRoot } from "src/app/app.helper";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
+import { testBawServices } from "src/app/test.helper";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {

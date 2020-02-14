@@ -11,11 +11,11 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testBawServices } from "src/app/app.helper";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
+import { testBawServices } from "src/app/test.helper";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
