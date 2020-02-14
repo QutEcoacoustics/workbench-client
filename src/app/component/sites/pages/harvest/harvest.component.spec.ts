@@ -25,8 +25,8 @@ describe("SiteHarvestComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HarvestComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
     fixture.detectChanges();
   });
 

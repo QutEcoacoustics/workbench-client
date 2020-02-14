@@ -54,8 +54,8 @@ describe("AccountService", () => {
       ]
     });
 
-    service = TestBed.get(AccountService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(AccountService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

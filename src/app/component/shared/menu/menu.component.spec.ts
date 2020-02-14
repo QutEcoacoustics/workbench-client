@@ -93,8 +93,8 @@ describe("MenuComponent", () => {
       ]
     }).compileComponents();
 
-    router = TestBed.get(ActivatedRoute);
-    api = TestBed.get(SecurityService);
+    router = TestBed.inject(ActivatedRoute);
+    api = TestBed.inject(SecurityService);
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
     componentElement = fixture.debugElement;

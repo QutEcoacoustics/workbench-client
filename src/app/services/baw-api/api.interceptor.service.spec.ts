@@ -35,10 +35,10 @@ describe("BawApiInterceptor", () => {
       ]
     });
 
-    api = TestBed.get(SecurityService);
-    config = TestBed.get(AppConfigService);
-    http = TestBed.get(HttpClient);
-    httpMock = TestBed.get(HttpTestingController);
+    api = TestBed.inject(SecurityService);
+    config = TestBed.inject(AppConfigService);
+    http = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

@@ -24,8 +24,8 @@ describe("AboutEthicsComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EthicsComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,7 +1,7 @@
 import {
   AgmCoreModule,
-  LAZY_MAPS_API_CONFIG,
-  LazyMapsAPILoaderConfigLiteral
+  LazyMapsAPILoaderConfigLiteral,
+  LAZY_MAPS_API_CONFIG
 } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
@@ -10,7 +10,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
 import { ToastrModule } from "ngx-toastr";
-import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { formlyRoot, providers } from "./app.helper";

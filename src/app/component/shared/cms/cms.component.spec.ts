@@ -27,9 +27,9 @@ describe("CmsComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CmsComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
-    api = TestBed.get(SecurityService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
+    api = TestBed.inject(SecurityService);
     component = fixture.componentInstance;
   });
 

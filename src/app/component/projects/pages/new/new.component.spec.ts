@@ -27,7 +27,7 @@ describe("ProjectsNewComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
-    api = TestBed.get(ProjectsService);
+    api = TestBed.inject(ProjectsService);
     component = fixture.componentInstance;
     fixture.detectChanges();
 

@@ -41,8 +41,8 @@ describe("SitesEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditComponent);
-    api = TestBed.get(SitesService);
-    router = TestBed.get(ActivatedRoute);
+    api = TestBed.inject(SitesService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 

@@ -35,8 +35,8 @@ describe("RegisterComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    api = TestBed.get(SecurityService);
-    router = TestBed.get(Router);
+    api = TestBed.inject(SecurityService);
+    router = TestBed.inject(Router);
 
     component.schema.model = {};
   });

@@ -55,8 +55,8 @@ describe("SitesService", () => {
       ]
     });
 
-    service = TestBed.get(SitesService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(SitesService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

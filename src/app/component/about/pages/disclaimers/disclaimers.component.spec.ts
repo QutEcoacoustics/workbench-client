@@ -24,8 +24,8 @@ describe("AboutDisclaimersComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DisclaimersComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

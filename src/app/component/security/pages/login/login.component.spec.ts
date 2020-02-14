@@ -57,11 +57,11 @@ describe("LoginComponent", () => {
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-    securityService = TestBed.get(SecurityService);
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
-    location = TestBed.get(Location);
-    config = TestBed.get(AppConfigService);
+    securityService = TestBed.inject(SecurityService);
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
+    location = TestBed.inject(Location);
+    config = TestBed.inject(AppConfigService);
 
     component.schema.model = {
       login: "",

@@ -31,7 +31,7 @@ describe("ProjectsListComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
-    api = TestBed.get(ProjectsService);
+    api = TestBed.inject(ProjectsService);
   });
 
   it("should display loading animation", fakeAsync(() => {

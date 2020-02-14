@@ -54,10 +54,10 @@ describe("HeaderComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
-    securityApi = TestBed.get(SecurityService);
-    userApi = TestBed.get(UserService);
-    config = TestBed.get(AppConfigService);
-    router = TestBed.get(Router);
+    securityApi = TestBed.inject(SecurityService);
+    userApi = TestBed.inject(UserService);
+    config = TestBed.inject(AppConfigService);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
 
     viewport.set("extra-large");

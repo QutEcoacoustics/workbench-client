@@ -43,9 +43,9 @@ describe("ProjectsDeleteComponent", () => {
 
     fixture = TestBed.createComponent(DeleteComponent);
     component = fixture.componentInstance;
-    api = TestBed.get(ProjectsService);
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
+    api = TestBed.inject(ProjectsService);
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
   });
 
   it("should create", () => {

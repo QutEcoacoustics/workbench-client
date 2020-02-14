@@ -32,8 +32,8 @@ describe("ProjectDetailsComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
-    projectsApi = TestBed.get(ProjectsService);
-    sitesApi = TestBed.get(SitesService);
+    projectsApi = TestBed.inject(ProjectsService);
+    sitesApi = TestBed.inject(SitesService);
 
     component = fixture.componentInstance;
   });

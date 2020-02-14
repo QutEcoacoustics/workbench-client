@@ -46,9 +46,9 @@ describe("SitesNewComponent", () => {
 
   it("should handle project not found", fakeAsync(() => {
     fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.get(SitesService);
-    projectApi = TestBed.get(ProjectsService);
-    router = TestBed.get(ActivatedRoute);
+    sitesApi = TestBed.inject(SitesService);
+    projectApi = TestBed.inject(ProjectsService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 
@@ -76,9 +76,9 @@ describe("SitesNewComponent", () => {
 
   it("should handle project unauthorized", fakeAsync(() => {
     fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.get(SitesService);
-    projectApi = TestBed.get(ProjectsService);
-    router = TestBed.get(ActivatedRoute);
+    sitesApi = TestBed.inject(SitesService);
+    projectApi = TestBed.inject(ProjectsService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 
@@ -131,9 +131,9 @@ describe("SitesNewComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.get(SitesService);
-    projectApi = TestBed.get(ProjectsService);
-    router = TestBed.get(ActivatedRoute);
+    sitesApi = TestBed.inject(SitesService);
+    projectApi = TestBed.inject(ProjectsService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 

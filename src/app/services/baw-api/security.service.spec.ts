@@ -59,9 +59,9 @@ describe("SecurityService", () => {
       ]
     });
 
-    service = TestBed.get(SecurityService);
-    config = TestBed.get(AppConfigService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(SecurityService);
+    config = TestBed.inject(AppConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

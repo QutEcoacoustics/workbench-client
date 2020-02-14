@@ -52,13 +52,13 @@ describe("AppComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
-    const projectsApi = TestBed.get(ProjectsService);
-    const securityApi = TestBed.get(SecurityService);
-    const userApi = TestBed.get(UserService);
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
+    const projectsApi = TestBed.inject(ProjectsService);
+    const securityApi = TestBed.inject(SecurityService);
+    const userApi = TestBed.inject(UserService);
 
     spyOn(securityApi, "isLoggedIn").and.callFake(() => {
       return false;

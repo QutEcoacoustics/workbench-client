@@ -41,8 +41,8 @@ describe("ProjectsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditComponent);
-    api = TestBed.get(ProjectsService);
-    router = TestBed.get(ActivatedRoute);
+    api = TestBed.inject(ProjectsService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 
