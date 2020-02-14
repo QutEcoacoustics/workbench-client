@@ -42,7 +42,7 @@ describe("ProjectsListComponent", () => {
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
+      "#app-spinner"
     );
     expect(spinner).toBeTruthy();
   }));
@@ -71,7 +71,7 @@ describe("ProjectsListComponent", () => {
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
+      "#app-spinner"
     );
     expect(spinner).toBeFalsy();
   }));

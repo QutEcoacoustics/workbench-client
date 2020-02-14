@@ -57,7 +57,7 @@ describe("SitesDeleteComponent", () => {
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
+      "#app-spinner"
     );
     expect(spinner).toBeTruthy();
   });
@@ -86,7 +86,7 @@ describe("SitesDeleteComponent", () => {
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
+      "#app-spinner"
     );
     expect(spinner).toBeFalsy();
   }));

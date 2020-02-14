@@ -1,8 +1,8 @@
 import {
-  HTTP_INTERCEPTORS,
   HttpClient,
   HttpClientModule,
-  HttpParams
+  HttpParams,
+  HTTP_INTERCEPTORS
 } from "@angular/common/http";
 import {
   HttpClientTestingModule,
