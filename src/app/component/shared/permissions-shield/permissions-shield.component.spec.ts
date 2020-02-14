@@ -53,8 +53,8 @@ describe("PermissionsShieldComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    projectsApi = TestBed.get(ProjectsService);
+    httpMock = TestBed.inject(HttpTestingController);
+    projectsApi = TestBed.inject(ProjectsService);
     component = fixture.componentInstance;
 
     projectsApi.show = jasmine.createSpy();
@@ -79,8 +79,8 @@ describe("PermissionsShieldComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    sitesApi = TestBed.get(SitesService);
+    httpMock = TestBed.inject(HttpTestingController);
+    sitesApi = TestBed.inject(SitesService);
     component = fixture.componentInstance;
 
     sitesApi.show = jasmine.createSpy();
@@ -105,8 +105,8 @@ describe("PermissionsShieldComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    projectsApi = TestBed.get(ProjectsService);
+    httpMock = TestBed.inject(HttpTestingController);
+    projectsApi = TestBed.inject(ProjectsService);
     component = fixture.componentInstance;
 
     spyOn(projectsApi, "show").and.callFake(() => {
@@ -155,8 +155,8 @@ describe("PermissionsShieldComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.get(HttpTestingController);
-    sitesApi = TestBed.get(SitesService);
+    httpMock = TestBed.inject(HttpTestingController);
+    sitesApi = TestBed.inject(SitesService);
     component = fixture.componentInstance;
 
     spyOn(sitesApi, "show").and.callFake(() => {

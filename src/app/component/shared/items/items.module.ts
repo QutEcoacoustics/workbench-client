@@ -1,8 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  FaIconLibrary,
+  FontAwesomeModule
+} from "@fortawesome/angular-fontawesome";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
@@ -14,7 +16,7 @@ import { SelectableItemsComponent } from "./selectable-items/selectable-items.co
   exports: [ItemsComponent, ItemComponent, SelectableItemsComponent]
 })
 export class ItemsModule {
-  constructor() {
+  constructor(library: FaIconLibrary) {
     fontAwesomeLibraries(library);
   }
 }

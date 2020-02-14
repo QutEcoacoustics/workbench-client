@@ -63,7 +63,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const name = fixture.debugElement.nativeElement.querySelector("h5#name");
+    const name = fixture.nativeElement.querySelector("h5#name");
     expect(name).toBeTruthy();
     expect(name.innerText).toContain("Test Site");
   });
@@ -89,9 +89,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const nameHyperlink = fixture.debugElement.nativeElement.querySelector(
-      "#imageLink"
-    );
+    const nameHyperlink = fixture.nativeElement.querySelector("#imageLink");
     expect(nameHyperlink).toBeTruthy();
     expect(nameHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
   }));
@@ -117,7 +115,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img#image");
+    const image = fixture.nativeElement.querySelector("img#image");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
       `http://${window.location.host}/assets/images/site/site_span4.png`
@@ -146,9 +144,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const imgHyperlink = fixture.debugElement.nativeElement.querySelector(
-      "#imageLink"
-    );
+    const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
     expect(imgHyperlink).toBeTruthy();
     expect(imgHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
   });
@@ -175,7 +171,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img");
+    const image = fixture.nativeElement.querySelector("img");
     expect(image).toBeTruthy();
     expect(image.src).toBe("http://brokenlink/");
     expect(image.alt).toBe("Test Site alt");
@@ -203,9 +199,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const imgHyperlink = fixture.debugElement.nativeElement.querySelector(
-      "#imageLink"
-    );
+    const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
     expect(imgHyperlink).toBeTruthy();
     expect(imgHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
   });
@@ -231,9 +225,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const displayButton = fixture.debugElement.nativeElement.querySelector(
-      "a#details"
-    );
+    const displayButton = fixture.nativeElement.querySelector("a#details");
     expect(displayButton).toBeTruthy();
     expect(displayButton.innerText.trim()).toBe("Details");
   });
@@ -259,9 +251,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const displayButton = fixture.debugElement.nativeElement.querySelector(
-      "a#details"
-    );
+    const displayButton = fixture.nativeElement.querySelector("a#details");
     expect(displayButton).toBeTruthy();
     expect(displayButton.getAttribute("href")).toBe("/projects/2/sites/5");
   });
@@ -287,9 +277,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const playButton = fixture.debugElement.nativeElement.querySelector(
-      "a#play"
-    );
+    const playButton = fixture.nativeElement.querySelector("a#play");
     expect(playButton).toBeTruthy();
     expect(playButton.innerText.trim()).toBe("Play");
   });
@@ -317,9 +305,7 @@ describe("SiteCardComponent", () => {
 
     fixture.detectChanges();
 
-    const visualizeButton = fixture.debugElement.nativeElement.querySelector(
-      "a#visualize"
-    );
+    const visualizeButton = fixture.nativeElement.querySelector("a#visualize");
     expect(visualizeButton).toBeTruthy();
     expect(visualizeButton.innerText.trim()).toBe("Visualise");
   });

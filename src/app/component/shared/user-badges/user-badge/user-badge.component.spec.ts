@@ -83,7 +83,7 @@ describe("UserBadgeComponent", () => {
     component.label = "custom label";
     fixture.detectChanges();
 
-    const label = fixture.debugElement.nativeElement.querySelector("#label");
+    const label = fixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy();
     expect(label.innerText.trim()).toBe("custom label");
   });
@@ -92,9 +92,7 @@ describe("UserBadgeComponent", () => {
     component.label = "custom label";
     fixture.detectChanges();
 
-    const notFound = fixture.debugElement.nativeElement.querySelector(
-      "#notFound"
-    );
+    const notFound = fixture.nativeElement.querySelector("#notFound");
     expect(notFound).toBeTruthy();
     expect(notFound.innerText.trim()).toBe("User not found");
   });
@@ -104,9 +102,7 @@ describe("UserBadgeComponent", () => {
     component.users = List([]);
     fixture.detectChanges();
 
-    const notFound = fixture.debugElement.nativeElement.querySelector(
-      "#notFound"
-    );
+    const notFound = fixture.nativeElement.querySelector("#notFound");
     expect(notFound).toBeTruthy();
     expect(notFound.innerText.trim()).toBe("User not found");
   });
@@ -124,9 +120,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelector(
-      "#username"
-    );
+    const username = fixture.nativeElement.querySelector("#username");
     expect(username).toBeTruthy("Username field should exist");
     expect(username.innerHTML.trim()).toBe("custom username");
     expect(
@@ -150,9 +144,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const imageLink = fixture.debugElement.nativeElement.querySelector(
-      "#imageLink"
-    );
+    const imageLink = fixture.nativeElement.querySelector("#imageLink");
     const image = imageLink.querySelector("img");
 
     expect(imageLink).toBeTruthy();
@@ -182,9 +174,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const lengthOfTime = fixture.debugElement.nativeElement.querySelector(
-      "#lengthOfTime"
-    );
+    const lengthOfTime = fixture.nativeElement.querySelector("#lengthOfTime");
     expect(lengthOfTime).toBeFalsy();
   });
 
@@ -202,9 +192,7 @@ describe("UserBadgeComponent", () => {
     component.lengthOfTime = "5 years ago";
     fixture.detectChanges();
 
-    const lengthOfTime = fixture.debugElement.nativeElement.querySelector(
-      "#lengthOfTime"
-    );
+    const lengthOfTime = fixture.nativeElement.querySelector("#lengthOfTime");
     expect(lengthOfTime).toBeTruthy();
     expect(lengthOfTime.innerText.trim()).toBe("5 years ago");
   });
@@ -229,9 +217,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const usernames = fixture.debugElement.nativeElement.querySelectorAll(
-      "#username"
-    );
+    const usernames = fixture.nativeElement.querySelectorAll("#username");
     expect(usernames).toBeTruthy("Username fields should exist");
     expect(usernames.length).toBe(2);
     expect(usernames[0].innerHTML.trim()).toBe("custom username 1");
@@ -270,9 +256,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const imageLinks = fixture.debugElement.nativeElement.querySelectorAll(
-      "#imageLink"
-    );
+    const imageLinks = fixture.nativeElement.querySelectorAll("#imageLink");
     expect(imageLinks).toBeTruthy();
     expect(imageLinks.length).toBe(2);
 
@@ -325,7 +309,7 @@ describe("UserBadgeComponent", () => {
     ]);
     fixture.detectChanges();
 
-    const lengthOfTimes = fixture.debugElement.nativeElement.querySelectorAll(
+    const lengthOfTimes = fixture.nativeElement.querySelectorAll(
       "#lengthOfTime"
     );
     expect(lengthOfTimes).toBeTruthy();
@@ -353,7 +337,7 @@ describe("UserBadgeComponent", () => {
     component.lengthOfTime = "5 years ago";
     fixture.detectChanges();
 
-    const lengthOfTimes = fixture.debugElement.nativeElement.querySelectorAll(
+    const lengthOfTimes = fixture.nativeElement.querySelectorAll(
       "#lengthOfTime"
     );
     expect(lengthOfTimes).toBeTruthy();
@@ -370,17 +354,15 @@ describe("UserBadgeComponent", () => {
     testFixture.detectChanges();
 
     // Initially, component should have label set to "first label", no users, and no length of time
-    let label = testFixture.debugElement.nativeElement.querySelector("#label");
+    let label = testFixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy("User badge label should exist");
     expect(label.innerText.trim()).toBe("first label");
 
-    let notFound = testFixture.debugElement.nativeElement.querySelector(
-      "#notFound"
-    );
+    let notFound = testFixture.nativeElement.querySelector("#notFound");
     expect(notFound).toBeTruthy("Not found message should exist");
     expect(notFound.innerText.trim()).toBe("User not found");
 
-    let lengthOfTimes = testFixture.debugElement.nativeElement.querySelectorAll(
+    let lengthOfTimes = testFixture.nativeElement.querySelectorAll(
       "#lengthOfTime"
     );
     expect(lengthOfTimes).toBeTruthy();
@@ -390,30 +372,22 @@ describe("UserBadgeComponent", () => {
     testFixture.detectChanges();
 
     // Next, component should have label set to "second label", two users, and 10 years length of time
-    label = testFixture.debugElement.nativeElement.querySelector("#label");
+    label = testFixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy();
     expect(label.innerText.trim()).toBe("second label");
 
-    notFound = testFixture.debugElement.nativeElement.querySelector(
-      "#notFound"
-    );
+    notFound = testFixture.nativeElement.querySelector("#notFound");
     expect(notFound).toBeFalsy();
 
-    const usernames = testFixture.debugElement.nativeElement.querySelectorAll(
-      "#username"
-    );
+    const usernames = testFixture.nativeElement.querySelectorAll("#username");
     expect(usernames).toBeTruthy("Username fields should exist");
     expect(usernames.length).toBe(2);
 
-    const imageLinks = testFixture.debugElement.nativeElement.querySelectorAll(
-      "#imageLink"
-    );
+    const imageLinks = testFixture.nativeElement.querySelectorAll("#imageLink");
     expect(imageLinks).toBeTruthy("Images should exist");
     expect(imageLinks.length).toBe(2);
 
-    lengthOfTimes = testFixture.debugElement.nativeElement.querySelectorAll(
-      "#lengthOfTime"
-    );
+    lengthOfTimes = testFixture.nativeElement.querySelectorAll("#lengthOfTime");
     expect(lengthOfTimes).toBeTruthy("Badges should contain length of time");
     expect(lengthOfTimes.length).toBe(2);
   }));

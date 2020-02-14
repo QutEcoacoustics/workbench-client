@@ -41,10 +41,8 @@ describe("MenuComponent", () => {
   function assertIcon(target: HTMLElement, prop: string) {
     const icon: HTMLElement = target.querySelector("fa-icon");
     expect(icon).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
-      prop
-    );
+    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(prop);
   }
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -69,9 +67,7 @@ describe("MenuComponent", () => {
   function findLinks(
     selector: "internal-link" | "external-link" | "button"
   ): HTMLElement[] {
-    return fixture.debugElement.nativeElement.querySelectorAll(
-      "app-menu-" + selector
-    );
+    return fixture.nativeElement.querySelectorAll("app-menu-" + selector);
   }
 
   function setLoggedInState() {
@@ -97,8 +93,8 @@ describe("MenuComponent", () => {
       ]
     }).compileComponents();
 
-    router = TestBed.get(ActivatedRoute);
-    api = TestBed.get(SecurityService);
+    router = TestBed.inject(ActivatedRoute);
+    api = TestBed.inject(SecurityService);
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
     componentElement = fixture.debugElement;
@@ -117,7 +113,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "MENU");
   });
 
@@ -126,7 +122,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "SECONDARY");
   });
 
@@ -135,7 +131,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertIcon(title, "fas,home");
   });
 
@@ -144,7 +140,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "SECONDARY");
   });
 

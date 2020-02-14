@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { PageComponent } from "src/app/helpers/page/pageComponent.js";
-import { Page } from "src/app/helpers/page/pageDecorator.js";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import data from "./report-problem.json";
 import {
   reportProblemMenuItem,

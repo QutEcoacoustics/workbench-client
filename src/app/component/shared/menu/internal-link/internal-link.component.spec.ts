@@ -48,11 +48,11 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
 
     expect(icon).toBeTruthy("Should contain <fa-icon> element");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
       "fas,home"
     );
   });
@@ -71,7 +71,7 @@ describe("MenuInternalLinkComponent", () => {
     fixture.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = fixture.debugElement.nativeElement.querySelector("#label");
+    const label = fixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
@@ -89,7 +89,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
 
     expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
     expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
@@ -111,7 +111,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
 
     expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
     expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
@@ -133,9 +133,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.id).toBe("id1000");
   });
@@ -153,9 +151,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
 
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.innerText.trim()).toBe("custom tooltip");
@@ -174,7 +170,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Anchor should have [placement] directive"
     );
@@ -196,7 +192,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Anchor should have [placement] directive"
     );
@@ -218,7 +214,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       "/brokenlink"
@@ -240,7 +236,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
     expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
       "/brokenlink/10"
@@ -260,7 +256,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a.active");
+    const link = fixture.nativeElement.querySelector("a.active");
     expect(link).toBeFalsy();
   });
 
@@ -277,7 +273,7 @@ describe("MenuInternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a.active");
+    const link = fixture.nativeElement.querySelector("a.active");
     expect(link).toBeTruthy();
   });
 });

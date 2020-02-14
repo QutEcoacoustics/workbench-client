@@ -19,8 +19,8 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
 
       <div class="input-group">
         <select
-          id="select"
           class="w-100 form-control"
+          [id]="field.id"
           [formControl]="formControl"
           [formlyAttributes]="field"
           (change)="calculateCurrentTime()"

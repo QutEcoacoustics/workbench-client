@@ -34,7 +34,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const titles = fixture.debugElement.nativeElement.querySelectorAll("h4");
+    const titles = fixture.nativeElement.querySelectorAll("h4");
     expect(titles.length).toBe(1);
     expect(titles[0].innerText).toContain("title");
   });
@@ -45,9 +45,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const description = fixture.debugElement.nativeElement.querySelectorAll(
-      "p"
-    );
+    const description = fixture.nativeElement.querySelectorAll("p");
     expect(description.length).toBe(1);
     expect(description[0].innerText).toContain("No description given");
   });
@@ -59,9 +57,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const description = fixture.debugElement.nativeElement.querySelectorAll(
-      "p"
-    );
+    const description = fixture.nativeElement.querySelectorAll("p");
     expect(description.length).toBe(1);
     expect(description[0].innerText).toContain("description");
   });
@@ -72,7 +68,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const links = fixture.debugElement.nativeElement.querySelectorAll("a");
+    const links = fixture.nativeElement.querySelectorAll("a");
     expect(links.length).toBe(0);
   });
 
@@ -83,7 +79,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const links = fixture.debugElement.nativeElement.querySelectorAll("a");
+    const links = fixture.nativeElement.querySelectorAll("a");
     expect(links.length).toBe(1);
     expect(links[0].innerText).toContain("title");
     expect(links[0].href).toBe("https://brokenlink/");
@@ -99,7 +95,7 @@ describe("CardComponent", () => {
     } as Card;
     fixture.detectChanges();
 
-    const links = fixture.debugElement.nativeElement.querySelectorAll("a");
+    const links = fixture.nativeElement.querySelectorAll("a");
 
     expect(links.length).toBe(1);
     expect(links[0].innerText).toContain("title");

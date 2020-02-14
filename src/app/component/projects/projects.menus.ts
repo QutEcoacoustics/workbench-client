@@ -26,7 +26,7 @@ export const projectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
   label: "Projects",
   route: projectsRoute,
-  tooltip: () => "View projects I have access too",
+  tooltip: () => "View projects I have access to",
   order: 4
 });
 

@@ -39,10 +39,10 @@ describe("HomeComponent", () => {
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.get(HttpTestingController);
-    config = TestBed.get(AppConfigService);
-    projectApi = TestBed.get(ProjectsService);
-    securityApi = TestBed.get(SecurityService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
+    projectApi = TestBed.inject(ProjectsService);
+    securityApi = TestBed.inject(SecurityService);
   });
 
   afterEach(() => {

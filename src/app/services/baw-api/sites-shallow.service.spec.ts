@@ -54,8 +54,8 @@ describe("ShallowSitesService", () => {
       ]
     });
 
-    service = TestBed.get(ShallowSitesService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ShallowSitesService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

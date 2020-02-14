@@ -45,11 +45,11 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
 
     expect(icon).toBeTruthy("Should contain <fa-icon> element");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon-prop").value).toBe(
+    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
       "fas,home"
     );
   });
@@ -67,7 +67,7 @@ describe("MenuButtonComponent", () => {
     fixture.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = fixture.debugElement.nativeElement.querySelector("#label");
+    const label = fixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
@@ -84,7 +84,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
 
     expect(button).toBeTruthy("Button should have [ngbTooltip] directive");
     expect(
@@ -107,7 +107,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
 
     expect(button).toBeTruthy("Button should have [ngbTooltip] directive");
     expect(
@@ -130,9 +130,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.id).toBe("id1000");
   });
@@ -149,9 +147,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
 
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.innerText.trim()).toBe("custom tooltip");
@@ -169,7 +165,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     expect(button.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Button should have [placement] directive"
     );
@@ -190,7 +186,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     expect(button.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Button should have [placement] directive"
     );
@@ -211,7 +207,7 @@ describe("MenuButtonComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     button.click();
     expect(component.link.action).toHaveBeenCalled();
   });

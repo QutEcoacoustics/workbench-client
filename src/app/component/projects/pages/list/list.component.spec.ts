@@ -31,7 +31,7 @@ describe("ProjectsListComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
-    api = TestBed.get(ProjectsService);
+    api = TestBed.inject(ProjectsService);
   });
 
   it("should display loading animation", fakeAsync(() => {
@@ -41,9 +41,7 @@ describe("ProjectsListComponent", () => {
 
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
   }));
 
@@ -70,9 +68,7 @@ describe("ProjectsListComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeFalsy();
   }));
 

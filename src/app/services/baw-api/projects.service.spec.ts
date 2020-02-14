@@ -54,8 +54,8 @@ describe("ProjectsService", () => {
       ]
     });
 
-    service = TestBed.get(ProjectsService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ProjectsService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

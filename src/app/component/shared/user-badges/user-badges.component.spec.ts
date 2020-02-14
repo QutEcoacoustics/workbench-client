@@ -31,7 +31,7 @@ describe("UserBadgesComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserBadgesComponent);
-    api = TestBed.get(AccountService);
+    api = TestBed.inject(AccountService);
     component = fixture.componentInstance;
   });
 

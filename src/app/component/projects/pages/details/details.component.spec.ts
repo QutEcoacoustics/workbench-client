@@ -32,8 +32,8 @@ describe("ProjectDetailsComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
-    projectsApi = TestBed.get(ProjectsService);
-    sitesApi = TestBed.get(SitesService);
+    projectsApi = TestBed.inject(ProjectsService);
+    sitesApi = TestBed.inject(SitesService);
 
     component = fixture.componentInstance;
   });
@@ -46,7 +46,7 @@ describe("ProjectDetailsComponent", () => {
   it("should initially display loading title", () => {
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h4");
+    const title = fixture.nativeElement.querySelector("h4");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Loading");
   });
@@ -54,9 +54,7 @@ describe("ProjectDetailsComponent", () => {
   it("should initially display loading animation", () => {
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "mat-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
   });
 
@@ -72,7 +70,7 @@ describe("ProjectDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Not found");
   });
@@ -89,7 +87,7 @@ describe("ProjectDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized access");
   });
@@ -106,7 +104,7 @@ describe("ProjectDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Not found");
   });
@@ -123,7 +121,7 @@ describe("ProjectDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized access");
   });
@@ -152,7 +150,7 @@ describe("ProjectDetailsComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized access");
   }));
@@ -181,7 +179,7 @@ describe("ProjectDetailsComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized access");
   }));
@@ -218,14 +216,14 @@ describe("ProjectDetailsComponent", () => {
     fixture.detectChanges();
     tick(50);
     fixture.detectChanges();
-    const loading = fixture.debugElement.nativeElement.querySelector("h4");
+    const loading = fixture.nativeElement.querySelector("h4");
     expect(loading).toBeTruthy();
     expect(loading.innerText).toBe("Loading");
 
     // Return project data
     flush();
     fixture.detectChanges();
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Test project");
   }));
@@ -262,7 +260,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Test project");
   }));
@@ -299,7 +297,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img");
+    const image = fixture.nativeElement.querySelector("img");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
       `http://${window.location.host}/assets/images/project/project_span4.png`
@@ -340,7 +338,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img");
+    const image = fixture.nativeElement.querySelector("img");
     expect(image).toBeTruthy();
     expect(image.src).toBe("http://brokenlink/");
     expect(image.alt.length).toBeGreaterThan(0);
@@ -378,7 +376,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const description = fixture.debugElement.nativeElement.querySelector(
+    const description = fixture.nativeElement.querySelector(
       "p#project_description"
     );
     expect(description).toBeTruthy();
@@ -417,7 +415,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const sitePlaceholder = fixture.debugElement.nativeElement.querySelector(
+    const sitePlaceholder = fixture.nativeElement.querySelector(
       "p#site_placeholder"
     );
     expect(sitePlaceholder).toBeTruthy();
@@ -473,13 +471,9 @@ describe("ProjectDetailsComponent", () => {
     siteCardComponent.project = project;
     siteCardFixture.detectChanges();
 
-    const sites = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-site-card"
-    );
+    const sites = fixture.nativeElement.querySelectorAll("app-site-card");
     expect(sites.length).toBe(1);
-    expect(sites[0].innerHTML).toEqual(
-      siteCardFixture.debugElement.nativeElement.innerHTML
-    );
+    expect(sites[0].innerHTML).toEqual(siteCardFixture.nativeElement.innerHTML);
   }));
 
   it("should display multiple sites", fakeAsync(() => {
@@ -545,15 +539,13 @@ describe("ProjectDetailsComponent", () => {
     siteCard2Component.project = project;
     siteCard2Fixture.detectChanges();
 
-    const sites = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-site-card"
-    );
+    const sites = fixture.nativeElement.querySelectorAll("app-site-card");
     expect(sites.length).toBe(2);
     expect(sites[0].innerHTML).toEqual(
-      siteCard1Fixture.debugElement.nativeElement.innerHTML
+      siteCard1Fixture.nativeElement.innerHTML
     );
     expect(sites[1].innerHTML).toEqual(
-      siteCard2Fixture.debugElement.nativeElement.innerHTML
+      siteCard2Fixture.nativeElement.innerHTML
     );
   }));
 
@@ -589,9 +581,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const googleMaps = fixture.debugElement.nativeElement.querySelector(
-      "app-map"
-    );
+    const googleMaps = fixture.nativeElement.querySelector("app-map");
     expect(googleMaps).toBeTruthy();
     expect(googleMaps.querySelector("span").innerText).toBe(
       "No locations specified"
@@ -641,9 +631,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const googleMaps = fixture.debugElement.nativeElement.querySelector(
-      "app-map"
-    );
+    const googleMaps = fixture.nativeElement.querySelector("app-map");
     expect(googleMaps).toBeTruthy();
     expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
   }));
@@ -701,9 +689,7 @@ describe("ProjectDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const googleMaps = fixture.debugElement.nativeElement.querySelector(
-      "app-map"
-    );
+    const googleMaps = fixture.nativeElement.querySelector("app-map");
     const output = googleMaps.querySelectorAll("p");
     expect(googleMaps).toBeTruthy();
     expect(output.length).toBe(2);

@@ -29,6 +29,8 @@ module.exports = function(config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true
     },
+    browserDisconnectTimeout: 30000,
+    browserDisconnectTolerance: 3,
     reporters: ["progress", "kjhtml", "junit"],
     port: 9876,
     colors: true,

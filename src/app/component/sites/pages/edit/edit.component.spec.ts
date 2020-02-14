@@ -41,8 +41,8 @@ describe("SitesEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditComponent);
-    api = TestBed.get(SitesService);
-    router = TestBed.get(ActivatedRoute);
+    api = TestBed.inject(SitesService);
+    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 
@@ -244,21 +244,17 @@ describe("SitesEditComponent", () => {
   it("should show error message with missing site name", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -267,15 +263,11 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -296,15 +288,11 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site 😀";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -325,21 +313,15 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
-    const description = fixture.debugElement.nativeElement.querySelectorAll(
-      "textarea"
-    )[0];
+    const description = fixture.nativeElement.querySelectorAll("textarea")[0];
     description.value = "test description";
     description.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -361,21 +343,15 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
-    const latitude = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const latitude = fixture.nativeElement.querySelectorAll("input")[2];
     latitude.value = 0;
     latitude.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -390,21 +366,15 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
-    const longitude = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const longitude = fixture.nativeElement.querySelectorAll("input")[3];
     longitude.value = 1;
     longitude.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -419,27 +389,19 @@ describe("SitesEditComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "update");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test site";
     name.dispatchEvent(new Event("input"));
 
-    const latitude = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const latitude = fixture.nativeElement.querySelectorAll("input")[2];
     latitude.value = 0;
     latitude.dispatchEvent(new Event("input"));
 
-    const longitude = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const longitude = fixture.nativeElement.querySelectorAll("input")[3];
     longitude.value = 1;
     longitude.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -472,23 +434,17 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-success"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-success");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain("Site was successfully updated.");
   }));
@@ -508,23 +464,17 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-danger"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain("Unauthorized");
   }));
@@ -541,23 +491,17 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-danger"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain("Not Found");
   }));
@@ -577,9 +521,7 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -611,9 +553,7 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -643,9 +583,7 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -675,9 +613,7 @@ describe("SitesEditComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 

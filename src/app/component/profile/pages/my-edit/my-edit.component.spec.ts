@@ -31,7 +31,7 @@ describe("MyProfileEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyEditComponent);
-    api = TestBed.get(UserService);
+    api = TestBed.inject(UserService);
     component = fixture.componentInstance;
     component.schema.model = { edit: {} };
   });

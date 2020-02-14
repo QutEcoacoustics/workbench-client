@@ -1,7 +1,7 @@
 import {
   AgmCoreModule,
-  LAZY_MAPS_API_CONFIG,
-  LazyMapsAPILoaderConfigLiteral
+  LazyMapsAPILoaderConfigLiteral,
+  LAZY_MAPS_API_CONFIG
 } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
@@ -10,7 +10,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
 import { ToastrModule } from "ngx-toastr";
-import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { formlyRoot, providers } from "./app.helper";
@@ -27,7 +26,6 @@ import { ReportProblemsModule } from "./component/report-problem/report-problem.
 import { SecurityModule } from "./component/security/security.module";
 import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./component/shared/shared.module";
-import { WidgetDirective } from "./component/shared/widget/widget.directive";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
 import { retrieveAppConfig } from "./services/app-config/app-config.service";
@@ -79,7 +77,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
 }
 
 @NgModule({
-  declarations: [AppComponent, WidgetDirective],
+  declarations: [AppComponent],
   imports: [...appImports],
   providers: [
     ...providers,

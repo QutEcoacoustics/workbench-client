@@ -1,8 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  FaIconLibrary,
+  FontAwesomeModule
+} from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import { PermissionsShieldComponent } from "../permissions-shield/permissions-shield.component";
@@ -34,7 +36,7 @@ import { MenuComponent } from "./menu.component";
   ]
 })
 export class MenuModule {
-  constructor() {
+  constructor(library: FaIconLibrary) {
     fontAwesomeLibraries(library);
   }
 }

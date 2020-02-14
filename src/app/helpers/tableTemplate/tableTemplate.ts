@@ -1,4 +1,4 @@
-import { ViewChild } from "@angular/core";
+import { Directive, ViewChild } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,
@@ -9,7 +9,7 @@ import {
 import { PageComponent } from "../page/pageComponent";
 
 export abstract class TableTemplate<T> extends PageComponent {
-  @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // Table variables
   public ColumnMode = ColumnMode;

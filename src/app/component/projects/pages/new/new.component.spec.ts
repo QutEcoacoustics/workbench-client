@@ -27,7 +27,7 @@ describe("ProjectsNewComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
-    api = TestBed.get(ProjectsService);
+    api = TestBed.inject(ProjectsService);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
@@ -133,15 +133,11 @@ describe("ProjectsNewComponent", () => {
   it("should not call submit function with missing project name", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -152,21 +148,17 @@ describe("ProjectsNewComponent", () => {
   it("should show error message with missing project name", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -175,15 +167,11 @@ describe("ProjectsNewComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "create");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -202,15 +190,11 @@ describe("ProjectsNewComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "create");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project 😀";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -229,21 +213,15 @@ describe("ProjectsNewComponent", () => {
     spyOn(component, "submit").and.callThrough();
     spyOn(api, "create");
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const description = fixture.debugElement.nativeElement.querySelectorAll(
-      "textarea"
-    )[0];
+    const description = fixture.nativeElement.querySelectorAll("textarea")[0];
     description.value = "test description";
     description.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -275,23 +253,17 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-success"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-success");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain("Project was successfully created.");
   }));
@@ -319,23 +291,17 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-danger"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain(
       "Record could not be saved: name has already been taken"
@@ -357,23 +323,17 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick(100);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector(
-      "ngb-alert.alert-danger"
-    );
+    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
     expect(msg).toBeTruthy();
     expect(msg.innerText).toContain("Unauthorized");
   }));
@@ -393,9 +353,7 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -427,9 +385,7 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -459,9 +415,7 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 
@@ -491,9 +445,7 @@ describe("ProjectsNewComponent", () => {
       return subject;
     });
 
-    const name = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const name = fixture.nativeElement.querySelectorAll("input")[0];
     name.value = "test project";
     name.dispatchEvent(new Event("input"));
 

@@ -57,11 +57,11 @@ describe("LoginComponent", () => {
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-    securityService = TestBed.get(SecurityService);
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
-    location = TestBed.get(Location);
-    config = TestBed.get(AppConfigService);
+    securityService = TestBed.inject(SecurityService);
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
+    location = TestBed.inject(Location);
+    config = TestBed.inject(AppConfigService);
 
     component.schema.model = {
       login: "",
@@ -76,25 +76,19 @@ describe("LoginComponent", () => {
   }
 
   function fillUsername(user?: string) {
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = user ? user : "username";
     username.dispatchEvent(new Event("input"));
   }
 
   function fillPassword(pass?: string) {
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const password = fixture.nativeElement.querySelectorAll("input")[1];
     password.value = pass ? pass : "password";
     password.dispatchEvent(new Event("input"));
   }
 
   function submit() {
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
     fixture.detectChanges();
 
@@ -236,9 +230,7 @@ describe("LoginComponent", () => {
       fillPassword();
       submit();
 
-      const msg = fixture.debugElement.nativeElement.querySelector(
-        "ngb-alert.alert-danger"
-      );
+      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
       expect(msg).toBeTruthy();
       expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
     }));
@@ -264,9 +256,7 @@ describe("LoginComponent", () => {
       fillUsername();
       submit();
 
-      const msg = fixture.debugElement.nativeElement.querySelector(
-        "ngb-alert.alert-danger"
-      );
+      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
       expect(msg).toBeTruthy();
       expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
     }));
@@ -290,9 +280,7 @@ describe("LoginComponent", () => {
 
       submit();
 
-      const msg = fixture.debugElement.nativeElement.querySelector(
-        "ngb-alert.alert-danger"
-      );
+      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
       expect(msg).toBeTruthy();
       expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
     }));
@@ -320,9 +308,7 @@ describe("LoginComponent", () => {
       fillPassword("12345");
       submit();
 
-      const msg = fixture.debugElement.nativeElement.querySelector(
-        "ngb-alert.alert-danger"
-      );
+      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
       expect(msg).toBeTruthy();
       expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
     }));
@@ -360,9 +346,7 @@ describe("LoginComponent", () => {
       tick();
       fixture.detectChanges();
 
-      const msg = fixture.debugElement.nativeElement.querySelector(
-        "ngb-alert.alert-danger"
-      );
+      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
       expect(msg).toBeTruthy();
       expect(msg.innerText).toContain(
         "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."

@@ -18,12 +18,12 @@ describe("AppConfigService", () => {
   });
 
   it("should be created", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     expect(service).toBeTruthy();
   });
 
   it("should load app config data", done => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     service.loadAppConfig().then(() => {
       expect(true).toEqual(true);
       done();
@@ -31,8 +31,8 @@ describe("AppConfigService", () => {
   });
 
   it("should update website title", done => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
-    const titleService: Title = TestBed.get(Title);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
+    const titleService: Title = TestBed.inject(Title);
     service.loadAppConfig().then(() => {
       expect(titleService.getTitle()).toBe("<< brandName >>");
       done();
@@ -40,7 +40,7 @@ describe("AppConfigService", () => {
   });
 
   it("should return config data", done => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     service.loadAppConfig().then(() => {
       expect(service.getConfig()).toEqual(remoteEnvironment);
       done();
@@ -48,7 +48,7 @@ describe("AppConfigService", () => {
   });
 
   it("should get content url start of array", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     const content = [
       {
         title: "<< content1 >>",
@@ -83,7 +83,7 @@ describe("AppConfigService", () => {
   });
 
   it("should get content url end of array", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     const content = [
       {
         title: "<< content1 >>",
@@ -118,7 +118,7 @@ describe("AppConfigService", () => {
   });
 
   it("should get content url for dropdown title", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     const content = [
       {
         title: "<< content1 >>",
@@ -170,7 +170,7 @@ describe("AppConfigService", () => {
   });
 
   it("should return # url for missing title", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     const content = [
       {
         title: "<< content1 >>",
@@ -203,7 +203,7 @@ describe("AppConfigService", () => {
   });
 
   it("should return # url for missing dropdown title", () => {
-    const service: AppConfigService = TestBed.get(AppConfigService);
+    const service: AppConfigService = TestBed.inject(AppConfigService);
     const content = [
       {
         title: "<< content1 >>",
