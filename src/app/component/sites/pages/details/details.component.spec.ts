@@ -46,7 +46,7 @@ describe("SitesDetailsComponent", () => {
   it("should initially display loading title", () => {
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h4");
+    const title = fixture.nativeElement.querySelector("h4");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Loading");
   });
@@ -54,9 +54,7 @@ describe("SitesDetailsComponent", () => {
   it("should initially display loading animation", () => {
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
   });
 
@@ -72,7 +70,7 @@ describe("SitesDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Not found");
   });
@@ -89,7 +87,7 @@ describe("SitesDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Unauthorized access");
   });
@@ -106,7 +104,7 @@ describe("SitesDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Not found");
   });
@@ -123,7 +121,7 @@ describe("SitesDetailsComponent", () => {
 
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Unauthorized access");
   });
@@ -152,7 +150,7 @@ describe("SitesDetailsComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Unauthorized access");
   }));
@@ -181,7 +179,7 @@ describe("SitesDetailsComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Unauthorized access");
   }));
@@ -229,14 +227,14 @@ describe("SitesDetailsComponent", () => {
     fixture.detectChanges();
     tick(50);
     fixture.detectChanges();
-    const loading = fixture.debugElement.nativeElement.querySelector("h4");
+    const loading = fixture.nativeElement.querySelector("h4");
     expect(loading).toBeTruthy();
     expect(loading.innerText).toContain("Loading");
 
     // Return project data
     flush();
     fixture.detectChanges();
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Test Site");
     expect(title.querySelector("small").innerText).toContain(
@@ -287,14 +285,14 @@ describe("SitesDetailsComponent", () => {
     fixture.detectChanges();
     tick(50);
     fixture.detectChanges();
-    const loading = fixture.debugElement.nativeElement.querySelector("h4");
+    const loading = fixture.nativeElement.querySelector("h4");
     expect(loading).toBeTruthy();
     expect(loading.innerText).toContain("Loading");
 
     // Return project data
     flush();
     fixture.detectChanges();
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Test Site");
     expect(title.querySelector("small").innerText).toContain(
@@ -345,7 +343,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Project: Test project");
   }));
@@ -393,7 +391,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Test Site");
   }));
@@ -441,7 +439,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img");
+    const image = fixture.nativeElement.querySelector("img");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
       `http://${window.location.host}/assets/images/site/site_span4.png`
@@ -493,7 +491,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const image = fixture.debugElement.nativeElement.querySelector("img");
+    const image = fixture.nativeElement.querySelector("img");
     expect(image).toBeTruthy();
     expect(image.src).toBe("http://brokenlink/");
     expect(image.alt.length).toBeGreaterThan(0);
@@ -542,7 +540,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const description = fixture.debugElement.nativeElement.querySelector(
+    const description = fixture.nativeElement.querySelector(
       "p#site_description"
     );
     expect(description).toBeTruthy();
@@ -590,9 +588,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const googleMaps = fixture.debugElement.nativeElement.querySelector(
-      "app-map"
-    );
+    const googleMaps = fixture.nativeElement.querySelector("app-map");
     expect(googleMaps).toBeTruthy();
     expect(googleMaps.querySelector("span").innerText).toContain(
       "No locations specified"
@@ -642,9 +638,7 @@ describe("SitesDetailsComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const googleMaps = fixture.debugElement.nativeElement.querySelector(
-      "app-map"
-    );
+    const googleMaps = fixture.nativeElement.querySelector("app-map");
     expect(googleMaps).toBeTruthy();
     expect(googleMaps.querySelector("p").innerText).toContain("Lat: 0 Long: 1");
   }));

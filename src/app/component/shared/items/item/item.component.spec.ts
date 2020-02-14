@@ -36,7 +36,7 @@ describe("ItemComponent", () => {
     component.value = 0;
 
     fixture.detectChanges();
-    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
     expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
       "fas,home"
@@ -49,7 +49,7 @@ describe("ItemComponent", () => {
     component.value = 0;
 
     fixture.detectChanges();
-    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
     expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
     expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
       "fas,user"
@@ -62,7 +62,7 @@ describe("ItemComponent", () => {
     component.value = 0;
 
     fixture.detectChanges();
-    const name = fixture.debugElement.nativeElement.querySelector("#name");
+    const name = fixture.nativeElement.querySelector("#name");
     expect(name).toBeTruthy();
     expect(name.innerText.trim()).toBe("Test");
   });
@@ -73,7 +73,7 @@ describe("ItemComponent", () => {
     component.value = 0;
 
     fixture.detectChanges();
-    const value = fixture.debugElement.nativeElement.querySelector("#value");
+    const value = fixture.nativeElement.querySelector("#value");
     expect(value).toBeTruthy();
     expect(value.innerText.trim()).toBe("0");
   });
@@ -84,7 +84,7 @@ describe("ItemComponent", () => {
     component.value = 42;
 
     fixture.detectChanges();
-    const value = fixture.debugElement.nativeElement.querySelector("#value");
+    const value = fixture.nativeElement.querySelector("#value");
     expect(value).toBeTruthy();
     expect(value.innerText.trim()).toBe("42");
   });
@@ -95,7 +95,7 @@ describe("ItemComponent", () => {
     component.value = "0";
 
     fixture.detectChanges();
-    const value = fixture.debugElement.nativeElement.querySelector("#value");
+    const value = fixture.nativeElement.querySelector("#value");
     expect(value).toBeTruthy();
     expect(value.innerText.trim()).toBe("0");
   });
@@ -106,7 +106,7 @@ describe("ItemComponent", () => {
     component.value = "random";
 
     fixture.detectChanges();
-    const value = fixture.debugElement.nativeElement.querySelector("#value");
+    const value = fixture.nativeElement.querySelector("#value");
     expect(value).toBeTruthy();
     expect(value.innerText.trim()).toBe("random");
   });
@@ -118,7 +118,7 @@ describe("ItemComponent", () => {
     component.uri = StrongRoute.Base.add("home");
 
     fixture.detectChanges();
-    const anchor = fixture.debugElement.nativeElement.querySelector("a");
+    const anchor = fixture.nativeElement.querySelector("a");
 
     expect(anchor).toBeTruthy();
     expect(anchor.innerText.trim()).toBe("Test");
@@ -137,7 +137,7 @@ describe("ItemComponent", () => {
     component.uri = "http://broken_link/";
 
     fixture.detectChanges();
-    const anchor = fixture.debugElement.nativeElement.querySelector("a");
+    const anchor = fixture.nativeElement.querySelector("a");
     expect(anchor).toBeTruthy();
     expect(anchor.innerText.trim()).toBe("Test");
     expect(anchor.href).toBe("http://broken_link/");

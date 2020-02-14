@@ -17,7 +17,7 @@ describe("ItemsComponent", () => {
 
     itemFixture.detectChanges();
 
-    return itemFixture.debugElement.nativeElement.innerHTML;
+    return itemFixture.nativeElement.innerHTML;
   }
 
   beforeEach(async(() => {
@@ -42,9 +42,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(1);
     expect(items[0].innerHTML).toEqual(
@@ -57,9 +55,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(1);
     expect(items[0].innerHTML).toEqual(
@@ -75,9 +71,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(2);
     expect(items[0].innerHTML).toEqual(
@@ -96,9 +90,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(2);
     expect(items[0].innerHTML).toEqual(
@@ -119,9 +111,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(4);
     expect(items[0].innerHTML).toEqual(
@@ -148,9 +138,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(4);
     expect(items[0].innerHTML).toEqual(
@@ -180,9 +168,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(3);
     expect(items[0].innerHTML).toEqual(
@@ -205,9 +191,7 @@ describe("ItemsComponent", () => {
 
     fixture.detectChanges();
 
-    const items = fixture.debugElement.nativeElement.querySelectorAll(
-      "app-items-item"
-    );
+    const items = fixture.nativeElement.querySelectorAll("app-items-item");
     expect(items).toBeTruthy();
     expect(items.length).toBe(3);
     expect(items[0].innerHTML).toEqual(

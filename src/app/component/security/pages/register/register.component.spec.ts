@@ -184,15 +184,11 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "";
     username.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -205,21 +201,17 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "";
     username.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -229,15 +221,11 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -250,21 +238,17 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -274,15 +258,11 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -295,21 +275,17 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "";
     password.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -319,15 +295,11 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -340,21 +312,17 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -364,33 +332,23 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "username";
     username.dispatchEvent(new Event("input"));
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "password";
     password.dispatchEvent(new Event("input"));
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "bad password";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -403,39 +361,29 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "username";
     username.dispatchEvent(new Event("input"));
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "password";
     password.dispatchEvent(new Event("input"));
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "bad password";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -445,33 +393,23 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "username";
     username.dispatchEvent(new Event("input"));
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "12345";
     password.dispatchEvent(new Event("input"));
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "12345";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -484,39 +422,29 @@ describe("RegisterComponent", () => {
     spyOn(component, "submit");
     fixture.detectChanges();
 
-    const username = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[0];
+    const username = fixture.nativeElement.querySelectorAll("input")[0];
     username.value = "username";
     username.dispatchEvent(new Event("input"));
 
-    const email = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[1];
+    const email = fixture.nativeElement.querySelectorAll("input")[1];
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const password = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[2];
+    const password = fixture.nativeElement.querySelectorAll("input")[2];
     password.value = "12345";
     password.dispatchEvent(new Event("input"));
 
-    const passwordConf = fixture.debugElement.nativeElement.querySelectorAll(
-      "input"
-    )[3];
+    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
     passwordConf.value = "12345";
     passwordConf.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -525,7 +453,7 @@ describe("RegisterComponent", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => true);
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   });

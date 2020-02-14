@@ -47,7 +47,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.nativeElement.querySelector("fa-icon");
+    const icon = fixture.nativeElement.querySelector("fa-icon");
 
     expect(icon).toBeTruthy("Should contain <fa-icon> element");
     expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
@@ -69,7 +69,7 @@ describe("MenuExternalLinkComponent", () => {
     fixture.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = fixture.debugElement.nativeElement.querySelector("#label");
+    const label = fixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
@@ -86,7 +86,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
 
     expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
     expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
@@ -107,7 +107,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
 
     expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
     expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
@@ -128,9 +128,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.id).toBe("id1000");
   });
@@ -147,9 +145,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const tooltip = fixture.debugElement.nativeElement.querySelector(
-      "span.d-none"
-    );
+    const tooltip = fixture.nativeElement.querySelector("span.d-none");
 
     expect(tooltip).toBeTruthy("Tooltip should exist");
     expect(tooltip.innerText.trim()).toBe("custom tooltip");
@@ -167,7 +163,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Anchor should have [placement] directive"
     );
@@ -188,7 +184,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
       "Anchor should have [placement] directive"
     );
@@ -209,7 +205,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link).toBeTruthy();
     expect(link.href).toBe("http://brokenlink/");
   });
@@ -226,7 +222,7 @@ describe("MenuExternalLinkComponent", () => {
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.debugElement.nativeElement.querySelector("a");
+    const link = fixture.nativeElement.querySelector("a");
     expect(link).toBeTruthy();
     expect(link.href).toBe("http://apiroot/brokenlink/");
   });

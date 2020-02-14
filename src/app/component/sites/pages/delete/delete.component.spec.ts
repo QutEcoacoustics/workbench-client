@@ -56,9 +56,7 @@ describe("SitesDeleteComponent", () => {
   it("should display loading spinner", () => {
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
   });
 
@@ -85,9 +83,7 @@ describe("SitesDeleteComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeFalsy();
   }));
 

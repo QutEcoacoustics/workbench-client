@@ -98,7 +98,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
   });
 
@@ -123,14 +123,14 @@ describe("FormComponent", () => {
     component.error = "Custom error";
     fixture.detectChanges();
 
-    let alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    let alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Custom error");
 
     component.clearError();
     fixture.detectChanges();
 
-    alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeFalsy();
   });
 
@@ -155,14 +155,14 @@ describe("FormComponent", () => {
     component.success = "Custom success";
     fixture.detectChanges();
 
-    let alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    let alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Custom success");
 
     component.clearSuccess();
     fixture.detectChanges();
 
-    alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeFalsy();
   });
 
@@ -186,7 +186,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit).toBeTruthy();
   });
 
@@ -211,7 +211,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-danger";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-danger");
   });
 
@@ -236,7 +236,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-success";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-success");
   });
 
@@ -261,7 +261,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-warning";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-warning");
   });
 
@@ -286,7 +286,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-primary";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-primary");
   });
 
@@ -311,7 +311,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-secondary";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-secondary");
   });
 
@@ -336,7 +336,7 @@ describe("FormComponent", () => {
     component.btnColor = "btn-info";
     fixture.detectChanges();
 
-    const submit = fixture.debugElement.nativeElement.querySelector("button");
+    const submit = fixture.nativeElement.querySelector("button");
     expect(submit.classList.value).toContain("btn-info");
   });
 
@@ -360,7 +360,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const input = form.querySelector("input");
@@ -390,7 +390,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const input = form.querySelector("input");
@@ -420,7 +420,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const input = form.querySelector("input");
@@ -450,7 +450,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const input = form.querySelector("textarea");
@@ -498,7 +498,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const inputs = form.querySelectorAll("input");
@@ -533,7 +533,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const input = form.querySelector("input");
@@ -582,7 +582,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
 
     const inputs = form.querySelectorAll("input");
@@ -618,7 +618,7 @@ describe("FormComponent", () => {
     component.title = "Title";
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h2");
+    const title = fixture.nativeElement.querySelector("h2");
     expect(title).toBeTruthy();
     expect(title.innerText).toContain("Title");
   });
@@ -644,7 +644,7 @@ describe("FormComponent", () => {
     component.subTitle = "Sub Title";
     fixture.detectChanges();
 
-    const subtitle = fixture.debugElement.nativeElement.querySelector("h6");
+    const subtitle = fixture.nativeElement.querySelector("h6");
     expect(subtitle).toBeTruthy();
     expect(subtitle.innerText).toContain("Sub Title");
   });
@@ -669,7 +669,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     expect(button).toBeTruthy();
     expect(button.innerText).toContain("Label");
   });
@@ -700,7 +700,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
@@ -734,11 +734,11 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const input = fixture.debugElement.nativeElement.querySelector("input");
+    const input = fixture.nativeElement.querySelector("input");
     input.value = "user input";
     input.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
   });
@@ -769,7 +769,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
@@ -803,11 +803,11 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const input = fixture.debugElement.nativeElement.querySelector("input");
+    const input = fixture.nativeElement.querySelector("input");
     input.value = "user input";
     input.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
   });
@@ -838,13 +838,13 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
     expect(buttonPressed).toBeFalsy();
 
-    const alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Please fill all required fields.");
   });
@@ -875,16 +875,14 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
     expect(buttonPressed).toBeFalsy();
 
-    const input = fixture.debugElement.nativeElement.querySelector("input");
-    const hint = fixture.debugElement.nativeElement.querySelector(
-      "div.invalid-feedback"
-    );
+    const input = fixture.nativeElement.querySelector("input");
+    const hint = fixture.nativeElement.querySelector("div.invalid-feedback");
 
     expect(input).toBeTruthy();
     expect(input.classList.value).toContain("is-invalid");
@@ -933,14 +931,14 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
     expect(buttonPressed).toBeFalsy();
 
-    const inputs = fixture.debugElement.nativeElement.querySelectorAll("input");
-    const hints = fixture.debugElement.nativeElement.querySelectorAll(
+    const inputs = fixture.nativeElement.querySelectorAll("input");
+    const hints = fixture.nativeElement.querySelectorAll(
       "div.invalid-feedback"
     );
 
@@ -972,7 +970,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Custom Error");
   });
@@ -1002,11 +1000,11 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
-    const alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Custom Error");
   });
@@ -1056,7 +1054,7 @@ describe("FormComponent", () => {
     component.submitLoading = false;
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     const inputs = form.querySelectorAll("input");
 
     expect(form).toBeTruthy();
@@ -1122,7 +1120,7 @@ describe("FormComponent", () => {
     });
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     const inputs = form.querySelectorAll("input");
 
     inputs[0].value = "user input";
@@ -1130,7 +1128,7 @@ describe("FormComponent", () => {
     inputs[1].value = "user input";
     inputs[1].dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
   });
@@ -1186,7 +1184,7 @@ describe("FormComponent", () => {
     });
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     const inputs = form.querySelectorAll("input");
 
     inputs[0].value = "user input";
@@ -1194,7 +1192,7 @@ describe("FormComponent", () => {
     inputs[1].value = "user input 2";
     inputs[1].dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("button");
     click(button);
     fixture.detectChanges();
 
@@ -1235,7 +1233,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const alert = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const alert = fixture.nativeElement.querySelector("ngb-alert");
     expect(alert).toBeTruthy();
     expect(alert.innerText).toContain("Resource not found");
   });
@@ -1288,7 +1286,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     expect(form).toBeTruthy();
   });
 
@@ -1340,7 +1338,7 @@ describe("FormComponent", () => {
 
     fixture.detectChanges();
 
-    const form = fixture.debugElement.nativeElement.querySelector("form");
+    const form = fixture.nativeElement.querySelector("form");
     const inputs = form.querySelectorAll("input");
     const textarea = form.querySelector("textarea");
 

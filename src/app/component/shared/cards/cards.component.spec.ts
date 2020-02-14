@@ -62,9 +62,7 @@ describe("CardsComponent", () => {
       title: "title"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
     expect(card).toEqual(testCard);
@@ -82,9 +80,7 @@ describe("CardsComponent", () => {
       description: "description"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
     expect(card).toEqual(testCard);
@@ -102,9 +98,7 @@ describe("CardsComponent", () => {
       link: "https://link/"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
     expect(card).toEqual(testCard);
@@ -122,9 +116,7 @@ describe("CardsComponent", () => {
       title: "title1"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -135,9 +127,7 @@ describe("CardsComponent", () => {
       title: "title2"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -154,9 +144,7 @@ describe("CardsComponent", () => {
       title: "title"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
     expect(cards[1]).toEqual(testCard);
@@ -178,9 +166,7 @@ describe("CardsComponent", () => {
       description: "desc1"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -192,9 +178,7 @@ describe("CardsComponent", () => {
       description: "desc2"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -215,9 +199,7 @@ describe("CardsComponent", () => {
       link: "https://link1/"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -229,9 +211,7 @@ describe("CardsComponent", () => {
       link: "https://link2/"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -253,9 +233,7 @@ describe("CardsComponent", () => {
       link: "https://link1/"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -268,9 +246,7 @@ describe("CardsComponent", () => {
       link: "https://link2/"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -319,9 +295,7 @@ describe("CardsComponent", () => {
       image: { url: "image", alt: "alt" }
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
       "app-card-image .card"
@@ -348,9 +322,7 @@ describe("CardsComponent", () => {
       description: "description"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
       "app-card-image .card"
@@ -377,9 +349,7 @@ describe("CardsComponent", () => {
       link: "https://link/"
     };
     cardFixture.detectChanges();
-    const testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
       "app-card-image .card"
@@ -405,9 +375,7 @@ describe("CardsComponent", () => {
       image: { url: "image1", alt: "alt1" }
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -419,9 +387,7 @@ describe("CardsComponent", () => {
       image: { url: "image2", alt: "alt2" }
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -444,9 +410,7 @@ describe("CardsComponent", () => {
       image: { url: "image1", alt: "alt1" }
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -458,9 +422,7 @@ describe("CardsComponent", () => {
       image: { url: "image2", alt: "alt2" }
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -483,9 +445,7 @@ describe("CardsComponent", () => {
       image: { url: "image", alt: "alt" }
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -497,9 +457,7 @@ describe("CardsComponent", () => {
       image: { url: "image", alt: "alt" }
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -531,9 +489,7 @@ describe("CardsComponent", () => {
       description: "desc1"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -546,9 +502,7 @@ describe("CardsComponent", () => {
       description: "desc2"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -580,9 +534,7 @@ describe("CardsComponent", () => {
       link: "https://link1/"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -595,9 +547,7 @@ describe("CardsComponent", () => {
       link: "https://link2/"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });
@@ -632,9 +582,7 @@ describe("CardsComponent", () => {
       link: "https://link1/"
     };
     cardFixture.detectChanges();
-    let testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[0]).toEqual(testCard);
 
@@ -648,9 +596,7 @@ describe("CardsComponent", () => {
       link: "https://link2/"
     };
     cardFixture.detectChanges();
-    testCard = cardFixture.debugElement.nativeElement.querySelectorAll(
-      ".card"
-    )[0];
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
   });

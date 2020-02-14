@@ -67,9 +67,7 @@ describe("MenuComponent", () => {
   function findLinks(
     selector: "internal-link" | "external-link" | "button"
   ): HTMLElement[] {
-    return fixture.debugElement.nativeElement.querySelectorAll(
-      "app-menu-" + selector
-    );
+    return fixture.nativeElement.querySelectorAll("app-menu-" + selector);
   }
 
   function setLoggedInState() {
@@ -115,7 +113,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "MENU");
   });
 
@@ -124,7 +122,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "SECONDARY");
   });
 
@@ -133,7 +131,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertIcon(title, "fas,home");
   });
 
@@ -142,7 +140,7 @@ describe("MenuComponent", () => {
     component.links = List<AnyMenuItem>([]);
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h6");
+    const title = fixture.nativeElement.querySelector("h6");
     assertTitle(title, "SECONDARY");
   });
 

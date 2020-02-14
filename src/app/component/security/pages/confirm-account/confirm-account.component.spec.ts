@@ -65,13 +65,11 @@ describe("ConfirmPasswordComponent", () => {
   it("should not call submit function with missing email", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelector("input");
+    const email = fixture.nativeElement.querySelector("input");
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -82,19 +80,17 @@ describe("ConfirmPasswordComponent", () => {
   it("should show error message with missing email", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelector("input");
+    const email = fixture.nativeElement.querySelector("input");
     email.value = "";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
     fixture.detectChanges();
 
-    const msg = fixture.debugElement.nativeElement.querySelector("ngb-alert");
+    const msg = fixture.nativeElement.querySelector("ngb-alert");
     expect(msg).toBeTruthy();
     expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
   }));
@@ -102,13 +98,11 @@ describe("ConfirmPasswordComponent", () => {
   it("should call submit function on submit", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelector("input");
+    const email = fixture.nativeElement.querySelector("input");
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();
@@ -119,13 +113,11 @@ describe("ConfirmPasswordComponent", () => {
   it("should call submit function with form details on submit", fakeAsync(() => {
     spyOn(component, "submit");
 
-    const email = fixture.debugElement.nativeElement.querySelector("input");
+    const email = fixture.nativeElement.querySelector("input");
     email.value = "email";
     email.dispatchEvent(new Event("input"));
 
-    const button = fixture.debugElement.nativeElement.querySelector(
-      "button[type='submit']"
-    );
+    const button = fixture.nativeElement.querySelector("button[type='submit']");
     button.click();
 
     tick();

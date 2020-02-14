@@ -73,9 +73,7 @@ describe("CmsComponent", () => {
       config.getConfig().environment.cmsRoot + "/testing.html"
     );
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
   });
 
@@ -92,9 +90,7 @@ describe("CmsComponent", () => {
 
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeFalsy();
   });
 
@@ -111,9 +107,7 @@ describe("CmsComponent", () => {
 
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.nativeElement.querySelector(
-      "#app-spinner"
-    );
+    const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeFalsy();
   });
 
@@ -199,11 +193,11 @@ describe("CmsComponent", () => {
 
     fixture.detectChanges();
 
-    const header = fixture.debugElement.nativeElement.querySelector("h1");
+    const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
     expect(header.innerText).toBe("Response");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe("Example HTML response from API");
   });
@@ -219,7 +213,7 @@ describe("CmsComponent", () => {
     );
     req.flush("", { status: 404, statusText: "Not Found" });
 
-    const header = fixture.debugElement.nativeElement.querySelector("h1");
+    const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
     expect(header.innerText).toBe("Not found");
   });
@@ -235,7 +229,7 @@ describe("CmsComponent", () => {
     );
     req.flush("", { status: 401, statusText: "Unauthorized" });
 
-    const header = fixture.debugElement.nativeElement.querySelector("h1");
+    const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
     expect(header.innerText).toBe("Unauthorized access");
   });

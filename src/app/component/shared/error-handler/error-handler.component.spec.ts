@@ -63,11 +63,11 @@ describe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unauthorized access");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe(
       "You need to log in or register before continuing."
@@ -81,11 +81,11 @@ describe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Not found");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe("Could not find the requested item.");
   });
@@ -97,11 +97,11 @@ describe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Forbidden");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe("You must request access to this resource.");
   });
@@ -113,11 +113,11 @@ describe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unknown Error");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe("Unknown error has occurred.");
   });
@@ -129,11 +129,11 @@ describe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeTruthy();
     expect(title.innerText).toBe("Unknown Error");
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe("Unknown error has occurred.");
   });
@@ -142,10 +142,10 @@ describe("ErrorHandlerComponent", () => {
     component.error = undefined;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeFalsy();
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeFalsy();
   });
 
@@ -153,10 +153,10 @@ describe("ErrorHandlerComponent", () => {
     component.error = null;
     fixture.detectChanges();
 
-    const title = fixture.debugElement.nativeElement.querySelector("h1");
+    const title = fixture.nativeElement.querySelector("h1");
     expect(title).toBeFalsy();
 
-    const body = fixture.debugElement.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeFalsy();
   });
 
@@ -167,13 +167,11 @@ describe("ErrorHandlerComponent", () => {
 
     testFixture.detectChanges();
 
-    const unauthorized = testFixture.debugElement.nativeElement.querySelector(
-      "h1"
-    );
+    const unauthorized = testFixture.nativeElement.querySelector("h1");
     expect(unauthorized).toBeTruthy();
     expect(unauthorized.innerText).toBe("Unauthorized access");
 
-    const body = testFixture.debugElement.nativeElement.querySelector("p");
+    const body = testFixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
     expect(body.innerText).toBe(
       "You need to log in or register before continuing."
@@ -183,7 +181,7 @@ describe("ErrorHandlerComponent", () => {
 
     testFixture.detectChanges();
 
-    const notFound = testFixture.debugElement.nativeElement.querySelector("h1");
+    const notFound = testFixture.nativeElement.querySelector("h1");
     expect(notFound).toBeTruthy();
     expect(notFound.innerText).toBe("Not found");
     expect(body).toBeTruthy();
