@@ -1,6 +1,6 @@
 # Workbench Client
 
-The Angular 8 client for an acoustic workbench application.
+The Angular 9 client for an acoustic workbench application.
 
 [![Build Status](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_apis/build/status/QutEcoacoustics.workbench-client?branchName=master)](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_build/latest?definitionId=4&branchName=master)
 
@@ -115,24 +115,13 @@ $ npm run code-coverage
 
 ## To build
 
-To build the application in production mode:
+To build the application:
 
 ```bash
 $ npm run build
 ```
 
 Move the generated files from the `/dist` directory to the required location.
-
-### Environments
-
-There are three environments supported by this application.
-
-- Development: Building the application with debugging tools
-  - `$ npm run build:dev`
-- Staging: Building the latest changes in production mode for testing before release
-  - `$ npm run build:staging`
-- Production: Building the latest changes in production mode for release
-  - `$ npm run build`
 
 ## Common Problems
 
