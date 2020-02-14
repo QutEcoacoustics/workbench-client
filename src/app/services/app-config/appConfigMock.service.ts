@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { environment } from "src/environments/environment";
 import { Configuration } from "./app-config.service";
 
 @Injectable()
@@ -12,8 +11,6 @@ export class MockAppConfigService {
    */
   async loadAppConfig(): Promise<any> {
     this.titleService.setTitle("TESTING");
-    environment.environment = "testing";
-    environment.configUrl = "testing.json";
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {

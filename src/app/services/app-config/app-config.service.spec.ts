@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Title } from "@angular/platform-browser";
-import { environment, values } from "../../../assets/config/development.json";
+import { environment, values } from "../../../assets/environment.json";
 import { AppConfigService } from "./app-config.service";
 
 describe("AppConfigService", () => {
