@@ -30,6 +30,7 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true
     },
     browserDisconnectTimeout: 30000,
+    browserDisconnectTolerance: 3,
     reporters: ["progress", "kjhtml", "junit"],
     port: 9876,
     colors: true,
