@@ -1,4 +1,4 @@
-<ng-container *ngIf="state === 'ready'">
+<ng-container *ngIf="ready">
   <!-- Project Details -->
   <h1>{{ project.name }}</h1>
   <div class="row">
@@ -38,5 +38,5 @@
   </div>
 </ng-container>
 
-<app-loading [isLoading]="state === 'loading'"></app-loading>
+<app-loading [isLoading]="!ready && !error"></app-loading>
 <app-error-handler [error]="error"></app-error-handler>

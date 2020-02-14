@@ -5,69 +5,59 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
-  deleteProjectMenuItem,
-  editProjectMenuItem,
-  editProjectPermissionsMenuItem,
-  exploreAudioProjectMenuItem,
   projectCategory,
   projectMenuItem
 } from "../../projects.menus";
-
-export const projectMenuItemActions = [
-  exploreAudioProjectMenuItem,
-  editProjectMenuItem,
-  editProjectPermissionsMenuItem,
-  newSiteMenuItem,
-  assignSiteMenuItem,
-  deleteProjectMenuItem
-];
+import { projectMenuItemActions } from "../details/details.component";
 
 @Page({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>(projectMenuItemActions),
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
-  self: projectMenuItem
+  self: assignSiteMenuItem
 })
 @Component({
-  selector: "app-projects-details",
-  templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"]
+  selector: "app-assign",
+  templateUrl: "./assign.component.html",
+  styleUrls: ["./assign.component.scss"]
 })
-export class DetailsComponent extends PageComponent
+export class AssignComponent extends TableTemplate<TableRow>
   implements OnInit, OnDestroy {
+  // TODO Move this back into the admin dashboard
+
+  public ready: boolean;
+  public error: ApiErrorDetails;
+  public project: Project;
+  public sites: Site[];
+
   private unsubscribe = new Subject();
-  project: Project;
-  sites: Site[];
-  error: ApiErrorDetails;
-  state = "loading";
-  ready: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private projectsApi: ProjectsService,
-    private sitesApi: SitesService
+    private projectsApi: ProjectsService
   ) {
-    super();
+    super(() => true);
   }
 
   ngOnInit() {
-    this.ready = false;
+    this.columns = [
+      { name: "Site Id" },
+      { name: "Name" },
+      { name: "Description" }
+    ];
 
-    // Retrieve project details
     this.route.params
       .pipe(
         flatMap(params => {
@@ -78,27 +68,10 @@ export class DetailsComponent extends PageComponent
       .subscribe(
         project => {
           this.project = project;
-          this.ready = true;
+          this.loadTable();
         },
         (err: ApiErrorDetails) => {
           this.error = err;
-        }
-      );
-
-    // Retrieve site details
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.sitesApi.list(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        sites => (this.sites = sites),
-        (err: ApiErrorDetails) => {
-          if (this.state !== "error") {
-            this.error = err;
-          }
         }
       );
   }
@@ -107,4 +80,29 @@ export class DetailsComponent extends PageComponent
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
+
+  public onSelect(event) {
+    console.log("Select: ", event);
+  }
+
+  protected createRows() {
+    this.rows = [
+      {
+        siteId: -1,
+        name: "Name",
+        description: null
+      },
+      {
+        siteId: -1,
+        name: "Name",
+        description: "Custom description"
+      }
+    ];
+  }
+}
+
+interface TableRow {
+  siteId: number;
+  name: string;
+  description: string;
 }

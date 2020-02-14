@@ -1,8 +1,4 @@
 {
-  "model": {
-    "login": "",
-    "password": ""
-  },
   "fields": [
     {
       "key": "login",

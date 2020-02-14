@@ -1,6 +1,6 @@
 import { stringTemplate } from "./stringTemplate";
 
-describe("StringTemplating", () => {
+describe("StringTemplate", () => {
   it("should handle no tokens", () => {
     const template = stringTemplate`/broken_link`;
 

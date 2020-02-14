@@ -3,6 +3,7 @@ import {
   defaultEditIcon,
   defaultNewIcon,
   defaultPermissionsIcon,
+  isAdminPredicate,
   isLoggedInPredicate,
   isOwnerPredicate
 } from "src/app/app.menus";
@@ -77,12 +78,22 @@ export const exploreAudioProjectMenuItem = MenuLink({
   tooltip: () => "Explore audio"
 });
 
-export const editProjectPermissionsMenuItem = MenuLink({
-  uri: "REPLACE_ME",
+export const editProjectPermissionsMenuItem = MenuRoute({
   icon: defaultPermissionsIcon,
   label: "Edit permissions",
+  route: projectMenuItem.route.add("permissions"),
+  parent: projectMenuItem,
   tooltip: () => "Edit this projects permissions",
   predicate: isOwnerPredicate
+});
+
+export const assignSiteMenuItem = MenuRoute({
+  icon: ["fas", "toolbox"],
+  label: "Assign sites",
+  route: projectMenuItem.route.add("assign"),
+  parent: projectMenuItem,
+  tooltip: () => "Change which sites belong to this project",
+  predicate: isAdminPredicate
 });
 
 export const deleteProjectMenuItem = MenuRoute({
