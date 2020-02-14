@@ -11,8 +11,8 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { NewComponent } from "./new.component";
 import { testBawServices } from "src/app/test.helper";
+import { NewComponent } from "./new.component";
 
 describe("ProjectsNewComponent", () => {
   let api: ProjectsService;
