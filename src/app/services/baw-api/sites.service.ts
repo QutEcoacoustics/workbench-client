@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -15,7 +15,7 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters } from "./baw-api.service";
+import { Filters, Meta } from "./baw-api.service";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
@@ -60,10 +60,57 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   }
 
   list(): Observable<Site[]> {
-    return this.apiList(endpointShallow(Empty, Empty));
+    const sites: Site[] = [];
+
+    for (let i = 0; i < 25; i++) {
+      const site = new Site({
+        id: 1,
+        name: "PLACEHOLDER SITE",
+        description: "PLACEHOLDER DESCRIPTION",
+        creatorId: 1
+      });
+
+      sites.push(site);
+    }
+
+    return of(sites);
+    // return this.apiList(endpointShallow(Empty, Empty));
   }
   filter(filters: Filters): Observable<Site[]> {
-    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+    const sites: Site[] = [];
+    const meta: Meta = {
+      status: 200,
+      message: "OK",
+      sorting: {
+        orderBy: "name",
+        direction: "asc"
+      },
+      paging: {
+        page: filters?.paging?.page ? filters.paging.page : 1,
+        items: filters?.paging?.items ? filters?.paging?.items : 25,
+        total: filters?.paging?.total ? filters?.paging?.total : 100,
+        maxPage: 4,
+        current:
+          "http://staging.ecosounds.org/sites?direction=asc&items=25&order_by=name&page=1",
+        previous: null,
+        next: null
+      }
+    };
+
+    for (let i = 0; i < 25; i++) {
+      const site = new Site({
+        id: 1,
+        name: "PLACEHOLDER SITE",
+        description: "PLACEHOLDER DESCRIPTION",
+        creatorId: 1
+      });
+
+      site.addMetadata(meta);
+      sites.push(site);
+    }
+
+    return of(sites);
+    // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Site>): Observable<Site> {
     return this.apiShow(endpointShallow(model, Empty));

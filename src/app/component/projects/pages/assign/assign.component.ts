@@ -12,6 +12,7 @@ import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
   projectCategory,
@@ -46,6 +47,7 @@ export class AssignComponent extends TableTemplate<TableRow>
 
   constructor(
     private route: ActivatedRoute,
+    private sitesApi: ShallowSitesService,
     private projectsApi: ProjectsService
   ) {
     super(() => true);
@@ -63,11 +65,15 @@ export class AssignComponent extends TableTemplate<TableRow>
         flatMap(params => {
           return this.projectsApi.show(params.projectId);
         }),
+        flatMap(project => {
+          this.project = project;
+          return this.sitesApi.list();
+        }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        project => {
-          this.project = project;
+        sites => {
+          this.sites = sites;
           this.loadTable();
         },
         (err: ApiErrorDetails) => {
@@ -86,18 +92,11 @@ export class AssignComponent extends TableTemplate<TableRow>
   }
 
   protected createRows() {
-    this.rows = [
-      {
-        siteId: -1,
-        name: "Name",
-        description: null
-      },
-      {
-        siteId: -1,
-        name: "Name",
-        description: "Custom description"
-      }
-    ];
+    this.rows = this.sites.map(site => ({
+      siteId: site.id,
+      name: site.name,
+      description: site.description
+    }));
   }
 }
 
