@@ -38,6 +38,8 @@ export class AssignComponent extends TableTemplate<TableRow>
   implements OnInit, OnDestroy {
   // TODO Move this back into the admin dashboard
 
+  public totalSites: number;
+  public pageNumber: number;
   public ready: boolean;
   public error: ApiErrorDetails;
   public project: Project;
@@ -67,7 +69,7 @@ export class AssignComponent extends TableTemplate<TableRow>
         }),
         flatMap(project => {
           this.project = project;
-          return this.sitesApi.list();
+          return this.sitesApi.filter({ paging: { page: 1 } });
         }),
         takeUntil(this.unsubscribe)
       )
@@ -91,12 +93,40 @@ export class AssignComponent extends TableTemplate<TableRow>
     console.log("Select: ", event);
   }
 
+  public setPage(pageInfo) {
+    console.log("Set Page");
+
+    this.pageNumber = pageInfo.offset;
+    this.sitesApi
+      .filter({ paging: { page: pageInfo.offset + 1 } })
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        sites => {
+          this.sites = sites;
+          this.rows = sites.map(site => ({
+            siteId: site.id,
+            name: site.name,
+            description: site.description
+          }));
+        },
+        (err: ApiErrorDetails) => {
+          this.error = err;
+        }
+      );
+  }
+
   protected createRows() {
     this.rows = this.sites.map(site => ({
       siteId: site.id,
       name: site.name,
       description: site.description
     }));
+
+    console.log("Sites: ", this.sites);
+
+    this.pageNumber = 0;
+    this.totalSites =
+      this.sites.length > 0 ? this.sites[0].getMetadata().paging.total : 0;
   }
 }
 

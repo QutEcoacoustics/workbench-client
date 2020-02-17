@@ -64,7 +64,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
 
     for (let i = 0; i < 25; i++) {
       const site = new Site({
-        id: 1,
+        id: i,
         name: "PLACEHOLDER SITE",
         description: "PLACEHOLDER DESCRIPTION",
         creatorId: 1
@@ -99,7 +99,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
 
     for (let i = 0; i < 25; i++) {
       const site = new Site({
-        id: 1,
+        id: i + (meta.paging.page - 1) * 25,
         name: "PLACEHOLDER SITE",
         description: "PLACEHOLDER DESCRIPTION",
         creatorId: 1

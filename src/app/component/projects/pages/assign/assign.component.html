@@ -26,6 +26,10 @@
       [selectAllRowsOnPage]="false"
       [selected]="selected"
       [selectionType]="SelectionType.checkbox"
+      [externalPaging]="true"
+      [count]="totalSites"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
       (select)="onSelect($event)"
     >
       <ngx-datatable-column
