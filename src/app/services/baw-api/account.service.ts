@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";
@@ -13,17 +13,22 @@ import {
   option,
   ReadonlyApi
 } from "./api-common";
-import { Filters } from "./baw-api.service";
+import { Filters, STUB_API_ROOT } from "./baw-api.service";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+export const accountServiceFactory = (
+  http: HttpClient,
+  config: AppConfigService
+) => {
+  return new AccountService(http, config.getConfig().environment.apiRoot);
+};
+
+@Injectable()
 export class AccountService extends ReadonlyApi<User, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, User);
+  constructor(http: HttpClient, @Inject(STUB_API_ROOT) apiRoot: string) {
+    super(http, apiRoot, User);
   }
 
   list(): Observable<User[]> {

@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
@@ -15,18 +15,23 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters } from "./baw-api.service";
+import { Filters, STUB_API_ROOT } from "./baw-api.service";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+export const sitesServiceFactory = (
+  http: HttpClient,
+  config: AppConfigService
+) => {
+  return new SitesService(http, config.getConfig().environment.apiRoot);
+};
+
+@Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Site);
+  constructor(http: HttpClient, @Inject(STUB_API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Site);
   }
 
   list(project: IdOr<Project>): Observable<Site[]> {
@@ -51,12 +56,17 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
 
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+export const shallowSitesServiceFactory = (
+  http: HttpClient,
+  config: AppConfigService
+) => {
+  return new ShallowSitesService(http, config.getConfig().environment.apiRoot);
+};
+
+@Injectable()
 export class ShallowSitesService extends StandardApi<Site, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Site);
+  constructor(http: HttpClient, @Inject(STUB_API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Site);
   }
 
   list(): Observable<Site[]> {

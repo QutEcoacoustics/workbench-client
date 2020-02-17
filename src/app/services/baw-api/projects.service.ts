@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
@@ -13,20 +13,22 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters } from "./baw-api.service";
+import { Filters, STUB_API_ROOT } from "./baw-api.service";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
 
-/**
- * Interacts with projects route in baw api
- */
-@Injectable({
-  providedIn: "root"
-})
+export const projectsServiceFactory = (
+  http: HttpClient,
+  config: AppConfigService
+) => {
+  return new ProjectsService(http, config.getConfig().environment.apiRoot);
+};
+
+@Injectable()
 export class ProjectsService extends StandardApi<Project, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Project);
+  constructor(http: HttpClient, @Inject(STUB_API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Project);
   }
 
   list(): Observable<Project[]> {

@@ -18,6 +18,15 @@ import { AppConfigService } from "../app-config/app-config.service";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 
+// export const bawApiInterceptorFactory = (
+//   api: SecurityService,
+//   config: AppConfigService
+// ) => {
+//   const environment = config.getConfig().environment;
+
+//   return new BawApiInterceptor(api, environment.apiRoot, environment.cmsRoot);
+// };
+
 /**
  * BAW API Interceptor.
  * This handles intercepting http requests to the BAW API server and manages

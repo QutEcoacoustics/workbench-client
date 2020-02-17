@@ -4,7 +4,6 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "../app-config/app-config.service";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -19,6 +18,7 @@ export const apiReturnCodes = {
   internalServerFailure: 500
 };
 
+export let STUB_API_ROOT = new InjectionToken("test.api.root");
 export let STUB_CLASS_BUILDER = new InjectionToken("test.class.builder");
 
 /**
@@ -37,7 +37,6 @@ export abstract class BawApiService<T extends AbstractModel> {
   */
 
   protected userSessionStorage = "baw.client.user";
-  private apiRoot: string;
 
   /**
    * Handle API collection response
@@ -61,11 +60,9 @@ export abstract class BawApiService<T extends AbstractModel> {
   // TODO Replace config: AppConfigService with apiRoot: string
   constructor(
     protected http: HttpClient,
-    config: AppConfigService,
+    @Inject(STUB_API_ROOT) private apiRoot: string,
     @Inject(STUB_CLASS_BUILDER) classBuilder: new (_: object) => T
   ) {
-    this.apiRoot = config.getConfig().environment.apiRoot;
-
     // Create pure functions to prevent rebinding of 'this'
 
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {

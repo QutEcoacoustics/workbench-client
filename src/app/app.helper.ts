@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClient, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +11,29 @@ import {
   AppConfigService,
   appInitializerFn
 } from "./services/app-config/app-config.service";
+import {
+  AccountService,
+  accountServiceFactory
+} from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import {
+  ProjectsService,
+  projectsServiceFactory
+} from "./services/baw-api/projects.service";
+import {
+  SecurityService,
+  securityServiceFactory
+} from "./services/baw-api/security.service";
+import {
+  ShallowSitesService,
+  shallowSitesServiceFactory,
+  SitesService,
+  sitesServiceFactory
+} from "./services/baw-api/sites.service";
+import {
+  UserService,
+  userServiceFactory
+} from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -61,6 +83,8 @@ export function fontAwesomeLibraries(library: FaIconLibrary) {
   library.addIconPacks(fas);
 }
 
+export const bawApiDeps = [HttpClient, AppConfigService];
+
 export const providers = [
   AppConfigService,
   {
@@ -73,5 +97,35 @@ export const providers = [
     useFactory: appInitializerFn,
     multi: true,
     deps: [AppConfigService]
+  },
+  {
+    provide: AccountService,
+    useFactory: accountServiceFactory,
+    deps: bawApiDeps
+  },
+  {
+    provide: ProjectsService,
+    useFactory: projectsServiceFactory,
+    deps: bawApiDeps
+  },
+  {
+    provide: SecurityService,
+    useFactory: securityServiceFactory,
+    deps: bawApiDeps
+  },
+  {
+    provide: SitesService,
+    useFactory: sitesServiceFactory,
+    deps: bawApiDeps
+  },
+  {
+    provide: ShallowSitesService,
+    useFactory: shallowSitesServiceFactory,
+    deps: bawApiDeps
+  },
+  {
+    provide: UserService,
+    useFactory: userServiceFactory,
+    deps: bawApiDeps
   }
 ];
