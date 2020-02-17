@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import { environment } from "src/environments/environment";
 
 const environmentUrl = "assets/environment.json";
 
@@ -25,18 +26,19 @@ export class AppConfigService {
     // to the use of a HttpInterceptor:
     // https://github.com/rfreedman/angular-configuration-service/issues/1
 
-    const handleData = (data: Configuration) => {
-      this.appConfig = data;
-      this.titleService.setTitle(data.values.brand.name);
-      return this.appConfig;
-    };
-
-    const handleError = (err: any) => {
-      this.appConfig = undefined;
-      console.error("AppConfigService: ", err);
-      throw new Error("AppConfigService: Failed to load configuration file");
-    };
-    return retrieveAppConfig(handleData, handleError);
+    return await fetch(environmentUrl)
+      .then(response => response.json())
+      .then((data: Configuration) => {
+        this.appConfig = data;
+        this.titleService.setTitle(data.values.brand.name);
+        environment.googleMapsKey = this.appConfig.values.keys.googleMaps;
+        return this.appConfig;
+      })
+      .catch((err: any) => {
+        this.appConfig = undefined;
+        console.error("AppConfigService: ", err);
+        throw new Error("AppConfigService: Failed to load configuration file");
+      });
   }
 
   /**
@@ -66,22 +68,6 @@ export class AppConfigService {
     // Return empty url if not found
     return "#";
   }
-}
-
-/**
- * Retrieve app external config
- * @param config Config location
- * @param dataFunc Handle config
- * @param catchFunc Handle failure
- */
-export async function retrieveAppConfig(
-  dataFunc: (data: Configuration) => Configuration,
-  catchFunc: (err: any) => null
-) {
-  return await fetch(environmentUrl)
-    .then(response => response.json())
-    .then(dataFunc)
-    .catch(catchFunc);
 }
 
 /**
