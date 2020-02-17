@@ -6,7 +6,10 @@ import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
+import {
+  TablePage,
+  TableTemplate
+} from "src/app/helpers/tableTemplate/tableTemplate";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -67,16 +70,13 @@ export class AssignComponent extends TableTemplate<TableRow>
         flatMap(params => {
           return this.projectsApi.show(params.projectId);
         }),
-        flatMap(project => {
-          this.project = project;
-          return this.sitesApi.filter({ paging: { page: 1 } });
-        }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        sites => {
-          this.sites = sites;
+        project => {
+          this.project = project;
           this.loadTable();
+          this.getSites();
         },
         (err: ApiErrorDetails) => {
           this.error = err;
@@ -93,12 +93,20 @@ export class AssignComponent extends TableTemplate<TableRow>
     console.log("Select: ", event);
   }
 
-  public setPage(pageInfo) {
-    console.log("Set Page");
-
+  public setPage(pageInfo: TablePage) {
     this.pageNumber = pageInfo.offset;
+    this.getSites(pageInfo.offset);
+  }
+
+  protected createRows() {
+    this.rows = [];
+  }
+
+  private getSites(page: number = 0) {
+    this.rows = [];
+
     this.sitesApi
-      .filter({ paging: { page: pageInfo.offset + 1 } })
+      .filter({ paging: { page: page + 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         sites => {
@@ -108,25 +116,20 @@ export class AssignComponent extends TableTemplate<TableRow>
             name: site.name,
             description: site.description
           }));
+
+          this.pageNumber =
+            this.sites.length > 0
+              ? this.sites[0].getMetadata().paging.page - 1
+              : 0;
+          this.totalSites =
+            this.sites.length > 0
+              ? this.sites[0].getMetadata().paging.total
+              : 0;
         },
         (err: ApiErrorDetails) => {
           this.error = err;
         }
       );
-  }
-
-  protected createRows() {
-    this.rows = this.sites.map(site => ({
-      siteId: site.id,
-      name: site.name,
-      description: site.description
-    }));
-
-    console.log("Sites: ", this.sites);
-
-    this.pageNumber = 0;
-    this.totalSites =
-      this.sites.length > 0 ? this.sites[0].getMetadata().paging.total : 0;
   }
 }
 

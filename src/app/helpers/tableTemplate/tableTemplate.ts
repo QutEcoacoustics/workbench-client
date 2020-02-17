@@ -78,3 +78,10 @@ export abstract class TableTemplate<T> extends PageComponent {
     this.ready = true;
   }
 }
+
+export interface TablePage {
+  count: number;
+  pageSize: number;
+  limit: number;
+  offset: number;
+}

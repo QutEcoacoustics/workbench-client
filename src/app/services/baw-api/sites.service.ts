@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
+import { delay } from "rxjs/operators";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -73,7 +74,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
       sites.push(site);
     }
 
-    return of(sites);
+    return of(sites).pipe(delay(1000));
     // return this.apiList(endpointShallow(Empty, Empty));
   }
   filter(filters: Filters): Observable<Site[]> {
@@ -109,7 +110,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
       sites.push(site);
     }
 
-    return of(sites);
+    return of(sites).pipe(delay(1000));
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Site>): Observable<Site> {
