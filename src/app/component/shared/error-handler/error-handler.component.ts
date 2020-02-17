@@ -45,7 +45,13 @@ export class ErrorHandlerComponent implements OnInit, OnChanges {
   }
 
   evaluateError() {
-    if (!this.error?.status && this.error?.status !== 0) {
+    if (!this.error) {
+      return;
+    }
+
+    console.error("ERROR: ", this.error);
+
+    if (this.error.status === undefined || this.error.status === null) {
       this.display = "";
       return;
     }

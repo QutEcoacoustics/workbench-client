@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { forkJoin, Observable, Subject } from "rxjs";
+import { map, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
@@ -12,8 +11,10 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import {
+  PROJECT_TOKEN,
+  SITES_TOKEN
+} from "src/app/services/baw-api/baw-api.tokens";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -49,56 +50,35 @@ export const projectMenuItemActions = [
 })
 export class DetailsComponent extends PageComponent
   implements OnInit, OnDestroy {
+  public project: Project;
+  public sites: Site[];
+  public error: ApiErrorDetails;
+  public ready = false;
   private unsubscribe = new Subject();
-  project: Project;
-  sites: Site[];
-  error: ApiErrorDetails;
-  state = "loading";
-  ready: boolean;
 
   constructor(
-    private route: ActivatedRoute,
-    private projectsApi: ProjectsService,
-    private sitesApi: SitesService
+    @Inject(PROJECT_TOKEN) public projectObv: Observable<Project>,
+    @Inject(SITES_TOKEN) public sitesObv: Observable<Site[]>
   ) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
-
-    // Retrieve project details
-    this.route.params
+    forkJoin([this.projectObv, this.sitesObv])
       .pipe(
-        flatMap(params => {
-          return this.projectsApi.show(params.projectId);
+        map(res => {
+          const [project, sites] = res;
+          this.project = project;
+          this.sites = sites;
         }),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        project => {
-          this.project = project;
+        () => {
           this.ready = true;
         },
         (err: ApiErrorDetails) => {
           this.error = err;
-        }
-      );
-
-    // Retrieve site details
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.sitesApi.list(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        sites => (this.sites = sites),
-        (err: ApiErrorDetails) => {
-          if (this.state !== "error") {
-            this.error = err;
-          }
         }
       );
   }
