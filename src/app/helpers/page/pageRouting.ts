@@ -27,7 +27,8 @@ export function GetRouteConfigForPage(
       {
         path: "",
         pathMatch: "full",
-        component: page.component
+        component: page.component,
+        resolve: page.resolvers ? page.resolvers : {}
       },
       {
         path: "",

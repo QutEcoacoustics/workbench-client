@@ -16,6 +16,7 @@ export interface PageInfoInterface extends Data {
   menus: Menus;
   fullscreen?: boolean;
   canDeactivate?: boolean;
+  resolvers?: { [key: string]: any };
 }
 
 /**
@@ -28,6 +29,7 @@ export class PageInfo implements PageInfoInterface {
   menus: Menus;
   fullscreen: boolean;
   canDeactivate: boolean;
+  resolvers: { [key: string]: any };
   constructor(target: Type<any>, args: PageInfoInterface) {
     if (!args.self) {
       throw new Error("A page info must be provided with an `self` MenuRoute");

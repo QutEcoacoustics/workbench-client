@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, Inject } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";

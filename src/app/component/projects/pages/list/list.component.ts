@@ -9,12 +9,14 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ProjectsResolverService } from "src/app/services/baw-api/resolvers/projects-resolver.service";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem
 } from "../../projects.menus";
+import { ActivatedRoute } from "@angular/router";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -26,6 +28,9 @@ export const projectsMenuItemActions = [
   menus: {
     actions: List<AnyMenuItem>(projectsMenuItemActions),
     links: List()
+  },
+  resolvers: {
+    projects: ProjectsResolverService
   },
   self: projectsMenuItem
 })
@@ -52,31 +57,20 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
   loading: boolean;
   error: ApiErrorDetails;
 
-  constructor(private api: ProjectsService) {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
     this.loading = true;
 
-    this.api
-      .list()
-      .pipe(
-        map((data: Project[]) => {
-          return List(data.map(project => project.getCard()));
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (projects: List<Card>) => {
-          this.cardList = projects;
-          this.loading = false;
-        },
-        (err: ApiErrorDetails) => {
-          this.loading = false;
-          this.error = err;
-        }
-      );
+    this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
+      (data: { projects: Project[] }) => {
+        this.cardList = List(data.projects.map(project => project.getCard()));
+        this.loading = false;
+      },
+      err => {}
+    );
   }
 
   ngOnDestroy() {
