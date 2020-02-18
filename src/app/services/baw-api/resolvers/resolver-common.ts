@@ -13,16 +13,9 @@ import { ApiErrorDetails } from "../api.interceptor.service";
 
 export class ListResolver<T extends AbstractModel>
   implements Resolve<T[] | ApiErrorDetails> {
-  constructor(
-    private api: any,
-    private router: Router,
-    private getIds: (params: ParamMap) => Id[]
-  ) {}
+  constructor(private api: any, private getIds: (params: ParamMap) => Id[]) {}
 
-  public resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<T[]> {
+  public resolve(route: ActivatedRouteSnapshot): Observable<T[]> {
     const ids = this.getIds(route.paramMap);
 
     return this.api.list(...ids).pipe(
@@ -36,16 +29,9 @@ export class ListResolver<T extends AbstractModel>
 
 export class ShowResolver<T extends AbstractModel>
   implements Resolve<T | ApiErrorDetails> {
-  constructor(
-    private api: any,
-    private router: Router,
-    private getIds: (params: ParamMap) => Id[]
-  ) {}
+  constructor(private api: any, private getIds: (params: ParamMap) => Id[]) {}
 
-  public resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<T> {
+  public resolve(route: ActivatedRouteSnapshot): Observable<T> {
     const ids = this.getIds(route.paramMap);
 
     return this.api.show(...ids).pipe(

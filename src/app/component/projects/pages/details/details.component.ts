@@ -59,7 +59,7 @@ export class DetailsComponent extends PageComponent
   public project: Project;
   public sites: Site[];
   public error: ApiErrorDetails;
-  public ready = false;
+  public ready: boolean;
   private unsubscribe = new Subject();
 
   constructor(private route: ActivatedRoute) {
@@ -74,8 +74,6 @@ export class DetailsComponent extends PageComponent
         project: Project | ApiErrorDetails;
         sites: Site[] | ApiErrorDetails;
       }) => {
-        console.log("Data: ", data);
-
         if (isApiErrorDetails(data.project)) {
           this.error = data.project;
           return;

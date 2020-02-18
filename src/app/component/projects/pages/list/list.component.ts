@@ -8,7 +8,10 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  ApiErrorDetails,
+  isApiErrorDetails
+} from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsResolverService } from "src/app/services/baw-api/resolvers/projects-resolver.service";
 import {
   newProjectMenuItem,
@@ -64,9 +67,9 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
     this.ready = false;
 
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (data: { projects: Project[]; error: ApiErrorDetails }) => {
-        if (data.error) {
-          this.error = data.error;
+      (data: { projects: Project[] | ApiErrorDetails }) => {
+        if (isApiErrorDetails(data.projects)) {
+          this.error = data.projects;
           return;
         }
 
