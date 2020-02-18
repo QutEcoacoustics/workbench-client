@@ -15,17 +15,19 @@
       [class]="tableClass"
       [columnMode]="ColumnMode.force"
       [columns]="columns"
-      [draggable]="false"
       [footerHeight]="footerHeight"
       [headerHeight]="headerHeight"
       [limit]="defaultTableLimit"
-      [reorderable]="false"
       [rowHeight]="'auto'"
       [rows]="rows"
       [scrollbarH]="true"
       [selectAllRowsOnPage]="false"
       [selected]="selected"
       [selectionType]="SelectionType.checkbox"
+      [externalPaging]="true"
+      [count]="totalSites"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
       (select)="onSelect($event)"
     >
       <ngx-datatable-column
@@ -38,9 +40,21 @@
         [width]="30"
       >
       </ngx-datatable-column>
-      <ngx-datatable-column name="Site Id"></ngx-datatable-column>
-      <ngx-datatable-column name="Name"></ngx-datatable-column>
-      <ngx-datatable-column name="Description"></ngx-datatable-column>
+      <ngx-datatable-column
+        name="Site Id"
+        [width]="75"
+        [sortable]="false"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        name="Name"
+        [width]="150"
+        [sortable]="false"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        name="Description"
+        [width]="400"
+        [sortable]="false"
+      ></ngx-datatable-column>
     </ngx-datatable>
   </ng-container>
 

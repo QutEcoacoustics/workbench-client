@@ -18,7 +18,7 @@ import {
 import { MockBawApiService } from "./mock/baseApiMock.service";
 import { ShallowSitesService } from "./sites.service";
 
-describe("ShallowSitesService", () => {
+xdescribe("ShallowSitesService", () => {
   let service: ShallowSitesService;
   let httpMock: HttpTestingController;
 
