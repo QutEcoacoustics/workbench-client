@@ -16,7 +16,6 @@ import {
   accountServiceFactory
 } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
-import { bawTokens } from "./services/baw-api/baw-api.tokens";
 import {
   ProjectsService,
   projectsServiceFactory
@@ -128,6 +127,5 @@ export const providers = [
     provide: UserService,
     useFactory: userServiceFactory,
     deps: bawApiDeps
-  },
-  ...bawTokens
+  }
 ];

@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
-import { map, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { Card } from "src/app/component/shared/cards/cards.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { ProjectsResolverService } from "src/app/services/baw-api/resolvers/projects-resolver.service";
 import {
   newProjectMenuItem,
@@ -16,7 +16,6 @@ import {
   projectsMenuItem,
   requestProjectMenuItem
 } from "../../projects.menus";
-import { ActivatedRoute } from "@angular/router";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -38,7 +37,7 @@ export const projectsMenuItemActions = [
   selector: "app-projects-list",
   template: `
     <!-- Display project cards -->
-    <ng-container *ngIf="cardList">
+    <ng-container *ngIf="ready">
       <ng-container *ngIf="cardList.size > 0; else noProjects">
         <app-cards [cards]="cardList"></app-cards>
       </ng-container>
@@ -47,14 +46,14 @@ export const projectsMenuItemActions = [
       </ng-template>
     </ng-container>
 
-    <app-loading [isLoading]="loading"></app-loading>
+    <app-loading [isLoading]="!ready && !error"></app-loading>
     <app-error-handler [error]="error"></app-error-handler>
   `
 })
 export class ListComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   cardList: List<Card>;
-  loading: boolean;
+  ready: boolean;
   error: ApiErrorDetails;
 
   constructor(private route: ActivatedRoute) {
@@ -62,12 +61,17 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loading = true;
+    this.ready = false;
 
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (data: { projects: Project[] }) => {
+      (data: { projects: Project[]; error: ApiErrorDetails }) => {
+        if (data.error) {
+          this.error = data.error;
+          return;
+        }
+
         this.cardList = List(data.projects.map(project => project.getCard()));
-        this.loading = false;
+        this.ready = true;
       },
       err => {}
     );

@@ -18,15 +18,6 @@ import { AppConfigService } from "../app-config/app-config.service";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 
-// export const bawApiInterceptorFactory = (
-//   api: SecurityService,
-//   config: AppConfigService
-// ) => {
-//   const environment = config.getConfig().environment;
-
-//   return new BawApiInterceptor(api, environment.apiRoot, environment.cmsRoot);
-// };
-
 /**
  * BAW API Interceptor.
  * This handles intercepting http requests to the BAW API server and manages
@@ -120,7 +111,7 @@ export class BawApiInterceptor implements HttpInterceptor {
   private handleError(
     response: HttpErrorResponse | ApiErrorResponse | ApiErrorDetails
   ): Observable<never> {
-    if (isErrorDetails(response)) {
+    if (isApiErrorDetails(response)) {
       return throwError(response);
     } else if (isErrorResponse(response)) {
       const error: ApiErrorDetails = {
@@ -162,8 +153,8 @@ interface ApiErrorResponse extends HttpErrorResponse {
  * Determine if error response has already been processed
  * @param errorResponse Error response
  */
-function isErrorDetails(
-  errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
+export function isApiErrorDetails(
+  errorResponse: any
 ): errorResponse is ApiErrorDetails {
   return (
     errorResponse["status"] &&

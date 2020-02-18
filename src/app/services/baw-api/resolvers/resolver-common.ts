@@ -28,7 +28,6 @@ export class ListResolver<T extends AbstractModel>
     return this.api.list(...ids).pipe(
       take(1),
       catchError((err: ApiErrorDetails) => {
-        console.error("Api Error: ", err);
         return of(err);
       })
     );
@@ -52,7 +51,6 @@ export class ShowResolver<T extends AbstractModel>
     return this.api.show(...ids).pipe(
       take(1),
       catchError((err: ApiErrorDetails) => {
-        console.error("Api Error: ", err);
         return of(err);
       })
     );
