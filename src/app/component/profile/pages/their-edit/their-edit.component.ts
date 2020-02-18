@@ -26,6 +26,7 @@ import data from "./their-edit.json";
     ]),
     links: List()
   },
+  canDeactivate: true,
   self: theirEditProfileMenuItem
 })
 @Component({

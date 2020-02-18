@@ -27,6 +27,7 @@ import { projectMenuItemActions } from "../details/details.component";
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
+  canDeactivate: true,
   self: deleteProjectMenuItem
 })
 @Component({

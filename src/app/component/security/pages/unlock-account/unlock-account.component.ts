@@ -23,6 +23,7 @@ import data from "./unlock-account.json";
     ]),
     links: List()
   },
+  canDeactivate: true,
   self: unlockAccountMenuItem
 })
 @Component({

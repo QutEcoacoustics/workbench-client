@@ -11,6 +11,7 @@ import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
     actions: List(),
     links: List()
   },
+  canDeactivate: true,
   self: dataRequestMenuItem
 })
 @Component({

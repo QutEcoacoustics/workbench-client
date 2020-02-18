@@ -23,6 +23,7 @@ import data from "./new.json";
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     links: List()
   },
+  canDeactivate: true,
   self: newSiteMenuItem
 })
 @Component({

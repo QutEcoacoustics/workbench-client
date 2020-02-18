@@ -11,6 +11,7 @@ import data from "./contact-us.json";
     actions: List(),
     links: List()
   },
+  canDeactivate: true,
   self: contactUsMenuItem
 })
 @Component({

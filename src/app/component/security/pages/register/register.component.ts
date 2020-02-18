@@ -10,6 +10,7 @@ import data from "./register.json";
 @Page({
   category: securityCategory,
   menus: null,
+  canDeactivate: true,
   self: registerMenuItem
 })
 @Component({

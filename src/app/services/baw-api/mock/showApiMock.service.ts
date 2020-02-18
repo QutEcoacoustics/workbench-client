@@ -1,16 +1,15 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AppConfigService } from "../../app-config/app-config.service";
 import { ApiShow, IdOr } from "../api-common";
-import { BawApiService } from "../baw-api.service";
+import { BawApiService, STUB_API_ROOT } from "../baw-api.service";
 import { MockModel } from "./baseApiMock.service";
 
 @Injectable()
 export class MockShowApiService extends BawApiService<MockModel>
   implements ApiShow<MockModel, [], IdOr<MockModel>> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, MockModel);
+  constructor(http: HttpClient, @Inject(STUB_API_ROOT) apiRoot: string) {
+    super(http, apiRoot, MockModel);
   }
 
   show() {

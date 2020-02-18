@@ -21,6 +21,7 @@ import data from "./request.json";
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
     links: List()
   },
+  canDeactivate: true,
   self: requestProjectMenuItem
 })
 @Component({

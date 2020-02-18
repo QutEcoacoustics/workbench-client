@@ -23,6 +23,7 @@ import data from "./confirm-account.json";
     ]),
     links: List()
   },
+  canDeactivate: true,
   self: confirmAccountMenuItem
 })
 @Component({

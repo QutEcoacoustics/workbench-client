@@ -26,6 +26,7 @@ import data from "./edit.json";
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
+  canDeactivate: true,
   self: editProjectMenuItem
 })
 @Component({

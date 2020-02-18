@@ -23,6 +23,7 @@ import data from "./reset-password.json";
     ]),
     links: List()
   },
+  canDeactivate: true,
   self: resetPasswordMenuItem
 })
 @Component({

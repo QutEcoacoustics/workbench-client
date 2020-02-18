@@ -25,6 +25,7 @@ import data from "./my-edit.json";
     ]),
     links: List()
   },
+  canDeactivate: true,
   self: editMyAccountMenuItem
 })
 @Component({

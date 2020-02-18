@@ -14,6 +14,7 @@ import {
     actions: List(),
     links: List()
   },
+  canDeactivate: true,
   self: reportProblemMenuItem
 })
 @Component({
