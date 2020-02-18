@@ -30,7 +30,11 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  private constructor(parent: StrongRoute, name: string, config) {
+  private constructor(
+    parent: StrongRoute,
+    name: string,
+    config: Partial<Route>
+  ) {
     this.name = name;
 
     if (parent) {
@@ -113,22 +117,34 @@ export class StrongRoute {
    */
   compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
+
+    const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+      // If one of the routes is a parameter route
+      if (a.path.charAt(0) === ":" || b.path.startsWith(":")) {
+        // If both are parameter routes, they are equal
+        if (a.path.charAt(0) === ":" && b.path.startsWith(":")) {
+          return 0;
+        }
+        // Else give priority to the non-parameter route
+        return a.path.charAt(0) === ":" ? 1 : -1;
+      }
+
+      return 0;
+    };
+
     const recursiveAdd = (current: StrongRoute): Route => {
       // provide an opportunity to modify the route config just before we
       // generate it.
       callback(current.pageComponent, current.config);
       const thisRoute = current.routeConfig;
       const childRoutes = current.children.map(recursiveAdd);
-      // TODO: the order of these arrays may well need to be changed...
-      // depends on how nested routes work
-      // we want "" to match current
-      // but e.g. "sites" to go down a level
-      // and not for both to match at same time.
-      thisRoute.children = [...(thisRoute.children || []), ...childRoutes];
+      thisRoute.children = [...(thisRoute.children || []), ...childRoutes].sort(
+        sortRoutes
+      );
       return thisRoute;
     };
 
-    return rootRoute.children.map(recursiveAdd);
+    return rootRoute.children.map(recursiveAdd).sort(sortRoutes);
   }
 
   /**

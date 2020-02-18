@@ -30,6 +30,14 @@ export const projectsMenuItem = MenuRoute({
   order: 4
 });
 
+export const projectMenuItem = MenuRoute({
+  icon: ["fas", "folder-open"],
+  label: "Project",
+  route: projectsRoute.add(":projectId"),
+  tooltip: () => "The current project",
+  parent: projectsMenuItem
+});
+
 export const newProjectMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New project",
@@ -45,14 +53,6 @@ export const requestProjectMenuItem = MenuRoute({
   route: projectsRoute.add("request"),
   tooltip: () => "Request access to a project not listed here",
   predicate: isLoggedInPredicate,
-  parent: projectsMenuItem
-});
-
-export const projectMenuItem = MenuRoute({
-  icon: ["fas", "folder-open"],
-  label: "Project",
-  route: projectsRoute.add(":projectId"),
-  tooltip: () => "The current project",
   parent: projectsMenuItem
 });
 
