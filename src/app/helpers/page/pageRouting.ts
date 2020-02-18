@@ -41,5 +41,5 @@ export function GetRouteConfigForPage(
         component: ActionMenuComponent
       }
     ]
-  });
+  } as Route);
 }

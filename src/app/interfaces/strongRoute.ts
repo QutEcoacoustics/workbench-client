@@ -158,7 +158,8 @@ export class StrongRoute {
    * Router representation of the route
    */
   toRoute(): string[] {
-    return this.full.map(x => x.name).filter(x => !!x);
+    const output = this.full.map(x => x.name);
+    return output.length > 1 ? output.filter(x => !!x) : [""];
   }
 
   /**
