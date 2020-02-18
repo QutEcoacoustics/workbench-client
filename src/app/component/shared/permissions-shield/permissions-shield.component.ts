@@ -52,6 +52,8 @@ export class PermissionsShieldComponent
             return this.sitesApi.show(params.projectId, params.siteId);
           } else if (params.projectId) {
             return this.projectsApi.show(params.projectId);
+          } else {
+            throw Error("No parameters found in url");
           }
         }),
         takeUntil(this.unsubscribe)
