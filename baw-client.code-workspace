@@ -38,7 +38,8 @@
       "statusBar.foreground": "#e7e7e7"
     },
     "peacock.color": "#2b7489",
-    "angularKarmaTestExplorer.debugMode": true
+    "angularKarmaTestExplorer.debugMode": true,
+    "explorer.compactFolders": false
   },
   "extensions": {
     "recommendations": [

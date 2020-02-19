@@ -12,17 +12,16 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
+  public pageComponent: Type<any> | null;
+  public readonly root: any;
+  public readonly parent: StrongRoute;
+  public readonly name: string;
+  public readonly isParameter: boolean;
+  public readonly fullRoute: string;
+  public readonly children: StrongRoute[] = [];
   private readonly parameters: StrongRoute[];
   private readonly full: StrongRoute[];
-
   private readonly config: Partial<Route>;
-  readonly root: any;
-  readonly parent: StrongRoute;
-  readonly name: string;
-  readonly isParameter: boolean;
-  readonly fullRoute: string;
-  readonly children: StrongRoute[] = [];
-  pageComponent: Type<any> | null;
 
   /**
    * Constructor
@@ -144,7 +143,9 @@ export class StrongRoute {
       return thisRoute;
     };
 
-    return rootRoute.children.map(recursiveAdd).sort(sortRoutes);
+    const output = rootRoute.children.map(recursiveAdd).sort(sortRoutes);
+
+    return output instanceof Array ? output : [output];
   }
 
   /**
