@@ -5,13 +5,12 @@ import { SharedModule } from "../shared/shared.module";
 import { DataRequestComponent } from "./data-request.component";
 import { dataRequestRoute } from "./data-request.menus";
 
-export const dataRequestComponents = [DataRequestComponent];
-
+const components = [DataRequestComponent];
 const routes = dataRequestRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [dataRequestComponents],
+  declarations: [components],
   imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...dataRequestComponents]
+  exports: [RouterModule, ...components]
 })
 export class DataRequestModule {}

@@ -8,7 +8,7 @@ import { CreditsComponent } from "./pages/credits/credits.component";
 import { DisclaimersComponent } from "./pages/disclaimers/disclaimers.component";
 import { EthicsComponent } from "./pages/ethics/ethics.component";
 
-export const AboutComponents = [
+const components = [
   ContactUsComponent,
   CreditsComponent,
   DisclaimersComponent,
@@ -18,8 +18,8 @@ export const AboutComponents = [
 const routes = aboutRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: AboutComponents,
+  declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...AboutComponents]
+  exports: [RouterModule, ...components]
 })
 export class AboutModule {}
