@@ -17,21 +17,8 @@ import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
   selector: "app-data-request",
   template: `
     <h1>Data Request</h1>
-    <h2>Annotations Download</h2>
-    <p>To download a standard CSV of annotations</p>
-    <ol>
-      <li>Navigate to the project you're interested in</li>
-      <li>Then, choose the site you want to download annotations for</li>
-      <li>Finally, click the <i>Download annotations</i> link</li>
-    </ol>
-    <h2>Custom Data Request</h2>
-    <p>
-      Use this form to request a customized annotations list or other data
-      related to the audio recordings on this website.
-      <br />
-      You <strong>do not need</strong> to use this form if you need the standard
-      <strong>annotations CSV</strong> download.
-    </p>
+    <app-cms page="annotationsDownload.html"></app-cms>
+    <app-cms page="dataRequest.html"></app-cms>
     <app-wip>
       <app-form
         [schema]="schema"
