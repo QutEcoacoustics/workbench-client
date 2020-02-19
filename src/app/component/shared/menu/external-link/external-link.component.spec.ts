@@ -25,7 +25,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -40,7 +40,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -61,7 +61,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "custom label",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -79,7 +79,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -100,7 +100,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -121,7 +121,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -138,7 +138,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -156,7 +156,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -177,7 +177,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://link/",
+      uri: () => "http://link/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -198,7 +198,7 @@ describe("MenuExternalLinkComponent", () => {
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
-      uri: "http://brokenlink/",
+      uri: () => "http://brokenlink/",
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
@@ -208,22 +208,5 @@ describe("MenuExternalLinkComponent", () => {
     const link = fixture.nativeElement.querySelector("a");
     expect(link).toBeTruthy();
     expect(link.href).toBe("http://brokenlink/");
-  });
-
-  it("should convert links to AngularJS server", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: "/brokenlink/",
-      tooltip: () => "custom tooltip"
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "left";
-    fixture.detectChanges();
-
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link).toBeTruthy();
-    expect(link.href).toBe("http://apiroot/brokenlink/");
   });
 });

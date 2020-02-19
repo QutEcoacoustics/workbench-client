@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild
 } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, ParamMap, Params } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -19,6 +19,7 @@ import {
   LabelAndIcon
 } from "src/app/interfaces/menusInterfaces";
 import { SessionUser } from "src/app/models/User";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
@@ -40,7 +41,8 @@ export class MenuComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
-  routerParams: Params;
+  params: Params;
+  bawUrl: string;
   url: string;
   user: SessionUser;
   loading: boolean;
@@ -51,13 +53,12 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: SecurityService,
+    private config: AppConfigService,
     private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
   ngOnInit() {
-    this.loading = true;
-
     // Get user details
     this.user = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
@@ -73,15 +74,8 @@ export class MenuComponent implements OnInit, OnDestroy {
     );
 
     // Retrieve router parameters to override link attributes
-    this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
-      params => {
-        this.routerParams = params;
-        this.loading = false;
-      },
-      err => {
-        console.error("MenuComponent: ", err);
-      }
-    );
+    this.params = this.route.snapshot.params;
+    this.bawUrl = this.config.getConfig().environment.apiRoot;
 
     // Load widget
     this.loadComponent();

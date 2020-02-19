@@ -26,7 +26,7 @@ export const DefaultMenu = {
       tooltip: () => "View my recent annotations",
       predicate: user => !!user,
       order: 3,
-      uri: "REPLACE_ME"
+      uri: () => "REPLACE_ME"
     }),
     projectsMenuItem,
     MenuLink({
@@ -34,14 +34,14 @@ export const DefaultMenu = {
       label: "Audio Analysis",
       tooltip: () => "View audio analysis jobs",
       order: 5,
-      uri: "/audio_analysis"
+      uri: (bawUrl, _) => bawUrl + "/audio_analysis"
     }),
     MenuLink({
       icon: ["fas", "book"],
       label: "Library",
       tooltip: () => "Annotation library",
       order: 6,
-      uri: "/library"
+      uri: (bawUrl, _) => bawUrl + "/library"
     }),
     dataRequestMenuItem,
     MenuLink({
@@ -49,7 +49,7 @@ export const DefaultMenu = {
       label: "Send Audio",
       tooltip: () => "Send us audio recordings to upload",
       order: 8,
-      uri: "/data_upload"
+      uri: () => "REPLACE_ME"
     }),
     reportProblemMenuItem,
     statisticsMenuItem

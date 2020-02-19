@@ -269,7 +269,7 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: "http://brokenlink/"
+              uri: () => "http://brokenlink/"
             }),
             MenuAction({
               label: "Custom Label",
@@ -373,7 +373,7 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: "http://brokenlink/"
+              uri: () => "http://brokenlink/"
             })
           ]),
           links: List<NavigableMenuItem>([])
@@ -403,13 +403,13 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              uri: "http://brokenlink/1"
+              uri: () => "http://brokenlink/1"
             }),
             MenuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              uri: "http://brokenlink/2"
+              uri: () => "http://brokenlink/2"
             })
           ]),
           links: List<NavigableMenuItem>([])

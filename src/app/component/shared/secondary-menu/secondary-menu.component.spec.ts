@@ -193,7 +193,7 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: "http://brokenlink/"
+              uri: () => "http://brokenlink/"
             })
           ])
         }
@@ -412,7 +412,7 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: "http://brokenlink/"
+              uri: () => "http://brokenlink/"
             })
           ])
         }
@@ -442,13 +442,13 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              uri: "http://brokenlink/1"
+              uri: () => "http://brokenlink/1"
             }),
             MenuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              uri: "http://brokenlink/2"
+              uri: () => "http://brokenlink/2"
             })
           ])
         }

@@ -5,14 +5,13 @@ import {
   OnInit
 } from "@angular/core";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-menu-external-link",
   template: `
     <a
       class="nav-link"
-      href="{{ link.uri }}"
+      href="{{ uri }}"
       placement="{{ placement }}"
       ngbTooltip="{{ tooltip }}"
     >
@@ -31,13 +30,9 @@ export class MenuExternalLinkComponent implements OnInit {
   @Input() link: MenuLink;
   @Input() placement: "left" | "right";
   @Input() tooltip: string;
+  @Input() uri: string;
 
-  constructor(private config: AppConfigService) {}
+  constructor() {}
 
-  ngOnInit() {
-    if (this.link.uri.charAt(0) === "/") {
-      this.link.uri =
-        this.config.getConfig().environment.apiRoot + this.link.uri;
-    }
-  }
+  ngOnInit() {}
 }

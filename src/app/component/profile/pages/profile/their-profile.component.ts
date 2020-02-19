@@ -22,28 +22,28 @@ export const theirProfileMenuItemActions = [
   MenuLink({
     icon: ["fas", "globe-asia"],
     label: "Their Projects",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: () => "Projects they can access",
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "map-marker-alt"],
     label: "Their Sites",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: () => "Sites they can access",
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "bookmark"],
     label: "Their Bookmarks",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: () => "Bookmarks created by them",
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "bullseye"],
     label: "Their Annotations",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: () => "Annotations created by them",
     predicate: user => !!user
   })
@@ -108,13 +108,13 @@ export class TheirProfileComponent extends PageComponent
         icon: ["fas", "tag"],
         name: "Test 1",
         value: 0,
-        uri: "BROKEN LINK"
+        uri: () => "BROKEN LINK"
       },
       {
         icon: ["fas", "tag"],
         name: "Test 2",
         value: 0,
-        uri: "BROKEN LINK"
+        uri: () => "BROKEN LINK"
       }
     ];
   }

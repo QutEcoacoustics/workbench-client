@@ -31,9 +31,9 @@
           <app-menu-internal-link
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
-            [linkParams]="routerParams"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
+            [route]="link.route.format(params)"
           >
           </app-menu-internal-link>
         </ng-container>
@@ -43,6 +43,7 @@
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
+            [uri]="link.uri(bawUrl, params)"
           >
           </app-menu-external-link>
         </ng-container>

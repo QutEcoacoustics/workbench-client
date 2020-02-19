@@ -78,7 +78,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      uri: "http://brokenlink/"
+      uri: () => "http://brokenlink/"
     });
     fixture.detectChanges();
 

@@ -4,9 +4,11 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Href } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-items-item",
@@ -53,15 +55,21 @@ export class ItemComponent implements OnInit {
   link: string;
   internalLink: boolean;
 
-  constructor() {}
+  constructor(
+    private config: AppConfigService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     if (typeof this.uri === "object") {
       this.internalLink = true;
       this.link = this.uri.toString();
     } else {
+      const params = this.route.snapshot.params;
+      const bawUrl = this.config.getConfig().environment.apiRoot;
+
       this.internalLink = false;
-      this.link = this.uri;
+      this.link = this.uri(bawUrl, params);
     }
   }
 }

@@ -21,28 +21,28 @@ export const myProfileMenuItemActions = [
   MenuLink({
     icon: ["fas", "globe-asia"],
     label: "My Projects",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: user => `Projects ${user.userName} can access`,
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "map-marker-alt"],
     label: "My Sites",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: user => `Sites ${user.userName} can access`,
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "bookmark"],
     label: "My Bookmarks",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: user => `Bookmarks created by ${user.userName}`,
     predicate: user => !!user
   }),
   MenuLink({
     icon: ["fas", "bullseye"],
     label: "My Annotations",
-    uri: "BROKEN LINK",
+    uri: () => "BROKEN LINK",
     tooltip: user => `Annotations created by ${user.userName}`,
     predicate: user => !!user
   })
@@ -103,13 +103,13 @@ export class MyProfileComponent extends PageComponent
         icon: ["fas", "tag"],
         name: "Test 1",
         value: 0,
-        uri: "BROKEN LINK"
+        uri: () => "BROKEN LINK"
       },
       {
         icon: ["fas", "tag"],
         name: "Test 2",
         value: 0,
-        uri: "BROKEN LINK"
+        uri: () => "BROKEN LINK"
       }
     ];
   }

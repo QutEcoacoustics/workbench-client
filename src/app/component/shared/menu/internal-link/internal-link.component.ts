@@ -4,7 +4,6 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import { Params } from "@angular/router";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
 @Component({
@@ -13,7 +12,7 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
     <a
       class="nav-link"
       [ngClass]="{ active: active }"
-      [routerLink]="linkRoute"
+      [routerLink]="route"
       [placement]="placement"
       [ngbTooltip]="tooltip"
     >
@@ -30,16 +29,14 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 export class MenuInternalLinkComponent implements OnInit {
   @Input() id: string;
   @Input() link: MenuRoute;
-  @Input() linkParams: Params;
+  @Input() route: string;
   @Input() placement: "left" | "right";
   @Input() tooltip: string;
-  linkRoute: string;
   active: boolean;
 
   constructor() {}
 
   ngOnInit() {
-    this.linkRoute = this.link.route.format(this.linkParams);
-    this.active = this.linkRoute === window.location.pathname;
+    this.active = this.route === window.location.pathname;
   }
 }

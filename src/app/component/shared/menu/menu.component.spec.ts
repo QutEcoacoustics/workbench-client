@@ -177,7 +177,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       }),
       MenuAction({
         label: "label",
@@ -206,7 +206,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       }),
       MenuAction({
         label: "label",
@@ -493,7 +493,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -510,7 +510,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -527,13 +527,13 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -550,7 +550,7 @@ describe("MenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -566,7 +566,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -582,7 +582,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "Custom Tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -599,7 +599,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: user => `${user.userName} tooltip`,
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -615,7 +615,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -632,7 +632,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -648,14 +648,14 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isGuestPredicate
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isLoggedInPredicate
         })
       ]);
@@ -674,14 +674,14 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isGuestPredicate
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isLoggedInPredicate
         })
       ]);
@@ -697,7 +697,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       });
       component.menuType = "action";
       component.links = List<AnyMenuItem>([menuLink, menuLink]);

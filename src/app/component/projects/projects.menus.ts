@@ -72,7 +72,7 @@ export const editProjectMenuItem = MenuRoute({
 });
 
 export const exploreAudioProjectMenuItem = MenuLink({
-  uri: "REPLACE_ME",
+  uri: (bawUrl, params) => `${bawUrl}/visualize?projectId=${params.projectId}`,
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio"
