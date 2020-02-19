@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
-import { BehaviorSubject } from "rxjs";
 import { isGuestPredicate, isLoggedInPredicate } from "src/app/app.menus";
 import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
@@ -610,6 +609,22 @@ describe("MenuComponent", () => {
 
       const link = findLinks(linkSelector)[0];
       assertHref(link, "http://brokenlink/");
+    });
+
+    it("should create link href with router params", () => {
+      component.menuType = "action";
+      component.links = List<AnyMenuItem>([
+        MenuLink({
+          label: "label",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
+          uri: params => "http://brokenlink/" + params.attribute
+        })
+      ]);
+      fixture.detectChanges();
+
+      const link = findLinks(linkSelector)[0];
+      assertHref(link, "http://brokenlink/10");
     });
 
     it("should not filter links without predicate", () => {

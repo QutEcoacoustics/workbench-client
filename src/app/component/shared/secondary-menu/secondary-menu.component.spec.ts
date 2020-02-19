@@ -307,6 +307,48 @@ describe("SecondaryMenuComponent", () => {
       assertIcon(links[2], "fas,exclamation-triangle");
       assertTooltip(links[2], "Custom Tooltip 3");
     });
+
+    it("should not hide self link if predicate fails", () => {
+      const parentRoute = StrongRoute.Base.add("home");
+      const childRoute = parentRoute.add("house");
+      const parentLink = MenuRoute({
+        label: "Parent Label",
+        icon: ["fas", "question"],
+        order: 999,
+        tooltip: () => "Custom Tooltip 1",
+        route: parentRoute,
+        predicate: () => false
+      });
+
+      createTestBed({}, {
+        self: MenuRoute({
+          label: "Child Label",
+          icon: ["fas", "exclamation-triangle"],
+          tooltip: () => "Custom Tooltip 2",
+          order: 999,
+          parent: parentLink,
+          route: childRoute,
+          predicate: () => false
+        }),
+        category: defaultCategory,
+        menus: {
+          actions: List<AnyMenuItem>([]),
+          links: List<NavigableMenuItem>([])
+        }
+      } as PageInfoInterface);
+
+      fixture.detectChanges();
+
+      const links = findLinks("internal-link");
+
+      assertLabel(links[0], "Parent Label");
+      assertIcon(links[0], "fas,question");
+      assertTooltip(links[0], "Custom Tooltip 1");
+
+      assertLabel(links[1], "Child Label");
+      assertIcon(links[1], "fas,exclamation-triangle");
+      assertTooltip(links[1], "Custom Tooltip 2");
+    });
   });
 
   describe("internal links", () => {

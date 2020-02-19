@@ -5,7 +5,7 @@ import {
   OnInit
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { List } from "immutable";
+import { fromJS, List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
@@ -36,19 +36,23 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
+    const clearPredicate = undefined;
+
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         // get default links
         const defaultLinks = DefaultMenu.contextLinks;
 
         // and current page
-        const current = page.self;
+        const current = fromJS(page.self).toJS(); // De-reference
+        current.predicate = clearPredicate;
 
         // and parent pages
         const parentMenuRoutes: MenuRoute[] = [];
         let menuRoute = current;
         while (menuRoute.parent) {
-          menuRoute = menuRoute.parent;
+          menuRoute = fromJS(menuRoute.parent).toJS(); // De-reference
+          menuRoute.predicate = clearPredicate;
           parentMenuRoutes.push(menuRoute);
         }
 
