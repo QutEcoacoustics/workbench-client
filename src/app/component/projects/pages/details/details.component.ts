@@ -21,7 +21,8 @@ import {
   editProjectPermissionsMenuItem,
   exploreAudioProjectMenuItem,
   projectCategory,
-  projectMenuItem
+  projectMenuItem,
+  projectsMenuItem
 } from "../../projects.menus";
 
 export const projectMenuItemActions = [
@@ -36,7 +37,7 @@ export const projectMenuItemActions = [
 @Page({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>(projectMenuItemActions),
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

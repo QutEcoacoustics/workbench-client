@@ -63,13 +63,14 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
-    this.filteredLinks = new Set(this
-      ?.links
-      ?.filter((link) => {
+    this.filteredLinks = new Set(
+      this?.links
+        ?.filter(link => {
           // If link has predicate function, test if returns true
           return link.predicate ? link.predicate(this?.user) : true;
-      })
-      ?.sort(this.compare));
+        })
+        ?.sort(this.compare)
+    );
 
     // Retrieve router parameters to override link attributes
     this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -103,12 +104,12 @@ export class MenuComponent implements OnInit, OnDestroy {
    * @param link Link to calculate padding for
    */
   calculateIndentation(link: AnyMenuItem) {
-      // Only the secondary menu implements this option
-      if (this.menuType !== "secondary" || !link.indentation) {
-        return 0;
-      }
+    // Only the secondary menu implements this option
+    if (this.menuType !== "secondary" || !link.indentation) {
+      return 0;
+    }
 
-      return link.indentation;
+    return link.indentation;
   }
 
   /**
@@ -152,6 +153,6 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     // Return the menu item with the lower order value
-    return (a?.order || 0) < (b?.order || 0) ? -1 : 1;
+    return (a?.order || Infinity) < (b?.order || Infinity) ? -1 : 1;
   }
 }

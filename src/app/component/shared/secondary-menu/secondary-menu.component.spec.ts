@@ -352,9 +352,10 @@ describe("SecondaryMenuComponent", () => {
       expect(findLinks("external-link").length).toBe(0);
       expect(findLinks("button").length).toBe(0);
 
-      assertLabel(links[0], "Custom Label");
-      assertTooltip(links[0], "Custom Tooltip");
-      assertIcon(links[0], "fas,tag");
+      // Links offset by one because order is infinite so they are placed after self link
+      assertLabel(links[1], "Custom Label");
+      assertTooltip(links[1], "Custom Tooltip");
+      assertIcon(links[1], "fas,tag");
     });
 
     it("should handle multiple links", () => {
@@ -388,13 +389,14 @@ describe("SecondaryMenuComponent", () => {
       expect(findLinks("external-link").length).toBe(0);
       expect(findLinks("button").length).toBe(0);
 
-      assertLabel(links[0], "Custom Label 1");
-      assertTooltip(links[0], "Custom Tooltip 1");
-      assertIcon(links[0], "fas,tag");
+      // Links offset by one because order is infinite so they are placed after self link
+      assertLabel(links[1], "Custom Label 1");
+      assertTooltip(links[1], "Custom Tooltip 1");
+      assertIcon(links[1], "fas,tag");
 
-      assertLabel(links[1], "Custom Label 2");
-      assertTooltip(links[1], "Custom Tooltip 2");
-      assertIcon(links[1], "fas,tags");
+      assertLabel(links[2], "Custom Label 2");
+      assertTooltip(links[2], "Custom Tooltip 2");
+      assertIcon(links[2], "fas,tags");
     });
   });
 
