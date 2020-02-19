@@ -34,14 +34,14 @@ export const DefaultMenu = {
       label: "Audio Analysis",
       tooltip: () => "View audio analysis jobs",
       order: 5,
-      uri: (bawUrl, _) => bawUrl + "/audio_analysis"
+      uri: () => "/audio_analysis"
     }),
     MenuLink({
       icon: ["fas", "book"],
       label: "Library",
       tooltip: () => "Annotation library",
       order: 6,
-      uri: (bawUrl, _) => bawUrl + "/library"
+      uri: () => "/library"
     }),
     dataRequestMenuItem,
     MenuLink({

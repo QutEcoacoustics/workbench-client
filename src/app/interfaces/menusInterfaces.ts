@@ -13,7 +13,7 @@ export type RouteFragment = string;
 /**
  * External URL
  */
-export type Href = (bawUrl: string, params: Params) => string;
+export type Href = (params: Params) => string;
 
 /**
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.

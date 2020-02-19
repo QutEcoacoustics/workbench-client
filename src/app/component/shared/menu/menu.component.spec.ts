@@ -6,6 +6,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { isGuestPredicate, isLoggedInPredicate } from "src/app/app.menus";
+import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   MenuAction,
@@ -35,14 +36,9 @@ describe("MenuComponent", () => {
   });
 
   class MockActivatedRoute {
-    public params = new BehaviorSubject<any>({ attribute: 10 });
-  }
-
-  function assertIcon(target: HTMLElement, prop: string) {
-    const icon: HTMLElement = target.querySelector("fa-icon");
-    expect(icon).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(prop);
+    public snapshot = {
+      params: { attribute: 10 }
+    };
   }
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -54,14 +50,6 @@ describe("MenuComponent", () => {
     const label: HTMLElement = target.querySelector("#label");
     expect(label).toBeTruthy();
     expect(label.innerText.trim()).toBe(labelText);
-  }
-
-  function assertTooltip(target: HTMLElement, tooltip: string) {
-    expect(target).toBeTruthy();
-    expect(target.attributes.getNamedItem("ng-reflect-tooltip")).toBeTruthy();
-    expect(
-      target.attributes.getNamedItem("ng-reflect-tooltip").value.trim()
-    ).toBe(tooltip);
   }
 
   function findLinks(

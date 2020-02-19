@@ -6,7 +6,8 @@ import {
 } from "@angular/core";
 import {
   isExternalLink,
-  isInternalRoute
+  isInternalRoute,
+  NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-config.service";
 
@@ -28,13 +29,13 @@ import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-con
             <a
               ngbDropdownItem
               routerLinkActive="active"
-              [routerLink]="link.route.toString()"
+              [routerLink]="getRoute(link)"
             >
               {{ link.label }}
             </a>
           </ng-container>
           <ng-container *ngIf="isExternalLink(link)">
-            <a ngbDropdownItem [href]="link.uri">
+            <a ngbDropdownItem [href]="getRoute(link)">
               {{ link.label }}
             </a>
           </ng-container>
@@ -54,4 +55,16 @@ export class HeaderDropdownComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  /**
+   * Get link route. This is only required because typescript is unable to
+   * properly type-check links in template
+   */
+  public getRoute(link: NavigableMenuItem): string {
+    if (isInternalRoute(link)) {
+      return link.route.toString();
+    } else {
+      return link.uri(undefined);
+    }
+  }
 }

@@ -39,7 +39,7 @@ export const siteMenuItem = MenuRoute({
 });
 
 export const exploreAudioSiteMenuItem = MenuLink({
-  uri: (bawUrl, params) => `${bawUrl}/visualize?siteId=${params.siteId}`,
+  uri: params => `/visualize?siteId=${params.siteId}`,
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio"

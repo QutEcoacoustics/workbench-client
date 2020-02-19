@@ -5,6 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   Category,
@@ -35,15 +36,6 @@ describe("ActionMenuComponent", () => {
     route: defaultRoute
   } as Category;
 
-  function assertIcon(target: HTMLElement, prop: string) {
-    const icon: HTMLElement = target.querySelector("fa-icon");
-    expect(icon).toBeTruthy("Icon is missing");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy(
-      "Icon missing [icon]"
-    );
-    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(prop);
-  }
-
   function assertTitle(target: HTMLElement, header: string) {
     expect(target).toBeTruthy("Title is missing");
     expect(target.innerText.trim()).toBe(header);
@@ -55,16 +47,6 @@ describe("ActionMenuComponent", () => {
     expect(label.innerText.trim()).toBe(labelText);
   }
 
-  function assertTooltip(target: HTMLElement, tooltip: string) {
-    expect(target).toBeTruthy("Tooltip is missing");
-    expect(target.attributes.getNamedItem("ng-reflect-tooltip")).toBeTruthy(
-      "Tooltip missing [tooltip]"
-    );
-    expect(
-      target.attributes.getNamedItem("ng-reflect-tooltip").value.trim()
-    ).toBe(tooltip);
-  }
-
   function findLinks(
     selector: "internal-link" | "external-link" | "button"
   ): HTMLElement[] {
@@ -73,8 +55,10 @@ describe("ActionMenuComponent", () => {
 
   function createTestBed(params: any, data: PageInfoInterface) {
     class MockActivatedRoute {
-      public params = new BehaviorSubject<any>(params);
       public data = new BehaviorSubject<PageInfoInterface>(data);
+      public snapshot = {
+        params
+      };
     }
 
     TestBed.configureTestingModule({
