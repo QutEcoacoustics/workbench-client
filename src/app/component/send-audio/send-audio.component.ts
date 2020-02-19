@@ -13,12 +13,9 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 })
 @Component({
   selector: "app-send-audio",
-  templateUrl: "./send-audio.component.html",
-  styleUrls: ["./send-audio.component.scss"],
+  template: `
+    <app-cms page="sendAudio.html"></app-cms>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SendAudioComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class SendAudioComponent {}
