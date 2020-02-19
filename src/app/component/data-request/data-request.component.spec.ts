@@ -38,10 +38,7 @@ describe("DataRequestComponent", () => {
 
   it("should create", () => {
     httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/annotationsDownload.html"
-    );
-    httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/dataRequest.html"
+      config.getConfig().environment.cmsRoot + "/downloadAnnotations.html"
     );
     expect(component).toBeTruthy();
   });
