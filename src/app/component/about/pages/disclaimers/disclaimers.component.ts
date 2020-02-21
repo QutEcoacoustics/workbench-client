@@ -15,11 +15,13 @@ import { aboutCategory, disclaimersMenuItem } from "../../about.menus";
 @Component({
   selector: "app-about-disclaimers",
   template: `
-    <app-cms page="disclaimers.html"></app-cms>
+    <app-cms [page]="page"></app-cms>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisclaimersComponent extends PageComponent {
+  public page = "disclaimers.html";
+
   constructor() {
     super();
   }

@@ -2,15 +2,15 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
-import { HomeComponent } from "./home.component";
-import { homeRoute } from "./home.menus";
+import { SendAudioComponent } from "./send-audio.component";
+import { sendAudioRoute } from "./send-audio.menus";
 
-const components = [HomeComponent];
-const routes = homeRoute.compileRoutes(GetRouteConfigForPage);
+const components = [SendAudioComponent];
+const routes = sendAudioRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components]
 })
-export class HomeModule {}
+export class SendAudioModule {}

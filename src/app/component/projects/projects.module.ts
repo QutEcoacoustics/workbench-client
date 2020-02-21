@@ -15,7 +15,7 @@ import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.menus";
 import { SiteCardComponent } from "./site-card/site-card.component";
 
-export const projectsComponents = [
+const components = [
   AssignComponent,
   DeleteComponent,
   DetailsComponent,
@@ -31,13 +31,13 @@ export const projectsComponents = [
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: projectsComponents,
+  declarations: components,
   imports: [
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
     RouterModule.forChild(routes)
   ],
-  exports: [RouterModule, ...projectsComponents]
+  exports: [RouterModule, ...components]
 })
 export class ProjectsModule {}

@@ -15,11 +15,13 @@ import { aboutCategory, ethicsMenuItem } from "../../about.menus";
 @Component({
   selector: "app-about-ethics",
   template: `
-    <app-cms page="ethics.html"></app-cms>
+    <app-cms [page]="page"></app-cms>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EthicsComponent extends PageComponent {
+  public page = "ethics.html";
+
   constructor() {
     super();
   }

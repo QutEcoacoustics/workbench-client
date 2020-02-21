@@ -11,6 +11,7 @@ import {
   loginMenuItem,
   registerMenuItem
 } from "src/app/component/security/security.menus";
+import { sendAudioMenuItem } from "src/app/component/send-audio/send-audio.menus";
 import { statisticsMenuItem } from "src/app/component/statistics/statistics.menus";
 import {
   MenuLink,
@@ -29,14 +30,7 @@ export const DefaultMenu = {
     audioAnalysisMenuItem,
     libraryMenuItem,
     dataRequestMenuItem,
-    // This will be replaced by the send-audio branch
-    MenuLink({
-      icon: ["fas", "envelope"],
-      label: "Send Audio",
-      tooltip: () => "Send us audio recordings to upload",
-      order: 8,
-      uri: () => "REPLACE_ME"
-    }),
+    sendAudioMenuItem,
     reportProblemMenuItem,
     statisticsMenuItem
   ]),

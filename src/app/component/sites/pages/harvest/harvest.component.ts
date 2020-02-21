@@ -17,11 +17,13 @@ import { siteMenuItemActions } from "../details/details.component";
   selector: "app-sites-harvest",
   template: `
     <app-wip>
-      <app-cms page="harvest.html"></app-cms>
+      <app-cms [page]="page"></app-cms>
     </app-wip>
   `
 })
 export class HarvestComponent extends PageComponent {
+  public page = "harvest.html";
+
   constructor() {
     super();
   }

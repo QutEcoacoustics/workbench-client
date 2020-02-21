@@ -5,13 +5,12 @@ import { SharedModule } from "../shared/shared.module";
 import { ReportProblemComponent } from "./report-problem.component";
 import { reportProblemsRoute } from "./report-problem.menus";
 
-export const reportProblemsComponents = [ReportProblemComponent];
-
+const components = [ReportProblemComponent];
 const routes = reportProblemsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: [reportProblemsComponents],
+  declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...reportProblemsComponents]
+  exports: [RouterModule, ...components]
 })
 export class ReportProblemsModule {}

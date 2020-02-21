@@ -9,7 +9,7 @@ import { ResetPasswordComponent } from "./pages/reset-password/reset-password.co
 import { UnlockPasswordComponent } from "./pages/unlock-account/unlock-account.component";
 import { securityRoute } from "./security.menus";
 
-export const SecurityComponents = [
+const components = [
   LoginComponent,
   RegisterComponent,
   ResetPasswordComponent,
@@ -20,8 +20,8 @@ export const SecurityComponents = [
 const routes = securityRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
-  declarations: SecurityComponents,
+  declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...SecurityComponents]
+  exports: [RouterModule, ...components]
 })
 export class SecurityModule {}

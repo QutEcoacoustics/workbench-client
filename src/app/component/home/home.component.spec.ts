@@ -29,6 +29,7 @@ describe("HomeComponent", () => {
   let securityApi: SecurityService;
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  let cmsUrl: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,11 +44,24 @@ describe("HomeComponent", () => {
     config = TestBed.inject(AppConfigService);
     projectApi = TestBed.inject(ProjectsService);
     securityApi = TestBed.inject(SecurityService);
+
+    cmsUrl = config.getConfig().environment.cmsRoot + "/home.html";
   });
 
   afterEach(() => {
     httpMock.verify();
   });
+
+  function handleCms(waitTime?: number) {
+    const req = httpMock.expectOne(cmsUrl);
+    req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    if (waitTime) {
+      tick(waitTime);
+    } else {
+      flush();
+    }
+    fixture.detectChanges();
+  }
 
   it("should create", fakeAsync(() => {
     spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
@@ -65,12 +79,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     expect(component).toBeTruthy();
   }));
@@ -91,12 +100,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const header = fixture.nativeElement.querySelector("h1");
     const body = fixture.nativeElement.querySelector("p");
@@ -124,12 +128,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const cards = fixture.nativeElement.querySelectorAll("app-card-image");
     const button = fixture.nativeElement.querySelector("button");
@@ -158,12 +157,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
   }));
 
   it("should display empty project in filter", fakeAsync(() => {
@@ -183,12 +177,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const cards = fixture.nativeElement.querySelectorAll("app-card-image");
     const button = fixture.nativeElement.querySelector("button");
@@ -221,12 +210,7 @@ describe("HomeComponent", () => {
 
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const cards = fixture.nativeElement.querySelectorAll("app-card-image");
     const button = fixture.nativeElement.querySelector("button");
@@ -279,12 +263,7 @@ describe("HomeComponent", () => {
 
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const cards = fixture.nativeElement.querySelectorAll("app-card-image");
     const button = fixture.nativeElement.querySelector("button");
@@ -327,12 +306,7 @@ describe("HomeComponent", () => {
 
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
 
     const button = fixture.nativeElement.querySelector("button");
     expect(button).toBeTruthy();
@@ -363,12 +337,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    flush();
-    fixture.detectChanges();
+    handleCms();
   }));
 
   it("should update on logout", fakeAsync(() => {
@@ -423,12 +392,7 @@ describe("HomeComponent", () => {
     tick(100);
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/home.html"
-    );
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    tick(100);
-    fixture.detectChanges();
+    handleCms(100);
 
     // Should initially have zero cards
     let cards = fixture.nativeElement.querySelectorAll("app-card-image");

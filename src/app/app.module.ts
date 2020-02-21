@@ -24,6 +24,7 @@ import {
 import { ProjectsModule } from "./component/projects/projects.module";
 import { ReportProblemsModule } from "./component/report-problem/report-problem.module";
 import { SecurityModule } from "./component/security/security.module";
+import { SendAudioModule } from "./component/send-audio/send-audio.module";
 import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
@@ -42,15 +43,16 @@ export const appImports = [
     positionClass: "toast-top-center"
   }),
   SharedModule,
-  SecurityModule,
   AboutModule,
-  ProjectsModule,
-  SitesModule,
-  ReportProblemsModule,
   DataRequestModule,
-  StatisticsModule,
   MyAccountModule,
   ProfileModule,
+  ProjectsModule,
+  ReportProblemsModule,
+  SecurityModule,
+  SendAudioModule,
+  SitesModule,
+  StatisticsModule,
   // these last two must be last!
   HomeModule,
   ErrorModule

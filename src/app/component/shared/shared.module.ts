@@ -9,8 +9,8 @@ import {
 
 @NgModule({
   declarations: [...sharedComponents, ...formlyAccessors],
-  imports: [sharedModules],
-  exports: [sharedModules, sharedComponents]
+  imports: sharedModules,
+  exports: [...sharedModules, ...sharedComponents]
 })
 export class SharedModule {
   constructor(library: FaIconLibrary) {
