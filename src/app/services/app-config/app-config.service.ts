@@ -1,6 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import { environment } from "src/environments/environment";
 
 export let API_ROOT = new InjectionToken("baw.api.root");
 export let API_CONFIG = new InjectionToken("baw.api.config");
@@ -22,15 +23,8 @@ export class AppInitializer {
     @Inject(API_CONFIG) apiConfig: Promise<Configuration>
   ) {
     return async () => {
-      // Wait for promise to resolve
       const config = await apiConfig;
-
-      // Override apiConfig with config data
-      for (const key of Object.keys(apiConfig)) {
-        delete apiConfig[key];
-      }
-      Object.assign(apiConfig, config);
-      return;
+      Object.assign(environment, config);
     };
   }
 }
@@ -39,11 +33,8 @@ export class AppInitializer {
   providedIn: "root"
 })
 export class AppConfigService {
-  constructor(
-    private titleService: Title,
-    @Inject(API_CONFIG) private appConfig: Configuration
-  ) {
-    this.titleService.setTitle(this.appConfig.values.brand.name);
+  constructor(private titleService: Title) {
+    this.titleService.setTitle(environment.values.brand.name);
   }
 
   /**
@@ -51,7 +42,7 @@ export class AppConfigService {
    * If config unknown/null, error has occurred.
    */
   getConfig(): Configuration {
-    return this.appConfig;
+    return environment as Configuration;
   }
 
   /**
@@ -79,6 +70,8 @@ export class AppConfigService {
  * External configuration file contents
  */
 export interface Configuration {
+  production: boolean;
+  version: string;
   environment: {
     environment: string;
     apiRoot: string;

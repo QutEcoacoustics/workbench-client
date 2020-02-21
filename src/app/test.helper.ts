@@ -1,10 +1,15 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 import {
   apiRootFactory,
+  API_CONFIG,
   API_ROOT,
   AppConfigService
 } from "./services/app-config/app-config.service";
-import { MockAppConfigService } from "./services/app-config/appConfigMock.service";
+import {
+  MockAppConfigService,
+  testConfig
+} from "./services/app-config/appConfigMock.service";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
@@ -43,8 +48,14 @@ export const testBawServices = [
   },
   {
     provide: API_ROOT,
-    useFactory: apiRootFactory,
-    deps: [AppConfigService]
+    useValue: "https://www.testing.com/api"
+  },
+  {
+    provide: API_CONFIG,
+    useValue: new Promise(resolve => {
+      Object.assign(environment, testConfig);
+      resolve(testConfig);
+    })
   },
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },

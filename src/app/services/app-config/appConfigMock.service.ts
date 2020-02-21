@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
+import { environment } from "src/environments/environment";
 import { Configuration } from "./app-config.service";
 
 @Injectable()
@@ -10,6 +11,7 @@ export class MockAppConfigService {
    * Load the application config from the ecosounds website
    */
   async loadAppConfig(): Promise<any> {
+    Object.assign(environment, testConfig);
     this.titleService.setTitle("TESTING");
 
     return new Promise((resolve, reject) => {
@@ -25,46 +27,7 @@ export class MockAppConfigService {
    * Returns null if an error has occurred
    */
   getConfig(): Configuration {
-    return {
-      environment: {
-        environment: "testing",
-        apiRoot: "http://apiroot",
-        siteRoot: "<< siteRoot >>",
-        siteDir: "<< siteDir >>",
-        cmsRoot: "<< cmsRoot >>",
-        ga: {
-          trackingId: "<< placeholder >>"
-        }
-      },
-      values: {
-        keys: {
-          googleMaps: "<< googleMaps >>"
-        },
-        brand: {
-          name: "<< brandName >>",
-          title: "<< brandTitle >>"
-        },
-        content: [
-          {
-            title: "<< content1 >>",
-            url: "<< contentUrl1 >>"
-          },
-          {
-            headerTitle: "<< content2 >>",
-            items: [
-              {
-                title: "<< content3 >>",
-                url: "<< contentUrl3 >>"
-              },
-              {
-                title: "<< content4 >>",
-                url: "<< contentUrl4 >>"
-              }
-            ]
-          }
-        ]
-      }
-    };
+    return environment as Configuration;
   }
 
   /**
@@ -76,3 +39,43 @@ export class MockAppConfigService {
     return "<< contentUrl >>";
   }
 }
+
+export const testConfig = {
+  environment: {
+    apiRoot: "https://www.testing.com/api",
+    siteRoot: "https://www.testing.com/site",
+    siteDir: "<< siteDir >>",
+    cmsRoot: "https://www.testing.com/cms",
+    ga: {
+      trackingId: "<< googleAnalytics >>"
+    }
+  },
+  values: {
+    keys: {
+      googleMaps: "<< googleMaps >>"
+    },
+    brand: {
+      name: "<< brandName >>",
+      title: "<< brandTitle >>"
+    },
+    content: [
+      {
+        title: "<< content1 >>",
+        url: "<< contentUrl1 >>"
+      },
+      {
+        headerTitle: "<< content2 >>",
+        items: [
+          {
+            title: "<< content3 >>",
+            url: "<< contentUrl3 >>"
+          },
+          {
+            title: "<< content4 >>",
+            url: "<< contentUrl4 >>"
+          }
+        ]
+      }
+    ]
+  }
+};
