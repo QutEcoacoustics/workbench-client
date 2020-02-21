@@ -63,8 +63,14 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.filteredLinks = new Set(
       this?.links
         ?.filter(link => {
+          if (!link.predicate || link.active) {
+            // Clear any modifications to link by secondary menu
+            link.active = false;
+            return true;
+          }
+
           // If link has predicate function, test if returns true
-          return link.predicate ? link.predicate(this?.user) : true;
+          return link.predicate(this?.user);
         })
         ?.sort(this.compare)
     );

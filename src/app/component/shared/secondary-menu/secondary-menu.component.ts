@@ -36,23 +36,22 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    const clearPredicate = undefined;
-
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         // get default links
         const defaultLinks = DefaultMenu.contextLinks;
 
         // and current page
-        const current = fromJS(page.self).toJS(); // De-reference
-        current.predicate = clearPredicate;
+        const current = page.self;
+        current.active = true; // Ignore predicate
 
         // and parent pages
         const parentMenuRoutes: MenuRoute[] = [];
         let menuRoute = current;
         while (menuRoute.parent) {
-          menuRoute = fromJS(menuRoute.parent).toJS(); // De-reference
-          menuRoute.predicate = clearPredicate;
+          menuRoute = menuRoute.parent;
+          menuRoute.active = true; // Ignore predicate
+
           parentMenuRoutes.push(menuRoute);
         }
 

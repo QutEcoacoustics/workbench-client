@@ -349,6 +349,9 @@ describe("SecondaryMenuComponent", () => {
       assertIcon(links[1], "fas,exclamation-triangle");
       assertTooltip(links[1], "Custom Tooltip 2");
     });
+
+    // TODO
+    xit("should hide duplicate if self link exists in default menu", () => {});
   });
 
   describe("internal links", () => {

@@ -80,6 +80,11 @@ export interface MenuItem extends LabelAndIcon {
    * The indentation of this link
    */
   indentation?: number;
+  /**
+   * Tracks whether this link, or one of its children is currently actively being displayed.
+   * It allows the link to skip its predicate temporarily.
+   */
+  active?: boolean;
 }
 
 /**
@@ -99,6 +104,7 @@ export interface MenuLink extends MenuItem {
 export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
   return Object.assign(item, {
     kind: "MenuLink" as "MenuLink",
+    active: false,
     indentation: 0
   });
 }
@@ -126,6 +132,7 @@ export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
 ): MenuRoute {
   return Object.assign(item, {
     kind: "MenuRoute" as "MenuRoute",
+    active: false,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
     order: item.parent ? item.parent.order : item.order
   });
@@ -146,6 +153,7 @@ export function MenuAction<T extends Omit<MenuAction, "kind">>(
 ): MenuAction {
   return Object.assign(item, {
     kind: "MenuAction" as "MenuAction",
+    active: false,
     indentation: 0
   });
 }
