@@ -27,7 +27,7 @@ import annotationData from "./download-annotations.json";
         [error]="error"
         [submitLabel]="'Download Annotations'"
         [submitLoading]="annotationLoading"
-        (onSubmit)="submitAnnotation($event)"
+        (onSubmit)="submitDownloadAnnotation($event)"
       ></app-form>
       <app-form
         title="Custom Data Request"
@@ -36,7 +36,7 @@ import annotationData from "./download-annotations.json";
         [error]="error"
         [submitLabel]="'Submit'"
         [submitLoading]="requestLoading"
-        (onSubmit)="submitRequest($event)"
+        (onSubmit)="submitDataRequest($event)"
       ></app-form>
     </app-wip>
   `
@@ -60,7 +60,7 @@ export class DataRequestComponent extends PageComponent implements OnInit {
    * Form submission
    * @param $event Form response
    */
-  submitAnnotation($event: any) {
+  submitDownloadAnnotation($event: any) {
     this.annotationLoading = true;
     console.log($event);
     this.annotationLoading = false;
@@ -70,7 +70,7 @@ export class DataRequestComponent extends PageComponent implements OnInit {
    * Form submission
    * @param $event Form response
    */
-  submitRequest($event: any) {
+  submitDataRequest($event: any) {
     this.requestLoading = true;
     console.log($event);
     this.requestLoading = false;
