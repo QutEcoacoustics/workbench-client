@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { SharedModule } from "../../shared.module";
 import { ItemComponent, ItemInterface } from "../item/item.component";
 import { ItemsComponent } from "./items.component";
@@ -22,7 +23,7 @@ describe("ItemsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [SharedModule, RouterTestingModule],
       declarations: [ItemsComponent, ItemComponent]
     }).compileComponents();
   }));

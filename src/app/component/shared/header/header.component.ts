@@ -182,7 +182,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       label: item.title,
       icon: ["fas", "home"],
       tooltip: () => "UPDATE ME",
-      uri: item.url
+      uri: () => item.url
     });
   }
 }

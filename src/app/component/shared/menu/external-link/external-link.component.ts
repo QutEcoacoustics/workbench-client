@@ -12,7 +12,7 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
   template: `
     <a
       class="nav-link"
-      href="{{ link.uri }}"
+      href="{{ uri }}"
       placement="{{ placement }}"
       ngbTooltip="{{ tooltip }}"
     >
@@ -31,13 +31,13 @@ export class MenuExternalLinkComponent implements OnInit {
   @Input() link: MenuLink;
   @Input() placement: "left" | "right";
   @Input() tooltip: string;
+  @Input() uri: string;
 
   constructor(private config: AppConfigService) {}
 
   ngOnInit() {
-    if (this.link.uri.charAt(0) === "/") {
-      this.link.uri =
-        this.config.getConfig().environment.apiRoot + this.link.uri;
+    if (this.uri.charAt(0) === "/") {
+      this.uri = this.config.getConfig().environment.apiRoot + this.uri;
     }
   }
 }

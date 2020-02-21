@@ -26,7 +26,7 @@ describe("HeaderDropdownComponent", () => {
       items: [
         MenuLink({
           label: "label",
-          uri: "uri",
+          uri: () => "uri",
           icon: ["fas", "home"],
           tooltip: () => "tooltip"
         })
@@ -42,7 +42,7 @@ describe("HeaderDropdownComponent", () => {
       items: [
         MenuLink({
           label: "label",
-          uri: "uri",
+          uri: () => "uri",
           icon: ["fas", "home"],
           tooltip: () => "tooltip"
         })
@@ -61,7 +61,7 @@ describe("HeaderDropdownComponent", () => {
       items: [
         MenuLink({
           label: "label",
-          uri: "uri",
+          uri: () => "uri",
           icon: ["fas", "home"],
           tooltip: () => "tooltip"
         })
@@ -83,7 +83,7 @@ describe("HeaderDropdownComponent", () => {
       items: [
         MenuLink({
           label: "label",
-          uri: "uri",
+          uri: () => "uri",
           icon: ["fas", "home"],
           tooltip: () => "tooltip"
         })
@@ -175,7 +175,7 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]
     };
@@ -195,13 +195,13 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/1"
+          uri: () => "http://brokenlink/1"
         }),
         MenuLink({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/2"
+          uri: () => "http://brokenlink/2"
         })
       ]
     };
@@ -223,7 +223,7 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/1"
+          uri: () => "http://brokenlink/1"
         }),
         MenuRoute({
           label: "Custom Label 2",

@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Href } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
@@ -53,15 +54,21 @@ export class ItemComponent implements OnInit {
   link: string;
   internalLink: boolean;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
+    if (!this.uri) {
+      return;
+    }
+
     if (typeof this.uri === "object") {
       this.internalLink = true;
       this.link = this.uri.toString();
     } else {
+      const params = this.route.snapshot.params;
+
       this.internalLink = false;
-      this.link = this.uri;
+      this.link = this.uri(params);
     }
   }
 }

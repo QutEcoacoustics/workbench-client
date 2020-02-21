@@ -4,8 +4,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
-import { BehaviorSubject } from "rxjs";
 import { isGuestPredicate, isLoggedInPredicate } from "src/app/app.menus";
+import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   MenuAction,
@@ -35,14 +35,9 @@ describe("MenuComponent", () => {
   });
 
   class MockActivatedRoute {
-    public params = new BehaviorSubject<any>({ attribute: 10 });
-  }
-
-  function assertIcon(target: HTMLElement, prop: string) {
-    const icon: HTMLElement = target.querySelector("fa-icon");
-    expect(icon).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(prop);
+    public snapshot = {
+      params: { attribute: 10 }
+    };
   }
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -54,14 +49,6 @@ describe("MenuComponent", () => {
     const label: HTMLElement = target.querySelector("#label");
     expect(label).toBeTruthy();
     expect(label.innerText.trim()).toBe(labelText);
-  }
-
-  function assertTooltip(target: HTMLElement, tooltip: string) {
-    expect(target).toBeTruthy();
-    expect(target.attributes.getNamedItem("ng-reflect-tooltip")).toBeTruthy();
-    expect(
-      target.attributes.getNamedItem("ng-reflect-tooltip").value.trim()
-    ).toBe(tooltip);
   }
 
   function findLinks(
@@ -177,7 +164,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       }),
       MenuAction({
         label: "label",
@@ -206,7 +193,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       }),
       MenuAction({
         label: "label",
@@ -493,7 +480,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -510,7 +497,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -527,13 +514,13 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -550,7 +537,7 @@ describe("MenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -566,7 +553,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -582,7 +569,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "Custom Tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -599,7 +586,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: user => `${user.userName} tooltip`,
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -615,13 +602,29 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
 
       const link = findLinks(linkSelector)[0];
       assertHref(link, "http://brokenlink/");
+    });
+
+    it("should create link href with router params", () => {
+      component.menuType = "action";
+      component.links = List<AnyMenuItem>([
+        MenuLink({
+          label: "label",
+          icon: ["fas", "home"],
+          tooltip: () => "tooltip",
+          uri: params => "http://brokenlink/" + params.attribute
+        })
+      ]);
+      fixture.detectChanges();
+
+      const link = findLinks(linkSelector)[0];
+      assertHref(link, "http://brokenlink/10");
     });
 
     it("should not filter links without predicate", () => {
@@ -632,7 +635,7 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/"
+          uri: () => "http://brokenlink/"
         })
       ]);
       fixture.detectChanges();
@@ -648,14 +651,14 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isGuestPredicate
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isLoggedInPredicate
         })
       ]);
@@ -674,14 +677,14 @@ describe("MenuComponent", () => {
           label: "label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isGuestPredicate
         }),
         MenuLink({
           label: "label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: "http://brokenlink/",
+          uri: () => "http://brokenlink/",
           predicate: isLoggedInPredicate
         })
       ]);
@@ -697,7 +700,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: "http://brokenlink/"
+        uri: () => "http://brokenlink/"
       });
       component.menuType = "action";
       component.links = List<AnyMenuItem>([menuLink, menuLink]);
