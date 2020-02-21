@@ -7,46 +7,26 @@ import { ItemInterface } from "src/app/component/shared/items/item/item.componen
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
-import { AnyMenuItem, MenuLink } from "src/app/interfaces/menusInterfaces";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
+  theirAnnotationsMenuItem,
+  theirBookmarksMenuItem,
   theirEditProfileMenuItem,
   theirProfileCategory,
-  theirProfileMenuItem
+  theirProfileMenuItem,
+  theirProjectsMenuItem,
+  theirSitesMenuItem
 } from "../../profile.menus";
 
 export const theirProfileMenuItemActions = [
   theirEditProfileMenuItem,
-  MenuLink({
-    icon: ["fas", "globe-asia"],
-    label: "Their Projects",
-    uri: () => "BROKEN LINK",
-    tooltip: () => "Projects they can access",
-    predicate: user => !!user
-  }),
-  MenuLink({
-    icon: ["fas", "map-marker-alt"],
-    label: "Their Sites",
-    uri: () => "BROKEN LINK",
-    tooltip: () => "Sites they can access",
-    predicate: user => !!user
-  }),
-  MenuLink({
-    icon: ["fas", "bookmark"],
-    label: "Their Bookmarks",
-    uri: () => "BROKEN LINK",
-    tooltip: () => "Bookmarks created by them",
-    predicate: user => !!user
-  }),
-  MenuLink({
-    icon: ["fas", "bullseye"],
-    label: "Their Annotations",
-    uri: () => "BROKEN LINK",
-    tooltip: () => "Annotations created by them",
-    predicate: user => !!user
-  })
+  theirProjectsMenuItem,
+  theirSitesMenuItem,
+  theirBookmarksMenuItem,
+  theirAnnotationsMenuItem
 ];
 
 @Page({

@@ -7,11 +7,7 @@ import {
   isLoggedInPredicate,
   isOwnerPredicate
 } from "src/app/app.menus";
-import {
-  Category,
-  MenuLink,
-  MenuRoute
-} from "src/app/interfaces/menusInterfaces";
+import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const projectsRoute = StrongRoute.Base.add("projects");
@@ -69,13 +65,6 @@ export const editProjectMenuItem = MenuRoute({
   parent: projectMenuItem,
   tooltip: () => "Change the details for this project",
   predicate: isOwnerPredicate
-});
-
-export const exploreAudioProjectMenuItem = MenuLink({
-  uri: params => `/visualize?projectId=${params.projectId}`,
-  icon: ["fas", "map"],
-  label: "Explore audio",
-  tooltip: () => "Explore audio"
 });
 
 export const editProjectPermissionsMenuItem = MenuRoute({
