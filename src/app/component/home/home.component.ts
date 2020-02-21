@@ -24,9 +24,10 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+  public page = "credits.html";
+  public moreProjectsLink = projectsMenuItem;
+  public projectList: List<Card> = List([]);
   private unsubscribe = new Subject();
-  moreProjectsLink = projectsMenuItem;
-  projectList: List<Card> = List([]);
 
   constructor(
     private projectApi: ProjectsService,

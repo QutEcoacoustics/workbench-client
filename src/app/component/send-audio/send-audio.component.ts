@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
@@ -14,8 +15,16 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 @Component({
   selector: "app-send-audio",
   template: `
-    <app-cms page="sendAudio.html"></app-cms>
+    <app-wip>
+      <app-cms [page]="page"></app-cms>
+    </app-wip>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SendAudioComponent {}
+export class SendAudioComponent extends PageComponent {
+  public page = "sendAudio.html";
+
+  constructor() {
+    super();
+  }
+}

@@ -15,11 +15,13 @@ import { aboutCategory, creditsMenuItem } from "../../about.menus";
 @Component({
   selector: "app-about-credits",
   template: `
-    <app-cms page="credits.html"></app-cms>
+    <app-cms [page]="page"></app-cms>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreditsComponent extends PageComponent {
+  public page = "credits.html";
+
   constructor() {
     super();
   }
