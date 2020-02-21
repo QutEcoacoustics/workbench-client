@@ -9,7 +9,7 @@ import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
   BawApiService,
-  STUB_CLASS_BUILDER
+  STUB_MODEL_BUILDER
 } from "./services/baw-api/baw-api.service";
 import {
   MockBawApiService,
@@ -47,7 +47,7 @@ export const testBawServices = [
     useClass: BawApiInterceptor,
     multi: true
   },
-  { provide: STUB_CLASS_BUILDER, useValue: MockModel },
+  { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockReadonlyApiService },

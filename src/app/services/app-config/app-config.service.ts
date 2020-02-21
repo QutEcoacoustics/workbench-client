@@ -1,9 +1,13 @@
-import { Injectable } from "@angular/core";
+import { Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 
 const environmentUrl = "assets/environment.json";
 
+export let API_ROOT = new InjectionToken("baw.api.root");
+export function apiRootFactory(appConfig: AppConfigService) {
+  return appConfig.getConfig().environment.apiRoot;
+}
 export function appInitializerFn(appConfig: AppConfigService) {
   return () => appConfig.loadAppConfig();
 }

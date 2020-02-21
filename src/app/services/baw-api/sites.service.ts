@@ -1,11 +1,11 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { AppConfigService } from "../app-config/app-config.service";
+import { API_ROOT } from "../app-config/app-config.service";
 import {
   Empty,
   Filter,
@@ -26,8 +26,8 @@ const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`
   providedIn: "root"
 })
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Site);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Site);
   }
 
   list(project: IdOr<Project>): Observable<Site[]> {
@@ -56,8 +56,8 @@ const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
   providedIn: "root"
 })
 export class ShallowSitesService extends StandardApi<Site, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Site);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Site);
   }
 
   list(): Observable<Site[]> {

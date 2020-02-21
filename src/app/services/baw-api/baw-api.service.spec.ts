@@ -15,7 +15,7 @@ import {
   ApiResponse,
   BawApiService,
   Meta,
-  STUB_CLASS_BUILDER
+  STUB_MODEL_BUILDER
 } from "./baw-api.service";
 
 export const shouldNotSucceed = () => {
@@ -194,7 +194,7 @@ describe("BawApiService", () => {
           useClass: BawApiInterceptor,
           multi: true
         },
-        { provide: STUB_CLASS_BUILDER, useValue: MockModel },
+        { provide: STUB_MODEL_BUILDER, useValue: MockModel },
         BawApiService
       ]
     });

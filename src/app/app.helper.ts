@@ -8,6 +8,8 @@ import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-a
 import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
+  apiRootFactory,
+  API_ROOT,
   AppConfigService,
   appInitializerFn
 } from "./services/app-config/app-config.service";
@@ -72,6 +74,11 @@ export const providers = [
     provide: APP_INITIALIZER,
     useFactory: appInitializerFn,
     multi: true,
+    deps: [AppConfigService]
+  },
+  {
+    provide: API_ROOT,
+    useFactory: apiRootFactory,
     deps: [AppConfigService]
   }
 ];

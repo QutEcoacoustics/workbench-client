@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
-import { AppConfigService } from "../app-config/app-config.service";
+import { API_ROOT } from "../app-config/app-config.service";
 import {
   Empty,
   Filter,
@@ -25,8 +25,8 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
   providedIn: "root"
 })
 export class ProjectsService extends StandardApi<Project, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, Project);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, Project);
   }
 
   list(): Observable<Project[]> {
