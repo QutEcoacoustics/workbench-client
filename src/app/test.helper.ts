@@ -1,10 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { APP_INITIALIZER } from "@angular/core";
 import {
   apiRootFactory,
   API_ROOT,
-  AppConfigService,
-  appInitializerFn
+  AppConfigService
 } from "./services/app-config/app-config.service";
 import { MockAppConfigService } from "./services/app-config/appConfigMock.service";
 import { AccountService } from "./services/baw-api/account.service";
@@ -33,12 +31,6 @@ export const testAppInitializer = [
   {
     provide: AppConfigService,
     useClass: MockAppConfigService
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: appInitializerFn,
-    multi: true,
-    deps: [AppConfigService]
   }
 ];
 

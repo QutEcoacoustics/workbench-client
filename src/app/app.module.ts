@@ -5,7 +5,7 @@ import {
 } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
-import { forwardRef, Injectable, NgModule } from "@angular/core";
+import { forwardRef, Inject, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
@@ -29,6 +29,10 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
+import {
+  API_CONFIG,
+  Configuration
+} from "./services/app-config/app-config.service";
 
 export const appImports = [
   BrowserModule,
@@ -62,19 +66,8 @@ export const appImports = [
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
   apiKey?: string;
 
-  constructor() {
-    this.apiKey = "";
-    // retrieveAppConfig(
-    //   data => {
-    //     this.apiKey = data.values.keys.googleMaps;
-    //     return data;
-    //   },
-    //   err => {
-    //     console.error("Failed to load google api key: ", err);
-    //     this.apiKey = "";
-    //     return null;
-    //   }
-    // );
+  constructor(@Inject(API_CONFIG) appConfig: Configuration) {
+    this.apiKey = appConfig.values.keys.googleMaps;
   }
 }
 

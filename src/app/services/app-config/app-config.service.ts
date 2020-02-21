@@ -1,19 +1,38 @@
-import {
-  APP_INITIALIZER,
-  Inject,
-  Injectable,
-  InjectionToken
-} from "@angular/core";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
-
-const environmentUrl = "assets/environment.json";
 
 export let API_ROOT = new InjectionToken("baw.api.root");
 export let API_CONFIG = new InjectionToken("baw.api.config");
 
 export function apiRootFactory(appConfig: AppConfigService) {
   return appConfig.getConfig().environment.apiRoot;
+}
+
+/**
+ * App Initializer class.
+ * Class is a wrapper for the factory function as error handler
+ * forbids injection on functions even though its supported.
+ */
+@Injectable()
+export class AppInitializer {
+  constructor() {}
+
+  static appInitializerFactory(
+    @Inject(API_CONFIG) apiConfig: Promise<Configuration>
+  ) {
+    return async () => {
+      // Wait for promise to resolve
+      const config = await apiConfig;
+
+      // Override apiConfig with config data
+      for (const key of Object.keys(apiConfig)) {
+        delete apiConfig[key];
+      }
+      Object.assign(apiConfig, config);
+      return;
+    };
+  }
 }
 
 @Injectable({
@@ -24,8 +43,6 @@ export class AppConfigService {
     private titleService: Title,
     @Inject(API_CONFIG) private appConfig: Configuration
   ) {
-    console.log("API_CONFIG Output: ", this.appConfig);
-
     this.titleService.setTitle(this.appConfig.values.brand.name);
   }
 

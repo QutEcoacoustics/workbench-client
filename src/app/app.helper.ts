@@ -9,8 +9,10 @@ import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
   apiRootFactory,
+  API_CONFIG,
   API_ROOT,
-  AppConfigService
+  AppConfigService,
+  AppInitializer
 } from "./services/app-config/app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 
@@ -67,6 +69,12 @@ export const providers = [
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: AppInitializer.appInitializerFactory,
+    multi: true,
+    deps: [API_CONFIG]
   },
   {
     provide: API_ROOT,
