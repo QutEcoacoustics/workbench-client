@@ -3,75 +3,77 @@ import { Route, Routes } from "@angular/router";
 import { StrongRoute } from "./strongRoute";
 
 describe("StrongRoute", () => {
+  function assertChildren(route: StrongRoute, children: StrongRoute[]) {
+    expect(route.children).toEqual(children);
+  }
+
   describe("Base StrongRoute", () => {
-    let strongRoute: StrongRoute;
+    let baseRoute: StrongRoute;
 
     beforeEach(() => {
-      strongRoute = StrongRoute.Base;
+      baseRoute = StrongRoute.Base;
     });
 
     it("should create base route", () => {
-      expect(strongRoute).toBeTruthy();
+      expect(baseRoute).toBeTruthy();
+      assertChildren(baseRoute, []);
     });
 
     it("should add route", () => {
-      const homeRoute = strongRoute.add("home");
-      expect(homeRoute).toBeTruthy();
+      const homeRoute = baseRoute.add("home");
+      assertChildren(baseRoute, [homeRoute]);
     });
 
     it("should add multiple routes", () => {
-      const homeRoute = strongRoute.add("home");
-      const houseRoute = strongRoute.add("house");
-      expect(homeRoute).toBeTruthy();
-      expect(houseRoute).toBeTruthy();
+      const homeRoute = baseRoute.add("home");
+      const houseRoute = baseRoute.add("house");
+      assertChildren(baseRoute, [homeRoute, houseRoute]);
     });
 
     it("should add parameter route", () => {
-      const paramRoute = strongRoute.add(":id");
-      expect(paramRoute).toBeTruthy();
+      const paramRoute = baseRoute.add(":id");
+      assertChildren(baseRoute, [paramRoute]);
     });
 
     it("should add mixed routes", () => {
-      const homeRoute = strongRoute.add("home");
-      const paramRoute = strongRoute.add(":id");
-      expect(homeRoute).toBeTruthy();
-      expect(paramRoute).toBeTruthy();
+      const homeRoute = baseRoute.add("home");
+      const paramRoute = baseRoute.add(":id");
+      assertChildren(baseRoute, [homeRoute, paramRoute]);
     });
   });
 
   describe("Child StrongRoute", () => {
-    let childStrongRoute: StrongRoute;
+    let parentRoute: StrongRoute;
 
     beforeEach(() => {
-      childStrongRoute = StrongRoute.Base.add("parent");
+      parentRoute = StrongRoute.Base.add("parent");
     });
 
     it("should create base route", () => {
-      expect(childStrongRoute).toBeTruthy();
+      expect(parentRoute).toBeTruthy();
+      assertChildren(parentRoute, []);
     });
 
     it("should add route", () => {
-      const homeRoute = childStrongRoute.add("home");
-      expect(homeRoute).toBeTruthy();
+      const homeRoute = parentRoute.add("home");
+      assertChildren(parentRoute, [homeRoute]);
     });
 
     it("should add multiple routes", () => {
-      const homeRoute = childStrongRoute.add("home");
-      const houseRoute = childStrongRoute.add("house");
-      expect(homeRoute).toBeTruthy();
-      expect(houseRoute).toBeTruthy();
+      const homeRoute = parentRoute.add("home");
+      const houseRoute = parentRoute.add("house");
+      assertChildren(parentRoute, [homeRoute, houseRoute]);
     });
 
     it("should add parameter route", () => {
-      const paramRoute = childStrongRoute.add(":id");
-      expect(paramRoute).toBeTruthy();
+      const paramRoute = parentRoute.add(":id");
+      assertChildren(parentRoute, [paramRoute]);
     });
 
     it("should add mixed routes", () => {
-      const homeRoute = childStrongRoute.add("home");
-      const paramRoute = childStrongRoute.add(":id");
-      expect(homeRoute).toBeTruthy();
-      expect(paramRoute).toBeTruthy();
+      const homeRoute = parentRoute.add("home");
+      const paramRoute = parentRoute.add(":id");
+      assertChildren(parentRoute, [homeRoute, paramRoute]);
     });
   });
 
@@ -340,10 +342,6 @@ describe("StrongRoute", () => {
 
     beforeEach(() => {
       strongRoute = StrongRoute.Base;
-    });
-
-    it("should handle base StrongRoute", () => {
-      expect(strongRoute.toRoute()).toEqual([""]);
     });
 
     it("should handle child route", () => {

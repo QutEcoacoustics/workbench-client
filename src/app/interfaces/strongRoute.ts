@@ -118,14 +118,17 @@ export class StrongRoute {
     const rootRoute = this.root;
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+      const aParamRoute = a.path.startsWith(":");
+      const bParamRoute = b.path.startsWith(":");
+
       // If one of the routes is a parameter route
-      if (a.path.charAt(0) === ":" || b.path.startsWith(":")) {
+      if (aParamRoute || bParamRoute) {
         // If both are parameter routes, they are equal
-        if (a.path.charAt(0) === ":" && b.path.startsWith(":")) {
+        if (aParamRoute && bParamRoute) {
           return 0;
         }
         // Else give priority to the non-parameter route
-        return a.path.charAt(0) === ":" ? 1 : -1;
+        return aParamRoute ? 1 : -1;
       }
 
       return 0;
@@ -159,8 +162,7 @@ export class StrongRoute {
    * Router representation of the route
    */
   toRoute(): string[] {
-    const output = this.full.map(x => x.name);
-    return output.length > 1 ? output.filter(x => !!x) : [""];
+    return this.full.slice(1).map(x => x.name);
   }
 
   /**
