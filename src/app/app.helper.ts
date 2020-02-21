@@ -10,8 +10,7 @@ import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.co
 import {
   apiRootFactory,
   API_ROOT,
-  AppConfigService,
-  appInitializerFn
+  AppConfigService
 } from "./services/app-config/app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 
@@ -64,17 +63,10 @@ export function fontAwesomeLibraries(library: FaIconLibrary) {
 }
 
 export const providers = [
-  AppConfigService,
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: appInitializerFn,
-    multi: true,
-    deps: [AppConfigService]
   },
   {
     provide: API_ROOT,

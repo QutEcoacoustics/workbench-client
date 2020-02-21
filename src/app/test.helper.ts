@@ -1,6 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
 import {
+  apiRootFactory,
+  API_ROOT,
   AppConfigService,
   appInitializerFn
 } from "./services/app-config/app-config.service";
@@ -46,6 +48,11 @@ export const testBawServices = [
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
+  },
+  {
+    provide: API_ROOT,
+    useFactory: apiRootFactory,
+    deps: [AppConfigService]
   },
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },

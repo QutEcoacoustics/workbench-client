@@ -29,7 +29,6 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
 export const appImports = [
   BrowserModule,
@@ -64,17 +63,18 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
   apiKey?: string;
 
   constructor() {
-    retrieveAppConfig(
-      data => {
-        this.apiKey = data.values.keys.googleMaps;
-        return data;
-      },
-      err => {
-        console.error("Failed to load google api key: ", err);
-        this.apiKey = "";
-        return null;
-      }
-    );
+    this.apiKey = "";
+    // retrieveAppConfig(
+    //   data => {
+    //     this.apiKey = data.values.keys.googleMaps;
+    //     return data;
+    //   },
+    //   err => {
+    //     console.error("Failed to load google api key: ", err);
+    //     this.apiKey = "";
+    //     return null;
+    //   }
+    // );
   }
 }
 
