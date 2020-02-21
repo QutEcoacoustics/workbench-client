@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
@@ -19,14 +20,13 @@ import {
   annotationsMenuItem,
   deleteSiteMenuItem,
   editSiteMenuItem,
-  exploreAudioSiteMenuItem,
   harvestMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
-  exploreAudioSiteMenuItem,
+  exploreAudioMenuItem,
   annotationsMenuItem,
   editSiteMenuItem,
   harvestMenuItem,

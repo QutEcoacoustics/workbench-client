@@ -4,7 +4,9 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
 import {
+  getRoute,
   isExternalLink,
   isInternalRoute,
   NavigableMenuItem
@@ -18,13 +20,13 @@ import {
         <a
           class="nav-link"
           routerLinkActive="active"
-          [routerLink]="link.route.toString()"
+          [routerLink]="getRoute(link, params)"
         >
           {{ link.label }}
         </a>
       </ng-container>
       <ng-container *ngIf="isExternalLink(link)">
-        <a class="nav-link" [href]="link.uri">
+        <a class="nav-link" [href]="getRoute(link, params)">
           {{ link.label }}
         </a>
       </ng-container>
@@ -34,11 +36,15 @@ import {
 })
 export class HeaderItemComponent implements OnInit {
   @Input() link: NavigableMenuItem;
+  public params: Params;
 
   isInternalRoute = isInternalRoute;
   isExternalLink = isExternalLink;
+  getRoute = getRoute;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {
+    this.params = this.route.snapshot.params;
+  }
 
   ngOnInit() {}
 }

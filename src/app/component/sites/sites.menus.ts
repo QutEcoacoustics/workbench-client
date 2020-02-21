@@ -38,16 +38,9 @@ export const siteMenuItem = MenuRoute({
   parent: projectMenuItem
 });
 
-export const exploreAudioSiteMenuItem = MenuLink({
-  uri: "REPLACE_ME",
-  icon: ["fas", "map"],
-  label: "Explore audio",
-  tooltip: () => "Explore audio"
-});
-
 export const annotationsMenuItem = MenuLink({
-  uri: "REPLACE_ME",
-  icon: ["fas", "table"],
+  uri: () => "REPLACE_ME",
+  icon: ["fas", "border-all"],
   label: "Download annotations",
   tooltip: () => "Download annotations for this site",
   predicate: isLoggedInPredicate

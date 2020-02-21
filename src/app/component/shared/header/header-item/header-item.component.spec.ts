@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { assertRoute } from "src/app/helpers/tests/helpers";
 import { MenuLink, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { HeaderItemComponent } from "./header-item.component";
@@ -49,10 +50,7 @@ describe("HeaderItemComponent", () => {
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
-    expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
-      "/home"
-    );
+    assertRoute(link, "/home");
   });
 
   it("internal link should have router link active attribute", () => {
@@ -78,7 +76,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      uri: "http://brokenlink/"
+      uri: () => "http://brokenlink/"
     });
     fixture.detectChanges();
 

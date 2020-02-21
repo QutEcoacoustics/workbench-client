@@ -1,7 +1,10 @@
 import { List } from "immutable";
 import { dataRequestMenuItem } from "src/app/component/data-request/data-request.menus";
 import { homeCategory, homeMenuItem } from "src/app/component/home/home.menus";
-import { myAccountMenuItem } from "src/app/component/profile/profile.menus";
+import {
+  myAccountMenuItem,
+  myAnnotationsMenuItem
+} from "src/app/component/profile/profile.menus";
 import { projectsMenuItem } from "src/app/component/projects/projects.menus";
 import { reportProblemMenuItem } from "src/app/component/report-problem/report-problem.menus";
 import {
@@ -13,6 +16,7 @@ import {
   MenuLink,
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
+import { audioAnalysisMenuItem, libraryMenuItem } from "./externalMenus";
 
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
@@ -20,36 +24,18 @@ export const DefaultMenu = {
     loginMenuItem,
     registerMenuItem,
     myAccountMenuItem,
-    MenuLink({
-      icon: ["fas", "border-all"],
-      label: "My Annotations",
-      tooltip: () => "View my recent annotations",
-      predicate: user => !!user,
-      order: 3,
-      uri: "REPLACE_ME"
-    }),
+    myAnnotationsMenuItem,
     projectsMenuItem,
-    MenuLink({
-      icon: ["fas", "server"],
-      label: "Audio Analysis",
-      tooltip: () => "View audio analysis jobs",
-      order: 5,
-      uri: "/audio_analysis"
-    }),
-    MenuLink({
-      icon: ["fas", "book"],
-      label: "Library",
-      tooltip: () => "Annotation library",
-      order: 6,
-      uri: "/library"
-    }),
+    audioAnalysisMenuItem,
+    libraryMenuItem,
     dataRequestMenuItem,
+    // This will be replaced by the send-audio branch
     MenuLink({
       icon: ["fas", "envelope"],
       label: "Send Audio",
       tooltip: () => "Send us audio recordings to upload",
       order: 8,
-      uri: "/data_upload"
+      uri: () => "REPLACE_ME"
     }),
     reportProblemMenuItem,
     statisticsMenuItem

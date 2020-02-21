@@ -5,7 +5,7 @@ import {
   OnInit
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { List } from "immutable";
+import { fromJS, List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
@@ -43,12 +43,15 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
 
         // and current page
         const current = page.self;
+        current.active = true; // Ignore predicate
 
         // and parent pages
         const parentMenuRoutes: MenuRoute[] = [];
         let menuRoute = current;
         while (menuRoute.parent) {
           menuRoute = menuRoute.parent;
+          menuRoute.active = true; // Ignore predicate
+
           parentMenuRoutes.push(menuRoute);
         }
 

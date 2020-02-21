@@ -10,7 +10,6 @@ import {
 import { ActivatedRoute, Params } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 import {
   AnyMenuItem,
   isButton,
@@ -40,7 +39,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
-  routerParams: Params;
+  params: Params;
   url: string;
   user: SessionUser;
   loading: boolean;
@@ -56,31 +55,28 @@ export class MenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loading = true;
-
     // Get user details
     this.user = this.api.getSessionUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links
-    this.filteredLinks = new Set(this
-      ?.links
-      ?.filter((link) => {
+    this.filteredLinks = new Set(
+      this?.links
+        ?.filter(link => {
+          if (!link.predicate || link.active) {
+            // Clear any modifications to link by secondary menu
+            link.active = false;
+            return true;
+          }
+
           // If link has predicate function, test if returns true
-          return link.predicate ? link.predicate(this?.user) : true;
-      })
-      ?.sort(this.compare));
+          return link.predicate(this?.user);
+        })
+        ?.sort(this.compare)
+    );
 
     // Retrieve router parameters to override link attributes
-    this.route.params.pipe(takeUntil(this.unsubscribe)).subscribe(
-      params => {
-        this.routerParams = params;
-        this.loading = false;
-      },
-      err => {
-        console.error("MenuComponent: ", err);
-      }
-    );
+    this.params = this.route.snapshot.params;
 
     // Load widget
     this.loadComponent();
@@ -103,12 +99,12 @@ export class MenuComponent implements OnInit, OnDestroy {
    * @param link Link to calculate padding for
    */
   calculateIndentation(link: AnyMenuItem) {
-      // Only the secondary menu implements this option
-      if (this.menuType !== "secondary" || !link.indentation) {
-        return 0;
-      }
+    // Only the secondary menu implements this option
+    if (this.menuType !== "secondary" || !link.indentation) {
+      return 0;
+    }
 
-      return link.indentation;
+    return link.indentation;
   }
 
   /**
@@ -152,6 +148,6 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     // Return the menu item with the lower order value
-    return (a?.order || 0) < (b?.order || 0) ? -1 : 1;
+    return (a?.order || Infinity) < (b?.order || Infinity) ? -1 : 1;
   }
 }

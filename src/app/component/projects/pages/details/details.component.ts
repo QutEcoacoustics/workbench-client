@@ -6,6 +6,7 @@ import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
+import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -19,13 +20,13 @@ import {
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
-  exploreAudioProjectMenuItem,
   projectCategory,
-  projectMenuItem
+  projectMenuItem,
+  projectsMenuItem
 } from "../../projects.menus";
 
 export const projectMenuItemActions = [
-  exploreAudioProjectMenuItem,
+  exploreAudioMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   newSiteMenuItem,
@@ -36,7 +37,7 @@ export const projectMenuItemActions = [
 @Page({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>(projectMenuItemActions),
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

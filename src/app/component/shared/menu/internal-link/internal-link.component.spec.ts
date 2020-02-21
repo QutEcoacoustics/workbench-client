@@ -1,5 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import {
+  assertIcon,
+  assertRoute,
+  assertTooltip
+} from "src/app/helpers/tests/helpers";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SharedModule } from "../../shared.module";
@@ -28,7 +33,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -44,17 +49,11 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
-    const icon = fixture.nativeElement.querySelector("fa-icon");
-
-    expect(icon).toBeTruthy("Should contain <fa-icon> element");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
-      "fas,home"
-    );
+    assertIcon(fixture.nativeElement, "fas,home");
   });
 
   it("should have label", () => {
@@ -66,7 +65,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -85,17 +84,12 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "custom tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
-
-    expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
-    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
-    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
-      "custom tooltip"
-    );
+    assertTooltip(link, "custom tooltip");
   });
 
   it("should not use link tooltip", () => {
@@ -107,54 +101,12 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
-
-    expect(link).toBeTruthy("Anchor should have [ngbTooltip] directive");
-    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip")).toBeTruthy();
-    expect(link.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
-      "custom tooltip"
-    );
-  });
-
-  it("should have id for disabled access tooltip", () => {
-    component.id = "id1000";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
-    });
-    component.tooltip = "custom tooltip";
-    component.linkParams = {};
-    component.placement = "left";
-    fixture.detectChanges();
-
-    const tooltip = fixture.nativeElement.querySelector("span.d-none");
-    expect(tooltip).toBeTruthy("Tooltip should exist");
-    expect(tooltip.id).toBe("id1000");
-  });
-
-  it("should have disabled access tooltip", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "custom tooltip"
-    });
-    component.tooltip = "custom tooltip";
-    component.linkParams = {};
-    component.placement = "left";
-    fixture.detectChanges();
-
-    const tooltip = fixture.nativeElement.querySelector("span.d-none");
-
-    expect(tooltip).toBeTruthy("Tooltip should exist");
-    expect(tooltip.innerText.trim()).toBe("custom tooltip");
+    assertTooltip(link, "custom tooltip");
   });
 
   it("should handle left placement of tooltip", () => {
@@ -166,7 +118,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "left";
     fixture.detectChanges();
 
@@ -188,7 +140,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/home";
     component.placement = "right";
     fixture.detectChanges();
 
@@ -210,37 +162,29 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/brokenlink";
     component.placement = "right";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
-    expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
-      "/brokenlink"
-    );
+    assertRoute(link, "/brokenlink");
   });
 
-  it("should create routerLink with attributes", () => {
-    const baseRoute = StrongRoute.Base.add("brokenlink");
-
+  it("should not use link route", () => {
     component.id = "id";
     component.link = MenuRoute({
       icon: ["fas", "home"],
       label: "home",
-      route: baseRoute.add(":attribute"),
+      route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = { attribute: "10" };
-    component.placement = "right";
+    component.route = "/house";
+    component.placement = "left";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
-    expect(link.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
-      "/brokenlink/10"
-    );
+    assertRoute(link, "/house");
   });
 
   it("should not highlight link when not active", () => {
@@ -252,7 +196,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/brokenlink";
     component.placement = "right";
     fixture.detectChanges();
 
@@ -269,7 +213,7 @@ describe("MenuInternalLinkComponent", () => {
       tooltip: () => "tooltip"
     });
     component.tooltip = "custom tooltip";
-    component.linkParams = {};
+    component.route = "/context.html";
     component.placement = "right";
     fixture.detectChanges();
 

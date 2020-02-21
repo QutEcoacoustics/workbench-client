@@ -21,7 +21,7 @@ describe("ItemComponent", () => {
     component = fixture.componentInstance;
   });
 
-  it("should create", () => {
+  it("should handle no uri", () => {
     component.icon = ["fas", "home"] as IconProp;
     component.name = "Test";
     component.value = 0;
@@ -134,7 +134,7 @@ describe("ItemComponent", () => {
     component.icon = ["fas", "home"] as IconProp;
     component.name = "Test";
     component.value = "unknown";
-    component.uri = "http://broken_link/";
+    component.uri = () => "http://broken_link/";
 
     fixture.detectChanges();
     const anchor = fixture.nativeElement.querySelector("a");
