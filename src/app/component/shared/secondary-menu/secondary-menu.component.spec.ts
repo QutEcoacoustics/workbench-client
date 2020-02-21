@@ -349,9 +349,6 @@ describe("SecondaryMenuComponent", () => {
       assertIcon(links[1], "fas,exclamation-triangle");
       assertTooltip(links[1], "Custom Tooltip 2");
     });
-
-    // TODO
-    xit("should hide duplicate if self link exists in default menu", () => {});
   });
 
   describe("internal links", () => {
@@ -526,7 +523,7 @@ describe("SecondaryMenuComponent", () => {
 
       const links = findLinks("internal-link");
 
-      expect(findLinks("internal-link").length).toBe(2);
+      expect(findLinks("internal-link").length).toBe(1 + selfLinkCount);
       expect(findLinks("external-link").length).toBe(0);
 
       assertLabel(links[0], "Home");
@@ -567,7 +564,54 @@ describe("SecondaryMenuComponent", () => {
 
       const links = findLinks("internal-link");
 
-      expect(findLinks("internal-link").length).toBe(3);
+      expect(findLinks("internal-link").length).toBe(2 + selfLinkCount);
+      expect(findLinks("external-link").length).toBe(0);
+
+      assertLabel(links[0], "Home");
+      assertTooltip(links[0], "Home page");
+      assertIcon(links[0], "fas,home");
+
+      assertLabel(links[1], "Projects");
+      assertTooltip(links[1], "View projects I have access to");
+      assertIcon(links[1], "fas,globe-asia");
+    });
+
+    it("should hide duplicate if self link exists in default menu", () => {
+      const homeRoute = StrongRoute.Base.add("");
+      const projectsRoute = StrongRoute.Base.add("projects");
+
+      const selfRoute = MenuRoute({
+        icon: ["fas", "globe-asia"],
+        label: "Projects",
+        route: projectsRoute,
+        tooltip: () => "View projects I have access to",
+        order: 4
+      });
+
+      DefaultMenu.contextLinks = List<NavigableMenuItem>([
+        MenuRoute({
+          icon: ["fas", "home"],
+          label: "Home",
+          route: homeRoute,
+          tooltip: () => "Home page",
+          order: 1
+        }),
+        selfRoute
+      ]);
+
+      createTestBed({}, {
+        self: selfRoute,
+        menus: {
+          actions: List<AnyMenuItem>([]),
+          links: List<NavigableMenuItem>([])
+        }
+      } as PageInfoInterface);
+
+      fixture.detectChanges();
+
+      const links = findLinks("internal-link");
+
+      expect(findLinks("internal-link").length).toBe(2);
       expect(findLinks("external-link").length).toBe(0);
 
       assertLabel(links[0], "Home");
