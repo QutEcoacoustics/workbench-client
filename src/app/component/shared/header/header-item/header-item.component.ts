@@ -4,8 +4,9 @@ import {
   Input,
   OnInit
 } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 import {
+  getRoute,
   isExternalLink,
   isInternalRoute,
   NavigableMenuItem
@@ -19,13 +20,13 @@ import {
         <a
           class="nav-link"
           routerLinkActive="active"
-          [routerLink]="getRoute(link)"
+          [routerLink]="getRoute(link, params)"
         >
           {{ link.label }}
         </a>
       </ng-container>
       <ng-container *ngIf="isExternalLink(link)">
-        <a class="nav-link" [href]="getRoute(link)">
+        <a class="nav-link" [href]="getRoute(link, params)">
           {{ link.label }}
         </a>
       </ng-container>
@@ -35,25 +36,15 @@ import {
 })
 export class HeaderItemComponent implements OnInit {
   @Input() link: NavigableMenuItem;
+  public params: Params;
 
   isInternalRoute = isInternalRoute;
   isExternalLink = isExternalLink;
+  getRoute = getRoute;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+    this.params = this.route.snapshot.params;
+  }
 
   ngOnInit() {}
-
-  /**
-   * Get link route. This is only required because typescript is unable to
-   * properly type-check links in template
-   */
-  public getRoute(link: NavigableMenuItem): string {
-    if (isInternalRoute(link)) {
-      return link.route.toString();
-    } else {
-      const params = this.route.snapshot.params;
-
-      return link.uri(params);
-    }
-  }
 }

@@ -187,6 +187,16 @@ export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
 }
 
 /**
+ * Get link route. This is only required because typescript is unable to
+ * properly type-check links in template.
+ * @param link Menu item
+ * @returns Either full route, or uri
+ */
+export function getRoute(link: NavigableMenuItem, params?: Params): string {
+  return isInternalRoute(link) ? link.route.toString() : link.uri(params);
+}
+
+/**
  * Determines if an object is part of the Navigable interface
  * @param menuItem Menu item
  */

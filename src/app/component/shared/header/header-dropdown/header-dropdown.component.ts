@@ -4,10 +4,11 @@ import {
   Input,
   OnInit
 } from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
 import {
+  getRoute,
   isExternalLink,
-  isInternalRoute,
-  NavigableMenuItem
+  isInternalRoute
 } from "src/app/interfaces/menusInterfaces";
 import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-config.service";
 
@@ -29,13 +30,13 @@ import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-con
             <a
               ngbDropdownItem
               routerLinkActive="active"
-              [routerLink]="getRoute(link)"
+              [routerLink]="getRoute(link, params)"
             >
               {{ link.label }}
             </a>
           </ng-container>
           <ng-container *ngIf="isExternalLink(link)">
-            <a ngbDropdownItem [href]="getRoute(link)">
+            <a ngbDropdownItem [href]="getRoute(link, params)">
               {{ link.label }}
             </a>
           </ng-container>
@@ -48,23 +49,15 @@ import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-con
 export class HeaderDropdownComponent implements OnInit {
   @Input() active: boolean;
   @Input() links: HeaderDropDownConvertedLink;
+  public params: Params;
 
   isInternalRoute = isInternalRoute;
   isExternalLink = isExternalLink;
+  getRoute = getRoute;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {
+    this.params = this.route.snapshot.params;
+  }
 
   ngOnInit() {}
-
-  /**
-   * Get link route. This is only required because typescript is unable to
-   * properly type-check links in template
-   */
-  public getRoute(link: NavigableMenuItem): string {
-    if (isInternalRoute(link)) {
-      return link.route.toString();
-    } else {
-      return link.uri(undefined);
-    }
-  }
 }
