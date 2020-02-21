@@ -13,6 +13,7 @@ describe("SendAudioComponent", () => {
   let config: AppConfigService;
   let component: SendAudioComponent;
   let fixture: ComponentFixture<SendAudioComponent>;
+  let cmsUrl: string;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,26 +28,27 @@ describe("SendAudioComponent", () => {
     httpMock = TestBed.inject(HttpTestingController);
     config = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
+
+    cmsUrl = config.getConfig().environment.cmsRoot + "/sendAudio.html";
+
     fixture.detectChanges();
   });
 
   it("should create", () => {
-    httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/sendAudio.html"
-    );
+    httpMock.expectOne(cmsUrl);
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/sendAudio.html"
-    );
+    const req = httpMock.expectOne(cmsUrl);
 
-    req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    req.flush(
+      "<h1>Test Header</h1><p class='description'>Test Description</p>"
+    );
     fixture.detectChanges();
 
     const header = fixture.nativeElement.querySelector("h1");
-    const body = fixture.nativeElement.querySelector("p");
+    const body = fixture.nativeElement.querySelector("p.description");
 
     expect(header).toBeTruthy();
     expect(header.innerText.trim()).toBe("Test Header");
