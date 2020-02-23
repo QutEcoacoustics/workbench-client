@@ -1,4 +1,4 @@
-import { Directive, ViewChild } from "@angular/core";
+import { ViewChild } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,

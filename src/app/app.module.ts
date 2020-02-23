@@ -5,7 +5,7 @@ import {
 } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
-import { forwardRef, Inject, Injectable, NgModule } from "@angular/core";
+import { forwardRef, Injectable, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
