@@ -2,9 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
-import { API_ROOT } from "../app-config/app-config.service";
 
 export const apiReturnCodes = {
   unknown: -1,

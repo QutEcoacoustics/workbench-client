@@ -1,16 +1,10 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import {
-  apiRootFactory,
   API_CONFIG,
   API_ROOT,
-  AppConfigService,
   CMS_ROOT
-} from "./services/app-config/app-config.service";
-import {
-  MockAppConfigService,
-  testConfig
-} from "./services/app-config/appConfigMock.service";
+} from "./helpers/app-initializer/app-initializer";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
@@ -33,24 +27,60 @@ import {
 } from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
+export const testApiConfig = {
+  environment: {
+    apiRoot: "https://www.testing.com/api",
+    siteRoot: "https://www.testing.com/site",
+    siteDir: "<< siteDir >>",
+    cmsRoot: "https://www.testing.com/cms",
+    ga: {
+      trackingId: "<< googleAnalytics >>"
+    }
+  },
+  values: {
+    keys: {
+      googleMaps: "<< googleMaps >>"
+    },
+    brand: {
+      name: "<< brandName >>",
+      title: "<< brandTitle >>"
+    },
+    content: [
+      {
+        title: "<< content1 >>",
+        url: "<< contentUrl1 >>"
+      },
+      {
+        headerTitle: "<< content2 >>",
+        items: [
+          {
+            title: "<< content3 >>",
+            url: "<< contentUrl3 >>"
+          },
+          {
+            title: "<< content4 >>",
+            url: "<< contentUrl4 >>"
+          }
+        ]
+      }
+    ]
+  }
+};
+
 export const testAppInitializer = [
   {
-    provide: AppConfigService,
-    useClass: MockAppConfigService
-  },
-  {
     provide: API_ROOT,
-    useValue: "https://www.testing.com/api"
+    useValue: testApiConfig.environment.apiRoot
   },
   {
     provide: CMS_ROOT,
-    useValue: "https://www.testing.com/cms"
+    useValue: testApiConfig.environment.cmsRoot
   },
   {
     provide: API_CONFIG,
     useValue: new Promise(resolve => {
-      Object.assign(environment, testConfig);
-      resolve(testConfig);
+      Object.assign(environment, testApiConfig);
+      resolve(testApiConfig);
     })
   }
 ];

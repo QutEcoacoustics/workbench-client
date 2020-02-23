@@ -1,10 +1,10 @@
-import { enableProdMode, InjectionToken } from "@angular/core";
+import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { AppModule } from "./app/app.module";
 import {
   API_CONFIG,
   Configuration
-} from "./app/services/app-config/app-config.service";
+} from "./app/helpers/app-initializer/app-initializer";
 import { environment } from "./environments/environment";
 
 if (environment.production) {

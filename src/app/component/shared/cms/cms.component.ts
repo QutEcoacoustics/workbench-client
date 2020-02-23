@@ -10,7 +10,7 @@ import {
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { CMS_ROOT } from "src/app/services/app-config/app-config.service";
+import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({

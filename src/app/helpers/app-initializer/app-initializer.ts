@@ -1,19 +1,10 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { Title } from "@angular/platform-browser";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
+export let API_CONFIG = new InjectionToken("baw.api.config");
 export let API_ROOT = new InjectionToken("baw.api.root");
 export let CMS_ROOT = new InjectionToken("baw.cms.root");
-export let API_CONFIG = new InjectionToken("baw.api.config");
-
-export function apiRootFactory() {
-  return environment.environment.apiRoot;
-}
-
-export function cmsRootFactory() {
-  return environment.environment.cmsRoot;
-}
 
 /**
  * App Initializer class.
@@ -24,7 +15,7 @@ export function cmsRootFactory() {
 export class AppInitializer {
   constructor() {}
 
-  static appInitializerFactory(
+  static initializerFactory(
     @Inject(API_CONFIG) apiConfig: Promise<Configuration>
   ) {
     return async () => {
@@ -32,14 +23,13 @@ export class AppInitializer {
       Object.assign(environment, config);
     };
   }
-}
 
-@Injectable({
-  providedIn: "root"
-})
-export class AppConfigService {
-  constructor(private titleService: Title) {
-    this.titleService.setTitle(environment.values.brand.name);
+  static apiRootFactory() {
+    return environment.environment.apiRoot;
+  }
+
+  static cmsRootFactory() {
+    return environment.environment.cmsRoot;
   }
 }
 

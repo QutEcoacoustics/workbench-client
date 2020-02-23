@@ -8,13 +8,11 @@ import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-a
 import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import {
-  apiRootFactory,
   API_CONFIG,
   API_ROOT,
   AppInitializer,
-  cmsRootFactory,
   CMS_ROOT
-} from "./services/app-config/app-config.service";
+} from "./helpers/app-initializer/app-initializer";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 
 export function minLengthValidationMessage(err, field) {
@@ -73,16 +71,16 @@ export const providers = [
   },
   {
     provide: APP_INITIALIZER,
-    useFactory: AppInitializer.appInitializerFactory,
+    useFactory: AppInitializer.initializerFactory,
     multi: true,
     deps: [API_CONFIG]
   },
   {
     provide: API_ROOT,
-    useFactory: apiRootFactory
+    useFactory: AppInitializer.apiRootFactory
   },
   {
     provide: CMS_ROOT,
-    useFactory: cmsRootFactory
+    useFactory: AppInitializer.cmsRootFactory
   }
 ];

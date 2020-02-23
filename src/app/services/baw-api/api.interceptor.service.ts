@@ -11,10 +11,13 @@ import { Inject, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import {
+  API_ROOT,
+  CMS_ROOT
+} from "src/app/helpers/app-initializer/app-initializer";
+import {
   toCamelCase,
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
-import { API_ROOT, CMS_ROOT } from "../app-config/app-config.service";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 

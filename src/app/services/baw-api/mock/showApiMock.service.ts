@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { API_ROOT } from "../../app-config/app-config.service";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ApiShow, IdOr } from "../api-common";
 import { BawApiService } from "../baw-api.service";
 import { MockModel } from "./baseApiMock.service";

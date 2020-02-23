@@ -3,6 +3,11 @@ import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import {
+  Configuration,
+  HeaderDropDownConvertedLink,
+  isHeaderLink
+} from "src/app/helpers/app-initializer/app-initializer";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -10,11 +15,6 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import {
-  Configuration,
-  HeaderDropDownConvertedLink,
-  isHeaderLink
-} from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
