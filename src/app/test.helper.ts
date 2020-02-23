@@ -4,7 +4,8 @@ import {
   apiRootFactory,
   API_CONFIG,
   API_ROOT,
-  AppConfigService
+  AppConfigService,
+  CMS_ROOT
 } from "./services/app-config/app-config.service";
 import {
   MockAppConfigService,
@@ -36,6 +37,21 @@ export const testAppInitializer = [
   {
     provide: AppConfigService,
     useClass: MockAppConfigService
+  },
+  {
+    provide: API_ROOT,
+    useValue: "https://www.testing.com/api"
+  },
+  {
+    provide: CMS_ROOT,
+    useValue: "https://www.testing.com/cms"
+  },
+  {
+    provide: API_CONFIG,
+    useValue: new Promise(resolve => {
+      Object.assign(environment, testConfig);
+      resolve(testConfig);
+    })
   }
 ];
 
@@ -45,17 +61,6 @@ export const testBawServices = [
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
     multi: true
-  },
-  {
-    provide: API_ROOT,
-    useValue: "https://www.testing.com/api"
-  },
-  {
-    provide: API_CONFIG,
-    useValue: new Promise(resolve => {
-      Object.assign(environment, testConfig);
-      resolve(testConfig);
-    })
   },
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },

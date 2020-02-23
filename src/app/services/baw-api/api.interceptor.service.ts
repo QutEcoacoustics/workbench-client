@@ -7,14 +7,14 @@ import {
   HttpRequest,
   HttpResponse
 } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import {
   toCamelCase,
   toSnakeCase
 } from "src/app/helpers/case-converter/case-converter";
-import { AppConfigService } from "../app-config/app-config.service";
+import { API_ROOT, CMS_ROOT } from "../app-config/app-config.service";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 
@@ -25,7 +25,11 @@ import { SecurityService } from "./security.service";
  */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
-  constructor(public api: SecurityService, private config: AppConfigService) {}
+  constructor(
+    @Inject(API_ROOT) private apiRoot: string,
+    @Inject(CMS_ROOT) private cmsRoot: string,
+    public api: SecurityService
+  ) {}
 
   /**
    * Intercept http requests and handle appending login tokens and errors.
@@ -39,8 +43,8 @@ export class BawApiInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (
-      !request.url.includes(this.config.getConfig().environment.apiRoot) &&
-      !request.url.includes(this.config.getConfig().environment.cmsRoot)
+      !request.url.includes(this.apiRoot) &&
+      !request.url.includes(this.cmsRoot)
     ) {
       return next.handle(request);
     }

@@ -4,10 +4,15 @@ import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
 export let API_ROOT = new InjectionToken("baw.api.root");
+export let CMS_ROOT = new InjectionToken("baw.cms.root");
 export let API_CONFIG = new InjectionToken("baw.api.config");
 
-export function apiRootFactory(appConfig: AppConfigService) {
-  return appConfig.getConfig().environment.apiRoot;
+export function apiRootFactory() {
+  return environment.environment.apiRoot;
+}
+
+export function cmsRootFactory() {
+  return environment.environment.cmsRoot;
 }
 
 /**
@@ -35,34 +40,6 @@ export class AppInitializer {
 export class AppConfigService {
   constructor(private titleService: Title) {
     this.titleService.setTitle(environment.values.brand.name);
-  }
-
-  /**
-   * Get the application config.
-   * If config unknown/null, error has occurred.
-   */
-  getConfig(): Configuration {
-    return environment as Configuration;
-  }
-
-  /**
-   * Get the url for a url link from the application config
-   * @param content Application config
-   * @param titles Title of link (titles if link is a subset of another)
-   */
-  getContentUrl(content: any, titles: string[]) {
-    for (const header of content) {
-      if (titles.length === 1) {
-        if (isHeaderLink(header) && header.title === titles[0]) {
-          return header.url;
-        }
-      } else if (!isHeaderLink(header) && header.headerTitle === titles[0]) {
-        return this.getContentUrl(header.items, titles.slice(1, titles.length));
-      }
-    }
-
-    // Return empty url if not found
-    return "#";
   }
 }
 
