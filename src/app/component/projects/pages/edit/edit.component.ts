@@ -18,6 +18,8 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 import data from "./edit.json";
+import { ToastrService } from "ngx-toastr";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: projectCategory,
@@ -33,59 +35,43 @@ import data from "./edit.json";
   template: `
     <app-wip>
       <app-form
-        *ngIf="ready"
+        *ngIf="success"
         [schema]="schema"
         [title]="'Edit Project'"
-        [error]="error"
-        [success]="success"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class EditComponent extends PageComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
-  ready: boolean;
-  schema = data;
-  success: string;
+  public loading: boolean;
+  public schema = data;
+  public success: boolean;
+  public project: Project;
 
-  projectId: Id;
+  private unsubscribe = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private api: ProjectsService,
-    private ref: ChangeDetectorRef
+    private notification: ToastrService
   ) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
-    this.loading = false;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          this.projectId = params.projectId;
-          return this.api.show(this.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          this.schema.model["name"] = project.name;
-          this.ready = true;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    if (projectModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.schema.model["name"] = this.project.name;
+    this.success = true;
   }
 
   ngOnDestroy() {
@@ -98,28 +84,24 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
    * @param $event Form response
    */
   submit($event: any) {
-    console.log($event);
-    const project = new Project({ ...$event, id: this.projectId });
+    const project = new Project({ ...$event, id: this.project.id });
 
     this.loading = true;
-    this.ref.detectChanges();
 
     this.api
       .update(project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.success = "Project was successfully updated.";
-          this.error = null;
+          this.notification.success("Project was successfully updated.");
           this.loading = false;
         },
         (err: ApiErrorDetails) => {
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.error = err.message + ": name " + err.info.name[0];
+            this.notification.error(err.message + ": name " + err.info.name[0]);
           } else {
-            this.error = err.message;
+            this.notification.error(err.message);
           }
-          this.success = null;
           this.loading = false;
         }
       );

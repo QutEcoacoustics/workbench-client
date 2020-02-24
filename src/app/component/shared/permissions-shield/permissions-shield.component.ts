@@ -31,21 +31,19 @@ export class PermissionsShieldComponent
   model: Site | Project;
   success: boolean;
 
-  constructor(private route: ActivatedRoute, private ref: ChangeDetectorRef) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data
       .project;
     const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
 
-    if (projectModel.error || siteModel.error) {
-      this.success = false;
-    }
-
-    if (siteModel) {
+    if (siteModel && !siteModel.error) {
       this.model = siteModel.model;
-    } else if (projectModel) {
+    } else if (projectModel && !projectModel.error) {
       this.model = projectModel.model;
+    } else {
+      this.success = false;
     }
   }
 
