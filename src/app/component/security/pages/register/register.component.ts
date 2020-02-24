@@ -16,9 +16,10 @@ import data from "./register.json";
   selector: "app-authentication-register",
   template: `
     <app-wip>
-      <div style="max-width: 380px; margin: 0 auto;">
+      <div>
         <app-form
           [schema]="schema"
+          [size]="'small'"
           [title]="'Register'"
           [submitLabel]="'Register'"
           [submitLoading]="loading"

@@ -45,9 +45,10 @@ import data from "./login.json";
 @Component({
   selector: "app-authentication-login",
   template: `
-    <div style="max-width: 380px; margin: 0 auto;">
+    <div>
       <app-form
         [schema]="schema"
+        [size]="'small'"
         [title]="'Log in'"
         [error]="error"
         [submitLabel]="'Log in'"
