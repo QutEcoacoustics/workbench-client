@@ -7,7 +7,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule, FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
 import { LoadingComponent } from "../loading/loading.component";
 import { flattenFields, FormComponent } from "./form.component";
@@ -330,9 +330,9 @@ describe("FormComponent", () => {
       ]);
       fixture.detectChanges();
 
-      let textInput = findInput(undefined, 0);
-      let passwordInput = findInput(undefined, 1);
-      let emailInput = findInput(undefined, 2);
+      const textInput = findInput(undefined, 0);
+      const passwordInput = findInput(undefined, 1);
+      const emailInput = findInput(undefined, 2);
       assertInput(textInput, "text");
       assertInput(passwordInput, "password");
       assertInput(emailInput, "email");
@@ -351,7 +351,7 @@ describe("FormComponent", () => {
       ]);
       fixture.detectChanges();
 
-      let input = findInput();
+      const input = findInput();
       assertInput(input, "text", true);
     });
 
@@ -386,9 +386,9 @@ describe("FormComponent", () => {
       ]);
       fixture.detectChanges();
 
-      let textInput = findInput(undefined, 0);
-      let passwordInput = findInput(undefined, 1);
-      let emailInput = findInput(undefined, 2);
+      const textInput = findInput(undefined, 0);
+      const passwordInput = findInput(undefined, 1);
+      const emailInput = findInput(undefined, 2);
       assertInput(textInput, "text", true);
       assertInput(passwordInput, "password", true);
       assertInput(emailInput, "email", true);
