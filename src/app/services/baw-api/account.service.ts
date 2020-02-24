@@ -14,6 +14,7 @@ import {
   ReadonlyApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
+import { ListResolver, ShowResolver } from "./resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
@@ -34,5 +35,27 @@ export class AccountService extends ReadonlyApi<User, []> {
   }
   show(model: IdOr<User>): Observable<User> {
     return this.apiShow(endpoint(model, Empty));
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class AccountResolver extends ListResolver<User> {
+  constructor(api: AccountService) {
+    super(api, () => []);
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class ShallowSiteResolver extends ShowResolver<User> {
+  constructor(api: AccountService) {
+    super(
+      api,
+      params => parseInt(params.get("accountId"), 10),
+      () => []
+    );
   }
 }

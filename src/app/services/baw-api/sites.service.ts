@@ -143,10 +143,30 @@ export class SiteResolver extends ShowResolver<Site> {
   constructor(api: SitesService) {
     super(
       api,
-      params => {
-        return parseInt(params.get("siteId"), 10);
-      },
+      params => parseInt(params.get("siteId"), 10),
       params => [parseInt(params.get("projectId"), 10)]
+    );
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class ShallowSitesResolver extends ListResolver<Site> {
+  constructor(api: ShallowSitesService) {
+    super(api, () => []);
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class ShallowSiteResolver extends ShowResolver<Site> {
+  constructor(api: ShallowSitesService) {
+    super(
+      api,
+      params => parseInt(params.get("siteId"), 10),
+      () => []
     );
   }
 }

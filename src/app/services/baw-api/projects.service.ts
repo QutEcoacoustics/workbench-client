@@ -66,9 +66,7 @@ export class ProjectResolver extends ShowResolver<Project> {
   constructor(api: ProjectsService) {
     super(
       api,
-      params => {
-        return parseInt(params.get("projectId"), 10);
-      },
+      params => parseInt(params.get("projectId"), 10),
       () => []
     );
   }

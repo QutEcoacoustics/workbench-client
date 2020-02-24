@@ -86,7 +86,7 @@ export const theirProfileCategory: Category = {
 export const theirProfileMenuItem = MenuRoute({
   icon: myAccountMenuItem.icon,
   label: "Their Profile",
-  route: theirProfileRoute.add(":userId"),
+  route: theirProfileRoute.add(":accountId"),
   tooltip: () => "View their profile",
   predicate: isLoggedInPredicate,
   order: myAccountMenuItem.order
