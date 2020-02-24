@@ -20,7 +20,7 @@ import { aboutCategory, ethicsMenuItem } from "../../about.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EthicsComponent extends PageComponent {
-  public page = "ethics.html";
+  public page = "ethics";
 
   constructor() {
     super();

@@ -24,7 +24,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
-  public page = "home.html";
+  public page = "home";
   public moreProjectsLink = projectsMenuItem;
   public projectList: List<Card> = List([]);
   private unsubscribe = new Subject();

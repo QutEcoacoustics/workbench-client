@@ -20,7 +20,7 @@ import { aboutCategory, disclaimersMenuItem } from "../../about.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisclaimersComponent extends PageComponent {
-  public page = "disclaimers.html";
+  public page = "disclaimers";
 
   constructor() {
     super();

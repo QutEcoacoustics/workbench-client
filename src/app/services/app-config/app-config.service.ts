@@ -107,6 +107,7 @@ export interface Configuration {
       title: string;
     };
     content: Links[];
+    cms: { title: string; url: string }[];
   };
 }
 

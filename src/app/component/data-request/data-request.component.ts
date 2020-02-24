@@ -19,7 +19,7 @@ import annotationData from "./download-annotations.json";
   template: `
     <app-wip>
       <h1>Data Request</h1>
-      <app-cms page="downloadAnnotations.html"></app-cms>
+      <app-cms [page]="page"></app-cms>
       <app-form
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
@@ -42,11 +42,12 @@ import annotationData from "./download-annotations.json";
   `
 })
 export class DataRequestComponent extends PageComponent implements OnInit {
-  annotationSchema = annotationData;
-  requestSchema = requestData;
-  error: string;
-  annotationLoading: boolean;
-  requestLoading: boolean;
+  public annotationLoading: boolean;
+  public annotationSchema = annotationData;
+  public error: string;
+  public page = "downloadAnnotations";
+  public requestLoading: boolean;
+  public requestSchema = requestData;
 
   constructor() {
     super();

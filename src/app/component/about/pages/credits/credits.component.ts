@@ -20,7 +20,7 @@ import { aboutCategory, creditsMenuItem } from "../../about.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreditsComponent extends PageComponent {
-  public page = "credits.html";
+  public page = "credits";
 
   constructor() {
     super();

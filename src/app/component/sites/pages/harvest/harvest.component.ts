@@ -22,7 +22,7 @@ import { siteMenuItemActions } from "../details/details.component";
   `
 })
 export class HarvestComponent extends PageComponent {
-  public page = "harvest.html";
+  public page = "harvest";
 
   constructor() {
     super();

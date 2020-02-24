@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
@@ -25,10 +25,10 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
   // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
-  blob: string;
+  blob: SafeHtml;
   error: ApiErrorDetails;
   loading = true;
-  notifier = new Subject();
+  unsubscribe = new Subject();
 
   constructor(
     private config: AppConfigService,
@@ -38,16 +38,28 @@ export class CmsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    let url: string;
+    const config = this.config.getConfig();
+
+    const cmsPage = config.values.cms.find(
+      cmsPage => cmsPage.title === this.page
+    );
+
+    if (cmsPage) {
+      url = config.environment.cmsRoot + cmsPage.url;
+    } else {
+      console.error("Failed to retrieve CMS file: ", this.page);
+      return;
+    }
+
     this.http
-      .get(this.config.getConfig().environment.cmsRoot + "/" + this.page, {
-        responseType: "text"
-      })
-      .pipe(takeUntil(this.notifier))
+      .get(url, { responseType: "text" })
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         data => {
           // This is a bit dangerous, however cms should only load from trusted sources.
           // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data) as string;
+          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
           this.loading = false;
           this.ref.detectChanges();
         },
@@ -60,7 +72,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.notifier.next();
-    this.notifier.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

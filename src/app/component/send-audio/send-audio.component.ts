@@ -22,7 +22,7 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SendAudioComponent extends PageComponent {
-  public page = "sendAudio.html";
+  public page = "sendAudio";
 
   constructor() {
     super();
