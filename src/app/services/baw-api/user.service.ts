@@ -6,6 +6,7 @@ import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";
 import { ApiShow, IdOr } from "./api-common";
 import { BawApiService } from "./baw-api.service";
+import { ShowResolver } from "./resolver-common";
 
 const endpoint = stringTemplate`/my_account`;
 
@@ -18,5 +19,18 @@ export class UserService extends BawApiService<User>
 
   show(): Observable<User> {
     return this.apiShow(endpoint());
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class UserResolver extends ShowResolver<User> {
+  constructor(api: UserService) {
+    super(
+      api,
+      () => undefined,
+      () => []
+    );
   }
 }
