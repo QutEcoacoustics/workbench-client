@@ -13,7 +13,10 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  ProjectsService,
+  ProjectResolverService
+} from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
@@ -40,6 +43,9 @@ export const projectMenuItemActions = [
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    project: ProjectResolverService
   },
   self: projectMenuItem
 })

@@ -9,13 +9,15 @@ import {
 } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { List } from "immutable";
 
 export const projectsRoute = StrongRoute.Base.add("projects");
 
 export const projectsCategory: Category = {
-  icon: ["fas", "globe-asia"],
   label: "Projects",
-  route: projectsRoute
+  icon: ["fas", "globe-asia"],
+  route: projectsRoute,
+  resolvedModels: List(["projects"])
 };
 
 export const projectsMenuItem = MenuRoute({
@@ -53,9 +55,10 @@ export const projectMenuItem = MenuRoute({
 });
 
 export const projectCategory: Category = {
-  icon: projectsCategory.icon,
   label: "Project",
-  route: projectMenuItem.route
+  icon: projectsCategory.icon,
+  route: projectMenuItem.route,
+  resolvedModels: List(["project", ...projectsCategory.resolvedModels])
 };
 
 export const editProjectMenuItem = MenuRoute({
