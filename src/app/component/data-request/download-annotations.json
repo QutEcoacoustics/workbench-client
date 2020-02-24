@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "key": "timezone",
+      "type": "timezone",
+      "templateOptions": {
+        "label": "Select timezone",
+        "required": true
+      }
+    }
+  ]
+}
