@@ -62,6 +62,44 @@ export class MockAppConfigService {
               }
             ]
           }
+        ],
+        cms: [
+          {
+            title: "testing",
+            url: "/testing.html"
+          },
+          {
+            title: "new",
+            url: "/new.html"
+          },
+          {
+            title: "credits",
+            url: "/credits.html"
+          },
+          {
+            title: "disclaimers",
+            url: "/disclaimers.html"
+          },
+          {
+            title: "downloadAnnotations",
+            url: "/downloadAnnotations.html"
+          },
+          {
+            title: "ethics",
+            url: "/ethics.html"
+          },
+          {
+            title: "harvest",
+            url: "/harvest.html"
+          },
+          {
+            title: "home",
+            url: "/home.html"
+          },
+          {
+            title: "sendAudio",
+            url: "/sendAudio.html"
+          }
         ]
       }
     };

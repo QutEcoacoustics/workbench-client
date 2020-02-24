@@ -24,11 +24,10 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
-  // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
-  blob: SafeHtml;
-  error: ApiErrorDetails;
-  loading = true;
-  unsubscribe = new Subject();
+  public blob: SafeHtml;
+  public error: ApiErrorDetails;
+  public loading: boolean;
+  private unsubscribe = new Subject();
 
   constructor(
     private config: AppConfigService,
@@ -38,20 +37,16 @@ export class CmsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    let url: string;
+    this.loading = true;
     const config = this.config.getConfig();
+    const cms = config.values.cms.find(cmsPage => cmsPage.title === this.page);
 
-    const cmsPage = config.values.cms.find(
-      cmsPage => cmsPage.title === this.page
-    );
-
-    if (cmsPage) {
-      url = config.environment.cmsRoot + cmsPage.url;
-    } else {
-      console.error("Failed to retrieve CMS file: ", this.page);
+    if (!cms) {
+      console.error("Failed to find CMS file in environment: ", this.page);
       return;
     }
 
+    const url = config.environment.cmsRoot + cms.url;
     this.http
       .get(url, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))
