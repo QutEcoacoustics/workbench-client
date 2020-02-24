@@ -16,14 +16,16 @@ import data from "./register.json";
   selector: "app-authentication-register",
   template: `
     <app-wip>
-      <app-form
-        [schema]="schema"
-        [title]="'Register'"
-        [submitLabel]="'Register'"
-        [submitLoading]="loading"
-        [error]="error"
-        (onSubmit)="submit($event)"
-      ></app-form>
+      <div style="max-width: 380px; margin: 0 auto;">
+        <app-form
+          [schema]="schema"
+          [title]="'Register'"
+          [submitLabel]="'Register'"
+          [submitLoading]="loading"
+          [error]="error"
+          (onSubmit)="submit($event)"
+        ></app-form>
+      </div>
       <app-error-handler [error]="errorDetails"></app-error-handler>
     </app-wip>
   `
