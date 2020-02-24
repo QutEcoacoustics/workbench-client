@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, Provider } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
@@ -53,7 +53,7 @@ export class ProjectsService extends StandardApi<Project, []> {
 @Injectable({
   providedIn: "root"
 })
-export class ProjectsResolverService extends ListResolver<Project> {
+export class ProjectsResolver extends ListResolver<Project> {
   constructor(api: ProjectsService) {
     super(api, () => []);
   }
@@ -62,7 +62,7 @@ export class ProjectsResolverService extends ListResolver<Project> {
 @Injectable({
   providedIn: "root"
 })
-export class ProjectResolverService extends ShowResolver<Project> {
+export class ProjectResolver extends ShowResolver<Project> {
   constructor(api: ProjectsService) {
     super(
       api,

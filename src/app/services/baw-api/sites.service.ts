@@ -17,10 +17,12 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters, Meta } from "./baw-api.service";
+import { ListResolver, ShowResolver } from "./resolver-common";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
+const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
 @Injectable({
   providedIn: "root"
@@ -49,8 +51,6 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
-
-const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
 @Injectable({
   providedIn: "root"
@@ -124,5 +124,29 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   }
   destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class SitesResolver extends ListResolver<Site> {
+  constructor(api: SitesService) {
+    super(api, params => [parseInt(params.get("projectId"), 10)]);
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class SiteResolver extends ShowResolver<Site> {
+  constructor(api: SitesService) {
+    super(
+      api,
+      params => {
+        return parseInt(params.get("siteId"), 10);
+      },
+      params => [parseInt(params.get("projectId"), 10)]
+    );
   }
 }

@@ -58,7 +58,7 @@ export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
   route: projectMenuItem.route,
-  resolvedModels: List(["project", ...projectsCategory.resolvedModels])
+  resolvedModels: List(["project", "sites", ...projectsCategory.resolvedModels])
 };
 
 export const editProjectMenuItem = MenuRoute({

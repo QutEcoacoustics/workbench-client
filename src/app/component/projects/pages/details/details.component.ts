@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
@@ -12,12 +10,8 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  ProjectsService,
-  ProjectResolverService
-} from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import { ProjectResolver } from "src/app/services/baw-api/projects.service";
+import { SitesResolver } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -27,6 +21,7 @@ import {
   projectMenuItem,
   projectsMenuItem
 } from "../../projects.menus";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -45,7 +40,8 @@ export const projectMenuItemActions = [
     links: List()
   },
   resolvers: {
-    project: ProjectResolverService
+    project: ProjectResolver,
+    sites: SitesResolver
   },
   self: projectMenuItem
 })
@@ -54,64 +50,28 @@ export const projectMenuItemActions = [
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"]
 })
-export class DetailsComponent extends PageComponent
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
-  project: Project;
-  sites: Site[];
-  error: ApiErrorDetails;
-  state = "loading";
-  ready: boolean;
+export class DetailsComponent extends PageComponent implements OnInit {
+  public project: Project;
+  public sites: Site[];
+  public success: boolean;
 
-  constructor(
-    private route: ActivatedRoute,
-    private projectsApi: ProjectsService,
-    private sitesApi: SitesService
-  ) {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
+    this.success = false;
 
-    // Retrieve project details
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.projectsApi.show(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          this.project = project;
-          this.ready = true;
-        },
-        (err: ApiErrorDetails) => {
-          this.error = err;
-        }
-      );
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+    const siteModels: ResolvedModel<Site[]> = this.route.snapshot.data.sites;
 
-    // Retrieve site details
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.sitesApi.list(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        sites => (this.sites = sites),
-        (err: ApiErrorDetails) => {
-          if (this.state !== "error") {
-            this.error = err;
-          }
-        }
-      );
-  }
+    if (projectModel.error || siteModels.error) {
+      return;
+    }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
+    this.project = projectModel.model;
+    this.sites = siteModels.model;
+    this.success = true;
   }
 }

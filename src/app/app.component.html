@@ -18,6 +18,7 @@
           [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }"
         >
           <router-outlet></router-outlet>
+          <router-outlet name="error"></router-outlet>
         </div>
         <div
           id="action"

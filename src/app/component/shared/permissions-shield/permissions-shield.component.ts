@@ -5,20 +5,17 @@ import {
   OnDestroy,
   OnInit
 } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 import { WidgetComponent } from "../widget/widget.component";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Component({
   selector: "app-permissions-shield",
   template: `
-    <div *ngIf="ready">
+    <div *ngIf="success">
       <app-user-badges [model]="model" *ngIf="model"></app-user-badges>
       <h4>Your access level</h4>
       <p>Not Implemented</p>
@@ -31,41 +28,25 @@ export class PermissionsShieldComponent
   private unsubscribe = new Subject();
   @Input() data: any;
 
-  error: boolean;
   model: Site | Project;
-  ready: boolean;
+  success: boolean;
 
-  constructor(
-    private route: ActivatedRoute,
-    private projectsApi: ProjectsService,
-    private sitesApi: SitesService,
-    private ref: ChangeDetectorRef
-  ) {}
+  constructor(private route: ActivatedRoute, private ref: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.ready = false;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
 
-    this.route.params
-      .pipe(
-        flatMap((params: Params) => {
-          if (params.siteId && params.projectId) {
-            return this.sitesApi.show(params.projectId, params.siteId);
-          } else if (params.projectId) {
-            return this.projectsApi.show(params.projectId);
-          }
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (model: Site | Project) => {
-          this.model = model;
-          this.ready = true;
-          this.ref.detectChanges();
-        },
-        (err: ApiErrorDetails) => {
-          console.error("PermissionsShieldComponent: ", err);
-        }
-      );
+    if (projectModel.error || siteModel.error) {
+      this.success = false;
+    }
+
+    if (siteModel) {
+      this.model = siteModel.model;
+    } else if (projectModel) {
+      this.model = projectModel.model;
+    }
   }
 
   ngOnDestroy() {
