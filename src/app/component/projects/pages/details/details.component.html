@@ -1,5 +1,5 @@
-<ng-container *ngIf="ready">
-  <!-- Project Details -->
+<!-- Project Details -->
+<ng-container *ngIf="success">
   <h1>{{ project.name }}</h1>
   <div class="row">
     <div class="col-sm-4">
@@ -37,6 +37,3 @@
     </div>
   </div>
 </ng-container>
-
-<app-loading [isLoading]="!ready && !error"></app-loading>
-<app-error-handler [error]="error"></app-error-handler>
