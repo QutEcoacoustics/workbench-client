@@ -7,7 +7,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
+import { FormlyModule, FormlyFieldConfig } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
 import { LoadingComponent } from "../loading/loading.component";
 import { flattenFields, FormComponent } from "./form.component";
@@ -34,6 +34,34 @@ describe("FormComponent", () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
   let httpMock: HttpTestingController;
+  let defaultSchema: any;
+
+  function createSchema(field: FormlyFieldConfig[]) {
+    return {
+      model: {},
+      fields: field
+    };
+  }
+
+  function findInput(
+    selector: string = "input",
+    position: number = 0
+  ): HTMLElement {
+    const input = fixture.nativeElement.querySelectorAll("form " + selector)[
+      position
+    ];
+
+    return input;
+  }
+
+  function assertInput(input: any, type?: string, required?: boolean) {
+    expect(input).toBeTruthy();
+    expect(input.required).toBe(required ? required : false);
+
+    if (type) {
+      expect(input.type).toBe(type);
+    }
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -53,10 +81,8 @@ describe("FormComponent", () => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
-  });
 
-  it("should create", () => {
-    component.schema = {
+    defaultSchema = {
       model: {
         input: ""
       },
@@ -71,6 +97,10 @@ describe("FormComponent", () => {
         }
       ]
     };
+  });
+
+  it("should create", () => {
+    component.schema = defaultSchema;
     component.submitLabel = "Label";
     component.submitLoading = false;
     fixture.detectChanges();
@@ -80,21 +110,7 @@ describe("FormComponent", () => {
 
   describe("Form Layout", () => {
     it("should create form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
       fixture.detectChanges();
@@ -104,21 +120,7 @@ describe("FormComponent", () => {
     });
 
     it("should create form with title", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
       component.title = "Title";
@@ -130,21 +132,7 @@ describe("FormComponent", () => {
     });
 
     it("should create form with subtitle", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
       component.subTitle = "Sub Title";
@@ -156,21 +144,7 @@ describe("FormComponent", () => {
     });
 
     it("should create form with submit button label", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
       fixture.detectChanges();
@@ -181,533 +155,266 @@ describe("FormComponent", () => {
     });
   });
 
-  describe("Notifications", () => {
-    it("should handle clearing error messages", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+  xdescribe("Notifications", () => {
+    beforeEach(() => {
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
-      component.error = "Custom error";
-      fixture.detectChanges();
-
-      let alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Custom error");
-
-      component.clearError();
-      fixture.detectChanges();
-
-      alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeFalsy();
     });
 
-    it("should handle clearing success messages", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      component.success = "Custom success";
-      fixture.detectChanges();
-
-      let alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Custom success");
-
-      component.clearSuccess();
-      fixture.detectChanges();
-
-      alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeFalsy();
-    });
+    // TODO Write notification tests when Toastr is added
   });
 
   describe("Submit Button Type", () => {
-    it("should create form with submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+    beforeEach(() => {
+      component.schema = defaultSchema;
       component.submitLabel = "Label";
       component.submitLoading = false;
-      fixture.detectChanges();
+    });
 
-      const submit = fixture.nativeElement.querySelector("button");
+    function assertSubmit(className: string) {
+      const submit = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
       expect(submit).toBeTruthy();
+      expect(submit.classList.value).toContain(className);
+    }
+
+    it("should create form with default submit button", () => {
+      fixture.detectChanges();
+      assertSubmit("btn-success");
     });
 
     it("should create form with danger submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-danger";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-danger");
+      assertSubmit("btn-danger");
     });
 
     it("should create form with success submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-success";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-success");
+      assertSubmit("btn-success");
     });
 
     it("should create form with warning submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-warning";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-warning");
+      assertSubmit("btn-warning");
     });
 
     it("should create form with primary submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-primary";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-primary");
+      assertSubmit("btn-primary");
     });
 
     it("should create form with secondary submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-secondary";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-secondary");
+      assertSubmit("btn-secondary");
     });
 
     it("should create form with info submit button", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
       component.btnColor = "btn-info";
       fixture.detectChanges();
-
-      const submit = fixture.nativeElement.querySelector("button");
-      expect(submit.classList.value).toContain("btn-info");
+      assertSubmit("btn-info");
     });
   });
 
   describe("Input Types", () => {
-    it("should create input form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+    beforeEach(() => {
       component.submitLabel = "Label";
       component.submitLoading = false;
+    });
+
+    it("should create input form", () => {
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const input = form.querySelector("input");
-      expect(input).toBeTruthy();
-      expect(input.type).toBe("text");
-      expect(input.required).toBe(false);
+      const input = findInput();
+      assertInput(input, "text");
     });
 
     it("should create password form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              type: "password",
-              label: "input element",
-              required: false
-            }
+      component.schema = component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            type: "password",
+            label: "input element",
+            required: false
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const input = form.querySelector("input");
-      expect(input).toBeTruthy();
-      expect(input.type).toBe("password");
-      expect(input.required).toBe(false);
+      const input = findInput();
+      assertInput(input, "password");
     });
 
     it("should create email form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              type: "email",
-              label: "input element",
-              required: false
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            type: "email",
+            label: "input element",
+            required: false
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const input = form.querySelector("input");
-      expect(input).toBeTruthy();
-      expect(input.type).toBe("email");
-      expect(input.required).toBe(false);
+      const input = findInput();
+      assertInput(input, "email");
     });
 
     it("should create textarea form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "message",
-            type: "textarea",
-            templateOptions: {
-              label: "Message",
-              rows: 8,
-              required: false
-            }
+      component.schema = createSchema([
+        {
+          key: "message",
+          type: "textarea",
+          templateOptions: {
+            label: "Message",
+            rows: 8,
+            required: false
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const input = form.querySelector("textarea");
-      expect(input).toBeTruthy();
-      expect(input.required).toBe(false);
+      const input = findInput("textarea");
+      assertInput(input);
     });
 
     it("should create multi form", () => {
-      component.schema = {
-        model: {
-          input: "",
-          password: "",
-          email: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          },
-          {
-            key: "password",
-            type: "input",
-            templateOptions: {
-              type: "password",
-              label: "password element",
-              required: false
-            }
-          },
-          {
-            key: "email",
-            type: "input",
-            templateOptions: {
-              type: "email",
-              label: "email element",
-              required: false
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        },
+        {
+          key: "password",
+          type: "input",
+          templateOptions: {
+            type: "password",
+            label: "password element",
+            required: false
+          }
+        },
+        {
+          key: "email",
+          type: "input",
+          templateOptions: {
+            type: "email",
+            label: "email element",
+            required: false
+          }
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const inputs = form.querySelectorAll("input");
-      expect(inputs[0]).toBeTruthy();
-      expect(inputs[0].type).toBe("text");
-      expect(inputs[0].required).toBe(false);
-      expect(inputs[1]).toBeTruthy();
-      expect(inputs[1].type).toBe("password");
-      expect(inputs[1].required).toBe(false);
-      expect(inputs[2]).toBeTruthy();
-      expect(inputs[2].type).toBe("email");
-      expect(inputs[2].required).toBe(false);
+      let textInput = findInput(undefined, 0);
+      let passwordInput = findInput(undefined, 1);
+      let emailInput = findInput(undefined, 2);
+      assertInput(textInput, "text");
+      assertInput(passwordInput, "password");
+      assertInput(emailInput, "email");
     });
 
     it("should create required input form", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const input = form.querySelector("input");
-      expect(input).toBeTruthy();
-      expect(input.type).toBe("text");
-      expect(input.required).toBe(true);
+      let input = findInput();
+      assertInput(input, "text", true);
     });
 
     it("should create required multi input form", () => {
-      component.schema = {
-        model: {
-          input: "",
-          password: "",
-          email: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
-          },
-          {
-            key: "password",
-            type: "input",
-            templateOptions: {
-              type: "password",
-              label: "password element",
-              required: true
-            }
-          },
-          {
-            key: "email",
-            type: "input",
-            templateOptions: {
-              type: "email",
-              label: "email element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        },
+        {
+          key: "password",
+          type: "input",
+          templateOptions: {
+            type: "password",
+            label: "password element",
+            required: true
+          }
+        },
+        {
+          key: "email",
+          type: "input",
+          templateOptions: {
+            type: "email",
+            label: "email element",
+            required: true
+          }
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
-
-      const inputs = form.querySelectorAll("input");
-      expect(inputs[0]).toBeTruthy();
-      expect(inputs[0].type).toBe("text");
-      expect(inputs[0].required).toBe(true);
-      expect(inputs[1]).toBeTruthy();
-      expect(inputs[1].type).toBe("password");
-      expect(inputs[1].required).toBe(true);
-      expect(inputs[2]).toBeTruthy();
-      expect(inputs[2].type).toBe("email");
-      expect(inputs[2].required).toBe(true);
+      let textInput = findInput(undefined, 0);
+      let passwordInput = findInput(undefined, 1);
+      let emailInput = findInput(undefined, 2);
+      assertInput(textInput, "text", true);
+      assertInput(passwordInput, "password", true);
+      assertInput(emailInput, "email", true);
     });
   });
 
   describe("Submit", () => {
-    it("should call submit function OnClick", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
+    let buttonPressed: boolean;
+
+    beforeEach(() => {
       component.submitLabel = "Label";
       component.submitLoading = false;
-      let buttonPressed = false;
+    });
+
+    function submit() {
+      buttonPressed = false;
       // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
+      component.submitFunction.subscribe(data => {
         buttonPressed = true;
       });
-
       fixture.detectChanges();
+    }
+
+    it("should call submit function OnClick", () => {
+      component.schema = defaultSchema;
+      submit();
 
       const button = fixture.nativeElement.querySelector("button");
       click(button);
@@ -717,23 +424,7 @@ describe("FormComponent", () => {
     });
 
     it("should call submit function OnClick with user input", done => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      component.schema = defaultSchema;
       // tslint:disable-next-line: rxjs-no-ignored-error
       component.submitFunction.subscribe(data => {
         expect(data).toBeTruthy();
@@ -753,30 +444,17 @@ describe("FormComponent", () => {
     });
 
     it("should not call submit function OnClick when required field is empty", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      let buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
-        buttonPressed = true;
-      });
-
-      fixture.detectChanges();
+        }
+      ]);
+      submit();
 
       const button = fixture.nativeElement.querySelector("button");
       click(button);
@@ -786,23 +464,16 @@ describe("FormComponent", () => {
     });
 
     it("should call submit function OnClick with filled required user input", done => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+        }
+      ]);
       // tslint:disable-next-line: rxjs-no-ignored-error
       component.submitFunction.subscribe(data => {
         expect(data).toBeTruthy();
@@ -822,30 +493,17 @@ describe("FormComponent", () => {
     });
 
     it("should show error message when required field is empty OnSubmit", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      let buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
-        buttonPressed = true;
-      });
-
-      fixture.detectChanges();
+        }
+      ]);
+      submit();
 
       const button = fixture.nativeElement.querySelector("button");
       click(button);
@@ -859,30 +517,17 @@ describe("FormComponent", () => {
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      let buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
-        buttonPressed = true;
-      });
-
-      fixture.detectChanges();
+        }
+      ]);
+      submit();
 
       const button = fixture.nativeElement.querySelector("button");
       click(button);
@@ -899,46 +544,33 @@ describe("FormComponent", () => {
     });
 
     it("should highlight multiple missing fields when required fields are empty OnSubmit", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
-          },
-          {
-            key: "input2",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          },
-          {
-            key: "input3",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: true
-            }
+      component.schema = createSchema([
+        {
+          key: "input",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
           }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      let buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
-        buttonPressed = true;
-      });
-
-      fixture.detectChanges();
+        },
+        {
+          key: "input2",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: false
+          }
+        },
+        {
+          key: "input3",
+          type: "input",
+          templateOptions: {
+            label: "input element",
+            required: true
+          }
+        }
+      ]);
+      submit();
 
       const button = fixture.nativeElement.querySelector("button");
       click(button);
@@ -958,23 +590,7 @@ describe("FormComponent", () => {
     });
 
     it("should show custom error message", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      component.schema = defaultSchema;
       component.error = "Custom Error";
 
       fixture.detectChanges();
@@ -985,23 +601,7 @@ describe("FormComponent", () => {
     });
 
     it("should update with custom error after submission", () => {
-      component.schema = {
-        model: {
-          input: ""
-        },
-        fields: [
-          {
-            key: "input",
-            type: "input",
-            templateOptions: {
-              label: "input element",
-              required: false
-            }
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      component.schema = defaultSchema;
       // tslint:disable-next-line: rxjs-no-ignored-error
       component.submitFunction.subscribe(() => {
         component.error = "Custom Error";
@@ -1019,103 +619,90 @@ describe("FormComponent", () => {
     });
 
     it("should handle custom expression", () => {
-      component.schema = {
-        model: {},
-        fields: [
-          {
-            key: "register",
-            validators: {
-              fieldMatch: {
-                expression:
-                  "return (control.value.passwordConfirm === control.value.password" +
-                  " || (!control.value.passwordConfirm || !control.value.password))",
-                message: "Passwords do not match",
-                errorPath: "passwordConfirm"
+      component.schema = createSchema([
+        {
+          key: "register",
+          validators: {
+            fieldMatch: {
+              expression:
+                "return (control.value.passwordConfirm === control.value.password" +
+                " || (!control.value.passwordConfirm || !control.value.password))",
+              message: "Passwords do not match",
+              errorPath: "passwordConfirm"
+            }
+          },
+          fieldGroup: [
+            {
+              key: "password",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password",
+                required: true
               }
             },
-            fieldGroup: [
-              {
-                key: "password",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password",
-                  required: true
-                }
+            {
+              key: "passwordConfirm",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password Confirmation",
+                required: true
               },
-              {
-                key: "passwordConfirm",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password Confirmation",
-                  required: true
-                },
-                expressionProperties: {
-                  "templateOptions.disabled": "!model.password"
-                }
+              expressionProperties: {
+                "templateOptions.disabled": "!model.password"
               }
-            ]
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+            }
+          ]
+        }
+      ]);
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      const inputs = form.querySelectorAll("input");
+      const passwordInput = findInput(undefined, 0);
+      const passwordConfInput = findInput(undefined, 1);
 
-      expect(form).toBeTruthy();
-      expect(inputs[0]).toBeTruthy();
-      expect(inputs[0].type).toBe("password");
-      expect(inputs[1]).toBeTruthy();
-      expect(inputs[1].type).toBe("password");
+      assertInput(passwordInput, "password", true);
+      assertInput(passwordConfInput, "password", true);
     });
 
     it("should submit with correct custom expression", done => {
-      component.schema = {
-        model: {},
-        fields: [
-          {
-            key: "register",
-            validators: {
-              fieldMatch: {
-                expression:
-                  "return (control.value.passwordConfirm === control.value.password" +
-                  " || (!control.value.passwordConfirm || !control.value.password))",
-                message: "Passwords do not match",
-                errorPath: "passwordConfirm"
+      component.schema = createSchema([
+        {
+          key: "register",
+          validators: {
+            fieldMatch: {
+              expression:
+                "return (control.value.passwordConfirm === control.value.password" +
+                " || (!control.value.passwordConfirm || !control.value.password))",
+              message: "Passwords do not match",
+              errorPath: "passwordConfirm"
+            }
+          },
+          fieldGroup: [
+            {
+              key: "password",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password",
+                required: true
               }
             },
-            fieldGroup: [
-              {
-                key: "password",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password",
-                  required: true
-                }
+            {
+              key: "passwordConfirm",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password Confirmation",
+                required: true
               },
-              {
-                key: "passwordConfirm",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password Confirmation",
-                  required: true
-                },
-                expressionProperties: {
-                  "templateOptions.disabled": "!model.password"
-                }
+              expressionProperties: {
+                "templateOptions.disabled": "!model.password"
               }
-            ]
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+            }
+          ]
+        }
+      ]);
       // tslint:disable-next-line: rxjs-no-ignored-error
       component.submitFunction.subscribe(data => {
         expect(data).toBeTruthy();
@@ -1144,54 +731,44 @@ describe("FormComponent", () => {
 
     // TODO Fix this test or the form component
     xit("should not submit with bad response custom expression", () => {
-      component.schema = {
-        model: {},
-        fields: [
-          {
-            key: "register",
-            validators: {
-              fieldMatch: {
-                expression:
-                  "return (control.value.passwordConfirm === control.value.password" +
-                  " || (!control.value.passwordConfirm || !control.value.password))",
-                message: "Passwords do not match",
-                errorPath: "passwordConfirm"
+      component.schema = createSchema([
+        {
+          key: "register",
+          validators: {
+            fieldMatch: {
+              expression:
+                "return (control.value.passwordConfirm === control.value.password" +
+                " || (!control.value.passwordConfirm || !control.value.password))",
+              message: "Passwords do not match",
+              errorPath: "passwordConfirm"
+            }
+          },
+          fieldGroup: [
+            {
+              key: "password",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password",
+                required: true
               }
             },
-            fieldGroup: [
-              {
-                key: "password",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password",
-                  required: true
-                }
+            {
+              key: "passwordConfirm",
+              type: "input",
+              templateOptions: {
+                type: "password",
+                label: "Password Confirmation",
+                required: true
               },
-              {
-                key: "passwordConfirm",
-                type: "input",
-                templateOptions: {
-                  type: "password",
-                  label: "Password Confirmation",
-                  required: true
-                },
-                expressionProperties: {
-                  "templateOptions.disabled": "!model.password"
-                }
+              expressionProperties: {
+                "templateOptions.disabled": "!model.password"
               }
-            ]
-          }
-        ]
-      };
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      let buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(data => {
-        buttonPressed = true;
-      });
-      fixture.detectChanges();
+            }
+          ]
+        }
+      ]);
+      submit();
 
       const form = fixture.nativeElement.querySelector("form");
       const inputs = form.querySelectorAll("input");
@@ -1210,38 +787,43 @@ describe("FormComponent", () => {
   });
 
   describe("Schema Url Handling", () => {
-    it("should handle schemaUrl", () => {
-      component.schemaUrl = `http://${window.location.host}/assets/tests/externalSchema.json`;
+    beforeEach(() => {
       component.submitLabel = "Label";
       component.submitLoading = false;
+    });
+
+    function catchRequest(
+      url: string,
+      response: any,
+      meta?: { status: number; statusText: string }
+    ) {
+      const req = httpMock.expectOne(url);
+      req.flush(response, meta ? meta : { status: 200, statusText: "OK" });
+    }
+
+    it("should handle schemaUrl", () => {
+      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      component.schemaUrl = url;
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
     });
 
     it("should request schemaUrl when given", () => {
-      component.schemaUrl = `http://${window.location.host}/assets/tests/externalSchema.json`;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      component.schemaUrl = url;
       fixture.detectChanges();
 
-      const req = httpMock.expectOne(
-        `http://${window.location.host}/assets/tests/externalSchema.json`
-      );
-
+      const req = httpMock.expectOne(url);
       expect(req).toBeTruthy();
     });
 
     it("should handle schema url http request failure", () => {
-      component.schemaUrl = `http://brokenlink/`;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      const url = "https://brokenlink/";
+      component.schemaUrl = url;
       fixture.detectChanges();
 
-      const req = httpMock.expectOne(`http://brokenlink/`);
-
-      req.flush({}, { status: 404, statusText: "Resource not found" });
-
+      catchRequest(url, {}, { status: 404, statusText: "Resource not found" });
       fixture.detectChanges();
 
       const alert = fixture.nativeElement.querySelector("ngb-alert");
@@ -1250,22 +832,13 @@ describe("FormComponent", () => {
     });
 
     it("should create form with schemaUrl", () => {
-      component.schemaUrl = `http://${window.location.host}/assets/tests/externalSchema.json`;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      component.schemaUrl = url;
       fixture.detectChanges();
 
-      const req = httpMock.expectOne(
-        `http://${window.location.host}/assets/tests/externalSchema.json`
-      );
-
-      req.flush({
-        model: {
-          name: "",
-          email: "",
-          message: ""
-        },
-        fields: [
+      catchRequest(
+        url,
+        createSchema([
           {
             key: "name",
             type: "input",
@@ -1289,12 +862,11 @@ describe("FormComponent", () => {
             templateOptions: {
               label: "Message",
               rows: 8,
-              required: true
+              required: false
             }
           }
-        ]
-      });
-
+        ])
+      );
       fixture.detectChanges();
 
       const form = fixture.nativeElement.querySelector("form");
@@ -1302,22 +874,13 @@ describe("FormComponent", () => {
     });
 
     it("should create inputs with schemaUrl", () => {
-      component.schemaUrl = `http://${window.location.host}/assets/tests/externalSchema.json`;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
+      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      component.schemaUrl = url;
       fixture.detectChanges();
 
-      const req = httpMock.expectOne(
-        `http://${window.location.host}/assets/tests/externalSchema.json`
-      );
-
-      req.flush({
-        model: {
-          name: "",
-          email: "",
-          message: ""
-        },
-        fields: [
+      catchRequest(
+        url,
+        createSchema([
           {
             key: "name",
             type: "input",
@@ -1341,26 +904,20 @@ describe("FormComponent", () => {
             templateOptions: {
               label: "Message",
               rows: 8,
-              required: true
+              required: false
             }
           }
-        ]
-      });
-
+        ])
+      );
       fixture.detectChanges();
 
-      const form = fixture.nativeElement.querySelector("form");
-      const inputs = form.querySelectorAll("input");
-      const textarea = form.querySelector("textarea");
+      const textInput = findInput(undefined, 0);
+      const emailInput = findInput(undefined, 1);
+      const textareaInput = findInput("textarea", 0);
 
-      expect(inputs[0]).toBeTruthy();
-      expect(inputs[0].type).toBe("text");
-      expect(inputs[0].required).toBe(false);
-      expect(inputs[1]).toBeTruthy();
-      expect(inputs[1].type).toBe("email");
-      expect(inputs[1].required).toBe(false);
-      expect(textarea).toBeTruthy();
-      expect(textarea.required).toBe(true);
+      assertInput(textInput, "text");
+      assertInput(emailInput, "email");
+      assertInput(textareaInput, undefined);
     });
   });
 
