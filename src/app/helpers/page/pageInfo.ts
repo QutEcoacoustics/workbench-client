@@ -1,6 +1,11 @@
 import { Type } from "@angular/core";
 import { Data } from "@angular/router";
-import { Category, MenuRoute, Menus } from "src/app/interfaces/menusInterfaces";
+import {
+  Category,
+  MenuRoute,
+  Menus,
+  Resolvers
+} from "src/app/interfaces/menusInterfaces";
 
 /**
  * Page info interface.
@@ -15,6 +20,7 @@ export interface PageInfoInterface extends Data {
   category: Category;
   menus: Menus;
   fullscreen?: boolean;
+  resolvers?: Resolvers;
 }
 
 /**
@@ -26,6 +32,8 @@ export class PageInfo implements PageInfoInterface {
   category: Category;
   menus: Menus;
   fullscreen: boolean;
+  resolvers: Resolvers;
+
   constructor(target: Type<any>, args: PageInfoInterface) {
     if (!args.self) {
       throw new Error("A page info must be provided with an `self` MenuRoute");

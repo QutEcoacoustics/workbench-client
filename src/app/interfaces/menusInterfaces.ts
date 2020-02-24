@@ -1,9 +1,10 @@
-import { Params } from "@angular/router";
+import { Params, Resolve } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { WidgetMenuItem } from "../component/shared/widget/widgetItem";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
+import { AbstractModel } from "../models/AbstractModel";
 
 /**
  * Part of an (a single file/directory) internal angular route
@@ -19,6 +20,14 @@ export type Href = (params: Params) => string;
  * Fontawesome icon. Eg. ['fas', 'home']. All icons used must be imported in app.module.ts.
  */
 export type Icon = IconProp;
+
+/**
+ * Angular Resolvers.
+ * Used to inject api models into route data.
+ */
+export interface Resolvers {
+  [key: string]: Resolve<AbstractModel>;
+}
 
 /**
  * Component Name and Icon

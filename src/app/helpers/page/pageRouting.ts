@@ -26,7 +26,8 @@ export function GetRouteConfigForPage(
       {
         path: "",
         pathMatch: "full",
-        component: page.component
+        component: page.component,
+        resolve: page.resolvers ? page.resolvers : {}
       },
       {
         path: "",
@@ -41,5 +42,5 @@ export function GetRouteConfigForPage(
         component: ActionMenuComponent
       }
     ]
-  });
+  } as Partial<Route>);
 }

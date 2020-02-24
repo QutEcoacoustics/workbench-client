@@ -1,70 +1,50 @@
 import { ActivatedRouteSnapshot, ParamMap, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { catchError, take } from "rxjs/operators";
+import { catchError, map, take } from "rxjs/operators";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { AbstractModel } from "src/app/models/AbstractModel";
-import { ApiList } from "./api-common";
+import { ApiList, ApiShow, IdOr } from "./api-common";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
-type Constructor<T = {}> = new (...args: any[]) => T;
-
-export function listResolver<T extends Constructor>(base: T) {
-  return class extends base {
-    private api: ApiList<any, any>;
-    private getIds: (params: ParamMap) => Id[];
-
-    constructor(...args: any[]) {
-      super(...args);
-      this.api = args[0];
-      this.getIds = args[1];
-    }
-
-    public resolve(
-      route: ActivatedRouteSnapshot
-    ): Observable<any[] | ApiErrorDetails> {
-      const ids = this.getIds(route.paramMap);
-
-      return this.api.list(...ids).pipe(
-        take(1),
-        catchError((err: ApiErrorDetails) => {
-          return of(err);
-        })
-      );
-    }
-  };
-}
-
 export class ListResolver<T extends AbstractModel>
-  implements Resolve<T[] | ApiErrorDetails> {
+  implements Resolve<{ model?: T[]; error?: ApiErrorDetails }> {
   constructor(
-    protected api: any,
-    protected getIds: (params: ParamMap) => Id[]
+    private api: ApiList<T, any[]>,
+    private ids: (params: ParamMap) => Id[]
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable<T[]> {
-    const ids = this.getIds(route.paramMap);
-
-    return this.api.list(...ids).pipe(
+  public resolve(
+    route: ActivatedRouteSnapshot
+  ): Observable<{ model?: T[]; error?: ApiErrorDetails }> {
+    return this.api.list(...this.ids(route.paramMap)).pipe(
+      map(model => ({ model })),
       take(1),
-      catchError((err: ApiErrorDetails) => {
-        return of(err);
+      catchError((error: ApiErrorDetails) => {
+        return of({ error });
       })
     );
   }
 }
 
 export class ShowResolver<T extends AbstractModel>
-  implements Resolve<T | ApiErrorDetails> {
-  constructor(private api: any, private getIds: (params: ParamMap) => Id[]) {}
+  implements Resolve<{ model?: T; error?: ApiErrorDetails }> {
+  constructor(
+    private api: ApiShow<T, any[], IdOr<T>>,
+    private id: (params: ParamMap) => Id,
+    private ids: (params: ParamMap) => Id[]
+  ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable<T> {
-    const ids = this.getIds(route.paramMap);
-
-    return this.api.show(...ids).pipe(
-      take(1),
-      catchError((err: ApiErrorDetails) => {
-        return of(err);
-      })
-    );
+  public resolve(
+    route: ActivatedRouteSnapshot
+  ): Observable<{ model?: T; error?: ApiErrorDetails }> {
+    return this.api
+      .show(this.id(route.paramMap), ...this.ids(route.paramMap))
+      .pipe(
+        map(model => ({ model })),
+        take(1),
+        catchError((error: ApiErrorDetails) => {
+          return of({ error });
+        })
+      );
   }
 }
