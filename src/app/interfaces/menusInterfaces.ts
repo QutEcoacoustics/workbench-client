@@ -1,10 +1,9 @@
-import { Params, Resolve } from "@angular/router";
+import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { WidgetMenuItem } from "../component/shared/widget/widgetItem";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
-import { AbstractModel } from "../models/AbstractModel";
 
 /**
  * Part of an (a single file/directory) internal angular route
@@ -26,7 +25,7 @@ export type Icon = IconProp;
  * Used to inject api models into route data.
  */
 export interface Resolvers {
-  [key: string]: Resolve<AbstractModel>;
+  [key: string]: any;
 }
 
 /**

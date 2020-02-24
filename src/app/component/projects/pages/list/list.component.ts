@@ -1,19 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { map, takeUntil } from "rxjs/operators";
 import { Card } from "src/app/component/shared/cards/cards.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ProjectsResolverService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem
 } from "../../projects.menus";
+import { ActivatedRoute } from "@angular/router";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -25,6 +26,9 @@ export const projectsMenuItemActions = [
   menus: {
     actions: List<AnyMenuItem>(projectsMenuItemActions),
     links: List()
+  },
+  resolvers: {
+    projects: ProjectsResolverService
   },
   self: projectsMenuItem
 })
@@ -41,39 +45,27 @@ export const projectsMenuItemActions = [
       </ng-template>
     </ng-container>
 
-    <app-loading [isLoading]="loading"></app-loading>
+    <app-loading [isLoading]="!cardList && !error"></app-loading>
     <app-error-handler [error]="error"></app-error-handler>
   `
 })
 export class ListComponent extends PageComponent implements OnInit {
   cardList: List<Card>;
-  loading: boolean;
   error: ApiErrorDetails;
 
-  constructor(private api: ProjectsService) {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.loading = true;
+    const projects: ResolvedModel<Project[]> = this.route.snapshot.data
+      .projects;
 
-    this.api
-      .list()
-      .pipe(
-        map((data: Project[]) => {
-          return List(data.map(project => project.getCard()));
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (projects: List<Card>) => {
-          this.cardList = projects;
-          this.loading = false;
-        },
-        (err: ApiErrorDetails) => {
-          this.loading = false;
-          this.error = err;
-        }
-      );
+    if (projects.error) {
+      this.error = projects.error;
+      return;
+    }
+
+    this.cardList = List(projects.model.map(project => project.getCard()));
   }
 }
