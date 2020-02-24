@@ -51,6 +51,11 @@ export interface Category extends LabelAndIcon {
    *  Local route of category Eg. 'security'
    */
   route: StrongRoute;
+
+  /**
+   * List of resolved models accessible to any components within the category
+   */
+  resolvedModels?: List<string>;
 }
 
 /**

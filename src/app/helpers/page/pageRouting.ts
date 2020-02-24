@@ -4,6 +4,7 @@ import { ActionMenuComponent } from "src/app/component/shared/action-menu/action
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
 import { FormTouchedGuard } from "src/app/guards/form/form.guard";
 import { getPageInfo } from "./pageComponent";
+import { ErrorHandlerComponent } from "src/app/component/shared/error-handler/error-handler.component";
 
 /**
  * Dynamically create routes for an angular component
@@ -23,13 +24,13 @@ export function GetRouteConfigForPage(
   Object.assign(config, {
     // data is inherited in child routes
     data: page,
+    resolve: page.resolvers ? page.resolvers : {},
     children: [
       {
         path: "",
         pathMatch: "full",
         component: page.component,
-        canDeactivate: [FormTouchedGuard],
-        resolve: page.resolvers ? page.resolvers : {}
+        canDeactivate: [FormTouchedGuard]
       },
       {
         path: "",
@@ -42,6 +43,12 @@ export function GetRouteConfigForPage(
         pathMatch: "full",
         outlet: "action",
         component: ActionMenuComponent
+      },
+      {
+        path: "",
+        pathMatch: "full",
+        outlet: "error",
+        component: ErrorHandlerComponent
       }
     ]
   } as Route);
