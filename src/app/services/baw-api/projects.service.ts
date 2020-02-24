@@ -14,6 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
+import { ListResolver, ShowResolver } from "./resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
@@ -46,5 +47,29 @@ export class ProjectsService extends StandardApi<Project, []> {
   }
   destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.apiDestroy(endpoint(model, Empty));
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class ProjectsResolverService extends ListResolver<Project> {
+  constructor(api: ProjectsService) {
+    super(api, () => []);
+  }
+}
+
+@Injectable({
+  providedIn: "root"
+})
+export class ProjectResolverService extends ShowResolver<Project> {
+  constructor(api: ProjectsService) {
+    super(
+      api,
+      params => {
+        return parseInt(params.get("projectId"), 10);
+      },
+      () => []
+    );
   }
 }
