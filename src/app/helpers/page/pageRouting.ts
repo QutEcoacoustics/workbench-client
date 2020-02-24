@@ -28,7 +28,8 @@ export function GetRouteConfigForPage(
         path: "",
         pathMatch: "full",
         component: page.component,
-        canDeactivate: [FormTouchedGuard]
+        canDeactivate: [FormTouchedGuard],
+        resolve: page.resolvers ? page.resolvers : {}
       },
       {
         path: "",
