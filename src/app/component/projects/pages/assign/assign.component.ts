@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -13,7 +13,6 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
@@ -21,6 +20,7 @@ import {
   projectMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: projectCategory,
@@ -48,8 +48,7 @@ export class AssignComponent extends TableTemplate<TableRow> implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private sitesApi: ShallowSitesService,
-    private projectsApi: ProjectsService
+    private sitesApi: ShallowSitesService
   ) {
     super(() => true);
   }
@@ -61,23 +60,16 @@ export class AssignComponent extends TableTemplate<TableRow> implements OnInit {
       { name: "Description" }
     ];
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.projectsApi.show(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          this.project = project;
-          this.loadTable();
-          this.getSites();
-        },
-        (err: ApiErrorDetails) => {
-          this.error = err;
-        }
-      );
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+
+    if (projectModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.loadTable();
+    this.getSites();
   }
 
   public onSelect(event) {

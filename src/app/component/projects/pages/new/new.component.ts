@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
@@ -15,6 +15,7 @@ import {
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
 import { fields } from "./new.json";
+import { ToastrService } from "ngx-toastr";
 
 @Page({
   category: projectsCategory,
@@ -30,8 +31,6 @@ import { fields } from "./new.json";
     <app-form
       [schema]="schema"
       [title]="'New Project'"
-      [error]="error"
-      [success]="success"
       [submitLabel]="'Submit'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
@@ -40,12 +39,13 @@ import { fields } from "./new.json";
 })
 export class NewComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  loading: boolean;
-  schema = { model: {}, fields };
-  success: string;
+  public loading: boolean;
+  public schema = { model: {}, fields };
 
-  constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
+  constructor(
+    private api: ProjectsService,
+    private notification: ToastrService
+  ) {
     super();
   }
 
@@ -58,26 +58,21 @@ export class NewComponent extends WithFormCheck(PageComponent)
    * @param $event Form response
    */
   submit($event: any) {
-    console.log($event);
-
     this.loading = true;
-    this.ref.detectChanges();
 
     this.api
       .create(new Project($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.success = "Project was successfully created.";
-          this.error = null;
+          this.notification.success("Project was successfully created.");
           this.loading = false;
         },
         (err: ApiErrorDetails) => {
-          this.success = null;
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.error = err.message + ": name " + err.info.name[0];
+            this.notification.error(err.message + ": name " + err.info.name[0]);
           } else {
-            this.error = err.message;
+            this.notification.error(err.message);
           }
 
           this.loading = false;

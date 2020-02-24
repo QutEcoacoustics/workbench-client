@@ -29,14 +29,12 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
       .project;
     const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
 
-    if (projectModel.error || siteModel.error) {
-      this.success = false;
-    }
-
-    if (siteModel) {
+    if (siteModel && !siteModel.error) {
       this.model = siteModel.model;
-    } else if (projectModel) {
+    } else if (projectModel && !projectModel.error) {
       this.model = projectModel.model;
+    } else {
+      this.success = false;
     }
   }
 }
