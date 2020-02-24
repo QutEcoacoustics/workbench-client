@@ -2,8 +2,6 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -22,7 +20,6 @@ import data from "./new.json";
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
   self: newProjectMenuItem

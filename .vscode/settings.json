@@ -20,5 +20,6 @@
     "**/.git/objects/**",
     ".vscode",
     ".tsling.json"
-  ]
+  ],
+  "explorer.compactFolders": false
 }
