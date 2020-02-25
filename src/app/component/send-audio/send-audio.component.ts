@@ -1,13 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { CMS, CMS_DATA } from "src/app/helpers/app-initializer/app-initializer";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { environment } from "src/environments/environment";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Page({
@@ -30,11 +25,11 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 export class SendAudioComponent extends PageComponent implements OnInit {
   public page: string;
 
-  constructor(@Inject(CMS_DATA) private cms: CMS) {
+  constructor() {
     super();
   }
 
   ngOnInit() {
-    this.page = this.cms.sendAudio;
+    this.page = environment.values.cms.sendAudio;
   }
 }

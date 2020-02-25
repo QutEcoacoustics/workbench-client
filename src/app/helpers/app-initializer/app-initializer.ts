@@ -5,7 +5,6 @@ import { environment } from "src/environments/environment";
 export let API_CONFIG = new InjectionToken("baw.api.config");
 export let API_ROOT = new InjectionToken("baw.api.root");
 export let CMS_ROOT = new InjectionToken("baw.cms.root");
-export let CMS_DATA = new InjectionToken("baw.cms.data");
 
 /**
  * App Initializer class.
@@ -31,10 +30,6 @@ export class AppInitializer {
 
   static cmsRootFactory() {
     return environment.environment.cmsRoot;
-  }
-
-  static cmsDataFactory() {
-    return environment.values.cms;
   }
 }
 
