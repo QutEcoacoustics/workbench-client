@@ -29,7 +29,6 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import { FormTouchedGuard } from "./guards/form/form.guard";
 import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
 export const appImports = [
@@ -59,8 +58,6 @@ export const appImports = [
   ErrorModule
 ];
 
-const appGuards = [FormTouchedGuard];
-
 // tslint:disable-next-line: no-use-before-declare
 @Injectable({ providedIn: forwardRef(() => AppModule) })
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
@@ -86,7 +83,6 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
   imports: [...appImports],
   providers: [
     ...providers,
-    ...appGuards,
     { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig }
   ],
   bootstrap: [AppComponent],

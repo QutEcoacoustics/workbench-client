@@ -29,7 +29,7 @@ export class FormComponent implements OnInit, OnDestroy {
   @Input() schemaUrl: string;
   @Input() title?: string;
   @Input() subTitle?: string;
-  @Input() submitLabel: string;
+  @Input() submitLabel = "Submit";
   @Input() submitLoading: boolean;
   @Input() error?: string;
   @Input() success?: string;

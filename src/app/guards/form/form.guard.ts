@@ -18,7 +18,7 @@ export function WithFormCheck<T extends Constructor<{}>>(
      * Determine if any forms have been touched
      */
     isFormTouched() {
-      return this.appForms.some(appForm => appForm.form.touched);
+      return this.appForms.some(appForm => appForm.form.dirty);
     }
   }
 
