@@ -45,14 +45,17 @@ import data from "./login.json";
 @Component({
   selector: "app-authentication-login",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Log in'"
-      [error]="error"
-      [submitLabel]="'Log in'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <div>
+      <app-form
+        [schema]="schema"
+        [size]="'small'"
+        [title]="'Log in'"
+        [error]="error"
+        [submitLabel]="'Log in'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </div>
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })

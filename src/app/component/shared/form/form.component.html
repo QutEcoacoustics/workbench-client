@@ -1,4 +1,4 @@
-<div class="login-form pl-2 pr-2 pb-3">
+<div class="login-form pl-2 pr-2 pb-3" [ngClass]="{ small: size === 'small' }">
   <h2 class="text-center" *ngIf="title" [innerHTML]="title"></h2>
   <small class="text-muted">
     <h6 *ngIf="subTitle" [innerHTML]="subTitle"></h6>
