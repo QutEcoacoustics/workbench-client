@@ -4,13 +4,14 @@ import {
   Component,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Inject
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 
 @Component({
   selector: "app-cms",
@@ -24,30 +25,29 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
-  // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
-  blob: string;
-  error: ApiErrorDetails;
-  loading = true;
-  notifier = new Subject();
+  public blob: SafeHtml;
+  public error: ApiErrorDetails;
+  public loading: boolean;
+  private unsubscribe = new Subject();
 
   constructor(
-    private config: AppConfigService,
+    @Inject(CMS_ROOT) private cmsRoot: string,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
+    this.loading = true;
+
     this.http
-      .get(this.config.getConfig().environment.cmsRoot + "/" + this.page, {
-        responseType: "text"
-      })
-      .pipe(takeUntil(this.notifier))
+      .get(this.cmsRoot + this.page, { responseType: "text" })
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         data => {
-          // This is a bit dangerous, however cms should only load from trusted sources.
+          // This is a bit dangerous, however CMS should only load from trusted sources.
           // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data) as string;
+          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
           this.loading = false;
           this.ref.detectChanges();
         },
@@ -60,7 +60,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.notifier.next();
-    this.notifier.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

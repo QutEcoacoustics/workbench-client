@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { environment } from "src/environments/environment";
 import { aboutCategory, creditsMenuItem } from "../../about.menus";
 
 @Page({
@@ -19,10 +20,14 @@ import { aboutCategory, creditsMenuItem } from "../../about.menus";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreditsComponent extends PageComponent {
-  public page = "credits.html";
+export class CreditsComponent extends PageComponent implements OnInit {
+  public page: string;
 
   constructor() {
     super();
+  }
+
+  ngOnInit() {
+    this.page = environment.values.cms.credits;
   }
 }

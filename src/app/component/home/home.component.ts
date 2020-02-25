@@ -8,6 +8,7 @@ import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { environment } from "src/environments/environment";
 import { projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
@@ -24,7 +25,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
-  public page = "home.html";
+  public page: string;
   public moreProjectsLink = projectsMenuItem;
   public projectList: List<Card> = List([]);
   private unsubscribe = new Subject();
@@ -37,6 +38,8 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.page = environment.values.cms.home;
+
     this.securityApi
       .getAuthTrigger()
       .pipe(
