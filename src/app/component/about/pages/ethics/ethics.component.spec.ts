@@ -4,13 +4,12 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
+import { environment } from "src/environments/environment";
 import { EthicsComponent } from "./ethics.component";
 
 describe("AboutEthicsComponent", () => {
   let httpMock: HttpTestingController;
-  let config: AppConfigService;
   let component: EthicsComponent;
   let fixture: ComponentFixture<EthicsComponent>;
 
@@ -25,7 +24,6 @@ describe("AboutEthicsComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EthicsComponent);
     httpMock = TestBed.inject(HttpTestingController);
-    config = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -35,13 +33,13 @@ describe("AboutEthicsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(config.getConfig().environment.cmsRoot + "/ethics.html");
+    httpMock.expectOne(environment.environment.cmsRoot + "/ethics.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/ethics.html"
+      environment.environment.cmsRoot + "/ethics.html"
     );
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");

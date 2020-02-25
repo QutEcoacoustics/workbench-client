@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AppConfigService } from "../../app-config/app-config.service";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ReadonlyApi } from "../api-common";
 import { MockModel } from "./baseApiMock.service";
 
 @Injectable()
 export class MockReadonlyApiService extends ReadonlyApi<MockModel, []> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, MockModel);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, MockModel);
   }
 
   public list() {

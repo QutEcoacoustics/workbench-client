@@ -11,10 +11,10 @@ import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { homeMenuItem } from "src/app/component/home/home.menus";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   LoginDetails,
@@ -45,14 +45,17 @@ import { fields } from "./login.json";
 @Component({
   selector: "app-authentication-login",
   template: `
-    <app-form
-      [schema]="schema"
-      [title]="'Log in'"
-      [error]="error"
-      [submitLabel]="'Log in'"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></app-form>
+    <div>
+      <app-form
+        [schema]="schema"
+        [size]="'small'"
+        [title]="'Log in'"
+        [error]="error"
+        [submitLabel]="'Log in'"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
+    </div>
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
@@ -66,8 +69,8 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
 
   constructor(
+    @Inject(API_ROOT) private apiRoot: string,
     private api: SecurityService,
-    private config: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
@@ -96,13 +99,11 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         // If external redirect
         if (typeof redirect === "string") {
           const redirectUrl = url.parse(redirect);
-          const validUrl = url.parse(
-            this.config.getConfig().environment.apiRoot
-          );
+          const validUrl = url.parse(this.apiRoot);
 
           // Check if redirect url is safe
           if (
-            redirect.charAt(0) === "/" ||
+            redirect.startsWith("/") ||
             redirectUrl.protocol + "//" + redirectUrl.hostname ===
               validUrl.protocol + "//" + validUrl.hostname
           ) {
@@ -139,7 +140,7 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
         () => {
           if (this.redirectBack) {
             this.location.back();
-          } else if (this.redirectUrl.charAt(0) === "/") {
+          } else if (this.redirectUrl.startsWith("/")) {
             this.router.navigateByUrl(this.redirectUrl);
           } else {
             this.externalRedirect(this.redirectUrl);
