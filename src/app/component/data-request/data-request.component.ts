@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { environment } from "src/environments/environment";
 import requestData from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import annotationData from "./download-annotations.json";
@@ -19,7 +20,7 @@ import annotationData from "./download-annotations.json";
   template: `
     <app-wip>
       <h1>Data Request</h1>
-      <app-cms page="downloadAnnotations.html"></app-cms>
+      <app-cms [page]="page"></app-cms>
       <app-form
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
@@ -42,17 +43,19 @@ import annotationData from "./download-annotations.json";
   `
 })
 export class DataRequestComponent extends PageComponent implements OnInit {
-  annotationSchema = annotationData;
-  requestSchema = requestData;
-  error: string;
-  annotationLoading: boolean;
-  requestLoading: boolean;
+  public annotationLoading: boolean;
+  public annotationSchema = annotationData;
+  public error: string;
+  public page: string;
+  public requestLoading: boolean;
+  public requestSchema = requestData;
 
   constructor() {
     super();
   }
 
   ngOnInit() {
+    this.page = environment.values.cms.downloadAnnotations;
     this.requestLoading = false;
   }
 

@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { environment } from "src/environments/environment";
 import { aboutCategory, ethicsMenuItem } from "../../about.menus";
 
 @Page({
@@ -19,10 +20,14 @@ import { aboutCategory, ethicsMenuItem } from "../../about.menus";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EthicsComponent extends PageComponent {
-  public page = "ethics.html";
+export class EthicsComponent extends PageComponent implements OnInit {
+  public page: string;
 
   constructor() {
     super();
+  }
+
+  ngOnInit() {
+    this.page = environment.values.cms.ethics;
   }
 }

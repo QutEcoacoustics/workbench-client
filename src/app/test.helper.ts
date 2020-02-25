@@ -63,7 +63,16 @@ export const testApiConfig = {
           }
         ]
       }
-    ]
+    ],
+    cms: {
+      credits: "/credits.html",
+      disclaimers: "/disclaimers.html",
+      downloadAnnotations: "/downloadAnnotations.html",
+      ethics: "/ethics.html",
+      harvest: "/harvest.html",
+      home: "/home.html",
+      sendAudio: "/sendAudio.html"
+    }
   }
 };
 

@@ -7,7 +7,7 @@ import {
   OnDestroy,
   OnInit
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
@@ -25,11 +25,10 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 })
 export class CmsComponent implements OnInit, OnDestroy {
   @Input() page: string;
-  // Should be SafeHtml, related to issue: https://github.com/angular/angular/issues/33028
-  blob: string;
-  error: ApiErrorDetails;
-  loading = true;
-  notifier = new Subject();
+  public blob: SafeHtml;
+  public error: ApiErrorDetails;
+  public loading: boolean;
+  private unsubscribe = new Subject();
 
   constructor(
     @Inject(CMS_ROOT) private cmsRoot: string,
@@ -39,16 +38,16 @@ export class CmsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.loading = true;
+
     this.http
-      .get(this.cmsRoot + "/" + this.page, {
-        responseType: "text"
-      })
-      .pipe(takeUntil(this.notifier))
+      .get(this.cmsRoot + this.page, { responseType: "text" })
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         data => {
-          // This is a bit dangerous, however cms should only load from trusted sources.
+          // This is a bit dangerous, however CMS should only load from trusted sources.
           // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data) as string;
+          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
           this.loading = false;
           this.ref.detectChanges();
         },
@@ -61,7 +60,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.notifier.next();
-    this.notifier.complete();
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

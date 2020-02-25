@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { environment } from "src/environments/environment";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Page({
@@ -21,10 +22,14 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SendAudioComponent extends PageComponent {
-  public page = "sendAudio.html";
+export class SendAudioComponent extends PageComponent implements OnInit {
+  public page: string;
 
   constructor() {
     super();
+  }
+
+  ngOnInit() {
+    this.page = environment.values.cms.sendAudio;
   }
 }

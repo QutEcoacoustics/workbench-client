@@ -58,7 +58,18 @@ export interface Configuration {
       title: string;
     };
     content: Links[];
+    cms: CMS;
   };
+}
+
+export interface CMS {
+  credits: string;
+  disclaimers: string;
+  downloadAnnotations: string;
+  ethics: string;
+  harvest: string;
+  home: string;
+  sendAudio: string;
 }
 
 type Links = HeaderLink | HeaderDropDownLink;
