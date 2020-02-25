@@ -1,15 +1,15 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { APP_INITIALIZER } from "@angular/core";
+import { environment } from "src/environments/environment";
 import {
-  AppConfigService,
-  appInitializerFn
-} from "./services/app-config/app-config.service";
-import { MockAppConfigService } from "./services/app-config/appConfigMock.service";
+  API_CONFIG,
+  API_ROOT,
+  CMS_ROOT
+} from "./helpers/app-initializer/app-initializer";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
   BawApiService,
-  STUB_CLASS_BUILDER
+  STUB_MODEL_BUILDER
 } from "./services/baw-api/baw-api.service";
 import {
   MockBawApiService,
@@ -27,16 +27,61 @@ import {
 } from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
+export const testApiConfig = {
+  environment: {
+    apiRoot: "https://www.testing.com/api",
+    siteRoot: "https://www.testing.com/site",
+    siteDir: "<< siteDir >>",
+    cmsRoot: "https://www.testing.com/cms",
+    ga: {
+      trackingId: "<< googleAnalytics >>"
+    }
+  },
+  values: {
+    keys: {
+      googleMaps: "<< googleMaps >>"
+    },
+    brand: {
+      name: "<< brandName >>",
+      title: "<< brandTitle >>"
+    },
+    content: [
+      {
+        title: "<< content1 >>",
+        url: "<< contentUrl1 >>"
+      },
+      {
+        headerTitle: "<< content2 >>",
+        items: [
+          {
+            title: "<< content3 >>",
+            url: "<< contentUrl3 >>"
+          },
+          {
+            title: "<< content4 >>",
+            url: "<< contentUrl4 >>"
+          }
+        ]
+      }
+    ]
+  }
+};
+
 export const testAppInitializer = [
   {
-    provide: AppConfigService,
-    useClass: MockAppConfigService
+    provide: API_ROOT,
+    useValue: testApiConfig.environment.apiRoot
   },
   {
-    provide: APP_INITIALIZER,
-    useFactory: appInitializerFn,
-    multi: true,
-    deps: [AppConfigService]
+    provide: CMS_ROOT,
+    useValue: testApiConfig.environment.cmsRoot
+  },
+  {
+    provide: API_CONFIG,
+    useValue: new Promise(resolve => {
+      Object.assign(environment, testApiConfig);
+      resolve(testApiConfig);
+    })
   }
 ];
 
@@ -47,7 +92,7 @@ export const testBawServices = [
     useClass: BawApiInterceptor,
     multi: true
   },
-  { provide: STUB_CLASS_BUILDER, useValue: MockModel },
+  { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockReadonlyApiService },

@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";
-import { AppConfigService } from "../app-config/app-config.service";
 import { ApiShow, IdOr } from "./api-common";
 import { BawApiService } from "./baw-api.service";
 
@@ -14,8 +14,8 @@ const endpoint = stringTemplate`/my_account`;
 })
 export class UserService extends BawApiService<User>
   implements ApiShow<User, [], IdOr<User>> {
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, User);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, User);
   }
 
   show(): Observable<User> {

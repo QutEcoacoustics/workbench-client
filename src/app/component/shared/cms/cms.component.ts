@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import {
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnDestroy,
   OnInit
@@ -9,8 +10,9 @@ import {
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-cms",
@@ -30,7 +32,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
 
   constructor(
-    private config: AppConfigService,
+    @Inject(CMS_ROOT) private cmsRoot: string,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
@@ -38,15 +40,16 @@ export class CmsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
-    const config = this.config.getConfig();
-    const cms = config.values.cms.find(cmsPage => cmsPage.title === this.page);
+    const cms = environment.values.cms.find(
+      cmsPage => cmsPage.title === this.page
+    );
 
     if (!cms) {
       console.error("Failed to find CMS file in environment: ", this.page);
       return;
     }
 
-    const url = config.environment.cmsRoot + cms.url;
+    const url = this.cmsRoot + cms.url;
     this.http
       .get(url, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))

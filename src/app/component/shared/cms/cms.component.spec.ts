@@ -4,16 +4,15 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
+import { environment } from "src/environments/environment";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
   let api: SecurityService;
   let httpMock: HttpTestingController;
-  let config: AppConfigService;
   let component: CmsComponent;
   let fixture: ComponentFixture<CmsComponent>;
 
@@ -28,7 +27,6 @@ describe("CmsComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CmsComponent);
     httpMock = TestBed.inject(HttpTestingController);
-    config = TestBed.inject(AppConfigService);
     api = TestBed.inject(SecurityService);
     component = fixture.componentInstance;
   });
@@ -42,7 +40,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
 
     expect(req).toBeTruthy();
@@ -56,7 +54,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/new.html"
+      environment.environment.cmsRoot + "/new.html"
     );
 
     expect(req).toBeTruthy();
@@ -69,9 +67,7 @@ describe("CmsComponent", () => {
     component.page = "testing";
     fixture.detectChanges();
 
-    httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
-    );
+    httpMock.expectOne(environment.environment.cmsRoot + "/testing.html");
 
     const spinner = fixture.nativeElement.querySelector("#app-spinner");
     expect(spinner).toBeTruthy();
@@ -84,7 +80,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
 
@@ -101,7 +97,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     req.flush("", { status: 404, statusText: "Not Found" });
 
@@ -118,7 +114,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
 
     expect(req.request.responseType).toBeTruthy();
@@ -132,7 +128,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     expect(req.request.headers.has("Accept")).toBeFalsy();
   });
@@ -144,7 +140,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     expect(req.request.headers.has("Content-Type")).toBeFalsy();
   });
@@ -156,7 +152,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     expect(req.request.headers.has("Authorization")).toBeFalsy();
   });
@@ -172,7 +168,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     expect(req.request.headers.has("Authorization")).toBeTruthy();
     expect(req.request.headers.get("Authorization")).toBe(
@@ -187,7 +183,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
 
@@ -209,7 +205,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     req.flush("", { status: 404, statusText: "Not Found" });
 
@@ -225,7 +221,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      config.getConfig().environment.cmsRoot + "/testing.html"
+      environment.environment.cmsRoot + "/testing.html"
     );
     req.flush("", { status: 401, statusText: "Unauthorized" });
 

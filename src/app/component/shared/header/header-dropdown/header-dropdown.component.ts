@@ -5,12 +5,12 @@ import {
   OnInit
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
+import { HeaderDropDownConvertedLink } from "src/app/helpers/app-initializer/app-initializer";
 import {
   getRoute,
   isExternalLink,
   isInternalRoute
 } from "src/app/interfaces/menusInterfaces";
-import { HeaderDropDownConvertedLink } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-header-dropdown",
