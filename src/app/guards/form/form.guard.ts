@@ -1,17 +1,22 @@
-import { Injectable, QueryList, ViewChildren } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
+import { Injectable, QueryList, Type, ViewChildren } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
 import { FormComponent } from "src/app/component/shared/form/form.component";
-import { Constructor } from "src/app/helpers/advancedTypes";
+
+/**
+ * Interface for FormCheckingPageComponent.
+ */
+export interface FormCheckingComponent {
+  appForms: QueryList<FormComponent>;
+  isFormTouched(): boolean;
+}
 
 /**
  * Add form checking to the component
  * @param Base Class to extend
  */
-export function WithFormCheck<T extends Constructor<{}>>(
-  Base: T = class {} as any
-) {
-  class Temporary extends Base {
+export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
+  class FormCheckingPageComponent extends Base
+    implements FormCheckingComponent {
     @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
 
     /**
@@ -22,7 +27,7 @@ export function WithFormCheck<T extends Constructor<{}>>(
     }
   }
 
-  return Temporary;
+  return FormCheckingPageComponent;
 }
 
 /**
@@ -31,11 +36,10 @@ export function WithFormCheck<T extends Constructor<{}>>(
  * modified by the user in any way.
  */
 @Injectable()
-export class FormTouchedGuard
-  implements CanDeactivate<{ form: AbstractControl }> {
-  canDeactivate(component: any) {
+export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
+  canDeactivate(component: FormCheckingComponent) {
     // If component doesn't have a form, ignore it
-    if (!component.isFormTouched) {
+    if (typeof component.isFormTouched !== "function") {
       return true;
     }
 
