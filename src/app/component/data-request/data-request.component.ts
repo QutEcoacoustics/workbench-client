@@ -43,7 +43,8 @@ import { fields as annotationFields } from "./download-annotations.json";
     </app-wip>
   `
 })
-export class DataRequestComponent extends PageComponent implements OnInit {
+export class DataRequestComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
   public annotationLoading: boolean;
   public annotationSchema = { model: {}, fields: annotationFields };
   public error: string;

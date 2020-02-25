@@ -2,16 +2,16 @@ import { HttpClient } from "@angular/common/http";
 import {
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnDestroy,
-  OnInit,
-  Inject
+  OnInit
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({
   selector: "app-cms",

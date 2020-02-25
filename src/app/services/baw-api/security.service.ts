@@ -1,11 +1,11 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
+import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
 
@@ -23,8 +23,8 @@ export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
-  constructor(http: HttpClient, config: AppConfigService) {
-    super(http, config, SessionUser);
+  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+    super(http, apiRoot, SessionUser);
 
     this.authTrigger.next(this.isLoggedIn());
     this.handleError = (err: ApiErrorDetails) => {

@@ -1,8 +1,4 @@
 .login-form {
-  margin: 0 auto;
-  max-width: 380px;
-  width: 100%;
-
   a {
     color: #4aba70;
 
@@ -18,6 +14,11 @@
   }
 }
 
+.small {
+  max-width: 380px;
+  margin: 0 auto;
+}
+
 .hint-text {
   color: #999;
   padding-bottom: 15px;
@@ -25,7 +26,7 @@
 }
 
 // Fixes issue with ngx formly
-input[type='file'] {
+input[type="file"] {
   border: 0px;
   height: auto;
 }

@@ -22,24 +22,25 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
   encapsulation: ViewEncapsulation.None
 })
 export class FormComponent implements OnInit, OnDestroy {
-  @Input() schema: {
-    model: {};
-    fields: FormlyFieldConfig[];
-  };
-  @Input() schemaUrl: string;
-  @Input() title?: string;
-  @Input() subTitle?: string;
-  @Input() submitLabel = "Submit";
-  @Input() submitLoading: boolean;
-  @Input() error?: string;
-  @Input() success?: string;
-  @Input() btnColor?:
+  @Input() btnColor:
     | "btn-danger"
     | "btn-success"
     | "btn-warning"
     | "btn-primary"
     | "btn-secondary"
     | "btn-info" = "btn-success";
+  @Input() error?: string;
+  @Input() schema: {
+    model: {};
+    fields: FormlyFieldConfig[];
+  };
+  @Input() schemaUrl: string;
+  @Input() submitLabel: string;
+  @Input() submitLoading: boolean;
+  @Input() subTitle?: string;
+  @Input() success?: string;
+  @Input() size: "small" | "default" = "default";
+  @Input() title?: string;
 
   // Rename is required to stop formly from hijacking the variable
   // tslint:disable-next-line: no-output-rename

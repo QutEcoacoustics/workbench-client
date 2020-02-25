@@ -3,6 +3,10 @@ import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import {
+  HeaderDropDownConvertedLink,
+  isHeaderLink
+} from "src/app/helpers/app-initializer/app-initializer";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -10,15 +14,10 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import {
-  AppConfigService,
-  Configuration,
-  HeaderDropDownConvertedLink,
-  isHeaderLink
-} from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
@@ -34,7 +33,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   activeLink: string;
   collapsed: boolean;
-  config: Configuration;
   headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
   routes: any;
   title: string;
@@ -47,15 +45,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private securityApi: SecurityService,
     private userApi: UserService,
-    private appConfig: AppConfigService,
     private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.config = this.appConfig.getConfig();
-    this.title = this.config.values.brand.name;
+    this.title = environment.values.brand.name;
     this.routes = {
       home: homeMenuItem,
       login: loginMenuItem,
@@ -136,7 +132,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return this.config.values.content.map(header => {
+    return environment.values.content.map(header => {
       if (!isHeaderLink(header)) {
         return {
           headerTitle: header.headerTitle,

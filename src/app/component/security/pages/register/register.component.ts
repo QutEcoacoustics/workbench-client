@@ -18,6 +18,7 @@ import { fields } from "./register.json";
     <app-wip>
       <app-form
         [schema]="schema"
+        [size]="'small'"
         [title]="'Register'"
         [submitLabel]="'Register'"
         [submitLoading]="loading"
