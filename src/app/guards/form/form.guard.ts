@@ -40,7 +40,7 @@ export class FormTouchedGuard
     }
 
     return component.isFormTouched()
-      ? confirm("Are you sure you want to leave?")
+      ? confirm("Form data will be lost! Are you sure you want to leave?")
       : true;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { WithFormCheck } from "src/app/guards/form/form.guard.js";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { fields as requestFields } from "./data-request.json";

@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -29,7 +28,7 @@ import { fields } from "./register.json";
     </app-wip>
   `
 })
-export class RegisterComponent extends WithFormCheck(PageComponent)
+export class RegisterComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   schema = { model: {}, fields };
