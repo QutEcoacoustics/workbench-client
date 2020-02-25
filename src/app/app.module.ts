@@ -10,7 +10,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormlyModule } from "@ngx-formly/core";
 import { ToastrModule } from "ngx-toastr";
-import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { formlyRoot, providers } from "./app.helper";
@@ -30,6 +29,7 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
+import { retrieveAppConfig } from "./services/app-config/app-config.service";
 
 export const appImports = [
   BrowserModule,
@@ -64,7 +64,17 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
   apiKey?: string;
 
   constructor() {
-    this.apiKey = environment.values.keys.googleMaps;
+    retrieveAppConfig(
+      data => {
+        this.apiKey = data.values.keys.googleMaps;
+        return data;
+      },
+      err => {
+        console.error("Failed to load google api key: ", err);
+        this.apiKey = "";
+        return null;
+      }
+    );
   }
 }
 

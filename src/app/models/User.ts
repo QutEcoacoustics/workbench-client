@@ -55,7 +55,7 @@ export class User extends AbstractModel implements UserInterface {
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {
           // Default values from API need to have /assets prepended
-          if (imageUrl.url.startsWith("/")) {
+          if (imageUrl.url.charAt(0) === "/") {
             imageUrl.url = "/assets" + imageUrl.url;
           }
           return imageUrl;

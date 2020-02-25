@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { User } from "src/app/models/User";
+import { AppConfigService } from "../app-config/app-config.service";
 import {
   Empty,
   Filter,
@@ -22,8 +22,8 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
   providedIn: "root"
 })
 export class AccountService extends ReadonlyApi<User, []> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, User);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, User);
   }
 
   list(): Observable<User[]> {

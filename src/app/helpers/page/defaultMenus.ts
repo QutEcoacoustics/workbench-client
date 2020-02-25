@@ -13,7 +13,10 @@ import {
 } from "src/app/component/security/security.menus";
 import { sendAudioMenuItem } from "src/app/component/send-audio/send-audio.menus";
 import { statisticsMenuItem } from "src/app/component/statistics/statistics.menus";
-import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import {
+  MenuLink,
+  NavigableMenuItem
+} from "src/app/interfaces/menusInterfaces";
 import { audioAnalysisMenuItem, libraryMenuItem } from "./externalMenus";
 
 export const DefaultMenu = {

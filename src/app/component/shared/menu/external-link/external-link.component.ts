@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   Input,
   OnInit
 } from "@angular/core";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
 @Component({
   selector: "app-menu-external-link",
@@ -34,11 +33,11 @@ export class MenuExternalLinkComponent implements OnInit {
   @Input() tooltip: string;
   @Input() uri: string;
 
-  constructor(@Inject(API_ROOT) private apiRoot: string) {}
+  constructor(private config: AppConfigService) {}
 
   ngOnInit() {
-    if (this.uri.startsWith("/")) {
-      this.uri = this.apiRoot + this.uri;
+    if (this.uri.charAt(0) === "/") {
+      this.uri = this.config.getConfig().environment.apiRoot + this.uri;
     }
   }
 }

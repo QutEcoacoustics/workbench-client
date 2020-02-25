@@ -14,12 +14,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { BehaviorSubject, Subject } from "rxjs";
-import { environment } from "src/environments/environment";
 import { AppComponent } from "./app.component";
 import { appImports } from "./app.module";
 import { homeMenuItem } from "./component/home/home.menus";
 import { projectsMenuItem } from "./component/projects/projects.menus";
 import { Project } from "./models/Project";
+import { AppConfigService } from "./services/app-config/app-config.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { UserService } from "./services/baw-api/user.service";
@@ -31,6 +31,7 @@ describe("AppComponent", () => {
   let router: Router;
   let route: ActivatedRoute;
   let httpMock: HttpTestingController;
+  let config: AppConfigService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -54,6 +55,7 @@ describe("AppComponent", () => {
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
     httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
     const projectsApi = TestBed.inject(ProjectsService);
     const securityApi = TestBed.inject(SecurityService);
     const userApi = TestBed.inject(UserService);
@@ -106,7 +108,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
-      environment.environment.cmsRoot + "/home.html"
+      config.getConfig().environment.cmsRoot + "/home.html"
     );
     req.flush("<h1>Title</h1><p>Paragraph</p>");
     tick(100);

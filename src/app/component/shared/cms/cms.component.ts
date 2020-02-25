@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import {
   ChangeDetectorRef,
   Component,
-  Inject,
   Input,
   OnDestroy,
   OnInit
@@ -10,7 +9,7 @@ import {
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({
@@ -32,7 +31,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   notifier = new Subject();
 
   constructor(
-    @Inject(CMS_ROOT) private cmsRoot: string,
+    private config: AppConfigService,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
@@ -40,7 +39,7 @@ export class CmsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.http
-      .get(this.cmsRoot + "/" + this.page, {
+      .get(this.config.getConfig().environment.cmsRoot + "/" + this.page, {
         responseType: "text"
       })
       .pipe(takeUntil(this.notifier))

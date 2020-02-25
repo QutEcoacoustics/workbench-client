@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
+import { AppConfigService } from "../../app-config/app-config.service";
 import { StandardApi } from "../api-common";
 import { MockModel } from "./baseApiMock.service";
 
 @Injectable()
 export class MockStandardApiService extends StandardApi<MockModel, []> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, MockModel);
+  constructor(http: HttpClient, config: AppConfigService) {
+    super(http, config, MockModel);
   }
 
   public list() {

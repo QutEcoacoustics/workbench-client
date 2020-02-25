@@ -3,11 +3,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyModule } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import {
-  FormCheckingComponent,
-  FormTouchedGuard,
-  WithFormCheck
-} from "./form.guard";
+import { FormTouchedGuard, WithFormCheck } from "./form.guard";
 
 describe("FormTouchedGuard", () => {
   let guard: FormTouchedGuard;
@@ -16,9 +12,8 @@ describe("FormTouchedGuard", () => {
     spyOn(window, "confirm").and.returnValue(confirmation);
   }
 
-  function createComponent(touched: boolean): FormCheckingComponent {
+  function createComponent(touched: boolean) {
     return {
-      appForms: undefined,
       isFormTouched() {
         return touched;
       }
@@ -39,7 +34,7 @@ describe("FormTouchedGuard", () => {
   it("should navigate away from route if component has no form", () => {
     spyOnWindow(false);
     const component = {};
-    expect(guard.canDeactivate(component as any)).toBeTrue();
+    expect(guard.canDeactivate(component)).toBeTrue();
   });
 
   it("should navigate away from route if form is untouched", () => {

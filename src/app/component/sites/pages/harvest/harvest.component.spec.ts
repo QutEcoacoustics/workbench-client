@@ -4,12 +4,13 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { HarvestComponent } from "./harvest.component";
 
 describe("SiteHarvestComponent", () => {
   let httpMock: HttpTestingController;
+  let config: AppConfigService;
   let component: HarvestComponent;
   let fixture: ComponentFixture<HarvestComponent>;
 
@@ -25,6 +26,7 @@ describe("SiteHarvestComponent", () => {
     fixture = TestBed.createComponent(HarvestComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
     fixture.detectChanges();
   });
 
@@ -33,13 +35,15 @@ describe("SiteHarvestComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(environment.environment.cmsRoot + "/harvest.html");
+    httpMock.expectOne(
+      config.getConfig().environment.cmsRoot + "/harvest.html"
+    );
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      environment.environment.cmsRoot + "/harvest.html"
+      config.getConfig().environment.cmsRoot + "/harvest.html"
     );
 
     req.flush(

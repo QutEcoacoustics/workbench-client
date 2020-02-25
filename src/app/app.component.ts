@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { Observable, Subject } from "rxjs";
 import { delay, map, takeUntil, withLatestFrom } from "rxjs/operators";
-import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-root",
@@ -19,12 +17,10 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private title: Title,
     private loader: LoadingBarService
   ) {}
 
   ngOnInit() {
-    this.title.setTitle(environment.values.brand.name);
     this.menuLayout = true;
 
     /**

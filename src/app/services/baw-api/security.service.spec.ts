@@ -7,6 +7,7 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
+import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   apiErrorDetails,
@@ -19,6 +20,7 @@ import { LoginDetails, SecurityService } from "./security.service";
 describe("SecurityService", () => {
   let service: SecurityService;
   let httpMock: HttpTestingController;
+  let config: AppConfigService;
 
   function createError(
     func:
@@ -58,6 +60,7 @@ describe("SecurityService", () => {
     });
 
     service = TestBed.inject(SecurityService);
+    config = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 

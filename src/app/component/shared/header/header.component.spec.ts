@@ -13,10 +13,10 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, Subject } from "rxjs";
 import { User } from "src/app/models/User";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { testBawServices } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
@@ -32,6 +32,7 @@ describe("HeaderComponent", () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let securityApi: SecurityService;
   let userApi: UserService;
+  let config: AppConfigService;
   let router: Router;
 
   beforeEach(async(() => {
@@ -55,6 +56,7 @@ describe("HeaderComponent", () => {
     fixture = TestBed.createComponent(HeaderComponent);
     securityApi = TestBed.inject(SecurityService);
     userApi = TestBed.inject(UserService);
+    config = TestBed.inject(AppConfigService);
     router = TestBed.inject(Router);
     component = fixture.componentInstance;
 
@@ -110,7 +112,7 @@ describe("HeaderComponent", () => {
 
     const brand = fixture.nativeElement.querySelector("a.navbar-brand");
     expect(brand).toBeTruthy();
-    expect(brand.innerText).toContain(environment.values.brand.name);
+    expect(brand.innerText).toContain(config.getConfig().values.brand.name);
     expect(
       brand.attributes.getNamedItem("ng-reflect-router-link")
     ).toBeTruthy();

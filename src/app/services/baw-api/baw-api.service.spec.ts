@@ -9,13 +9,13 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
   Meta,
-  STUB_MODEL_BUILDER
+  STUB_CLASS_BUILDER
 } from "./baw-api.service";
 
 export const shouldNotSucceed = () => {
@@ -94,6 +94,7 @@ describe("BawApiService", () => {
   }
 
   let service: BawApiService<MockModel>;
+  let config: AppConfigService;
   let httpMock: HttpTestingController;
 
   // Multi response metadata
@@ -159,7 +160,7 @@ describe("BawApiService", () => {
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
-      url: environment.environment.apiRoot + route,
+      url: config.getConfig().environment.apiRoot + route,
       method
     });
   }
@@ -193,11 +194,12 @@ describe("BawApiService", () => {
           useClass: BawApiInterceptor,
           multi: true
         },
-        { provide: STUB_MODEL_BUILDER, useValue: MockModel },
+        { provide: STUB_CLASS_BUILDER, useValue: MockModel },
         BawApiService
       ]
     });
     service = TestBed.inject(BawApiService);
+    config = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
 
     multiMeta = {
@@ -213,7 +215,7 @@ describe("BawApiService", () => {
         total: 1,
         maxPage: 1,
         current:
-          environment.environment.apiRoot +
+          config.getConfig().environment.apiRoot +
           "/projects?direction=asc&items=25&order_by=name&page=1",
         previous: null,
         next: null
