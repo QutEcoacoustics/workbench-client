@@ -12,7 +12,6 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-cms",
@@ -40,22 +39,13 @@ export class CmsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
-    const cms = environment.values.cms.find(
-      cmsPage => cmsPage.title === this.page
-    );
 
-    if (!cms) {
-      console.error("Failed to find CMS file in environment: ", this.page);
-      return;
-    }
-
-    const url = this.cmsRoot + cms.url;
     this.http
-      .get(url, { responseType: "text" })
+      .get(this.cmsRoot + this.page, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         data => {
-          // This is a bit dangerous, however cms should only load from trusted sources.
+          // This is a bit dangerous, however CMS should only load from trusted sources.
           // May need to revise this in future.
           this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
           this.loading = false;

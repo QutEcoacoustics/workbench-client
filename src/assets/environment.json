@@ -48,35 +48,14 @@
         ]
       }
     ],
-    "cms": [
-      {
-        "title": "credits",
-        "url": "/credits.html"
-      },
-      {
-        "title": "disclaimers",
-        "url": "/disclaimers.html"
-      },
-      {
-        "title": "downloadAnnotations",
-        "url": "/downloadAnnotations.html"
-      },
-      {
-        "title": "ethics",
-        "url": "/ethics.html"
-      },
-      {
-        "title": "harvest",
-        "url": "/harvest.html"
-      },
-      {
-        "title": "home",
-        "url": "/home.html"
-      },
-      {
-        "title": "sendAudio",
-        "url": "/sendAudio.html"
-      }
-    ]
+    "cms": {
+      "credits": "/credits.html",
+      "disclaimers": "/disclaimers.html",
+      "downloadAnnotations": "/downloadAnnotations.html",
+      "ethics": "/ethics.html",
+      "harvest": "/harvest.html",
+      "home": "/home.html",
+      "sendAudio": "/sendAudio.html"
+    }
   }
 }

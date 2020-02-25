@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, map, takeUntil } from "rxjs/operators";
+import { CMS, CMS_DATA } from "src/app/helpers/app-initializer/app-initializer";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
@@ -24,12 +25,13 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
-  public page = "home";
+  public page: string;
   public moreProjectsLink = projectsMenuItem;
   public projectList: List<Card> = List([]);
   private unsubscribe = new Subject();
 
   constructor(
+    @Inject(CMS_DATA) private cms: CMS,
     private projectApi: ProjectsService,
     private securityApi: SecurityService
   ) {
@@ -37,6 +39,8 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.page = this.cms.home;
+
     this.securityApi
       .getAuthTrigger()
       .pipe(

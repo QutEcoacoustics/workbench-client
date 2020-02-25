@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { CMS, CMS_DATA } from "src/app/helpers/app-initializer/app-initializer";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import requestData from "./data-request.json";
@@ -45,15 +46,16 @@ export class DataRequestComponent extends PageComponent implements OnInit {
   public annotationLoading: boolean;
   public annotationSchema = annotationData;
   public error: string;
-  public page = "downloadAnnotations";
+  public page: string;
   public requestLoading: boolean;
   public requestSchema = requestData;
 
-  constructor() {
+  constructor(@Inject(CMS_DATA) private cms: CMS) {
     super();
   }
 
   ngOnInit() {
+    this.page = this.cms.downloadAnnotations;
     this.requestLoading = false;
   }
 

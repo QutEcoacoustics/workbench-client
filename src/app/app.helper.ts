@@ -11,6 +11,7 @@ import {
   API_CONFIG,
   API_ROOT,
   AppInitializer,
+  CMS_DATA,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
@@ -82,5 +83,9 @@ export const providers = [
   {
     provide: CMS_ROOT,
     useFactory: AppInitializer.cmsRootFactory
+  },
+  {
+    provide: CMS_DATA,
+    useFactory: AppInitializer.cmsDataFactory
   }
 ];
