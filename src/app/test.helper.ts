@@ -3,6 +3,7 @@ import { environment } from "src/environments/environment";
 import {
   API_CONFIG,
   API_ROOT,
+  CMS_DATA,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
 import { AccountService } from "./services/baw-api/account.service";
@@ -63,7 +64,16 @@ export const testApiConfig = {
           }
         ]
       }
-    ]
+    ],
+    cms: {
+      credits: "/credits.html",
+      disclaimers: "/disclaimers.html",
+      downloadAnnotations: "/downloadAnnotations.html",
+      ethics: "/ethics.html",
+      harvest: "/harvest.html",
+      home: "/home.html",
+      sendAudio: "/sendAudio.html"
+    }
   }
 };
 
@@ -75,6 +85,10 @@ export const testAppInitializer = [
   {
     provide: CMS_ROOT,
     useValue: testApiConfig.environment.cmsRoot
+  },
+  {
+    provide: CMS_DATA,
+    useValue: testApiConfig.values.cms
   },
   {
     provide: API_CONFIG,

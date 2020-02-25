@@ -36,7 +36,7 @@ describe("CmsComponent", () => {
   it("should request page from api", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -50,7 +50,7 @@ describe("CmsComponent", () => {
   it("should change request based on page", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "new";
+    component.page = "/new.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -64,7 +64,7 @@ describe("CmsComponent", () => {
   it("should initially display loading animation", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     httpMock.expectOne(environment.environment.cmsRoot + "/testing.html");
@@ -76,7 +76,7 @@ describe("CmsComponent", () => {
   it("should hide loading animation after success response", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -93,7 +93,7 @@ describe("CmsComponent", () => {
   it("should hide loading animation after error response", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -110,7 +110,7 @@ describe("CmsComponent", () => {
   it("should request page from api with 'responseType' of type text", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -124,7 +124,7 @@ describe("CmsComponent", () => {
   it("should request page from api without 'accept' header", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -136,7 +136,7 @@ describe("CmsComponent", () => {
   it("should request page from api without 'content-type' header", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -148,7 +148,7 @@ describe("CmsComponent", () => {
   it("should request page from api without 'Authorization' header when not logged in", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -164,7 +164,7 @@ describe("CmsComponent", () => {
         new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
     );
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -179,7 +179,7 @@ describe("CmsComponent", () => {
   it("should display html on success", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -201,7 +201,7 @@ describe("CmsComponent", () => {
   it("should display 'not found' on page not found", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
@@ -217,7 +217,7 @@ describe("CmsComponent", () => {
   it("should display 'unauthorized' on unauthorized", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => false);
 
-    component.page = "testing";
+    component.page = "/testing.html";
     fixture.detectChanges();
 
     const req = httpMock.expectOne(
