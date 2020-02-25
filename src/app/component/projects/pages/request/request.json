@@ -1,8 +1,4 @@
 {
-  "model": {
-    "name": [],
-    "reason": ""
-  },
   "fields": [
     {
       "key": "name",

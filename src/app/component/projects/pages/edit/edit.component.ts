@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -17,7 +18,7 @@ import {
   projectMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
-import data from "./edit.json";
+import { fields } from "./edit.json";
 
 @Page({
   category: projectCategory,
@@ -46,13 +47,14 @@ import data from "./edit.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class EditComponent extends PageComponent implements OnInit, OnDestroy {
+export class EditComponent extends WithFormCheck(PageComponent)
+  implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
-  schema = data;
+  schema = { model: { name: "" }, fields };
   success: string;
 
   projectId: Id;
@@ -79,7 +81,7 @@ export class EditComponent extends PageComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         project => {
-          this.schema.model["name"] = project.name;
+          this.schema.model.name = project.name;
           this.ready = true;
         },
         (err: ApiErrorDetails) => {

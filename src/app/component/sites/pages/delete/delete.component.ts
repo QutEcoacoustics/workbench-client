@@ -11,6 +11,7 @@ import {
   siteMenuItem,
   sitesCategory
 } from "src/app/component/sites/sites.menus";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -45,7 +46,7 @@ import { siteMenuItemActions } from "../details/details.component";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class DeleteComponent extends PageComponent
+export class DeleteComponent extends WithFormCheck(PageComponent)
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject<any>();
   error: string;

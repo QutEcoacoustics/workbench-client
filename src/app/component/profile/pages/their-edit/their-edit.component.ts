@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -15,7 +16,7 @@ import {
   theirProfileMenuItem
 } from "../../profile.menus";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
-import data from "./their-edit.json";
+import { fields } from "./their-edit.json";
 
 @Page({
   category: theirProfileCategory,
@@ -46,14 +47,14 @@ import data from "./their-edit.json";
     </app-wip>
   `
 })
-export class TheirEditComponent extends PageComponent
+export class TheirEditComponent extends WithFormCheck(PageComponent)
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
-  schema = data;
+  schema = { model: {}, fields };
   success: string;
 
   user: User;

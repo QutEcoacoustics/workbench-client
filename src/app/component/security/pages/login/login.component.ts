@@ -11,6 +11,7 @@ import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { homeMenuItem } from "src/app/component/home/home.menus";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -28,7 +29,7 @@ import {
   securityCategory,
   unlockAccountMenuItem
 } from "../../security.menus";
-import data from "./login.json";
+import { fields } from "./login.json";
 
 @Page({
   category: securityCategory,
@@ -56,8 +57,9 @@ import data from "./login.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
-  public schema = { model: {}, fields: data.fields };
+export class LoginComponent extends WithFormCheck(PageComponent)
+  implements OnInit, OnDestroy {
+  public schema = { model: {}, fields };
   public error: string;
   public errorDetails: ApiErrorDetails;
   public loading: boolean;

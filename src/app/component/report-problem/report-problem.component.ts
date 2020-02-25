@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard.js";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import data from "./report-problem.json";
+import { fields } from "./report-problem.json";
 import {
   reportProblemMenuItem,
   reportProblemsCategory
@@ -32,8 +33,9 @@ import {
     </app-wip>
   `
 })
-export class ReportProblemComponent extends PageComponent implements OnInit {
-  schema = data;
+export class ReportProblemComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
+  schema = { model: {}, fields };
   error: string;
   loading: boolean;
   subTitle: string;

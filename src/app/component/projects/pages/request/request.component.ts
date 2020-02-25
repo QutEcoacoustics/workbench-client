@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -13,7 +14,7 @@ import {
   requestProjectMenuItem
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
-import data from "./request.json";
+import { fields } from "./request.json";
 
 @Page({
   category: projectsCategory,
@@ -39,10 +40,10 @@ import data from "./request.json";
     </app-wip>
   `
 })
-export class RequestComponent extends PageComponent
+export class RequestComponent extends WithFormCheck(PageComponent)
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  schema: any;
+  schema = { model: {}, fields };
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
@@ -55,7 +56,6 @@ export class RequestComponent extends PageComponent
     this.loading = false;
 
     // TODO Change this to the list of projects a user does not have access to
-    this.schema = data;
     this.api
       .list()
       .pipe(takeUntil(this.unsubscribe))

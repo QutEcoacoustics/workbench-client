@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard.js";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import requestData from "./data-request.json";
+import { fields as requestFields } from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
-import annotationData from "./download-annotations.json";
+import { fields as annotationFields } from "./download-annotations.json";
 
 @Page({
   category: dataRequestCategory,
@@ -41,9 +42,10 @@ import annotationData from "./download-annotations.json";
     </app-wip>
   `
 })
-export class DataRequestComponent extends PageComponent implements OnInit {
-  annotationSchema = annotationData;
-  requestSchema = requestData;
+export class DataRequestComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
+  annotationSchema = { model: {}, fields: annotationFields };
+  requestSchema = { model: {}, fields: requestFields };
   error: string;
   annotationLoading: boolean;
   requestLoading: boolean;

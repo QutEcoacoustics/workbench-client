@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -14,7 +15,7 @@ import {
   myAccountMenuItem
 } from "../../profile.menus";
 import { myProfileMenuItemActions } from "../profile/my-profile.component copy";
-import data from "./my-edit.json";
+import { fields } from "./my-edit.json";
 
 @Page({
   category: myAccountCategory,
@@ -58,14 +59,14 @@ import data from "./my-edit.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class MyEditComponent extends PageComponent
+export class MyEditComponent extends WithFormCheck(PageComponent)
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
-  schema = data;
+  schema = { model: { edit: { name: "" } }, fields };
   success: string;
 
   user: User;
@@ -86,7 +87,7 @@ export class MyEditComponent extends PageComponent
           this.user = user;
           this.ready = true;
 
-          this.schema.model.edit["name"] = this.user.userName;
+          this.schema.model.edit.name = this.user.userName;
         },
         (err: ApiErrorDetails) => {
           this.errorDetails = err;
