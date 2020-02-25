@@ -2,6 +2,7 @@ import { Type } from "@angular/core";
 import { Route } from "@angular/router";
 import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
+import { FormTouchedGuard } from "src/app/guards/form/form.guard";
 import { getPageInfo } from "./pageComponent";
 
 /**
@@ -26,7 +27,8 @@ export function GetRouteConfigForPage(
       {
         path: "",
         pathMatch: "full",
-        component: page.component
+        component: page.component,
+        canDeactivate: [FormTouchedGuard]
       },
       {
         path: "",
