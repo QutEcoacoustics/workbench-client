@@ -1,38 +1,41 @@
-import { Injectable, ViewChild } from "@angular/core";
-import { AbstractControl, FormGroup } from "@angular/forms";
+import { Injectable, QueryList, ViewChildren } from "@angular/core";
+import { AbstractControl } from "@angular/forms";
 import { CanDeactivate } from "@angular/router";
 import { FormComponent } from "src/app/component/shared/form/form.component";
+import { Constructor } from "src/app/helpers/advancedTypes";
 
-type Constructor<T> = new (...args: any[]) => T;
-
-interface FormCheck {
-  isFormTouched(): boolean;
-}
-
+/**
+ * Add form checking to the component
+ * @param Base Class to extend
+ */
 export function WithFormCheck<T extends Constructor<{}>>(
   Base: T = class {} as any
 ) {
-  class Temporary extends Base implements FormCheck {
-    @ViewChild(FormComponent) appForm: FormComponent;
-    form: FormGroup;
+  class Temporary extends Base {
+    @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
 
+    /**
+     * Determine if any forms have been touched
+     */
     isFormTouched() {
-      console.log("isFormTouched: ", this.appForm.form.touched);
-      return this.appForm.form.touched;
+      return this.appForms.some(appForm => appForm.form.touched);
     }
   }
 
   return Temporary;
 }
 
+/**
+ * Form checking guard.
+ * This stops the user from leaving a page where a form has been
+ * modified by the user in any way.
+ */
 @Injectable()
 export class FormTouchedGuard
   implements CanDeactivate<{ form: AbstractControl }> {
-  canDeactivate(component) {
-    console.log("FormTouchedGuard", component);
-
+  canDeactivate(component: any) {
+    // If component doesn't have a form, ignore it
     if (!component.isFormTouched) {
-      console.log("Non form component");
       return true;
     }
 
