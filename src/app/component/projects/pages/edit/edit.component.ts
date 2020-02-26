@@ -1,16 +1,17 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectMenuItem,
   projectCategory,
@@ -18,8 +19,6 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 import data from "./edit.json";
-import { ToastrService } from "ngx-toastr";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: projectCategory,

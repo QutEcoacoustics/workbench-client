@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
@@ -17,7 +18,6 @@ import {
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
 import data from "./new.json";
-import { ToastrService } from "ngx-toastr";
 
 @Page({
   category: projectsCategory,

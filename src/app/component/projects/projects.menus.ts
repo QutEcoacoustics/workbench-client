@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -9,7 +10,6 @@ import {
 } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { List } from "immutable";
 
 export const projectsRoute = StrongRoute.Base.add("projects");
 

@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
-import { ActivatedRoute } from "@angular/router";
-import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 
 @Component({
   selector: "app-error-handler",
@@ -24,32 +26,47 @@ import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
     </ng-container>
   `
 })
-export class ErrorHandlerComponent implements OnInit {
+export class ErrorHandlerComponent implements OnInit, OnDestroy {
   @Input() error: ApiErrorDetails;
   public apiReturnCodes = apiReturnCodes;
+  private unsubscribe = new Subject<void>();
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.data.subscribe((data: PageInfoInterface) => {
-      const resolvers = data.category.resolvedModels;
+    this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
+      (data: PageInfoInterface) => {
+        const resolvers = data.category.resolvedModels;
 
-      if (!resolvers) {
-        return;
-      }
-
-      // Find any error messages
-      for (const resolver of resolvers) {
-        if (!data[resolver].error) {
-          continue;
-        }
-
-        this.error = data[resolver].error as ApiErrorDetails;
-        // If unauthorized response, no point downgrading to "Not Found"
-        if (this.error.status === apiReturnCodes.unauthorized) {
+        if (!resolvers) {
           return;
         }
+
+        // Find any error messages
+        for (const resolver of resolvers) {
+          if (!data[resolver].error) {
+            continue;
+          }
+
+          this.error = data[resolver].error as ApiErrorDetails;
+          // If unauthorized response, no point downgrading to "Not Found"
+          if (this.error.status === apiReturnCodes.unauthorized) {
+            return;
+          }
+        }
+      },
+      err => {
+        console.error("ErrorHandlerComponent: ", err);
+        this.error = {
+          status: apiReturnCodes.unknown,
+          message: "Unable to load data from Server."
+        };
       }
-    });
+    );
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 }

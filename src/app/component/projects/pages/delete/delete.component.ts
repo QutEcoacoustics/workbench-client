@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { ToastrService } from "ngx-toastr";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -11,6 +10,7 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   deleteProjectMenuItem,
   projectCategory,
@@ -18,8 +18,6 @@ import {
   projectsMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { ToastrService } from "ngx-toastr";
 
 @Page({
   category: projectCategory,

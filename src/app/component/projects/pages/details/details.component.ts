@@ -11,6 +11,7 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ProjectResolver } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesResolver } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
@@ -21,7 +22,6 @@ import {
   projectMenuItem,
   projectsMenuItem
 } from "../../projects.menus";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,

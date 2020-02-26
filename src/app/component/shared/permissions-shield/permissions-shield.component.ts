@@ -9,8 +9,8 @@ import { ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { WidgetComponent } from "../widget/widget.component";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { WidgetComponent } from "../widget/widget.component";
 
 @Component({
   selector: "app-permissions-shield",

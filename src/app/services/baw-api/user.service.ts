@@ -29,10 +29,6 @@ export class UserService extends BawApiService<User>
 })
 export class UserResolver extends ShowResolver<User> {
   constructor(api: UserService) {
-    super(
-      api,
-      () => undefined,
-      () => []
-    );
+    super(api);
   }
 }
