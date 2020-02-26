@@ -1,9 +1,9 @@
-import { Type } from "@angular/core";
+import { OnDestroy, Type } from "@angular/core";
+import { Subject } from "rxjs";
 import { PageInfo } from "./pageInfo";
 
 export interface PageComponentStatic
-  extends
-    Type<PageComponentInterface>,
+  extends Type<PageComponentInterface>,
     Type<any> {
   readonly pageInfo: PageInfo;
 }
@@ -17,7 +17,14 @@ export interface PageComponentInterface {
 // See https://github.com/Microsoft/TypeScript/issues/4881
 // If they did, then we wouldn't need this shim, which
 // currently needs to be extended from in every component!
-export class PageComponent implements PageComponentInterface {
+export class PageComponent implements PageComponentInterface, OnDestroy {
+  protected unsubscribe = new Subject<void>();
+
+  ngOnDestroy() {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
   static get pageInfo(): PageInfo {
     return null;
   }
@@ -30,7 +37,7 @@ export class PageComponent implements PageComponentInterface {
  * Get the page info interface of an angular component
  * @param component Angular component
  */
-export function getPageInfo(component: Type<any>): (PageInfo | null) {
+export function getPageInfo(component: Type<any>): PageInfo | null {
   const pageComponent = component as PageComponentStatic;
   return pageComponent ? pageComponent.pageInfo : null;
 }

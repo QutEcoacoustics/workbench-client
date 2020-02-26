@@ -1,14 +1,7 @@
 import { DOCUMENT, Location } from "@angular/common";
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { homeMenuItem } from "src/app/component/home/home.menus";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
@@ -57,14 +50,13 @@ import { fields } from "./login.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
+export class LoginComponent extends PageComponent implements OnInit {
   public schema = { model: {}, fields };
   public error: string;
   public errorDetails: ApiErrorDetails;
   public loading: boolean;
   private redirectUrl: string;
   private redirectBack: boolean;
-  private unsubscribe = new Subject();
 
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
@@ -116,11 +108,6 @@ export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
       },
       err => {}
     );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

@@ -61,7 +61,6 @@
     "rxjs-no-create": true,
     "rxjs-no-ignored-error": true,
     "rxjs-no-nested-subscribe": true,
-    "rxjs-prefer-angular-takeuntil": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "triple-equals": true,

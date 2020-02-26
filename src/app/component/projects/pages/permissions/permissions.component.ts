@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { theirProfileMenuItem } from "src/app/component/profile/profile.menus";
 import { ISelectableItem } from "src/app/component/shared/items/selectable-items/selectable-items.component";
@@ -36,7 +35,7 @@ import { projectMenuItemActions } from "../details/details.component";
   styleUrls: ["permissions.component.scss"]
 })
 export class PermissionsComponent extends TableTemplate<TableRow>
-  implements OnInit, OnDestroy {
+  implements OnInit {
   public errorDetails: ApiErrorDetails;
   public loading: boolean;
   public project: Project;
@@ -46,8 +45,6 @@ export class PermissionsComponent extends TableTemplate<TableRow>
   public individualOptions: ISelectableItem[];
   public userOptions: ISelectableItem[];
   public visitorOptions: ISelectableItem[];
-
-  private unsubscribe = new Subject();
 
   constructor(private route: ActivatedRoute, private api: ProjectsService) {
     super((val, row) => this.checkMatch(val, row.user));
@@ -99,10 +96,6 @@ export class PermissionsComponent extends TableTemplate<TableRow>
       );
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
   public submit($event: any) {
     console.log($event);
   }

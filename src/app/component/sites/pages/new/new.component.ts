@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { projectMenuItemActions } from "src/app/component/projects/pages/details/details.component";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
@@ -43,8 +42,7 @@ import { fields } from "./new.json";
   `
 })
 export class NewComponent extends WithFormCheck(PageComponent)
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+  implements OnInit {
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
@@ -83,11 +81,6 @@ export class NewComponent extends WithFormCheck(PageComponent)
           this.ready = false;
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

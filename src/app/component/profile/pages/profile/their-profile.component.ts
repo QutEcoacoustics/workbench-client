@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { ItemInterface } from "src/app/component/shared/items/item/item.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -42,9 +41,7 @@ export const theirProfileMenuItemActions = [
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"]
 })
-export class TheirProfileComponent extends PageComponent
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class TheirProfileComponent extends PageComponent implements OnInit {
   error: ApiErrorDetails;
   imageUrl: string;
   tags: ItemInterface[];
@@ -97,10 +94,5 @@ export class TheirProfileComponent extends PageComponent
         uri: () => "BROKEN LINK"
       }
     ];
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

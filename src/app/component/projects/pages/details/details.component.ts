@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
@@ -48,9 +47,7 @@ export const projectMenuItemActions = [
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"]
 })
-export class DetailsComponent extends PageComponent
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class DetailsComponent extends PageComponent implements OnInit {
   project: Project;
   sites: Site[];
   error: ApiErrorDetails;
@@ -102,10 +99,5 @@ export class DetailsComponent extends PageComponent
           }
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

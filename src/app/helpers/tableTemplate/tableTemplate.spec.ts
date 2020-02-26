@@ -18,11 +18,11 @@ import { TableTemplate } from "./tableTemplate";
     </ngx-datatable>
   `
 })
-class MockComponent extends TableTemplate<any> {
+class MockComponent extends TableTemplate<{ id: number | string }> {
+  public columns = [{ prop: "id" }];
+
   constructor() {
     super(() => true);
-
-    this.columns = [{ prop: "id" }];
   }
 
   protected createRows() {

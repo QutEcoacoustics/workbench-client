@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -40,8 +39,7 @@ import { fields } from "./new.json";
   `
 })
 export class NewComponent extends WithFormCheck(PageComponent)
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+  implements OnInit {
   error: string;
   loading: boolean;
   schema = { model: {}, fields };
@@ -53,11 +51,6 @@ export class NewComponent extends WithFormCheck(PageComponent)
 
   ngOnInit() {
     this.loading = false;
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

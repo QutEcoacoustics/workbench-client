@@ -28,7 +28,7 @@ export class CmsComponent implements OnInit, OnDestroy {
   public blob: SafeHtml;
   public error: ApiErrorDetails;
   public loading: boolean;
-  private unsubscribe = new Subject();
+  private unsubscribe = new Subject<void>();
 
   constructor(
     @Inject(CMS_ROOT) private cmsRoot: string,
