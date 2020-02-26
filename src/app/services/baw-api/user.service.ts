@@ -24,11 +24,6 @@ export class UserService extends BawApiService<User>
   }
 }
 
-@Injectable({
-  providedIn: "root"
-})
-export class UserResolver extends ShowResolver<User, UserService> {
-  constructor(api: UserService) {
-    super(api);
-  }
-}
+export const userResolvers = new ShowResolver<User, UserService>([
+  UserService
+]).create("User");

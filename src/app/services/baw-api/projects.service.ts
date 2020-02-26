@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, Provider } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
@@ -14,7 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { ListResolver, ShowResolver, Resolvers } from "./resolver-common";
+import { Resolvers } from "./resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
