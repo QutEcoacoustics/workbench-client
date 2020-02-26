@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -46,7 +47,7 @@ import { projectMenuItemActions } from "../details/details.component";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class DeleteComponent extends PageComponent
+export class DeleteComponent extends WithFormCheck(PageComponent)
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject<any>();
   error: string;

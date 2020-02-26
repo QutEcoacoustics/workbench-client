@@ -1,11 +1,4 @@
 {
-  "model": {
-    "name": "",
-    "email": "",
-    "date": "",
-    "steps": "",
-    "expect": ""
-  },
   "fields": [
     {
       "key": "name",

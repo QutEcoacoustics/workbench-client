@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -14,7 +15,7 @@ import {
   projectsMenuItem
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
-import data from "./new.json";
+import { fields } from "./new.json";
 
 @Page({
   category: projectsCategory,
@@ -38,11 +39,12 @@ import data from "./new.json";
     ></app-form>
   `
 })
-export class NewComponent extends PageComponent implements OnInit, OnDestroy {
+export class NewComponent extends WithFormCheck(PageComponent)
+  implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   loading: boolean;
-  schema = data;
+  schema = { model: {}, fields };
   success: string;
 
   constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {

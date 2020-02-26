@@ -33,7 +33,7 @@ describe("MyProfileEditComponent", () => {
     fixture = TestBed.createComponent(MyEditComponent);
     api = TestBed.inject(UserService);
     component = fixture.componentInstance;
-    component.schema.model = { edit: {} };
+    component.schema.model = { edit: { name: "" } };
   });
 
   it("should create", fakeAsync(() => {

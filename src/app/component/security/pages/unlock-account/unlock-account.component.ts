@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -10,7 +11,7 @@ import {
   securityCategory,
   unlockAccountMenuItem
 } from "../../security.menus";
-import data from "./unlock-account.json";
+import { fields } from "./unlock-account.json";
 
 @Page({
   category: securityCategory,
@@ -40,8 +41,9 @@ import data from "./unlock-account.json";
     </app-wip>
   `
 })
-export class UnlockPasswordComponent extends PageComponent implements OnInit {
-  schema = data;
+export class UnlockPasswordComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
+  schema = { model: {}, fields };
   error: string;
   loading: boolean;
 

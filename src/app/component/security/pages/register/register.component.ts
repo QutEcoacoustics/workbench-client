@@ -5,7 +5,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { registerMenuItem, securityCategory } from "../../security.menus";
-import data from "./register.json";
+import { fields } from "./register.json";
 
 @Page({
   category: securityCategory,
@@ -16,17 +16,15 @@ import data from "./register.json";
   selector: "app-authentication-register",
   template: `
     <app-wip>
-      <div>
-        <app-form
-          [schema]="schema"
-          [size]="'small'"
-          [title]="'Register'"
-          [submitLabel]="'Register'"
-          [submitLoading]="loading"
-          [error]="error"
-          (onSubmit)="submit($event)"
-        ></app-form>
-      </div>
+      <app-form
+        [schema]="schema"
+        [size]="'small'"
+        [title]="'Register'"
+        [submitLabel]="'Register'"
+        [submitLoading]="loading"
+        [error]="error"
+        (onSubmit)="submit($event)"
+      ></app-form>
       <app-error-handler [error]="errorDetails"></app-error-handler>
     </app-wip>
   `
@@ -34,7 +32,7 @@ import data from "./register.json";
 export class RegisterComponent extends PageComponent
   implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
-  schema = data;
+  schema = { model: {}, fields };
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;

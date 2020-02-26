@@ -6,6 +6,7 @@ import { flatMap, takeUntil } from "rxjs/operators";
 import { projectMenuItemActions } from "src/app/component/projects/pages/details/details.component";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { flattenFields } from "src/app/component/shared/form/form.component";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -15,7 +16,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem, sitesCategory } from "../../sites.menus";
-import data from "./new.json";
+import { fields } from "./new.json";
 
 @Page({
   category: sitesCategory,
@@ -41,13 +42,14 @@ import data from "./new.json";
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
-export class NewComponent extends PageComponent implements OnInit, OnDestroy {
+export class NewComponent extends WithFormCheck(PageComponent)
+  implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
-  schema = data;
+  schema = { model: {}, fields };
   success: string;
 
   projectId: Id;

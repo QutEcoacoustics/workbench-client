@@ -1,11 +1,4 @@
 {
-  "model": {
-    "name": "",
-    "email": "",
-    "organization": "",
-    "organization_type": "",
-    "request": ""
-  },
   "fields": [
     {
       "key": "name",

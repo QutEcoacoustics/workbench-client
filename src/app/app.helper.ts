@@ -7,6 +7,7 @@ import { FormlyImageInput } from "./component/shared/formly/image-input.componen
 import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
+import { FormTouchedGuard } from "./guards/form/form.guard";
 import {
   API_CONFIG,
   API_ROOT,
@@ -82,5 +83,6 @@ export const providers = [
   {
     provide: CMS_ROOT,
     useFactory: AppInitializer.cmsRootFactory
-  }
+  },
+  FormTouchedGuard
 ];

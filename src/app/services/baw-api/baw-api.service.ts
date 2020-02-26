@@ -57,7 +57,6 @@ export abstract class BawApiService<T extends AbstractModel> {
     return null;
   }
 
-  // TODO Replace config: AppConfigService with apiRoot: string
   constructor(
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,

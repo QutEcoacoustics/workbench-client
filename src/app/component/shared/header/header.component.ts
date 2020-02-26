@@ -4,7 +4,6 @@ import { List } from "immutable";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
-  Configuration,
   HeaderDropDownConvertedLink,
   isHeaderLink
 } from "src/app/helpers/app-initializer/app-initializer";
@@ -34,7 +33,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
   activeLink: string;
   collapsed: boolean;
-  config: Configuration;
   headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
   routes: any;
   title: string;

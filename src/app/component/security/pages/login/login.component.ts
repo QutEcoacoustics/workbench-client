@@ -28,7 +28,7 @@ import {
   securityCategory,
   unlockAccountMenuItem
 } from "../../security.menus";
-import data from "./login.json";
+import { fields } from "./login.json";
 
 @Page({
   category: securityCategory,
@@ -45,22 +45,20 @@ import data from "./login.json";
 @Component({
   selector: "app-authentication-login",
   template: `
-    <div>
-      <app-form
-        [schema]="schema"
-        [size]="'small'"
-        [title]="'Log in'"
-        [error]="error"
-        [submitLabel]="'Log in'"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></app-form>
-    </div>
+    <app-form
+      [schema]="schema"
+      [size]="'small'"
+      [title]="'Log in'"
+      [error]="error"
+      [submitLabel]="'Log in'"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></app-form>
     <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
-  public schema = { model: {}, fields: data.fields };
+  public schema = { model: {}, fields };
   public error: string;
   public errorDetails: ApiErrorDetails;
   public loading: boolean;

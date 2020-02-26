@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -10,7 +11,7 @@ import {
   securityCategory,
   unlockAccountMenuItem
 } from "../../security.menus";
-import data from "./reset-password.json";
+import { fields } from "./reset-password.json";
 
 @Page({
   category: securityCategory,
@@ -40,8 +41,9 @@ import data from "./reset-password.json";
     </app-wip>
   `
 })
-export class ResetPasswordComponent extends PageComponent implements OnInit {
-  schema = data;
+export class ResetPasswordComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
+  schema = { model: {}, fields };
   error: string;
   loading: boolean;
 

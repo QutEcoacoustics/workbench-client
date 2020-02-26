@@ -44,7 +44,7 @@ describe("ProjectsEditComponent", () => {
     api = TestBed.inject(ProjectsService);
     router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
-    component.schema.model = {};
+    component.schema.model = { name: "" };
 
     spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Project>();

@@ -1,7 +1,4 @@
 {
-  "model": {
-    "email": ""
-  },
   "fields": [
     {
       "key": "email",

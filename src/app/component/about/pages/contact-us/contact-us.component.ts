@@ -1,9 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { aboutCategory, contactUsMenuItem } from "../../about.menus";
-import data from "./contact-us.json";
+import { fields } from "./contact-us.json";
 
 @Page({
   category: aboutCategory,
@@ -28,8 +29,9 @@ import data from "./contact-us.json";
     </app-wip>
   `
 })
-export class ContactUsComponent extends PageComponent implements OnInit {
-  schema = data;
+export class ContactUsComponent extends WithFormCheck(PageComponent)
+  implements OnInit {
+  schema = { model: {}, fields };
   error: string;
   loading: boolean;
 
