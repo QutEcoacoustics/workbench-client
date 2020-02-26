@@ -10,8 +10,8 @@ import {
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({
   selector: "app-form",

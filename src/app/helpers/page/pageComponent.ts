@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
-import { PageInfo } from "./pageInfo";
 import { WithUnsubscribe } from "../unsubscribe/unsubscribe";
+import { PageInfo } from "./pageInfo";
 
 export interface PageComponentStatic
   extends Type<PageComponentInterface>,

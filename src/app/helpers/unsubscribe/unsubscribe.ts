@@ -1,4 +1,4 @@
-import { Type, OnDestroy } from "@angular/core";
+import { OnDestroy, Type } from "@angular/core";
 import { Subject } from "rxjs";
 
 export function WithUnsubscribe<T extends Type<{}>>(Base: T = class {} as any) {

@@ -9,8 +9,8 @@ import {
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { takeUntil } from "rxjs/operators";
 import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 @Component({
   selector: "app-cms",

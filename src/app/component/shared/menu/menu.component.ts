@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { List } from "immutable";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
   AnyMenuItem,
   isButton,
@@ -20,7 +21,6 @@ import { SecurityService } from "src/app/services/baw-api/security.service";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-menu",

@@ -6,6 +6,7 @@ import {
   HeaderDropDownConvertedLink,
   isHeaderLink
 } from "src/app/helpers/app-initializer/app-initializer";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -22,7 +23,6 @@ import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-header",

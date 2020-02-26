@@ -8,8 +8,8 @@ import {
   OnInit
 } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
@@ -21,7 +21,6 @@ import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Badge } from "./user-badge/user-badge.component";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-user-badges",
