@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { Card } from "src/app/component/shared/cards/cards.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -6,14 +7,13 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ProjectsResolver } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem
 } from "../../projects.menus";
-import { ActivatedRoute } from "@angular/router";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,

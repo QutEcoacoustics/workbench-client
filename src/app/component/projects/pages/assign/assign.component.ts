@@ -13,6 +13,7 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
@@ -20,7 +21,6 @@ import {
   projectMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: projectCategory,

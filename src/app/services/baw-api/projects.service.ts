@@ -53,7 +53,7 @@ export class ProjectsService extends StandardApi<Project, []> {
 })
 export class ProjectsResolver extends ListResolver<Project> {
   constructor(api: ProjectsService) {
-    super(api, () => []);
+    super(api);
   }
 }
 
@@ -62,10 +62,6 @@ export class ProjectsResolver extends ListResolver<Project> {
 })
 export class ProjectResolver extends ShowResolver<Project> {
   constructor(api: ProjectsService) {
-    super(
-      api,
-      params => parseInt(params.get("projectId"), 10),
-      () => []
-    );
+    super(api, "projectId");
   }
 }

@@ -41,7 +41,7 @@ export class AccountService extends ReadonlyApi<User, []> {
 })
 export class AccountResolver extends ListResolver<User> {
   constructor(api: AccountService) {
-    super(api, () => []);
+    super(api);
   }
 }
 
@@ -50,10 +50,6 @@ export class AccountResolver extends ListResolver<User> {
 })
 export class ShallowSiteResolver extends ShowResolver<User> {
   constructor(api: AccountService) {
-    super(
-      api,
-      params => parseInt(params.get("accountId"), 10),
-      () => []
-    );
+    super(api, "accountId");
   }
 }

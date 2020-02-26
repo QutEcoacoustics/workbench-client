@@ -129,7 +129,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
 })
 export class SitesResolver extends ListResolver<Site> {
   constructor(api: SitesService) {
-    super(api, params => [parseInt(params.get("projectId"), 10)]);
+    super(api, ["projectId"]);
   }
 }
 
@@ -138,11 +138,7 @@ export class SitesResolver extends ListResolver<Site> {
 })
 export class SiteResolver extends ShowResolver<Site> {
   constructor(api: SitesService) {
-    super(
-      api,
-      params => parseInt(params.get("siteId"), 10),
-      params => [parseInt(params.get("projectId"), 10)]
-    );
+    super(api, "siteId", ["projectId"]);
   }
 }
 
@@ -151,7 +147,7 @@ export class SiteResolver extends ShowResolver<Site> {
 })
 export class ShallowSitesResolver extends ListResolver<Site> {
   constructor(api: ShallowSitesService) {
-    super(api, () => []);
+    super(api);
   }
 }
 
@@ -160,10 +156,6 @@ export class ShallowSitesResolver extends ListResolver<Site> {
 })
 export class ShallowSiteResolver extends ShowResolver<Site> {
   constructor(api: ShallowSitesService) {
-    super(
-      api,
-      params => parseInt(params.get("siteId"), 10),
-      () => []
-    );
+    super(api, "siteId");
   }
 }

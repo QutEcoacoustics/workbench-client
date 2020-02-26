@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -15,7 +16,6 @@ import {
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
 import { fields } from "./new.json";
-import { ToastrService } from "ngx-toastr";
 
 @Page({
   category: projectsCategory,
