@@ -41,17 +41,8 @@ export class AccountService extends ReadonlyApi<User, []> {
 @Injectable({
   providedIn: "root"
 })
-export class AccountResolver extends ListResolver<User> {
+export class AccountResolver extends ListResolver<User, AccountService> {
   constructor(api: AccountService) {
     super(api);
-  }
-}
-
-@Injectable({
-  providedIn: "root"
-})
-export class ShallowSiteResolver extends ShowResolver<User> {
-  constructor(api: AccountService) {
-    super(api, "accountId");
   }
 }

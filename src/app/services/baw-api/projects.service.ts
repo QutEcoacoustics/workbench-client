@@ -14,7 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { ListResolver, ShowResolver } from "./resolver-common";
+import { ListResolver, ShowResolver, Resolvers } from "./resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
@@ -50,20 +50,7 @@ export class ProjectsService extends StandardApi<Project, []> {
   }
 }
 
-@Injectable({
-  providedIn: "root"
-})
-export class ProjectsResolver extends ListResolver<Project> {
-  constructor(api: ProjectsService) {
-    super(api);
-  }
-}
-
-@Injectable({
-  providedIn: "root"
-})
-export class ProjectResolver extends ShowResolver<Project> {
-  constructor(api: ProjectsService) {
-    super(api, "projectId");
-  }
-}
+export const projectResolvers = new Resolvers<Project, ProjectsService>(
+  [ProjectsService],
+  "projectId"
+).create("Project");

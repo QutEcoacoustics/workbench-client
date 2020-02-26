@@ -12,6 +12,16 @@ import {
   appInitializerFn
 } from "./services/app-config/app-config.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import {
+  ProjectsService,
+  projectResolvers
+} from "./services/baw-api/projects.service";
+import { Project } from "./models/Project";
+import { ListResolver } from "./services/baw-api/resolver-common";
+import {
+  siteResolvers,
+  shallowSiteResolvers
+} from "./services/baw-api/sites.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -73,5 +83,8 @@ export const providers = [
     useFactory: appInitializerFn,
     multi: true,
     deps: [AppConfigService]
-  }
+  },
+  ...projectResolvers,
+  ...siteResolvers,
+  ...shallowSiteResolvers
 ];
