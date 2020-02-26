@@ -4,7 +4,6 @@ import {
   Component,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit
 } from "@angular/core";
 import { List } from "immutable";
@@ -50,7 +49,7 @@ import { Badge } from "./user-badge/user-badge.component";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserBadgesComponent extends WithUnsubscribe()
-  implements OnInit, OnChanges, OnDestroy {
+  implements OnInit, OnChanges {
   @Input() model: Site | Project;
 
   created: any;

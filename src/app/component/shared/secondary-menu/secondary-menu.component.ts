@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
@@ -29,7 +24,7 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecondaryMenuComponent extends WithUnsubscribe()
-  implements OnInit, OnDestroy {
+  implements OnInit {
   contextLinks: List<NavigableMenuItem>;
   linksWidget: WidgetMenuItem;
 
