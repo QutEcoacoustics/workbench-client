@@ -1,5 +1,5 @@
-import { WithUnsubscribe } from "./unsubscribe";
 import { Subject } from "rxjs";
+import { WithUnsubscribe } from "./unsubscribe";
 
 describe("WithUnsubscribe", () => {
   it("should accept empty base class", () => {
