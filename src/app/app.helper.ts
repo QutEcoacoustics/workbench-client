@@ -1,7 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
@@ -15,7 +14,10 @@ import {
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
 import { AppConfigService } from "./services/app-config/app-config.service";
-import { AccountService } from "./services/baw-api/account.service";
+import {
+  accountResolvers,
+  AccountService
+} from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
   projectResolvers,
@@ -27,7 +29,7 @@ import {
   siteResolvers,
   SitesService
 } from "./services/baw-api/sites.service";
-import { UserService } from "./services/baw-api/user.service";
+import { userResolvers, UserService } from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -108,7 +110,9 @@ export const providers = [
   SecurityService,
   SitesService,
   UserService,
+  ...accountResolvers,
   ...projectResolvers,
   ...siteResolvers,
-  ...shallowSiteResolvers
+  ...shallowSiteResolvers,
+  ...userResolvers
 ];

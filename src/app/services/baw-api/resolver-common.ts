@@ -1,3 +1,4 @@
+import { Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
@@ -8,10 +9,10 @@ import { ApiErrorDetails } from "./api.interceptor.service";
 
 export class Resolvers<
   T extends AbstractModel,
-  S extends ApiList<T, any[]> & ApiShow<T, any[], IdOr<T>>
+  A extends ApiList<T, any[]> & ApiShow<T, any[], IdOr<T>>
 > {
   constructor(
-    private deps: [any],
+    private deps: Type<A>[],
     private id?: string,
     private ids?: string[]
   ) {}
@@ -21,75 +22,95 @@ export class Resolvers<
     const id = this.id;
     const ids = this.ids;
 
-    const providers = [
-      {
-        provide: name + "sResolver",
-        useClass: class Resolver extends ListResolver<T, S> {
-          constructor(api: S) {
-            super(api, ids);
-          }
-        },
-        deps
-      },
-      {
-        provide: name + "Resolver",
-        useClass: class Resolver extends ShowResolver<T, S> {
-          constructor(api: S) {
-            super(api, id, ids);
-          }
-        },
-        deps
-      }
-    ];
+    const listProvider = new ListResolver<T, A>(deps, ids).create(name);
+    const showProvider = new ShowResolver<T, A>(deps, id, ids).create(name);
 
-    console.log("Providers: ", name, providers);
-    return providers;
+    return [...listProvider, ...showProvider];
   }
 }
 
-export class ListResolver<T extends AbstractModel, S extends ApiList<T, any[]>>
-  implements Resolve<ResolvedModel<T[]>> {
-  constructor(private api: S, private ids?: string[]) {}
+export class ListResolver<
+  T extends AbstractModel,
+  L extends ApiList<T, any[]>
+> {
+  constructor(private deps: Type<L>[], private ids?: string[]) {}
 
-  public resolve(
-    route: ActivatedRouteSnapshot
-  ): Observable<ResolvedModel<T[]>> {
-    const args: Id[] = this.ids
-      ? this.ids.map(id => convertToId(route.paramMap.get(id)))
-      : [];
+  public create(name: string) {
+    const deps = this.deps;
+    const ids = this.ids;
 
-    return this.api.list(...args).pipe(
-      map(model => ({ model })),
-      take(1),
-      catchError((error: ApiErrorDetails) => {
-        return of({ error });
-      })
-    );
+    class Resolver implements Resolve<ResolvedModel<T[]>> {
+      constructor(private api: L) {}
+
+      public resolve(
+        route: ActivatedRouteSnapshot
+      ): Observable<ResolvedModel<T[]>> {
+        const args: Id[] = ids
+          ? ids.map(id => convertToId(route.paramMap.get(id)))
+          : [];
+
+        return this.api.list(...args).pipe(
+          map(model => ({ model })),
+          take(1),
+          catchError((error: ApiErrorDetails) => {
+            return of({ error });
+          })
+        );
+      }
+    }
+
+    return [
+      {
+        provide: name + "sResolver",
+        useClass: Resolver,
+        deps
+      }
+    ];
   }
 }
 
 export class ShowResolver<
   T extends AbstractModel,
   S extends ApiShow<T, any[], IdOr<T>>
-> implements Resolve<ResolvedModel<T>> {
-  constructor(private api: S, private id?: string, private ids?: string[]) {}
+> {
+  constructor(
+    private deps: Type<S>[],
+    private id?: string,
+    private ids?: string[]
+  ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable<ResolvedModel<T>> {
-    const showId = this.id
-      ? convertToId(route.paramMap.get(this.id))
-      : undefined;
-    const args =
-      this.id && this.ids
-        ? this.ids.map(id => convertToId(route.paramMap.get(id)))
-        : [];
+  public create(name: string) {
+    const deps = this.deps;
+    const id = this.id;
+    const ids = this.ids;
 
-    return this.api.show(showId, ...args).pipe(
-      map(model => ({ model })),
-      take(1),
-      catchError((error: ApiErrorDetails) => {
-        return of({ error });
-      })
-    );
+    class Resolver implements Resolve<ResolvedModel<T>> {
+      constructor(private api: S) {}
+
+      public resolve(
+        route: ActivatedRouteSnapshot
+      ): Observable<ResolvedModel<T>> {
+        const showId = id ? convertToId(route.paramMap.get(id)) : undefined;
+        const args =
+          id && ids ? ids.map(id => convertToId(route.paramMap.get(id))) : [];
+
+        return this.api.show(showId, ...args).pipe(
+          map(model => ({ model })),
+          take(1),
+          catchError((error: ApiErrorDetails) => {
+            return of({ error });
+          })
+        );
+      }
+    }
+
+    return [
+      {
+        provide: name + "Resolver",
+        useClass: Resolver,
+        deps
+      }
+    ];
   }
 }
 

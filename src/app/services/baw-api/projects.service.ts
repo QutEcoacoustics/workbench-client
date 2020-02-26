@@ -14,7 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { ListResolver, ShowResolver, Resolvers } from "./resolver-common";
+import { Resolvers } from "./resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
