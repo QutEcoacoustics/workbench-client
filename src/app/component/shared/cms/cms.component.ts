@@ -4,14 +4,13 @@ import {
   Component,
   Inject,
   Input,
-  OnDestroy,
   OnInit
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-cms",
@@ -23,19 +22,20 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
     <app-error-handler [error]="error"></app-error-handler>
   `
 })
-export class CmsComponent implements OnInit, OnDestroy {
+export class CmsComponent extends WithUnsubscribe() implements OnInit {
   @Input() page: string;
   public blob: SafeHtml;
   public error: ApiErrorDetails;
   public loading: boolean;
-  private unsubscribe = new Subject<void>();
 
   constructor(
     @Inject(CMS_ROOT) private cmsRoot: string,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.loading = true;
@@ -57,10 +57,5 @@ export class CmsComponent implements OnInit, OnDestroy {
           this.ref.detectChanges();
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

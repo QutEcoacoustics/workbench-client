@@ -21,6 +21,7 @@ import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Badge } from "./user-badge/user-badge.component";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-user-badges",
@@ -49,15 +50,17 @@ import { Badge } from "./user-badge/user-badge.component";
   styleUrls: ["./user-badges.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
+export class UserBadgesComponent extends WithUnsubscribe()
+  implements OnInit, OnChanges, OnDestroy {
   @Input() model: Site | Project;
 
-  private unsubscribe = new Subject();
   created: any;
   updated: any;
   owned: any;
 
-  constructor(private api: AccountService, private ref: ChangeDetectorRef) {}
+  constructor(private api: AccountService, private ref: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit() {
     this.generateBadges();
@@ -65,11 +68,6 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges() {
     this.generateBadges();
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   generateBadges() {

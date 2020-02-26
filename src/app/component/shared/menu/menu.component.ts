@@ -3,13 +3,11 @@ import {
   Component,
   ComponentFactoryResolver,
   Input,
-  OnDestroy,
   OnInit,
   ViewChild
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import {
   AnyMenuItem,
   isButton,
@@ -22,6 +20,7 @@ import { SecurityService } from "src/app/services/baw-api/security.service";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-menu",
@@ -29,14 +28,13 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   styleUrls: ["./menu.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuComponent implements OnInit, OnDestroy {
+export class MenuComponent extends WithUnsubscribe() implements OnInit {
   @Input() title?: LabelAndIcon;
   @Input() links: List<AnyMenuItem>;
   @Input() menuType: "action" | "secondary";
   @Input() widget?: WidgetMenuItem;
   @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
 
-  private unsubscribe = new Subject();
   filteredLinks: Set<AnyMenuItem>;
   placement: "left" | "right";
   params: Params;
@@ -52,7 +50,9 @@ export class MenuComponent implements OnInit, OnDestroy {
     private api: SecurityService,
     private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     // Get user details
@@ -80,11 +80,6 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     // Load widget
     this.loadComponent();
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

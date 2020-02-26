@@ -15,6 +15,7 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { WidgetMenuItem } from "../widget/widgetItem";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-secondary-menu",
@@ -28,12 +29,14 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SecondaryMenuComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class SecondaryMenuComponent extends WithUnsubscribe()
+  implements OnInit, OnDestroy {
   contextLinks: List<NavigableMenuItem>;
   linksWidget: WidgetMenuItem;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+    super();
+  }
 
   ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -75,10 +78,5 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
       },
       err => {}
     );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

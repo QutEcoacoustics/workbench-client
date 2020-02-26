@@ -3,16 +3,15 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 
 @Component({
   selector: "app-form",
@@ -21,7 +20,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
   // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() btnColor:
     | "btn-danger"
     | "btn-success"
@@ -46,12 +45,13 @@ export class FormComponent implements OnInit, OnDestroy {
   // tslint:disable-next-line: no-output-rename
   @Output("onSubmit") submitFunction: EventEmitter<any> = new EventEmitter();
 
-  private unsubscribe = new Subject();
   form: FormGroup;
   fields: FormlyFieldConfig[];
   model: {};
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({});
@@ -78,11 +78,6 @@ export class FormComponent implements OnInit, OnDestroy {
           }
         );
     }
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**
