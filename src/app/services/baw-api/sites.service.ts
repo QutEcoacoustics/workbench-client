@@ -17,7 +17,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters, Meta } from "./baw-api.service";
-import { ListResolver, ShowResolver } from "./resolver-common";
+import { Resolvers } from "./resolver-common";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
@@ -124,38 +124,13 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   }
 }
 
-@Injectable({
-  providedIn: "root"
-})
-export class SitesResolver extends ListResolver<Site> {
-  constructor(api: SitesService) {
-    super(api, ["projectId"]);
-  }
-}
+export const siteResolvers = new Resolvers<Site, SitesService>(
+  [SitesService],
+  "siteId",
+  ["projectId"]
+).create("Site");
 
-@Injectable({
-  providedIn: "root"
-})
-export class SiteResolver extends ShowResolver<Site> {
-  constructor(api: SitesService) {
-    super(api, "siteId", ["projectId"]);
-  }
-}
-
-@Injectable({
-  providedIn: "root"
-})
-export class ShallowSitesResolver extends ListResolver<Site> {
-  constructor(api: ShallowSitesService) {
-    super(api);
-  }
-}
-
-@Injectable({
-  providedIn: "root"
-})
-export class ShallowSiteResolver extends ShowResolver<Site> {
-  constructor(api: ShallowSitesService) {
-    super(api, "siteId");
-  }
-}
+export const shallowSiteResolvers = new Resolvers<Site, ShallowSitesService>(
+  [ShallowSitesService],
+  "siteId"
+).create("ShallowSite");

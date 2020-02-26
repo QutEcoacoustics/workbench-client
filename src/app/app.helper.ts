@@ -17,9 +17,16 @@ import {
 import { AppConfigService } from "./services/app-config/app-config.service";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
-import { ProjectsService } from "./services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
-import { SitesService } from "./services/baw-api/sites.service";
+import {
+  shallowSiteResolvers,
+  siteResolvers,
+  SitesService
+} from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
@@ -100,5 +107,8 @@ export const providers = [
   ProjectsService,
   SecurityService,
   SitesService,
-  UserService
+  UserService,
+  ...projectResolvers,
+  ...siteResolvers,
+  ...shallowSiteResolvers
 ];
