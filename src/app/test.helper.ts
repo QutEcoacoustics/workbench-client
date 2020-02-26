@@ -79,11 +79,11 @@ export const testApiConfig = {
 export const testAppInitializer = [
   {
     provide: API_ROOT,
-    useClass: testApiConfig.environment.apiRoot
+    useValue: testApiConfig.environment.apiRoot
   },
   {
     provide: CMS_ROOT,
-    useClass: testApiConfig.environment.cmsRoot
+    useValue: testApiConfig.environment.cmsRoot
   },
   {
     provide: API_CONFIG,
