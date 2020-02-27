@@ -3,8 +3,7 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
@@ -18,11 +17,7 @@ describe("DataRequestComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientTestingModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, SharedModule, HttpClientTestingModule],
       declarations: [DataRequestComponent],
       providers: [...testAppInitializer]
     }).compileComponents();

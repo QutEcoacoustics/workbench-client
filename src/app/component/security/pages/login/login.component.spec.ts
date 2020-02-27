@@ -7,9 +7,8 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SessionUser } from "src/app/models/User";
@@ -43,11 +42,7 @@ describe("LoginComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, RouterTestingModule, SharedModule],
       declarations: [LoginComponent, HomeComponent],
       providers: [
         ...testBawServices,

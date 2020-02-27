@@ -18,7 +18,6 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
@@ -134,7 +133,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return environment.values.content.map(header => {
+    return this.env.values.content.map(header => {
       if (!isHeaderLink(header)) {
         return {
           headerTitle: header.headerTitle,

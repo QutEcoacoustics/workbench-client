@@ -4,9 +4,8 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockProject, Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -21,7 +20,7 @@ describe("ProjectsNewComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
+      imports: [...appLibraryImports, SharedModule],
       declarations: [NewComponent],
       providers: [...testBawServices]
     }).compileComponents();

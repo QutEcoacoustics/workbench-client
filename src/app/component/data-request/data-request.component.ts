@@ -3,7 +3,7 @@ import { List } from "immutable";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { AppConfigService } from "src/app/services/app-config/app-config.service.js";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { fields as requestFields } from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as annotationFields } from "./download-annotations.json";

@@ -5,9 +5,8 @@ import {
   tick
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
 import { UserService } from "src/app/services/baw-api/user.service";
@@ -21,11 +20,7 @@ describe("MyProfileEditComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [MyEditComponent],
       providers: [...testBawServices]
     }).compileComponents();

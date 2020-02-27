@@ -9,7 +9,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
-import { AppConfigService } from "../environment/deployment-environment.service";
+import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,

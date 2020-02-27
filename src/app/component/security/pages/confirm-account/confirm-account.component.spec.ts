@@ -5,8 +5,7 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
@@ -17,7 +16,7 @@ describe("ConfirmPasswordComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
+      imports: [...appLibraryImports, SharedModule],
       declarations: [ConfirmPasswordComponent, HomeComponent]
     }).compileComponents();
   }));

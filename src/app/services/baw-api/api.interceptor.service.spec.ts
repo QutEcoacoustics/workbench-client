@@ -11,7 +11,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { SessionUser } from "src/app/models/User";
 import { testBawServices } from "src/app/test.helper";
-import { AppConfigService } from "../environment/deployment-environment.service";
+import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import { SecurityService } from "./security.service";
 

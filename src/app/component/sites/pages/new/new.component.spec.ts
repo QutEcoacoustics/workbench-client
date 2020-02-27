@@ -6,9 +6,8 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { mockSite, Site } from "src/app/models/Site";
@@ -31,11 +30,7 @@ describe("SitesNewComponent", () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
       providers: [
         ...testBawServices,
@@ -118,11 +113,7 @@ describe("SitesNewComponent", () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
       providers: [
         ...testBawServices,

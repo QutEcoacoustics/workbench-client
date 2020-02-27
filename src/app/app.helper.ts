@@ -32,6 +32,10 @@ export function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
+export const toastrRoot = {
+  positionClass: "toast-top-center"
+};
+
 export const formlyRoot = {
   types: [
     {
