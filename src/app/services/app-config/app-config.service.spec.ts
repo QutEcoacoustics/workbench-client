@@ -21,7 +21,6 @@ describe("AppConfigService", () => {
   // Save environment to variable
   beforeAll(() => {
     tempEnvironment = fromJS(environment).toJS();
-    console.log("AppConfigService Environment: ", tempEnvironment);
   });
 
   // Clear environment before each test
@@ -43,7 +42,6 @@ describe("AppConfigService", () => {
       delete environment[key];
     }
     Object.assign(environment, fromJS(tempEnvironment).toJS());
-    console.log("AppConfigService Environment after: ", environment);
   });
 
   function configureTestingModule(

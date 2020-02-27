@@ -8,8 +8,8 @@ import {
 import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { ConfirmPasswordComponent } from "./confirm-account.component";
 import { testAppInitializer } from "src/app/test.helper";
+import { ConfirmPasswordComponent } from "./confirm-account.component";
 
 describe("ConfirmPasswordComponent", () => {
   let component: ConfirmPasswordComponent;
