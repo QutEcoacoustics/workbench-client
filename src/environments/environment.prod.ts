@@ -1,7 +1,7 @@
-import { Environment } from "src/app/helpers/app-initializer/app-initializer";
+import { Configuration } from "src/app/helpers/app-initializer/app-initializer";
 import { version } from "../../package.json";
 
-export const environment: Environment = {
+export const environment: Configuration = {
   production: true,
   version
 } as any;

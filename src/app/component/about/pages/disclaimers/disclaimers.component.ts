@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { aboutCategory, disclaimersMenuItem } from "../../about.menus";
 
 @Page({
@@ -23,11 +23,11 @@ import { aboutCategory, disclaimersMenuItem } from "../../about.menus";
 export class DisclaimersComponent extends PageComponent implements OnInit {
   public page: string;
 
-  constructor(private env: DeploymentEnvironmentService) {
+  constructor(private env: AppConfigService) {
     super();
   }
 
   ngOnInit() {
-    this.page = this.env.getValues().cms.disclaimers;
+    this.page = this.env.values.cms.disclaimers;
   }
 }

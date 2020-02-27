@@ -3,7 +3,7 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
 import { SendAudioComponent } from "./send-audio.component";
@@ -12,7 +12,7 @@ describe("SendAudioComponent", () => {
   let httpMock: HttpTestingController;
   let component: SendAudioComponent;
   let fixture: ComponentFixture<SendAudioComponent>;
-  let env: DeploymentEnvironmentService;
+  let env: AppConfigService;
   let cmsUrl: string;
 
   beforeEach(async(() => {
@@ -26,10 +26,10 @@ describe("SendAudioComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SendAudioComponent);
     httpMock = TestBed.inject(HttpTestingController);
-    env = TestBed.inject(DeploymentEnvironmentService);
+    env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
 
-    cmsUrl = env.getEnvironment().cmsRoot + "/sendAudio.html";
+    cmsUrl = env.environment.cmsRoot + "/sendAudio.html";
 
     fixture.detectChanges();
   });

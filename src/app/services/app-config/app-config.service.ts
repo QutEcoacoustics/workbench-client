@@ -1,19 +1,21 @@
 import { Injectable } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
 import {
+  Configuration,
   Environment,
-  EnvironmentRoots,
-  EnvironmentValues,
-  isErrorConfiguration
+  isConfiguration,
+  Values
 } from "src/app/helpers/app-initializer/app-initializer";
 import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root"
 })
-export class DeploymentEnvironmentService {
+export class AppConfigService {
+  private _config: Configuration;
+
   constructor(private notification: ToastrService) {
-    if (isErrorConfiguration(environment)) {
+    if (!isConfiguration(environment)) {
       console.error("Detected invalid environment.");
       this.notification.error(
         "The website is not configured correctly. Try coming back at another time.",
@@ -25,18 +27,30 @@ export class DeploymentEnvironmentService {
           positionClass: "toast-center-center"
         }
       );
+      return;
     }
+
+    this._config = new Proxy(environment, {});
   }
 
-  getDeployment(): Environment {
-    return environment as Environment;
+  /**
+   * Get config data
+   */
+  get config(): Configuration {
+    return this._config;
   }
 
-  getEnvironment(): EnvironmentRoots {
-    return environment.environment;
+  /**
+   * Get environment values
+   */
+  get environment(): Environment {
+    return this._config.environment;
   }
 
-  getValues(): EnvironmentValues {
-    return environment.values;
+  /**
+   * Get config values
+   */
+  get values(): Values {
+    return this._config.values;
   }
 }

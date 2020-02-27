@@ -9,7 +9,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
-import { DeploymentEnvironmentService } from "../environment/deployment-environment.service";
+import { AppConfigService } from "../environment/deployment-environment.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
@@ -94,7 +94,7 @@ describe("BawApiService", () => {
   }
 
   let service: BawApiService<MockModel>;
-  let env: DeploymentEnvironmentService;
+  let env: AppConfigService;
   let httpMock: HttpTestingController;
 
   // Multi response metadata
@@ -160,7 +160,7 @@ describe("BawApiService", () => {
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
-      url: env.getEnvironment().apiRoot + route,
+      url: env.environment.apiRoot + route,
       method
     });
   }
@@ -199,7 +199,7 @@ describe("BawApiService", () => {
       ]
     });
     service = TestBed.inject(BawApiService);
-    env = TestBed.inject(DeploymentEnvironmentService);
+    env = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
 
     multiMeta = {
@@ -215,7 +215,7 @@ describe("BawApiService", () => {
         total: 1,
         maxPage: 1,
         current:
-          env.getEnvironment().apiRoot +
+          env.environment.apiRoot +
           "/projects?direction=asc&items=25&order_by=name&page=1",
         previous: null,
         next: null

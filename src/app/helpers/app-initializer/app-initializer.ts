@@ -2,9 +2,9 @@ import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
-export let API_ENVIRONMENT = new InjectionToken<
-  Promise<Environment | ErrorEnvironment>
->("baw.api.config");
+export let API_ENVIRONMENT = new InjectionToken<Promise<Configuration>>(
+  "baw.api.config"
+);
 export let API_ROOT = new InjectionToken<string>("baw.api.root");
 export let CMS_ROOT = new InjectionToken<string>("baw.cms.root");
 
@@ -19,7 +19,7 @@ export class AppInitializer {
 
   static initializerFactory(
     @Inject(API_ENVIRONMENT)
-    apiEnvironment: Promise<Environment | ErrorEnvironment>
+    apiEnvironment: Promise<Configuration>
   ) {
     return async () => {
       const config = await apiEnvironment;
@@ -28,19 +28,25 @@ export class AppInitializer {
   }
 
   static apiRootFactory() {
-    return !isErrorConfiguration(environment)
-      ? environment.environment.apiRoot
-      : "";
+    return isConfiguration(environment) ? environment.environment.apiRoot : "";
   }
 
   static cmsRootFactory() {
-    return !isErrorConfiguration(environment)
-      ? environment.environment.cmsRoot
-      : "";
+    return isConfiguration(environment) ? environment.environment.cmsRoot : "";
   }
 }
 
-export interface EnvironmentValues {
+export interface CMS {
+  credits: string;
+  disclaimers: string;
+  downloadAnnotations: string;
+  ethics: string;
+  harvest: string;
+  home: string;
+  sendAudio: string;
+}
+
+export interface Values {
   keys: {
     googleMaps: string;
   };
@@ -52,7 +58,7 @@ export interface EnvironmentValues {
   cms: CMS;
 }
 
-export interface EnvironmentRoots {
+export interface Environment {
   environment: string;
   apiRoot: string;
   siteRoot: string;
@@ -66,32 +72,34 @@ export interface EnvironmentRoots {
 /**
  * External configuration file contents
  */
-export interface Environment {
-  kind: "Environment";
+export interface Configuration {
+  kind: "Configuration";
   production: boolean;
   version: string;
-  environment: EnvironmentRoots;
-  values: EnvironmentValues;
+  environment: Environment;
+  values: Values;
 }
 
-export interface ErrorEnvironment {
-  kind: "ErrorEnvironment";
+/**
+ * External configuration.
+ * Wrapper to automatically initialize kind key
+ */
+export class Configuration implements Configuration {
+  kind: "Configuration" = "Configuration";
+  production: boolean;
+  version: string;
+  environment: Environment;
+  values: Values;
+
+  constructor(configuration: Partial<Configuration>) {
+    Object.assign(this, configuration);
+  }
 }
 
-export function isErrorConfiguration(
-  config: Environment | ErrorEnvironment
-): config is ErrorEnvironment {
-  return config.kind !== "Environment";
-}
-
-export interface CMS {
-  credits: string;
-  disclaimers: string;
-  downloadAnnotations: string;
-  ethics: string;
-  harvest: string;
-  home: string;
-  sendAudio: string;
+export function isConfiguration(
+  config: Configuration
+): config is Configuration {
+  return config.kind === "Configuration";
 }
 
 type Links = HeaderLink | HeaderDropDownLink;

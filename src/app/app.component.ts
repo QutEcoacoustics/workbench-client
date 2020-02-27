@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { Observable, Subject } from "rxjs";
 import { delay, map, takeUntil, withLatestFrom } from "rxjs/operators";
-import { DeploymentEnvironmentService } from "./services/environment/deployment-environment.service";
+import { AppConfigService } from "./services/app-config/app-config.service";
 
 @Component({
   selector: "app-root",
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
   delayedProgress$: Observable<number>;
 
   constructor(
-    private env: DeploymentEnvironmentService,
+    private env: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private title: Title,
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.title.setTitle(this.env.getValues().brand.name);
+    this.title.setTitle(this.env.values.brand.name);
     this.menuLayout = true;
 
     /**

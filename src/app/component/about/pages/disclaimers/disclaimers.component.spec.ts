@@ -4,14 +4,14 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
 import { DisclaimersComponent } from "./disclaimers.component";
 
 describe("AboutDisclaimersComponent", () => {
   let httpMock: HttpTestingController;
   let component: DisclaimersComponent;
-  let env: DeploymentEnvironmentService;
+  let env: AppConfigService;
   let fixture: ComponentFixture<DisclaimersComponent>;
 
   beforeEach(async(() => {
@@ -25,7 +25,7 @@ describe("AboutDisclaimersComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DisclaimersComponent);
     httpMock = TestBed.inject(HttpTestingController);
-    env = TestBed.inject(DeploymentEnvironmentService);
+    env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -35,13 +35,13 @@ describe("AboutDisclaimersComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.getEnvironment().cmsRoot + "/disclaimers.html");
+    httpMock.expectOne(env.environment.cmsRoot + "/disclaimers.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      env.getEnvironment().cmsRoot + "/disclaimers.html"
+      env.environment.cmsRoot + "/disclaimers.html"
     );
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");

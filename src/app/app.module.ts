@@ -29,7 +29,7 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import { DeploymentEnvironmentService } from "./services/environment/deployment-environment.service";
+import { AppConfigService } from "./services/app-config/app-config.service";
 
 export const appImports = [
   BrowserModule,
@@ -63,8 +63,8 @@ export const appImports = [
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
   apiKey?: string;
 
-  constructor(env: DeploymentEnvironmentService) {
-    this.apiKey = env.getValues().keys.googleMaps;
+  constructor(env: AppConfigService) {
+    this.apiKey = env.values.keys.googleMaps;
   }
 }
 

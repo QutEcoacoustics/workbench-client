@@ -22,14 +22,14 @@ import { Project } from "./models/Project";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { UserService } from "./services/baw-api/user.service";
-import { DeploymentEnvironmentService } from "./services/environment/deployment-environment.service";
+import { AppConfigService } from "./services/environment/deployment-environment.service";
 import { testBawServices } from "./test.helper";
 
 describe("AppComponent", () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   let router: Router;
-  let env: DeploymentEnvironmentService;
+  let env: AppConfigService;
   let httpMock: HttpTestingController;
 
   beforeEach(async(() => {
@@ -52,7 +52,7 @@ describe("AppComponent", () => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    env = TestBed.inject(DeploymentEnvironmentService);
+    env = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
     const projectsApi = TestBed.inject(ProjectsService);
     const securityApi = TestBed.inject(SecurityService);
@@ -105,7 +105,7 @@ describe("AppComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.getEnvironment().cmsRoot + "/home.html");
+    const req = httpMock.expectOne(env.environment.cmsRoot + "/home.html");
     req.flush("<h1>Title</h1><p>Paragraph</p>");
     tick(100);
     fixture.detectChanges();
