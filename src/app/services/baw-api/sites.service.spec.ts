@@ -51,6 +51,7 @@ describe("SitesService", () => {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
+        SitesService,
         { provide: BawApiService, useClass: MockBawApiService }
       ]
     });

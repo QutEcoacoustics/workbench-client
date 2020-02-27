@@ -2,7 +2,7 @@ import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
-export let API_ENVIRONMENT = new InjectionToken<Promise<Configuration>>(
+export let API_CONFIG = new InjectionToken<Promise<Configuration>>(
   "baw.api.config"
 );
 export let API_ROOT = new InjectionToken<string>("baw.api.root");
@@ -18,7 +18,7 @@ export class AppInitializer {
   constructor() {}
 
   static initializerFactory(
-    @Inject(API_ENVIRONMENT)
+    @Inject(API_CONFIG)
     apiEnvironment: Promise<Configuration>
   ) {
     return async () => {

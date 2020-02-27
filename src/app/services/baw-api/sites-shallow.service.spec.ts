@@ -50,6 +50,7 @@ xdescribe("ShallowSitesService", () => {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
+        ShallowSitesService,
         { provide: BawApiService, useClass: MockBawApiService }
       ]
     });

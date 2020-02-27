@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "../shared.module";
 import { WIPComponent } from "./wip.component";
+import { testAppInitializer } from "src/app/test.helper";
 
 describe("WIPComponent", () => {
   let component: WIPComponent;
@@ -10,7 +11,8 @@ describe("WIPComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
-      declarations: [WIPComponent]
+      declarations: [WIPComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

@@ -9,12 +9,18 @@ import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import { FormTouchedGuard } from "./guards/form/form.guard";
 import {
-  API_ENVIRONMENT,
+  API_CONFIG,
   API_ROOT,
   AppInitializer,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
+import { AppConfigService } from "./services/app-config/app-config.service";
+import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import { ProjectsService } from "./services/baw-api/projects.service";
+import { SecurityService } from "./services/baw-api/security.service";
+import { SitesService } from "./services/baw-api/sites.service";
+import { UserService } from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -78,7 +84,7 @@ export const providers = [
     provide: APP_INITIALIZER,
     useFactory: AppInitializer.initializerFactory,
     multi: true,
-    deps: [API_ENVIRONMENT]
+    deps: [API_CONFIG]
   },
   {
     provide: API_ROOT,
@@ -88,5 +94,11 @@ export const providers = [
     provide: CMS_ROOT,
     useFactory: AppInitializer.cmsRootFactory
   },
-  FormTouchedGuard
+  FormTouchedGuard,
+  AppConfigService,
+  AccountService,
+  ProjectsService,
+  SecurityService,
+  SitesService,
+  UserService
 ];

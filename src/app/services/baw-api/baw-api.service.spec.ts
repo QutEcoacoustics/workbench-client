@@ -17,6 +17,7 @@ import {
   Meta,
   STUB_MODEL_BUILDER
 } from "./baw-api.service";
+import { SecurityService } from "./security.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");
@@ -189,13 +190,14 @@ describe("BawApiService", () => {
       imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
+        BawApiService,
+        SecurityService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true
         },
-        { provide: STUB_MODEL_BUILDER, useValue: MockModel },
-        BawApiService
+        { provide: STUB_MODEL_BUILDER, useValue: MockModel }
       ]
     });
     service = TestBed.inject(BawApiService);

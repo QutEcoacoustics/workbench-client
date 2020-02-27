@@ -9,6 +9,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { ResetPasswordComponent } from "./reset-password.component";
+import { testAppInitializer } from "src/app/test.helper";
 
 describe("ResetPasswordComponent", () => {
   let component: ResetPasswordComponent;
@@ -17,7 +18,8 @@ describe("ResetPasswordComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
-      declarations: [ResetPasswordComponent, HomeComponent]
+      declarations: [ResetPasswordComponent, HomeComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

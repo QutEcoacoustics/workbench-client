@@ -9,9 +9,7 @@ import { BawApiService } from "./baw-api.service";
 
 const endpoint = stringTemplate`/my_account`;
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class UserService extends BawApiService<User>
   implements ApiShow<User, [], IdOr<User>> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {

@@ -9,6 +9,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { UnlockPasswordComponent } from "./unlock-account.component";
+import { testAppInitializer } from "src/app/test.helper";
 
 describe("UnlockPasswordComponent", () => {
   let component: UnlockPasswordComponent;
@@ -17,7 +18,8 @@ describe("UnlockPasswordComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
-      declarations: [UnlockPasswordComponent, HomeComponent]
+      declarations: [UnlockPasswordComponent, HomeComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

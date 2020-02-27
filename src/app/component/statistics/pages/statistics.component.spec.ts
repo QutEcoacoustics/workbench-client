@@ -3,6 +3,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "../../shared/shared.module";
 import { StatisticsComponent } from "./statistics.component";
+import { testAppInitializer } from "src/app/test.helper";
 
 describe("StatisticsComponent", () => {
   let component: StatisticsComponent;
@@ -11,7 +12,8 @@ describe("StatisticsComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [StatisticsComponent]
+      declarations: [StatisticsComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

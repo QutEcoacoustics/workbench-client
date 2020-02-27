@@ -22,9 +22,7 @@ const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Site);
@@ -52,9 +50,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
 
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class ShallowSitesService extends StandardApi<Site, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Site);

@@ -16,9 +16,7 @@ const signOutEndpoint = stringTemplate`/security/`;
 /**
  * Interacts with security based routes in baw api
  */
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;

@@ -8,9 +8,7 @@ import {
 } from "src/app/helpers/app-initializer/app-initializer";
 import { environment } from "src/environments/environment";
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class AppConfigService {
   private _config: Configuration;
 

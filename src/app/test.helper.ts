@@ -1,7 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import {
-  API_ENVIRONMENT,
+  API_CONFIG,
   API_ROOT,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
@@ -42,9 +42,8 @@ export const testAppInitializer = [
     useValue: testApiConfig.environment.cmsRoot
   },
   {
-    provide: API_ENVIRONMENT,
+    provide: API_CONFIG,
     useValue: new Promise(resolve => {
-      Object.assign(environment, testApiConfig);
       resolve(testApiConfig);
     })
   },

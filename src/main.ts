@@ -2,7 +2,7 @@ import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { AppModule } from "./app/app.module";
 import {
-  API_ENVIRONMENT,
+  API_CONFIG,
   Configuration
 } from "./app/helpers/app-initializer/app-initializer";
 import { fetchRetry } from "./app/helpers/fetch-retry/fetchRetry";
@@ -22,7 +22,7 @@ const apiConfig = fetchRetry("assets/environment.json", 1000, 5)
   });
 
 const apiConfigProvider = {
-  provide: API_ENVIRONMENT,
+  provide: API_CONFIG,
   useValue: apiConfig
 };
 

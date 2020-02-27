@@ -50,6 +50,7 @@ describe("ProjectsService", () => {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
+        ProjectsService,
         { provide: BawApiService, useClass: MockBawApiService }
       ]
     });

@@ -15,7 +15,7 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { testAppInitializer } from "src/app/test.helper";
+import { testBawServices } from "src/app/test.helper";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
@@ -65,7 +65,7 @@ describe("ActionMenuComponent", () => {
       imports: [RouterTestingModule, HttpClientModule, SharedModule],
       declarations: [ActionMenuComponent],
       providers: [
-        ...testAppInitializer,
+        ...testBawServices,
         { provide: ActivatedRoute, useClass: MockActivatedRoute }
       ]
     }).compileComponents();

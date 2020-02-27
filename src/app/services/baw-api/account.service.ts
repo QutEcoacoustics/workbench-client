@@ -18,9 +18,7 @@ import { Filters } from "./baw-api.service";
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class AccountService extends ReadonlyApi<User, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, User);

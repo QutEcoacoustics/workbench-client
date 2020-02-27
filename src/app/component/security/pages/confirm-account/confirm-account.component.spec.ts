@@ -9,6 +9,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
+import { testAppInitializer } from "src/app/test.helper";
 
 describe("ConfirmPasswordComponent", () => {
   let component: ConfirmPasswordComponent;
@@ -17,7 +18,8 @@ describe("ConfirmPasswordComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
-      declarations: [ConfirmPasswordComponent, HomeComponent]
+      declarations: [ConfirmPasswordComponent, HomeComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 
