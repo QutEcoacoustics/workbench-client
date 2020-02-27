@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { aboutCategory, creditsMenuItem } from "../../about.menus";
 
 @Page({
@@ -23,11 +23,11 @@ import { aboutCategory, creditsMenuItem } from "../../about.menus";
 export class CreditsComponent extends PageComponent implements OnInit {
   public page: string;
 
-  constructor() {
+  constructor(private env: DeploymentEnvironmentService) {
     super();
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.credits;
+    this.page = this.env.getValues().cms.credits;
   }
 }

@@ -17,8 +17,8 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { testBawServices } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
 
@@ -27,6 +27,7 @@ describe("HomeComponent", () => {
   let projectApi: ProjectsService;
   let securityApi: SecurityService;
   let component: HomeComponent;
+  let env: DeploymentEnvironmentService;
   let fixture: ComponentFixture<HomeComponent>;
   let cmsUrl: string;
 
@@ -42,8 +43,9 @@ describe("HomeComponent", () => {
     httpMock = TestBed.inject(HttpTestingController);
     projectApi = TestBed.inject(ProjectsService);
     securityApi = TestBed.inject(SecurityService);
+    env = TestBed.inject(DeploymentEnvironmentService);
 
-    cmsUrl = environment.environment.cmsRoot + "/home.html";
+    cmsUrl = env.getEnvironment().cmsRoot + "/home.html";
   });
 
   afterEach(() => {

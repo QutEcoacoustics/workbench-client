@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { aboutCategory, ethicsMenuItem } from "../../about.menus";
 
 @Page({
@@ -23,11 +23,11 @@ import { aboutCategory, ethicsMenuItem } from "../../about.menus";
 export class EthicsComponent extends PageComponent implements OnInit {
   public page: string;
 
-  constructor() {
+  constructor(private env: DeploymentEnvironmentService) {
     super();
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.ethics;
+    this.page = this.env.getValues().cms.ethics;
   }
 }

@@ -9,7 +9,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "../environment/deployment-environment.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
@@ -94,6 +94,7 @@ describe("BawApiService", () => {
   }
 
   let service: BawApiService<MockModel>;
+  let env: DeploymentEnvironmentService;
   let httpMock: HttpTestingController;
 
   // Multi response metadata
@@ -159,7 +160,7 @@ describe("BawApiService", () => {
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
-      url: environment.environment.apiRoot + route,
+      url: env.getEnvironment().apiRoot + route,
       method
     });
   }
@@ -198,6 +199,7 @@ describe("BawApiService", () => {
       ]
     });
     service = TestBed.inject(BawApiService);
+    env = TestBed.inject(DeploymentEnvironmentService);
     httpMock = TestBed.inject(HttpTestingController);
 
     multiMeta = {
@@ -213,7 +215,7 @@ describe("BawApiService", () => {
         total: 1,
         maxPage: 1,
         current:
-          environment.environment.apiRoot +
+          env.getEnvironment().apiRoot +
           "/projects?direction=asc&items=25&order_by=name&page=1",
         previous: null,
         next: null

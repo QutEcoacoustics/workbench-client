@@ -19,8 +19,8 @@ import {
   SecurityService
 } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { LoginComponent } from "./login.component";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
@@ -28,6 +28,7 @@ describe("LoginComponent", () => {
   let router: Router;
   let route: ActivatedRoute;
   let location: Location;
+  let env: DeploymentEnvironmentService;
   let fixture: ComponentFixture<LoginComponent>;
 
   class MockActivatedRoute {
@@ -60,6 +61,7 @@ describe("LoginComponent", () => {
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
+    env = TestBed.inject(DeploymentEnvironmentService);
 
     component.schema.model = {
       login: "",
@@ -441,7 +443,7 @@ describe("LoginComponent", () => {
     it("should handle ecosounds redirect url", fakeAsync(() => {
       createSubmitSpies();
       fixRouting();
-      route["setRedirectUrl"](environment.environment.apiRoot + "/broken_link");
+      route["setRedirectUrl"](env.getEnvironment().apiRoot + "/broken_link");
       fixture.detectChanges();
 
       fillUsername();
@@ -451,7 +453,7 @@ describe("LoginComponent", () => {
       expect(router.navigateByUrl).not.toHaveBeenCalled();
       expect(component.externalRedirect).toHaveBeenCalled();
       expect(component.externalRedirect).toHaveBeenCalledWith(
-        environment.environment.apiRoot + "/broken_link"
+        env.getEnvironment().apiRoot + "/broken_link"
       );
     }));
 

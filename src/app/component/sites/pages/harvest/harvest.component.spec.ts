@@ -4,13 +4,14 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { HarvestComponent } from "./harvest.component";
 
 describe("SiteHarvestComponent", () => {
   let httpMock: HttpTestingController;
   let component: HarvestComponent;
+  let env: DeploymentEnvironmentService;
   let fixture: ComponentFixture<HarvestComponent>;
 
   beforeEach(async(() => {
@@ -25,6 +26,7 @@ describe("SiteHarvestComponent", () => {
     fixture = TestBed.createComponent(HarvestComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+    env = TestBed.inject(DeploymentEnvironmentService);
     fixture.detectChanges();
   });
 
@@ -33,13 +35,13 @@ describe("SiteHarvestComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(environment.environment.cmsRoot + "/harvest.html");
+    httpMock.expectOne(env.getEnvironment().cmsRoot + "/harvest.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
     const req = httpMock.expectOne(
-      environment.environment.cmsRoot + "/harvest.html"
+      env.getEnvironment().cmsRoot + "/harvest.html"
     );
 
     req.flush(

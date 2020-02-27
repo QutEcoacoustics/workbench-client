@@ -10,11 +10,10 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { BehaviorSubject, Subject } from "rxjs";
-import { environment } from "src/environments/environment";
 import { AppComponent } from "./app.component";
 import { appImports } from "./app.module";
 import { homeMenuItem } from "./component/home/home.menus";
@@ -23,13 +22,14 @@ import { Project } from "./models/Project";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { UserService } from "./services/baw-api/user.service";
+import { DeploymentEnvironmentService } from "./services/environment/deployment-environment.service";
 import { testBawServices } from "./test.helper";
 
 describe("AppComponent", () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   let router: Router;
-  let route: ActivatedRoute;
+  let env: DeploymentEnvironmentService;
   let httpMock: HttpTestingController;
 
   beforeEach(async(() => {
@@ -52,7 +52,7 @@ describe("AppComponent", () => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    route = TestBed.inject(ActivatedRoute);
+    env = TestBed.inject(DeploymentEnvironmentService);
     httpMock = TestBed.inject(HttpTestingController);
     const projectsApi = TestBed.inject(ProjectsService);
     const securityApi = TestBed.inject(SecurityService);
@@ -105,9 +105,7 @@ describe("AppComponent", () => {
     flush();
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      environment.environment.cmsRoot + "/home.html"
-    );
+    const req = httpMock.expectOne(env.getEnvironment().cmsRoot + "/home.html");
     req.flush("<h1>Title</h1><p>Paragraph</p>");
     tick(100);
     fixture.detectChanges();

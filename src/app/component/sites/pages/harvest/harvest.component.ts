@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { harvestMenuItem, sitesCategory } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 
@@ -25,11 +25,11 @@ import { siteMenuItemActions } from "../details/details.component";
 export class HarvestComponent extends PageComponent implements OnInit {
   public page: string;
 
-  constructor() {
+  constructor(private env: DeploymentEnvironmentService) {
     super();
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.harvest;
+    this.page = this.env.getValues().cms.harvest;
   }
 }

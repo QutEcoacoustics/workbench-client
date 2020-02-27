@@ -8,7 +8,7 @@ import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
@@ -31,6 +31,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   private unsubscribe = new Subject();
 
   constructor(
+    private env: DeploymentEnvironmentService,
     private projectApi: ProjectsService,
     private securityApi: SecurityService
   ) {
@@ -38,7 +39,7 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.home;
+    this.page = this.env.getValues().cms.home;
 
     this.securityApi
       .getAuthTrigger()

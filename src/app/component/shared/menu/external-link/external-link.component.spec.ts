@@ -2,12 +2,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { SharedModule } from "../../shared.module";
 import { MenuExternalLinkComponent } from "./external-link.component";
 
 describe("MenuExternalLinkComponent", () => {
+  let env: DeploymentEnvironmentService;
   let component: MenuExternalLinkComponent;
   let fixture: ComponentFixture<MenuExternalLinkComponent>;
 
@@ -19,6 +20,7 @@ describe("MenuExternalLinkComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuExternalLinkComponent);
+    env = TestBed.inject(DeploymentEnvironmentService);
     component = fixture.componentInstance;
   });
 
@@ -202,6 +204,6 @@ describe("MenuExternalLinkComponent", () => {
 
     const link = fixture.nativeElement.querySelector("a");
     expect(link).toBeTruthy();
-    expect(link.href).toBe(environment.environment.apiRoot + "/brokenlink/");
+    expect(link.href).toBe(env.getEnvironment().apiRoot + "/brokenlink/");
   });
 });

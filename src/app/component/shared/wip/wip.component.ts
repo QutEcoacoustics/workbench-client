@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewEncapsulation
 } from "@angular/core";
-import { environment } from "src/environments/environment";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 
 @Component({
   selector: "app-wip",
@@ -27,10 +27,10 @@ export class WIPComponent implements OnInit {
   prodMode: boolean;
   tooltip: string;
 
-  constructor() {}
+  constructor(private env: DeploymentEnvironmentService) {}
 
   ngOnInit() {
-    this.prodMode = environment.production;
+    this.prodMode = this.env.getDeployment().production;
 
     this.tooltip = this.prodMode
       ? "This feature is currently not functional."

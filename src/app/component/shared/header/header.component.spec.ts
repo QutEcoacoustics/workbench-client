@@ -15,8 +15,8 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { User } from "src/app/models/User";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { testBawServices } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
@@ -32,6 +32,7 @@ describe("HeaderComponent", () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let securityApi: SecurityService;
   let userApi: UserService;
+  let env: DeploymentEnvironmentService;
   let router: Router;
 
   beforeEach(async(() => {
@@ -56,6 +57,7 @@ describe("HeaderComponent", () => {
     securityApi = TestBed.inject(SecurityService);
     userApi = TestBed.inject(UserService);
     router = TestBed.inject(Router);
+    env = TestBed.inject(DeploymentEnvironmentService);
     component = fixture.componentInstance;
 
     viewport.set("extra-large");
@@ -110,7 +112,7 @@ describe("HeaderComponent", () => {
 
     const brand = fixture.nativeElement.querySelector("a.navbar-brand");
     expect(brand).toBeTruthy();
-    expect(brand.innerText).toContain(environment.values.brand.name);
+    expect(brand.innerText).toContain(env.getValues().brand.name);
     expect(
       brand.attributes.getNamedItem("ng-reflect-router-link")
     ).toBeTruthy();

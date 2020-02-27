@@ -2,9 +2,11 @@ import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
-export let API_CONFIG = new InjectionToken("baw.api.config");
-export let API_ROOT = new InjectionToken("baw.api.root");
-export let CMS_ROOT = new InjectionToken("baw.cms.root");
+export let API_ENVIRONMENT = new InjectionToken<
+  Promise<Environment | ErrorEnvironment>
+>("baw.api.config");
+export let API_ROOT = new InjectionToken<string>("baw.api.root");
+export let CMS_ROOT = new InjectionToken<string>("baw.cms.root");
 
 /**
  * App Initializer class.
@@ -16,50 +18,70 @@ export class AppInitializer {
   constructor() {}
 
   static initializerFactory(
-    @Inject(API_CONFIG) apiConfig: Promise<Configuration>
+    @Inject(API_ENVIRONMENT)
+    apiEnvironment: Promise<Environment | ErrorEnvironment>
   ) {
     return async () => {
-      const config = await apiConfig;
+      const config = await apiEnvironment;
       Object.assign(environment, config);
     };
   }
 
   static apiRootFactory() {
-    return environment.environment.apiRoot;
+    return !isErrorConfiguration(environment)
+      ? environment.environment.apiRoot
+      : "";
   }
 
   static cmsRootFactory() {
-    return environment.environment.cmsRoot;
+    return !isErrorConfiguration(environment)
+      ? environment.environment.cmsRoot
+      : "";
   }
+}
+
+export interface EnvironmentValues {
+  keys: {
+    googleMaps: string;
+  };
+  brand: {
+    name: string;
+    title: string;
+  };
+  content: Links[];
+  cms: CMS;
+}
+
+export interface EnvironmentRoots {
+  environment: string;
+  apiRoot: string;
+  siteRoot: string;
+  siteDir: string;
+  cmsRoot: string;
+  ga: {
+    trackingId: string;
+  };
 }
 
 /**
  * External configuration file contents
  */
-export interface Configuration {
+export interface Environment {
+  kind: "Environment";
   production: boolean;
   version: string;
-  environment: {
-    environment: string;
-    apiRoot: string;
-    siteRoot: string;
-    siteDir: string;
-    cmsRoot: string;
-    ga: {
-      trackingId: string;
-    };
-  };
-  values: {
-    keys: {
-      googleMaps: string;
-    };
-    brand: {
-      name: string;
-      title: string;
-    };
-    content: Links[];
-    cms: CMS;
-  };
+  environment: EnvironmentRoots;
+  values: EnvironmentValues;
+}
+
+export interface ErrorEnvironment {
+  kind: "ErrorEnvironment";
+}
+
+export function isErrorConfiguration(
+  config: Environment | ErrorEnvironment
+): config is ErrorEnvironment {
+  return config.kind === "ErrorEnvironment";
 }
 
 export interface CMS {

@@ -9,7 +9,7 @@ import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import { FormTouchedGuard } from "./guards/form/form.guard";
 import {
-  API_CONFIG,
+  API_ENVIRONMENT,
   API_ROOT,
   AppInitializer,
   CMS_ROOT
@@ -74,7 +74,7 @@ export const providers = [
     provide: APP_INITIALIZER,
     useFactory: AppInitializer.initializerFactory,
     multi: true,
-    deps: [API_CONFIG]
+    deps: [API_ENVIRONMENT]
   },
   {
     provide: API_ROOT,

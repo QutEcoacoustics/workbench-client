@@ -17,6 +17,7 @@ import { User } from "src/app/models/User";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -42,6 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isNavigableMenuItem = isNavigableMenuItem;
 
   constructor(
+    private env: DeploymentEnvironmentService,
     private router: Router,
     private securityApi: SecurityService,
     private userApi: UserService,
@@ -51,7 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.title = environment.values.brand.name;
+    this.title = this.env.getValues().brand.name;
     this.routes = {
       home: homeMenuItem,
       login: loginMenuItem,
