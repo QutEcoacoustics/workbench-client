@@ -6,62 +6,17 @@ import {
   Environment,
   ErrorEnvironment
 } from "./app/helpers/app-initializer/app-initializer";
+import { fetchRetry } from "./app/helpers/fetch-retry/fetchRetry";
 import { environment } from "./environments/environment";
 
 if (environment.production) {
   enableProdMode();
 }
 
-/**
- * Fetch request with multiple attempts
- * @param url URL
- * @param delay Delay amount in milliseconds
- * @param limit Maximum number of attempts
- * @param options Fetch options
- */
-function fetchRetry(
-  url: string,
-  delay: number,
-  limit: number,
-  options = {}
-): Promise<Response> {
-  return new Promise((resolve, reject) => {
-    let wrappedFetch = attempt => {
-      fetch(url, options).then(response => {
-        if (response.status !== 200) {
-          retry(attempt);
-          return;
-        }
-
-        try {
-          const res = response.json();
-          resolve(res);
-        } catch (err) {
-          retry(attempt);
-        }
-      });
-    };
-
-    function retry(attempt: number) {
-      if (attempt >= limit - 1) {
-        const msg = "Failed to fetch item after " + limit + " attempt/s.";
-        reject(msg);
-        return;
-      }
-
-      setTimeout(() => {
-        wrappedFetch(++attempt);
-      }, delay);
-    }
-
-    wrappedFetch(0);
-  });
-}
-
-const apiConfig = fetchRetry("assets/environment.jsonh", 500, 5)
+const apiConfig = fetchRetry("assets/environment.json", 1000, 5)
   .then(data => {
     return Object.assign(data as Partial<Environment>, {
-      kind: "Configuration"
+      kind: "Environment"
     }) as Environment;
   })
   .catch((err: any) => {

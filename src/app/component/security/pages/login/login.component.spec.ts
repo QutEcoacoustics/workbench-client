@@ -18,9 +18,9 @@ import {
   LoginDetails,
   SecurityService
 } from "src/app/services/baw-api/security.service";
+import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 import { testBawServices } from "src/app/test.helper";
 import { LoginComponent } from "./login.component";
-import { DeploymentEnvironmentService } from "src/app/services/environment/deployment-environment.service";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;

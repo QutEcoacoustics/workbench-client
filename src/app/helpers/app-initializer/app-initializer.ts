@@ -81,7 +81,7 @@ export interface ErrorEnvironment {
 export function isErrorConfiguration(
   config: Environment | ErrorEnvironment
 ): config is ErrorEnvironment {
-  return config.kind === "ErrorEnvironment";
+  return config.kind !== "Environment";
 }
 
 export interface CMS {

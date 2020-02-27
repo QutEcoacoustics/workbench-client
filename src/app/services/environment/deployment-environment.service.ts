@@ -16,7 +16,7 @@ export class DeploymentEnvironmentService {
     if (isErrorConfiguration(environment)) {
       console.error("Detected invalid environment.");
       this.notification.error(
-        "The application is not configured correctly and cannot run. Try leaving the page and coming back.",
+        "The website is not configured correctly. Try coming back at another time.",
         "Unrecoverable Error",
         {
           closeButton: false,
