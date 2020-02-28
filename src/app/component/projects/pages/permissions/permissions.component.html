@@ -84,16 +84,10 @@
 
     <ngx-datatable
       #table
-      [class]="tableClass"
+      bawDatatableDefaults
       [rows]="rows"
       [columns]="columns"
       [columnMode]="ColumnMode.force"
-      [limit]="defaultTableLimit"
-      [rowHeight]="'auto'"
-      [headerHeight]="headerHeight"
-      [footerHeight]="footerHeight"
-      [reorderable]="false"
-      [scrollbarH]="true"
     >
       <!-- User Template -->
       <ngx-datatable-column name="User">
