@@ -12,6 +12,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CmsComponent } from "./cms/cms.component";
+import { DefaultDatatableComponent } from "./datatable/datatable.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
@@ -41,7 +42,8 @@ export const sharedComponents = [
   FormlyQuestionAnswer,
   FormlyQuestionAnswerAction,
   TimezoneFormPipe,
-  LoadingComponent
+  LoadingComponent,
+  DefaultDatatableComponent
 ];
 
 export const sharedModules = [

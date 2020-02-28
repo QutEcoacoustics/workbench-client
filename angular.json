@@ -31,12 +31,18 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.json"
+            ],
             "styles": [
               "src/styles.scss",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
-            "scripts": ["node_modules/marked/lib/marked.js"],
+            "scripts": [
+              "node_modules/marked/lib/marked.js"
+            ],
             "sourceMap": true
           },
           "configurations": {
@@ -128,12 +134,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": ["src/assets", "src/manifest.json"],
+            "assets": [
+              "src/assets",
+              "src/manifest.json"
+            ],
             "styles": [
               "src/styles.scss",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
-            "scripts": ["node_modules/marked/lib/marked.js"]
+            "scripts": [
+              "node_modules/marked/lib/marked.js"
+            ]
           }
         },
         "lint": {
@@ -144,7 +155,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {
@@ -162,5 +175,8 @@
       }
     }
   },
-  "defaultProject": "workbench-client"
+  "defaultProject": "workbench-client",
+  "cli": {
+    "analytics": false
+  }
 }
