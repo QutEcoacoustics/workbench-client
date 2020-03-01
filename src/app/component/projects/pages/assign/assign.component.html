@@ -10,48 +10,48 @@
     </p>
     <p>Only the selected sites will be part of this project.</p>
 
-    <app-datatable>
-      <ngx-datatable
-        #table
-        [columnMode]="ColumnMode.force"
-        [columns]="columns"
-        [rows]="rows"
-        [selectAllRowsOnPage]="false"
-        [selected]="selected"
-        [selectionType]="SelectionType.checkbox"
-        [externalPaging]="true"
-        [count]="totalSites"
-        [offset]="pageNumber"
-        (page)="setPage($event)"
-        (select)="onSelect($event)"
+    <ngx-datatable
+      #table
+      appDatatable
+      [datatable]="table"
+      [columnMode]="ColumnMode.force"
+      [columns]="columns"
+      [rows]="rows"
+      [selectAllRowsOnPage]="false"
+      [selected]="selected"
+      [selectionType]="SelectionType.checkbox"
+      [externalPaging]="true"
+      [count]="totalSites"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
+      (select)="onSelect($event)"
+    >
+      <ngx-datatable-column
+        [canAutoResize]="false"
+        [checkboxable]="true"
+        [draggable]="false"
+        [headerCheckboxable]="false"
+        [resizeable]="false"
+        [sortable]="false"
+        [width]="30"
       >
-        <ngx-datatable-column
-          [canAutoResize]="false"
-          [checkboxable]="true"
-          [draggable]="false"
-          [headerCheckboxable]="false"
-          [resizeable]="false"
-          [sortable]="false"
-          [width]="30"
-        >
-        </ngx-datatable-column>
-        <ngx-datatable-column
-          name="Site Id"
-          [width]="75"
-          [sortable]="false"
-        ></ngx-datatable-column>
-        <ngx-datatable-column
-          name="Name"
-          [width]="150"
-          [sortable]="false"
-        ></ngx-datatable-column>
-        <ngx-datatable-column
-          name="Description"
-          [width]="400"
-          [sortable]="false"
-        ></ngx-datatable-column>
-      </ngx-datatable>
-    </app-datatable>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Site Id"
+        [width]="75"
+        [sortable]="false"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        name="Name"
+        [width]="150"
+        [sortable]="false"
+      ></ngx-datatable-column>
+      <ngx-datatable-column
+        name="Description"
+        [width]="400"
+        [sortable]="false"
+      ></ngx-datatable-column>
+    </ngx-datatable>
   </ng-container>
 
   <app-loading [isLoading]="!ready && !error"></app-loading>

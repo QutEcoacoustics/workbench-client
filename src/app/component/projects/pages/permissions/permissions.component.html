@@ -82,74 +82,74 @@
       />
     </div>
 
-    <app-datatable>
-      <ngx-datatable
-        #table
-        [rows]="rows"
-        [columns]="columns"
-        [columnMode]="ColumnMode.force"
-      >
-        <!-- User Template -->
-        <ngx-datatable-column name="User">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            <fa-icon [icon]="userIcon"></fa-icon
-            ><strong>{{ column.name }}</strong>
-          </ng-template>
+    <ngx-datatable
+      #table
+      appDatatable
+      [datatable]="table"
+      [rows]="rows"
+      [columns]="columns"
+      [columnMode]="ColumnMode.force"
+    >
+      <!-- User Template -->
+      <ngx-datatable-column name="User">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <fa-icon [icon]="userIcon"></fa-icon
+          ><strong>{{ column.name }}</strong>
+        </ng-template>
 
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
 
-        <!-- Individual Template -->
-        <ngx-datatable-column name="Individual" [width]="275">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            <strong>{{ column.name }}</strong>
-          </ng-template>
+      <!-- Individual Template -->
+      <ngx-datatable-column name="Individual" [width]="275">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
 
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            <app-selectable-items
-              [options]="individualOptions"
-              [selected]="1"
-              [inline]="true"
-            ></app-selectable-items>
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <app-selectable-items
+            [options]="individualOptions"
+            [selected]="1"
+            [inline]="true"
+          ></app-selectable-items>
+        </ng-template>
+      </ngx-datatable-column>
 
-        <!-- Visitor Permissions Template -->
-        <ngx-datatable-column name="Visitors" [width]="100">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            <strong>{{ column.name }}</strong>
-          </ng-template>
+      <!-- Visitor Permissions Template -->
+      <ngx-datatable-column name="Visitors" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
 
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
 
-        <!-- Users Permissions Template -->
-        <ngx-datatable-column name="Users" [width]="100">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            <strong>{{ column.name }}</strong>
-          </ng-template>
+      <!-- Users Permissions Template -->
+      <ngx-datatable-column name="Users" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
 
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
 
-        <!-- Overall Permissions Template -->
-        <ngx-datatable-column name="Overall" [width]="100">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            <strong>{{ column.name }}</strong>
-          </ng-template>
+      <!-- Overall Permissions Template -->
+      <ngx-datatable-column name="Overall" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <strong>{{ column.name }}</strong>
+        </ng-template>
 
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </app-datatable>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
 
   <app-loading [isLoading]="!ready && !errorDetails"></app-loading>

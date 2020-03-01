@@ -9,10 +9,10 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDirective } from "src/app/directives/datatable/datatable.directive";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CmsComponent } from "./cms/cms.component";
-import { DefaultDatatableComponent } from "./datatable/datatable.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
@@ -43,7 +43,7 @@ export const sharedComponents = [
   FormlyQuestionAnswerAction,
   TimezoneFormPipe,
   LoadingComponent,
-  DefaultDatatableComponent
+  DatatableDirective
 ];
 
 export const sharedModules = [
