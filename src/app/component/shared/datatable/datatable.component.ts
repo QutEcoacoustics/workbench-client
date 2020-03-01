@@ -31,5 +31,6 @@ export class DefaultDatatableComponent implements OnInit, AfterContentInit {
     this.datatable.limit = 25;
     this.datatable.rowHeight = "auto";
     this.datatable.scrollbarH = true;
+    this.datatable.reorderable = false;
   }
 }
