@@ -9,8 +9,9 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 
 @Component({
   selector: "app-datatable",
-  templateUrl: "./datatable.component.html",
-  styleUrls: ["./datatable.component.scss"]
+  template: `
+    <ng-content class="bootstrap"></ng-content>
+  `
 })
 export class DefaultDatatableComponent implements OnInit, AfterContentInit {
   @ContentChild(DatatableComponent) datatable: DatatableComponent;
@@ -22,10 +23,10 @@ export class DefaultDatatableComponent implements OnInit, AfterContentInit {
   ngOnInit(): void {}
 
   ngAfterContentInit() {
-    console.log(this.datatable);
-    console.log(this.datatableRef);
-
+    // Set Class
     this.datatableRef.nativeElement.classList.add("bootstrap");
+
+    // Set Inputs
     this.datatable.footerHeight = 50;
     this.datatable.headerHeight = 50;
     this.datatable.limit = 25;
