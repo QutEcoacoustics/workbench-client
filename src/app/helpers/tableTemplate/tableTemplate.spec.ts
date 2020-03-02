@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { TableTemplate } from "./tableTemplate";
 
@@ -18,11 +19,18 @@ import { TableTemplate } from "./tableTemplate";
     </ngx-datatable>
   `
 })
-class MockComponent extends TableTemplate<any> {
+class MockComponent extends TableTemplate<{ id: number | string }> {
+  // TODO Check if this bug has been fixed
+  // Unsure why but this line is required on in unit tests
+  // Specifically: a unit test which is run with another .spec.ts file
+  // in the pool of tests. If this test suite is run in isolation it
+  // will pass without this line.
+  @ViewChild(DatatableComponent) table: DatatableComponent;
+
+  public columns = [{ prop: "id" }];
+
   constructor() {
     super(() => true);
-
-    this.columns = [{ prop: "id" }];
   }
 
   protected createRows() {

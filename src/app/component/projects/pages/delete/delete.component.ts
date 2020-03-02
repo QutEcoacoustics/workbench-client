@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
@@ -48,8 +47,7 @@ import { projectMenuItemActions } from "../details/details.component";
   `
 })
 export class DeleteComponent extends WithFormCheck(PageComponent)
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject<any>();
+  implements OnInit {
   error: string;
   errorDetails: ApiErrorDetails;
   formLoading: boolean;
@@ -89,11 +87,6 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
           this.loading = false;
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next(null);
-    this.unsubscribe.complete();
   }
 
   submit() {

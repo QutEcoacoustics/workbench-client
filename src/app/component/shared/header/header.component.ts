@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink
 } from "src/app/helpers/app-initializer/app-initializer";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
@@ -29,8 +29,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   activeLink: string;
   collapsed: boolean;
   headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
@@ -46,7 +45,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private securityApi: SecurityService,
     private userApi: UserService,
     private ref: ChangeDetectorRef
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.collapsed = true;
@@ -84,11 +85,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         () => this.updateUser(),
         err => {}
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

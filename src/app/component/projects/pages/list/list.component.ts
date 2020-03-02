@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 import { Card } from "src/app/component/shared/cards/cards.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -46,8 +45,7 @@ export const projectsMenuItemActions = [
     <app-error-handler [error]="error"></app-error-handler>
   `
 })
-export class ListComponent extends PageComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class ListComponent extends PageComponent implements OnInit {
   cardList: List<Card>;
   loading: boolean;
   error: ApiErrorDetails;
@@ -77,10 +75,5 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy {
           this.error = err;
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }
