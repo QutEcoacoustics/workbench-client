@@ -2,6 +2,7 @@ import {
   AfterContentInit,
   Directive,
   ElementRef,
+  Host,
   Input,
   OnInit
 } from "@angular/core";
@@ -11,11 +12,13 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
   selector: "[appDatatable]"
 })
 export class DatatableDirective implements OnInit, AfterContentInit {
-  @Input() datatable: DatatableComponent;
   @Input() defaults: Partial<DatatableComponent>;
   private datatableConfig: Partial<DatatableComponent>;
 
-  constructor(private datatableRef: ElementRef) {}
+  constructor(
+    @Host() private datatable: DatatableComponent,
+    private datatableRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.datatableRef.nativeElement.classList.add("bootstrap");

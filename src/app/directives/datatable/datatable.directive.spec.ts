@@ -17,7 +17,6 @@ describe("DatatableDirective", () => {
         <ngx-datatable
           #table
           appDatatable
-          [datatable]="table"
           [defaults]="defaults"
           [rows]="rows"
           [columns]="columns"
