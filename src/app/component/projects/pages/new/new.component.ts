@@ -65,16 +65,20 @@ export class NewComponent extends WithFormCheck(PageComponent)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
+          this.resetForms();
           this.notification.success("Project was successfully created.");
           this.loading = false;
         },
         (err: ApiErrorDetails) => {
+          let errMsg: string;
+
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.notification.error(err.message + ": name " + err.info.name[0]);
+            errMsg = err.message + ": name " + err.info.name[0];
           } else {
-            this.notification.error(err.message);
+            errMsg = err.message;
           }
 
+          this.notification.error(errMsg);
           this.loading = false;
         }
       );

@@ -19,6 +19,7 @@ import {
   projectMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: projectCategory,
@@ -36,8 +37,6 @@ import { projectMenuItemActions } from "../details/details.component";
 })
 export class PermissionsComponent extends TableTemplate<TableRow>
   implements OnInit {
-  public errorDetails: ApiErrorDetails;
-  public loading: boolean;
   public project: Project;
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public users: User[];
@@ -77,23 +76,15 @@ export class PermissionsComponent extends TableTemplate<TableRow>
       { label: "Owner", value: "owner" }
     ];
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.api.show(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          // Do something
-          this.project = project;
-          this.loadTable();
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+
+    if (projectModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.loadTable();
   }
 
   public submit($event: any) {

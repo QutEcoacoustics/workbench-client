@@ -5,6 +5,7 @@ import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
@@ -28,23 +29,23 @@ import { fields } from "./request.json";
   template: `
     <app-wip>
       <app-form
+        *ngIf="projects"
         [schema]="schema"
         [title]="'Request project access'"
-        [error]="error"
         [submitLabel]="'Submit request'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
-      <app-error-handler [error]="errorDetails"></app-error-handler>
+      <app-error-handler [error]="error"></app-error-handler>
     </app-wip>
   `
 })
 export class RequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  schema = { model: {}, fields };
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
+  public error: ApiErrorDetails;
+  public loading: boolean;
+  public projects: Project[];
+  public schema = { model: {}, fields };
 
   constructor(private api: ProjectsService) {
     super();
@@ -59,6 +60,7 @@ export class RequestComponent extends WithFormCheck(PageComponent)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         projects => {
+          this.projects = projects;
           this.schema.fields[0].templateOptions.options = projects.map(
             project => {
               return {
@@ -68,7 +70,9 @@ export class RequestComponent extends WithFormCheck(PageComponent)
             }
           );
         },
-        (err: ApiErrorDetails) => (this.errorDetails = err)
+        (err: ApiErrorDetails) => {
+          this.error = err;
+        }
       );
   }
 

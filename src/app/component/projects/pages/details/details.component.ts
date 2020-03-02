@@ -47,15 +47,12 @@ export const projectMenuItemActions = [
 export class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
   public sites: Site[];
-  public success: boolean;
 
   constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.success = false;
-
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data
       .project;
     const siteModels: ResolvedModel<Site[]> = this.route.snapshot.data.sites;
@@ -66,6 +63,5 @@ export class DetailsComponent extends PageComponent implements OnInit {
 
     this.project = projectModel.model;
     this.sites = siteModels.model;
-    this.success = true;
   }
 }

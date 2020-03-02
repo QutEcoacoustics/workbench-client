@@ -33,7 +33,7 @@ import { projectMenuItemActions } from "../details/details.component";
   selector: "app-projects-delete",
   template: `
     <app-form
-      *ngIf="success"
+      *ngIf="project"
       [schema]="{ model: {}, fields: [] }"
       [title]="'Are you certain you wish to delete ' + project.name + '?'"
       [btnColor]="'btn-danger'"
@@ -47,7 +47,6 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
   public project: Project;
-  public success: boolean;
 
   constructor(
     private router: Router,
@@ -67,7 +66,6 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
     }
 
     this.project = projectModel.model;
-    this.success = true;
   }
 
   submit() {
@@ -78,13 +76,13 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
     // of component onDestroy.
     this.loading = true;
     this.api
-      .destroy(this.project.id)
+      .destroy(this.project)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {
-          this.loading = false;
-          this.router.navigate(projectsMenuItem.route.toRoute());
+          this.resetForms();
           this.notification.success("Successfully deleted project.");
+          this.router.navigate(projectsMenuItem.route.toRoute());
         },
         (err: ApiErrorDetails) => {
           this.loading = false;

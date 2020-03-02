@@ -34,7 +34,7 @@ import { fields } from "./edit.json";
   template: `
     <app-wip>
       <app-form
-        *ngIf="success"
+        *ngIf="project"
         [schema]="schema"
         [title]="'Edit Project'"
         [submitLabel]="'Submit'"
@@ -47,9 +47,8 @@ import { fields } from "./edit.json";
 export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
-  public schema = { model: { name: "" }, fields };
-  public success: boolean;
   public project: Project;
+  public schema = { model: { name: "" }, fields };
 
   constructor(
     private route: ActivatedRoute,
@@ -69,7 +68,6 @@ export class EditComponent extends WithFormCheck(PageComponent)
 
     this.project = projectModel.model;
     this.schema.model["name"] = this.project.name;
-    this.success = true;
   }
 
   /**
@@ -86,15 +84,20 @@ export class EditComponent extends WithFormCheck(PageComponent)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
+          this.resetForms();
           this.notification.success("Project was successfully updated.");
           this.loading = false;
         },
         (err: ApiErrorDetails) => {
+          let errMsg: string;
+
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.notification.error(err.message + ": name " + err.info.name[0]);
+            errMsg = err.message + ": name " + err.info.name[0];
           } else {
-            this.notification.error(err.message);
+            errMsg = err.message;
           }
+
+          this.notification.error(errMsg);
           this.loading = false;
         }
       );

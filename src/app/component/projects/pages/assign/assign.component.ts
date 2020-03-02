@@ -41,7 +41,6 @@ export class AssignComponent extends TableTemplate<TableRow> implements OnInit {
 
   public totalSites: number;
   public pageNumber: number;
-  public ready: boolean;
   public error: ApiErrorDetails;
   public project: Project;
   public sites: Site[];
