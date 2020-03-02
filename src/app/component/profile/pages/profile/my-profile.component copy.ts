@@ -32,9 +32,6 @@ export const myProfileMenuItemActions = [
     actions: List<AnyMenuItem>(myProfileMenuItemActions),
     links: List()
   },
-  resolvers: {
-    user: "UserShowResolver"
-  },
   self: myAccountMenuItem
 })
 @Component({

@@ -21,10 +21,16 @@ export function GetRouteConfigForPage(
     return;
   }
 
+  // If the page has custom resolvers, or it is the landing page for the category
+  const hasResolvers =
+    page.resolvers || page.category.route === page.self.route;
+
   Object.assign(config, {
     // data is inherited in child routes
     data: page,
-    resolve: page.resolvers ? page.resolvers : {},
+    resolve: hasResolvers
+      ? { ...page.resolvers, ...page.category.resolvers }
+      : {},
     children: [
       {
         path: "",

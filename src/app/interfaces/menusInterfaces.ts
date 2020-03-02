@@ -53,9 +53,9 @@ export interface Category extends LabelAndIcon {
   route: StrongRoute;
 
   /**
-   * List of resolved models accessible to any components within the category
+   * List of resolvers
    */
-  resolvedModels?: List<string>;
+  resolvers?: Resolvers;
 }
 
 /**

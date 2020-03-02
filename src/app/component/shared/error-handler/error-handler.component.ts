@@ -1,10 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { Resolvers } from "src/app/interfaces/menusInterfaces";
 
 @Component({
   selector: "app-error-handler",
@@ -26,34 +27,22 @@ import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
     </ng-container>
   `
 })
-export class ErrorHandlerComponent implements OnInit, OnDestroy {
+export class ErrorHandlerComponent extends WithUnsubscribe() implements OnInit {
+  /**
+   * Deprecated input
+   */
   @Input() error: ApiErrorDetails;
   public apiReturnCodes = apiReturnCodes;
-  private unsubscribe = new Subject<void>();
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+    super();
+  }
 
   ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (data: PageInfoInterface) => {
-        const resolvers = data.category.resolvedModels;
-
-        if (!resolvers) {
-          return;
-        }
-
-        // Find any error messages
-        for (const resolver of resolvers) {
-          if (!data[resolver].error) {
-            continue;
-          }
-
-          this.error = data[resolver].error as ApiErrorDetails;
-          // If unauthorized response, no point downgrading to "Not Found"
-          if (this.error.status === apiReturnCodes.unauthorized) {
-            return;
-          }
-        }
+        const resolvers = { ...data.resolvers, ...data.category.resolvers };
+        this.handleResolvers(data, resolvers);
       },
       err => {
         console.error("ErrorHandlerComponent: ", err);
@@ -65,8 +54,18 @@ export class ErrorHandlerComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
+  private handleResolvers(data: any, resolvers: Resolvers) {
+    for (const key of Object.keys(resolvers)) {
+      if (!data[key].error) {
+        continue;
+      }
+
+      this.error = data[key].error as ApiErrorDetails;
+
+      // If unauthorized response, no point downgrading to "Not Found"
+      if (this.error.status === apiReturnCodes.unauthorized) {
+        return;
+      }
+    }
   }
 }
