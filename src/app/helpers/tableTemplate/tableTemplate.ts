@@ -18,10 +18,6 @@ export abstract class TableTemplate<T> extends PageComponent {
   public columns: TableColumn[] = [];
   public rows: T[] = [];
   public temp: T[] = [];
-  public tableClass = "bootstrap";
-  public defaultTableLimit = 25;
-  public headerHeight = 50;
-  public footerHeight = 50;
   public selected: T[] = [];
 
   // State variable
