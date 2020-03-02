@@ -21,16 +21,20 @@ export function GetRouteConfigForPage(
     return;
   }
 
-  // If the page has custom resolvers, or it is the landing page for the category
-  const hasResolvers =
-    page.resolvers || page.category.route === page.self.route;
+  const resolvers = {};
+  // Assign category resolvers if the page is the top level category page
+  if (page.category.route === page.self.route && page.category.resolvers) {
+    Object.assign(resolvers, page.category.resolvers);
+  }
+  // Assign custom page resolvers
+  if (page.resolvers) {
+    Object.assign(resolvers, page.resolvers);
+  }
 
   Object.assign(config, {
     // data is inherited in child routes
     data: page,
-    resolve: hasResolvers
-      ? { ...page.resolvers, ...page.category.resolvers }
-      : {},
+    resolve: resolvers,
     children: [
       {
         path: "",

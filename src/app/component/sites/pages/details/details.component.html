@@ -1,4 +1,4 @@
-<ng-container *ngIf="state === 'ready'">
+<ng-container *ngIf="site">
   <!-- Site Details -->
   <h1>
     <small class="text-muted" *ngIf="project">
@@ -51,6 +51,3 @@
     </div>
   </app-wip>
 </ng-container>
-
-<app-loading [isLoading]="state === 'loading'"></app-loading>
-<app-error-handler [error]="error"></app-error-handler>

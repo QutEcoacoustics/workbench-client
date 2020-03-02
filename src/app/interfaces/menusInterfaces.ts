@@ -53,6 +53,11 @@ export interface Category extends LabelAndIcon {
   route: StrongRoute;
 
   /**
+   * Parent category
+   */
+  parent?: Category;
+
+  /**
    * List of resolvers
    */
   resolvers?: Resolvers;

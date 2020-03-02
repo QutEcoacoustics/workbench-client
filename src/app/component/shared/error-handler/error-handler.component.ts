@@ -5,7 +5,7 @@ import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { Resolvers } from "src/app/interfaces/menusInterfaces";
+import { Resolvers, Category } from "src/app/interfaces/menusInterfaces";
 
 @Component({
   selector: "app-error-handler",
@@ -41,8 +41,7 @@ export class ErrorHandlerComponent extends WithUnsubscribe() implements OnInit {
   ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (data: PageInfoInterface) => {
-        const resolvers = { ...data.resolvers, ...data.category.resolvers };
-        this.handleResolvers(data, resolvers);
+        this.handleResolvers(data);
       },
       err => {
         console.error("ErrorHandlerComponent: ", err);
@@ -54,7 +53,27 @@ export class ErrorHandlerComponent extends WithUnsubscribe() implements OnInit {
     );
   }
 
-  private handleResolvers(data: any, resolvers: Resolvers) {
+  private handleResolvers(data: PageInfoInterface) {
+    const resolvers: Resolvers = {};
+    const categories: Category[] = [];
+
+    // Scale category parents and add in reverse order (this is to preserve any overwrites)
+    let category = data.category;
+    while (category) {
+      categories.push(category);
+      category = category.parent;
+    }
+    for (let i = categories.length - 1; i >= 0; i--) {
+      if (categories[i].resolvers) {
+        Object.assign(resolvers, categories[i].resolvers);
+      }
+    }
+
+    // Add final custom resolvers
+    if (data.resolvers) {
+      Object.assign(resolvers, data.resolvers);
+    }
+
     for (const key of Object.keys(resolvers)) {
       if (!data[key].error) {
         continue;

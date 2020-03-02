@@ -58,8 +58,8 @@ export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
   route: projectsRoute.add(":projectId"),
+  parent: projectsCategory,
   resolvers: {
-    ...projectsCategory.resolvers,
     project: "ProjectShowResolver",
     sites: "SiteListResolver"
   }
