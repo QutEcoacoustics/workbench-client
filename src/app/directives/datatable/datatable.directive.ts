@@ -12,20 +12,30 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 })
 export class DatatableDirective implements OnInit, AfterContentInit {
   @Input() datatable: DatatableComponent;
+  @Input() defaults: Partial<DatatableComponent>;
+  private datatableConfig: Partial<DatatableComponent>;
 
   constructor(private datatableRef: ElementRef) {}
 
   ngOnInit(): void {
     this.datatableRef.nativeElement.classList.add("bootstrap");
+
+    this.datatableConfig = Object.assign(
+      {
+        footerHeight: 50,
+        headerHeight: 50,
+        limit: 25,
+        rowHeight: "auto",
+        scrollbarH: true,
+        reorderable: false
+      },
+      this.defaults
+    );
   }
 
   ngAfterContentInit() {
-    // Set Inputs
-    this.datatable.footerHeight = 50;
-    this.datatable.headerHeight = 50;
-    this.datatable.limit = 25;
-    this.datatable.rowHeight = "auto";
-    this.datatable.scrollbarH = true;
-    this.datatable.reorderable = false;
+    for (const key of Object.keys(this.datatableConfig)) {
+      this.datatable[key] = this.datatableConfig[key];
+    }
   }
 }

@@ -1,29 +1,45 @@
 import { Component, DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { DatatableDirective } from "./datatable.directive";
 
 describe("DatatableDirective", () => {
-  let component: MockComponent;
-  let fixture: ComponentFixture<MockComponent>;
+  let fixture: ComponentFixture<any>;
   let datatable: DebugElement;
 
-  @Component({
-    template: `
-      <ngx-datatable
-        #table
-        appDatatable
-        [datatable]="table"
-        [rows]="rows"
-        [columns]="columns"
-      >
-      </ngx-datatable>
-    `
-  })
-  class MockComponent {
-    rows = [{ id: 1 }];
-    columns = [{ prop: "id" }];
+  function configureTestingModule(
+    overrideDefaults?: Partial<DatatableComponent>
+  ) {
+    @Component({
+      template: `
+        <ngx-datatable
+          #table
+          appDatatable
+          [datatable]="table"
+          [defaults]="defaults"
+          [rows]="rows"
+          [columns]="columns"
+        >
+        </ngx-datatable>
+      `
+    })
+    class MockComponent {
+      rows = [{ id: 1 }];
+      columns = [{ prop: "id" }];
+      defaults = overrideDefaults;
+    }
+
+    TestBed.configureTestingModule({
+      declarations: [MockComponent, DatatableDirective],
+      imports: [SharedModule]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MockComponent);
+    fixture.detectChanges();
+
+    datatable = fixture.debugElement.query(By.css("ngx-datatable"));
   }
 
   function assertAttribute(
@@ -37,50 +53,52 @@ describe("DatatableDirective", () => {
     expect(target.attributes[attribute]).toBe(expectedValue);
   }
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MockComponent, DatatableDirective],
-      imports: [SharedModule]
-    }).compileComponents();
-  }));
+  describe("Defaults", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MockComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    it("should set class", () => {
+      expect(Object.keys(datatable.classes)).toContain("bootstrap");
+    });
 
-    datatable = fixture.debugElement.query(By.css("ngx-datatable"));
+    it("should set footer height", () => {
+      assertAttribute("datatable-footer", "ng-reflect-footer-height", "50");
+    });
+
+    it("should set header height", () => {
+      assertAttribute("datatable-header", "ng-reflect-header-height", "50");
+    });
+
+    it("should set limit", () => {
+      assertAttribute("datatable-body", "ng-reflect-page-size", "25");
+    });
+
+    it("should set row height", () => {
+      assertAttribute("datatable-body", "ng-reflect-row-height", "auto");
+    });
+
+    it("should set horizontal scroll bar", () => {
+      assertAttribute("datatable-scroller", "ng-reflect-scrollbar-h", "true");
+    });
+
+    it("should set not reorderable", () => {
+      assertAttribute("datatable-header", "ng-reflect-reorderable", "false");
+    });
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  describe("Overrides", () => {
+    it("should override default value", () => {
+      configureTestingModule({ footerHeight: 150 });
 
-  it("should set class", () => {
-    expect(Object.keys(datatable.classes)).toContain("bootstrap");
-  });
+      assertAttribute("datatable-footer", "ng-reflect-footer-height", "150");
+    });
 
-  it("should set footer height", () => {
-    assertAttribute("datatable-footer", "ng-reflect-footer-height", "50");
-  });
+    it("should override multiple default values", () => {
+      configureTestingModule({ footerHeight: 150, headerHeight: 150 });
 
-  it("should set header height", () => {
-    assertAttribute("datatable-header", "ng-reflect-header-height", "50");
-  });
-
-  it("should set limit", () => {
-    assertAttribute("datatable-body", "ng-reflect-page-size", "25");
-  });
-
-  it("should set row height", () => {
-    assertAttribute("datatable-body", "ng-reflect-row-height", "auto");
-  });
-
-  it("should set horizontal scroll bar", () => {
-    assertAttribute("datatable-scroller", "ng-reflect-scrollbar-h", "true");
-  });
-
-  it("should set not reorderable", () => {
-    assertAttribute("datatable-header", "ng-reflect-reorderable", "false");
+      assertAttribute("datatable-footer", "ng-reflect-footer-height", "150");
+      assertAttribute("datatable-header", "ng-reflect-header-height", "150");
+    });
   });
 });
