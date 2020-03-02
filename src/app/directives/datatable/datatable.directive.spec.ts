@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { DatatableDirective } from "./datatable.directive";
 import { Component, DebugElement } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { DatatableDirective } from "./datatable.directive";
 
 describe("DatatableDirective", () => {
   let component: MockComponent;

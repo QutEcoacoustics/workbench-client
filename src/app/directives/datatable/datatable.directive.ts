@@ -1,9 +1,9 @@
 import {
   AfterContentInit,
-  ElementRef,
-  OnInit,
   Directive,
-  Input
+  ElementRef,
+  Input,
+  OnInit
 } from "@angular/core";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 
