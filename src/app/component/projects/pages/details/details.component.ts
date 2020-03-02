@@ -38,8 +38,8 @@ export const projectMenuItemActions = [
     links: List()
   },
   resolvers: {
-    project: "ProjectResolver",
-    sites: "SitesResolver"
+    project: "ProjectShowResolver",
+    sites: "SiteListResolver"
   },
   self: projectMenuItem
 })

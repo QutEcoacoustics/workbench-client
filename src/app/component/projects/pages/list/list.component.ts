@@ -26,7 +26,7 @@ export const projectsMenuItemActions = [
     links: List()
   },
   resolvers: {
-    projects: "ProjectsResolver"
+    projects: "ProjectListResolver"
   },
   self: projectsMenuItem
 })
