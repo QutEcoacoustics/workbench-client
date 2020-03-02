@@ -1,10 +1,14 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { environment } from "src/environments/environment";
 import {
   API_CONFIG,
   API_ROOT,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
+import { AppConfigService } from "./services/app-config/app-config.service";
+import {
+  AppConfigMockService,
+  testApiConfig
+} from "./services/app-config/appConfigMock.service";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
@@ -27,55 +31,6 @@ import {
 } from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
-export const testApiConfig = {
-  environment: {
-    apiRoot: "https://www.testing.com/api",
-    siteRoot: "https://www.testing.com/site",
-    siteDir: "<< siteDir >>",
-    cmsRoot: "https://www.testing.com/cms",
-    ga: {
-      trackingId: "<< googleAnalytics >>"
-    }
-  },
-  values: {
-    keys: {
-      googleMaps: "<< googleMaps >>"
-    },
-    brand: {
-      name: "<< brandName >>",
-      title: "<< brandTitle >>"
-    },
-    content: [
-      {
-        title: "<< content1 >>",
-        url: "<< contentUrl1 >>"
-      },
-      {
-        headerTitle: "<< content2 >>",
-        items: [
-          {
-            title: "<< content3 >>",
-            url: "<< contentUrl3 >>"
-          },
-          {
-            title: "<< content4 >>",
-            url: "<< contentUrl4 >>"
-          }
-        ]
-      }
-    ],
-    cms: {
-      credits: "/credits.html",
-      disclaimers: "/disclaimers.html",
-      downloadAnnotations: "/downloadAnnotations.html",
-      ethics: "/ethics.html",
-      harvest: "/harvest.html",
-      home: "/home.html",
-      sendAudio: "/sendAudio.html"
-    }
-  }
-};
-
 export const testAppInitializer = [
   {
     provide: API_ROOT,
@@ -88,9 +43,12 @@ export const testAppInitializer = [
   {
     provide: API_CONFIG,
     useValue: new Promise(resolve => {
-      Object.assign(environment, testApiConfig);
       resolve(testApiConfig);
     })
+  },
+  {
+    provide: AppConfigService,
+    useClass: AppConfigMockService
   }
 ];
 

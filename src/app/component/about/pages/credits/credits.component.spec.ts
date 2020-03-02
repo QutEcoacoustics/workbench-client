@@ -4,13 +4,14 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
 import { CreditsComponent } from "./credits.component";
 
 describe("AboutCreditsComponent", () => {
   let httpMock: HttpTestingController;
   let component: CreditsComponent;
+  let env: AppConfigService;
   let fixture: ComponentFixture<CreditsComponent>;
 
   beforeEach(async(() => {
@@ -24,6 +25,7 @@ describe("AboutCreditsComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CreditsComponent);
     httpMock = TestBed.inject(HttpTestingController);
+    env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -33,14 +35,12 @@ describe("AboutCreditsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(environment.environment.cmsRoot + "/credits.html");
+    httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(
-      environment.environment.cmsRoot + "/credits.html"
-    );
+    const req = httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
     fixture.detectChanges();

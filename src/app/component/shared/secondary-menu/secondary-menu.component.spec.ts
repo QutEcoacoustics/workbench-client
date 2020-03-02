@@ -5,7 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { fromJS, List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
-import { PageInfo, PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
@@ -15,7 +15,7 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { testAppInitializer } from "src/app/test.helper";
+import { testBawServices } from "src/app/test.helper";
 import { homeCategory } from "../../home/home.menus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
@@ -67,7 +67,7 @@ describe("SecondaryMenuComponent", () => {
       imports: [RouterTestingModule, HttpClientModule, SharedModule],
       declarations: [SecondaryMenuComponent],
       providers: [
-        ...testAppInitializer,
+        ...testBawServices,
         { provide: ActivatedRoute, useClass: MockActivatedRoute }
       ]
     }).compileComponents();

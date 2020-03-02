@@ -14,10 +14,10 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { environment } from "src/environments/environment";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
@@ -41,6 +41,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   isNavigableMenuItem = isNavigableMenuItem;
 
   constructor(
+    private env: AppConfigService,
     private router: Router,
     private securityApi: SecurityService,
     private userApi: UserService,
@@ -52,7 +53,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.title = environment.values.brand.name;
+    this.title = this.env.values.brand.name;
     this.routes = {
       home: homeMenuItem,
       login: loginMenuItem,
@@ -128,7 +129,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return environment.values.content.map(header => {
+    return this.env.values.content.map(header => {
       if (!isHeaderLink(header)) {
         return {
           headerTitle: header.headerTitle,

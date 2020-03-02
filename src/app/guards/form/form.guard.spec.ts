@@ -1,7 +1,6 @@
 import { Component, OnInit, QueryList } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { FormComponent } from "src/app/component/shared/form/form.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import {
@@ -113,7 +112,7 @@ describe("WithFormCheck", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
+      imports: [...appLibraryImports, SharedModule],
       declarations: [MockComponent]
     }).compileComponents();
 

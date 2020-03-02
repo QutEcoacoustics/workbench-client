@@ -14,7 +14,13 @@ import {
   AppInitializer,
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
+import { AppConfigService } from "./services/app-config/app-config.service";
+import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import { ProjectsService } from "./services/baw-api/projects.service";
+import { SecurityService } from "./services/baw-api/security.service";
+import { SitesService } from "./services/baw-api/sites.service";
+import { UserService } from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -31,6 +37,10 @@ export function minValidationMessage(err, field) {
 export function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
+
+export const toastrRoot = {
+  positionClass: "toast-top-center"
+};
 
 export const formlyRoot = {
   types: [
@@ -84,5 +94,11 @@ export const providers = [
     provide: CMS_ROOT,
     useFactory: AppInitializer.cmsRootFactory
   },
-  FormTouchedGuard
+  FormTouchedGuard,
+  AppConfigService,
+  AccountService,
+  ProjectsService,
+  SecurityService,
+  SitesService,
+  UserService
 ];

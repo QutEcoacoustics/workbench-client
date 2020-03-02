@@ -3,7 +3,7 @@ import { List } from "immutable";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { fields as requestFields } from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as annotationFields } from "./download-annotations.json";
@@ -52,12 +52,12 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
   public requestLoading: boolean;
   public requestSchema = { model: {}, fields: requestFields };
 
-  constructor() {
+  constructor(private env: AppConfigService) {
     super();
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.downloadAnnotations;
+    this.page = this.env.values.cms.downloadAnnotations;
     this.requestLoading = false;
   }
 

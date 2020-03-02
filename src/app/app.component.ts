@@ -4,8 +4,8 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { Observable } from "rxjs";
 import { delay, map, takeUntil, withLatestFrom } from "rxjs/operators";
-import { environment } from "src/environments/environment";
 import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
+import { AppConfigService } from "./services/app-config/app-config.service";
 
 @Component({
   selector: "app-root",
@@ -17,6 +17,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
   delayedProgress$: Observable<number>;
 
   constructor(
+    private env: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private title: Title,
@@ -26,7 +27,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
   }
 
   ngOnInit() {
-    this.title.setTitle(environment.values.brand.name);
+    this.title.setTitle(this.env.values.brand.name);
     this.menuLayout = true;
 
     /**

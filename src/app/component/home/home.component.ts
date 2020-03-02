@@ -4,10 +4,10 @@ import { flatMap, map, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { environment } from "src/environments/environment";
 import { projectsMenuItem } from "../projects/projects.menus";
 import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
@@ -29,6 +29,7 @@ export class HomeComponent extends PageComponent implements OnInit {
   public projectList: List<Card> = List([]);
 
   constructor(
+    private env: AppConfigService,
     private projectApi: ProjectsService,
     private securityApi: SecurityService
   ) {
@@ -36,7 +37,7 @@ export class HomeComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.page = environment.values.cms.home;
+    this.page = this.env.values.cms.home;
 
     this.securityApi
       .getAuthTrigger()

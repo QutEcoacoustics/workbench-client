@@ -7,8 +7,7 @@ import {
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
@@ -22,11 +21,7 @@ describe("RegisterComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, RouterTestingModule, SharedModule],
       declarations: [RegisterComponent],
       providers: [...testBawServices]
     }).compileComponents();

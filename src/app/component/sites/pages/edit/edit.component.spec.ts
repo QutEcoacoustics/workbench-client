@@ -6,9 +6,8 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { mockSite, Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -18,7 +17,6 @@ import { EditComponent } from "./edit.component";
 
 describe("SitesEditComponent", () => {
   let api: SitesService;
-  let router: ActivatedRoute;
   let component: EditComponent;
   let fixture: ComponentFixture<EditComponent>;
 
@@ -28,11 +26,7 @@ describe("SitesEditComponent", () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, RouterTestingModule, SharedModule],
       declarations: [EditComponent],
       providers: [
         ...testBawServices,
@@ -42,7 +36,6 @@ describe("SitesEditComponent", () => {
 
     fixture = TestBed.createComponent(EditComponent);
     api = TestBed.inject(SitesService);
-    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
     component.schema.model = {};
 

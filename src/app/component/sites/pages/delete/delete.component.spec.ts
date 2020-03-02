@@ -6,9 +6,8 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { FormlyModule } from "@ngx-formly/core";
 import { BehaviorSubject, Subject } from "rxjs";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Site } from "src/app/models/Site";
@@ -21,7 +20,6 @@ describe("SitesDeleteComponent", () => {
   let component: DeleteComponent;
   let api: SitesService;
   let router: Router;
-  let route: ActivatedRoute;
   let fixture: ComponentFixture<DeleteComponent>;
 
   class MockActivatedRoute {
@@ -29,11 +27,7 @@ describe("SitesDeleteComponent", () => {
   }
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        FormlyModule.forRoot(formlyRoot)
-      ],
+      imports: [...appLibraryImports, RouterTestingModule, SharedModule],
       declarations: [DeleteComponent],
       providers: [
         ...testBawServices,
@@ -45,7 +39,6 @@ describe("SitesDeleteComponent", () => {
     component = fixture.componentInstance;
     api = TestBed.inject(SitesService);
     router = TestBed.inject(Router);
-    route = TestBed.inject(ActivatedRoute);
   });
 
   it("should create", () => {

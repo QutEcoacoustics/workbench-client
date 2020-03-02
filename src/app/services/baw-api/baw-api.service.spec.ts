@@ -9,7 +9,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
-import { environment } from "src/environments/environment";
+import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
@@ -17,6 +17,7 @@ import {
   Meta,
   STUB_MODEL_BUILDER
 } from "./baw-api.service";
+import { SecurityService } from "./security.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");
@@ -94,6 +95,7 @@ describe("BawApiService", () => {
   }
 
   let service: BawApiService<MockModel>;
+  let env: AppConfigService;
   let httpMock: HttpTestingController;
 
   // Multi response metadata
@@ -159,7 +161,7 @@ describe("BawApiService", () => {
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
-      url: environment.environment.apiRoot + route,
+      url: env.environment.apiRoot + route,
       method
     });
   }
@@ -188,16 +190,18 @@ describe("BawApiService", () => {
       imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
+        BawApiService,
+        SecurityService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true
         },
-        { provide: STUB_MODEL_BUILDER, useValue: MockModel },
-        BawApiService
+        { provide: STUB_MODEL_BUILDER, useValue: MockModel }
       ]
     });
     service = TestBed.inject(BawApiService);
+    env = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
 
     multiMeta = {
@@ -213,7 +217,7 @@ describe("BawApiService", () => {
         total: 1,
         maxPage: 1,
         current:
-          environment.environment.apiRoot +
+          env.environment.apiRoot +
           "/projects?direction=asc&items=25&order_by=name&page=1",
         previous: null,
         next: null

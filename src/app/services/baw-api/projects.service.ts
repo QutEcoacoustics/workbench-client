@@ -21,9 +21,7 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
 /**
  * Interacts with projects route in baw api
  */
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class ProjectsService extends StandardApi<Project, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Project);

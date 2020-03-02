@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { testAppInitializer } from "src/app/test.helper";
 import { ContactUsComponent } from "./contact-us.component";
 
 describe("ContactUsComponent", () => {
@@ -10,8 +10,9 @@ describe("ContactUsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, FormlyModule.forRoot(formlyRoot)],
-      declarations: [ContactUsComponent]
+      imports: [...appLibraryImports, SharedModule],
+      declarations: [ContactUsComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

@@ -5,20 +5,20 @@ import {
   API_CONFIG,
   Configuration
 } from "./app/helpers/app-initializer/app-initializer";
+import { fetchRetry } from "./app/helpers/fetch-retry/fetchRetry";
 import { environment } from "./environments/environment";
 
 if (environment.production) {
   enableProdMode();
 }
 
-const apiConfig = fetch("assets/environment.json")
-  .then(response => response.json())
-  .then((data: Configuration) => {
-    return data;
+const apiConfig = fetchRetry("assets/environment.json", 1000, 5)
+  .then(data => {
+    return new Configuration(data as Partial<Configuration>);
   })
   .catch((err: any) => {
-    console.error("APP_INITIALIZER: ", err);
-    throw new Error("APP_INITIALIZER: Failed to load configuration file");
+    console.error("API_CONFIG Failed to load configuration file: ", err);
+    return {};
   });
 
 const apiConfigProvider = {
