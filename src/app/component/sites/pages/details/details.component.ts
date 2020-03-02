@@ -11,6 +11,7 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   annotationsMenuItem,
   deleteSiteMenuItem,
@@ -19,7 +20,6 @@ import {
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 export const siteMenuItemActions = [
   exploreAudioMenuItem,
@@ -44,11 +44,11 @@ export const siteMenuItemActions = [
   styleUrls: ["./details.component.scss"]
 })
 export class DetailsComponent extends PageComponent implements OnInit {
-  public endDate: DateTimeTimezone;
   public project: Project;
   public recordings: AudioRecording[];
+  public recordingsEnd: DateTimeTimezone;
+  public recordingsStart: DateTimeTimezone;
   public site: Site;
-  public startDate: DateTimeTimezone;
 
   constructor(private route: ActivatedRoute) {
     super();
@@ -102,7 +102,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
       }
     });
 
-    this.startDate = startDate;
-    this.endDate = endDate;
+    this.recordingsStart = startDate;
+    this.recordingsEnd = endDate;
   }
 }

@@ -34,6 +34,7 @@ export function GetRouteConfigForPage(
   Object.assign(config, {
     // data is inherited in child routes
     data: page,
+    runGuardsAndResolvers: "paramsOrQueryParamsChange",
     resolve: resolvers,
     children: [
       {

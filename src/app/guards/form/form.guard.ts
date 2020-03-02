@@ -25,6 +25,13 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     isFormTouched() {
       return this.appForms.some(appForm => appForm.form.dirty);
     }
+
+    /**
+     * Reset all forms on the page, this should be used before navigation
+     */
+    resetForms() {
+      return this.appForms.map(appForm => appForm.form.markAsPristine());
+    }
   }
 
   return FormCheckingPageComponent;
