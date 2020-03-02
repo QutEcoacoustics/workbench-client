@@ -27,4 +27,6 @@ If the PR has any visual changes to the website, post pictures of the new pages 
 - [ ] Assign reviewers if you have permission
 - [ ] Assign labels if you have permission
 - [ ] Link issues related to PR
+- [ ] Ensure project linter is not producing any warnings (`npm run lint`)
+- [ ] Ensure build is passing on all browsers (`npm run test:all`)
 - [ ] Ensure CI build is passing
