@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { Category, Resolvers } from "src/app/interfaces/menusInterfaces";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { Resolvers, Category } from "src/app/interfaces/menusInterfaces";
 
 @Component({
   selector: "app-error-handler",

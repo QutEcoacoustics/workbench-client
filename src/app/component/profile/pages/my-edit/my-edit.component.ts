@@ -6,6 +6,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
@@ -14,7 +15,6 @@ import {
 } from "../../profile.menus";
 import { myProfileMenuItemActions } from "../profile/my-profile.component copy";
 import { fields } from "./my-edit.json";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 
 @Page({
   category: myAccountCategory,
