@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -56,7 +55,6 @@ export const sharedModules = [
   ReactiveFormsModule,
   FormlyModule,
   FormlyBootstrapModule,
-  MatProgressSpinnerModule,
   NgxDatatableModule,
   ToastrModule,
 
