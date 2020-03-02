@@ -61,7 +61,7 @@ export class ListResolver<
 
     return [
       {
-        provide: name + "sResolver",
+        provide: name + "ListResolver",
         useClass: Resolver,
         deps
       }
@@ -106,7 +106,7 @@ export class ShowResolver<
 
     return [
       {
-        provide: name + "Resolver",
+        provide: name + "ShowResolver",
         useClass: Resolver,
         deps
       }
