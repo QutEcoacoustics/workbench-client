@@ -1,14 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
@@ -32,57 +31,39 @@ import { fields } from "./their-edit.json";
   selector: "app-their-profile-edit",
   template: `
     <app-wip>
-      <app-form
-        *ngIf="ready"
-        [schema]="schema"
-        [title]="'Editing profile for ' + user.userName"
-        [error]="error"
-        [success]="success"
-        [submitLabel]="'Update User'"
-        [submitLoading]="loading"
-        [btnColor]="'btn-warning'"
-        (onSubmit)="submit($event)"
-      ></app-form>
+      <ng-container *ngIf="user">
+        <app-form
+          [schema]="schema"
+          [title]="'Editing profile for ' + user.userName"
+          [submitLabel]="'Update User'"
+          [submitLoading]="loading"
+          [btnColor]="'btn-warning'"
+          (onSubmit)="submit($event)"
+        ></app-form>
+      </ng-container>
     </app-wip>
   `
 })
 export class TheirEditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
-  ready: boolean;
-  schema = { model: {}, fields };
-  success: string;
-
-  user: User;
+  public loading: boolean;
+  public schema = { model: { name: "" }, fields };
+  public user: User;
 
   constructor(private api: AccountService, private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
     this.loading = false;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data.account;
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.api.show(params.userId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-          this.ready = true;
+    if (userModel.error) {
+      return;
+    }
 
-          this.schema.model["name"] = this.user.userName;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    this.user = userModel.model;
+    this.schema.model.name = this.user.userName;
   }
 
   /**

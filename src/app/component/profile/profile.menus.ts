@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import {
   defaultEditIcon,
   isAdminPredicate,
@@ -18,7 +19,8 @@ export const myAccountRoute = StrongRoute.Base.add("my_account");
 export const myAccountCategory: Category = {
   icon: ["fas", "user"],
   label: "My Profile",
-  route: myAccountRoute
+  route: myAccountRoute,
+  resolvedModels: List(["user"])
 };
 
 export const myAccountMenuItem = MenuRoute({
@@ -80,7 +82,8 @@ export const theirProfileRoute = StrongRoute.Base.add("user_accounts");
 export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
   label: "Their Profile",
-  route: theirProfileRoute
+  route: theirProfileRoute,
+  resolvedModels: List(["account"])
 };
 
 export const theirProfileMenuItem = MenuRoute({

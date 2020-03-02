@@ -14,7 +14,7 @@ import {
   ReadonlyApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { ListResolver } from "./resolver-common";
+import { Resolvers } from "./resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
@@ -36,6 +36,7 @@ export class AccountService extends ReadonlyApi<User, []> {
   }
 }
 
-export const accountResolvers = new ListResolver<User, AccountService>([
-  AccountService
-]).create("Account");
+export const accountResolvers = new Resolvers<User, AccountService>(
+  [AccountService],
+  "accountId"
+).create("Account");

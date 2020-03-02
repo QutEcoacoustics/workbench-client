@@ -1,14 +1,13 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
 import { ItemInterface } from "src/app/component/shared/items/item/item.component";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { UserService } from "src/app/services/baw-api/user.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editMyAccountMenuItem,
   myAccountCategory,
@@ -33,6 +32,9 @@ export const myProfileMenuItemActions = [
     actions: List<AnyMenuItem>(myProfileMenuItemActions),
     links: List()
   },
+  resolvers: {
+    user: "UserShowResolver"
+  },
   self: myAccountMenuItem
 })
 @Component({
@@ -41,30 +43,25 @@ export const myProfileMenuItemActions = [
   styleUrls: ["./profile.component.scss"]
 })
 export class MyProfileComponent extends PageComponent implements OnInit {
-  error: ApiErrorDetails;
-  imageUrl: string;
-  tags: ItemInterface[];
-  thirdPerson = false;
-  user: User;
-  userStatistics: ItemInterface[];
+  public imageUrl: string;
+  public tags: ItemInterface[];
+  public thirdPerson = false;
+  public user: User;
+  public userStatistics: ItemInterface[];
 
-  constructor(private api: UserService) {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.api
-      .show()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-          this.imageUrl = user.getImage(ImageSizes.large);
-        },
-        (err: ApiErrorDetails) => {
-          this.error = err;
-        }
-      );
+    const userModel: ResolvedModel<User> = this.route.snapshot.data.user;
+
+    if (userModel.error) {
+      return;
+    }
+
+    this.user = userModel.model;
+    this.imageUrl = this.user.getImage(ImageSizes.large);
 
     this.userStatistics = [
       { icon: ["fas", "globe-asia"], name: "Projects", value: "Unknown" },
