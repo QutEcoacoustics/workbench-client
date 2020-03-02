@@ -8,7 +8,7 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
 import { testAppInitializer } from "src/app/test.helper";
 import { HarvestComponent } from "./harvest.component";
 
-describe("SiteHarvestComponent", () => {
+xdescribe("SiteHarvestComponent", () => {
   let httpMock: HttpTestingController;
   let component: HarvestComponent;
   let env: AppConfigService;

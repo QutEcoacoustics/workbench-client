@@ -10,7 +10,7 @@ import { testBawServices } from "src/app/test.helper";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 
-describe("CmsComponent", () => {
+xdescribe("CmsComponent", () => {
   let api: SecurityService;
   let httpMock: HttpTestingController;
   let component: CmsComponent;

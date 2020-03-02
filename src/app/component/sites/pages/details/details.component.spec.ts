@@ -18,7 +18,7 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import { testBawServices } from "src/app/test.helper";
 import { DetailsComponent } from "./details.component";
 
-describe("SitesDetailsComponent", () => {
+xdescribe("SitesDetailsComponent", () => {
   let projectsApi: ProjectsService;
   let sitesApi: SitesService;
   let component: DetailsComponent;

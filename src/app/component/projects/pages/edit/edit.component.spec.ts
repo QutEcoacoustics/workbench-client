@@ -15,7 +15,7 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { testBawServices } from "src/app/test.helper";
 import { EditComponent } from "./edit.component";
 
-describe("ProjectsEditComponent", () => {
+xdescribe("ProjectsEditComponent", () => {
   let api: ProjectsService;
   let component: EditComponent;
   let fixture: ComponentFixture<EditComponent>;

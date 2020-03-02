@@ -21,7 +21,6 @@ import {
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
-import { FormGroup } from "@angular/forms";
 
 @Page({
   category: sitesCategory,

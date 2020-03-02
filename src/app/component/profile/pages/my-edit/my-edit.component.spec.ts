@@ -13,7 +13,7 @@ import { UserService } from "src/app/services/baw-api/user.service";
 import { testBawServices } from "src/app/test.helper";
 import { MyEditComponent } from "./my-edit.component";
 
-describe("MyProfileEditComponent", () => {
+xdescribe("MyProfileEditComponent", () => {
   let api: UserService;
   let component: MyEditComponent;
   let fixture: ComponentFixture<MyEditComponent>;

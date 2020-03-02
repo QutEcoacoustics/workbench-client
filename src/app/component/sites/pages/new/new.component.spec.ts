@@ -17,7 +17,7 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import { testBawServices } from "src/app/test.helper";
 import { NewComponent } from "./new.component";
 
-describe("SitesNewComponent", () => {
+xdescribe("SitesNewComponent", () => {
   let sitesApi: SitesService;
   let projectApi: ProjectsService;
   let router: ActivatedRoute;
@@ -100,7 +100,7 @@ describe("SitesNewComponent", () => {
   }));
 });
 
-describe("SitesNewComponent", () => {
+xdescribe("SitesNewComponent", () => {
   let sitesApi: SitesService;
   let projectApi: ProjectsService;
   let router: ActivatedRoute;

@@ -21,7 +21,7 @@ import {
 import { testBawServices } from "src/app/test.helper";
 import { LoginComponent } from "./login.component";
 
-describe("LoginComponent", () => {
+xdescribe("LoginComponent", () => {
   let component: LoginComponent;
   let securityService: SecurityService;
   let router: Router;
