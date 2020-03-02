@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, map, takeUntil } from "rxjs/operators";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -24,11 +23,10 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
+export class HomeComponent extends PageComponent implements OnInit {
   public page: string;
   public moreProjectsLink = projectsMenuItem;
   public projectList: List<Card> = List([]);
-  private unsubscribe = new Subject();
 
   constructor(
     private env: AppConfigService,
@@ -60,10 +58,5 @@ export class HomeComponent extends PageComponent implements OnInit, OnDestroy {
           this.projectList = List([]);
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

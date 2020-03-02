@@ -1,15 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { fromJS, List } from "immutable";
-import { Subject } from "rxjs";
+import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { PageInfo } from "src/app/helpers/page/pageInfo";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
   MenuRoute,
   NavigableMenuItem
@@ -28,12 +23,14 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SecondaryMenuComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class SecondaryMenuComponent extends WithUnsubscribe()
+  implements OnInit {
   contextLinks: List<NavigableMenuItem>;
   linksWidget: WidgetMenuItem;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+    super();
+  }
 
   ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
@@ -75,10 +72,5 @@ export class SecondaryMenuComponent implements OnInit, OnDestroy {
       },
       err => {}
     );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

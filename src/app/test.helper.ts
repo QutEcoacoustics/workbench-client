@@ -1,5 +1,4 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { environment } from "src/environments/environment";
 import {
   API_CONFIG,
   API_ROOT,

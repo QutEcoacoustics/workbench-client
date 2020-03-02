@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { LoadingBarService } from "@ngx-loading-bar/core";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { delay, map, takeUntil, withLatestFrom } from "rxjs/operators";
+import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { AppConfigService } from "./services/app-config/app-config.service";
 
 @Component({
@@ -11,8 +12,7 @@ import { AppConfigService } from "./services/app-config/app-config.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class AppComponent extends WithUnsubscribe() implements OnInit {
   menuLayout: boolean;
   delayedProgress$: Observable<number>;
 
@@ -22,7 +22,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private title: Title,
     private loader: LoadingBarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.title.setTitle(this.env.values.brand.name);
@@ -72,10 +74,5 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       err => {}
     );
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

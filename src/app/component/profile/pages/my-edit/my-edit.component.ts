@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -60,15 +59,13 @@ import { fields } from "./my-edit.json";
   `
 })
 export class MyEditComponent extends WithFormCheck(PageComponent)
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+  implements OnInit {
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
   ready: boolean;
   schema = { model: { edit: { name: "" } }, fields };
   success: string;
-
   user: User;
 
   constructor(private api: UserService) {
@@ -93,11 +90,6 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
           this.errorDetails = err;
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

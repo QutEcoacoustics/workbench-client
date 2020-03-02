@@ -21,11 +21,12 @@ export interface PageInfoInterface extends Data {
  * Page info class
  */
 export class PageInfo implements PageInfoInterface {
-  self: MenuRoute;
-  component: Type<any>;
-  category: Category;
-  menus: Menus;
-  fullscreen: boolean;
+  public self: MenuRoute;
+  public component: Type<any>;
+  public category: Category;
+  public menus: Menus;
+  public fullscreen: boolean;
+
   constructor(target: Type<any>, args: PageInfoInterface) {
     if (!args.self) {
       throw new Error("A page info must be provided with an `self` MenuRoute");

@@ -4,12 +4,11 @@ import {
   Component,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit
 } from "@angular/core";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
   DateTimeTimezone,
   defaultDateTimeTimezone,
@@ -49,15 +48,17 @@ import { Badge } from "./user-badge/user-badge.component";
   styleUrls: ["./user-badges.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
+export class UserBadgesComponent extends WithUnsubscribe()
+  implements OnInit, OnChanges {
   @Input() model: Site | Project;
 
-  private unsubscribe = new Subject();
   created: any;
   updated: any;
   owned: any;
 
-  constructor(private api: AccountService, private ref: ChangeDetectorRef) {}
+  constructor(private api: AccountService, private ref: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit() {
     this.generateBadges();
@@ -65,11 +66,6 @@ export class UserBadgesComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges() {
     this.generateBadges();
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   generateBadges() {

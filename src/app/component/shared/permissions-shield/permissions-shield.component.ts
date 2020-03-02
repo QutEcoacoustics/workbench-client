@@ -1,13 +1,7 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -26,9 +20,8 @@ import { WidgetComponent } from "../widget/widget.component";
   `,
   styleUrls: ["./permissions-shield.component.scss"]
 })
-export class PermissionsShieldComponent
-  implements OnInit, OnDestroy, WidgetComponent {
-  private unsubscribe = new Subject();
+export class PermissionsShieldComponent extends WithUnsubscribe()
+  implements OnInit, WidgetComponent {
   @Input() data: any;
 
   error: boolean;
@@ -40,7 +33,9 @@ export class PermissionsShieldComponent
     private projectsApi: ProjectsService,
     private sitesApi: SitesService,
     private ref: ChangeDetectorRef
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.ready = false;
@@ -68,10 +63,5 @@ export class PermissionsShieldComponent
           console.error("PermissionsShieldComponent: ", err);
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 }

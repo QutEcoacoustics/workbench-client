@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Subject } from "rxjs";
+import { Component, OnInit } from "@angular/core";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -29,9 +28,7 @@ import { fields } from "./register.json";
     </app-wip>
   `
 })
-export class RegisterComponent extends PageComponent
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+export class RegisterComponent extends PageComponent implements OnInit {
   schema = { model: {}, fields };
   error: string;
   errorDetails: ApiErrorDetails;
@@ -51,11 +48,6 @@ export class RegisterComponent extends PageComponent
       this.loading = false;
       this.error = null;
     }
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   submit(model) {

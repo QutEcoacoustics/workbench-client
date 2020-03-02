@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -48,8 +47,7 @@ import { fields } from "./their-edit.json";
   `
 })
 export class TheirEditComponent extends WithFormCheck(PageComponent)
-  implements OnInit, OnDestroy {
-  private unsubscribe = new Subject();
+  implements OnInit {
   error: string;
   errorDetails: ApiErrorDetails;
   loading: boolean;
@@ -85,10 +83,6 @@ export class TheirEditComponent extends WithFormCheck(PageComponent)
           this.errorDetails = err;
         }
       );
-  }
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   /**

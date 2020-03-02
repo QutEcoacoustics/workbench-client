@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { Subject } from "rxjs";
 import { flatMap, takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
@@ -37,8 +36,7 @@ import { projectMenuItemActions } from "../details/details.component";
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"]
 })
-export class AssignComponent extends TableTemplate<TableRow>
-  implements OnInit, OnDestroy {
+export class AssignComponent extends TableTemplate<TableRow> implements OnInit {
   // TODO Move this back into the admin dashboard
 
   public totalSites: number;
@@ -47,8 +45,6 @@ export class AssignComponent extends TableTemplate<TableRow>
   public error: ApiErrorDetails;
   public project: Project;
   public sites: Site[];
-
-  private unsubscribe = new Subject();
 
   constructor(
     private route: ActivatedRoute,
@@ -82,11 +78,6 @@ export class AssignComponent extends TableTemplate<TableRow>
           this.error = err;
         }
       );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
   }
 
   public onSelect(event) {

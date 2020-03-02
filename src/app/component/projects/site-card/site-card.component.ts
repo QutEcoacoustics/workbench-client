@@ -6,7 +6,6 @@ import {
 } from "@angular/core";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { siteMenuItem } from "../../sites/sites.menus";
 
 @Component({
   selector: "app-site-card",
