@@ -47,7 +47,7 @@ import { fields } from "./edit.json";
 export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
-  public schema = { model: { name: "" }, fields: fields };
+  public schema = { model: { name: "" }, fields };
   public success: boolean;
   public project: Project;
 

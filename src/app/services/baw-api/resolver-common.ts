@@ -131,7 +131,9 @@ export class ShowResolver<
         const showId = id ? convertToId(route.paramMap.get(id)) : undefined;
         // Grab additional ID's from URL
         const args =
-          id && ids ? ids.map(id => convertToId(route.paramMap.get(id))) : [];
+          id && ids
+            ? ids.map(urlId => convertToId(route.paramMap.get(urlId)))
+            : [];
 
         // Return model
         return this.api.show(showId, ...args).pipe(

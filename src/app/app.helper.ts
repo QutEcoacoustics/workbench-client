@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
