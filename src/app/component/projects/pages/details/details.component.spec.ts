@@ -1,699 +1,313 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Subject } from "rxjs";
 import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 import { testBawServices } from "src/app/test.helper";
 import { SiteCardComponent } from "../../site-card/site-card.component";
 import { DetailsComponent } from "./details.component";
 
 describe("ProjectDetailsComponent", () => {
-  let projectsApi: ProjectsService;
-  let sitesApi: SitesService;
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
+  let defaultProject: Project;
+  let defaultSites: Site[];
+  let defaultError: ApiErrorDetails;
 
-  beforeEach(() => {
+  function configureTestingModule(
+    project: Project,
+    projectError: ApiErrorDetails,
+    sites: Site[],
+    sitesError: ApiErrorDetails
+  ) {
+    class MockActivatedRoute {
+      public snapshot = {
+        data: {
+          project: {
+            model: project,
+            error: projectError
+          },
+          sites: {
+            model: sites,
+            error: sitesError
+          }
+        }
+      };
+    }
+
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
       declarations: [MockMapComponent, SiteCardComponent, DetailsComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
-    projectsApi = TestBed.inject(ProjectsService);
-    sitesApi = TestBed.inject(SitesService);
-
     component = fixture.componentInstance;
+  }
+
+  beforeEach(() => {
+    defaultProject = new Project({
+      id: 1,
+      name: "Project"
+    });
+    defaultSites = [];
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
   });
 
   it("should create", () => {
+    configureTestingModule(defaultProject, undefined, defaultSites, undefined);
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should initially display loading title", () => {
-    fixture.detectChanges();
+  describe("Error Handling", () => {
+    it("should handle failed project model", () => {
+      configureTestingModule(undefined, defaultError, defaultSites, undefined);
+      fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h4");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Loading");
+      const title = fixture.nativeElement.querySelector("h1");
+      expect(title).toBeFalsy();
+    });
+
+    it("should handle failed site model", () => {
+      configureTestingModule(
+        defaultProject,
+        undefined,
+        undefined,
+        defaultError
+      );
+      fixture.detectChanges();
+
+      const title = fixture.nativeElement.querySelector("h1");
+      expect(title).toBeFalsy();
+    });
   });
 
-  it("should initially display loading animation", () => {
-    fixture.detectChanges();
+  describe("Project", () => {
+    it("should display project name", () => {
+      const project = new Project({
+        id: 1,
+        name: "Test project"
+      });
 
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeTruthy();
+      configureTestingModule(project, undefined, defaultSites, undefined);
+      fixture.detectChanges();
+
+      const title = fixture.nativeElement.querySelector("h1");
+      expect(title).toBeTruthy();
+      expect(title.innerText).toBe("Test project");
+    });
+
+    it("should display default project image", () => {
+      const project = new Project({
+        id: 1,
+        name: "Test project"
+      });
+
+      configureTestingModule(project, undefined, defaultSites, undefined);
+      fixture.detectChanges();
+
+      const image = fixture.nativeElement.querySelector("img");
+      expect(image).toBeTruthy();
+      expect(image.src).toBe(
+        `http://${window.location.host}/assets/images/project/project_span4.png`
+      );
+      expect(image.alt.length).toBeGreaterThan(0);
+    });
+
+    it("should display custom project image", () => {
+      const project = new Project({
+        id: 1,
+        name: "Test project",
+        imageUrl: "http://brokenlink/"
+      });
+
+      configureTestingModule(project, undefined, defaultSites, undefined);
+      fixture.detectChanges();
+
+      const image = fixture.nativeElement.querySelector("img");
+      expect(image).toBeTruthy();
+      expect(image.src).toBe("http://brokenlink/");
+      expect(image.alt.length).toBeGreaterThan(0);
+    });
+
+    it("should display description", () => {
+      const project = new Project({
+        id: 1,
+        name: "Test project",
+        description: "A test project"
+      });
+
+      configureTestingModule(project, undefined, defaultSites, undefined);
+      fixture.detectChanges();
+
+      const description = fixture.nativeElement.querySelector(
+        "p#project_description"
+      );
+      expect(description).toBeTruthy();
+      expect(description.innerText).toBe("A test project");
+    });
   });
 
-  it("should handle project not found", () => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 404,
-        message: "Project Not Found"
-      } as ApiErrorDetails);
-      return subject;
+  describe("Sites", () => {
+    it("should display no sites found message", () => {
+      configureTestingModule(defaultProject, undefined, [], undefined);
+      fixture.detectChanges();
+
+      const sitePlaceholder = fixture.nativeElement.querySelector(
+        "p#site_placeholder"
+      );
+      expect(sitePlaceholder).toBeTruthy();
+      expect(sitePlaceholder.innerText).toBe(
+        "No sites associated with this project"
+      );
     });
 
-    fixture.detectChanges();
+    it("should display single site", fakeAsync(() => {
+      const site = new Site({
+        id: 1,
+        name: "Site",
+        description: "A sample site"
+      });
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
+      configureTestingModule(defaultProject, undefined, [site], undefined);
+      fixture.detectChanges();
+
+      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
+      expect(siteEls.length).toBe(1);
+    }));
+
+    it("should display single site with name", fakeAsync(() => {
+      const site = new Site({
+        id: 1,
+        name: "Custom Site",
+        description: "A sample site"
+      });
+
+      configureTestingModule(defaultProject, undefined, [site], undefined);
+      fixture.detectChanges();
+
+      const siteEl = fixture.nativeElement.querySelectorAll("app-site-card")[0];
+      const el = siteEl.querySelector("h5");
+      expect(el.innerText.trim()).toBe("Custom Site");
+    }));
+
+    it("should display multiple sites", fakeAsync(() => {
+      const sites = [
+        new Site({
+          id: 1,
+          name: "Site 1",
+          description: "A sample site"
+        }),
+        new Site({
+          id: 2,
+          name: "Site 2",
+          description: "A sample site"
+        })
+      ];
+
+      configureTestingModule(defaultProject, undefined, sites, undefined);
+      fixture.detectChanges();
+
+      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
+      expect(siteEls.length).toBe(2);
+    }));
+
+    it("should display multiple sites in order", fakeAsync(() => {
+      const sites = [
+        new Site({
+          id: 1,
+          name: "Site 1",
+          description: "A sample site"
+        }),
+        new Site({
+          id: 2,
+          name: "Site 2",
+          description: "A sample site"
+        })
+      ];
+
+      configureTestingModule(defaultProject, undefined, sites, undefined);
+      fixture.detectChanges();
+
+      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
+
+      let el = siteEls[0].querySelector("h5");
+      expect(el.innerText.trim()).toBe("Site 1");
+
+      el = siteEls[1].querySelector("h5");
+      expect(el.innerText.trim()).toBe("Site 2");
+    }));
   });
 
-  it("should handle unauthorized project", () => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
+  describe("Google Maps", () => {
+    it("should display google maps placeholder box when no sites found", () => {
+      configureTestingModule(defaultProject, undefined, [], undefined);
+      fixture.detectChanges();
+
+      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      expect(googleMaps).toBeTruthy();
+      expect(googleMaps.querySelector("span").innerText).toBe(
+        "No locations specified"
+      );
     });
 
-    fixture.detectChanges();
+    it("should display google maps with pin for single site", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site",
+        description: "A sample site",
+        locationObfuscated: true,
+        customLatitude: 0,
+        customLongitude: 1
+      });
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
+      configureTestingModule(defaultProject, undefined, [site], undefined);
+      fixture.detectChanges();
+
+      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      expect(googleMaps).toBeTruthy();
+      expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
+    });
+
+    it("should display google maps with pins for multiple sites", () => {
+      const sites = [
+        new Site({
+          id: 1,
+          name: "Site",
+          description: "A sample site",
+          locationObfuscated: true,
+          customLatitude: 0,
+          customLongitude: 1
+        }),
+        new Site({
+          id: 2,
+          name: "Site",
+          description: "A sample site",
+          locationObfuscated: true,
+          customLatitude: 2,
+          customLongitude: 3
+        })
+      ];
+
+      configureTestingModule(defaultProject, undefined, sites, undefined);
+      fixture.detectChanges();
+
+      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      const output = googleMaps.querySelectorAll("p");
+      expect(googleMaps).toBeTruthy();
+      expect(output.length).toBe(2);
+      expect(output[0].innerText).toBe("Lat: 0 Long: 1");
+      expect(output[1].innerText).toBe("Lat: 2 Long: 3");
+    });
   });
-
-  it("should handle site not found", () => {
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-      subject.error({
-        status: 404,
-        message: "Project Not Found"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
-  });
-
-  it("should handle unauthorized site", () => {
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
-  });
-
-  it("should show project error instead of site error when project loads first", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      setTimeout(() => {
-        subject.error({
-          status: 404,
-          message: "Site Not Found"
-        } as ApiErrorDetails);
-      }, 50);
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
-  }));
-
-  it("should show project error instead of site error when site loads first", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "Unauthorized"
-        } as ApiErrorDetails);
-      }, 50);
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      subject.error({
-        status: 404,
-        message: "Site Not Found"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
-  }));
-
-  it("should show loading until project returns", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 1000);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    // Only return sites
-    fixture.detectChanges();
-    tick(50);
-    fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelector("h4");
-    expect(loading).toBeTruthy();
-    expect(loading.innerText).toBe("Loading");
-
-    // Return project data
-    flush();
-    fixture.detectChanges();
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Test project");
-  }));
-
-  it("should display project name", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Test project");
-  }));
-
-  it("should display default project image", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const image = fixture.nativeElement.querySelector("img");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/project/project_span4.png`
-    );
-    expect(image.alt.length).toBeGreaterThan(0);
-  }));
-
-  it("should display custom project image", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([]),
-            imageUrl: "http://brokenlink/"
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const image = fixture.nativeElement.querySelector("img");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe("http://brokenlink/");
-    expect(image.alt.length).toBeGreaterThan(0);
-  }));
-
-  it("should display description", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const description = fixture.nativeElement.querySelector(
-      "p#project_description"
-    );
-    expect(description).toBeTruthy();
-    expect(description.innerText).toBe("A test project");
-  }));
-
-  it("should display no sites found message", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const sitePlaceholder = fixture.nativeElement.querySelector(
-      "p#site_placeholder"
-    );
-    expect(sitePlaceholder).toBeTruthy();
-    expect(sitePlaceholder.innerText).toBe(
-      "No sites associated with this project"
-    );
-  }));
-
-  it("should display single site", fakeAsync(() => {
-    const site = new Site({
-      id: 1,
-      name: "Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0
-    });
-    const project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([1])
-    });
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(project);
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([site]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const siteCardFixture = TestBed.createComponent(SiteCardComponent);
-    const siteCardComponent = siteCardFixture.componentInstance;
-    siteCardComponent.site = site;
-    siteCardComponent.project = project;
-    siteCardFixture.detectChanges();
-
-    const sites = fixture.nativeElement.querySelectorAll("app-site-card");
-    expect(sites.length).toBe(1);
-    expect(sites[0].innerHTML).toEqual(siteCardFixture.nativeElement.innerHTML);
-  }));
-
-  it("should display multiple sites", fakeAsync(() => {
-    const site1 = new Site({
-      id: 1,
-      name: "Site #1",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0
-    });
-    const site2 = new Site({
-      id: 2,
-      name: "Site #2",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0
-    });
-    const project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([1, 2])
-    });
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(project);
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([site1, site2]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const siteCard1Fixture = TestBed.createComponent(SiteCardComponent);
-    const siteCard1Component = siteCard1Fixture.componentInstance;
-    siteCard1Component.site = site1;
-    siteCard1Component.project = project;
-    siteCard1Fixture.detectChanges();
-
-    const siteCard2Fixture = TestBed.createComponent(SiteCardComponent);
-    const siteCard2Component = siteCard2Fixture.componentInstance;
-    siteCard2Component.site = site2;
-    siteCard2Component.project = project;
-    siteCard2Fixture.detectChanges();
-
-    const sites = fixture.nativeElement.querySelectorAll("app-site-card");
-    expect(sites.length).toBe(2);
-    expect(sites[0].innerHTML).toEqual(
-      siteCard1Fixture.nativeElement.innerHTML
-    );
-    expect(sites[1].innerHTML).toEqual(
-      siteCard2Fixture.nativeElement.innerHTML
-    );
-  }));
-
-  it("should display google maps placeholder box when no sites found", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const googleMaps = fixture.nativeElement.querySelector("app-map");
-    expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("span").innerText).toBe(
-      "No locations specified"
-    );
-  }));
-
-  it("should display google maps with pin for single site", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([1])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([
-          new Site({
-            id: 1,
-            name: "Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 1
-          })
-        ]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const googleMaps = fixture.nativeElement.querySelector("app-map");
-    expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
-  }));
-
-  it("should display google maps with pins for multiple sites", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([1, 2])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "list").and.callFake(() => {
-      const subject = new Subject<Site[]>();
-
-      setTimeout(() => {
-        subject.next([
-          new Site({
-            id: 1,
-            name: "Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 1
-          }),
-          new Site({
-            id: 2,
-            name: "Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 2,
-            customLongitude: 3
-          })
-        ]);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const googleMaps = fixture.nativeElement.querySelector("app-map");
-    const output = googleMaps.querySelectorAll("p");
-    expect(googleMaps).toBeTruthy();
-    expect(output.length).toBe(2);
-    expect(output[0].innerText).toBe("Lat: 0 Long: 1");
-    expect(output[1].innerText).toBe("Lat: 2 Long: 3");
-  }));
 });

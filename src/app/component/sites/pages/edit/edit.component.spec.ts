@@ -37,7 +37,7 @@ describe("SitesEditComponent", () => {
     fixture = TestBed.createComponent(EditComponent);
     api = TestBed.inject(SitesService);
     component = fixture.componentInstance;
-    component.schema.model = {};
+    component.schema.model = { name: "", description: "" };
 
     spyOn(api, "show").and.callFake(() => {
       const subject = new Subject<Site>();
