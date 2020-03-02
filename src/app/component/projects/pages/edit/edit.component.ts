@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
@@ -52,6 +52,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: ProjectsService,
     private notification: ToastrService
   ) {
@@ -86,7 +87,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
         () => {
           this.resetForms();
           this.notification.success("Project was successfully updated.");
-          this.loading = false;
+          this.router.navigateByUrl(project.redirectPath());
         },
         (err: ApiErrorDetails) => {
           let errMsg: string;

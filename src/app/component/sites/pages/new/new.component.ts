@@ -86,7 +86,7 @@ export class NewComponent extends WithFormCheck(PageComponent)
         (createdSite: Site) => {
           this.resetForms();
           this.notification.success("Site was successfully created.");
-          this.router.navigate([createdSite.redirectPath(this.project)]);
+          this.router.navigateByUrl(createdSite.redirectPath(this.project));
         },
         (err: ApiErrorDetails) => {
           this.loading = false;

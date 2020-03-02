@@ -100,7 +100,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
         () => {
           this.resetForms();
           this.notification.success("Site was successfully updated.");
-          this.router.navigate([this.site.redirectPath(this.project)]);
+          this.router.navigateByUrl(this.site.redirectPath(this.project));
         },
         (err: ApiErrorDetails) => {
           this.loading = false;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
@@ -43,6 +44,7 @@ export class NewComponent extends WithFormCheck(PageComponent)
   public schema = { model: {}, fields };
 
   constructor(
+    private router: Router,
     private api: ProjectsService,
     private notification: ToastrService
   ) {
@@ -64,10 +66,10 @@ export class NewComponent extends WithFormCheck(PageComponent)
       .create(new Project($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        () => {
+        project => {
           this.resetForms();
           this.notification.success("Project was successfully created.");
-          this.loading = false;
+          this.router.navigateByUrl(project.redirectPath());
         },
         (err: ApiErrorDetails) => {
           let errMsg: string;
