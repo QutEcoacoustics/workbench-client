@@ -9,10 +9,16 @@ import {
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 
 @Directive({
-  selector: "[appDatatable]"
+  selector: "[bawDatatableDefaults]"
 })
 export class DatatableDirective implements OnInit, AfterContentInit {
-  @Input() defaults: Partial<DatatableComponent>;
+  @Input() footerHeight = 50;
+  @Input() headerHeight = 50;
+  @Input() limit = 25;
+  @Input() rowHeight: ((row: any) => number) | number | "auto" = "auto";
+  @Input() scrollbarH = true;
+  @Input() reorderable = false;
+
   private datatableConfig: Partial<DatatableComponent>;
 
   constructor(
@@ -21,19 +27,17 @@ export class DatatableDirective implements OnInit, AfterContentInit {
   ) {}
 
   ngOnInit(): void {
+    // Set class
     this.datatableRef.nativeElement.classList.add("bootstrap");
 
-    this.datatableConfig = Object.assign(
-      {
-        footerHeight: 50,
-        headerHeight: 50,
-        limit: 25,
-        rowHeight: "auto",
-        scrollbarH: true,
-        reorderable: false
-      },
-      this.defaults
-    );
+    // Set overrides
+    this.datatableConfig = {};
+    this.datatableConfig.footerHeight = this.footerHeight;
+    this.datatableConfig.headerHeight = this.headerHeight;
+    this.datatableConfig.limit = this.limit;
+    this.datatableConfig.rowHeight = this.rowHeight;
+    this.datatableConfig.scrollbarH = this.scrollbarH;
+    this.datatableConfig.reorderable = this.reorderable;
   }
 
   ngAfterContentInit() {
