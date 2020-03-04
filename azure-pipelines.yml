@@ -3,14 +3,36 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+strategy:
+  matrix:
+    linux:
+      imageName: "ubuntu-latest"
+    mac:
+      imageName: "macOS-latest"
+    windows:
+      imageName: "windows-latest"
+
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
 pool:
-  vmImage: "windows-latest"
+  vmImage: "$(imageName)"
 
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: 10.x
+      versionSpec: 12.x
     displayName: "Install Node.js"
+
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | package-lock.json'
+      path: $(npm_config_cache)
+      cacheHitVar: CACHE_RESTORED
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+        npm
+    displayName: "Cache NPM packages"
 
   - task: Npm@1
     inputs:
@@ -41,29 +63,14 @@ steps:
     displayName: "Publish code coverage results"
 
   - task: Npm@1
-    inputs:
-      command: custom
-      customCommand: run stats
-    displayName: "Analyze workbench client bundle"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: "$(Build.SourcesDirectory)/dist/workbench-client/stats.json"
-      artifactName: analysis
-    displayName: "Publish analysis"
-
-  - task: DeleteFiles@1
-    inputs:
-      SourceFolder: "$(Build.SourcesDirectory)/dist/**/*"
-    displayName: "Cleanup analysis files"
-
-  - task: Npm@1
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'linux'))
     inputs:
       command: custom
       customCommand: run build
     displayName: "Build the workbench client"
 
   - task: ArchiveFiles@2
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'linux'))
     inputs:
       rootFolderOrFile: "$(Build.SourcesDirectory)/dist/workbench-client/"
       archiveType: "zip"
@@ -72,6 +79,7 @@ steps:
     displayName: "Zip workbench files"
 
   - task: PublishBuildArtifacts@1
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'linux'))
     inputs:
       pathtoPublish: "$(Build.ArtifactStagingDirectory)/workbench-client.zip"
       artifactName: workbench-client
