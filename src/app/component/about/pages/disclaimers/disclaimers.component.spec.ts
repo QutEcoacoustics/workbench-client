@@ -9,7 +9,7 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
 import { testAppInitializer } from "src/app/test.helper";
 import { DisclaimersComponent } from "./disclaimers.component";
 
-xdescribe("AboutDisclaimersComponent", () => {
+describe("AboutDisclaimersComponent", () => {
   let httpMock: HttpTestingController;
   let component: DisclaimersComponent;
   let env: AppConfigService;

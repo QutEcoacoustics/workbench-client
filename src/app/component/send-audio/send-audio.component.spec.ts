@@ -3,12 +3,13 @@ import {
   HttpTestingController
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
 import { SendAudioComponent } from "./send-audio.component";
 
-xdescribe("SendAudioComponent", () => {
+describe("SendAudioComponent", () => {
   let httpMock: HttpTestingController;
   let component: SendAudioComponent;
   let fixture: ComponentFixture<SendAudioComponent>;
@@ -17,7 +18,7 @@ xdescribe("SendAudioComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule],
+      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
       declarations: [SendAudioComponent],
       providers: [...testAppInitializer]
     }).compileComponents();

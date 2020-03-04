@@ -31,7 +31,7 @@ export const projectsMenuItemActions = [
   selector: "app-projects-list",
   template: `
     <!-- Display project cards -->
-    <ng-container *ngIf="success">
+    <ng-container *ngIf="cardList">
       <ng-container *ngIf="cardList.size > 0; else noProjects">
         <app-cards [cards]="cardList"></app-cards>
       </ng-container>
@@ -43,15 +43,12 @@ export const projectsMenuItemActions = [
 })
 export class ListComponent extends PageComponent implements OnInit {
   public cardList: List<Card>;
-  public success: boolean;
 
   constructor(private route: ActivatedRoute) {
     super();
   }
 
   ngOnInit() {
-    this.success = false;
-
     const projects: ResolvedModel<Project[]> = this.route.snapshot.data
       .projects;
 
@@ -60,6 +57,5 @@ export class ListComponent extends PageComponent implements OnInit {
     }
 
     this.cardList = List(projects.model.map(project => project.getCard()));
-    this.success = true;
   }
 }

@@ -35,16 +35,14 @@ import { fields } from "./unlock-account.json";
         [title]="'Resend unlock instructions'"
         [submitLabel]="'Resend unlock instructions'"
         [submitLoading]="loading"
-        [error]="error"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
   `
 })
-export class UnlockPasswordComponent extends WithFormCheck(PageComponent)
+export class UnlockAccountComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   schema = { model: {}, fields };
-  error: string;
   loading: boolean;
 
   constructor() {

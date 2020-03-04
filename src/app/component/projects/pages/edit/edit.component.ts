@@ -32,11 +32,10 @@ import { fields } from "./edit.json";
 @Component({
   selector: "app-project-edit",
   template: `
-    <app-wip>
+    <app-wip *ngIf="project">
       <app-form
-        *ngIf="project"
         [schema]="schema"
-        [title]="'Edit Project'"
+        [title]="'Edit ' + project.name"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -48,7 +47,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
   public project: Project;
-  public schema = { model: { name: "" }, fields };
+  public schema = { model: {}, fields };
 
   constructor(
     private route: ActivatedRoute,
@@ -69,6 +68,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
 
     this.project = projectModel.model;
     this.schema.model["name"] = this.project.name;
+    this.schema.model["description"] = this.project.description;
   }
 
   /**

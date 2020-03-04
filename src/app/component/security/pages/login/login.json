@@ -5,6 +5,7 @@
       "type": "input",
       "templateOptions": {
         "label": "Username or Email Address",
+        "type": "text",
         "required": true
       }
     },
@@ -12,8 +13,8 @@
       "key": "password",
       "type": "input",
       "templateOptions": {
-        "type": "password",
         "label": "Password",
+        "type": "password",
         "minLength": 6,
         "required": true
       }

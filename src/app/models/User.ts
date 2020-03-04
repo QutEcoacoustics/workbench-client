@@ -140,7 +140,7 @@ export class User extends AbstractModel implements UserInterface {
   redirectPath(): string {
     return theirProfileMenuItem.route
       .toString()
-      .replace(":userId", this.id.toString());
+      .replace(":accountId", this.id.toString());
   }
 }
 

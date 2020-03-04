@@ -5,6 +5,7 @@
       "type": "input",
       "templateOptions": {
         "label": "Site Name",
+        "type": "text",
         "required": true
       }
     },
@@ -22,7 +23,7 @@
       "validators": {
         "fieldMatch": {
           "expression": "return ((control.value.customLatitude && control.value.customLongitude) || (!control.value.customLatitude && !control.value.customLongitude))",
-          "message": "Both latitude and longitude must be set or left empty",
+          "message": "Both latitude and longitude must be set or left empty.",
           "errorPath": "customLongitude"
         }
       },

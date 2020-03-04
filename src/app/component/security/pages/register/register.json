@@ -5,7 +5,7 @@
       "validators": {
         "fieldMatch": {
           "expression": "return (control.value.passwordConfirm === control.value.password || (!control.value.passwordConfirm || !control.value.password))",
-          "message": "Passwords do not match",
+          "message": "Passwords do not match.",
           "errorPath": "passwordConfirm"
         }
       },
@@ -14,6 +14,7 @@
           "key": "username",
           "type": "input",
           "templateOptions": {
+            "type": "text",
             "label": "Username",
             "required": true
           }
@@ -23,7 +24,7 @@
           "type": "input",
           "templateOptions": {
             "type": "email",
-            "label": "Email",
+            "label": "Email Address",
             "required": true
           }
         },

@@ -3,7 +3,7 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { MyEditComponent } from "./pages/my-edit/my-edit.component";
-import { MyProfileComponent } from "./pages/profile/my-profile.component copy";
+import { MyProfileComponent } from "./pages/profile/my-profile.component";
 import { TheirProfileComponent } from "./pages/profile/their-profile.component";
 import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
 import { myAccountRoute, theirProfileRoute } from "./profile.menus";

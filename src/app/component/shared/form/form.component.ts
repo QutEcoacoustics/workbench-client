@@ -9,9 +9,11 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ApiResponse } from "src/app/services/baw-api/baw-api.service";
 
 @Component({
   selector: "app-form",
@@ -28,6 +30,9 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
     | "btn-primary"
     | "btn-secondary"
     | "btn-info" = "btn-success";
+  /**
+   * Deprecated
+   */
   @Input() error?: string;
   @Input() schema: {
     model: {};
@@ -37,6 +42,9 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() submitLabel: string;
   @Input() submitLoading: boolean;
   @Input() subTitle?: string;
+  /**
+   * Deprecated
+   */
   @Input() success?: string;
   @Input() size: "small" | "default" = "default";
   @Input() title?: string;
@@ -49,7 +57,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   fields: FormlyFieldConfig[];
   model: {};
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private notifications: ToastrService) {
     super();
   }
 
@@ -63,18 +71,19 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
       this.model = this.schema.model;
       this.fields = this.schema.fields;
     } else if (this.schemaUrl) {
+      // TODO Wrap this in service to better handle remote forms
       this.http
         .get(this.schemaUrl)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe(
-          (data: any) => {
-            this.convertFunctions(data.fields);
+          (response: ApiResponse<any>) => {
+            this.convertFunctions(response.data.fields);
 
-            this.model = data.model;
-            this.fields = data.fields;
+            this.model = response.data.model;
+            this.fields = response.data.fields;
           },
           (err: ApiErrorDetails) => {
-            this.error = err.message;
+            this.notifications.error(err.message);
           }
         );
     }
@@ -100,46 +109,36 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   }
 
   /**
-   * Clear form error
-   */
-  clearError() {
-    this.error = null;
-  }
-
-  /**
-   * Clear form success
-   */
-  clearSuccess() {
-    this.success = null;
-  }
-
-  /**
    * Check form submission is valid, and if so emit output event
    * @param model Form response
    */
   submit(model: any) {
     if (this.form.status === "VALID") {
-      this.submitFunction.emit(model);
+      this.submitFunction.emit(this.flattenFields(model));
     } else {
-      this.error = "Please fill all required fields.";
-    }
-  }
-}
-
-/**
- * Used to flatten formly model field groups into an object with 1 depth
- * @param model Formly model output
- */
-export function flattenFields(model: any): any {
-  let output = {};
-
-  for (const key of Object.keys(model)) {
-    if (typeof model[key] === "string" || typeof model[key] === "number") {
-      output[key] = model[key];
-    } else {
-      output = { ...output, ...flattenFields(model[key]) };
+      this.notifications.error("Please fill all required fields.");
     }
   }
 
-  return output;
+  /**
+   * Used to flatten formly model field groups into an object with 1 depth
+   * @param model Formly model output
+   */
+  flattenFields(model: any): any {
+    let output = {};
+
+    if (!model) {
+      return output;
+    }
+
+    for (const key of Object.keys(model)) {
+      if (typeof model[key] === "string" || typeof model[key] === "number") {
+        output[key] = model[key];
+      } else {
+        output = { ...output, ...this.flattenFields(model[key]) };
+      }
+    }
+
+    return output;
+  }
 }

@@ -6,7 +6,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { SiteCardComponent } from "../../site-card/site-card.component";
 import { DetailsComponent } from "./details.component";
 
@@ -23,27 +23,24 @@ describe("ProjectDetailsComponent", () => {
     sites: Site[],
     sitesError: ApiErrorDetails
   ) {
-    class MockActivatedRoute {
-      public snapshot = {
-        data: {
-          project: {
-            model: project,
-            error: projectError
-          },
-          sites: {
-            model: sites,
-            error: sitesError
-          }
-        }
-      };
-    }
-
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
       declarations: [MockMapComponent, SiteCardComponent, DetailsComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            project: {
+              model: project,
+              error: projectError
+            },
+            sites: {
+              model: sites,
+              error: sitesError
+            }
+          })
+        }
       ]
     }).compileComponents();
 
@@ -74,8 +71,8 @@ describe("ProjectDetailsComponent", () => {
       configureTestingModule(undefined, defaultError, defaultSites, undefined);
       fixture.detectChanges();
 
-      const title = fixture.nativeElement.querySelector("h1");
-      expect(title).toBeFalsy();
+      const body = fixture.nativeElement;
+      expect(body.childElementCount).toBe(0);
     });
 
     it("should handle failed site model", () => {
@@ -87,8 +84,8 @@ describe("ProjectDetailsComponent", () => {
       );
       fixture.detectChanges();
 
-      const title = fixture.nativeElement.querySelector("h1");
-      expect(title).toBeFalsy();
+      const body = fixture.nativeElement;
+      expect(body.childElementCount).toBe(0);
     });
   });
 

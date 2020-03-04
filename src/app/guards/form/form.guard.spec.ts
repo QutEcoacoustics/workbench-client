@@ -21,7 +21,8 @@ describe("FormTouchedGuard", () => {
       appForms: new QueryList<FormComponent>(),
       isFormTouched() {
         return touched;
-      }
+      },
+      resetForms() {}
     };
   }
 

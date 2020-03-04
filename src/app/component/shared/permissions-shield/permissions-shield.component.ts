@@ -8,8 +8,8 @@ import { WidgetComponent } from "../widget/widget.component";
 @Component({
   selector: "app-permissions-shield",
   template: `
-    <div *ngIf="success">
-      <app-user-badges [model]="model" *ngIf="model"></app-user-badges>
+    <div *ngIf="model">
+      <app-user-badges [model]="model"></app-user-badges>
       <h4>Your access level</h4>
       <p>Not Implemented</p>
     </div>
@@ -17,10 +17,8 @@ import { WidgetComponent } from "../widget/widget.component";
   styleUrls: ["./permissions-shield.component.scss"]
 })
 export class PermissionsShieldComponent implements OnInit, WidgetComponent {
-  @Input() data: any;
-
-  model: Site | Project;
-  success: boolean;
+  public model: Site | Project;
+  public pageData: any;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -33,8 +31,6 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
       this.model = siteModel.model;
     } else if (projectModel && !projectModel.error) {
       this.model = projectModel.model;
-    } else {
-      this.success = false;
     }
   }
 }

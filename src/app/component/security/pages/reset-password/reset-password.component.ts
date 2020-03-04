@@ -35,7 +35,6 @@ import { fields } from "./reset-password.json";
         [title]="'Forgot your password?'"
         [submitLabel]="'Send me reset password instructions'"
         [submitLoading]="loading"
-        [error]="error"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
@@ -44,7 +43,6 @@ import { fields } from "./reset-password.json";
 export class ResetPasswordComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   schema = { model: {}, fields };
-  error: string;
   loading: boolean;
 
   constructor() {

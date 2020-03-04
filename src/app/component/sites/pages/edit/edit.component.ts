@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
-import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
@@ -34,11 +33,10 @@ import { fields } from "./edit.json";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <app-wip>
+    <app-wip *ngIf="site">
       <app-form
-        *ngIf="site"
         [schema]="schema"
-        [title]="'Edit Site'"
+        [title]="'Edit ' + site.name"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -50,7 +48,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
   public project: Project;
-  public schema = { model: { name: "", description: "" }, fields };
+  public schema = { model: {}, fields };
   public site: Site;
 
   constructor(
@@ -76,8 +74,8 @@ export class EditComponent extends WithFormCheck(PageComponent)
     this.project = projectModel.model;
     this.site = siteModel.model;
 
-    this.schema.model.name = this.site.name;
-    this.schema.model.description = this.site.description;
+    this.schema.model["name"] = this.site.name;
+    this.schema.model["description"] = this.site.description;
   }
 
   /**
@@ -89,7 +87,7 @@ export class EditComponent extends WithFormCheck(PageComponent)
 
     const updatedSite = new Site({
       id: this.site.id,
-      ...flattenFields($event)
+      ...$event
     });
 
     this.api
@@ -102,8 +100,8 @@ export class EditComponent extends WithFormCheck(PageComponent)
           this.router.navigateByUrl(this.site.redirectPath(this.project));
         },
         (err: ApiErrorDetails) => {
-          this.loading = false;
           this.notification.error(err.message);
+          this.loading = false;
         }
       );
   }

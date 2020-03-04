@@ -8,7 +8,6 @@ import {
   projectCategory,
   projectMenuItem
 } from "src/app/component/projects/projects.menus";
-import { flattenFields } from "src/app/component/shared/form/form.component";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -51,7 +50,7 @@ export class NewComponent extends WithFormCheck(PageComponent)
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private sitesApi: SitesService,
+    private api: SitesService,
     private notification: ToastrService
   ) {
     super();
@@ -77,20 +76,18 @@ export class NewComponent extends WithFormCheck(PageComponent)
   submit($event: any) {
     this.loading = true;
 
-    const newSite = new Site(flattenFields($event));
-
-    this.sitesApi
-      .create(newSite, this.project)
+    this.api
+      .create(new Site($event), this.project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (createdSite: Site) => {
+        site => {
           this.resetForms();
           this.notification.success("Site was successfully created.");
-          this.router.navigateByUrl(createdSite.redirectPath(this.project));
+          this.router.navigateByUrl(site.redirectPath(this.project));
         },
         (err: ApiErrorDetails) => {
-          this.loading = false;
           this.notification.error(err.message);
+          this.loading = false;
         }
       );
   }

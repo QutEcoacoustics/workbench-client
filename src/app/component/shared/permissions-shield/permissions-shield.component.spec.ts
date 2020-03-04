@@ -1,139 +1,91 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from "@angular/common/http/testing";
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { BehaviorSubject, Subject } from "rxjs";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
-import { testBawServices } from "src/app/test.helper";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
-xdescribe("PermissionsShieldComponent", () => {
+describe("PermissionsShieldComponent", () => {
   let component: PermissionsShieldComponent;
   let fixture: ComponentFixture<PermissionsShieldComponent>;
-  let httpMock: HttpTestingController;
-  let sitesApi: SitesService;
-  let projectsApi: ProjectsService;
+  let defaultProject: Project;
+  let defaultSite: Site;
+  let defaultError: ApiErrorDetails;
 
-  const imports = [RouterTestingModule, HttpClientTestingModule];
-  const declarations = [
-    PermissionsShieldComponent,
-    UserBadgesComponent,
-    UserBadgeComponent
-  ];
-
-  afterEach(() => {
-    httpMock.verify();
-  });
-
-  it("should detect profile url", () => {
-    class MockActivatedRoute {
-      public params = new BehaviorSubject<any>({ projectId: 1 });
-    }
-
+  function configureTestingModule(
+    project: Project,
+    projectError: ApiErrorDetails,
+    site: Site,
+    siteError: ApiErrorDetails
+  ) {
     TestBed.configureTestingModule({
-      imports,
-      declarations,
+      imports: [RouterTestingModule, HttpClientTestingModule],
+      declarations: [
+        PermissionsShieldComponent,
+        UserBadgesComponent,
+        UserBadgeComponent
+      ],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    projectsApi = TestBed.inject(ProjectsService);
-    component = fixture.componentInstance;
-
-    projectsApi.show = jasmine.createSpy();
-
-    fixture.detectChanges();
-
-    expect(projectsApi.show).toHaveBeenCalled();
-  });
-
-  it("should detect site url", () => {
-    class MockActivatedRoute {
-      public params = new BehaviorSubject<any>({ projectId: 1, siteId: 1 });
-    }
-
-    TestBed.configureTestingModule({
-      imports,
-      declarations,
-      providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    sitesApi = TestBed.inject(SitesService);
-    component = fixture.componentInstance;
-
-    sitesApi.show = jasmine.createSpy();
-
-    fixture.detectChanges();
-
-    expect(sitesApi.show).toHaveBeenCalled();
-  });
-
-  it("should create three user badges for profile", fakeAsync(() => {
-    class MockActivatedRoute {
-      public params = new BehaviorSubject<any>({ projectId: 1 });
-    }
-
-    TestBed.configureTestingModule({
-      imports,
-      declarations,
-      providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    projectsApi = TestBed.inject(ProjectsService);
-    component = fixture.componentInstance;
-
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test Project",
-            creatorId: 1,
-            createdAt: "2019-01-01",
-            updaterId: 1,
-            updatedAt: "2019-01-01",
-            ownerId: 1,
-            description: "Test description",
-            siteIds: new Set([])
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            project:
+              project || projectError
+                ? {
+                    model: project,
+                    error: projectError
+                  }
+                : undefined,
+            site:
+              site || siteError
+                ? {
+                    model: site,
+                    error: siteError
+                  }
+                : undefined
           })
-        );
-      }, 50);
+        }
+      ]
+    }).compileComponents();
 
-      return subject;
+    fixture = TestBed.createComponent(PermissionsShieldComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    defaultProject = new Project({
+      id: 1,
+      name: "Project"
+    });
+    defaultSite = new Site({
+      id: 1,
+      name: "Site"
+    });
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
+  });
+
+  it("should create three user badges for project", fakeAsync(() => {
+    const project = new Project({
+      id: 1,
+      name: "Project",
+      creatorId: 1,
+      createdAt: "2019-01-01",
+      updaterId: 1,
+      updatedAt: "2019-01-01",
+      ownerId: 1
     });
 
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
+    configureTestingModule(project, undefined, undefined, undefined);
 
     const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
     expect(badges).toBeTruthy();
@@ -141,54 +93,25 @@ xdescribe("PermissionsShieldComponent", () => {
   }));
 
   it("should create two user badges for site", fakeAsync(() => {
-    class MockActivatedRoute {
-      public params = new BehaviorSubject<any>({ projectId: 1, siteId: 1 });
-    }
-
-    TestBed.configureTestingModule({
-      imports,
-      declarations,
-      providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(PermissionsShieldComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    sitesApi = TestBed.inject(SitesService);
-    component = fixture.componentInstance;
-
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            createdAt: "2019-01-01",
-            updaterId: 1,
-            updatedAt: "2019-01-01",
-            description: "Test description",
-            projectIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
+    const site = new Site({
+      id: 1,
+      name: "Site",
+      creatorId: 1,
+      createdAt: "2019-01-01",
+      updaterId: 1,
+      updatedAt: "2019-01-01"
     });
 
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
+    configureTestingModule(undefined, undefined, site, undefined);
 
     const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
     expect(badges).toBeTruthy();
     expect(badges.length).toBe(2);
   }));
 
+  // TODO
+  xit("should handle project error", () => {});
+  xit("should handle site error", () => {});
   xit("should display your access level when owner", () => {});
   xit("should display your access level when writer", () => {});
   xit("should display your access level when reader", () => {});

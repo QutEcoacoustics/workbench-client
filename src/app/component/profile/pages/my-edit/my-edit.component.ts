@@ -13,7 +13,7 @@ import {
   myAccountCategory,
   myAccountMenuItem
 } from "../../profile.menus";
-import { myProfileMenuItemActions } from "../profile/my-profile.component copy";
+import { myProfileMenuItemActions } from "../profile/my-profile.component";
 import { fields } from "./my-edit.json";
 
 @Page({

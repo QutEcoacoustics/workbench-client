@@ -4,15 +4,6 @@
     <h6 *ngIf="subTitle" [innerHTML]="subTitle"></h6>
   </small>
 
-  <!-- Error msg -->
-  <ngb-alert [type]="'danger'" (close)="clearError()" *ngIf="error">
-    {{ error }}
-  </ngb-alert>
-
-  <ngb-alert [type]="'success'" (close)="clearSuccess()" *ngIf="success">
-    {{ success }}
-  </ngb-alert>
-
   <div class="clearfix">
     <form [formGroup]="form" (ngSubmit)="submit(model)">
       <app-loading [isLoading]="!fields"></app-loading>

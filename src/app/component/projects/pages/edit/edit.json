@@ -5,6 +5,7 @@
       "type": "input",
       "templateOptions": {
         "label": "Project Name",
+        "type": "text",
         "required": true
       }
     },
