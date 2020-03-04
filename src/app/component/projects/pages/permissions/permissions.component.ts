@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
 import { theirProfileMenuItem } from "src/app/component/profile/profile.menus";
 import { ISelectableItem } from "src/app/component/shared/items/selectable-items/selectable-items.component";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
@@ -11,8 +10,8 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { Project } from "src/app/models/Project";
 import { User } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectPermissionsMenuItem,
   projectCategory,
@@ -36,8 +35,6 @@ import { projectMenuItemActions } from "../details/details.component";
 })
 export class PermissionsComponent extends TableTemplate<TableRow>
   implements OnInit {
-  public errorDetails: ApiErrorDetails;
-  public loading: boolean;
   public project: Project;
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public users: User[];
@@ -77,23 +74,15 @@ export class PermissionsComponent extends TableTemplate<TableRow>
       { label: "Owner", value: "owner" }
     ];
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          return this.api.show(params.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          // Do something
-          this.project = project;
-          this.loadTable();
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+
+    if (projectModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.loadTable();
   }
 
   public submit($event: any) {

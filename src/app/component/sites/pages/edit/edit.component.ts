@@ -1,16 +1,18 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
 import { flattenFields } from "src/app/component/shared/form/form.component";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { Id } from "src/app/interfaces/apiInterfaces";
+import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   editSiteMenuItem,
@@ -34,63 +36,48 @@ import { fields } from "./edit.json";
   template: `
     <app-wip>
       <app-form
-        *ngIf="ready"
+        *ngIf="site"
         [schema]="schema"
         [title]="'Edit Site'"
-        [error]="error"
-        [success]="success"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
-  ready: boolean;
-  schema = { model: {}, fields };
-  success: string;
-
-  projectId: Id;
-  siteId: Id;
+  public loading: boolean;
+  public project: Project;
+  public schema = { model: { name: "", description: "" }, fields };
+  public site: Site;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private api: SitesService,
-    private ref: ChangeDetectorRef
+    private notification: ToastrService
   ) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
     this.loading = false;
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          this.projectId = params.projectId;
-          this.siteId = params.siteId;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
 
-          return this.api.show(this.projectId, this.siteId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        site => {
-          this.schema.model["name"] = site.name;
-          this.ready = true;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-          this.ready = false;
-        }
-      );
+    if (projectModel.error || siteModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.site = siteModel.model;
+
+    this.schema.model.name = this.site.name;
+    this.schema.model.description = this.site.description;
   }
 
   /**
@@ -98,26 +85,25 @@ export class EditComponent extends WithFormCheck(PageComponent)
    * @param $event Form response
    */
   submit($event: any) {
-    console.log($event);
-
     this.loading = true;
-    this.ref.detectChanges();
 
-    const site = new Site({ id: this.siteId, ...flattenFields($event) });
+    const updatedSite = new Site({
+      id: this.site.id,
+      ...flattenFields($event)
+    });
 
     this.api
-      .update(site, this.projectId)
+      .update(updatedSite, this.project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.success = "Site was successfully updated.";
-          this.error = null;
-          this.loading = false;
+          this.resetForms();
+          this.notification.success("Site was successfully updated.");
+          this.router.navigateByUrl(this.site.redirectPath(this.project));
         },
         (err: ApiErrorDetails) => {
-          this.success = null;
-          this.error = err.message;
           this.loading = false;
+          this.notification.error(err.message);
         }
       );
   }

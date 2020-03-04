@@ -1,5 +1,5 @@
 <app-wip>
-  <div *ngIf="ready">
+  <div *ngIf="project">
     <h2 class="text-center">{{ project.name }} Permissions</h2>
 
     <!-- Permission Explanation -->
@@ -156,7 +156,4 @@
       </ngx-datatable-column>
     </ngx-datatable>
   </div>
-
-  <app-loading [isLoading]="!ready && !errorDetails"></app-loading>
-  <app-error-handler [error]="errorDetails"></app-error-handler>
 </app-wip>

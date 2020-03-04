@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
-import { projectMenuItem } from "src/app/component/projects/projects.menus";
+import { ToastrService } from "ngx-toastr";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
@@ -13,10 +12,11 @@ import {
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { Id } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 @Page({
@@ -32,83 +32,63 @@ import { siteMenuItemActions } from "../details/details.component";
   selector: "app-projects-delete",
   template: `
     <app-form
-      *ngIf="ready"
+      *ngIf="site"
       [schema]="{ model: {}, fields: [] }"
-      [title]="'Are you certain you wish to delete ' + siteName + '?'"
+      [title]="'Are you certain you wish to delete ' + site.name + '?'"
       [btnColor]="'btn-danger'"
-      [error]="error"
       [submitLabel]="'Delete'"
-      [submitLoading]="formLoading"
+      [submitLoading]="loading"
       (onSubmit)="submit()"
     ></app-form>
-    <app-loading [isLoading]="loading"></app-loading>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class DeleteComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  errorDetails: ApiErrorDetails;
-  formLoading: boolean;
-  loading: boolean;
-  siteName: string;
-  ready: boolean;
-  projectId: Id;
-  siteId: Id;
+  public loading: boolean;
+  public project: Project;
+  public site: Site;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private api: SitesService
+    private api: SitesService,
+    private notification: ToastrService
   ) {
     super();
   }
 
   ngOnInit() {
-    this.loading = true;
-    this.ready = false;
+    this.loading = false;
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          this.projectId = params.projectId;
-          this.siteId = params.siteId;
-          return this.api.show(this.projectId, this.siteId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        (site: Site) => {
-          this.siteName = site.name;
-          this.ready = true;
-          this.loading = false;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-          this.loading = false;
-        }
-      );
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+
+    if (projectModel.error || siteModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.site = siteModel.model;
   }
 
   submit() {
     // This subscription must complete so takeuntil is ignored
     // so that it will run in the background in case the user
     // manages to navigate too fast
-    this.formLoading = true;
+    this.loading = true;
     this.api
-      .destroy(this.projectId, this.siteId)
+      .destroy(this.site, this.project)
       // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
       .subscribe(
         () => {
-          this.formLoading = false;
-          // TODO Get redirect path from Project.redirectPath()
-          this.router.navigate([
-            projectMenuItem.route.format({ projectId: this.projectId })
-          ]);
+          this.resetForms();
+          this.notification.success("Site was successfully deleted.");
+          this.router.navigate([this.project.redirectPath()]);
         },
         (err: ApiErrorDetails) => {
-          this.formLoading = false;
-          this.error = err.message;
+          this.loading = false;
+          this.notification.error(err.message);
         }
       );
   }

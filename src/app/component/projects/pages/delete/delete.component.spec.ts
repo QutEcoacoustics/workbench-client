@@ -16,7 +16,7 @@ import { testBawServices } from "src/app/test.helper";
 import { projectsMenuItem } from "../../projects.menus";
 import { DeleteComponent } from "./delete.component";
 
-describe("ProjectsDeleteComponent", () => {
+xdescribe("ProjectsDeleteComponent", () => {
   let component: DeleteComponent;
   let api: ProjectsService;
   let router: Router;

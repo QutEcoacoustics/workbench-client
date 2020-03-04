@@ -21,6 +21,14 @@ export type Href = (params: Params) => string;
 export type Icon = IconProp;
 
 /**
+ * Angular Resolvers.
+ * Used to inject api models into route data.
+ */
+export interface Resolvers {
+  [key: string]: any;
+}
+
+/**
  * Component Name and Icon
  */
 export interface LabelAndIcon {
@@ -43,6 +51,16 @@ export interface Category extends LabelAndIcon {
    *  Local route of category Eg. 'security'
    */
   route: StrongRoute;
+
+  /**
+   * Parent category
+   */
+  parent?: Category;
+
+  /**
+   * List of resolvers
+   */
+  resolvers?: Resolvers;
 }
 
 /**

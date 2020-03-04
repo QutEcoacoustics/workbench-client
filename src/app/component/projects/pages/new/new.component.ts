@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
@@ -30,8 +32,6 @@ import { fields } from "./new.json";
     <app-form
       [schema]="schema"
       [title]="'New Project'"
-      [error]="error"
-      [success]="success"
       [submitLabel]="'Submit'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
@@ -40,12 +40,14 @@ import { fields } from "./new.json";
 })
 export class NewComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  loading: boolean;
-  schema = { model: {}, fields };
-  success: string;
+  public loading: boolean;
+  public schema = { model: {}, fields };
 
-  constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
+  constructor(
+    private router: Router,
+    private api: ProjectsService,
+    private notification: ToastrService
+  ) {
     super();
   }
 
@@ -58,28 +60,27 @@ export class NewComponent extends WithFormCheck(PageComponent)
    * @param $event Form response
    */
   submit($event: any) {
-    console.log($event);
-
     this.loading = true;
-    this.ref.detectChanges();
 
     this.api
       .create(new Project($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        () => {
-          this.success = "Project was successfully created.";
-          this.error = null;
-          this.loading = false;
+        project => {
+          this.resetForms();
+          this.notification.success("Project was successfully created.");
+          this.router.navigateByUrl(project.redirectPath());
         },
         (err: ApiErrorDetails) => {
-          this.success = null;
+          let errMsg: string;
+
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.error = err.message + ": name " + err.info.name[0];
+            errMsg = err.message + ": name " + err.info.name[0];
           } else {
-            this.error = err.message;
+            errMsg = err.message;
           }
 
+          this.notification.error(errMsg);
           this.loading = false;
         }
       );

@@ -15,7 +15,7 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { testBawServices } from "src/app/test.helper";
 import { ListComponent } from "./list.component";
 
-describe("ProjectsListComponent", () => {
+xdescribe("ProjectsListComponent", () => {
   let component: ListComponent;
   let fixture: ComponentFixture<ListComponent>;
   let api: ProjectsService;

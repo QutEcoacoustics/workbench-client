@@ -1,16 +1,17 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { flatMap, takeUntil } from "rxjs/operators";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
-import { Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectMenuItem,
   projectCategory,
@@ -33,59 +34,41 @@ import { fields } from "./edit.json";
   template: `
     <app-wip>
       <app-form
-        *ngIf="ready"
+        *ngIf="project"
         [schema]="schema"
         [title]="'Edit Project'"
-        [error]="error"
-        [success]="success"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class EditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
-  ready: boolean;
-  schema = { model: { name: "" }, fields };
-  success: string;
-
-  projectId: Id;
+  public loading: boolean;
+  public project: Project;
+  public schema = { model: { name: "" }, fields };
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: ProjectsService,
-    private ref: ChangeDetectorRef
+    private notification: ToastrService
   ) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
-    this.loading = false;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
+      .project;
 
-    this.route.params
-      .pipe(
-        flatMap(params => {
-          this.projectId = params.projectId;
-          return this.api.show(this.projectId);
-        }),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        project => {
-          this.schema.model.name = project.name;
-          this.ready = true;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    if (projectModel.error) {
+      return;
+    }
+
+    this.project = projectModel.model;
+    this.schema.model["name"] = this.project.name;
   }
 
   /**
@@ -93,28 +76,29 @@ export class EditComponent extends WithFormCheck(PageComponent)
    * @param $event Form response
    */
   submit($event: any) {
-    console.log($event);
-    const project = new Project({ ...$event, id: this.projectId });
+    const project = new Project({ ...$event, id: this.project.id });
 
     this.loading = true;
-    this.ref.detectChanges();
 
     this.api
       .update(project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
-          this.success = "Project was successfully updated.";
-          this.error = null;
-          this.loading = false;
+          this.resetForms();
+          this.notification.success("Project was successfully updated.");
+          this.router.navigateByUrl(project.redirectPath());
         },
         (err: ApiErrorDetails) => {
+          let errMsg: string;
+
           if (err.info && err.info.name && err.info.name.length === 1) {
-            this.error = err.message + ": name " + err.info.name[0];
+            errMsg = err.message + ": name " + err.info.name[0];
           } else {
-            this.error = err.message;
+            errMsg = err.message;
           }
-          this.success = null;
+
+          this.notification.error(errMsg);
           this.loading = false;
         }
       );

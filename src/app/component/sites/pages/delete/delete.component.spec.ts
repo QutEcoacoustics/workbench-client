@@ -16,7 +16,7 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import { testBawServices } from "src/app/test.helper";
 import { DeleteComponent } from "./delete.component";
 
-describe("SitesDeleteComponent", () => {
+xdescribe("SitesDeleteComponent", () => {
   let component: DeleteComponent;
   let api: SitesService;
   let router: Router;

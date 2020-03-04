@@ -13,7 +13,7 @@ import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { testBawServices } from "src/app/test.helper";
 import { NewComponent } from "./new.component";
 
-describe("ProjectsNewComponent", () => {
+xdescribe("ProjectsNewComponent", () => {
   let api: ProjectsService;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;

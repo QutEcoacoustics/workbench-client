@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { UserService } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
@@ -31,65 +31,50 @@ import { fields } from "./my-edit.json";
   selector: "app-my-account-edit",
   template: `
     <app-wip>
-      <app-form
-        *ngIf="ready"
-        [schema]="schema"
-        [title]="'Profile Settings'"
-        [error]="error"
-        [success]="success"
-        [submitLabel]="'Update'"
-        [submitLoading]="loading"
-        [btnColor]="'btn-warning'"
-        (onSubmit)="submitEdit($event)"
-      ></app-form>
+      <ng-container *ngIf="user">
+        <app-form
+          [schema]="schema"
+          [title]="'Profile Settings'"
+          [submitLabel]="'Update'"
+          [submitLoading]="loading"
+          [btnColor]="'btn-warning'"
+          (onSubmit)="submitEdit($event)"
+        ></app-form>
 
-      <app-form
-        *ngIf="ready"
-        [schema]="{ model: {}, fields: [] }"
-        [title]="'Cancel my account'"
-        [subTitle]="'Unhappy? You can permanently cancel your account.'"
-        [submitLabel]="'Cancel my account'"
-        [submitLoading]="loading"
-        [btnColor]="'btn-danger'"
-        (onSubmit)="submitDelete($event)"
-      >
-      </app-form>
+        <app-form
+          [schema]="{ model: {}, fields: [] }"
+          [title]="'Cancel my account'"
+          [subTitle]="'Unhappy? You can permanently cancel your account.'"
+          [submitLabel]="'Cancel my account'"
+          [submitLoading]="loading"
+          [btnColor]="'btn-danger'"
+          (onSubmit)="submitDelete($event)"
+        >
+        </app-form>
+      </ng-container>
     </app-wip>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class MyEditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  error: string;
-  errorDetails: ApiErrorDetails;
-  loading: boolean;
-  ready: boolean;
-  schema = { model: { edit: { name: "" } }, fields };
-  success: string;
-  user: User;
+  public loading: boolean;
+  public schema = { model: { edit: { name: "" } }, fields };
+  public user: User;
 
-  constructor(private api: UserService) {
+  constructor(private route: ActivatedRoute, private api: UserService) {
     super();
   }
 
   ngOnInit() {
-    this.ready = false;
     this.loading = false;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data.user;
 
-    this.api
-      .show()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-          this.ready = true;
+    if (userModel.error) {
+      return;
+    }
 
-          this.schema.model.edit.name = this.user.userName;
-        },
-        (err: ApiErrorDetails) => {
-          this.errorDetails = err;
-        }
-      );
+    this.user = userModel.model;
+    this.schema.model.edit.name = this.user.userName;
   }
 
   /**

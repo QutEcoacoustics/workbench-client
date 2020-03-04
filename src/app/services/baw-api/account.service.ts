@@ -14,6 +14,7 @@ import {
   ReadonlyApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
+import { Resolvers } from "./resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
@@ -34,3 +35,8 @@ export class AccountService extends ReadonlyApi<User, []> {
     return this.apiShow(endpoint(model, Empty));
   }
 }
+
+export const accountResolvers = new Resolvers<User, AccountService>(
+  [AccountService],
+  "accountId"
+).create("Account");

@@ -8,7 +8,7 @@ import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
 import { SendAudioComponent } from "./send-audio.component";
 
-describe("SendAudioComponent", () => {
+xdescribe("SendAudioComponent", () => {
   let httpMock: HttpTestingController;
   let component: SendAudioComponent;
   let fixture: ComponentFixture<SendAudioComponent>;

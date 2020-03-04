@@ -14,6 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
+import { Resolvers } from "./resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
@@ -46,3 +47,8 @@ export class ProjectsService extends StandardApi<Project, []> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }
+
+export const projectResolvers = new Resolvers<Project, ProjectsService>(
+  [ProjectsService],
+  "projectId"
+).create("Project");

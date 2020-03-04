@@ -5,7 +5,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { testBawServices } from "src/app/test.helper";
 import { PermissionsComponent } from "./permissions.component";
 
-describe("PermissionsComponent", () => {
+xdescribe("PermissionsComponent", () => {
   let component: PermissionsComponent;
   let fixture: ComponentFixture<PermissionsComponent>;
 

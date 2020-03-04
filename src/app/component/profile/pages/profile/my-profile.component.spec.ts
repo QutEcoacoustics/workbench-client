@@ -5,7 +5,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { testBawServices } from "src/app/test.helper";
 import { MyProfileComponent } from "./my-profile.component copy";
 
-describe("MyProfileComponent", () => {
+xdescribe("MyProfileComponent", () => {
   let component: MyProfileComponent;
   let fixture: ComponentFixture<MyProfileComponent>;
 

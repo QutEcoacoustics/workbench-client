@@ -17,10 +17,12 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters, Meta } from "./baw-api.service";
+import { Resolvers } from "./resolver-common";
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
+const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
 @Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
@@ -47,8 +49,6 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
-
-const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site, []> {
@@ -122,3 +122,14 @@ export class ShallowSitesService extends StandardApi<Site, []> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
 }
+
+export const siteResolvers = new Resolvers<Site, SitesService>(
+  [SitesService],
+  "siteId",
+  ["projectId"]
+).create("Site");
+
+export const shallowSiteResolvers = new Resolvers<Site, ShallowSitesService>(
+  [ShallowSitesService],
+  "siteId"
+).create("ShallowSite");

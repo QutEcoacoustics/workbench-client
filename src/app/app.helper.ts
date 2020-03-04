@@ -15,12 +15,22 @@ import {
   CMS_ROOT
 } from "./helpers/app-initializer/app-initializer";
 import { AppConfigService } from "./services/app-config/app-config.service";
-import { AccountService } from "./services/baw-api/account.service";
+import {
+  accountResolvers,
+  AccountService
+} from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
-import { ProjectsService } from "./services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
-import { SitesService } from "./services/baw-api/sites.service";
-import { UserService } from "./services/baw-api/user.service";
+import {
+  shallowSiteResolvers,
+  siteResolvers,
+  SitesService
+} from "./services/baw-api/sites.service";
+import { userResolvers, UserService } from "./services/baw-api/user.service";
 
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
@@ -100,5 +110,10 @@ export const providers = [
   ProjectsService,
   SecurityService,
   SitesService,
-  UserService
+  UserService,
+  ...accountResolvers,
+  ...projectResolvers,
+  ...siteResolvers,
+  ...shallowSiteResolvers,
+  ...userResolvers
 ];

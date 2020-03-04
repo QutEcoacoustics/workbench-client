@@ -1,10 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-  OnInit
-} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { takeUntil } from "rxjs/operators";
+import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { Category, Resolvers } from "src/app/interfaces/menusInterfaces";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 
@@ -12,60 +11,80 @@ import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
   selector: "app-error-handler",
   template: `
     <ng-container *ngIf="error">
-      <ng-container *ngIf="display === 'unauthorized'">
-        <h1>Unauthorized access</h1>
-      </ng-container>
-      <ng-container *ngIf="display === 'notFound'">
-        <h1>Not found</h1>
-      </ng-container>
-      <ng-container *ngIf="display === 'forbidden'">
-        <h1>Forbidden</h1>
-      </ng-container>
-      <ng-container *ngIf="display === 'unknown'">
-        <h1>Unknown Error</h1>
-      </ng-container>
+      <div [ngSwitch]="error.status">
+        <h1>
+          <ng-container *ngSwitchCase="apiReturnCodes.unauthorized">
+            Unauthorized access
+          </ng-container>
+          <ng-container *ngSwitchCase="apiReturnCodes.notFound">
+            Not Found
+          </ng-container>
+          <ng-container *ngSwitchDefault>Unknown Error</ng-container>
+        </h1>
+      </div>
 
       <p *ngIf="error">{{ error.message }}</p>
     </ng-container>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `
 })
-export class ErrorHandlerComponent implements OnInit, OnChanges {
+export class ErrorHandlerComponent extends WithUnsubscribe() implements OnInit {
+  /**
+   * Deprecated input
+   */
   @Input() error: ApiErrorDetails;
-  display = "";
+  public apiReturnCodes = apiReturnCodes;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {
+    super();
+  }
 
   ngOnInit() {
-    this.evaluateError();
+    this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
+      (data: PageInfoInterface) => {
+        this.handleResolvers(data);
+      },
+      err => {
+        console.error("ErrorHandlerComponent: ", err);
+        this.error = {
+          status: apiReturnCodes.unknown,
+          message: "Unable to load data from Server."
+        };
+      }
+    );
   }
 
-  ngOnChanges() {
-    this.evaluateError();
-  }
+  private handleResolvers(data: PageInfoInterface) {
+    const resolvers: Resolvers = {};
+    const categories: Category[] = [];
 
-  evaluateError() {
-    if (!this.error?.status && this.error?.status !== 0) {
-      this.display = "";
-      return;
+    // Scale category parents and add in reverse order (this is to preserve any overwrites)
+    let category = data.category;
+    while (category) {
+      categories.push(category);
+      category = category.parent;
+    }
+    for (let i = categories.length - 1; i >= 0; i--) {
+      if (categories[i].resolvers) {
+        Object.assign(resolvers, categories[i].resolvers);
+      }
     }
 
-    switch (this.error.status) {
-      case apiReturnCodes.unauthorized:
-        this.display = "unauthorized";
-        break;
+    // Add final custom resolvers
+    if (data.resolvers) {
+      Object.assign(resolvers, data.resolvers);
+    }
 
-      case apiReturnCodes.notFound:
-        this.display = "notFound";
-        break;
+    for (const key of Object.keys(resolvers)) {
+      if (!data[key].error) {
+        continue;
+      }
 
-      case apiReturnCodes.forbidden:
-        this.display = "forbidden";
-        break;
+      this.error = data[key].error as ApiErrorDetails;
 
-      default:
-        this.display = "unknown";
-        break;
+      // If unauthorized response, no point downgrading to "Not Found"
+      if (this.error.status === apiReturnCodes.unauthorized) {
+        return;
+      }
     }
   }
 }
