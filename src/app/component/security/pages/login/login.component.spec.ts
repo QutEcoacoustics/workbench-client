@@ -5,68 +5,71 @@ import {
   TestBed,
   tick
 } from "@angular/core/testing";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { testApiConfig } from "src/app/services/app-config/appConfigMock.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   LoginDetails,
   SecurityService
 } from "src/app/services/baw-api/security.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  assertValidationMessage,
+  getInputs,
+  testFormlyField
+} from "src/testHelpers";
 import { LoginComponent } from "./login.component";
+import { fields } from "./login.json";
 
-xdescribe("LoginComponent", () => {
+describe("LoginComponent", () => {
+  let api: SecurityService;
   let component: LoginComponent;
-  let securityService: SecurityService;
-  let router: Router;
-  let route: ActivatedRoute;
-  let location: Location;
-  let env: AppConfigService;
   let fixture: ComponentFixture<LoginComponent>;
+  let location: Location;
+  let notifications: ToastrService;
+  let router: Router;
 
-  class MockActivatedRoute {
-    public queryParams: BehaviorSubject<Params> = new BehaviorSubject<Params>(
-      {}
-    );
-
-    public setRedirectUrl(url: string) {
-      this.queryParams = new BehaviorSubject<Params>({ redirect: url });
-    }
-  }
-
-  beforeEach(() => {
+  function configureTestingModule(
+    redirect?: string | boolean,
+    navigationId?: number
+  ) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, RouterTestingModule, SharedModule],
       declarations: [LoginComponent, HomeComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(
+            undefined,
+            undefined,
+            redirect ? { redirect } : undefined
+          )
+        }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-    securityService = TestBed.inject(SecurityService);
+    api = TestBed.inject(SecurityService);
     router = TestBed.inject(Router);
-    route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
-    env = TestBed.inject(AppConfigService);
+    notifications = TestBed.inject(ToastrService);
 
-    component.schema.model = {
-      login: "",
-      password: ""
-    };
-  });
-
-  function fixRouting(id?: number) {
+    spyOn(component, "externalRedirect").and.stub();
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
-      navigationId: id ? id : 1
+      navigationId: navigationId ? navigationId : 1
     }));
   }
 
@@ -91,12 +94,9 @@ xdescribe("LoginComponent", () => {
     fixture.detectChanges();
   }
 
-  function createSubmitSpies(failure?: boolean) {
-    spyOn(location, "back").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
-    spyOn(component, "externalRedirect").and.stub();
-    spyOn(securityService, "signIn").and.callFake(() => {
-      if (!failure) {
+  function successResponse(signedIn: boolean = true) {
+    spyOn(api, "signIn").and.callFake(() => {
+      if (signedIn) {
         return new BehaviorSubject<SessionUser>(
           new SessionUser({
             authToken: "xxxxxxxxxxxxxxx",
@@ -120,7 +120,7 @@ xdescribe("LoginComponent", () => {
   }
 
   it("should create", () => {
-    fixRouting();
+    configureTestingModule();
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -128,7 +128,7 @@ xdescribe("LoginComponent", () => {
 
   describe("form inputs", () => {
     it("should eventually load form", () => {
-      fixRouting();
+      configureTestingModule();
       fixture.detectChanges();
 
       expect(
@@ -140,162 +140,88 @@ xdescribe("LoginComponent", () => {
     });
 
     it("should contain two inputs", () => {
-      fixRouting();
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelectorAll("input").length).toBe(2);
-    });
-
-    it("should contain username/email input as first input", () => {
-      fixRouting();
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelectorAll("input")[0]).toBeTruthy();
-      expect(fixture.nativeElement.querySelectorAll("input")[0].type).toBe(
-        "text"
-      );
-    });
-
-    it("username/email input should be required field", () => {
-      fixRouting();
+      configureTestingModule();
       fixture.detectChanges();
 
       expect(
-        fixture.nativeElement.querySelectorAll("input")[0].required
-      ).toBeTruthy();
+        fixture.nativeElement.querySelectorAll("form formly-field").length
+      ).toBe(2);
     });
 
-    it("username/email input should have login id", () => {
-      fixRouting();
-      fixture.detectChanges();
+    /* Username */
+    testFormlyField(
+      "Username Input",
+      () => {
+        configureTestingModule();
+      },
+      fields[0],
+      "login",
+      "input",
+      true,
+      "Username or Email Address",
+      "text"
+    );
 
-      expect(fixture.nativeElement.querySelectorAll("input")[0].id).toContain(
-        "_login_"
-      );
-    });
-
-    it("should contain password input as second input", () => {
-      fixRouting();
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelectorAll("input")[1]).toBeTruthy();
-      expect(fixture.nativeElement.querySelectorAll("input")[1].type).toBe(
-        "password"
-      );
-    });
-
-    it("password input should be required field", () => {
-      fixRouting();
-      fixture.detectChanges();
-
-      expect(
-        fixture.nativeElement.querySelectorAll("input")[1].required
-      ).toBeTruthy();
-    });
-
-    it("password input should have password id", () => {
-      fixRouting();
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelectorAll("input")[1].id).toContain(
-        "_input_password_"
-      );
-    });
+    /* Project Description Textarea */
+    testFormlyField(
+      "Password Input",
+      () => {
+        configureTestingModule();
+      },
+      fields[1],
+      "password",
+      "input",
+      true,
+      "Password",
+      "password"
+    );
   });
 
   describe("submit logic", () => {
-    it("should not call submit function with missing username", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      fillPassword();
-      submit();
-
-      expect(component.submit).not.toHaveBeenCalled();
-    }));
-
     it("should show error message with missing username", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       spyOn(component, "submit");
       fixture.detectChanges();
 
       fillPassword();
       submit();
 
-      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-      expect(msg).toBeTruthy();
-      expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-    }));
-
-    it("should not call submit function with missing password", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      fillUsername();
-      submit();
-
-      expect(component.submit).not.toHaveBeenCalled();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
     }));
 
     it("should show error message with missing password", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       spyOn(component, "submit");
       fixture.detectChanges();
 
       fillUsername();
       submit();
 
-      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-      expect(msg).toBeTruthy();
-      expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-    }));
-
-    it("should not call submit function with missing fields", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      submit();
-
-      expect(component.submit).not.toHaveBeenCalled();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
     }));
 
     it("should show error message with missing fields", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       spyOn(component, "submit");
       fixture.detectChanges();
 
       submit();
 
-      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-      expect(msg).toBeTruthy();
-      expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-    }));
-
-    it("should not call submit function with password less than 6 characters long", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      fillUsername();
-      fillPassword("12345");
-      submit();
-
-      expect(component.submit).not.toHaveBeenCalled();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
     }));
 
     it("should show error message with password less than 6 characters long", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       spyOn(component, "submit");
       fixture.detectChanges();
 
@@ -303,14 +229,18 @@ xdescribe("LoginComponent", () => {
       fillPassword("12345");
       submit();
 
-      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-      expect(msg).toBeTruthy();
-      expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+      assertValidationMessage(
+        getInputs(fixture)[1],
+        "Input should have at least 6 characters"
+      );
     }));
 
     it("should login account on submit", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       spyOn(component, "submit").and.callThrough();
       fixture.detectChanges();
 
@@ -319,8 +249,8 @@ xdescribe("LoginComponent", () => {
       submit();
 
       expect(component.submit).toHaveBeenCalled();
-      expect(securityService.signIn).toHaveBeenCalled();
-      expect(securityService.signIn).toHaveBeenCalledWith(
+      expect(api.signIn).toHaveBeenCalled();
+      expect(api.signIn).toHaveBeenCalledWith(
         new LoginDetails({
           login: "username",
           password: "password"
@@ -329,8 +259,8 @@ xdescribe("LoginComponent", () => {
     }));
 
     it("should show error on bad credentials", fakeAsync(() => {
-      createSubmitSpies(true);
-      fixRouting();
+      configureTestingModule();
+      successResponse(false);
       spyOn(component, "submit").and.callThrough();
       fixture.detectChanges();
 
@@ -338,50 +268,47 @@ xdescribe("LoginComponent", () => {
       fillPassword();
       submit();
 
-      tick();
-      fixture.detectChanges();
-
-      const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-      expect(msg).toBeTruthy();
-      expect(msg.innerText).toContain(
+      expect(notifications.error).toHaveBeenCalledWith(
         "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
       );
     }));
 
     it("should disable submit button during submission", fakeAsync(() => {
-      fixRouting();
+      configureTestingModule();
       spyOn(component, "submit").and.callThrough();
-      spyOn(securityService, "signIn").and.callFake(() => {
-        expect(button).toBeTruthy();
-        expect(button.disabled).toBeTruthy();
-
-        return new BehaviorSubject<SessionUser>(
-          new SessionUser({
-            authToken: "xxxxxxxxxxxxxxx",
-            userName: "username"
-          })
-        );
-      });
-
       fixture.detectChanges();
 
       const button = fixture.nativeElement.querySelector(
         "button[type='submit']"
       );
 
+      fillUsername();
+      fillPassword();
+      submit();
+
       expect(button).toBeTruthy();
-      expect(button.disabled).toBeFalsy();
+      expect(button.disabled).toBeTruthy();
+    }));
+
+    it("should display success on successful submit", fakeAsync(() => {
+      configureTestingModule();
+      successResponse();
+      fixture.detectChanges();
 
       fillUsername();
       fillPassword();
       submit();
+
+      expect(notifications.success).toHaveBeenCalledWith(
+        "Successfully signed in."
+      );
     }));
   });
 
   describe("redirection", () => {
     it("should redirect user to previous page on login", fakeAsync(() => {
-      fixRouting(2);
-      createSubmitSpies();
+      configureTestingModule(undefined, 2);
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();
@@ -393,9 +320,8 @@ xdescribe("LoginComponent", () => {
     }));
 
     it("should redirect user to home page on redirect=false", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      route["setRedirectUrl"](false);
+      configureTestingModule(false);
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();
@@ -408,8 +334,8 @@ xdescribe("LoginComponent", () => {
     }));
 
     it("should redirect user to home page when no previous location remembered", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
+      configureTestingModule();
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();
@@ -422,9 +348,8 @@ xdescribe("LoginComponent", () => {
     }));
 
     it("should handle redirect url", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      route["setRedirectUrl"]("/broken_link");
+      configureTestingModule("/broken_link");
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();
@@ -436,9 +361,10 @@ xdescribe("LoginComponent", () => {
     }));
 
     it("should handle ecosounds redirect url", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      route["setRedirectUrl"](env.environment.apiRoot + "/broken_link");
+      configureTestingModule(
+        testApiConfig.environment.apiRoot + "/broken_link"
+      );
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();
@@ -448,14 +374,13 @@ xdescribe("LoginComponent", () => {
       expect(router.navigateByUrl).not.toHaveBeenCalled();
       expect(component.externalRedirect).toHaveBeenCalled();
       expect(component.externalRedirect).toHaveBeenCalledWith(
-        env.environment.apiRoot + "/broken_link"
+        testApiConfig.environment.apiRoot + "/broken_link"
       );
     }));
 
     it("should ignore non-ecosounds redirect url", fakeAsync(() => {
-      createSubmitSpies();
-      fixRouting();
-      route["setRedirectUrl"]("http://broken_link");
+      configureTestingModule("http://broken_link");
+      successResponse();
       fixture.detectChanges();
 
       fillUsername();

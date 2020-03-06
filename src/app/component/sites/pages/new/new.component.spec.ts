@@ -1,725 +1,448 @@
 import {
   ComponentFixture,
   fakeAsync,
-  TestBed,
-  tick
+  flush,
+  TestBed
 } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
-import { mockSite, Site } from "src/app/models/Site";
+import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  assertValidationMessage,
+  getInputs,
+  inputValue,
+  submitForm,
+  testFormlyField
+} from "src/testHelpers";
 import { NewComponent } from "./new.component";
+import { fields } from "./new.json";
 
-xdescribe("SitesNewComponent", () => {
-  let sitesApi: SitesService;
-  let projectApi: ProjectsService;
-  let router: ActivatedRoute;
+describe("SitesNewComponent", () => {
+  let api: SitesService;
   let component: NewComponent;
+  let defaultError: ApiErrorDetails;
+  let defaultProject: Project;
   let fixture: ComponentFixture<NewComponent>;
+  let notifications: ToastrService;
+  let router: Router;
 
-  class MockActivatedRoute {
-    public params = new BehaviorSubject<any>({ projectId: 1 });
-  }
+  const nameIndex = 0;
+  const descriptionIndex = 1;
+  const latitudeIndex = 3;
+  const longitudeIndex = 4;
+  const imageIndex = 5;
+  const timezoneIndex = 6;
 
-  beforeEach(fakeAsync(() => {
+  function configureTestingModule(
+    project: Project,
+    projectError: ApiErrorDetails
+  ) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(
+            {
+              project: {
+                model: project,
+                error: projectError
+              }
+            },
+            { projectId: project?.id }
+          )
+        }
       ]
     }).compileComponents();
-  }));
 
-  it("should handle project not found", fakeAsync(() => {
     fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.inject(SitesService);
-    projectApi = TestBed.inject(ProjectsService);
-    router = TestBed.inject(ActivatedRoute);
     component = fixture.componentInstance;
-    component.schema.model = {};
+    router = TestBed.inject(Router);
+    api = TestBed.inject(SitesService);
+    notifications = TestBed.inject(ToastrService);
 
-    spyOn(projectApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Not Found",
-          status: 404
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
 
     fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
-  }));
-
-  it("should handle project unauthorized", fakeAsync(() => {
-    fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.inject(SitesService);
-    projectApi = TestBed.inject(ProjectsService);
-    router = TestBed.inject(ActivatedRoute);
-    component = fixture.componentInstance;
-    component.schema.model = {};
-
-    spyOn(projectApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Unauthorized",
-          status: 401
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
-  }));
-});
-
-xdescribe("SitesNewComponent", () => {
-  let sitesApi: SitesService;
-  let projectApi: ProjectsService;
-  let router: ActivatedRoute;
-  let component: NewComponent;
-  let fixture: ComponentFixture<NewComponent>;
-
-  class MockActivatedRoute {
-    public params = new BehaviorSubject<any>({ projectId: 1 });
   }
 
-  beforeEach(fakeAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [NewComponent],
-      providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(NewComponent);
-    sitesApi = TestBed.inject(SitesService);
-    projectApi = TestBed.inject(ProjectsService);
-    router = TestBed.inject(ActivatedRoute);
-    component = fixture.componentInstance;
-    component.schema.model = {};
-
-    spyOn(projectApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Project",
-            description: "Project Description",
-            creatorId: 1,
-            siteIds: new Set([1])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
+  beforeEach(() => {
+    defaultProject = new Project({
+      id: 1,
+      name: "Project"
     });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-  }));
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
+  });
 
   it("should create", () => {
+    configureTestingModule(defaultProject, undefined);
+
     expect(component).toBeTruthy();
   });
 
-  it("should eventually load form", () => {
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']")
-    ).toBeTruthy();
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']").disabled
-    ).toBeFalsy();
-  });
+  it("should handle project error", fakeAsync(() => {
+    configureTestingModule(undefined, defaultError);
 
-  it("should contain six inputs", () => {
-    expect(
-      fixture.nativeElement.querySelectorAll("form formly-field").length
-    ).toBe(7); // FieldGroup adds a formly-field
-  });
+    const body = fixture.nativeElement;
+    expect(body.childElementCount).toBe(0);
+  }));
 
-  /* Site Name Input */
+  describe("form", () => {
+    it("should eventually load form", () => {
+      configureTestingModule(defaultProject, undefined);
 
-  it("should contain site name input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("label");
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']")
+      ).toBeTruthy();
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']").disabled
+      ).toBeFalsy();
+    });
 
-    expect(input).toBeTruthy("Form should contain input as first field");
-    expect(input.id).toContain("_name_", "Site name input id should be 'name'");
-    expect(input.type).toBe("text", "Site name input should be of type 'text'");
-    expect(input.required).toBeTruthy("Site name input should be required");
+    it("should contain three inputs", () => {
+      configureTestingModule(defaultProject, undefined);
 
-    expect(label).toBeTruthy("Site name input should have label");
-    expect(label.innerText).toContain(
+      expect(
+        fixture.nativeElement.querySelectorAll("form formly-field").length
+      ).toBe(7);
+    });
+
+    /* Site Name Input */
+    testFormlyField(
+      "Site Name Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[0],
+      "name",
+      "input",
+      true,
       "Site Name",
-      "Site name label should be 'Site Name'"
-    );
-  });
-
-  /* Site Description Textarea */
-
-  it("should contain site description textarea", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("label");
-
-    expect(input).toBeTruthy("Form should contain textarea as second field");
-    expect(input.id).toContain(
-      "_description_",
-      "Site description field id should be 'description'"
-    );
-    expect(input.required).toBeFalsy(
-      "Site description field should not be required"
+      "text"
     );
 
-    expect(label).toBeTruthy("Site name input should have label");
-    expect(label.innerText).toContain(
-      "Description",
-      "Site description label should be 'Description'"
+    /* Site Description Textarea */
+    testFormlyField(
+      "Site Description Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[1],
+      "description",
+      "textarea",
+      false,
+      "Description"
     );
-  });
 
-  /* Site Latitude Input */
-
-  it("should contain site latitude input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
-      .querySelector("input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[3]
-      .querySelector("label");
-
-    expect(input).toBeTruthy("Form should contain input as third field");
-    expect(input.id).toContain(
-      "_customLatitude_",
-      "Latitude input id should be 'customLatitude'"
-    );
-    expect(input.type).toBe(
-      "number",
-      "Latitude input should be of type 'number'"
-    );
-    expect(input.required).toBeFalsy("Latitude input should not be required");
-
-    expect(label).toBeTruthy("Latitude input should have label");
-    expect(label.innerText).toContain(
+    /* Site Latitude Input */
+    testFormlyField(
+      "Site Latitude Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[2].fieldGroup[0],
+      "customLatitude",
+      "input",
+      false,
       "Latitude",
-      "Latitude label should be 'Latitude'"
+      "number"
     );
-  });
 
-  /* Site Longitude Input */
-
-  it("should contain site longitude input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[4]
-      .querySelector("label");
-
-    expect(input).toBeTruthy("Form should contain input as fourth field");
-    expect(input.id).toContain(
-      "_customLongitude_",
-      "Longitude input id should be 'customLongitude'"
-    );
-    expect(input.type).toBe(
-      "number",
-      "Longitude input should be of type 'number'"
-    );
-    expect(input.required).toBeFalsy("Longitude input should not be required");
-
-    expect(label).toBeTruthy("Longitude input should have label");
-    expect(label.innerText).toContain(
+    /* Site Longitude Input */
+    testFormlyField(
+      "Site Longitude Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[2].fieldGroup[1],
+      "customLongitude",
+      "input",
+      false,
       "Longitude",
-      "Longitude label should be 'Longitude'"
+      "number"
     );
+
+    /* Site Image Input */
+    testFormlyField(
+      "Site Image Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[3],
+      "image",
+      "image",
+      false,
+      "Image"
+    );
+
+    /* Site Timezone Input */
+    testFormlyField(
+      "Site Timezone Input",
+      () => {
+        configureTestingModule(defaultProject, undefined);
+      },
+      fields[4],
+      "timezoneInformation",
+      "timezone",
+      false,
+      "Time Zone"
+    );
+
+    // TODO Add input validation for custom location logic
   });
 
-  /* Site Image Input */
+  describe("form error handling", () => {
+    it("should show error message with missing site name", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
 
-  it("should contain site image input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("formly-image-input input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[5]
-      .querySelector("label");
+      submitForm(fixture);
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
 
-    expect(input).toBeTruthy(
-      "Form should contain custom image input as fifth field"
-    );
-    expect(input.id).toContain("_image_", "Image input id should be 'image'");
-    expect(input.type).toBe("file", "Image input should be of type 'file'");
-    expect(input.required).toBeFalsy("Image input should not be required");
+    it("should show error message when only latitude is given", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
 
-    expect(label).toBeTruthy("Image input should have label");
-    expect(label.innerText).toContain("Image", "Image label should be 'Image'");
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[latitudeIndex], "input", "5");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+      assertValidationMessage(
+        inputs[longitudeIndex],
+        "Both latitude and longitude must be set or left empty."
+      );
+    }));
+
+    it("should show error message when only longitude is given", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[longitudeIndex], "input", "5");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+      assertValidationMessage(
+        inputs[longitudeIndex],
+        "Both latitude and longitude must be set or left empty."
+      );
+    }));
   });
 
-  /* Site Timezone Input */
+  describe("failed submissions", () => {
+    it("should handle general error", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create").and.callFake(() => {
+        const subject = new Subject<Site>();
 
-  it("should contain site timezone input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[6]
-      .querySelector("formly-timezone-input select");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[6]
-      .querySelector("label");
+        subject.error({
+          message: "Sign in to access this feature.",
+          info: 401
+        } as ApiErrorDetails);
 
-    expect(input).toBeTruthy(
-      "Form should contain custom timezone input as sixth field"
-    );
-    expect(input.id).toContain(
-      "_timezoneInformation_",
-      "Timezone input id should be 'timezoneInformation'"
-    );
-    expect(input.required).toBeFalsy("Timezone input should not be required");
+        return subject;
+      });
 
-    expect(label).toBeTruthy("Timezone input should have label");
-    expect(label.innerText).toContain(
-      "Time Zone",
-      "Timezone label should be 'Time Zone'"
-    );
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Site");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Sign in to access this feature."
+      );
+    }));
+
+    it("should re-enable submit button after failed submission", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create").and.callFake(() => {
+        const subject = new Subject<Site>();
+
+        subject.error({
+          message: "Sign in to access this feature.",
+          info: 401
+        } as ApiErrorDetails);
+
+        return subject;
+      });
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Site");
+      submitForm(fixture);
+
+      flush();
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeFalsy("Button should not be disabled");
+    }));
   });
 
-  /* End of input typing checks */
-
-  it("should not call submit function with missing site name", fakeAsync(() => {
-    spyOn(component, "submit");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing site name", fakeAsync(() => {
-    spyOn(component, "submit");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should create new site on submit", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalledWith(
-      new Site({
-        name: "test site"
-      }),
-      1
-    );
-  }));
-
-  it("should create new site containing emoji on submit", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site 😀";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalledWith(
-      new Site({
-        name: "test site 😀"
-      }),
-      1
-    );
-  }));
-
-  it("should create new site on submit with description", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const description = fixture.nativeElement.querySelectorAll("textarea")[0];
-    description.value = "test description";
-    description.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalledWith(
-      new Site({
-        name: "test site",
-        description: "test description"
-      }),
-      1
-    );
-  }));
-
-  xit("should not create new site on submit with latitude and no longitude", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const latitude = fixture.nativeElement.querySelectorAll("input")[2];
-    latitude.value = 0;
-    latitude.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  xit("should show error message on submit with latitude and no longitude", fakeAsync(() => {}));
-
-  xit("should not create new site on submit with longitude and no latitude", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const longitude = fixture.nativeElement.querySelectorAll("input")[3];
-    longitude.value = 1;
-    longitude.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  xit("should show error message on submit with longitude and no latitude", fakeAsync(() => {}));
-
-  xit("should create new site on submit with latitude and longitude", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const latitude = fixture.nativeElement.querySelectorAll("input")[2];
-    latitude.value = 0;
-    latitude.dispatchEvent(new Event("input"));
-
-    const longitude = fixture.nativeElement.querySelectorAll("input")[3];
-    longitude.value = 1;
-    longitude.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalled();
-    expect(sitesApi.create).toHaveBeenCalledWith(
-      new Site({
-        name: "test site"
-      }),
-      1
-    );
-  }));
-
-  xit("should create new site on submit with image", fakeAsync(() => {}));
-  xit("should create new site on submit with all inputs", fakeAsync(() => {}));
-
-  it("should show success on successful submission", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(mockSite);
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick(100);
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-success");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain("Site was successfully created.");
-  }));
-
-  it("should show error on unauthorized", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Unauthorized",
-          info: 401
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick(100);
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain("Unauthorized");
-  }));
-
-  it("should show error on site not found", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Not Found",
-          info: 404
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick(100);
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain("Not Found");
-  }));
-
-  it("should disable submit button during successful submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(mockSite);
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    button.click();
-
-    tick(10);
-
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeTruthy("Button should be disabled");
-
-    tick(100);
-    fixture.detectChanges();
-  }));
-
-  it("should disable submit button during error submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Unauthorized",
-          info: 401
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    button.click();
-
-    tick(10);
-
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeTruthy("Button should be disabled");
-
-    tick(100);
-    fixture.detectChanges();
-  }));
-
-  it("should re-enable submit button after successful submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(mockSite);
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    button.click();
-
-    tick(100);
-    fixture.detectChanges();
-
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeFalsy("Button should not be disabled");
-  }));
-
-  it("should re-enable submit button after error submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(sitesApi, "create").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.error({
-          message: "Unauthorized",
-          info: 401
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test site";
-    name.dispatchEvent(new Event("input"));
-
-    button.click();
-
-    tick(100);
-    fixture.detectChanges();
-
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeFalsy("Button should not be disabled");
-  }));
+  describe("successful submissions", () => {
+    it("should call create", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create");
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      submitForm(fixture);
+
+      expect(api.create).toHaveBeenCalled();
+    }));
+
+    it("should call create with name", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create");
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      submitForm(fixture);
+
+      expect(api.create).toHaveBeenCalledWith(
+        new Site({ name: "Test Site" }),
+        defaultProject
+      );
+    }));
+
+    it("should call create with description", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create");
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[descriptionIndex], "textarea", "Test Description");
+      submitForm(fixture);
+
+      expect(api.create).toHaveBeenCalledWith(
+        new Site({
+          name: "Test Site",
+          description: "Test Description"
+        }),
+        defaultProject
+      );
+    }));
+
+    it("should call create with location", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create");
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[latitudeIndex], "input", "5");
+      inputValue(inputs[longitudeIndex], "input", "10");
+      submitForm(fixture);
+
+      expect(api.create).toHaveBeenCalledWith(
+        new Site({
+          name: "Test Site",
+          customLatitude: 5,
+          customLongitude: 10
+        }),
+        defaultProject
+      );
+    }));
+
+    xit("should call create with image", fakeAsync(() => {}));
+    xit("should call create with timezone", fakeAsync(() => {}));
+
+    it("should create notification on submission", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Site>(
+          new Site({
+            id: 1,
+            name: "Test Site"
+          })
+        );
+      });
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[nameIndex], "input", "Test Site");
+      submitForm(fixture);
+
+      expect(notifications.success).toHaveBeenCalledWith(
+        "Site was successfully created."
+      );
+    }));
+
+    it("should navigate user to project on submit", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      const site = new Site({
+        id: 1,
+        name: "Site"
+      });
+
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Site>(site);
+      });
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Site");
+      submitForm(fixture);
+
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        site.redirectPath(defaultProject)
+      );
+    }));
+
+    it("should disable submit button during submission", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Site");
+      submitForm(fixture);
+
+      flush();
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeTruthy("Button should be disabled");
+    }));
+
+    it("should reset form on successful submit", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(component, "resetForms");
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Site>(
+          new Site({
+            id: 1,
+            name: "Site"
+          })
+        );
+      });
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Site");
+      submitForm(fixture);
+
+      expect(component.resetForms).toHaveBeenCalled();
+      expect(component.isFormTouched()).toBeFalse();
+    }));
+  });
 });

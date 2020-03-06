@@ -118,7 +118,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     viewContainerRef.clear();
 
     const componentRef = viewContainerRef.createComponent(componentFactory);
-    (componentRef.instance as WidgetComponent).data = this.widget.data;
+    (componentRef.instance as WidgetComponent).pageData = this.widget.pageData;
   }
 
   /**

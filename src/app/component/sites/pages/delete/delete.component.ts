@@ -84,7 +84,7 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
         () => {
           this.resetForms();
           this.notification.success("Site was successfully deleted.");
-          this.router.navigate([this.project.redirectPath()]);
+          this.router.navigateByUrl(this.project.redirectPath());
         },
         (err: ApiErrorDetails) => {
           this.loading = false;

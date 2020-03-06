@@ -1,35 +1,56 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { testBawServices } from "src/app/test.helper";
+import { User } from "src/app/models/User";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { TheirEditComponent } from "./their-edit.component";
 
-xdescribe("TheirProfileEditComponent", () => {
+describe("TheirProfileEditComponent", () => {
   let component: TheirEditComponent;
   let fixture: ComponentFixture<TheirEditComponent>;
+  let defaultError: ApiErrorDetails;
+  let defaultUser: User;
 
-  beforeEach(async(() => {
+  function configureTestingModule(user: User, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        HttpClientTestingModule
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [TheirEditComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            account: {
+              model: user,
+              error
+            }
+          })
+        }
+      ]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(TheirEditComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    defaultUser = new User({
+      id: 1,
+      userName: "Username"
+    });
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
   });
 
   it("should create", () => {
+    configureTestingModule(defaultUser, undefined);
     expect(component).toBeTruthy();
   });
 });

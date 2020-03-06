@@ -46,14 +46,12 @@ export class NewComponent extends WithFormCheck(PageComponent)
   constructor(
     private router: Router,
     private api: ProjectsService,
-    private notification: ToastrService
+    private notifications: ToastrService
   ) {
     super();
   }
 
-  ngOnInit() {
-    this.loading = false;
-  }
+  ngOnInit() {}
 
   /**
    * Form submission
@@ -68,7 +66,7 @@ export class NewComponent extends WithFormCheck(PageComponent)
       .subscribe(
         project => {
           this.resetForms();
-          this.notification.success("Project was successfully created.");
+          this.notifications.success("Project was successfully created.");
           this.router.navigateByUrl(project.redirectPath());
         },
         (err: ApiErrorDetails) => {
@@ -80,7 +78,7 @@ export class NewComponent extends WithFormCheck(PageComponent)
             errMsg = err.message;
           }
 
-          this.notification.error(errMsg);
+          this.notifications.error(errMsg);
           this.loading = false;
         }
       );

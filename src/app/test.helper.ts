@@ -1,4 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { Params } from "@angular/router";
+import { BehaviorSubject } from "rxjs";
 import {
   API_CONFIG,
   API_ROOT,
@@ -24,6 +26,7 @@ import { MockSecurityService } from "./services/baw-api/mock/securityMock.servic
 import { MockShowApiService } from "./services/baw-api/mock/showApiMock.service";
 import { MockStandardApiService } from "./services/baw-api/mock/standardApiMock.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
+import { ResolvedModel } from "./services/baw-api/resolver-common";
 import { SecurityService } from "./services/baw-api/security.service";
 import {
   ShallowSitesService,
@@ -68,3 +71,18 @@ export const testBawServices = [
   { provide: ShallowSitesService, useClass: MockStandardApiService },
   { provide: UserService, useClass: MockShowApiService }
 ];
+
+export function mockActivatedRoute(
+  data: {
+    [key: string]: ResolvedModel<any>;
+  } = {},
+  params: { [key: string]: string | number } = {},
+  queryParams: Params = {}
+) {
+  return class MockActivatedRoute {
+    public snapshot = { data, queryParams };
+    public data = new BehaviorSubject<any>(data);
+    public params = new BehaviorSubject<any>(params);
+    public queryParams = new BehaviorSubject<Params>(queryParams);
+  };
+}

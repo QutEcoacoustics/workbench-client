@@ -1,70 +1,59 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { UserService } from "src/app/services/baw-api/user.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { MyEditComponent } from "./my-edit.component";
 
-xdescribe("MyProfileEditComponent", () => {
+describe("MyProfileEditComponent", () => {
   let api: UserService;
   let component: MyEditComponent;
   let fixture: ComponentFixture<MyEditComponent>;
+  let defaultError: ApiErrorDetails;
+  let defaultUser: User;
 
-  beforeEach(() => {
+  function configureTestingModule(user: User, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [MyEditComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            user: {
+              model: user,
+              error
+            }
+          })
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyEditComponent);
-    api = TestBed.inject(UserService);
     component = fixture.componentInstance;
-    component.schema.model = { edit: { name: "" } };
+    api = TestBed.inject(UserService);
+
+    fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    defaultUser = new User({
+      id: 1,
+      userName: "Username"
+    });
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
   });
 
-  it("should create", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<User>();
-
-      setTimeout(() => {
-        subject.next(
-          new User({
-            id: 1,
-            userName: "username",
-            rolesMask: 2,
-            rolesMaskNames: ["user"],
-            timezoneInformation: null,
-            imageUrls: [
-              {
-                size: "extralarge",
-                url: "/images/user/user_span4.png",
-                width: 300,
-                height: 300
-              }
-            ],
-            lastSeenAt: "2019-12-16T16:21:25.144+10:00",
-            preferences: null
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
+  it("should create", () => {
+    configureTestingModule(defaultUser, undefined);
     expect(component).toBeTruthy();
-  }));
+  });
 });

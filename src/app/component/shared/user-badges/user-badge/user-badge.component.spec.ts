@@ -57,7 +57,7 @@ class TestUserBadgeComponent implements OnInit {
   }
 }
 
-xdescribe("UserBadgeComponent", () => {
+describe("UserBadgeComponent", () => {
   let component: UserBadgeComponent;
   let fixture: ComponentFixture<UserBadgeComponent>;
 

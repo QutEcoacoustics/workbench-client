@@ -35,7 +35,6 @@ import { fields } from "./confirm-account.json";
         [title]="'Resend confirmation instructions?'"
         [submitLabel]="'Resend confirmation instructions'"
         [submitLoading]="loading"
-        [error]="error"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
@@ -44,7 +43,6 @@ import { fields } from "./confirm-account.json";
 export class ConfirmPasswordComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   schema = { model: {}, fields };
-  error: string;
   loading: boolean;
 
   constructor() {

@@ -1,278 +1,132 @@
 import {
   ComponentFixture,
   fakeAsync,
-  TestBed,
-  tick
+  flush,
+  TestBed
 } from "@angular/core/testing";
-import { Subject } from "rxjs";
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { mockProject, Project } from "src/app/models/Project";
+import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { testBawServices } from "src/app/test.helper";
+import {
+  getInputs,
+  inputValue,
+  submitForm,
+  testFormlyField
+} from "src/testHelpers";
 import { NewComponent } from "./new.component";
+import { fields } from "./new.json";
 
-xdescribe("ProjectsNewComponent", () => {
+describe("ProjectsNewComponent", () => {
   let api: ProjectsService;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
+  let notifications: ToastrService;
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
       providers: [...testBawServices]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
     api = TestBed.inject(ProjectsService);
+    router = TestBed.inject(Router);
+    notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
-    fixture.detectChanges();
 
-    component.schema.model = {};
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
+
+    fixture.detectChanges();
   });
 
   it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should eventually load form", () => {
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']")
-    ).toBeTruthy();
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']").disabled
-    ).toBeFalsy();
-  });
-
-  it("should contain three inputs", () => {
-    expect(
-      fixture.nativeElement.querySelectorAll("form formly-field").length
-    ).toBe(3);
-  });
-
-  /* Project Name Input */
-
-  it("should contain project name input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[0]
-      .querySelector("label");
-
-    expect(input).toBeTruthy("Form should contain input as first field");
-    expect(input.id).toContain(
-      "_name_",
-      "Project name input id should be 'name'"
-    );
-    expect(input.type).toBe(
-      "text",
-      "Project name input should be of type 'text'"
-    );
-    expect(input.required).toBeTruthy("Project name input should be required");
-
-    expect(label).toBeTruthy("Project name input should have label");
-    expect(label.innerText).toContain(
-      "Project Name",
-      "Project name label should be 'Project Name'"
-    );
-  });
-
-  /* Project Description Textarea */
-
-  it("should contain project description textarea", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("textarea");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[1]
-      .querySelector("label");
-
-    expect(input).toBeTruthy("Form should contain textarea as second field");
-    expect(input.id).toContain(
-      "_description_",
-      "Project description field id should be 'description'"
-    );
-    expect(input.required).toBeFalsy(
-      "Project description field should not be required"
-    );
-
-    expect(label).toBeTruthy("Project name input should have label");
-    expect(label.innerText).toContain(
-      "Description",
-      "Project description label should be 'Description'"
-    );
-  });
-
-  /* Project Image Input */
-
-  it("should contain site image input", () => {
-    const input = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("formly-image-input input");
-    const label = fixture.nativeElement
-      .querySelectorAll("form formly-field")[2]
-      .querySelector("label");
-
-    expect(input).toBeTruthy(
-      "Form should contain custom image input as third field"
-    );
-    expect(input.id).toContain("_image_", "Image input id should be 'image'");
-    expect(input.type).toBe("file", "Image input should be of type 'file'");
-    expect(input.required).toBeFalsy("Image input should not be required");
-
-    expect(label).toBeTruthy("Image input should have label");
-    expect(label.innerText).toContain("Image", "Image label should be 'Image'");
-  });
-
-  /* End of input typing checks */
-
-  it("should not call submit function with missing project name", fakeAsync(() => {
-    spyOn(component, "submit");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing project name", fakeAsync(() => {
-    spyOn(component, "submit");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should create new project on submit", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalledWith(
-      new Project({
-        name: "test project"
-      })
-    );
-  }));
-
-  it("should create new project containing emoji on submit", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project 😀";
-    name.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalledWith(
-      new Project({
-        name: "test project 😀"
-      })
-    );
-  }));
-
-  it("should create new project on submit with description", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create");
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
-
-    const description = fixture.nativeElement.querySelectorAll("textarea")[0];
-    description.value = "test description";
-    description.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.submit).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalled();
-    expect(api.create).toHaveBeenCalledWith(
-      new Project({
-        name: "test project",
-        description: "test description"
-      })
-    );
-  }));
-
-  xit("should create new project on submit with image", fakeAsync(() => {}));
-  xit("should create new project on submit with all inputs", fakeAsync(() => {}));
-
-  it("should show success on successful submission", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(mockProject);
-        subject.complete();
-      }, 50);
-
-      return subject;
+  describe("form", () => {
+    it("should eventually load form", () => {
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']")
+      ).toBeTruthy();
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']").disabled
+      ).toBeFalsy();
     });
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+    it("should contain three inputs", () => {
+      expect(
+        fixture.nativeElement.querySelectorAll("form formly-field").length
+      ).toBe(3);
+    });
 
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
+    /* Project Name Input */
+    testFormlyField(
+      "Project Name Input",
+      undefined,
+      fields[0],
+      "name",
+      "input",
+      true,
+      "Project Name",
+      "text"
+    );
 
-    tick(100);
-    fixture.detectChanges();
+    /* Project Description Textarea */
+    testFormlyField(
+      "Project Description Input",
+      undefined,
+      fields[1],
+      "description",
+      "textarea",
+      false,
+      "Description"
+    );
 
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-success");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain("Project was successfully created.");
-  }));
+    /* Project Image Input */
+    testFormlyField(
+      "Project Image Input",
+      undefined,
+      fields[2],
+      "image",
+      "image",
+      false,
+      "Image"
+    );
+  });
 
-  it("should show error on duplicate project name", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
+  describe("form error handling", () => {
+    it("should not call submit function with missing project name", fakeAsync(() => {
+      spyOn(component, "submit");
 
-      setTimeout(() => {
+      submitForm(fixture);
+      expect(component.submit).not.toHaveBeenCalled();
+    }));
+
+    it("should show error message with missing project name", fakeAsync(() => {
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
+  });
+
+  describe("failed submissions", () => {
+    it("should handle duplicate project name", fakeAsync(() => {
+      spyOn(api, "create").and.callFake(() => {
+        const subject = new Subject<Project>();
+
         subject.error({
           message: "Record could not be saved",
           status: 422,
@@ -285,175 +139,177 @@ xdescribe("ProjectsNewComponent", () => {
             image_updated_at: []
           }
         } as ApiErrorDetails);
-      }, 50);
 
-      return subject;
-    });
+        return subject;
+      });
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Record could not be saved: name has already been taken"
+      );
+    }));
 
-    tick(100);
-    fixture.detectChanges();
+    it("should handle general error", fakeAsync(() => {
+      spyOn(api, "create").and.callFake(() => {
+        const subject = new Subject<Project>();
 
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain(
-      "Record could not be saved: name has already been taken"
-    );
-  }));
-
-  it("should show error on unauthorized", fakeAsync(() => {
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
         subject.error({
-          message: "Unauthorized",
+          message: "Sign in to access this feature.",
           info: 401
         } as ApiErrorDetails);
-      }, 50);
 
-      return subject;
-    });
+        return subject;
+      });
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Sign in to access this feature."
+      );
+    }));
 
-    tick(100);
-    fixture.detectChanges();
+    it("should re-enable submit button after failed submission", fakeAsync(() => {
+      spyOn(api, "create").and.callFake(() => {
+        const subject = new Subject<Project>();
 
-    const msg = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText).toContain("Unauthorized");
-  }));
-
-  it("should disable submit button during successful submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(mockProject);
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
-
-    button.click();
-
-    tick(10);
-
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeTruthy("Button should be disabled");
-
-    tick(100);
-    fixture.detectChanges();
-  }));
-
-  it("should disable submit button during error submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
         subject.error({
-          message: "Unauthorized",
+          message: "Sign in to access this feature.",
           info: 401
         } as ApiErrorDetails);
-      }, 50);
 
-      return subject;
-    });
+        return subject;
+      });
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Project");
+      submitForm(fixture);
 
-    button.click();
+      flush();
+      fixture.detectChanges();
 
-    tick(10);
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeFalsy("Button should not be disabled");
+    }));
+  });
 
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeTruthy("Button should be disabled");
+  describe("successful submissions", () => {
+    it("should call create", fakeAsync(() => {
+      spyOn(api, "create");
 
-    tick(100);
-    fixture.detectChanges();
-  }));
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-  it("should re-enable submit button after successful submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
+      expect(api.create).toHaveBeenCalled();
+    }));
 
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
+    it("should call create with name", fakeAsync(() => {
+      spyOn(api, "create");
 
-      setTimeout(() => {
-        subject.next(mockProject);
-        subject.complete();
-      }, 50);
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-      return subject;
-    });
+      expect(api.create).toHaveBeenCalledWith(
+        new Project({ name: "Test Project" })
+      );
+    }));
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+    it("should call create with description", fakeAsync(() => {
+      spyOn(api, "create");
 
-    button.click();
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      inputValue(inputs[1], "textarea", "Test Description");
+      submitForm(fixture);
 
-    tick(100);
-    fixture.detectChanges();
+      expect(api.create).toHaveBeenCalledWith(
+        new Project({
+          name: "Test Project",
+          description: "Test Description"
+        })
+      );
+    }));
 
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeFalsy("Button should not be disabled");
-  }));
+    xit("should call create with image", fakeAsync(() => {}));
+    xit("should call create with all inputs", fakeAsync(() => {}));
 
-  it("should re-enable submit button after error submission", fakeAsync(() => {
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
+    it("should create success notification on submit", fakeAsync(() => {
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Project>(
+          new Project({
+            id: 1,
+            name: "Test Project"
+          })
+        );
+      });
 
-    spyOn(component, "submit").and.callThrough();
-    spyOn(api, "create").and.callFake(() => {
-      const subject = new Subject<Project>();
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-      setTimeout(() => {
-        subject.error({
-          message: "Unauthorized",
-          info: 401
-        } as ApiErrorDetails);
-      }, 50);
+      expect(notifications.success).toHaveBeenCalledWith(
+        "Project was successfully created."
+      );
+    }));
 
-      return subject;
-    });
+    it("should navigate user to project on submit", fakeAsync(() => {
+      const project = new Project({
+        id: 1,
+        name: "Test Project"
+      });
 
-    const name = fixture.nativeElement.querySelectorAll("input")[0];
-    name.value = "test project";
-    name.dispatchEvent(new Event("input"));
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Project>(project);
+      });
 
-    button.click();
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
 
-    tick(100);
-    fixture.detectChanges();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(project.redirectPath());
+    }));
 
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeFalsy("Button should not be disabled");
-  }));
+    it("should disable submit button during submission", fakeAsync(() => {
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Project");
+      submitForm(fixture);
+
+      flush();
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeTruthy("Button should be disabled");
+    }));
+
+    it("should reset form on successful submit", fakeAsync(() => {
+      spyOn(component, "resetForms");
+      spyOn(api, "create").and.callFake(() => {
+        return new BehaviorSubject<Project>(
+          new Project({
+            id: 1,
+            name: "Test Project"
+          })
+        );
+      });
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[0], "input", "Test Project");
+      submitForm(fixture);
+
+      expect(component.resetForms).toHaveBeenCalled();
+      expect(component.isFormTouched()).toBeFalse();
+    }));
+  });
 });

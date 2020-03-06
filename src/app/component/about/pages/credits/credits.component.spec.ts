@@ -9,7 +9,7 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
 import { testAppInitializer } from "src/app/test.helper";
 import { CreditsComponent } from "./credits.component";
 
-xdescribe("AboutCreditsComponent", () => {
+describe("AboutCreditsComponent", () => {
   let httpMock: HttpTestingController;
   let component: CreditsComponent;
   let env: AppConfigService;

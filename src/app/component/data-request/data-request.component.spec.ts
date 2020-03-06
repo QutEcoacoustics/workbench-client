@@ -10,7 +10,7 @@ import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared/shared.module";
 import { DataRequestComponent } from "./data-request.component";
 
-xdescribe("DataRequestComponent", () => {
+describe("DataRequestComponent", () => {
   let httpMock: HttpTestingController;
   let component: DataRequestComponent;
   let env: AppConfigService;

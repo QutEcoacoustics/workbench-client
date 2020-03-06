@@ -6,7 +6,7 @@ import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-accoun
 import { LoginComponent } from "./pages/login/login.component";
 import { RegisterComponent } from "./pages/register/register.component";
 import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
-import { UnlockPasswordComponent } from "./pages/unlock-account/unlock-account.component";
+import { UnlockAccountComponent } from "./pages/unlock-account/unlock-account.component";
 import { securityRoute } from "./security.menus";
 
 const components = [
@@ -14,7 +14,7 @@ const components = [
   RegisterComponent,
   ResetPasswordComponent,
   ConfirmPasswordComponent,
-  UnlockPasswordComponent
+  UnlockAccountComponent
 ];
 
 const routes = securityRoute.compileRoutes(GetRouteConfigForPage);

@@ -1,10 +1,11 @@
 {
   "fields": [
     {
-      "key": "email",
+      "key": "login",
       "type": "input",
       "templateOptions": {
         "label": "Username or Email Address",
+        "type": "text",
         "required": true
       }
     }

@@ -1,19 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testBawServices } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test.helper";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
   template: "<app-error-handler [error]='error'></app-error-handler>"
 })
-class TestErrorHandlerComponent implements OnInit {
+class MockComponent implements OnInit {
   error: ApiErrorDetails;
 
   constructor(private ref: ChangeDetectorRef) {}
@@ -24,31 +20,62 @@ class TestErrorHandlerComponent implements OnInit {
       message: "You need to log in or register before continuing."
     } as ApiErrorDetails;
     this.ref.detectChanges();
+  }
 
-    setTimeout(() => {
-      this.error = {
-        status: 404,
-        message: "Could not find the requested item."
-      } as ApiErrorDetails;
-      this.ref.detectChanges();
-    }, 50);
+  setError(error: ApiErrorDetails) {
+    this.error = error;
+    this.ref.detectChanges();
   }
 }
 
-xdescribe("ErrorHandlerComponent", () => {
+describe("ErrorHandlerComponent", () => {
   let component: ErrorHandlerComponent;
+  let mockComponent: MockComponent;
   let fixture: ComponentFixture<ErrorHandlerComponent>;
+  let mockFixture: ComponentFixture<MockComponent>;
+
+  function assertTitle(
+    title: string,
+    nativeElement: any = fixture.nativeElement
+  ) {
+    const titleEl = nativeElement.querySelector("h1");
+
+    if (!title) {
+      expect(titleEl).toBeFalsy();
+      return;
+    }
+
+    expect(titleEl).toBeTruthy();
+    expect(titleEl.innerText.trim()).toBe(title);
+  }
+
+  function assertDescription(
+    description: string,
+    nativeElement: any = fixture.nativeElement
+  ) {
+    const bodyEl = nativeElement.querySelector("p");
+
+    if (!description) {
+      expect(bodyEl).toBeFalsy();
+      return;
+    }
+
+    expect(bodyEl).toBeTruthy();
+    expect(bodyEl.innerText).toBe(description);
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule],
-      declarations: [ErrorHandlerComponent, TestErrorHandlerComponent],
-      providers: [...testBawServices]
+      imports: [SharedModule, RouterTestingModule],
+      declarations: [ErrorHandlerComponent, MockComponent],
+      providers: [...testAppInitializer]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
+    mockFixture = TestBed.createComponent(MockComponent);
 
     component = fixture.componentInstance;
+    mockComponent = mockFixture.componentInstance;
   });
 
   it("should create", () => {
@@ -63,15 +90,8 @@ xdescribe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unauthorized access");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe(
-      "You need to log in or register before continuing."
-    );
+    assertTitle("Unauthorized Access");
+    assertDescription("You need to log in or register before continuing.");
   });
 
   it("should handle not found code", () => {
@@ -81,29 +101,8 @@ xdescribe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Not found");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe("Could not find the requested item.");
-  });
-
-  it("should handle forbidden code", () => {
-    component.error = {
-      status: 403,
-      message: "You must request access to this resource."
-    } as ApiErrorDetails;
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Forbidden");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe("You must request access to this resource.");
+    assertTitle("Not Found");
+    assertDescription("Could not find the requested item.");
   });
 
   it("should handle zero code", () => {
@@ -113,13 +112,8 @@ xdescribe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unknown Error");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe("Unknown error has occurred.");
+    assertTitle("Unknown Error");
+    assertDescription("Unknown error has occurred.");
   });
 
   it("should handle unknown code", () => {
@@ -129,62 +123,43 @@ xdescribe("ErrorHandlerComponent", () => {
     } as ApiErrorDetails;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toBe("Unknown Error");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe("Unknown error has occurred.");
+    assertTitle("Unknown Error");
+    assertDescription("Unknown error has occurred.");
   });
 
   it("should handle undefined code", () => {
     component.error = undefined;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeFalsy();
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeFalsy();
+    assertTitle(undefined);
+    assertDescription(undefined);
   });
 
   it("should handle null code", () => {
     component.error = null;
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeFalsy();
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeFalsy();
+    assertTitle(undefined);
+    assertDescription(undefined);
   });
 
-  it("should detect changes", fakeAsync(() => {
-    const testFixture: ComponentFixture<TestErrorHandlerComponent> = TestBed.createComponent(
-      TestErrorHandlerComponent
+  it("should detect changes", () => {
+    mockFixture.detectChanges();
+
+    const nativeElement = mockFixture.nativeElement;
+    assertTitle("Unauthorized Access", nativeElement);
+    assertDescription(
+      "You need to log in or register before continuing.",
+      nativeElement
     );
 
-    testFixture.detectChanges();
+    mockComponent.setError({
+      status: 404,
+      message: "Could not find the requested item."
+    });
+    mockFixture.detectChanges();
 
-    const unauthorized = testFixture.nativeElement.querySelector("h1");
-    expect(unauthorized).toBeTruthy();
-    expect(unauthorized.innerText).toBe("Unauthorized access");
-
-    const body = testFixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe(
-      "You need to log in or register before continuing."
-    );
-
-    tick(100);
-
-    testFixture.detectChanges();
-
-    const notFound = testFixture.nativeElement.querySelector("h1");
-    expect(notFound).toBeTruthy();
-    expect(notFound.innerText).toBe("Not found");
-    expect(body).toBeTruthy();
-    expect(body.innerText).toBe("Could not find the requested item.");
-  }));
+    assertTitle("Not Found", nativeElement);
+    assertDescription("Could not find the requested item.", nativeElement);
+  });
 });

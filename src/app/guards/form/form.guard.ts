@@ -8,6 +8,7 @@ import { FormComponent } from "src/app/component/shared/form/form.component";
 export interface FormCheckingComponent {
   appForms: QueryList<FormComponent>;
   isFormTouched(): boolean;
+  resetForms(): void;
 }
 
 /**
@@ -22,15 +23,21 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     /**
      * Determine if any forms have been touched
      */
-    isFormTouched() {
-      return this.appForms.some(appForm => appForm.form.dirty);
+    isFormTouched(): boolean {
+      return this.appForms
+        ? this.appForms.some(appForm => appForm.form.dirty)
+        : false;
     }
 
     /**
      * Reset all forms on the page, this should be used before navigation
      */
     resetForms() {
-      return this.appForms.map(appForm => appForm.form.markAsPristine());
+      if (!this.appForms) {
+        return;
+      }
+
+      this.appForms.map(appForm => appForm.form.markAsPristine());
     }
   }
 
@@ -44,7 +51,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
  */
 @Injectable()
 export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
-  canDeactivate(component: FormCheckingComponent) {
+  canDeactivate(component: FormCheckingComponent): boolean {
     // If component doesn't have a form, ignore it
     if (typeof component.isFormTouched !== "function") {
       return true;

@@ -1,16 +1,22 @@
+import { AgmCoreModule } from "@agm/core";
+import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { ToastrModule, ToastrService } from "ngx-toastr";
+import { formlyRoot, toastrRoot } from "src/app/app.helper";
+import { ApiResponse } from "src/app/services/baw-api/baw-api.service";
 import { LoadingComponent } from "../loading/loading.component";
-import { flattenFields, FormComponent } from "./form.component";
+import { FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
 export const ButtonClickEvents = {
@@ -32,9 +38,11 @@ export function click(
 
 describe("FormComponent", () => {
   let component: FormComponent;
+  let defaultSchema: any;
+  let errorSpy: jasmine.Spy;
   let fixture: ComponentFixture<FormComponent>;
   let httpMock: HttpTestingController;
-  let defaultSchema: any;
+  let notifications: ToastrService;
 
   function createSchema(field: FormlyFieldConfig[]) {
     return {
@@ -66,12 +74,16 @@ describe("FormComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
+        BrowserModule,
+        BrowserAnimationsModule,
         NgbModule,
-        FormsModule,
         ReactiveFormsModule,
+        AgmCoreModule.forRoot(),
+        AgmSnazzyInfoWindowModule,
         FormlyModule.forRoot(formlyRoot),
-        FormlyBootstrapModule
+        FormlyBootstrapModule,
+        ToastrModule.forRoot(toastrRoot),
+        HttpClientTestingModule
       ],
       declarations: [FormComponent, LoadingComponent]
     }).compileComponents();
@@ -81,6 +93,9 @@ describe("FormComponent", () => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+    notifications = TestBed.inject(ToastrService);
+
+    errorSpy = spyOn(notifications, "error").and.stub();
 
     defaultSchema = {
       model: {
@@ -153,16 +168,6 @@ describe("FormComponent", () => {
       expect(button).toBeTruthy();
       expect(button.innerText).toContain("Label");
     });
-  });
-
-  xdescribe("Notifications", () => {
-    beforeEach(() => {
-      component.schema = defaultSchema;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-    });
-
-    // TODO Write notification tests when Toastr is added
   });
 
   describe("Submit Button Type", () => {
@@ -509,11 +514,7 @@ describe("FormComponent", () => {
       click(button);
       fixture.detectChanges();
 
-      expect(buttonPressed).toBeFalsy();
-
-      const alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Please fill all required fields.");
+      expect(errorSpy).toHaveBeenCalledWith("Please fill all required fields.");
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {
@@ -587,35 +588,6 @@ describe("FormComponent", () => {
       expect(inputs[1].classList.value).toContain("ng-valid");
       expect(inputs[2].classList.value).toContain("is-invalid");
       expect(hints.length).toBe(2);
-    });
-
-    it("should show custom error message", () => {
-      component.schema = defaultSchema;
-      component.error = "Custom Error";
-
-      fixture.detectChanges();
-
-      const alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Custom Error");
-    });
-
-    it("should update with custom error after submission", () => {
-      component.schema = defaultSchema;
-      // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(() => {
-        component.error = "Custom Error";
-      });
-
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
-      const alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Custom Error");
     });
 
     it("should handle custom expression", () => {
@@ -707,10 +679,8 @@ describe("FormComponent", () => {
       component.submitFunction.subscribe(data => {
         expect(data).toBeTruthy();
         expect(data).toEqual({
-          register: {
-            password: "user input",
-            passwordConfirm: "user input"
-          }
+          password: "user input",
+          passwordConfirm: "user input"
         });
         done();
       });
@@ -794,7 +764,7 @@ describe("FormComponent", () => {
 
     function catchRequest(
       url: string,
-      response: any,
+      response: ApiResponse<any>,
       meta?: { status: number; statusText: string }
     ) {
       const req = httpMock.expectOne(url);
@@ -823,12 +793,23 @@ describe("FormComponent", () => {
       component.schemaUrl = url;
       fixture.detectChanges();
 
-      catchRequest(url, {}, { status: 404, statusText: "Resource not found" });
+      catchRequest(
+        url,
+        {
+          meta: {
+            status: 404,
+            message: "Resource not found",
+            error: { details: "Form not found" }
+          },
+          data: null
+        },
+        { status: 404, statusText: "Resource not found" }
+      );
       fixture.detectChanges();
 
-      const alert = fixture.nativeElement.querySelector("ngb-alert");
-      expect(alert).toBeTruthy();
-      expect(alert.innerText).toContain("Resource not found");
+      expect(errorSpy).toHaveBeenCalledWith(
+        "Http failure response for https://brokenlink/: 404 Resource not found"
+      );
     });
 
     it("should create form with schemaUrl", () => {
@@ -836,9 +817,12 @@ describe("FormComponent", () => {
       component.schemaUrl = url;
       fixture.detectChanges();
 
-      catchRequest(
-        url,
-        createSchema([
+      catchRequest(url, {
+        meta: {
+          status: 200,
+          message: "OK"
+        },
+        data: createSchema([
           {
             key: "name",
             type: "input",
@@ -866,7 +850,7 @@ describe("FormComponent", () => {
             }
           }
         ])
-      );
+      });
       fixture.detectChanges();
 
       const form = fixture.nativeElement.querySelector("form");
@@ -878,9 +862,12 @@ describe("FormComponent", () => {
       component.schemaUrl = url;
       fixture.detectChanges();
 
-      catchRequest(
-        url,
-        createSchema([
+      catchRequest(url, {
+        meta: {
+          status: 200,
+          message: "OK"
+        },
+        data: createSchema([
           {
             key: "name",
             type: "input",
@@ -908,7 +895,7 @@ describe("FormComponent", () => {
             }
           }
         ])
-      );
+      });
       fixture.detectChanges();
 
       const textInput = findInput(undefined, 0);
@@ -921,24 +908,29 @@ describe("FormComponent", () => {
     });
   });
 
-  describe("Flattening Output Object", () => {
+  describe("FlattenFields", () => {
+    it("should flatten undefined", () => {
+      const output = component.flattenFields(undefined);
+      expect(output).toEqual({});
+    });
+
     it("should flatten empty object", () => {
       const model = {};
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(model);
     });
 
     it("should flatten string value object", () => {
       const model = { key: "value" };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(model);
     });
 
     it("should flatten number value object", () => {
       const model = { key: 42 };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(model);
     });
@@ -954,7 +946,7 @@ describe("FormComponent", () => {
         group1: "value1",
         group2: "value2"
       };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(flattened);
     });
@@ -970,7 +962,7 @@ describe("FormComponent", () => {
         group1: 2,
         group2: 3
       };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(flattened);
     });
@@ -980,7 +972,7 @@ describe("FormComponent", () => {
         group: {}
       };
       const flattened = {};
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(flattened);
     });
@@ -998,7 +990,7 @@ describe("FormComponent", () => {
         group1: "value2",
         group2: 42
       };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(flattened);
     });
@@ -1025,7 +1017,7 @@ describe("FormComponent", () => {
         section1: 42,
         section2: "value3"
       };
-      const output = flattenFields(model);
+      const output = component.flattenFields(model);
 
       expect(output).toEqual(flattened);
     });

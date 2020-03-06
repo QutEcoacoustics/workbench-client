@@ -1,7 +1,8 @@
 import { DOCUMENT, Location } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { homeMenuItem } from "src/app/component/home/home.menus";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
@@ -42,30 +43,26 @@ import { fields } from "./login.json";
       [schema]="schema"
       [size]="'small'"
       [title]="'Log in'"
-      [error]="error"
       [submitLabel]="'Log in'"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-    <app-error-handler [error]="errorDetails"></app-error-handler>
   `
 })
 export class LoginComponent extends PageComponent implements OnInit {
   public schema = { model: {}, fields };
-  public error: string;
-  public errorDetails: ApiErrorDetails;
   public loading: boolean;
-  private redirectUrl: string;
   private redirectBack: boolean;
+  private redirectUrl: string;
 
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
+    @Inject(DOCUMENT) private document: Document,
     private api: SecurityService,
-    private router: Router,
-    private route: ActivatedRoute,
     private location: Location,
-    private ref: ChangeDetectorRef,
-    @Inject(DOCUMENT) private document: Document
+    private notifications: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     super();
   }
@@ -76,38 +73,34 @@ export class LoginComponent extends PageComponent implements OnInit {
     const noHistory = 1;
     const state: LocationState = this.location.getState() as LocationState;
 
-    this.route.queryParams.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (params: { redirect: string | boolean | undefined }) => {
-        const redirect = params.redirect;
+    const redirect: string | boolean | undefined = this.route.snapshot
+      .queryParams.redirect;
 
-        // If no redirect, redirect home
-        if (redirect === false) {
-          this.redirectUrl = homeMenuItem.route.toString();
-          return;
-        }
+    // If no redirect, redirect home
+    if (redirect === false) {
+      this.redirectUrl = homeMenuItem.route.toString();
+      return;
+    }
 
-        // If external redirect
-        if (typeof redirect === "string") {
-          const redirectUrl = url.parse(redirect);
-          const validUrl = url.parse(this.apiRoot);
+    // If external redirect
+    if (typeof redirect === "string") {
+      const redirectUrl = url.parse(redirect);
+      const validUrl = url.parse(this.apiRoot);
 
-          // Check if redirect url is safe
-          if (
-            redirect.startsWith("/") ||
-            redirectUrl.protocol + "//" + redirectUrl.hostname ===
-              validUrl.protocol + "//" + validUrl.hostname
-          ) {
-            this.redirectUrl = redirect;
-          }
-        }
+      // Check if redirect url is safe
+      if (
+        redirect.startsWith("/") ||
+        redirectUrl.protocol + "//" + redirectUrl.hostname ===
+          validUrl.protocol + "//" + validUrl.hostname
+      ) {
+        this.redirectUrl = redirect;
+      }
+    }
 
-        // Redirect to previous page unless there is no router history
-        if (state.navigationId !== noHistory) {
-          this.redirectBack = true;
-        }
-      },
-      err => {}
-    );
+    // Redirect to previous page unless there is no router history
+    if (state.navigationId !== noHistory) {
+      this.redirectBack = true;
+    }
   }
 
   /**
@@ -116,13 +109,14 @@ export class LoginComponent extends PageComponent implements OnInit {
    */
   submit($event: any) {
     this.loading = true;
-    this.ref.detectChanges();
 
     this.api
       .signIn(new LoginDetails($event))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => {
+          this.notifications.success("Successfully signed in.");
+
           if (this.redirectBack) {
             this.location.back();
           } else if (this.redirectUrl.startsWith("/")) {
@@ -130,11 +124,9 @@ export class LoginComponent extends PageComponent implements OnInit {
           } else {
             this.externalRedirect(this.redirectUrl);
           }
-
-          this.loading = false;
         },
         (err: ApiErrorDetails) => {
-          this.error = err.message;
+          this.notifications.error(err.message);
           this.loading = false;
         }
       );

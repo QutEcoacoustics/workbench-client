@@ -1,526 +1,216 @@
 import {
   ComponentFixture,
   fakeAsync,
-  TestBed,
-  tick
+  flush,
+  TestBed
 } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import { submitForm } from "src/testHelpers";
 import { projectsMenuItem } from "../../projects.menus";
 import { DeleteComponent } from "./delete.component";
 
-xdescribe("ProjectsDeleteComponent", () => {
-  let component: DeleteComponent;
+describe("ProjectsDeleteComponent", () => {
   let api: ProjectsService;
-  let router: Router;
+  let component: DeleteComponent;
+  let defaultError: ApiErrorDetails;
+  let defaultProject: Project;
   let fixture: ComponentFixture<DeleteComponent>;
+  let notifications: ToastrService;
+  let router: Router;
 
-  class MockActivatedRoute {
-    public params = new BehaviorSubject<any>({ projectId: 5 });
-  }
-  beforeEach(() => {
+  function configureTestingModule(
+    project: Project,
+    projectError: ApiErrorDetails
+  ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, RouterTestingModule, SharedModule],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [DeleteComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            project: {
+              model: project,
+              error: projectError
+            }
+          })
+        }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(ProjectsService);
     router = TestBed.inject(Router);
+    api = TestBed.inject(ProjectsService);
+    notifications = TestBed.inject(ToastrService);
+
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
+
+    fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    defaultProject = new Project({
+      id: 1,
+      name: "Project"
+    });
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
   });
 
   it("should create", () => {
-    fixture.detectChanges();
+    configureTestingModule(defaultProject, undefined);
+
     expect(component).toBeTruthy();
   });
 
-  it("should display loading spinner", () => {
-    fixture.detectChanges();
+  it("should handle project error", fakeAsync(() => {
+    configureTestingModule(undefined, defaultError);
 
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeTruthy();
+    const body = fixture.nativeElement;
+    expect(body.childElementCount).toBe(0);
+  }));
+
+  describe("form", () => {
+    it("should eventually load form", () => {
+      configureTestingModule(defaultProject, undefined);
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']")
+      ).toBeTruthy();
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']").disabled
+      ).toBeFalsy();
+    });
+
+    it("should display form with project name in title", fakeAsync(() => {
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
+
+      const title = fixture.nativeElement.querySelector("h2");
+      expect(title).toBeTruthy();
+      expect(title.innerText).toContain("Custom Project");
+    }));
+
+    it("should display form with red delete button", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+
+      const button = fixture.nativeElement.querySelector("button.btn-danger");
+      expect(button).toBeTruthy();
+      expect(button.innerText).toContain("Delete");
+    }));
   });
 
-  it("should hide loading spinner on form load", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
+  describe("failed submissions", () => {
+    it("should display form error on failure to submit", fakeAsync(() => {
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
+      spyOn(api, "destroy").and.callFake(() => {
+        const subject = new Subject<void>();
 
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeFalsy();
-  }));
-
-  it("should display form", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const form = fixture.nativeElement.querySelector("form");
-    expect(form).toBeTruthy();
-  }));
-
-  it("should show with route param id", fakeAsync(() => {
-    const showSpy = spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    expect(showSpy).toHaveBeenCalledWith(5);
-  }));
-
-  it("should handle unauthorized", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
         subject.error({
           status: 401,
           message: "You need to log in or register before continuing."
         } as ApiErrorDetails);
-      }, 50);
 
-      return subject;
-    });
+        return subject;
+      });
 
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
+      submitForm(fixture);
 
-    const errorHandler = fixture.nativeElement.querySelector(
-      "app-error-handler"
-    );
-    expect(errorHandler).toBeTruthy();
-    expect(errorHandler.querySelector("h1").innerText).toBe(
-      "Unauthorized access"
-    );
-    expect(errorHandler.querySelector("p").innerText).toBe(
-      "You need to log in or register before continuing."
-    );
-  }));
+      expect(notifications.error).toHaveBeenCalledWith(
+        "You need to log in or register before continuing."
+      );
+    }));
 
-  it("should handle not found", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
+    it("should re-enable submit button after failed submission", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "destroy").and.callFake(() => {
+        const subject = new Subject<Project>();
 
-      setTimeout(() => {
         subject.error({
-          status: 404,
-          message: "Project not found"
+          message: "Sign in to access this feature.",
+          info: 401
         } as ApiErrorDetails);
-      }, 50);
 
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const errorHandler = fixture.nativeElement.querySelector(
-      "app-error-handler"
-    );
-    expect(errorHandler).toBeTruthy();
-    expect(errorHandler.querySelector("h1").innerText).toBe("Not found");
-    expect(errorHandler.querySelector("p").innerText).toBe("Project not found");
-  }));
-
-  it("should display form with project name in title", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h2");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Custom Project");
-  }));
-
-  it("should display form with red delete button", fakeAsync(() => {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button.btn-danger");
-    expect(button).toBeTruthy();
-    expect(button.innerText).toContain("Delete");
-  }));
-
-  it("should delete project on submit", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    const deleteSpy = spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.next();
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    expect(deleteSpy).toHaveBeenCalledWith(5);
-  }));
-
-  it("should navigate on successful submit", fakeAsync(() => {
-    const navigateSpy = spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.next();
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    expect(navigateSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(projectsMenuItem.route.toRoute());
-  }));
-
-  it("should display form error on failure to submit", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "You need to log in or register before continuing."
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const alert = fixture.nativeElement.querySelector("ngb-alert.alert-danger");
-    expect(alert).toBeTruthy();
-    expect(alert.innerText).toContain(
-      "You need to log in or register before continuing."
-    );
-  }));
-
-  it("should disable submit button while submitting", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.next();
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-
-    expect(button.disabled).toBeTruthy();
-
-    tick(100);
-  }));
-
-  it("should re-enable submit button after submission success", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.next();
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    expect(button.disabled).toBeFalsy();
-  }));
-
-  it("should re-enable submit button after submission failure", fakeAsync(() => {
-    spyOn(router, "navigate").and.stub();
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Custom Project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-        subject.complete();
-      }, 50);
-
-      return subject;
-    });
-
-    spyOn(api, "destroy").and.callFake(() => {
-      const subject = new Subject<null>();
-
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "You need to log in or register before continuing."
-        } as ApiErrorDetails);
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    expect(button.disabled).toBeFalsy();
-  }));
+        return subject;
+      });
+
+      submitForm(fixture);
+
+      flush();
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeFalsy("Button should not be disabled");
+    }));
+  });
+
+  describe("successful submissions", () => {
+    it("should delete project on submit", fakeAsync(() => {
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
+      const deleteSpy = spyOn(api, "destroy").and.callFake(() => {
+        return new BehaviorSubject<null>(null);
+      });
+
+      submitForm(fixture);
+      expect(deleteSpy).toHaveBeenCalledWith(project);
+    }));
+
+    it("should navigate on successful submit", fakeAsync(() => {
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
+      spyOn(api, "destroy").and.callFake(() => {
+        return new BehaviorSubject<null>(null);
+      });
+
+      submitForm(fixture);
+
+      expect(router.navigateByUrl).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        projectsMenuItem.route.toString()
+      );
+    }));
+
+    it("should disable submit button while submitting", fakeAsync(() => {
+      configureTestingModule(defaultProject, undefined);
+      spyOn(api, "destroy").and.stub();
+
+      submitForm(fixture);
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button.disabled).toBeTruthy();
+    }));
+  });
 });

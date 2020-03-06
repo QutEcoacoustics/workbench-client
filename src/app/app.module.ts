@@ -6,8 +6,11 @@ import {
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
 import { forwardRef, Injectable, NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { ToastrModule } from "ngx-toastr";
 import { AppRoutingModule } from "./app-routing.module";
@@ -34,9 +37,12 @@ import { AppConfigService } from "./services/app-config/app-config.service";
 export const appLibraryImports = [
   BrowserModule,
   BrowserAnimationsModule,
+  NgbModule,
+  ReactiveFormsModule,
   AgmCoreModule.forRoot(),
   AgmSnazzyInfoWindowModule,
   FormlyModule.forRoot(formlyRoot),
+  FormlyBootstrapModule,
   ToastrModule.forRoot(toastrRoot)
 ];
 

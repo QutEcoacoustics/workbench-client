@@ -82,7 +82,7 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
         () => {
           this.resetForms();
           this.notification.success("Successfully deleted project.");
-          this.router.navigate(projectsMenuItem.route.toRoute());
+          this.router.navigateByUrl(projectsMenuItem.route.toString());
         },
         (err: ApiErrorDetails) => {
           this.loading = false;

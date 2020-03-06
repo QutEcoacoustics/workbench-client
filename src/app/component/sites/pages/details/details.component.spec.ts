@@ -1,645 +1,206 @@
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-  tick
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Subject } from "rxjs";
 import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { DetailsComponent } from "./details.component";
 
-xdescribe("SitesDetailsComponent", () => {
-  let projectsApi: ProjectsService;
-  let sitesApi: SitesService;
+describe("SitesDetailsComponent", () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
+  let defaultProject: Project;
+  let defaultSite: Site;
+  let defaultError: ApiErrorDetails;
 
-  beforeEach(() => {
+  function configureTestingModule(
+    project: Project,
+    projectError: ApiErrorDetails,
+    site: Site,
+    siteError: ApiErrorDetails
+  ) {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule, AgmSnazzyInfoWindowModule],
       declarations: [DetailsComponent, MockMapComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute({
+            project: {
+              model: project,
+              error: projectError
+            },
+            site: {
+              model: site,
+              error: siteError
+            }
+          })
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
-    projectsApi = TestBed.inject(ProjectsService);
-    sitesApi = TestBed.inject(SitesService);
-
     component = fixture.componentInstance;
+  }
+
+  beforeEach(() => {
+    defaultProject = new Project({
+      id: 1,
+      name: "Project"
+    });
+    defaultSite = new Site({
+      id: 1,
+      name: "Site"
+    });
+    defaultError = {
+      status: 401,
+      message: "Unauthorized"
+    };
   });
 
   it("should create", () => {
+    configureTestingModule(defaultProject, undefined, defaultSite, undefined);
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should initially display loading title", () => {
-    fixture.detectChanges();
+  describe("Error Handling", () => {
+    it("should handle failed project model", () => {
+      configureTestingModule(undefined, defaultError, defaultSite, undefined);
+      fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h4");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Loading");
+      const body = fixture.nativeElement;
+      expect(body.childElementCount).toBe(0);
+    });
+
+    it("should handle failed site model", () => {
+      configureTestingModule(
+        defaultProject,
+        undefined,
+        undefined,
+        defaultError
+      );
+      fixture.detectChanges();
+
+      const body = fixture.nativeElement;
+      expect(body.childElementCount).toBe(0);
+    });
   });
 
-  it("should initially display loading animation", () => {
-    fixture.detectChanges();
+  describe("Project", () => {
+    it("should display project name", () => {
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined, defaultSite, undefined);
+      fixture.detectChanges();
 
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeTruthy();
+      const title = fixture.nativeElement.querySelector("h1");
+      expect(title).toBeTruthy();
+      expect(title.innerText).toContain("Project: Custom Project");
+    });
   });
 
-  it("should handle project not found", () => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 404,
-        message: "Project Not Found"
-      } as ApiErrorDetails);
-      return subject;
+  describe("Site", () => {
+    it("should display site name", () => {
+      const site = new Site({
+        id: 1,
+        name: "Custom Site"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
+
+      const title = fixture.nativeElement.querySelector("h1");
+      expect(title).toBeTruthy();
+      expect(title.innerText).toContain("Custom Site");
     });
 
-    fixture.detectChanges();
+    it("should display default site image", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Not found");
+      const image = fixture.nativeElement.querySelector("img");
+      expect(image).toBeTruthy();
+      expect(image.src).toBe(
+        `http://${window.location.host}/assets/images/site/site_span4.png`
+      );
+      expect(image.alt.length).toBeGreaterThan(0);
+    });
+
+    it("should display custom site image", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site",
+        imageUrl: "http://brokenlink/"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
+
+      const image = fixture.nativeElement.querySelector("img");
+      expect(image).toBeTruthy();
+      expect(image.src).toBe("http://brokenlink/");
+      expect(image.alt.length).toBeGreaterThan(0);
+    });
+
+    it("should display site description", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site",
+        description: "Custom Description"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
+
+      const description = fixture.nativeElement.querySelector(
+        "p#site_description"
+      );
+      expect(description).toBeTruthy();
+      expect(description.innerText).toContain("Custom Description");
+    });
   });
 
-  it("should handle unauthorized project", () => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
+  describe("Google Maps", () => {
+    it("should display google maps placeholder box when no location found", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
+
+      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      expect(googleMaps).toBeTruthy();
+      expect(googleMaps.querySelector("span").innerText).toContain(
+        "No locations specified"
+      );
     });
 
-    fixture.detectChanges();
+    it("should display google maps with pin when location found", () => {
+      const site = new Site({
+        id: 1,
+        name: "Site",
+        locationObfuscated: true,
+        customLatitude: 0,
+        customLongitude: 1
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
+      fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Unauthorized access");
+      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      expect(googleMaps).toBeTruthy();
+      expect(googleMaps.querySelector("p").innerText).toContain(
+        "Lat: 0 Long: 1"
+      );
+    });
   });
-
-  it("should handle site not found", () => {
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      subject.error({
-        status: 404,
-        message: "Project Not Found"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Not found");
-  });
-
-  it("should handle unauthorized site", () => {
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Unauthorized access");
-  });
-
-  it("should show project error instead of site error when project loads first", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      subject.error({
-        status: 401,
-        message: "Unauthorized"
-      } as ApiErrorDetails);
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      setTimeout(() => {
-        subject.error({
-          status: 404,
-          message: "Site Not Found"
-        } as ApiErrorDetails);
-      }, 50);
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Unauthorized access");
-  }));
-
-  it("should show project error instead of site error when site loads first", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message: "Unauthorized"
-        } as ApiErrorDetails);
-      }, 50);
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-      subject.error({
-        status: 404,
-        message: "Site Not Found"
-      } as ApiErrorDetails);
-      return subject;
-    });
-
-    fixture.detectChanges();
-    tick(100);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Unauthorized access");
-  }));
-
-  it("should show loading until project returns", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 1000);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    // Only return sites
-    fixture.detectChanges();
-    tick(50);
-    fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelector("h4");
-    expect(loading).toBeTruthy();
-    expect(loading.innerText).toContain("Loading");
-
-    // Return project data
-    flush();
-    fixture.detectChanges();
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Test Site");
-    expect(title.querySelector("small").innerText).toContain(
-      "Project: Test project"
-    );
-  }));
-
-  it("should show loading until site returns", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 1000);
-
-      return subject;
-    });
-
-    // Only return sites
-    fixture.detectChanges();
-    tick(50);
-    fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelector("h4");
-    expect(loading).toBeTruthy();
-    expect(loading.innerText).toContain("Loading");
-
-    // Return project data
-    flush();
-    fixture.detectChanges();
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Test Site");
-    expect(title.querySelector("small").innerText).toContain(
-      "Project: Test project"
-    );
-  }));
-
-  it("should display project name", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Project: Test project");
-  }));
-
-  it("should display site name", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h1");
-    expect(title).toBeTruthy();
-    expect(title.innerText).toContain("Test Site");
-  }));
-
-  it("should display default site image", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const image = fixture.nativeElement.querySelector("img");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/site/site_span4.png`
-    );
-    expect(image.alt.length).toBeGreaterThan(0);
-  }));
-
-  it("should display custom site image", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0,
-            imageUrl: "http://brokenlink/"
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const image = fixture.nativeElement.querySelector("img");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe("http://brokenlink/");
-    expect(image.alt.length).toBeGreaterThan(0);
-  }));
-
-  it("should display description", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 0
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const description = fixture.nativeElement.querySelector(
-      "p#site_description"
-    );
-    expect(description).toBeTruthy();
-    expect(description.innerText).toContain("A sample site");
-  }));
-
-  it("should display google maps placeholder box when no location found", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: false
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const googleMaps = fixture.nativeElement.querySelector("app-map");
-    expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("span").innerText).toContain(
-      "No locations specified"
-    );
-  }));
-
-  it("should display google maps with pin when location found", fakeAsync(() => {
-    spyOn(projectsApi, "show").and.callFake(() => {
-      const subject = new Subject<Project>();
-
-      setTimeout(() => {
-        subject.next(
-          new Project({
-            id: 1,
-            name: "Test project",
-            description: "A test project",
-            creatorId: 1,
-            siteIds: new Set([])
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-    spyOn(sitesApi, "show").and.callFake(() => {
-      const subject = new Subject<Site>();
-
-      setTimeout(() => {
-        subject.next(
-          new Site({
-            id: 1,
-            name: "Test Site",
-            creatorId: 1,
-            description: "A sample site",
-            projectIds: new Set([1, 2, 3]),
-            locationObfuscated: true,
-            customLatitude: 0,
-            customLongitude: 1
-          })
-        );
-      }, 50);
-
-      return subject;
-    });
-
-    fixture.detectChanges();
-    flush();
-    fixture.detectChanges();
-
-    const googleMaps = fixture.nativeElement.querySelector("app-map");
-    expect(googleMaps).toBeTruthy();
-    expect(googleMaps.querySelector("p").innerText).toContain("Lat: 0 Long: 1");
-  }));
 });

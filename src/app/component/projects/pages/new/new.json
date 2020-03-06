@@ -4,6 +4,7 @@
       "key": "name",
       "type": "input",
       "templateOptions": {
+        "type": "text",
         "label": "Project Name",
         "required": true
       }

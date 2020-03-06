@@ -5,6 +5,7 @@
       "type": "input",
       "templateOptions": {
         "label": "Site Name",
+        "type": "text",
         "required": true
       }
     },

@@ -2,22 +2,38 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
-  TestBed,
-  tick
+  TestBed
 } from "@angular/core/testing";
-import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
+import {
+  assertValidationMessage,
+  getInputs,
+  inputValue,
+  submitForm,
+  testFormlyField
+} from "src/testHelpers";
 import { RegisterComponent } from "./register.component";
+import { fields } from "./register.json";
 
 describe("RegisterComponent", () => {
-  let component: RegisterComponent;
   let api: SecurityService;
-  let router: Router;
+  let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+  let notifications: ToastrService;
+
+  const usernameIndex = 1;
+  const emailIndex = 2;
+  const passwordIndex = 3;
+  const passwordConfIndex = 4;
+
+  function isSignedIn(signedIn: boolean = true) {
+    spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,436 +47,218 @@ describe("RegisterComponent", () => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     api = TestBed.inject(SecurityService);
-    router = TestBed.inject(Router);
+    notifications = TestBed.inject(ToastrService);
 
-    component.schema.model = {};
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
   });
 
   it("should create", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
+    isSignedIn(false);
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
   });
 
-  it("should eventually load form", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
+  describe("form inputs", () => {
+    it("should eventually load form", () => {
+      isSignedIn(false);
+      fixture.detectChanges();
 
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']")
-    ).toBeTruthy();
-    expect(
-      fixture.nativeElement.querySelector("button[type='submit']").disabled
-    ).toBeFalsy();
-  });
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']")
+      ).toBeTruthy();
+      expect(
+        fixture.nativeElement.querySelector("button[type='submit']").disabled
+      ).toBeFalsy();
+    });
 
-  it("should contain four inputs", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
+    it("should contain four inputs", () => {
+      isSignedIn(false);
+      fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll("input").length).toBe(4);
-  });
+      expect(fixture.nativeElement.querySelectorAll("input").length).toBe(4);
+    });
 
-  it("should contain username input as first input", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[0]).toBeTruthy();
-    expect(fixture.nativeElement.querySelectorAll("input")[0].type).toBe(
+    /* Username */
+    testFormlyField(
+      "Username Input",
+      undefined,
+      fields[0].fieldGroup[0],
+      "username",
+      "input",
+      true,
+      "Username",
       "text"
     );
-  });
 
-  it("username input should be required field", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelectorAll("input")[0].required
-    ).toBeTruthy();
-  });
-
-  it("username input should have username id", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[0].id).toContain(
-      "_input_username_"
-    );
-  });
-
-  it("should contain email input as second input", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[1]).toBeTruthy();
-    expect(fixture.nativeElement.querySelectorAll("input")[1].type).toBe(
+    /* Email */
+    testFormlyField(
+      "Email Input",
+      undefined,
+      fields[0].fieldGroup[1],
+      "email",
+      "input",
+      true,
+      "Email Address",
       "email"
     );
-  });
 
-  it("email input should be required field", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelectorAll("input")[1].required
-    ).toBeTruthy();
-  });
-
-  it("email input should have email id", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[1].id).toContain(
-      "_input_email_"
+    /* Password */
+    testFormlyField(
+      "Password Input",
+      undefined,
+      fields[0].fieldGroup[2],
+      "password",
+      "input",
+      true,
+      "Password",
+      "password"
     );
-  });
 
-  it("should contain password input as third input", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[2]).toBeTruthy();
-    expect(fixture.nativeElement.querySelectorAll("input")[2].type).toBe(
+    /* Password Confirmation */
+    testFormlyField(
+      "Password Confirmation Input",
+      undefined,
+      fields[0].fieldGroup[3],
+      "passwordConfirm",
+      "input",
+      true,
+      "Password Confirmation",
       "password"
     );
   });
 
-  it("password input should be required field", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
+  describe("submit logic", () => {
+    it("should display error with missing username", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
 
-    expect(
-      fixture.nativeElement.querySelectorAll("input")[2].required
-    ).toBeTruthy();
+      const inputs = getInputs(fixture);
+      inputValue(inputs[emailIndex], "input", "a@b.com.au");
+      inputValue(inputs[passwordIndex], "input", "password");
+      inputValue(inputs[passwordConfIndex], "input", "password");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
+
+    it("should display error with missing email", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[usernameIndex], "input", "username");
+      inputValue(inputs[passwordIndex], "input", "password");
+      inputValue(inputs[passwordConfIndex], "input", "password");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
+
+    it("should display error with missing password", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[usernameIndex], "input", "username");
+      inputValue(inputs[emailIndex], "input", "a@b.com.au");
+      inputValue(inputs[passwordConfIndex], "input", "password");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
+
+    it("should display error with missing password confirmation", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[usernameIndex], "input", "username");
+      inputValue(inputs[emailIndex], "input", "a@b.com.au");
+      inputValue(inputs[passwordIndex], "input", "password");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+    }));
+
+    it("should display error if password and password confirmation do not match", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[usernameIndex], "input", "username");
+      inputValue(inputs[emailIndex], "input", "a@b.com.au");
+      inputValue(inputs[passwordIndex], "input", "password 1");
+      inputValue(inputs[passwordConfIndex], "input", "password 2");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+      assertValidationMessage(
+        inputs[passwordConfIndex],
+        "Passwords do not match."
+      );
+    }));
+
+    it("should display error if password is less than 6 characters", fakeAsync(() => {
+      isSignedIn(false);
+      spyOn(component, "submit");
+      fixture.detectChanges();
+
+      const inputs = getInputs(fixture);
+      inputValue(inputs[usernameIndex], "input", "username");
+      inputValue(inputs[emailIndex], "input", "a@b.com.au");
+      inputValue(inputs[passwordIndex], "input", "pass");
+      inputValue(inputs[passwordConfIndex], "input", "pass");
+      submitForm(fixture);
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
+      assertValidationMessage(
+        inputs[passwordConfIndex],
+        "Input should have at least 6 characters"
+      );
+    }));
   });
 
-  it("password input should have password id", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
+  describe("authenticated user", () => {
+    it("should show error for authenticated user", () => {
+      isSignedIn(true);
+      fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll("input")[2].id).toContain(
-      "_input_password_"
-    );
+      expect(notifications.error).toHaveBeenCalledWith(
+        "You are already logged in."
+      );
+    });
+
+    it("should disable submit button for authenticated user", () => {
+      isSignedIn(true);
+      fixture.detectChanges();
+
+      const button = fixture.nativeElement.querySelector(
+        "button[type='submit']"
+      );
+      expect(button).toBeTruthy();
+      expect(button.disabled).toBeTruthy();
+    });
   });
 
-  it("should contain password confirmation input as fourth input", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[3]).toBeTruthy();
-    expect(fixture.nativeElement.querySelectorAll("input")[3].type).toBe(
-      "password"
-    );
-  });
-
-  it("password confirmation input should be required field", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelectorAll("input")[3].required
-    ).toBeTruthy();
-  });
-
-  it("password confirmation input should have passwordConfirm id", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelectorAll("input")[3].id).toContain(
-      "_input_passwordConfirm_"
-    );
-  });
-
-  it("should not call submit function with missing username", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "";
-    username.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing username", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "";
-    username.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should not call submit function with missing email", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing email", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "";
-    email.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should not call submit function with missing password", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "";
-    password.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing password", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "";
-    password.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should not call submit function with missing password confirmation", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with missing password confirmation", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  xit("should not call submit function with non matching passwords", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "username";
-    username.dispatchEvent(new Event("input"));
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "password";
-    password.dispatchEvent(new Event("input"));
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "bad password";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  xit("should show error message with non matching passwords", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "username";
-    username.dispatchEvent(new Event("input"));
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "password";
-    password.dispatchEvent(new Event("input"));
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "bad password";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should not call submit function with password less than 6 characters long", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "username";
-    username.dispatchEvent(new Event("input"));
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "12345";
-    password.dispatchEvent(new Event("input"));
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "12345";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-    expect(component.submit).not.toHaveBeenCalled();
-  }));
-
-  it("should show error message with password less than 6 characters long", fakeAsync(() => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-    spyOn(component, "submit");
-    fixture.detectChanges();
-
-    const username = fixture.nativeElement.querySelectorAll("input")[0];
-    username.value = "username";
-    username.dispatchEvent(new Event("input"));
-
-    const email = fixture.nativeElement.querySelectorAll("input")[1];
-    email.value = "email";
-    email.dispatchEvent(new Event("input"));
-
-    const password = fixture.nativeElement.querySelectorAll("input")[2];
-    password.value = "12345";
-    password.dispatchEvent(new Event("input"));
-
-    const passwordConf = fixture.nativeElement.querySelectorAll("input")[3];
-    passwordConf.value = "12345";
-    passwordConf.dispatchEvent(new Event("input"));
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    button.click();
-
-    tick();
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  }));
-
-  it("should show error for authenticated user", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => true);
-    fixture.detectChanges();
-
-    const msg = fixture.nativeElement.querySelector("ngb-alert");
-    expect(msg).toBeTruthy();
-    expect(msg.innerText.length).toBeGreaterThan(2); // Alert places a ' x' at the end of the message
-  });
-
-  it("should disable submit button for authenticated user", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => true);
-    fixture.detectChanges();
-
-    const button = fixture.nativeElement.querySelector("button[type='submit']");
-    expect(button).toBeTruthy();
-    expect(button.disabled).toBeTruthy();
-  });
-
+  // TODO Write this test
   xit("should register account on submit", () => {});
 });
