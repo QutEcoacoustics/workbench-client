@@ -8,6 +8,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { ToastrModule } from "ngx-toastr";
 import { DatatableDirective } from "src/app/directives/datatable/datatable.directive";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
