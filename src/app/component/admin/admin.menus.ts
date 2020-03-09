@@ -31,6 +31,7 @@ export const adminUserListMenuItem = MenuRoute({
   label: "User List",
   route: adminRoute.add("user_accounts"),
   tooltip: () => "Manage user accounts",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -39,6 +40,7 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   label: "Orphan Sites",
   route: adminRoute.add("sites"),
   tooltip: () => "Manage orphaned sites",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -47,6 +49,7 @@ export const adminScriptsMenuItem = MenuRoute({
   label: "Scripts",
   route: adminRoute.add("scripts"),
   tooltip: () => "Manage custom scripts",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -55,6 +58,7 @@ export const adminNewScriptsMenuItem = MenuRoute({
   label: "New Script",
   route: adminScriptsMenuItem.route.add("new"),
   tooltip: () => "Create a new script",
+  parent: adminScriptsMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -63,6 +67,7 @@ export const adminTagsMenuItem = MenuRoute({
   label: "Tags",
   route: adminRoute.add("tags"),
   tooltip: () => "Manage tags",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -71,6 +76,7 @@ export const adminNewTagMenuItem = MenuRoute({
   label: "New Tag",
   route: adminTagsMenuItem.route.add("new"),
   tooltip: () => "Create a new tag",
+  parent: adminTagsMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -79,6 +85,7 @@ export const adminTagGroupsMenuItem = MenuRoute({
   label: "Tag Group",
   route: adminRoute.add("tags"),
   tooltip: () => "Manage tags",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -87,6 +94,7 @@ export const adminNewTagGroupMenuItem = MenuRoute({
   label: "New Tag Group",
   route: adminTagsMenuItem.route.add("new"),
   tooltip: () => "Create a new tag group",
+  parent: adminTagGroupsMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -95,6 +103,7 @@ export const adminAudioRecordingsMenuItem = MenuRoute({
   label: "Audio Recordings",
   route: adminRoute.add("audio_recordings"),
   tooltip: () => "Manage audio recordings",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -103,6 +112,7 @@ export const adminAnalysisJobsMenuItem = MenuRoute({
   label: "Analysis Jobs",
   route: adminRoute.add("analysis_jobs"),
   tooltip: () => "Manage analysis jobs",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -111,5 +121,6 @@ export const adminJobStatus = MenuLink({
   label: "Job Status",
   tooltip: () => "Job queue status overview",
   uri: () => "/job_queue_status/overview",
+  parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
 });
