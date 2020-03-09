@@ -39,9 +39,9 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
   constructor(api: AccountService) {
     super(api, accounts =>
       accounts.map(account => ({
-        account: account,
+        account,
         user: account.userName,
-        lastLogin: account.lastSeenAt.toRelative(),
+        lastLogin: account.lastSeenAt ? account.lastSeenAt.toRelative() : "?",
         confirmed: account.isConfirmed
       }))
     );
@@ -57,10 +57,19 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
     this.getModels();
   }
 
+  /**
+   * Return the user redirect path.
+   * This is outside the HTML file for static compiler analysis
+   * @param user User account
+   */
   public viewPath(user: User) {
     return user.redirectPath();
   }
 
+  /**
+   * Produce the router path to the edit their account page
+   * @param user User Account
+   */
   public editPath(user: User) {
     return theirEditProfileMenuItem.route
       .toString()

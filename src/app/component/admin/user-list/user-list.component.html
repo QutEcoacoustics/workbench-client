@@ -1,8 +1,8 @@
-<ng-container *ngIf="rows">
+<ng-container *ngIf="rows && !error">
   <h1>User List</h1>
 
   <p>
-    Displaying <strong>all {{ totalModels }}</strong> user(s)
+    Displaying <strong>all {{ totalModels }}</strong> user/s
   </p>
 
   <ngx-datatable

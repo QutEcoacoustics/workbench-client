@@ -1,16 +1,16 @@
-import { PageComponent } from "../page/pageComponent";
 import { ViewChild } from "@angular/core";
 import {
-  DatatableComponent,
   ColumnMode,
-  SortType,
+  DatatableComponent,
   SelectionType,
+  SortType,
   TableColumn
 } from "@swimlane/ngx-datatable";
-import { ApiFilter } from "src/app/services/baw-api/api-common";
-import { AbstractModel } from "src/app/models/AbstractModel";
 import { takeUntil } from "rxjs/operators";
+import { AbstractModel } from "src/app/models/AbstractModel";
+import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { PageComponent } from "../page/pageComponent";
 
 export abstract class PagedTableTemplate<
   T,
@@ -23,8 +23,8 @@ export abstract class PagedTableTemplate<
   public SortType = SortType;
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: T[] = [];
-  public temp: T[] = [];
+  public rows: T[];
+  public temp: T[];
   public selected: T[] = [];
   public pageNumber: number;
   public totalModels: number;

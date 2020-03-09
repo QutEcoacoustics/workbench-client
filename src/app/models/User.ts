@@ -3,7 +3,6 @@ import { theirProfileMenuItem } from "../component/profile/profile.menus";
 import {
   AuthToken,
   DateTimeTimezone,
-  defaultDateTimeTimezone,
   Id,
   ImageSizes,
   ImageURL,
@@ -46,11 +45,12 @@ export class User extends AbstractModel implements UserInterface {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.lastSeenAt = user.lastSeenAt
-      ? DateTime.fromISO(user.lastSeenAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
+
+    if (user.lastSeenAt) {
+      this.lastSeenAt = DateTime.fromISO(user.lastSeenAt as string, {
+        setZone: true
+      });
+    }
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {
