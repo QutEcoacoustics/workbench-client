@@ -1,11 +1,11 @@
-import { isGuestPredicate } from "src/app/app.menus";
+import { defaultUserIcon, isGuestPredicate } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const securityRoute = StrongRoute.Base.add("security");
 
 export const securityCategory: Category = {
-  icon: ["fas", "user"],
+  icon: defaultUserIcon,
   label: "Accounts",
   route: securityRoute
 };
