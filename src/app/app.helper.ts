@@ -27,6 +27,7 @@ import {
 import { SecurityService } from "./services/baw-api/security.service";
 import {
   shallowSiteResolvers,
+  ShallowSitesService,
   siteResolvers,
   SitesService
 } from "./services/baw-api/sites.service";
@@ -110,6 +111,7 @@ export const providers = [
   ProjectsService,
   SecurityService,
   SitesService,
+  ShallowSitesService,
   UserService,
   ...accountResolvers,
   ...projectResolvers,

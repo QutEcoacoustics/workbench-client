@@ -12,15 +12,10 @@
 
     <ngx-datatable
       #table
-      [class]="tableClass"
+      bawDatatableDefaults
       [columnMode]="ColumnMode.force"
       [columns]="columns"
-      [footerHeight]="footerHeight"
-      [headerHeight]="headerHeight"
-      [limit]="defaultTableLimit"
-      [rowHeight]="'auto'"
       [rows]="rows"
-      [scrollbarH]="true"
       [selectAllRowsOnPage]="false"
       [selected]="selected"
       [selectionType]="SelectionType.checkbox"

@@ -9,6 +9,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { ToastrModule } from "ngx-toastr";
+import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CmsComponent } from "./cms/cms.component";
@@ -58,6 +59,7 @@ export const sharedModules = [
   NgxDatatableModule,
   ToastrModule,
 
+  DirectivesModule,
   CardsModule,
   HeaderModule,
   ItemsModule,
