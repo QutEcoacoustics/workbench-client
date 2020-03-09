@@ -19,6 +19,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
+import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
 import { myAccountMenuItem } from "../../profile/profile.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
@@ -30,13 +31,13 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent extends WithUnsubscribe() implements OnInit {
-  activeLink: string;
-  collapsed: boolean;
-  headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
-  routes: any;
-  title: string;
-  user: User;
-  userImage: string;
+  public activeLink: string;
+  public collapsed: boolean;
+  public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  public routes: any;
+  public title: string;
+  public user: User;
+  public userImage: string;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
@@ -55,10 +56,11 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     this.activeLink = "projects";
     this.title = this.env.values.brand.name;
     this.routes = {
+      admin: adminDashboardMenuItem,
       home: homeMenuItem,
       login: loginMenuItem,
-      register: registerMenuItem,
-      profile: myAccountMenuItem
+      profile: myAccountMenuItem,
+      register: registerMenuItem
     };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface

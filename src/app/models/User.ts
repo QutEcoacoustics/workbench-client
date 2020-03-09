@@ -102,7 +102,7 @@ export class User extends AbstractModel implements UserInterface {
    */
   get isAdmin(): boolean {
     // tslint:disable-next-line: no-bitwise
-    return (this.rolesMask & 1) === 1;
+    return !!(this.rolesMask & 1);
   }
 
   static fromJSON = (obj: any) => {
