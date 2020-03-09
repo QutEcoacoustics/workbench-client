@@ -79,7 +79,9 @@ export const myAnnotationsMenuItem = MenuLink({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.Base.add("user_accounts");
+export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
+  ":accountId"
+);
 
 export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
@@ -95,7 +97,7 @@ export const theirProfileMenuItem = MenuRoute({
   label: "Their Profile",
   order: myAccountMenuItem.order,
   predicate: isLoggedInPredicate,
-  route: theirProfileRoute.add(":accountId"),
+  route: theirProfileRoute,
   tooltip: () => "View their profile"
 });
 
