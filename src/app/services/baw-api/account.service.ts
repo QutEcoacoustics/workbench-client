@@ -28,9 +28,11 @@ export class AccountService extends ReadonlyApi<User, []> {
   list(): Observable<User[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
+
   filter(filters: Filters): Observable<User[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
+
   show(model: IdOr<User>): Observable<User> {
     return this.apiShow(endpoint(model, Empty));
   }

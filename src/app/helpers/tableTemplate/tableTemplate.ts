@@ -18,19 +18,10 @@ export abstract class TableTemplate<T> extends PageComponent {
   public columns: TableColumn[] = [];
   public rows: T[] = [];
   public temp: T[] = [];
-  public tableClass = "bootstrap";
-  public defaultTableLimit = 25;
-  public headerHeight = 50;
-  public footerHeight = 50;
   public selected: T[] = [];
-
-  // State variable
-  public ready: boolean;
 
   constructor(private filterMatch: (val: string, row: T) => boolean) {
     super();
-
-    this.ready = false;
   }
 
   /**
@@ -75,13 +66,5 @@ export abstract class TableTemplate<T> extends PageComponent {
   protected loadTable() {
     this.createRows();
     this.temp = [...this.rows];
-    this.ready = true;
   }
-}
-
-export interface TablePage {
-  count: number;
-  pageSize: number;
-  limit: number;
-  offset: number;
 }

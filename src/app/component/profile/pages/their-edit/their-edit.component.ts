@@ -56,6 +56,7 @@ export class TheirEditComponent extends WithFormCheck(PageComponent)
 
   ngOnInit() {
     this.loading = false;
+
     const userModel: ResolvedModel<User> = this.route.snapshot.data.account;
 
     if (userModel.error) {
