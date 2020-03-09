@@ -36,7 +36,7 @@ export class User extends AbstractModel implements UserInterface {
   public readonly userName?: UserName;
   public readonly timezoneInformation?: TimezoneInformation;
   public readonly imageUrls?: ImageURL[];
-  public readonly lastSeenAt?: DateTimeTimezone | string;
+  public readonly lastSeenAt?: DateTimeTimezone;
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;

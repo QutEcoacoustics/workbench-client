@@ -6,12 +6,15 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
 import {
+  theirEditProfileMenuItem,
+  theirProfileMenuItem
+} from "../../profile/profile.menus";
+import {
   adminCategory,
   adminDashboardMenuItem,
   adminUserListMenuItem
 } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
-import { theirEditProfileMenuItem } from "../../profile/profile.menus";
 
 @Page({
   category: adminCategory,
@@ -31,13 +34,15 @@ import { theirEditProfileMenuItem } from "../../profile/profile.menus";
 })
 export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
   implements OnInit {
+  public userIcon = theirProfileMenuItem.icon;
+
   constructor(api: AccountService) {
     super(api, accounts =>
       accounts.map(account => ({
         account: account,
         user: account.userName,
-        lastLogin: account.lastSeenAt.toString(),
-        confirmed: account.isConfirmed ? "confirmed" : "no"
+        lastLogin: account.lastSeenAt.toRelative(),
+        confirmed: account.isConfirmed
       }))
     );
   }
@@ -52,7 +57,11 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
     this.getModels();
   }
 
-  public redirectPath(user: User) {
+  public viewPath(user: User) {
+    return user.redirectPath();
+  }
+
+  public editPath(user: User) {
     return theirEditProfileMenuItem.route
       .toString()
       .replace(":accountId", user.id.toString());
@@ -63,5 +72,5 @@ interface TableRow {
   account: User;
   user: string;
   lastLogin: string;
-  confirmed: "no" | "confirmed";
+  confirmed: boolean;
 }
