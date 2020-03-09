@@ -7,16 +7,7 @@ import { TableTemplate } from "./tableTemplate";
 @Component({
   selector: "app-test-component",
   template: `
-    <ngx-datatable
-      #table
-      [class]="tableClass"
-      [rows]="rows"
-      [columns]="columns"
-      [rowHeight]="'auto'"
-      [headerHeight]="headerHeight"
-      [footerHeight]="footerHeight"
-    >
-    </ngx-datatable>
+    <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {

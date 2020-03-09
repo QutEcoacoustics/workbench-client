@@ -16,8 +16,8 @@ export abstract class TableTemplate<T> extends PageComponent {
   public SortType = SortType;
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: T[] = [];
-  public temp: T[] = [];
+  public rows: T[];
+  public temp: T[];
   public selected: T[] = [];
 
   constructor(private filterMatch: (val: string, row: T) => boolean) {
