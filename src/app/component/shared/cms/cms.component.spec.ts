@@ -174,11 +174,11 @@ describe("CmsComponent", () => {
 
     const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
-    expect(header.innerText).toBe("Response");
+    expect(header.innerText.trim()).toBe("Response");
 
     const body = fixture.nativeElement.querySelector("p");
     expect(body).toBeTruthy();
-    expect(body.innerText).toBe("Example HTML response from API");
+    expect(body.innerText.trim()).toBe("Example HTML response from API");
   });
 
   it("should display 'not found' on page not found", () => {
@@ -192,7 +192,7 @@ describe("CmsComponent", () => {
 
     const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
-    expect(header.innerText).toBe("Not Found");
+    expect(header.innerText.trim()).toBe("Not Found");
   });
 
   it("should display 'unauthorized' on unauthorized", () => {
@@ -206,6 +206,6 @@ describe("CmsComponent", () => {
 
     const header = fixture.nativeElement.querySelector("h1");
     expect(header).toBeTruthy();
-    expect(header.innerText).toBe("Unauthorized Access");
+    expect(header.innerText.trim()).toBe("Unauthorized Access");
   });
 });
