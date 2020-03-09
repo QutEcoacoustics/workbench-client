@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { List } from "immutable";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import {
+  adminAnalysisJobsMenuItem,
+  adminAudioRecordingsMenuItem,
   adminCategory,
   adminDashboardMenuItem,
-  adminUserListMenuItem,
+  adminJobStatusMenuItem,
   adminOrphanSitesMenuItem,
   adminScriptsMenuItem,
   adminTagGroupsMenuItem,
   adminTagsMenuItem,
-  adminAudioRecordingsMenuItem,
-  adminAnalysisJobsMenuItem,
-  adminJobStatusMenuItem
+  adminUserListMenuItem
 } from "../admin.menus";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 
 export const adminMenuItemActions = [
   adminUserListMenuItem,
