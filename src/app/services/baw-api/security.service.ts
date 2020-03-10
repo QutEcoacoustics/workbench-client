@@ -1,13 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, flatMap } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { SessionUser } from "src/app/models/User";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
+import { UserService } from "./user.service";
 
 const registerEndpoint = stringTemplate`/security/`;
 const signInEndpoint = stringTemplate`/security/`;
@@ -21,7 +22,11 @@ export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    private userService: UserService
+  ) {
     super(http, apiRoot, SessionUser);
 
     this.authTrigger.next(this.isLoggedIn());
@@ -40,12 +45,17 @@ export class SecurityService extends BawApiService<SessionUser> {
   }
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
-  public register(details: any): Observable<SessionUser> {
+  public register(details: any): Observable<void> {
     return this.apiCreate(registerEndpoint(), details).pipe(
-      map(user => {
-        this.setSessionUser(user);
+      map(sessionUser => {
+        this.storeSessionUser(sessionUser);
         this.authTrigger.next(null);
-        return user;
+      }),
+      flatMap(() => {
+        return this.userService.show();
+      }),
+      map(user => {
+        this.storeUser(user);
       }),
       catchError(this.handleError)
     );
@@ -56,12 +66,17 @@ export class SecurityService extends BawApiService<SessionUser> {
    * is not logged in.
    * @param details Details provided by login form
    */
-  public signIn(details: LoginDetails): Observable<SessionUser> {
+  public signIn(details: LoginDetails): Observable<void> {
     return this.apiCreate(signInEndpoint(), details).pipe(
-      map((user: SessionUser) => {
-        this.setSessionUser(user);
+      map((sessionUser: SessionUser) => {
+        this.storeSessionUser(sessionUser);
         this.authTrigger.next(null);
-        return user;
+      }),
+      flatMap(() => {
+        return this.userService.show();
+      }),
+      map(user => {
+        this.storeUser(user);
       }),
       catchError(this.handleError)
     );

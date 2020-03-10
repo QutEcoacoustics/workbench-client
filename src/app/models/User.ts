@@ -161,6 +161,7 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
+  public readonly user?: User;
 
   /**
    * Constructor

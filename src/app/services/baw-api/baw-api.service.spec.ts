@@ -7,7 +7,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser } from "src/app/models/User";
+import { SessionUser, User } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
@@ -17,7 +17,10 @@ import {
   Meta,
   STUB_MODEL_BUILDER
 } from "./baw-api.service";
+import { MockSecurityService } from "./mock/securityMock.service";
+import { MockShowApiService } from "./mock/showApiMock.service";
 import { SecurityService } from "./security.service";
+import { UserService } from "./user.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");
@@ -144,12 +147,17 @@ describe("BawApiService", () => {
   const multiResponse = [singleResponse];
 
   function signIn(authToken: string, userName: string) {
-    const user = new SessionUser({ authToken, userName });
-    sessionStorage.setItem("baw.client.user", JSON.stringify(user));
+    const sessionUser = new SessionUser({ authToken, userName });
+    localStorage.setItem("baw.client.sessionUser", JSON.stringify(sessionUser));
+    localStorage.setItem(
+      "baw.client.user",
+      JSON.stringify(new User({ id: 1, userName }))
+    );
   }
 
   function signOut() {
-    sessionStorage.removeItem("baw.client.user");
+    localStorage.removeItem("baw.client.user");
+    localStorage.removeItem("baw.client.sessionUser");
   }
 
   function flushResponse<T>(req: TestRequest, response: ApiResponse<T>) {
@@ -191,7 +199,8 @@ describe("BawApiService", () => {
       providers: [
         ...testAppInitializer,
         BawApiService,
-        SecurityService,
+        { provide: SecurityService, useClass: MockSecurityService },
+        { provide: UserService, useClass: MockShowApiService },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
@@ -226,13 +235,13 @@ describe("BawApiService", () => {
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     httpMock.verify();
   });
 
   describe("Session Tracking", () => {
     it("should not change session storage on first load", () => {
-      expect(sessionStorage.length).toBe(0);
+      expect(localStorage.length).toBe(0);
     });
 
     it("should not be logged in", () => {

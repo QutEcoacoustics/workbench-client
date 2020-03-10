@@ -88,7 +88,7 @@ describe("MenuComponent", () => {
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it("should create", () => {
