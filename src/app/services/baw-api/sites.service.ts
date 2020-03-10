@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { delay } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Project } from "src/app/models/Project";
@@ -16,7 +15,8 @@ import {
   option,
   StandardApi
 } from "./api-common";
-import { Filters, Meta } from "./baw-api.service";
+import { Filters } from "./baw-api.service";
+import { filterMock, listMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const projectId: IdParam<Project> = id;
@@ -57,56 +57,28 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   }
 
   list(): Observable<Site[]> {
-    const sites: Site[] = [];
-
-    for (let i = 0; i < 25; i++) {
-      const site = new Site({
-        id: i,
-        name: "PLACEHOLDER SITE",
-        description: "PLACEHOLDER DESCRIPTION",
-        creatorId: 1
-      });
-
-      sites.push(site);
-    }
-
-    return of(sites).pipe(delay(1000));
+    return listMock<Site>(
+      index =>
+        new Site({
+          id: index,
+          name: "PLACEHOLDER SITE",
+          description: "PLACEHOLDER DESCRIPTION",
+          creatorId: 1
+        })
+    );
     // return this.apiList(endpointShallow(Empty, Empty));
   }
   filter(filters: Filters): Observable<Site[]> {
-    const sites: Site[] = [];
-    const meta: Meta = {
-      status: 200,
-      message: "OK",
-      sorting: {
-        orderBy: "name",
-        direction: "asc"
-      },
-      paging: {
-        page: filters?.paging?.page ? filters.paging.page : 1,
-        items: filters?.paging?.items ? filters?.paging?.items : 25,
-        total: filters?.paging?.total ? filters?.paging?.total : 100,
-        maxPage: 4,
-        current:
-          "http://staging.ecosounds.org/sites?direction=asc&items=25&order_by=name&page=1",
-        previous: null,
-        next: null
-      }
-    };
-
-    for (let i = 0; i < 25; i++) {
-      const site = new Site({
-        id: i + (meta.paging.page - 1) * 25,
-        name: "PLACEHOLDER SITE",
-        description: "PLACEHOLDER DESCRIPTION",
-        creatorId: 1
-      });
-
-      site.addMetadata(meta);
-      sites.push(site);
-    }
-
-    return of(sites).pipe(delay(1000));
+    return filterMock<Site>(
+      filters,
+      index =>
+        new Site({
+          id: index,
+          name: "PLACEHOLDER SITE",
+          description: "PLACEHOLDER DESCRIPTION",
+          creatorId: 1
+        })
+    );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Site>): Observable<Site> {

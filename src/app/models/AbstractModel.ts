@@ -9,6 +9,8 @@ export abstract class AbstractModel {
   private static metaKey = Symbol("meta");
   public readonly id?: number;
 
+  public abstract redirectPath(...args: any): string;
+
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,
     raw: object
