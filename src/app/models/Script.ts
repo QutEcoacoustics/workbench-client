@@ -1,6 +1,7 @@
 import { Id, Param, DateTimeTimezone } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { DateTime } from "luxon";
+import { adminScriptsMenuItem } from "../component/admin/admin.menus";
 
 /**
  * A script model
@@ -70,6 +71,6 @@ export class Script extends AbstractModel implements ScriptInterface {
   }
 
   redirectPath(): string {
-    throw new Error("Not Implemented");
+    return adminScriptsMenuItem.route.toString();
   }
 }

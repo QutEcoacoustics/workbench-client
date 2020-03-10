@@ -184,4 +184,8 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
       userName: this.userName
     };
   }
+
+  redirectPath(): string {
+    throw new Error("Not Implemented");
+  }
 }

@@ -1,0 +1,76 @@
+{
+  "fields": [
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Name",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8
+      }
+    },
+    {
+      "key": "version",
+      "type": "input",
+      "templateOptions": {
+        "label": "Version",
+        "type": "number",
+        "required": false
+      }
+    },
+    {
+      "key": "analysisIdentifier",
+      "type": "input",
+      "templateOptions": {
+        "label": "Analysis Identifier",
+        "type": "Text",
+        "required": true
+      }
+    },
+    {
+      "key": "executeCommand",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Executable Command",
+        "required": true,
+        "rows": 8
+      }
+    },
+    {
+      "key": "executeSettings",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Executable Settings",
+        "required": true,
+        "rows": 8
+      }
+    },
+    {
+      "key": "executableSettingsMediaType",
+      "type": "input",
+      "templateOptions": {
+        "label": "Executable Settings Media Type",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "analysisActionParams",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Analysis Action Parameters",
+        "required": false,
+        "rows": 8
+      }
+    }
+  ]
+}

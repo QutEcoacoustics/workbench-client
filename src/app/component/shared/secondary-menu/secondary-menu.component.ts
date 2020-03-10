@@ -63,7 +63,7 @@ export class SecondaryMenuComponent extends WithUnsubscribe()
         // and add it all together
         const allLinks = defaultLinks.concat(
           links,
-          List<MenuRoute>(parentMenuRoutes),
+          List<MenuRoute>(parentMenuRoutes).reverse(), // List lineage correctly
           current
         );
 
