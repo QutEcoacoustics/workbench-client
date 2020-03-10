@@ -1,7 +1,7 @@
-import { Id, Param, DateTimeTimezone } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
 import { DateTime } from "luxon";
 import { adminScriptsMenuItem } from "../component/admin/admin.menus";
+import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
 
 /**
  * A script model

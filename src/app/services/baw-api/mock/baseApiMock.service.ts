@@ -18,6 +18,10 @@ export class MockModel extends AbstractModel {
     this.addIfExists(json, "id", this.id);
     return json;
   }
+
+  public redirectPath(): string {
+    return "";
+  }
 }
 
 @Injectable()

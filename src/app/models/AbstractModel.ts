@@ -9,14 +9,14 @@ export abstract class AbstractModel {
   private static metaKey = Symbol("meta");
   public readonly id?: number;
 
-  public abstract redirectPath(...args: any): string;
-
   public static Create<T extends AbstractModel>(
     _new: new (_: object) => T,
     raw: object
   ): T {
     return new _new(raw);
   }
+
+  public abstract redirectPath(...args: any): string;
   public abstract toJSON(): object;
 
   public addMetadata(meta: Meta) {
