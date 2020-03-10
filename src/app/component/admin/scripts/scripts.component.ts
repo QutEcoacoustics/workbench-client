@@ -7,18 +7,20 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Script } from "src/app/models/Script";
 import { ScriptsService } from "src/app/services/baw-api/scripts.service";
 import {
-  adminCategory,
   adminDashboardMenuItem,
   adminNewScriptsMenuItem,
+  adminScriptsCategory,
   adminScriptsMenuItem
 } from "../admin.menus";
 
+export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
+
 @Page({
-  category: adminCategory,
+  category: adminScriptsCategory,
   menus: {
     actions: List<AnyMenuItem>([
       adminDashboardMenuItem,
-      adminNewScriptsMenuItem
+      ...adminScriptsMenuItemActions
     ]),
     links: List()
   },
