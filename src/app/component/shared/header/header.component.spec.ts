@@ -152,9 +152,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const brand = fixture.nativeElement.querySelector("a.navbar-brand");
-          expect(brand).toBeTruthy();
-          expect(brand.innerText).toContain(env.values.brand.name);
           assertRouterLink(brand, homeMenuItem.route.toString());
+          expect(brand.innerText).toContain(env.values.brand.name);
         });
 
         it("should create projects link", () => {
@@ -162,9 +161,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[0];
-          expect(link).toBeTruthy();
-          expect(link.innerText).toContain(projectsMenuItem.label);
           assertRouterLink(link, projectsMenuItem.route.toString());
+          expect(link.innerText).toContain(projectsMenuItem.label);
         });
 
         it("should create contact us link", () => {
@@ -172,9 +170,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[2];
-          expect(link).toBeTruthy();
-          expect(link.innerText).toContain(contactUsMenuItem.label);
           assertRouterLink(link, contactUsMenuItem.route.toString());
+          expect(link.innerText).toContain(contactUsMenuItem.label);
         });
 
         it("should create header links from external config", () => {
@@ -213,9 +210,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.register) {
-              expect(link).toBeTruthy();
-              expect(link.innerText).toContain(registerMenuItem.label);
               assertRouterLink(link, registerMenuItem.route.toString());
+              expect(link.innerText).toContain(registerMenuItem.label);
             } else {
               expect(link).toBeFalsy();
             }
@@ -235,9 +231,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.login) {
-              expect(link).toBeTruthy();
-              expect(link.innerText).toContain(loginMenuItem.label);
               assertRouterLink(link, loginMenuItem.route.toString());
+              expect(link.innerText).toContain(loginMenuItem.label);
             } else {
               expect(link).toBeFalsy();
             }
@@ -257,9 +252,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.profile) {
-              expect(profile).toBeTruthy();
-              expect(profile.innerText.trim()).toBe("Username");
               assertRouterLink(profile, myAccountMenuItem.route.toString());
+              expect(profile.innerText.trim()).toBe("Username");
             } else {
               expect(profile).toBeFalsy();
             }
@@ -274,8 +268,6 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            expect(profile).toBeTruthy();
-
             const icon = profile.querySelector("img");
             expect(icon).toBeTruthy();
             expect(icon.alt).toBe("Profile Icon");
@@ -326,8 +318,6 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            expect(profile).toBeTruthy();
-
             const icon = profile.querySelector("img");
             expect(icon).toBeTruthy();
             expect(icon.alt).toBe("Profile Icon");
@@ -559,9 +549,7 @@ describe("HeaderComponent", () => {
       const button = fixture.nativeElement.querySelector(
         "button.navbar-toggler"
       );
-      expect(button).toBeTruthy();
       button.click();
-
       fixture.detectChanges();
 
       const navbar = fixture.nativeElement.querySelector("div.collapse");
@@ -576,7 +564,6 @@ describe("HeaderComponent", () => {
       const button = fixture.nativeElement.querySelector(
         "button.navbar-toggler"
       );
-      expect(button).toBeTruthy();
       button.click();
       fixture.detectChanges();
 
