@@ -51,13 +51,13 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const userModel: ResolvedModel<User> = this.route.snapshot.data.account;
+    const accountModel: ResolvedModel<User> = this.route.snapshot.data.account;
 
-    if (userModel.error) {
+    if (accountModel.error) {
       return;
     }
 
-    this.user = userModel.model;
+    this.user = accountModel.model;
     this.imageUrl = this.user.getImage(ImageSizes.large);
 
     this.userStatistics = [

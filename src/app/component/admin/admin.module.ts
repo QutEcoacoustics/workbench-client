@@ -2,15 +2,16 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
-import { DataRequestComponent } from "./data-request.component";
-import { dataRequestRoute } from "./data-request.menus";
+import { adminRoute } from "./admin.menus";
+import { AdminDashboardComponent } from "./dashboard/dashboard.component";
+import { AdminUserListComponent } from "./user-list/user-list.component";
 
-const components = [DataRequestComponent];
-const routes = dataRequestRoute.compileRoutes(GetRouteConfigForPage);
+const components = [AdminDashboardComponent, AdminUserListComponent];
+const routes = adminRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components]
 })
-export class DataRequestModule {}
+export class AdminModule {}

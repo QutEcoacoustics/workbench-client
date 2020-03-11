@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
+import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Site } from "src/app/models/Site";
@@ -53,12 +54,12 @@ export class StatisticsComponent extends PageComponent implements OnInit {
         value: "Unknown"
       },
       {
-        icon: ["fas", "file-audio"],
+        icon: defaultAudioIcon,
         name: "Audio recordings",
         value: "Unknown"
       },
       {
-        icon: ["fas", "users"],
+        icon: defaultUserIcon,
         name: "Users",
         value: "Unknown"
       }
@@ -86,17 +87,17 @@ export class StatisticsComponent extends PageComponent implements OnInit {
         value: "Unknown"
       },
       {
-        icon: ["fas", "users"],
+        icon: defaultUserIcon,
         name: "Users Online",
         value: "Unknown"
       },
       {
-        icon: ["fas", "file-audio"],
+        icon: defaultAudioIcon,
         name: "Overall audio recording file size",
         value: "Unknown"
       },
       {
-        icon: ["fas", "file-audio"],
+        icon: defaultAudioIcon,
         name: "New audio recordings in last month",
         value: "Unknown"
       },

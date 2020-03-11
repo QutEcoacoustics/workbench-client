@@ -15,7 +15,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
-import { appImports } from "./app.module";
+import { appLibraryImports } from "./app.module";
 import { homeMenuItem } from "./component/home/home.menus";
 import { projectsMenuItem } from "./component/projects/projects.menus";
 import { Project } from "./models/Project";
@@ -35,13 +35,13 @@ describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        ...appLibraryImports,
         RouterTestingModule.withRoutes([
           homeMenuItem.route.routeConfig,
           projectsMenuItem.route.routeConfig
         ]),
         HttpClientTestingModule,
-        LoadingBarHttpClientModule,
-        ...appImports
+        LoadingBarHttpClientModule
       ],
       declarations: [AppComponent],
       providers: [...testBawServices]
@@ -64,7 +64,7 @@ describe("AppComponent", () => {
     spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
     );
-    spyOn(userApi, "getSessionUser").and.callFake(() => {
+    spyOn(userApi, "getLocalUser").and.callFake(() => {
       return null;
     });
     spyOn(projectsApi, "list").and.callFake(() => {

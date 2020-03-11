@@ -1,4 +1,5 @@
 import {
+  defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
@@ -60,7 +61,7 @@ export const editSiteMenuItem = MenuRoute({
 });
 
 export const harvestMenuItem = MenuRoute({
-  icon: ["fas", "file-audio"],
+  icon: defaultAudioIcon,
   label: "Harvesting",
   parent: siteMenuItem,
   predicate: isAdminPredicate,

@@ -58,7 +58,7 @@ describe("MenuComponent", () => {
   }
 
   function setLoggedInState() {
-    spyOn(api, "getSessionUser").and.callFake(() => sessionUser);
+    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
   }
 
   beforeEach(() => {
@@ -88,7 +88,7 @@ describe("MenuComponent", () => {
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it("should create", () => {

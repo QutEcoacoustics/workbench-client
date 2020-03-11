@@ -42,6 +42,7 @@
       <ul class="navbar-nav" *ngIf="!user">
         <li class="nav-item">
           <a
+            id="register-header-link"
             class="nav-link"
             [routerLink]="routes.register.route.toString()"
             routerLinkActive="active"
@@ -51,6 +52,7 @@
         </li>
         <li class="nav-item">
           <a
+            id="login-header-link"
             class="nav-link"
             [routerLink]="routes.login.route.toString()"
             routerLinkActive="active"
@@ -62,10 +64,21 @@
 
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
+        <li *ngIf="isAdmin" class="nav-item">
+          <a
+            id="admin-settings"
+            class="nav-link"
+            [routerLink]="routes.admin.route.toString()"
+            routerLinkActive="active"
+          >
+            <fa-icon [icon]="routes.admin.icon"></fa-icon>
+          </a>
+        </li>
         <li class="nav-item">
           <a
-            class="nav-link login-widget"
-            [routerLink]="routes.profile.route.toString()"
+            id="login-widget"
+            class="nav-link"
+            [routerLink]="user.redirectPath()"
             routerLinkActive="active"
           >
             <span>{{ user.userName }}</span>

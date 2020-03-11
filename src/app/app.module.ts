@@ -17,6 +17,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { formlyRoot, providers, toastrRoot } from "./app.helper";
 import { AboutModule } from "./component/about/about.module";
+import { AdminModule } from "./component/admin/admin.module";
 import { DataRequestModule } from "./component/data-request/data-request.module";
 import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
@@ -49,6 +50,7 @@ export const appLibraryImports = [
 export const appImports = [
   SharedModule,
   AboutModule,
+  AdminModule,
   DataRequestModule,
   MyAccountModule,
   ProfileModule,

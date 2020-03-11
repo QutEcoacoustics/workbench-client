@@ -146,7 +146,7 @@ describe("CmsComponent", () => {
 
   it("should request page from api with 'Authorization' header when logged in", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getSessionUser").and.callFake(
+    spyOn(api, "getLocalUser").and.callFake(
       () =>
         new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
     );

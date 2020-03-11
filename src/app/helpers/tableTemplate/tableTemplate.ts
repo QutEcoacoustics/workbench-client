@@ -16,21 +16,12 @@ export abstract class TableTemplate<T> extends PageComponent {
   public SortType = SortType;
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: T[] = [];
-  public temp: T[] = [];
-  public tableClass = "bootstrap";
-  public defaultTableLimit = 25;
-  public headerHeight = 50;
-  public footerHeight = 50;
+  public rows: T[];
+  public filterTempRows: T[];
   public selected: T[] = [];
-
-  // State variable
-  public ready: boolean;
 
   constructor(private filterMatch: (val: string, row: T) => boolean) {
     super();
-
-    this.ready = false;
   }
 
   /**
@@ -46,7 +37,7 @@ export abstract class TableTemplate<T> extends PageComponent {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.temp.filter(row => {
+    const temp = this.filterTempRows.filter(row => {
       return !val || this.filterMatch(val, row);
     });
 
@@ -74,14 +65,6 @@ export abstract class TableTemplate<T> extends PageComponent {
    */
   protected loadTable() {
     this.createRows();
-    this.temp = [...this.rows];
-    this.ready = true;
+    this.filterTempRows = [...this.rows];
   }
-}
-
-export interface TablePage {
-  count: number;
-  pageSize: number;
-  limit: number;
-  offset: number;
 }

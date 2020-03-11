@@ -1,6 +1,6 @@
-import { List } from "immutable";
 import {
   defaultEditIcon,
+  defaultUserIcon,
   isAdminPredicate,
   isLoggedInPredicate
 } from "src/app/app.menus";
@@ -17,7 +17,7 @@ export const myAccountRoute = StrongRoute.Base.add("my_account");
  * My Account Menus
  */
 export const myAccountCategory: Category = {
-  icon: ["fas", "user"],
+  icon: defaultUserIcon,
   label: "My Profile",
   route: myAccountRoute,
   resolvers: {
@@ -26,7 +26,7 @@ export const myAccountCategory: Category = {
 };
 
 export const myAccountMenuItem = MenuRoute({
-  icon: ["fas", "user"],
+  icon: defaultUserIcon,
   label: "My Profile",
   order: 2,
   predicate: isLoggedInPredicate,
@@ -79,7 +79,9 @@ export const myAnnotationsMenuItem = MenuLink({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.Base.add("user_accounts");
+export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
+  ":accountId"
+);
 
 export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
@@ -95,7 +97,7 @@ export const theirProfileMenuItem = MenuRoute({
   label: "Their Profile",
   order: myAccountMenuItem.order,
   predicate: isLoggedInPredicate,
-  route: theirProfileRoute.add(":accountId"),
+  route: theirProfileRoute,
   tooltip: () => "View their profile"
 });
 
