@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Subject } from "rxjs";
-import { SessionUser } from "src/app/models/User";
+import { SessionUser, User } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
@@ -20,7 +20,11 @@ import { UserService } from "./user.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
+  let userApi: UserService;
   let httpMock: HttpTestingController;
+  let defaultLoginDetails: LoginDetails;
+  let defaultUser: User;
+  let defaultSessionUser: SessionUser;
 
   function createError(
     func:
@@ -36,11 +40,7 @@ describe("SecurityService", () => {
     spyOn<any>(service as any, func).and.callFake((path: string) => {
       expect(path).toBe(url);
       const subject = new Subject();
-
-      setTimeout(() => {
-        subject.error(error);
-      }, 50);
-
+      subject.error(error);
       return subject;
     });
   }
@@ -61,7 +61,21 @@ describe("SecurityService", () => {
     });
 
     service = TestBed.inject(SecurityService);
+    userApi = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    defaultUser = new User({
+      id: 1,
+      userName: "username"
+    });
+    defaultSessionUser = new SessionUser({
+      authToken: "xxxxxxxxxxxxxxx",
+      userName: "username"
+    });
+    defaultLoginDetails = new LoginDetails({
+      login: "username",
+      password: "password"
+    });
   });
 
   afterEach(() => {
@@ -75,7 +89,7 @@ describe("SecurityService", () => {
     });
 
     it("getSessionUser should return null initially", () => {
-      expect(service.getSessionUser()).toBeFalsy();
+      expect(service.getLocalUser()).toBeFalsy();
     });
 
     it("authTrigger should contain default value", () => {
@@ -88,10 +102,11 @@ describe("SecurityService", () => {
   });
 
   describe("signIn", () => {
-    function createSuccess(
+    function createResponse(
       path: string,
       details: LoginDetails,
-      model: SessionUser
+      model: SessionUser,
+      user?: User
     ) {
       spyOn(service as any, "apiCreate").and.callFake(
         (_path: string, _details: object) => {
@@ -101,84 +116,119 @@ describe("SecurityService", () => {
           return new BehaviorSubject<SessionUser>(model);
         }
       );
+      spyOn(userApi, "show").and.callFake(() => {
+        if (user) {
+          return new BehaviorSubject<User>(user);
+        } else {
+          const subject = new Subject<User>();
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as ApiErrorDetails);
+          return subject;
+        }
+      });
     }
 
     it("should call apiCreate", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
-      createSuccess("/security/", details, model);
-      service.signIn(details).subscribe();
-      expect(service["apiCreate"]).toHaveBeenCalledWith("/security/", details);
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
+      service.signIn(defaultLoginDetails).subscribe();
+      expect(service["apiCreate"]).toHaveBeenCalledWith(
+        "/security/",
+        defaultLoginDetails
+      );
     }));
 
     it("should handle response", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
-      createSuccess("/security/", details, model);
-      service.signIn(details).subscribe(() => {
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
+      service.signIn(defaultLoginDetails).subscribe(() => {
         expect(true).toBeTruthy();
       }, shouldNotFail);
     }));
 
     // TODO Update this test
     it("store user", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
+      const user = new User({
+        id: 1,
+        userName: "username",
+        isConfirmed: false,
+        lastSeenAt: "1970-01-01T00:00:00.000+10:00",
+        rolesMask: 2,
+        rolesMaskNames: ["user"]
       });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
+      const session = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxxx",
         userName: "username"
       });
-      createSuccess("/security/", details, model);
-      service.signIn(details).subscribe(() => {}, shouldNotFail);
+      createResponse("/security/", defaultLoginDetails, session, user);
+      service.signIn(defaultLoginDetails).subscribe(() => {}, shouldNotFail);
 
-      expect(service.getSessionUser()).toEqual(model);
+      expect(service.getLocalUser()).toEqual(
+        new SessionUser({
+          id: 1,
+          userName: "username",
+          authToken: "xxxxxxxxxxxxxxxx",
+          isConfirmed: false,
+          lastSeenAt: "1970-01-01T00:00:00.000+10:00",
+          rolesMask: 2,
+          rolesMaskNames: ["user"]
+        })
+      );
     }));
 
     it("should update authTrigger trigger", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
       const spy = jasmine.createSpy();
-      createSuccess("/security/", details, model);
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
 
       service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
-      service.signIn(details).subscribe();
+      service.signIn(defaultLoginDetails).subscribe();
 
+      // Should call auth trigger twice, first time is when the subscription is created
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
-    it("should handle error", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
+    it("should handle signIn error", fakeAsync(() => {
       createError("apiCreate", "/security/", apiErrorDetails);
       service
-        .signIn(details)
+        .signIn(defaultLoginDetails)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorDetails);
         });
     }));
+
+    it("should handle get user error", fakeAsync(() => {
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        undefined
+      );
+
+      service
+        .signIn(defaultLoginDetails)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
+    }));
+
+    // TODO Add check for authTrigger triggering on error
   });
 
   describe("signOut", () => {
@@ -207,7 +257,7 @@ describe("SecurityService", () => {
       createSuccess("/security/");
       service.signOut().subscribe(() => {}, shouldNotFail);
 
-      expect(service.getSessionUser()).toBeFalsy();
+      expect(service.getLocalUser()).toBeFalsy();
     }));
 
     it("should update authTrigger trigger", fakeAsync(() => {
@@ -217,6 +267,7 @@ describe("SecurityService", () => {
       service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
       service.signOut().subscribe();
 
+      // Should call auth trigger twice, first time is when the subscription is created
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
@@ -227,5 +278,7 @@ describe("SecurityService", () => {
         expect(err).toEqual(apiErrorDetails);
       });
     }));
+
+    // TODO Add check for authTrigger triggering on error
   });
 });

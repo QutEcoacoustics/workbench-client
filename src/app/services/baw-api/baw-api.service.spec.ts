@@ -147,17 +147,12 @@ describe("BawApiService", () => {
   const multiResponse = [singleResponse];
 
   function signIn(authToken: string, userName: string) {
-    const sessionUser = new SessionUser({ authToken, userName });
-    localStorage.setItem("baw.client.sessionUser", JSON.stringify(sessionUser));
-    localStorage.setItem(
-      "baw.client.user",
-      JSON.stringify(new User({ id: 1, userName }))
-    );
+    const sessionUser = new SessionUser({ id: 1, authToken, userName });
+    localStorage.setItem("baw.client.user", JSON.stringify(sessionUser));
   }
 
   function signOut() {
     localStorage.removeItem("baw.client.user");
-    localStorage.removeItem("baw.client.sessionUser");
   }
 
   function flushResponse<T>(req: TestRequest, response: ApiResponse<T>) {
@@ -240,7 +235,7 @@ describe("BawApiService", () => {
   });
 
   describe("Session Tracking", () => {
-    it("should not change session storage on first load", () => {
+    it("should not change local storage on first load", () => {
       expect(localStorage.length).toBe(0);
     });
 
@@ -249,30 +244,30 @@ describe("BawApiService", () => {
     });
 
     it("should not return user", () => {
-      expect(service.getSessionUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(null);
     });
 
-    it("should be logged in after user saved to session storage", () => {
+    it("should be logged in after user saved to local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       expect(service.isLoggedIn()).toBeTruthy();
     });
 
-    it("should return user after user saved to session storage", () => {
+    it("should return user after user saved to local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
-      expect(service.getSessionUser().authToken).toBe("xxxxxxxxxxxxxxx");
-      expect(service.getSessionUser().userName).toBe("username");
+      expect(service.getLocalUser().authToken).toBe("xxxxxxxxxxxxxxx");
+      expect(service.getLocalUser().userName).toBe("username");
     });
 
-    it("should not be logged in after user removed from session storage", () => {
+    it("should not be logged in after user removed from local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
       expect(service.isLoggedIn()).toBe(false);
     });
 
-    it("should not return user after user removed from session storage", () => {
+    it("should not return user after user removed from local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
-      expect(service.getSessionUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(null);
     });
   });
 

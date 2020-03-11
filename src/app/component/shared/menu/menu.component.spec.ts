@@ -58,7 +58,7 @@ describe("MenuComponent", () => {
   }
 
   function setLoggedInState() {
-    spyOn(api, "getSessionUser").and.callFake(() => sessionUser);
+    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
   }
 
   beforeEach(() => {

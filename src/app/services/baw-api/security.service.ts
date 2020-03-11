@@ -19,7 +19,7 @@ const signOutEndpoint = stringTemplate`/security/`;
  */
 @Injectable()
 export class SecurityService extends BawApiService<SessionUser> {
-  private authTrigger = new BehaviorSubject(null);
+  private authTrigger = new BehaviorSubject<void>(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
   constructor(
@@ -29,7 +29,6 @@ export class SecurityService extends BawApiService<SessionUser> {
   ) {
     super(http, apiRoot, SessionUser);
 
-    this.authTrigger.next(this.isLoggedIn());
     this.handleError = (err: ApiErrorDetails) => {
       this.clearSessionUser();
       this.authTrigger.next(null);
@@ -40,7 +39,7 @@ export class SecurityService extends BawApiService<SessionUser> {
   /**
    * Returns a subject which tracks the change in loggedIn status
    */
-  public getAuthTrigger(): BehaviorSubject<boolean> {
+  public getAuthTrigger(): BehaviorSubject<void> {
     return this.authTrigger;
   }
 

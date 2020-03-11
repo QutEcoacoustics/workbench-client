@@ -151,7 +151,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Update header user profile
    */
   private updateUser() {
-    this.user = this.api.getSessionUser();
+    this.user = this.api.getLocalUser();
 
     if (!this.user) {
       return;

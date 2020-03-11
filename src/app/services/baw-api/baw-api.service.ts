@@ -97,14 +97,14 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Determine if the user is currently logged in
    */
   public isLoggedIn(): boolean {
-    const user = this.getSessionUser();
+    const user = this.getLocalUser();
     return user ? !!user.authToken : false;
   }
 
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  public getSessionUser(): SessionUser | null {
+  public getLocalUser(): SessionUser | null {
     // Will return null if no item exists
     const userData = localStorage.getItem(this.userLocalStorage);
 

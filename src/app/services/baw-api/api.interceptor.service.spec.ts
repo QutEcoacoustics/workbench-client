@@ -189,7 +189,7 @@ describe("BawApiInterceptor", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(api, "getSessionUser").and.callFake(() => {
+    spyOn(api, "getLocalUser").and.callFake(() => {
       return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
         userName: "username"
@@ -386,7 +386,7 @@ describe("BawApiInterceptor", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => {
       return true;
     });
-    spyOn(api, "getSessionUser").and.callFake(() => {
+    spyOn(api, "getLocalUser").and.callFake(() => {
       return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
         userName: "username"
