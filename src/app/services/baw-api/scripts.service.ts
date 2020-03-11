@@ -7,13 +7,12 @@ import { Script } from "src/app/models/Script";
 import { Empty, id, IdOr, IdParamOptional, StandardApi } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, listMock } from "./mock/api-commonMock";
+import { Resolvers } from "./resolver-common";
 
 const scriptId: IdParamOptional<Script> = id;
 const endpoint = stringTemplate`/scripts/${scriptId}`;
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable()
 export class ScriptsService extends StandardApi<Script, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Script);
@@ -77,3 +76,8 @@ export class ScriptsService extends StandardApi<Script, []> {
     return this.apiDestroy(endpoint(model));
   }
 }
+
+export const scriptResolvers = new Resolvers<Script, ScriptsService>(
+  [ScriptsService],
+  "scriptId"
+).create("Script");
