@@ -22,10 +22,16 @@ export function GetRouteConfigForPage(
   }
 
   const resolvers = {};
-  // Assign category resolvers if the page is the top level category page
-  if (page.category.route === page.self.route && page.category.resolvers) {
+
+  // Assign category resolvers
+  if (!page.category.rootChild) {
+    // If this is the root child, append resolvers
+    Object.assign(resolvers, page.category.resolvers);
+  } else if (page.category.rootChild.route === page.route) {
+    // If category has no root child, append resolvers
     Object.assign(resolvers, page.category.resolvers);
   }
+
   // Assign custom page resolvers
   if (page.resolvers) {
     Object.assign(resolvers, page.resolvers);

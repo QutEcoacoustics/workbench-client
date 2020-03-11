@@ -1,5 +1,7 @@
 import { Type } from "@angular/core";
 import { Route, Routes } from "@angular/router";
+import { getPageInfo } from "../helpers/page/pageComponent";
+import { Category } from "./menusInterfaces";
 
 export type RouteConfigCallback = (
   component: Type<any> | null,
@@ -115,8 +117,6 @@ export class StrongRoute {
    * @param callback Callback function (usually: GetRouteConfigForPage)
    */
   compileRoutes(callback: RouteConfigCallback): Routes {
-    const rootRoute = this.root;
-
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
       const aParamRoute = a.path.startsWith(":");
       const bParamRoute = b.path.startsWith(":");
@@ -146,9 +146,8 @@ export class StrongRoute {
       return thisRoute;
     };
 
-    const output = rootRoute.children.map(recursiveAdd).sort(sortRoutes);
-
-    return output instanceof Array ? output : [output];
+    const rootRoute = this.root;
+    return recursiveAdd(rootRoute).children;
   }
 
   /**

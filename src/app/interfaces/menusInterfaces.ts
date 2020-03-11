@@ -61,6 +61,10 @@ export interface Category extends LabelAndIcon {
    * List of resolvers
    */
   resolvers?: Resolvers;
+  /**
+   * Root MenuRoute
+   */
+  rootChild?: MenuRoute;
 }
 
 /**
