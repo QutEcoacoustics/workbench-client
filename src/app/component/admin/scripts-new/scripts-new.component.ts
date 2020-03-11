@@ -44,7 +44,7 @@ import { fields } from "./new.json";
 })
 export class AdminScriptsNewComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  public schema = { models: {}, fields };
+  public schema = { model: {}, fields };
   public loading: boolean;
 
   constructor(
@@ -56,7 +56,7 @@ export class AdminScriptsNewComponent extends WithFormCheck(PageComponent)
   }
 
   ngOnInit(): void {
-    this.schema.models["executableSettingsMediaType"] = "text/plain";
+    this.schema.model["executableSettingsMediaType"] = "text/plain";
   }
 
   public submit($event) {
