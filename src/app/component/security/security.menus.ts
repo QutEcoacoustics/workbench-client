@@ -4,11 +4,11 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const securityRoute = StrongRoute.Base.add("security");
 
-export const securityCategory: Category = {
+export const securityCategory = Category({
   icon: defaultUserIcon,
   label: "Accounts",
   route: securityRoute
-};
+});
 
 export const loginMenuItem = MenuRoute({
   icon: ["fas", "sign-in-alt"],

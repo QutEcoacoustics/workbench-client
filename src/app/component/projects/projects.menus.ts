@@ -15,14 +15,6 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 */
 
 export const projectsRoute = StrongRoute.Base.add("projects");
-export const projectsCategory: Category = {
-  label: "Projects",
-  icon: ["fas", "globe-asia"],
-  route: projectsRoute,
-  resolvers: {
-    projects: "ProjectListResolver"
-  }
-};
 
 export const projectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
@@ -30,6 +22,15 @@ export const projectsMenuItem = MenuRoute({
   order: 4,
   route: projectsRoute,
   tooltip: () => "View projects I have access to"
+});
+
+export const projectsCategory = Category({
+  label: "Projects",
+  icon: ["fas", "globe-asia"],
+  route: projectsRoute,
+  resolvers: {
+    projects: "ProjectListResolver"
+  }
 });
 
 export const newProjectMenuItem = MenuRoute({
@@ -54,23 +55,25 @@ export const requestProjectMenuItem = MenuRoute({
   Project Category
 */
 
-export const projectCategory: Category = {
-  label: "Project",
-  icon: projectsCategory.icon,
-  route: projectsRoute.add(":projectId"),
-  parent: projectsCategory,
-  resolvers: {
-    project: "ProjectShowResolver",
-    sites: "SiteListResolver"
-  }
-};
+const projectRoute = projectsRoute.add(":projectId");
 
 export const projectMenuItem = MenuRoute({
   icon: ["fas", "folder-open"],
   label: "Project",
   parent: projectsMenuItem,
-  route: projectCategory.route,
+  route: projectRoute,
   tooltip: () => "The current project"
+});
+
+export const projectCategory = Category({
+  label: "Project",
+  icon: projectsCategory.icon,
+  route: projectRoute,
+  parent: projectsCategory,
+  resolvers: {
+    project: "ProjectShowResolver",
+    sites: "SiteListResolver"
+  }
 });
 
 export const editProjectMenuItem = MenuRoute({
@@ -78,7 +81,7 @@ export const editProjectMenuItem = MenuRoute({
   label: "Edit this project",
   parent: projectMenuItem,
   predicate: isOwnerPredicate,
-  route: projectMenuItem.route.add("edit"),
+  route: projectRoute.add("edit"),
   tooltip: () => "Change the details for this project"
 });
 
@@ -87,7 +90,7 @@ export const editProjectPermissionsMenuItem = MenuRoute({
   label: "Edit permissions",
   parent: projectMenuItem,
   predicate: isOwnerPredicate,
-  route: projectMenuItem.route.add("permissions"),
+  route: projectRoute.add("permissions"),
   tooltip: () => "Edit this projects permissions"
 });
 
@@ -96,7 +99,7 @@ export const assignSiteMenuItem = MenuRoute({
   label: "Assign sites",
   parent: projectMenuItem,
   predicate: isAdminPredicate,
-  route: projectMenuItem.route.add("assign"),
+  route: projectRoute.add("assign"),
   tooltip: () => "Change which sites belong to this project"
 });
 
@@ -105,6 +108,6 @@ export const deleteProjectMenuItem = MenuRoute({
   label: "Delete Project",
   parent: projectMenuItem,
   predicate: isOwnerPredicate,
-  route: projectMenuItem.route.add("delete"),
+  route: projectRoute.add("delete"),
   tooltip: () => "Delete this project"
 });

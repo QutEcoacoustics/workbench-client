@@ -3,11 +3,11 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const aboutRoute = StrongRoute.Base.add("about");
 
-export const aboutCategory: Category = {
+export const aboutCategory = Category({
   icon: ["fas", "info-circle"],
   label: "About",
   route: aboutRoute
-};
+});
 
 export const contactUsMenuItem = MenuRoute({
   icon: ["fas", "question-circle"],

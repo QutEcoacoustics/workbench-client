@@ -16,16 +16,6 @@ import { projectCategory, projectMenuItem } from "../projects/projects.menus";
 
 export const sitesRoute = projectMenuItem.route.add("sites");
 
-export const sitesCategory: Category = {
-  icon: ["fas", "map-marker-alt"],
-  label: "Sites",
-  route: sitesRoute.add(":siteId"),
-  parent: projectCategory,
-  resolvers: {
-    site: "SiteShowResolver"
-  }
-};
-
 export const newSiteMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New site",
@@ -35,12 +25,24 @@ export const newSiteMenuItem = MenuRoute({
   tooltip: () => "Create a new site"
 });
 
+export const siteRoute = sitesRoute.add(":siteId");
+
 export const siteMenuItem = MenuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Site",
   parent: projectMenuItem,
-  route: sitesCategory.route,
+  route: siteRoute,
   tooltip: () => "The current site"
+});
+
+export const sitesCategory = Category({
+  icon: ["fas", "map-marker-alt"],
+  label: "Sites",
+  route: siteRoute,
+  parent: projectCategory,
+  resolvers: {
+    site: "SiteShowResolver"
+  }
 });
 
 export const annotationsMenuItem = MenuLink({
@@ -56,7 +58,7 @@ export const editSiteMenuItem = MenuRoute({
   label: "Edit this site",
   parent: siteMenuItem,
   predicate: isOwnerPredicate,
-  route: siteMenuItem.route.add("edit"),
+  route: siteRoute.add("edit"),
   tooltip: () => "Change the details for this site"
 });
 
@@ -65,7 +67,7 @@ export const harvestMenuItem = MenuRoute({
   label: "Harvesting",
   parent: siteMenuItem,
   predicate: isAdminPredicate,
-  route: siteMenuItem.route.add("harvest"),
+  route: siteRoute.add("harvest"),
   tooltip: () => "Upload new audio to this site"
 });
 
@@ -74,6 +76,6 @@ export const deleteSiteMenuItem = MenuRoute({
   label: "Delete Site",
   parent: siteMenuItem,
   predicate: isOwnerPredicate,
-  route: siteMenuItem.route.add("delete"),
+  route: siteRoute.add("delete"),
   tooltip: () => "Delete this site"
 });

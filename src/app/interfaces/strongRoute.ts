@@ -1,7 +1,6 @@
 import { Type } from "@angular/core";
 import { Route, Routes } from "@angular/router";
 import { getPageInfo } from "../helpers/page/pageComponent";
-import { Category } from "./menusInterfaces";
 
 export type RouteConfigCallback = (
   component: Type<any> | null,

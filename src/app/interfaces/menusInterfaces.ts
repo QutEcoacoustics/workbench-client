@@ -47,6 +47,7 @@ export interface LabelAndIcon {
  * @extends LabelAndIcon
  */
 export interface Category extends LabelAndIcon {
+  kind: "Category";
   /**
    *  Local route of category Eg. 'security'
    */
@@ -61,10 +62,21 @@ export interface Category extends LabelAndIcon {
    * List of resolvers
    */
   resolvers?: Resolvers;
+
   /**
-   * Root MenuRoute
+   * Does this category have a root MenuRoute using the same StrongRoute.
+   * Used by the page routing to append resolvers. Do not manually assign.
    */
-  rootChild?: MenuRoute;
+  hasRootChild: boolean;
+}
+
+export function Category<T extends Omit<Category, "kind" | "hasRootChild">>(
+  category: T
+): Category {
+  return Object.assign(category, {
+    kind: "Category" as "Category",
+    hasRootChild: false
+  });
 }
 
 /**
@@ -123,7 +135,9 @@ export interface MenuLink extends MenuItem {
   uri: Href;
 }
 
-export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
+export function MenuLink<
+  T extends Omit<MenuLink, "kind" | "active" | "indentation">
+>(item: T): MenuLink {
   return Object.assign(item, {
     kind: "MenuLink" as "MenuLink",
     active: false,
@@ -149,7 +163,7 @@ export interface MenuRoute extends MenuItem {
   parent?: MenuRoute;
 }
 
-export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
+export function MenuRoute<T extends Omit<MenuRoute, "kind" | "active">>(
   item: T
 ): MenuRoute {
   return Object.assign(item, {
@@ -170,9 +184,9 @@ export interface MenuAction extends MenuItem {
   action: () => any | void;
 }
 
-export function MenuAction<T extends Omit<MenuAction, "kind">>(
-  item: T
-): MenuAction {
+export function MenuAction<
+  T extends Omit<MenuAction, "kind" | "active" | "indentation">
+>(item: T): MenuAction {
   return Object.assign(item, {
     kind: "MenuAction" as "MenuAction",
     active: false,

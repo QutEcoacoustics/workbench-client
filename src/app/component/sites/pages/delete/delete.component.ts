@@ -19,6 +19,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
+
 @Page({
   category: sitesCategory,
   menus: {

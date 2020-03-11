@@ -16,14 +16,6 @@ export const myAccountRoute = StrongRoute.Base.add("my_account");
 /**
  * My Account Menus
  */
-export const myAccountCategory: Category = {
-  icon: defaultUserIcon,
-  label: "My Profile",
-  route: myAccountRoute,
-  resolvers: {
-    user: "UserShowResolver"
-  }
-};
 
 export const myAccountMenuItem = MenuRoute({
   icon: defaultUserIcon,
@@ -32,6 +24,15 @@ export const myAccountMenuItem = MenuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
   tooltip: () => "View profile"
+});
+
+export const myAccountCategory = Category({
+  icon: defaultUserIcon,
+  label: "My Profile",
+  route: myAccountRoute,
+  resolvers: {
+    user: "UserShowResolver"
+  }
 });
 
 export const editMyAccountMenuItem = MenuRoute({
@@ -83,15 +84,6 @@ export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
   ":accountId"
 );
 
-export const theirProfileCategory: Category = {
-  icon: myAccountCategory.icon,
-  label: "Their Profile",
-  route: theirProfileRoute,
-  resolvers: {
-    account: "AccountShowResolver"
-  }
-};
-
 export const theirProfileMenuItem = MenuRoute({
   icon: myAccountMenuItem.icon,
   label: "Their Profile",
@@ -99,6 +91,15 @@ export const theirProfileMenuItem = MenuRoute({
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
   tooltip: () => "View their profile"
+});
+
+export const theirProfileCategory = Category({
+  icon: myAccountCategory.icon,
+  label: "Their Profile",
+  route: theirProfileRoute,
+  resolvers: {
+    account: "AccountShowResolver"
+  }
 });
 
 export const theirEditProfileMenuItem = MenuRoute({

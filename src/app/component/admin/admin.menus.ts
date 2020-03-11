@@ -12,11 +12,6 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { sitesCategory } from "../sites/sites.menus";
 
 export const adminRoute = StrongRoute.Base.add("admin");
-export const adminCategory: Category = {
-  icon: ["fas", "cog"],
-  label: "Admin",
-  route: adminRoute
-};
 
 export const adminDashboardMenuItem = MenuRoute({
   icon: ["fas", "toolbox"],
@@ -24,6 +19,12 @@ export const adminDashboardMenuItem = MenuRoute({
   route: adminRoute,
   tooltip: () => "Administrator dashboard",
   predicate: isAdminPredicate
+});
+
+export const adminCategory = Category({
+  icon: ["fas", "cog"],
+  label: "Admin",
+  route: adminRoute
 });
 
 export const adminUserListMenuItem = MenuRoute({
@@ -41,71 +42,6 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   route: adminRoute.add("sites"),
   tooltip: () => "Manage orphaned sites",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
-});
-
-/*
-  Admin Scripts
-*/
-
-export const adminScriptsCategory: Category = {
-  icon: ["fas", "scroll"],
-  label: "Scripts",
-  route: adminRoute.add("scripts"),
-  parent: adminCategory
-};
-
-export const adminScriptsMenuItem = MenuRoute({
-  icon: ["fas", "scroll"],
-  label: "Scripts",
-  route: adminScriptsCategory.route,
-  tooltip: () => "Manage custom scripts",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
-});
-
-export const adminNewScriptsMenuItem = MenuRoute({
-  icon: defaultNewIcon,
-  label: "New Script",
-  route: adminScriptsMenuItem.route.add("new"),
-  tooltip: () => "Create a new script",
-  parent: adminScriptsMenuItem,
-  predicate: isAdminPredicate
-});
-
-export const adminTagsMenuItem = MenuRoute({
-  icon: ["fas", "tag"],
-  label: "Tags",
-  route: adminRoute.add("tags"),
-  tooltip: () => "Manage tags",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
-});
-
-export const adminNewTagMenuItem = MenuRoute({
-  icon: defaultNewIcon,
-  label: "New Tag",
-  route: adminTagsMenuItem.route.add("new"),
-  tooltip: () => "Create a new tag",
-  parent: adminTagsMenuItem,
-  predicate: isAdminPredicate
-});
-
-export const adminTagGroupsMenuItem = MenuRoute({
-  icon: ["fas", "tags"],
-  label: "Tag Group",
-  route: adminRoute.add("tags"),
-  tooltip: () => "Manage tags",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
-});
-
-export const adminNewTagGroupMenuItem = MenuRoute({
-  icon: defaultNewIcon,
-  label: "New Tag Group",
-  route: adminTagsMenuItem.route.add("new"),
-  tooltip: () => "Create a new tag group",
-  parent: adminTagGroupsMenuItem,
   predicate: isAdminPredicate
 });
 
@@ -133,5 +69,80 @@ export const adminJobStatusMenuItem = MenuLink({
   tooltip: () => "Job queue status overview",
   uri: () => "/job_queue_status/overview",
   parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate
+});
+
+/*
+  Admin Scripts
+*/
+
+const adminScriptsRoute = adminRoute.add("scripts");
+
+export const adminScriptsMenuItem = MenuRoute({
+  icon: ["fas", "scroll"],
+  label: "Scripts",
+  route: adminScriptsRoute,
+  tooltip: () => "Manage custom scripts",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminScriptsCategory = Category({
+  icon: ["fas", "scroll"],
+  label: "Scripts",
+  route: adminScriptsRoute,
+  parent: adminCategory
+});
+
+export const adminNewScriptsMenuItem = MenuRoute({
+  icon: defaultNewIcon,
+  label: "New Script",
+  route: adminScriptsRoute.add("new"),
+  tooltip: () => "Create a new script",
+  parent: adminScriptsMenuItem,
+  predicate: isAdminPredicate
+});
+
+/**
+ * Admin Tags
+ */
+
+export const adminTagsMenuItem = MenuRoute({
+  icon: ["fas", "tag"],
+  label: "Tags",
+  route: adminRoute.add("tags"),
+  tooltip: () => "Manage tags",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminNewTagMenuItem = MenuRoute({
+  icon: defaultNewIcon,
+  label: "New Tag",
+  route: adminTagsMenuItem.route.add("new"),
+  tooltip: () => "Create a new tag",
+  parent: adminTagsMenuItem,
+  predicate: isAdminPredicate
+});
+
+/**
+ * Admin Tag Groups
+ */
+
+export const adminTagGroupsMenuItem = MenuRoute({
+  icon: ["fas", "tags"],
+  label: "Tag Group",
+  route: adminRoute.add("tags"),
+  tooltip: () => "Manage tags",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminNewTagGroupMenuItem = MenuRoute({
+  icon: defaultNewIcon,
+  label: "New Tag Group",
+  route: adminTagsMenuItem.route.add("new"),
+  tooltip: () => "Create a new tag group",
+  parent: adminTagGroupsMenuItem,
   predicate: isAdminPredicate
 });
