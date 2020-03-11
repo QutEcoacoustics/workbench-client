@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser, User } from "src/app/models/User";
+import { SessionUser } from "src/app/models/User";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -36,8 +36,10 @@ export abstract class BawApiService<T extends AbstractModel> {
     filter -> POST with filter body
   */
 
-  protected userSessionStorage = "baw.client.sessonUser";
-  protected userStorage = "baw.client.user";
+  /**
+   * User local storage location
+   */
+  protected userLocalStorage = "baw.client.user";
 
   /**
    * Handle API collection response
@@ -104,7 +106,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    */
   public getSessionUser(): SessionUser | null {
     // Will return null if no item exists
-    const userData = localStorage.getItem(this.userSessionStorage);
+    const userData = localStorage.getItem(this.userLocalStorage);
 
     if (userData) {
       // Try create session user
@@ -120,22 +122,18 @@ export abstract class BawApiService<T extends AbstractModel> {
   }
 
   /**
-   * Add user details to the session storage
+   * Add user session data to the local storage
    * @param user User details
    */
-  protected storeSessionUser(user: SessionUser): void {
-    localStorage.setItem(this.userSessionStorage, JSON.stringify(user));
-  }
-
-  protected storeUser(user: User): void {
-    localStorage.setItem(this.userStorage, JSON.stringify(user));
+  protected storeLocalUser(user: SessionUser): void {
+    localStorage.setItem(this.userLocalStorage, JSON.stringify(user));
   }
 
   /**
    * Clear session storage
    */
   protected clearSessionUser(): void {
-    localStorage.removeItem(this.userSessionStorage);
+    localStorage.removeItem(this.userLocalStorage);
   }
 
   /**

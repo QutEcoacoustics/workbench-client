@@ -64,7 +64,7 @@
 
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
-        <li *ngIf="user.isAdmin" class="nav-item">
+        <li *ngIf="isAdmin" class="nav-item">
           <a
             id="admin-settings"
             class="nav-link"
@@ -78,7 +78,7 @@
           <a
             id="login-widget"
             class="nav-link"
-            [routerLink]="routes.profile.route.toString()"
+            [routerLink]="user.redirectPath()"
             routerLinkActive="active"
           >
             <span>{{ user.userName }}</span>

@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, map, flatMap } from "rxjs/operators";
+import { catchError, flatMap, map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "src/app/models/AbstractModel";
@@ -46,19 +46,7 @@ export class SecurityService extends BawApiService<SessionUser> {
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
   public register(details: any): Observable<void> {
-    return this.apiCreate(registerEndpoint(), details).pipe(
-      map(sessionUser => {
-        this.storeSessionUser(sessionUser);
-        this.authTrigger.next(null);
-      }),
-      flatMap(() => {
-        return this.userService.show();
-      }),
-      map(user => {
-        this.storeUser(user);
-      }),
-      catchError(this.handleError)
-    );
+    return this.handleAuth(this.apiCreate(registerEndpoint(), details));
   }
 
   /**
@@ -67,19 +55,7 @@ export class SecurityService extends BawApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
-    return this.apiCreate(signInEndpoint(), details).pipe(
-      map((sessionUser: SessionUser) => {
-        this.storeSessionUser(sessionUser);
-        this.authTrigger.next(null);
-      }),
-      flatMap(() => {
-        return this.userService.show();
-      }),
-      map(user => {
-        this.storeUser(user);
-      }),
-      catchError(this.handleError)
-    );
+    return this.handleAuth(this.apiCreate(signInEndpoint(), details));
   }
 
   /**
@@ -89,6 +65,30 @@ export class SecurityService extends BawApiService<SessionUser> {
     return this.apiDestroy(signOutEndpoint()).pipe(
       map(() => {
         this.clearSessionUser();
+        this.authTrigger.next(null);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Handle register/login authentication requests
+   * @param apiRequest API Request
+   */
+  private handleAuth(apiRequest: Observable<SessionUser>): Observable<void> {
+    return apiRequest.pipe(
+      flatMap((sessionUser: SessionUser) => {
+        // Store authToken before making api request
+        this.storeLocalUser(sessionUser);
+
+        return this.userService.show().pipe(
+          map(user => {
+            return new SessionUser({ ...user, ...sessionUser });
+          })
+        );
+      }),
+      map((sessionUser: SessionUser) => {
+        this.storeLocalUser(sessionUser);
         this.authTrigger.next(null);
       }),
       catchError(this.handleError)

@@ -1,7 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
+import { isAdminPredicate } from "src/app/app.menus";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink
@@ -13,11 +15,10 @@ import {
   MenuLink,
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
+import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { UserService } from "src/app/services/baw-api/user.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -34,19 +35,19 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   public activeLink: string;
   public collapsed: boolean;
   public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  public isAdmin: boolean;
   public routes: any;
   public title: string;
-  public user: User;
+  public user: SessionUser;
   public userImage: string;
 
   isNavigableMenuItem = isNavigableMenuItem;
 
   constructor(
+    private api: SecurityService,
     private env: AppConfigService,
-    private router: Router,
-    private securityApi: SecurityService,
-    private userApi: UserService,
-    private ref: ChangeDetectorRef
+    private notifications: ToastrService,
+    private router: Router
   ) {
     super();
   }
@@ -81,12 +82,14 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       }
     );
 
-    this.securityApi
+    this.api
       .getAuthTrigger()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => this.updateUser(),
-        err => {}
+        (err: ApiErrorDetails) => {
+          this.notifications.error(err.message);
+        }
       );
   }
 
@@ -113,14 +116,15 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Logout user
-   * TODO Handle error by giving user a warning
    */
   logout() {
-    this.securityApi
+    this.api
       .signOut()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        error: () => {},
+        error: (err: ApiErrorDetails) => {
+          this.notifications.error(err.message);
+        },
         complete: () => {
           this.router.navigate([homeMenuItem.route.toString()]);
         }
@@ -147,25 +151,14 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Update header user profile
    */
   private updateUser() {
-    if (this.securityApi.isLoggedIn()) {
-      this.userApi
-        .show()
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe(
-          (user: User) => {
-            this.user = user;
-            this.userImage = this.user.getImage(ImageSizes.small);
-            this.ref.detectChanges();
-          },
-          (err: ApiErrorDetails) => {
-            this.user = null;
-            this.ref.detectChanges();
-          }
-        );
-    } else {
-      this.user = null;
-      this.ref.detectChanges();
+    this.user = this.api.getSessionUser();
+
+    if (!this.user) {
+      return;
     }
+
+    this.userImage = this.user.getImage(ImageSizes.small);
+    this.isAdmin = isAdminPredicate(this.user);
   }
 
   /**
