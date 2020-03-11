@@ -1,5 +1,8 @@
 import { DateTime } from "luxon";
-import { theirProfileMenuItem } from "../component/profile/profile.menus";
+import {
+  myAccountMenuItem,
+  theirProfileMenuItem
+} from "../component/profile/profile.menus";
 import {
   AuthToken,
   DateTimeTimezone,
@@ -30,7 +33,7 @@ export interface UserInterface {
  * A user model.
  */
 export class User extends AbstractModel implements UserInterface {
-  public readonly kind: "User" = "User";
+  public readonly kind: "User" | "SessionUser" = "User";
   public readonly id?: Id;
   public readonly userName?: UserName;
   public readonly timezoneInformation?: TimezoneInformation;
@@ -54,8 +57,12 @@ export class User extends AbstractModel implements UserInterface {
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {
+          // TODO Add /assets by default from the API so this check doesn't need to occur
           // Default values from API need to have /assets prepended
-          if (imageUrl.url.startsWith("/")) {
+          if (
+            imageUrl.url.startsWith("/") &&
+            !imageUrl.url.startsWith("/assets/")
+          ) {
             imageUrl.url = "/assets" + imageUrl.url;
           }
           return imageUrl;
@@ -114,11 +121,16 @@ export class User extends AbstractModel implements UserInterface {
   };
 
   toJSON() {
-    // TODO Add register details
-
     return {
       id: this.id,
-      userName: this.userName
+      userName: this.userName,
+      rolesMask: this.rolesMask,
+      rolesMaskNames: this.rolesMaskNames,
+      timezoneInformation: this.timezoneInformation,
+      imageUrls: this.imageUrls,
+      lastSeenAt: this.lastSeenAt ? this.lastSeenAt.toString() : undefined,
+      preferences: this.preferences,
+      isConfirmed: this.isConfirmed
     };
   }
 
@@ -147,8 +159,7 @@ export class User extends AbstractModel implements UserInterface {
 /**
  * A user model for the website user
  */
-export interface SessionUserInterface {
-  id?: Id;
+export interface SessionUserInterface extends UserInterface {
   userName?: UserName;
   authToken?: AuthToken;
 }
@@ -156,17 +167,24 @@ export interface SessionUserInterface {
 /**
  * A user model for the website user
  */
-export class SessionUser extends AbstractModel implements SessionUserInterface {
-  public readonly kind?: "SessionUser" = "SessionUser";
+export class SessionUser extends User implements SessionUserInterface {
+  public readonly kind: "User" | "SessionUser" = "SessionUser";
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
+  public readonly timezoneInformation?: TimezoneInformation;
+  public readonly imageUrls?: ImageURL[];
+  public readonly lastSeenAt?: DateTimeTimezone;
+  public readonly preferences?: any;
+  public readonly isConfirmed?: boolean;
+  public readonly rolesMask?: number;
+  public readonly rolesMaskNames?: string[];
 
   /**
    * Constructor
    */
-  constructor(user: SessionUserInterface) {
-    super(user);
+  constructor(sessionUser: SessionUserInterface) {
+    super(sessionUser);
   }
 
   static fromJSON = (obj: any) => {
@@ -179,13 +197,13 @@ export class SessionUser extends AbstractModel implements SessionUserInterface {
 
   toJSON() {
     return {
-      id: this.id,
       authToken: this.authToken,
-      userName: this.userName
+      userName: this.userName,
+      ...super.toJSON()
     };
   }
 
   redirectPath(): string {
-    throw new Error("Not Implemented");
+    return myAccountMenuItem.route.toString();
   }
 }

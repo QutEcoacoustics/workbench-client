@@ -11,4 +11,4 @@ export const defaultUserIcon: IconProp = ["fas", "user"];
 export const isGuestPredicate = (user: SessionUser) => !user;
 export const isLoggedInPredicate = (user: SessionUser) => !!user;
 export const isOwnerPredicate = (user: SessionUser) => !!user;
-export const isAdminPredicate = (user: SessionUser) => !!user;
+export const isAdminPredicate = (user: SessionUser) => !!user && user.isAdmin;

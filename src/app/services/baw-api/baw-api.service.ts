@@ -36,7 +36,10 @@ export abstract class BawApiService<T extends AbstractModel> {
     filter -> POST with filter body
   */
 
-  protected userSessionStorage = "baw.client.user";
+  /**
+   * User local storage location
+   */
+  protected userLocalStorage = "baw.client.user";
 
   /**
    * Handle API collection response
@@ -94,16 +97,16 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Determine if the user is currently logged in
    */
   public isLoggedIn(): boolean {
-    const user = this.getSessionUser();
+    const user = this.getLocalUser();
     return user ? !!user.authToken : false;
   }
 
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  public getSessionUser(): SessionUser | null {
+  public getLocalUser(): SessionUser | null {
     // Will return null if no item exists
-    const userData = sessionStorage.getItem(this.userSessionStorage);
+    const userData = localStorage.getItem(this.userLocalStorage);
 
     if (userData) {
       // Try create session user
@@ -119,18 +122,18 @@ export abstract class BawApiService<T extends AbstractModel> {
   }
 
   /**
-   * Add user details to the session storage
+   * Add user session data to the local storage
    * @param user User details
    */
-  protected setSessionUser(user: SessionUser): void {
-    sessionStorage.setItem(this.userSessionStorage, JSON.stringify(user));
+  protected storeLocalUser(user: SessionUser): void {
+    localStorage.setItem(this.userLocalStorage, JSON.stringify(user));
   }
 
   /**
    * Clear session storage
    */
   protected clearSessionUser(): void {
-    sessionStorage.removeItem(this.userSessionStorage);
+    localStorage.removeItem(this.userLocalStorage);
   }
 
   /**

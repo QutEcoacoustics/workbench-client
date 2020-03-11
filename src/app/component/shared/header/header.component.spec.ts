@@ -5,16 +5,15 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
-  TestBed,
-  tick
+  TestBed
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject, Subject } from "rxjs";
-import { User } from "src/app/models/User";
+import { appLibraryImports } from "src/app/app.module";
+import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { UserService } from "src/app/services/baw-api/user.service";
 import { testBawServices } from "src/app/test.helper";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
@@ -30,24 +29,18 @@ import { HeaderComponent } from "./header.component";
 describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let securityApi: SecurityService;
-  let userApi: UserService;
+  let api: SecurityService;
   let env: AppConfigService;
   let router: Router;
 
-  function setUser(isLoggedIn: boolean, user?: User) {
+  function setUser(isLoggedIn: boolean, user?: SessionUser) {
     if (isLoggedIn) {
-      spyOn(userApi, "show").and.callFake(() => {
-        return new BehaviorSubject<User>(user);
+      spyOn(api, "getLocalUser").and.callFake(() => {
+        return user;
       });
     }
 
-    spyOn(securityApi, "isLoggedIn").and.callFake(() => {
-      return isLoggedIn;
-    });
-    spyOn(securityApi, "getAuthTrigger").and.callFake(
-      () => new BehaviorSubject(null)
-    );
+    spyOn(api, "getAuthTrigger").and.callFake(() => new BehaviorSubject(null));
   }
 
   function assertRouterLink(element: HTMLElement, route: string) {
@@ -66,15 +59,19 @@ describe("HeaderComponent", () => {
         HeaderItemComponent,
         HeaderDropdownComponent
       ],
-      imports: [SharedModule, RouterTestingModule, HttpClientModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        HttpClientModule
+      ],
       providers: [...testBawServices]
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
-    securityApi = TestBed.inject(SecurityService);
-    userApi = TestBed.inject(UserService);
+    api = TestBed.inject(SecurityService);
     router = TestBed.inject(Router);
     env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
@@ -130,7 +127,7 @@ describe("HeaderComponent", () => {
     userRoles.forEach(userType => {
       describe(userType.type + " user", () => {
         let isLoggedIn: boolean;
-        let user: User;
+        let user: SessionUser;
 
         beforeEach(() => {
           if (userType.type === "guest") {
@@ -138,8 +135,9 @@ describe("HeaderComponent", () => {
             user = undefined;
           } else {
             isLoggedIn = true;
-            user = new User({
+            user = new SessionUser({
               id: 1,
+              authToken: "xxxxxxxxxxxxxxx",
               userName: "Username",
               rolesMask: userType.type === "admin" ? 1 : 2,
               rolesMaskNames: userType.type === "user" ? ["user"] : ["admin"]
@@ -152,9 +150,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const brand = fixture.nativeElement.querySelector("a.navbar-brand");
-          expect(brand).toBeTruthy();
-          expect(brand.innerText).toContain(env.values.brand.name);
           assertRouterLink(brand, homeMenuItem.route.toString());
+          expect(brand.innerText).toContain(env.values.brand.name);
         });
 
         it("should create projects link", () => {
@@ -162,9 +159,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[0];
-          expect(link).toBeTruthy();
-          expect(link.innerText).toContain(projectsMenuItem.label);
           assertRouterLink(link, projectsMenuItem.route.toString());
+          expect(link.innerText).toContain(projectsMenuItem.label);
         });
 
         it("should create contact us link", () => {
@@ -172,9 +168,8 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[2];
-          expect(link).toBeTruthy();
-          expect(link.innerText).toContain(contactUsMenuItem.label);
           assertRouterLink(link, contactUsMenuItem.route.toString());
+          expect(link.innerText).toContain(contactUsMenuItem.label);
         });
 
         it("should create header links from external config", () => {
@@ -213,9 +208,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.register) {
-              expect(link).toBeTruthy();
-              expect(link.innerText).toContain(registerMenuItem.label);
               assertRouterLink(link, registerMenuItem.route.toString());
+              expect(link.innerText).toContain(registerMenuItem.label);
             } else {
               expect(link).toBeFalsy();
             }
@@ -235,9 +229,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.login) {
-              expect(link).toBeTruthy();
-              expect(link.innerText).toContain(loginMenuItem.label);
               assertRouterLink(link, loginMenuItem.route.toString());
+              expect(link.innerText).toContain(loginMenuItem.label);
             } else {
               expect(link).toBeFalsy();
             }
@@ -257,9 +250,8 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.profile) {
-              expect(profile).toBeTruthy();
-              expect(profile.innerText.trim()).toBe("Username");
               assertRouterLink(profile, myAccountMenuItem.route.toString());
+              expect(profile.innerText.trim()).toBe("Username");
             } else {
               expect(profile).toBeFalsy();
             }
@@ -274,8 +266,6 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            expect(profile).toBeTruthy();
-
             const icon = profile.querySelector("img");
             expect(icon).toBeTruthy();
             expect(icon.alt).toBe("Profile Icon");
@@ -285,7 +275,7 @@ describe("HeaderComponent", () => {
           }));
 
           it("should display profile custom icon", fakeAsync(() => {
-            const customUser = new User({
+            const customUser = new SessionUser({
               ...user,
               imageUrls: [
                 {
@@ -326,8 +316,6 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            expect(profile).toBeTruthy();
-
             const icon = profile.querySelector("img");
             expect(icon).toBeTruthy();
             expect(icon.alt).toBe("Profile Icon");
@@ -385,15 +373,16 @@ describe("HeaderComponent", () => {
     it("should call signOut when logout button pressed", fakeAsync(() => {
       setUser(
         true,
-        new User({
+        new SessionUser({
           id: 1,
+          authToken: "xxxxxxxxxxxxxxx",
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
           lastSeenAt: "2019-12-18T11:16:08.233+10:00"
         })
       );
-      spyOn(securityApi, "signOut").and.callFake(() => {
+      spyOn(api, "signOut").and.callFake(() => {
         return new BehaviorSubject<void>(null);
       });
       fixture.detectChanges();
@@ -403,21 +392,22 @@ describe("HeaderComponent", () => {
       )[1];
       logout.click();
 
-      expect(securityApi.signOut).toHaveBeenCalled();
+      expect(api.signOut).toHaveBeenCalled();
     }));
 
     it("should redirect to home page when logout successful", fakeAsync(() => {
       setUser(
         true,
-        new User({
+        new SessionUser({
           id: 1,
+          authToken: "xxxxxxxxxxxxxxx",
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
           lastSeenAt: "2019-12-18T11:16:08.233+10:00"
         })
       );
-      spyOn(securityApi, "signOut").and.callFake(() => {
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<void>();
         subject.complete();
         return subject;
@@ -439,27 +429,28 @@ describe("HeaderComponent", () => {
     it("should display register after logout", fakeAsync(() => {
       let count = 0;
       const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(securityApi, "isLoggedIn").and.callFake(() => {
-        count++;
-        return count === 1;
-      });
-      spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
-      spyOn(securityApi, "signOut").and.callFake(() => {
+      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<any>();
         subject.complete();
         return subject;
       });
       spyOn(router, "navigate").and.stub();
-      spyOn(userApi, "show").and.callFake(() => {
-        return new BehaviorSubject<User>(
-          new User({
-            id: 1,
-            userName: "custom username",
-            rolesMask: 2,
-            rolesMaskNames: ["user"],
-            lastSeenAt: "2019-12-18T11:16:08.233+10:00"
-          })
-        );
+      spyOn(api, "getLocalUser").and.callFake(() => {
+        if (count !== 0) {
+          return null;
+        } else {
+          count++;
+        }
+
+        return new SessionUser({
+          id: 1,
+          authToken: "xxxxxxxxxxxxxxx",
+          userName: "custom username",
+          rolesMask: 2,
+          rolesMaskNames: ["user"],
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+        });
       });
       fixture.detectChanges();
 
@@ -482,27 +473,28 @@ describe("HeaderComponent", () => {
     it("should display login after logout", fakeAsync(() => {
       let count = 0;
       const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(securityApi, "isLoggedIn").and.callFake(() => {
-        count++;
-        return count === 1;
-      });
-      spyOn(securityApi, "getAuthTrigger").and.callFake(() => loggedInTrigger);
-      spyOn(securityApi, "signOut").and.callFake(() => {
+      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<any>();
         subject.complete();
         return subject;
       });
       spyOn(router, "navigate").and.stub();
-      spyOn(userApi, "show").and.callFake(() => {
-        return new BehaviorSubject<User>(
-          new User({
-            id: 1,
-            userName: "custom username",
-            rolesMask: 2,
-            rolesMaskNames: ["user"],
-            lastSeenAt: "2019-12-18T11:16:08.233+10:00"
-          })
-        );
+      spyOn(api, "getLocalUser").and.callFake(() => {
+        if (count !== 0) {
+          return null;
+        } else {
+          count++;
+        }
+
+        return new SessionUser({
+          id: 1,
+          authToken: "xxxxxxxxxxxxxxx",
+          userName: "custom username",
+          rolesMask: 2,
+          rolesMaskNames: ["user"],
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+        });
       });
       fixture.detectChanges();
 
@@ -559,9 +551,7 @@ describe("HeaderComponent", () => {
       const button = fixture.nativeElement.querySelector(
         "button.navbar-toggler"
       );
-      expect(button).toBeTruthy();
       button.click();
-
       fixture.detectChanges();
 
       const navbar = fixture.nativeElement.querySelector("div.collapse");
@@ -576,7 +566,6 @@ describe("HeaderComponent", () => {
       const button = fixture.nativeElement.querySelector(
         "button.navbar-toggler"
       );
-      expect(button).toBeTruthy();
       button.click();
       fixture.detectChanges();
 

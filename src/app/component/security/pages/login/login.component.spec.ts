@@ -12,7 +12,6 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { SessionUser } from "src/app/models/User";
 import { testApiConfig } from "src/app/services/app-config/appConfigMock.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
@@ -97,24 +96,15 @@ describe("LoginComponent", () => {
   function successResponse(signedIn: boolean = true) {
     spyOn(api, "signIn").and.callFake(() => {
       if (signedIn) {
-        return new BehaviorSubject<SessionUser>(
-          new SessionUser({
-            authToken: "xxxxxxxxxxxxxxx",
-            userName: "username"
-          })
-        );
+        return new BehaviorSubject<void>(null);
       }
 
-      const subject = new Subject<SessionUser>();
-
-      setTimeout(() => {
-        subject.error({
-          status: 401,
-          message:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
-        } as ApiErrorDetails);
-      }, 50);
-
+      const subject = new Subject<void>();
+      subject.error({
+        status: 401,
+        message:
+          "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
+      } as ApiErrorDetails);
       return subject;
     });
   }
