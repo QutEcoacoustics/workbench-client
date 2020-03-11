@@ -3,9 +3,9 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from "@angular/common/http/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { Subject } from "rxjs";
-import { SessionUser } from "src/app/models/User";
+import { fakeAsync, TestBed } from "@angular/core/testing";
+import { BehaviorSubject, Subject } from "rxjs";
+import { SessionUser, User } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
@@ -14,11 +14,17 @@ import {
   shouldNotFail,
   shouldNotSucceed
 } from "./baw-api.service.spec";
+import { MockShowApiService } from "./mock/showApiMock.service";
 import { LoginDetails, SecurityService } from "./security.service";
+import { UserService } from "./user.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
+  let userApi: UserService;
   let httpMock: HttpTestingController;
+  let defaultLoginDetails: LoginDetails;
+  let defaultUser: User;
+  let defaultSessionUser: SessionUser;
 
   function createError(
     func:
@@ -34,11 +40,7 @@ describe("SecurityService", () => {
     spyOn<any>(service as any, func).and.callFake((path: string) => {
       expect(path).toBe(url);
       const subject = new Subject();
-
-      setTimeout(() => {
-        subject.error(error);
-      }, 50);
-
+      subject.error(error);
       return subject;
     });
   }
@@ -48,6 +50,7 @@ describe("SecurityService", () => {
       imports: [HttpClientTestingModule],
       providers: [
         ...testAppInitializer,
+        { provide: UserService, useClass: MockShowApiService },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
@@ -58,11 +61,25 @@ describe("SecurityService", () => {
     });
 
     service = TestBed.inject(SecurityService);
+    userApi = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    defaultUser = new User({
+      id: 1,
+      userName: "username"
+    });
+    defaultSessionUser = new SessionUser({
+      authToken: "xxxxxxxxxxxxxxx",
+      userName: "username"
+    });
+    defaultLoginDetails = new LoginDetails({
+      login: "username",
+      password: "password"
+    });
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     httpMock.verify();
   });
 
@@ -72,7 +89,7 @@ describe("SecurityService", () => {
     });
 
     it("getSessionUser should return null initially", () => {
-      expect(service.getSessionUser()).toBeFalsy();
+      expect(service.getLocalUser()).toBeFalsy();
     });
 
     it("authTrigger should contain default value", () => {
@@ -85,142 +102,148 @@ describe("SecurityService", () => {
   });
 
   describe("signIn", () => {
-    function createSuccess(
+    function createResponse(
       path: string,
       details: LoginDetails,
-      model: SessionUser
+      model: SessionUser,
+      user?: User
     ) {
-      return spyOn(service as any, "apiCreate").and.callFake(
+      spyOn(service as any, "apiCreate").and.callFake(
         (_path: string, _details: object) => {
           expect(_path).toBe(path);
           expect(_details).toEqual(details);
 
-          const subject = new Subject<SessionUser>();
-
-          setTimeout(() => {
-            subject.next(model);
-            subject.complete();
-          }, 50);
-
-          return subject;
+          return new BehaviorSubject<SessionUser>(model);
         }
       );
+      spyOn(userApi, "show").and.callFake(() => {
+        if (user) {
+          return new BehaviorSubject<User>(user);
+        } else {
+          const subject = new Subject<User>();
+          subject.error({
+            status: 401,
+            message: "Unauthorized"
+          } as ApiErrorDetails);
+          return subject;
+        }
+      });
     }
 
     it("should call apiCreate", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
-      const spy = createSuccess("/security/", details, model);
-      service.signIn(details).subscribe();
-      expect(spy).toHaveBeenCalledWith("/security/", details);
-
-      tick(100);
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
+      service.signIn(defaultLoginDetails).subscribe();
+      expect(service["apiCreate"]).toHaveBeenCalledWith(
+        "/security/",
+        defaultLoginDetails
+      );
     }));
 
     it("should handle response", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
-      createSuccess("/security/", details, model);
-      service.signIn(details).subscribe((_model: SessionUser) => {
-        expect(_model).toBeTruthy();
-        expect(_model).toEqual(model);
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
+      service.signIn(defaultLoginDetails).subscribe(() => {
+        expect(true).toBeTruthy();
       }, shouldNotFail);
-
-      tick(100);
     }));
 
-    it("set session user", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
+    // TODO Update this test
+    it("store user", fakeAsync(() => {
+      const user = new User({
+        id: 1,
+        userName: "username",
+        isConfirmed: false,
+        lastSeenAt: "1970-01-01T00:00:00.000+10:00",
+        rolesMask: 2,
+        rolesMaskNames: ["user"]
       });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
+      const session = new SessionUser({
+        authToken: "xxxxxxxxxxxxxxxx",
         userName: "username"
       });
-      createSuccess("/security/", details, model);
-      service
-        .signIn(details)
-        .subscribe((_model: SessionUser) => {}, shouldNotFail);
+      createResponse("/security/", defaultLoginDetails, session, user);
+      service.signIn(defaultLoginDetails).subscribe(() => {}, shouldNotFail);
 
-      tick(100);
-
-      expect(service.getSessionUser()).toEqual(model);
+      expect(service.getLocalUser()).toEqual(
+        new SessionUser({
+          id: 1,
+          userName: "username",
+          authToken: "xxxxxxxxxxxxxxxx",
+          isConfirmed: false,
+          lastSeenAt: "1970-01-01T00:00:00.000+10:00",
+          rolesMask: 2,
+          rolesMaskNames: ["user"]
+        })
+      );
     }));
 
     it("should update authTrigger trigger", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
-      const model = new SessionUser({
-        authToken: "xxxxxxxxxxxxxxx",
-        userName: "username"
-      });
       const spy = jasmine.createSpy();
-      createSuccess("/security/", details, model);
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        defaultUser
+      );
 
       service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
-      service.signIn(details).subscribe();
+      service.signIn(defaultLoginDetails).subscribe();
 
-      tick(100);
-
+      // Should call auth trigger twice, first time is when the subscription is created
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
-    it("should handle error", fakeAsync(() => {
-      const details = new LoginDetails({
-        login: "username",
-        password: "password"
-      });
+    it("should handle signIn error", fakeAsync(() => {
       createError("apiCreate", "/security/", apiErrorDetails);
       service
-        .signIn(details)
+        .signIn(defaultLoginDetails)
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
           expect(err).toBeTruthy();
           expect(err).toEqual(apiErrorDetails);
         });
-
-      tick(100);
     }));
+
+    it("should handle get user error", fakeAsync(() => {
+      createResponse(
+        "/security/",
+        defaultLoginDetails,
+        defaultSessionUser,
+        undefined
+      );
+
+      service
+        .signIn(defaultLoginDetails)
+        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toBeTruthy();
+          expect(err).toEqual(apiErrorDetails);
+        });
+    }));
+
+    // TODO Add check for authTrigger triggering on error
   });
 
   describe("signOut", () => {
     function createSuccess(path: string) {
-      return spyOn(service as any, "apiDestroy").and.callFake(
-        (_path: string) => {
-          expect(_path).toBe(path);
+      spyOn(service as any, "apiDestroy").and.callFake((_path: string) => {
+        expect(_path).toBe(path);
 
-          const subject = new Subject<SessionUser>();
-
-          setTimeout(() => {
-            subject.next(null);
-            subject.complete();
-          }, 50);
-
-          return subject;
-        }
-      );
+        return new BehaviorSubject<void>(null);
+      });
     }
 
     it("should call apiDestroy", fakeAsync(() => {
-      const spy = createSuccess("/security/");
+      createSuccess("/security/");
       service.signOut().subscribe();
-      expect(spy).toHaveBeenCalledWith("/security/");
-
-      tick(100);
+      expect(service["apiDestroy"]).toHaveBeenCalledWith("/security/");
     }));
 
     it("should handle response", fakeAsync(() => {
@@ -228,17 +251,13 @@ describe("SecurityService", () => {
       service
         .signOut()
         .subscribe(() => expect(true).toBeTruthy(), shouldNotFail);
-
-      tick(100);
     }));
 
     it("should clear session user", fakeAsync(() => {
       createSuccess("/security/");
       service.signOut().subscribe(() => {}, shouldNotFail);
 
-      tick(100);
-
-      expect(service.getSessionUser()).toBeFalsy();
+      expect(service.getLocalUser()).toBeFalsy();
     }));
 
     it("should update authTrigger trigger", fakeAsync(() => {
@@ -248,8 +267,7 @@ describe("SecurityService", () => {
       service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
       service.signOut().subscribe();
 
-      tick(100);
-
+      // Should call auth trigger twice, first time is when the subscription is created
       expect(spy).toHaveBeenCalledTimes(2);
     }));
 
@@ -259,8 +277,8 @@ describe("SecurityService", () => {
         expect(err).toBeTruthy();
         expect(err).toEqual(apiErrorDetails);
       });
-
-      tick(100);
     }));
+
+    // TODO Add check for authTrigger triggering on error
   });
 });

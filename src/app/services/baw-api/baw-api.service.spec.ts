@@ -7,7 +7,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser } from "src/app/models/User";
+import { SessionUser, User } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
@@ -17,7 +17,10 @@ import {
   Meta,
   STUB_MODEL_BUILDER
 } from "./baw-api.service";
+import { MockSecurityService } from "./mock/securityMock.service";
+import { MockShowApiService } from "./mock/showApiMock.service";
 import { SecurityService } from "./security.service";
+import { UserService } from "./user.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");
@@ -144,12 +147,12 @@ describe("BawApiService", () => {
   const multiResponse = [singleResponse];
 
   function signIn(authToken: string, userName: string) {
-    const user = new SessionUser({ authToken, userName });
-    sessionStorage.setItem("baw.client.user", JSON.stringify(user));
+    const sessionUser = new SessionUser({ id: 1, authToken, userName });
+    localStorage.setItem("baw.client.user", JSON.stringify(sessionUser));
   }
 
   function signOut() {
-    sessionStorage.removeItem("baw.client.user");
+    localStorage.removeItem("baw.client.user");
   }
 
   function flushResponse<T>(req: TestRequest, response: ApiResponse<T>) {
@@ -191,7 +194,8 @@ describe("BawApiService", () => {
       providers: [
         ...testAppInitializer,
         BawApiService,
-        SecurityService,
+        { provide: SecurityService, useClass: MockSecurityService },
+        { provide: UserService, useClass: MockShowApiService },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
@@ -226,13 +230,13 @@ describe("BawApiService", () => {
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     httpMock.verify();
   });
 
   describe("Session Tracking", () => {
-    it("should not change session storage on first load", () => {
-      expect(sessionStorage.length).toBe(0);
+    it("should not change local storage on first load", () => {
+      expect(localStorage.length).toBe(0);
     });
 
     it("should not be logged in", () => {
@@ -240,30 +244,30 @@ describe("BawApiService", () => {
     });
 
     it("should not return user", () => {
-      expect(service.getSessionUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(null);
     });
 
-    it("should be logged in after user saved to session storage", () => {
+    it("should be logged in after user saved to local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       expect(service.isLoggedIn()).toBeTruthy();
     });
 
-    it("should return user after user saved to session storage", () => {
+    it("should return user after user saved to local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
-      expect(service.getSessionUser().authToken).toBe("xxxxxxxxxxxxxxx");
-      expect(service.getSessionUser().userName).toBe("username");
+      expect(service.getLocalUser().authToken).toBe("xxxxxxxxxxxxxxx");
+      expect(service.getLocalUser().userName).toBe("username");
     });
 
-    it("should not be logged in after user removed from session storage", () => {
+    it("should not be logged in after user removed from local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
       expect(service.isLoggedIn()).toBe(false);
     });
 
-    it("should not return user after user removed from session storage", () => {
+    it("should not return user after user removed from local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
-      expect(service.getSessionUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(null);
     });
   });
 

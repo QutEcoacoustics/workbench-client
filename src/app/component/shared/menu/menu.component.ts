@@ -56,7 +56,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
 
   ngOnInit() {
     // Get user details
-    this.user = this.api.getSessionUser();
+    this.user = this.api.getLocalUser();
     this.placement = this.menuType === "action" ? "left" : "right";
 
     // Filter links

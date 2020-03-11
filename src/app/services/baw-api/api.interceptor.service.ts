@@ -66,7 +66,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (this.api.isLoggedIn()) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Token token="${this.api.getSessionUser().authToken}"`
+          Authorization: `Token token="${this.api.getLocalUser().authToken}"`
         }
       });
     }
