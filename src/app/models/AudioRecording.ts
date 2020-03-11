@@ -82,4 +82,8 @@ export class AudioRecording extends AbstractModel
       id: this.id
     };
   }
+
+  redirectPath(): string {
+    throw new Error("Not Implemented");
+  }
 }

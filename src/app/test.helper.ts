@@ -27,6 +27,7 @@ import { MockShowApiService } from "./services/baw-api/mock/showApiMock.service"
 import { MockStandardApiService } from "./services/baw-api/mock/standardApiMock.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { ResolvedModel } from "./services/baw-api/resolver-common";
+import { ScriptsService } from "./services/baw-api/scripts.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import {
   ShallowSitesService,
@@ -67,6 +68,7 @@ export const testBawServices = [
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockReadonlyApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
+  { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },
   { provide: ShallowSitesService, useClass: MockStandardApiService },
   { provide: UserService, useClass: MockShowApiService }

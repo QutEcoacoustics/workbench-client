@@ -1,0 +1,39 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Scripts</h1>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [externalPaging]="true"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+  >
+    <ngx-datatable-column name="Name" [sortable]="false">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <fa-icon [icon]="['fas', 'book']"></fa-icon>
+        Name
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Version" [sortable]="false">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Version
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Id" [sortable]="false">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Id
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Command" [sortable]="false">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Command
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-error-handler [error]="error"></app-error-handler>

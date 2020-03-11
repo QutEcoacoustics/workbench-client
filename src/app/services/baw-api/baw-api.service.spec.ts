@@ -92,6 +92,10 @@ describe("BawApiService", () => {
 
       return json;
     }
+
+    public redirectPath(): string {
+      return "";
+    }
   }
 
   let service: BawApiService<MockModel>;

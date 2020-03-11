@@ -44,10 +44,21 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
-export const adminScriptsMenuItem = MenuRoute({
+/*
+  Admin Scripts
+*/
+
+export const adminScriptsCategory: Category = {
   icon: ["fas", "scroll"],
   label: "Scripts",
   route: adminRoute.add("scripts"),
+  parent: adminCategory
+};
+
+export const adminScriptsMenuItem = MenuRoute({
+  icon: ["fas", "scroll"],
+  label: "Scripts",
+  route: adminScriptsCategory.route,
   tooltip: () => "Manage custom scripts",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate

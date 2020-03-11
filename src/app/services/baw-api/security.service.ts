@@ -101,4 +101,8 @@ export class LoginDetails extends AbstractModel
       password: this.password
     };
   }
+
+  redirectPath(): string {
+    throw new Error("Not Implemented");
+  }
 }

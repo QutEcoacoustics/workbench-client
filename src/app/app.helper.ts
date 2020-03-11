@@ -24,6 +24,10 @@ import {
   projectResolvers,
   ProjectsService
 } from "./services/baw-api/projects.service";
+import {
+  scriptResolvers,
+  ScriptsService
+} from "./services/baw-api/scripts.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import {
   shallowSiteResolvers,
@@ -109,12 +113,14 @@ export const providers = [
   AppConfigService,
   AccountService,
   ProjectsService,
+  ScriptsService,
   SecurityService,
-  SitesService,
   ShallowSitesService,
+  SitesService,
   UserService,
   ...accountResolvers,
   ...projectResolvers,
+  ...scriptResolvers,
   ...siteResolvers,
   ...shallowSiteResolvers,
   ...userResolvers
