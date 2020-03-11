@@ -24,7 +24,6 @@ export abstract class PagedTableTemplate<
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: T[];
-  public temp: T[];
   public selected: T[] = [];
   public pageNumber: number;
   public totalModels: number;
@@ -55,7 +54,6 @@ export abstract class PagedTableTemplate<
       .subscribe(
         models => {
           this.rows = this.rowsCallback(models);
-          this.temp = [...this.rows];
           this.loadingData = false;
 
           if (models.length > 0) {

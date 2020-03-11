@@ -15,6 +15,14 @@ import { AdminUserListComponent } from "./user-list.component";
 describe("AdminUserListComponent", () => {
   let fixture: ComponentFixture<AdminUserListComponent>;
   let api: AccountService;
+  let defaultUser: User;
+  let defaultUsers: User[];
+  let defaultPaging: {
+    page: number;
+    items: number;
+    total: number;
+    maxPage: number;
+  };
 
   function apiResponse(
     users: User[],
@@ -69,14 +77,32 @@ describe("AdminUserListComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminUserListComponent);
     api = TestBed.inject(AccountService);
+
+    defaultUser = new User({
+      id: 1,
+      userName: "username",
+      isConfirmed: false
+    });
+    defaultUsers = [];
+    for (let i = 0; i < 25; i++) {
+      defaultUsers.push(
+        new User({
+          id: i,
+          userName: "user " + i,
+          isConfirmed: false
+        })
+      );
+    }
+    defaultPaging = {
+      page: 1,
+      items: 25,
+      total: 1,
+      maxPage: 1
+    };
   });
 
-  it("should display number of users in description", () => {
-    const user = new User({
-      id: 1,
-      userName: "username"
-    });
-    apiResponse([user], {
+  it("should display number of users in description using paging data", () => {
+    apiResponse([defaultUser], {
       page: 1,
       items: 25,
       total: 100,
@@ -190,17 +216,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should handle single user", () => {
-      const user = new User({
-        id: 1,
-        userName: "username",
-        isConfirmed: false
-      });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([defaultUser], defaultPaging);
       fixture.detectChanges();
 
       const rows = getRows();
@@ -209,17 +225,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should handle 25 users", () => {
-      const users = [];
-      for (let i = 0; i < 25; i++) {
-        users.push(
-          new User({
-            id: i,
-            userName: "user " + i,
-            isConfirmed: false
-          })
-        );
-      }
-      apiResponse(users, {
+      apiResponse(defaultUsers, {
         page: 1,
         items: 25,
         total: 25,
@@ -233,17 +239,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should handle 100 users", () => {
-      const users = [];
-      for (let i = 0; i < 25; i++) {
-        users.push(
-          new User({
-            id: i,
-            userName: "user " + i,
-            isConfirmed: false
-          })
-        );
-      }
-      apiResponse(users, {
+      apiResponse(defaultUsers, {
         page: 1,
         items: 25,
         total: 100,
@@ -266,12 +262,7 @@ describe("AdminUserListComponent", () => {
         userName: "user 1",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -286,12 +277,7 @@ describe("AdminUserListComponent", () => {
         userName: "username",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -307,12 +293,7 @@ describe("AdminUserListComponent", () => {
         lastSeenAt: "2020-03-09T22:00:50.072+10:00",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
       fixture.detectChanges();
 
@@ -326,12 +307,7 @@ describe("AdminUserListComponent", () => {
         lastSeenAt: "2020-03-09T22:00:50.072+10:00",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
       fixture.detectChanges();
 
@@ -347,12 +323,7 @@ describe("AdminUserListComponent", () => {
         userName: "username",
         isConfirmed: true
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -371,12 +342,7 @@ describe("AdminUserListComponent", () => {
         userName: "username",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -390,17 +356,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should display edit button", () => {
-      const user = new User({
-        id: 1,
-        userName: "username",
-        isConfirmed: false
-      });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([defaultUser], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -418,12 +374,7 @@ describe("AdminUserListComponent", () => {
         userName: "username",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -441,12 +392,7 @@ describe("AdminUserListComponent", () => {
         userName: "username",
         isConfirmed: false
       });
-      apiResponse([user], {
-        page: 1,
-        items: 25,
-        total: 1,
-        maxPage: 1
-      });
+      apiResponse([defaultUser], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];

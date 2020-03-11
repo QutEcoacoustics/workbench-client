@@ -17,7 +17,7 @@ export abstract class TableTemplate<T> extends PageComponent {
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: T[];
-  public temp: T[];
+  public filterTempRows: T[];
   public selected: T[] = [];
 
   constructor(private filterMatch: (val: string, row: T) => boolean) {
@@ -37,7 +37,7 @@ export abstract class TableTemplate<T> extends PageComponent {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.temp.filter(row => {
+    const temp = this.filterTempRows.filter(row => {
       return !val || this.filterMatch(val, row);
     });
 
@@ -65,6 +65,6 @@ export abstract class TableTemplate<T> extends PageComponent {
    */
   protected loadTable() {
     this.createRows();
-    this.temp = [...this.rows];
+    this.filterTempRows = [...this.rows];
   }
 }
