@@ -116,7 +116,7 @@ export const adminAnalysisJobsMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
-export const adminJobStatus = MenuLink({
+export const adminJobStatusMenuItem = MenuLink({
   icon: ["fas", "tasks"],
   label: "Job Status",
   tooltip: () => "Job queue status overview",
