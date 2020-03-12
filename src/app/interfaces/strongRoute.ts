@@ -139,14 +139,13 @@ export class StrongRoute {
       callback(current.pageComponent, current.config);
       const thisRoute = current.routeConfig;
       const childRoutes = current.children.map(recursiveAdd);
-      thisRoute.children = [...(thisRoute.children || []), ...childRoutes].sort(
-        sortRoutes
-      );
+      const children = [...(thisRoute.children || []), ...childRoutes];
+      thisRoute.children = children.sort(sortRoutes);
       return thisRoute;
     };
 
     const rootRoute = this.root;
-    return recursiveAdd(rootRoute).children;
+    return rootRoute.children.map(recursiveAdd).sort(sortRoutes);
   }
 
   /**
