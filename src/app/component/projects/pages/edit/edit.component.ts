@@ -46,7 +46,7 @@ export class EditComponent extends EditFormTemplate<Project, FormEvent> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super("Project", ["project"], fields, notifications, route, router);
+    super(["project"], fields, notifications, route, router);
   }
 
   public getProject(): Project {
@@ -64,6 +64,10 @@ export class EditComponent extends EditFormTemplate<Project, FormEvent> {
     const project = this.getProject();
     const updatedProject = new Project({ id: project.id, ...event });
     return this.api.update(updatedProject);
+  }
+
+  successMessage(model: Project) {
+    return "Successfully updated " + model.name;
   }
 
   redirectPath(project: Project) {

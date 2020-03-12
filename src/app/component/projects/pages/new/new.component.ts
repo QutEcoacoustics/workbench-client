@@ -1,14 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { NewFormTemplate } from "src/app/helpers/formTemplate/newTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   newProjectMenuItem,
@@ -38,49 +35,31 @@ import { fields } from "./new.json";
     ></app-form>
   `
 })
-export class NewComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public schema = { model: {}, fields };
-
+export class NewComponent extends NewFormTemplate<Project, FormEvent> {
   constructor(
-    private router: Router,
     private api: ProjectsService,
-    private notifications: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super([], fields, notifications, route, router);
   }
 
-  ngOnInit() {}
-
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
-
-    this.api
-      .create(new Project($event))
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        project => {
-          this.resetForms();
-          this.notifications.success("Project was successfully created.");
-          this.router.navigateByUrl(project.redirectPath());
-        },
-        (err: ApiErrorDetails) => {
-          let errMsg: string;
-
-          if (err.info && err.info.name && err.info.name.length === 1) {
-            errMsg = err.message + ": name " + err.info.name[0];
-          } else {
-            errMsg = err.message;
-          }
-
-          this.notifications.error(errMsg);
-          this.loading = false;
-        }
-      );
+  apiCreate(event: FormEvent) {
+    return this.api.create(new Project({ ...event }));
   }
+
+  successMessage(model: Project) {
+    return "Successfully created " + model.name;
+  }
+
+  redirectPath(project: Project) {
+    return project.redirectPath();
+  }
+}
+
+interface FormEvent {
+  name: string;
+  description: string;
+  image: any;
 }

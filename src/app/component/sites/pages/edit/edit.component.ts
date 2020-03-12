@@ -47,7 +47,7 @@ export class EditComponent extends EditFormTemplate<Site, FormEvent> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super("Site", ["site", "project"], fields, notifications, route, router);
+    super(["site", "project"], fields, notifications, route, router);
   }
 
   public getSite(): Site {
@@ -74,6 +74,10 @@ export class EditComponent extends EditFormTemplate<Site, FormEvent> {
     const project = this.getProject();
     const updatedSite = new Site({ id: site.id, ...event });
     return this.api.update(updatedSite, project);
+  }
+
+  successMessage(model: Site) {
+    return "Successfully updated " + model.name;
   }
 
   redirectPath(site: Site) {
