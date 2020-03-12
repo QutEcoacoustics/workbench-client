@@ -30,10 +30,6 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
     | "btn-primary"
     | "btn-secondary"
     | "btn-info" = "btn-success";
-  /**
-   * Deprecated
-   */
-  @Input() error?: string;
   @Input() schema: {
     model: {};
     fields: FormlyFieldConfig[];
@@ -42,10 +38,6 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() submitLabel: string;
   @Input() submitLoading: boolean;
   @Input() subTitle?: string;
-  /**
-   * Deprecated
-   */
-  @Input() success?: string;
   @Input() size: "small" | "default" = "default";
   @Input() title?: string;
 

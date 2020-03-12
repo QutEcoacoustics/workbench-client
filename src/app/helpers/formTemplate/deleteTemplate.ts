@@ -1,6 +1,6 @@
-import { FormTemplate } from "./formTemplate";
-import { AbstractModel } from "src/app/models/AbstractModel";
 import { Observable } from "rxjs";
+import { AbstractModel } from "src/app/models/AbstractModel";
+import { FormTemplate } from "./formTemplate";
 
 export abstract class DeleteFormTemplate<
   M extends AbstractModel

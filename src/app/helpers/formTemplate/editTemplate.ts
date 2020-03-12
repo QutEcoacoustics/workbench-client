@@ -1,3 +1,4 @@
+import { OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { FormTemplate } from "./formTemplate";
@@ -5,10 +6,9 @@ import { FormTemplate } from "./formTemplate";
 /**
  * Edit Abstract Model Form
  */
-export abstract class EditFormTemplate<
-  M extends AbstractModel,
-  F
-> extends FormTemplate<M, F> {
+export abstract class EditFormTemplate<M extends AbstractModel, F>
+  extends FormTemplate<M, F>
+  implements OnInit {
   ngOnInit() {
     super.ngOnInit();
 
