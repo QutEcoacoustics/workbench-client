@@ -24,7 +24,7 @@ export function Page(
   ): DecoratedPageComponent {
     const staticInfo = new PageInfo(componentConstructor, info);
 
-    // Declare this page as the root child of the category
+    // Identify category has root child
     if (staticInfo.category.route === staticInfo.route) {
       staticInfo.category.hasRootChild = true;
     }

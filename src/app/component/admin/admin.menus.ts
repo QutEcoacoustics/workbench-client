@@ -13,18 +13,18 @@ import { sitesCategory } from "../sites/sites.menus";
 
 export const adminRoute = StrongRoute.Base.add("admin");
 
+export const adminCategory = Category({
+  icon: ["fas", "cog"],
+  label: "Admin",
+  route: adminRoute
+});
+
 export const adminDashboardMenuItem = MenuRoute({
   icon: ["fas", "toolbox"],
   label: "Admin Home",
   route: adminRoute,
   tooltip: () => "Administrator dashboard",
   predicate: isAdminPredicate
-});
-
-export const adminCategory = Category({
-  icon: ["fas", "cog"],
-  label: "Admin",
-  route: adminRoute
 });
 
 export const adminUserListMenuItem = MenuRoute({
@@ -78,6 +78,13 @@ export const adminJobStatusMenuItem = MenuLink({
 
 const adminScriptsRoute = adminRoute.add("scripts");
 
+export const adminScriptsCategory = Category({
+  icon: ["fas", "scroll"],
+  label: "Scripts",
+  route: adminScriptsRoute,
+  parent: adminCategory
+});
+
 export const adminScriptsMenuItem = MenuRoute({
   icon: ["fas", "scroll"],
   label: "Scripts",
@@ -85,13 +92,6 @@ export const adminScriptsMenuItem = MenuRoute({
   tooltip: () => "Manage custom scripts",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
-});
-
-export const adminScriptsCategory = Category({
-  icon: ["fas", "scroll"],
-  label: "Scripts",
-  route: adminScriptsRoute,
-  parent: adminCategory
 });
 
 export const adminNewScriptsMenuItem = MenuRoute({

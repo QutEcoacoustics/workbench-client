@@ -27,14 +27,6 @@ export const newSiteMenuItem = MenuRoute({
 
 export const siteRoute = sitesRoute.add(":siteId");
 
-export const siteMenuItem = MenuRoute({
-  icon: ["fas", "map-marker-alt"],
-  label: "Site",
-  parent: projectMenuItem,
-  route: siteRoute,
-  tooltip: () => "The current site"
-});
-
 export const sitesCategory = Category({
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
@@ -43,6 +35,14 @@ export const sitesCategory = Category({
   resolvers: {
     site: "SiteShowResolver"
   }
+});
+
+export const siteMenuItem = MenuRoute({
+  icon: ["fas", "map-marker-alt"],
+  label: "Site",
+  parent: projectMenuItem,
+  route: siteRoute,
+  tooltip: () => "The current site"
 });
 
 export const annotationsMenuItem = MenuLink({

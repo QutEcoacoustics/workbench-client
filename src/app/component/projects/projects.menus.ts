@@ -16,14 +16,6 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const projectsRoute = StrongRoute.Base.add("projects");
 
-export const projectsMenuItem = MenuRoute({
-  icon: ["fas", "globe-asia"],
-  label: "Projects",
-  order: 4,
-  route: projectsRoute,
-  tooltip: () => "View projects I have access to"
-});
-
 export const projectsCategory = Category({
   label: "Projects",
   icon: ["fas", "globe-asia"],
@@ -31,6 +23,14 @@ export const projectsCategory = Category({
   resolvers: {
     projects: "ProjectListResolver"
   }
+});
+
+export const projectsMenuItem = MenuRoute({
+  icon: ["fas", "globe-asia"],
+  label: "Projects",
+  order: 4,
+  route: projectsRoute,
+  tooltip: () => "View projects I have access to"
 });
 
 export const newProjectMenuItem = MenuRoute({
@@ -57,14 +57,6 @@ export const requestProjectMenuItem = MenuRoute({
 
 const projectRoute = projectsRoute.add(":projectId");
 
-export const projectMenuItem = MenuRoute({
-  icon: ["fas", "folder-open"],
-  label: "Project",
-  parent: projectsMenuItem,
-  route: projectRoute,
-  tooltip: () => "The current project"
-});
-
 export const projectCategory = Category({
   label: "Project",
   icon: projectsCategory.icon,
@@ -74,6 +66,14 @@ export const projectCategory = Category({
     project: "ProjectShowResolver",
     sites: "SiteListResolver"
   }
+});
+
+export const projectMenuItem = MenuRoute({
+  icon: ["fas", "folder-open"],
+  label: "Project",
+  parent: projectsMenuItem,
+  route: projectRoute,
+  tooltip: () => "The current project"
 });
 
 export const editProjectMenuItem = MenuRoute({
