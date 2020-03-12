@@ -11,6 +11,7 @@ export abstract class NewFormTemplate<
 > extends FormTemplate<M, F> {
   /**
    * Create update request
+   * @param event Form submission
    */
   protected abstract apiCreate(event: F): Observable<M>;
 

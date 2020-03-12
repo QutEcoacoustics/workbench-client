@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -9,14 +9,11 @@ import {
   siteMenuItem,
   sitesCategory
 } from "src/app/component/sites/sites.menus";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { DeleteFormTemplate } from "src/app/helpers/formTemplate/deleteTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 @Page({
@@ -32,9 +29,9 @@ import { siteMenuItemActions } from "../details/details.component";
   selector: "app-projects-delete",
   template: `
     <app-form
-      *ngIf="site"
-      [schema]="{ model: {}, fields: [] }"
-      [title]="'Are you certain you wish to delete ' + site.name + '?'"
+      *ngIf="models"
+      [schema]="schema"
+      [title]="'Are you certain you wish to delete ' + getSite().name + '?'"
       [btnColor]="'btn-danger'"
       [submitLabel]="'Delete'"
       [submitLoading]="loading"
@@ -42,54 +39,36 @@ import { siteMenuItemActions } from "../details/details.component";
     ></app-form>
   `
 })
-export class DeleteComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-  public site: Site;
-
+export class DeleteComponent extends DeleteFormTemplate<Site> {
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private api: SitesService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(["site", "project"], [], notifications, route, router);
   }
 
-  ngOnInit() {
-    this.loading = false;
-
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
-
-    if (projectModel.error || siteModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
-    this.site = siteModel.model;
+  public getSite(): Site {
+    return this.models.site as Site;
   }
 
-  submit() {
-    // This subscription must complete so takeuntil is ignored
-    // so that it will run in the background in case the user
-    // manages to navigate too fast
-    this.loading = true;
-    this.api
-      .destroy(this.site, this.project)
-      // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
-      .subscribe(
-        () => {
-          this.resetForms();
-          this.notification.success("Site was successfully deleted.");
-          this.router.navigateByUrl(this.project.redirectPath());
-        },
-        (err: ApiErrorDetails) => {
-          this.loading = false;
-          this.notification.error(err.message);
-        }
-      );
+  public getProject(): Project {
+    return this.models.project as Project;
+  }
+
+  apiDestroy() {
+    const site = this.getSite();
+    const project = this.getProject();
+    return this.api.destroy(site, project);
+  }
+
+  successMessage() {
+    return "Successfully deleted " + this.getSite().name;
+  }
+
+  redirectPath() {
+    const project = this.getProject();
+    return project.redirectPath();
   }
 }

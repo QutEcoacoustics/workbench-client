@@ -58,7 +58,7 @@ export abstract class FormTemplate<M extends AbstractModel, F>
   /**
    * Create api request. This should be overwritten by superclass.
    */
-  protected abstract apiAction($event: F): Observable<M>;
+  protected abstract apiAction($event: F): Observable<M | void>;
 
   /**
    * Success message

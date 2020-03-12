@@ -1,17 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { DeleteFormTemplate } from "src/app/helpers/formTemplate/deleteTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   deleteProjectMenuItem,
   projectCategory,
@@ -33,9 +30,9 @@ import { projectMenuItemActions } from "../details/details.component";
   selector: "app-projects-delete",
   template: `
     <app-form
-      *ngIf="project"
+      *ngIf="models"
       [schema]="{ model: {}, fields: [] }"
-      [title]="'Are you certain you wish to delete ' + project.name + '?'"
+      [title]="'Are you certain you wish to delete ' + getProject().name + '?'"
       [btnColor]="'btn-danger'"
       [submitLabel]="'Delete'"
       [submitLoading]="loading"
@@ -43,51 +40,30 @@ import { projectMenuItemActions } from "../details/details.component";
     ></app-form>
   `
 })
-export class DeleteComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-
+export class DeleteComponent extends DeleteFormTemplate<Project> {
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private api: ProjectsService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(["project"], [], notifications, route, router);
   }
 
-  ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-
-    if (projectModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
+  public getProject(): Project {
+    return this.models.project as Project;
   }
 
-  submit() {
-    // This subscription must complete so takeuntil is ignored
-    // so that it will run in the background in case the user
-    // manages to navigate too fast. Subscription will call
-    // onComplete so it should not sit hanging in the event
-    // of component onDestroy.
-    this.loading = true;
-    this.api
-      .destroy(this.project)
-      // tslint:disable-next-line: rxjs-prefer-angular-takeuntil
-      .subscribe(
-        () => {
-          this.resetForms();
-          this.notification.success("Successfully deleted project.");
-          this.router.navigateByUrl(projectsMenuItem.route.toString());
-        },
-        (err: ApiErrorDetails) => {
-          this.loading = false;
-          this.notification.error(err.message);
-        }
-      );
+  apiDestroy() {
+    const project = this.getProject();
+    return this.api.destroy(project);
+  }
+
+  successMessage() {
+    return "Successfully deleted " + this.getProject().name;
+  }
+
+  redirectPath() {
+    return projectsMenuItem.route.toString();
   }
 }

@@ -11,11 +11,16 @@ export abstract class EditFormTemplate<
 > extends FormTemplate<M, F> {
   ngOnInit() {
     super.ngOnInit();
-    this.preFillForm();
+
+    // Pre-fill form if schema exists
+    if (this.schema) {
+      this.preFillForm();
+    }
   }
 
   /**
    * Create update request
+   * @param event Form submission
    */
   protected abstract apiUpdate(event: F): Observable<M>;
 
