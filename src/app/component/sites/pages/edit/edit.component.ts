@@ -1,17 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { EditFormTemplate } from "src/app/helpers/formTemplate/editTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import {
   editSiteMenuItem,
@@ -33,10 +29,10 @@ import { fields } from "./edit.json";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <app-wip *ngIf="site">
+    <app-wip *ngIf="models">
       <app-form
         [schema]="schema"
-        [title]="'Edit ' + site.name"
+        [title]="'Edit ' + getSite().name"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -44,65 +40,53 @@ import { fields } from "./edit.json";
     </app-wip>
   `
 })
-export class EditComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-  public schema = { model: {}, fields };
-  public site: Site;
-
+export class EditComponent extends EditFormTemplate<Site, FormEvent> {
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private api: SitesService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super("Site", ["site", "project"], fields, notifications, route, router);
   }
 
-  ngOnInit() {
-    this.loading = false;
-
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
-
-    if (projectModel.error || siteModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
-    this.site = siteModel.model;
-
-    this.schema.model["name"] = this.site.name;
-    this.schema.model["description"] = this.site.description;
+  public getSite(): Site {
+    return this.models.site as Site;
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
-
-    const updatedSite = new Site({
-      id: this.site.id,
-      ...$event
-    });
-
-    this.api
-      .update(updatedSite, this.project)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () => {
-          this.resetForms();
-          this.notification.success("Site was successfully updated.");
-          this.router.navigateByUrl(this.site.redirectPath(this.project));
-        },
-        (err: ApiErrorDetails) => {
-          this.notification.error(err.message);
-          this.loading = false;
-        }
-      );
+  public getProject(): Project {
+    return this.models.project as Project;
   }
+
+  preFillForm() {
+    const site = this.getSite();
+
+    this.schema.model["name"] = site.name;
+    this.schema.model["description"] = site.description;
+    this.schema.model["location"] = {
+      customLatitude: site.customLatitude,
+      customLongitude: site.customLongitude
+    };
+  }
+
+  apiUpdate(event: FormEvent) {
+    const site = this.getSite();
+    const project = this.getProject();
+    const updatedSite = new Site({ id: site.id, ...event });
+    return this.api.update(updatedSite, project);
+  }
+
+  redirectPath(site: Site) {
+    const project = this.getProject();
+    return site.redirectPath(project);
+  }
+}
+
+interface FormEvent {
+  name: string;
+  description: string;
+  customLatitude: number;
+  customLongitude: number;
+  image: any;
+  timezoneInformation: any;
 }

@@ -25,18 +25,6 @@ export abstract class AbstractModel {
   public readonly id?: Id;
 
   /**
-   * Create model
-   * @param _new Class Builder
-   * @param raw Raw object json
-   */
-  public static Create<T extends AbstractModel>(
-    _new: new (_: object) => T,
-    raw: object
-  ): T {
-    return new _new(raw);
-  }
-
-  /**
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.

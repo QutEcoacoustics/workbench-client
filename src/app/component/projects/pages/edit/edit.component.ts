@@ -1,17 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { EditFormTemplate } from "src/app/helpers/formTemplate/editTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectMenuItem,
   projectCategory,
@@ -32,10 +28,10 @@ import { fields } from "./edit.json";
 @Component({
   selector: "app-project-edit",
   template: `
-    <app-wip *ngIf="project">
+    <app-wip *ngIf="models">
       <app-form
         [schema]="schema"
-        [title]="'Edit ' + project.name"
+        [title]="'Edit ' + getProject().name"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -43,64 +39,40 @@ import { fields } from "./edit.json";
     </app-wip>
   `
 })
-export class EditComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-  public schema = { model: {}, fields };
-
+export class EditComponent extends EditFormTemplate<Project, FormEvent> {
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private api: ProjectsService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super("Project", ["project"], fields, notifications, route, router);
   }
 
-  ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-
-    if (projectModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
-    this.schema.model["name"] = this.project.name;
-    this.schema.model["description"] = this.project.description;
+  public getProject(): Project {
+    return this.models.project as Project;
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    const project = new Project({ ...$event, id: this.project.id });
+  preFillForm() {
+    const project = this.getProject();
 
-    this.loading = true;
-
-    this.api
-      .update(project)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () => {
-          this.resetForms();
-          this.notification.success("Project was successfully updated.");
-          this.router.navigateByUrl(project.redirectPath());
-        },
-        (err: ApiErrorDetails) => {
-          let errMsg: string;
-
-          if (err.info && err.info.name && err.info.name.length === 1) {
-            errMsg = err.message + ": name " + err.info.name[0];
-          } else {
-            errMsg = err.message;
-          }
-
-          this.notification.error(errMsg);
-          this.loading = false;
-        }
-      );
+    this.schema.model["name"] = project.name;
+    this.schema.model["description"] = project.description;
   }
+
+  apiUpdate(event: FormEvent) {
+    const project = this.getProject();
+    const updatedProject = new Project({ id: project.id, ...event });
+    return this.api.update(updatedProject);
+  }
+
+  redirectPath(project: Project) {
+    return project.redirectPath();
+  }
+}
+
+interface FormEvent {
+  name: string;
+  description: string;
+  image: any;
 }
