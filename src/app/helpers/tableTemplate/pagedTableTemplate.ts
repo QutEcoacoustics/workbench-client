@@ -11,6 +11,7 @@ import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { PageComponent } from "../page/pageComponent";
+import { Filters } from "src/app/services/baw-api/baw-api.service";
 
 export abstract class PagedTableTemplate<
   T,
@@ -44,12 +45,24 @@ export abstract class PagedTableTemplate<
     this.getModels(pageInfo.offset);
   }
 
-  public getModels(page: number = 0) {
+  public onFilter(filter: string) {
+    console.log("Filter Event", filter);
+
+    // TODO Call getModels with text filter
+  }
+
+  public onSort(event: any) {
+    console.log("Sort Event", event);
+
+    // TODO Call getModels with sortBy set from event
+  }
+
+  public getModels(page: number = 0, filters?: Filters) {
     this.loadingData = true;
     this.rows = [];
 
     this.api
-      .filter({ paging: { page: page + 1 } })
+      .filter({ paging: { page: page + 1 }, ...filters })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         models => {
