@@ -58,6 +58,11 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site>
       { name: "Name" },
       { name: "Description" }
     ];
+    this.sortKeys = {
+      siteId: "id",
+      name: "name",
+      description: "description"
+    };
 
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data
       .project;

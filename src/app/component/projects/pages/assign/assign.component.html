@@ -19,10 +19,12 @@
       [selectAllRowsOnPage]="false"
       [selected]="selected"
       [selectionType]="SelectionType.checkbox"
+      [externalSorting]="true"
       [externalPaging]="true"
       [count]="totalModels"
       [offset]="pageNumber"
       (page)="setPage($event)"
+      (sort)="onSort($event)"
       (select)="onSelect($event)"
     >
       <ngx-datatable-column
@@ -37,18 +39,12 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         name="Site Id"
-        [width]="75"
-        [sortable]="false"
+        [minWidth]="75"
       ></ngx-datatable-column>
-      <ngx-datatable-column
-        name="Name"
-        [width]="150"
-        [sortable]="false"
-      ></ngx-datatable-column>
+      <ngx-datatable-column name="Name" [minWidth]="150"></ngx-datatable-column>
       <ngx-datatable-column
         name="Description"
-        [width]="400"
-        [sortable]="false"
+        [minWidth]="400"
       ></ngx-datatable-column>
     </ngx-datatable>
 

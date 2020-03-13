@@ -26,23 +26,27 @@ export abstract class PagedTableTemplate<
   public columns: TableColumn[] = [];
   public rows: T[];
   public selected: T[] = [];
-  public pageNumber: number;
+  public sortKeys: { [key: string]: string };
   public totalModels: number;
 
   // State variables
   public loadingData: boolean;
   public error: ApiErrorDetails;
+  protected filters: Filters;
 
   constructor(
     private api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => T[]
   ) {
     super();
+    this.filters = {};
   }
 
   public setPage(pageInfo: TablePage) {
-    this.pageNumber = pageInfo.offset;
-    this.getModels(pageInfo.offset);
+    this.filters.paging = {
+      page: pageInfo.offset + 1
+    };
+    this.getModels();
   }
 
   public onFilter(filter: string) {
@@ -51,18 +55,23 @@ export abstract class PagedTableTemplate<
     // TODO Call getModels with text filter
   }
 
-  public onSort(event: any) {
-    console.log("Sort Event", event);
+  public onSort(event: SortEvent) {
+    this.filters.sorting = {
+      orderBy: this.sortKeys[event.column.prop],
+      direction: event.newValue
+    };
 
-    // TODO Call getModels with sortBy set from event
+    this.getModels();
   }
 
-  public getModels(page: number = 0, filters?: Filters) {
+  public getModels() {
     this.loadingData = true;
     this.rows = [];
 
+    console.log("Filters: ", this.filters);
+
     this.api
-      .filter({ paging: { page: page + 1 }, ...filters })
+      .filter(this.filters)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         models => {
@@ -71,10 +80,8 @@ export abstract class PagedTableTemplate<
 
           if (models.length > 0) {
             const meta = models[0].getMetadata();
-            this.pageNumber = meta.paging.page - 1;
             this.totalModels = meta.paging.total;
           } else {
-            this.pageNumber = 0;
             this.totalModels = 0;
           }
         },
@@ -92,4 +99,14 @@ export interface TablePage {
   pageSize: number;
   limit: number;
   offset: number;
+}
+
+interface SortEvent {
+  newValue: "asc" | "desc";
+  prevValue: "asc" | "desc";
+  column: {
+    sortable: boolean;
+    prop: string;
+    name: string;
+  };
 }
