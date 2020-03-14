@@ -27,6 +27,7 @@ export abstract class PagedTableTemplate<
   public rows: T[];
   public selected: T[] = [];
   public sortKeys: { [key: string]: string };
+  public filterKey: string;
   public totalModels: number;
 
   // State variables
@@ -46,20 +47,33 @@ export abstract class PagedTableTemplate<
     this.filters.paging = {
       page: pageInfo.offset + 1
     };
+
     this.getModels();
   }
 
   public onFilter(filter: string) {
     console.log("Filter Event", filter);
 
-    // TODO Call getModels with text filter
+    if (!filter) {
+      this.filters.filter = undefined;
+    } else {
+      this.filters.filter = {
+        [this.filterKey]: filter
+      };
+    }
+
+    this.getModels();
   }
 
   public onSort(event: SortEvent) {
-    this.filters.sorting = {
-      orderBy: this.sortKeys[event.column.prop],
-      direction: event.newValue
-    };
+    if (!event.newValue) {
+      this.filters.sorting = undefined;
+    } else {
+      this.filters.sorting = {
+        orderBy: this.sortKeys[event.column.prop],
+        direction: event.newValue
+      };
+    }
 
     this.getModels();
   }

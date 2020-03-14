@@ -63,6 +63,7 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site>
       name: "name",
       description: "description"
     };
+    this.filterKey = "id";
 
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data
       .project;
