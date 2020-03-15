@@ -127,26 +127,6 @@ describe("PagedTableTemplate", () => {
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
     });
-
-    it("should call filter with first page", () => {
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([]);
-      });
-      component.getModels();
-      fixture.detectChanges();
-
-      expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
-    });
-
-    it("should call filter with second page", () => {
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([]);
-      });
-      component.getModels(1);
-      fixture.detectChanges();
-
-      expect(api.filter).toHaveBeenCalledWith({ paging: { page: 2 } });
-    });
   });
 
   describe("setPage", () => {

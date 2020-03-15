@@ -32,7 +32,8 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
   templateUrl: "./user-list.component.html",
   styleUrls: ["./user-list.component.scss"]
 })
-export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
+export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
+  implements OnInit {
   public userIcon = theirProfileMenuItem.icon;
 
   constructor(api: AccountService) {

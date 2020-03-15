@@ -10,8 +10,8 @@ import { takeUntil } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { PageComponent } from "../page/pageComponent";
 import { Filters } from "src/app/services/baw-api/baw-api.service";
+import { PageComponent } from "../page/pageComponent";
 
 export abstract class PagedTableTemplate<
   T,
