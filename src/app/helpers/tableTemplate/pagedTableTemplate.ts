@@ -31,8 +31,9 @@ export abstract class PagedTableTemplate<
   public totalModels: number;
 
   // State variables
-  public loadingData: boolean;
   public error: ApiErrorDetails;
+  public loadingData: boolean;
+  public pageNumber: number;
   protected filters: Filters;
 
   constructor(
@@ -40,10 +41,12 @@ export abstract class PagedTableTemplate<
     private rowsCallback: (models: M[]) => T[]
   ) {
     super();
+    this.pageNumber = 0;
     this.filters = {};
   }
 
   public setPage(pageInfo: TablePage) {
+    this.pageNumber = pageInfo.offset;
     this.filters.paging = {
       page: pageInfo.offset + 1
     };
@@ -51,14 +54,16 @@ export abstract class PagedTableTemplate<
     this.getModels();
   }
 
-  public onFilter(filter: string) {
-    console.log("Filter Event", filter);
+  public onFilter(filter: KeyboardEvent) {
+    const filterText = (filter.target as HTMLInputElement).value;
 
     if (!filter) {
       this.filters.filter = undefined;
     } else {
       this.filters.filter = {
-        [this.filterKey]: filter
+        [this.filterKey]: {
+          contains: filterText
+        }
       };
     }
 
@@ -81,8 +86,6 @@ export abstract class PagedTableTemplate<
   public getModels() {
     this.loadingData = true;
     this.rows = [];
-
-    console.log("Filters: ", this.filters);
 
     this.api
       .filter(this.filters)

@@ -32,8 +32,7 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
   templateUrl: "./user-list.component.html",
   styleUrls: ["./user-list.component.scss"]
 })
-export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
-  implements OnInit {
+export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
 
   constructor(api: AccountService) {
@@ -54,6 +53,11 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
       { name: "Last Login" },
       { name: "Confirmed" }
     ];
+    this.sortKeys = {
+      user: "userName",
+      lastLogin: "lastSeenAt"
+    };
+    this.filterKey = "userName";
     this.getModels();
   }
 

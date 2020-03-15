@@ -36,11 +36,7 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
   // TODO Move this back into the admin dashboard
 
-  public error: ApiErrorDetails;
-  public pageNumber: number;
   public project: Project;
-  public sites: Site[];
-  public totalSites: number;
 
   constructor(private route: ActivatedRoute, api: ShallowSitesService) {
     super(api, sites =>
@@ -63,7 +59,7 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site>
       name: "name",
       description: "description"
     };
-    this.filterKey = "id";
+    this.filterKey = "name";
 
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data
       .project;

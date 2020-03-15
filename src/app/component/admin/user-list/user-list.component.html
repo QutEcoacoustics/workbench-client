@@ -5,28 +5,35 @@
     Displaying <strong>all {{ totalModels }}</strong> user/s
   </p>
 
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Filter</span>
+    </div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter Users"
+      (keyup)="onFilter($event)"
+    />
+  </div>
+
   <ngx-datatable
     #table
     bawDatatableDefaults
     [columnMode]="ColumnMode.force"
     [columns]="columns"
     [rows]="rows"
-    [externalPaging]="true"
     [count]="totalModels"
     [offset]="pageNumber"
     (page)="setPage($event)"
+    (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="User" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        <fa-icon [icon]="userIcon"></fa-icon>
-        User
-      </ng-template>
+    <ngx-datatable-column name="User">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
         <a [routerLink]="[viewPath(row.account)]">{{ value }}</a>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Last Login" [sortable]="false">
-    </ngx-datatable-column>
+    <ngx-datatable-column name="Last Login"> </ngx-datatable-column>
     <ngx-datatable-column
       name="Confirmed"
       [width]="90"
