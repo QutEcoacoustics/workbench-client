@@ -72,7 +72,7 @@ export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
 /**
  * User callback function
  */
-export type UserCallback<T> = null | ((user?: SessionUser) => T);
+export type UserCallback<T> = null | ((user?: SessionUser, data?: any) => T);
 
 /**
  * An item designed to be in a menu.

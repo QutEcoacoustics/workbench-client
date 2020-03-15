@@ -5,7 +5,7 @@ import {
   defaultPermissionsIcon,
   isAdminPredicate,
   isLoggedInPredicate,
-  isOwnerPredicate
+  isProjectOwnerPredicate
 } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
@@ -77,7 +77,7 @@ export const editProjectMenuItem = MenuRoute({
   icon: defaultEditIcon,
   label: "Edit this project",
   parent: projectMenuItem,
-  predicate: isOwnerPredicate,
+  predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this project"
 });
@@ -86,7 +86,7 @@ export const editProjectPermissionsMenuItem = MenuRoute({
   icon: defaultPermissionsIcon,
   label: "Edit permissions",
   parent: projectMenuItem,
-  predicate: isOwnerPredicate,
+  predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("permissions"),
   tooltip: () => "Edit this projects permissions"
 });
@@ -104,7 +104,7 @@ export const deleteProjectMenuItem = MenuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Project",
   parent: projectMenuItem,
-  predicate: isOwnerPredicate,
+  predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("delete"),
   tooltip: () => "Delete this project"
 });

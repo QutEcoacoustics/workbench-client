@@ -58,6 +58,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     // Get user details
     this.user = this.api.getLocalUser();
     this.placement = this.menuType === "action" ? "left" : "right";
+    const pageData = this.route.snapshot.data;
 
     // Filter links
     this.filteredLinks = new Set(
@@ -70,7 +71,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
           }
 
           // If link has predicate function, test if returns true
-          return link.predicate(this?.user);
+          return link.predicate(this?.user, pageData);
         })
         ?.sort(this.compare)
     );

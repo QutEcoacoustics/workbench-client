@@ -5,7 +5,7 @@ import {
   defaultNewIcon,
   isAdminPredicate,
   isLoggedInPredicate,
-  isOwnerPredicate
+  isProjectOwnerPredicate
 } from "src/app/app.menus";
 import {
   Category,
@@ -30,7 +30,7 @@ export const newSiteMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New site",
   parent: projectMenuItem,
-  predicate: isLoggedInPredicate,
+  predicate: isProjectOwnerPredicate,
   route: sitesRoute.add("new"),
   tooltip: () => "Create a new site"
 });
@@ -55,7 +55,7 @@ export const editSiteMenuItem = MenuRoute({
   icon: defaultEditIcon,
   label: "Edit this site",
   parent: siteMenuItem,
-  predicate: isOwnerPredicate,
+  predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site"
 });
@@ -64,7 +64,7 @@ export const harvestMenuItem = MenuRoute({
   icon: defaultAudioIcon,
   label: "Harvesting",
   parent: siteMenuItem,
-  predicate: isAdminPredicate,
+  predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("harvest"),
   tooltip: () => "Upload new audio to this site"
 });
@@ -73,7 +73,7 @@ export const deleteSiteMenuItem = MenuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Site",
   parent: siteMenuItem,
-  predicate: isOwnerPredicate,
+  predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("delete"),
   tooltip: () => "Delete this site"
 });
