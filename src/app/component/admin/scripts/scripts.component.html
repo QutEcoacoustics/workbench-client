@@ -1,38 +1,34 @@
 <ng-container *ngIf="rows && !error">
   <h1>Scripts</h1>
 
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Filter</span>
+    </div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter Scripts"
+      (keyup)="onFilter($event)"
+    />
+  </div>
+
   <ngx-datatable
     #table
     bawDatatableDefaults
     [columnMode]="ColumnMode.force"
     [columns]="columns"
     [rows]="rows"
-    [externalPaging]="true"
     [count]="totalModels"
     [offset]="pageNumber"
     (page)="setPage($event)"
+    (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Name" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        <fa-icon [icon]="['fas', 'book']"></fa-icon>
-        Name
-      </ng-template>
+    <ngx-datatable-column name="Id" [minWidth]="75" [maxWidth]="75">
     </ngx-datatable-column>
-    <ngx-datatable-column name="Version" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        Version
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Id" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        Id
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Command" [sortable]="false">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        Command
-      </ng-template>
-    </ngx-datatable-column>
+    <ngx-datatable-column name="Name"> </ngx-datatable-column>
+    <ngx-datatable-column name="Version"> </ngx-datatable-column>
+    <ngx-datatable-column name="Command"> </ngx-datatable-column>
   </ngx-datatable>
 </ng-container>
 

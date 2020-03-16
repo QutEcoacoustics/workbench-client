@@ -6,10 +6,12 @@ import {
   SortType,
   TableColumn
 } from "@swimlane/ngx-datatable";
-import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { PageComponent } from "../page/pageComponent";
 
 /**
@@ -30,31 +32,83 @@ export abstract class PagedTableTemplate<
   public columns: TableColumn[] = [];
   public rows: T[];
   public selected: T[] = [];
-  public pageNumber: number;
+  public sortKeys: { [key: string]: string };
+  public filterKey: string;
   public totalModels: number;
 
   // State variables
-  public loadingData: boolean;
   public error: ApiErrorDetails;
+  public loadingData: boolean;
+  public pageNumber: number;
+  public filterEvent$ = new Subject<string>();
+  protected filters: Filters;
 
   constructor(
     private api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => T[]
   ) {
     super();
+    this.pageNumber = 0;
+    this.filters = {};
+    this.filterEvent$
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        () => {
+          this.getModels();
+        },
+        // Filter event doesn't have an error output
+        err => {}
+      );
   }
 
   public setPage(pageInfo: TablePage) {
     this.pageNumber = pageInfo.offset;
-    this.getModels(pageInfo.offset);
+    this.filters.paging = {
+      page: pageInfo.offset + 1
+    };
+
+    this.getModels();
   }
 
-  public getModels(page: number = 0) {
+  public onFilter(filter: KeyboardEvent) {
+    const filterText = (filter.target as HTMLInputElement).value;
+
+    if (!filterText) {
+      this.filters.filter = undefined;
+    } else {
+      this.filters.filter = {
+        [this.filterKey]: {
+          contains: filterText
+        }
+      };
+    }
+
+    this.filterEvent$.next(filterText);
+  }
+
+  public onSort(event: SortEvent) {
+    if (!event.newValue) {
+      this.filters.sorting = undefined;
+    } else {
+      this.filters.sorting = {
+        orderBy: this.sortKeys[event.column.prop],
+        direction: event.newValue
+      };
+    }
+
+    this.getModels();
+  }
+
+  public getModels() {
     this.loadingData = true;
     this.rows = [];
 
     this.api
-      .filter({ paging: { page: page + 1 } })
+      .filter(this.filters)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         models => {
@@ -63,10 +117,8 @@ export abstract class PagedTableTemplate<
 
           if (models.length > 0) {
             const meta = models[0].getMetadata();
-            this.pageNumber = meta.paging.page - 1;
             this.totalModels = meta.paging.total;
           } else {
-            this.pageNumber = 0;
             this.totalModels = 0;
           }
         },
@@ -84,4 +136,14 @@ export interface TablePage {
   pageSize: number;
   limit: number;
   offset: number;
+}
+
+export interface SortEvent {
+  newValue: "asc" | "desc";
+  prevValue: "asc" | "desc";
+  column: {
+    sortable: boolean;
+    prop: string;
+    name: string;
+  };
 }

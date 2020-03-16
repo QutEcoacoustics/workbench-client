@@ -23,10 +23,13 @@ export function filterMock<M extends AbstractModel>(
   const meta: Meta = {
     status: 200,
     message: "OK",
-    sorting: {
-      orderBy: "name",
-      direction: "asc"
-    },
+    filter: filters.filter,
+    sorting: filters.sorting
+      ? filters.sorting
+      : {
+          orderBy: "name",
+          direction: "asc"
+        },
     paging: {
       page: filters?.paging?.page ? filters.paging.page : 1,
       items: filters?.paging?.items ? filters?.paging?.items : 25,
@@ -37,6 +40,7 @@ export function filterMock<M extends AbstractModel>(
 
   const startIndex = (meta.paging.page - 1) * 25;
   const endIndex = meta.paging.page * 25;
+
   for (let i = startIndex; i < endIndex; i++) {
     const model = classBuilder(i);
     model.addMetadata(meta);

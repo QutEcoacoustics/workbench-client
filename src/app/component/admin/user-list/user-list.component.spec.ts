@@ -162,10 +162,10 @@ describe("AdminUserListComponent", () => {
       }, 1);
     }
 
-    it("should request the first page from api", () => {
+    it("should send filter request", () => {
       apiResponse([]);
       fixture.detectChanges();
-      expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
+      expect(api.filter).toHaveBeenCalledWith({});
     });
 
     it("should request the second page from api", done => {
