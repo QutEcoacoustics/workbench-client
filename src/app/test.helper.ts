@@ -94,7 +94,7 @@ export function mockActivatedRoute(
   queryParams: Params = {}
 ) {
   return class MockActivatedRoute {
-    public snapshot = { data, queryParams };
+    public snapshot = { data, params, queryParams };
     public data = new BehaviorSubject<any>(data);
     public params = new BehaviorSubject<any>(params);
     public queryParams = new BehaviorSubject<Params>(queryParams);
