@@ -8,6 +8,10 @@ import {
 } from "src/app/helpers/app-initializer/app-initializer";
 import { environment } from "src/environments/environment";
 
+/**
+ * App Config Service.
+ * Handles access to the deployment environment.
+ */
 @Injectable()
 export class AppConfigService {
   private _config: Configuration;

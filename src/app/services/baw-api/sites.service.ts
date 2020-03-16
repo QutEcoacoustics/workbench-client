@@ -24,6 +24,10 @@ const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 
+/**
+ * Sites Service.
+ * Handles API routes pertaining to project sites.
+ */
 @Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
@@ -50,6 +54,10 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   }
 }
 
+/**
+ * Shallow Sites Service.
+ * Handles API routes pertaining to sites.
+ */
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {

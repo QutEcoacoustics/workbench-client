@@ -35,6 +35,9 @@ import {
 } from "./services/baw-api/sites.service";
 import { UserService } from "./services/baw-api/user.service";
 
+/**
+ * Create mock initializer values
+ */
 export const testAppInitializer = [
   {
     provide: API_ROOT,
@@ -56,6 +59,9 @@ export const testAppInitializer = [
   }
 ];
 
+/**
+ * Mock classes for baw services
+ */
 export const testBawServices = [
   ...testAppInitializer,
   {
@@ -74,6 +80,12 @@ export const testBawServices = [
   { provide: UserService, useClass: MockShowApiService }
 ];
 
+/**
+ * Create a mock ActivatedRoute class
+ * @param data Activated Route Data
+ * @param params Activated Route Params
+ * @param queryParams Activated Route Query Params
+ */
 export function mockActivatedRoute(
   data: {
     [key: string]: ResolvedModel<any>;

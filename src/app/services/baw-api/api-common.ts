@@ -27,6 +27,9 @@ export const Empty = "";
 export const New = "new";
 export const Filter = "filter";
 
+/**
+ * API List functionality
+ */
 export interface ApiList<M, P extends any[]> {
   /**
    * Get list of models
@@ -120,6 +123,9 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
 }
 
+/**
+ * Api Class with only readable abilities enabled
+ */
 export abstract class ReadonlyApi<M extends AbstractModel, P extends any[]>
   extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P, IdOr<M>> {

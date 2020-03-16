@@ -15,7 +15,8 @@ const signInEndpoint = stringTemplate`/security/`;
 const signOutEndpoint = stringTemplate`/security/`;
 
 /**
- * Interacts with security based routes in baw api
+ * Security Service.
+ * Handles API routes pertaining to security.
  */
 @Injectable()
 export class SecurityService extends BawApiService<SessionUser> {

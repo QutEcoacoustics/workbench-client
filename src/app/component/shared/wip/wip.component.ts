@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 
+/**
+ * Work In Progress Component
+ */
 @Component({
   selector: "app-wip",
   template: `

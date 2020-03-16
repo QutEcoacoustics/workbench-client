@@ -16,6 +16,9 @@ import { statisticsMenuItem } from "src/app/component/statistics/statistics.menu
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { audioAnalysisMenuItem, libraryMenuItem } from "./externalMenus";
 
+/**
+ * Default secondary menu items
+ */
 export const DefaultMenu = {
   contextLinks: List<NavigableMenuItem>([
     homeMenuItem,

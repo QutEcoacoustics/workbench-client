@@ -22,6 +22,10 @@ import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
+/**
+ * Menu Component.
+ * Used to display menu links, routes, and actions.
+ */
 @Component({
   selector: "app-menu",
   templateUrl: "./menu.component.html",

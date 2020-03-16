@@ -8,6 +8,9 @@ import {
 } from "../../about/about.menus";
 import { statisticsMenuItem } from "../../statistics/statistics.menus";
 
+/**
+ * Footer Component
+ */
 @Component({
   selector: "app-footer",
   templateUrl: "./footer.component.html",

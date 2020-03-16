@@ -134,6 +134,12 @@ describe("AdminUserListComponent", () => {
       });
       spyOn(api, "filter").and.callFake((filter: Filters) => {
         if (counter === 1) {
+          console.log(
+            "Second Filter: ",
+            filter.paging.page,
+            expectation.paging.page
+          );
+
           expect(filter).toEqual(expectation);
           done();
         } else {
@@ -142,6 +148,18 @@ describe("AdminUserListComponent", () => {
 
         return new BehaviorSubject<User[]>([user]);
       });
+    }
+
+    /**
+     * Click button after a period of time. This is to allow the
+     * first response to complete before sending a second request.
+     * @param button Button Element
+     */
+    function click(button: HTMLButtonElement) {
+      setTimeout(() => {
+        button.click();
+        fixture.detectChanges();
+      }, 1);
     }
 
     it("should send filter request", () => {
@@ -155,9 +173,7 @@ describe("AdminUserListComponent", () => {
       fixture.detectChanges();
 
       const pageBtn = fixture.nativeElement.querySelectorAll("li.pages a")[1];
-      pageBtn.click();
-
-      fixture.detectChanges();
+      click(pageBtn);
     });
 
     it("should request next page from api", done => {
@@ -166,9 +182,7 @@ describe("AdminUserListComponent", () => {
 
       const pager = fixture.nativeElement.querySelector("datatable-pager");
       const pageBtn = pager.querySelectorAll("li a")[6];
-      pageBtn.click();
-
-      fixture.detectChanges();
+      click(pageBtn);
     });
 
     it("should request final page from api", done => {
@@ -177,9 +191,7 @@ describe("AdminUserListComponent", () => {
 
       const pager = fixture.nativeElement.querySelector("datatable-pager");
       const pageBtn = pager.querySelectorAll("li a")[7];
-      pageBtn.click();
-
-      fixture.detectChanges();
+      click(pageBtn);
     });
 
     it("should handle api request failure", () => {

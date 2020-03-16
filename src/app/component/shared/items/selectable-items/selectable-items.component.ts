@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
+/**
+ * Selectable Items Component.
+ * This creates a list of items for a user to choose from.
+ */
 @Component({
   selector: "app-selectable-items",
   templateUrl: "./selectable-items.component.html",

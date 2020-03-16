@@ -37,26 +37,52 @@ import {
 } from "./services/baw-api/sites.service";
 import { userResolvers, UserService } from "./services/baw-api/user.service";
 
+/**
+ * Input min length validation message
+ * @param err Error message
+ * @param field Formly field
+ */
 export function minLengthValidationMessage(err, field) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
 }
 
+/**
+ * Input max length validation message
+ * @param err Error message
+ * @param field Formly field
+ */
 export function maxLengthValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.maxLength} characters`;
 }
 
+/**
+ * Number input min value validation message
+ * @param err Error message
+ * @param field Formly field
+ */
 export function minValidationMessage(err, field) {
   return `This value should be more than ${field.templateOptions.min}`;
 }
 
+/**
+ * Number input max value validation message
+ * @param err Error message
+ * @param field Formly field
+ */
 export function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
+/**
+ * Toastr Service global defaults
+ */
 export const toastrRoot = {
   positionClass: "toast-top-center"
 };
 
+/**
+ * Formly types and validation messages
+ */
 export const formlyRoot = {
   types: [
     {
@@ -85,10 +111,17 @@ export const formlyRoot = {
   ]
 } as ConfigOption;
 
+/**
+ * Load icon packs into font awesome library
+ * @param library Font awesome library
+ */
 export function fontAwesomeLibraries(library: FaIconLibrary) {
   library.addIconPacks(fas);
 }
 
+/**
+ * App providers
+ */
 export const providers = [
   {
     provide: HTTP_INTERCEPTORS,

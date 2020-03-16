@@ -2,7 +2,7 @@ import { Injectable, Pipe, PipeTransform } from "@angular/core";
 import { TimezoneService } from "./timezone.service";
 
 /**
- * Transforms any input value
+ * Transforms timezone input value into country name
  */
 @Pipe({
   name: "iso2CountryPipe"

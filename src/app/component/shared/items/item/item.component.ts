@@ -9,6 +9,9 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Href } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 
+/**
+ * Item Component
+ */
 @Component({
   selector: "app-items-item",
   template: `

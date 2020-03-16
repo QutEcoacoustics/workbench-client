@@ -26,6 +26,9 @@ import { myAccountMenuItem } from "../../profile/profile.menus";
 import { projectsMenuItem } from "../../projects/projects.menus";
 import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
+/**
+ * Header Component
+ */
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",

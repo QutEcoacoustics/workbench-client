@@ -2,6 +2,9 @@ import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
+/**
+ * Image Input
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-image-input",

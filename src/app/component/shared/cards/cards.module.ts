@@ -5,6 +5,9 @@ import { CardImageComponent } from "./card-image/card-image.component";
 import { CardComponent } from "./card/card.component";
 import { CardsComponent } from "./cards.component";
 
+/**
+ * Cards Module
+ */
 @NgModule({
   declarations: [CardsComponent, CardComponent, CardImageComponent],
   imports: [CommonModule, RouterModule],

@@ -6,6 +6,10 @@ export interface Timezone {
   zones: string[];
 }
 
+/**
+ * Timezone Service.
+ * A service used to convert timezone data into usable data for the timezone input.
+ */
 @Injectable({
   providedIn: "root"
 })

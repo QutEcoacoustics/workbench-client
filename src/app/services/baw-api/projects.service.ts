@@ -20,7 +20,8 @@ const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
 
 /**
- * Interacts with projects route in baw api
+ * Projects Service.
+ * Handles API routes pertaining to projects.
  */
 @Injectable()
 export class ProjectsService extends StandardApi<Project, []> {

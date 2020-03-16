@@ -7,6 +7,9 @@ import { delay, map, takeUntil, withLatestFrom } from "rxjs/operators";
 import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { AppConfigService } from "./services/app-config/app-config.service";
 
+/**
+ * App Root Component
+ */
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",

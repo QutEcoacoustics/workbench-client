@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import { Card } from "../cards.component";
 
+/**
+ * Card Image Component
+ */
 @Component({
   selector: "app-card-image",
   templateUrl: "./card-image.component.html",

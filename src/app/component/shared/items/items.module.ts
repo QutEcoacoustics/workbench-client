@@ -10,6 +10,9 @@ import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
 import { SelectableItemsComponent } from "./selectable-items/selectable-items.component";
 
+/**
+ * Items Module
+ */
 @NgModule({
   declarations: [ItemsComponent, ItemComponent, SelectableItemsComponent],
   imports: [CommonModule, RouterModule, FontAwesomeModule],

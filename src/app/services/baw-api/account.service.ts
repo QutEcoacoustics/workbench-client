@@ -19,6 +19,10 @@ import { Resolvers } from "./resolver-common";
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 
+/**
+ * Account Service.
+ * Handles API routes pertaining to user accounts.
+ */
 @Injectable()
 export class AccountService extends ReadonlyApi<User, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {

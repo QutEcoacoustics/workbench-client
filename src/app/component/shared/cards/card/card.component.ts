@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import { Card } from "../cards.component";
 
+/**
+ * Card Component
+ */
 @Component({
   selector: "app-card",
   templateUrl: "./card.component.html",

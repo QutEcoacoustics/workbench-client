@@ -1,7 +1,13 @@
 import { DateTime } from "luxon";
 
+/**
+ * BAW API ID
+ */
 export type Id = number;
 
+/**
+ * BAW API IDs
+ */
 export type Ids = Set<number>;
 
 /**

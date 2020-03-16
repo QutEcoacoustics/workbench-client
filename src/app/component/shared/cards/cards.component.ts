@@ -7,6 +7,9 @@ import {
 } from "@angular/core";
 import { List } from "immutable";
 
+/**
+ * Cards Component
+ */
 @Component({
   selector: "app-cards",
   templateUrl: "./cards.component.html",

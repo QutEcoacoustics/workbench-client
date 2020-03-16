@@ -29,6 +29,9 @@ export const siteMenuItemActions = [
   deleteSiteMenuItem
 ];
 
+/**
+ * Site Details Component
+ */
 @Page({
   category: sitesCategory,
   menus: {

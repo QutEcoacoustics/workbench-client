@@ -6,6 +6,9 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
 import { harvestMenuItem, sitesCategory } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 
+/**
+ * Site Harvest Component
+ */
 @Page({
   category: sitesCategory,
   menus: {

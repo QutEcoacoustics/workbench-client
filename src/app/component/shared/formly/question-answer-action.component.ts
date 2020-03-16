@@ -2,6 +2,11 @@ import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
+/**
+ * Formly Question Answer Action
+ * Displays a question, input, and button inline allowing a user to
+ * execute a command for a single input.
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-question-answer",

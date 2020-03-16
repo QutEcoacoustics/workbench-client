@@ -21,6 +21,9 @@ const components = [
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
 
+/**
+ * Sites Module
+ */
 @NgModule({
   declarations: components,
   imports: [

@@ -7,6 +7,9 @@ import {
   sharedModules
 } from "./shared.components";
 
+/**
+ * Shared Components Module
+ */
 @NgModule({
   declarations: [...sharedComponents, ...formlyAccessors],
   imports: sharedModules,

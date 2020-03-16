@@ -65,6 +65,9 @@ export const appImports = [
   ErrorModule
 ];
 
+/**
+ * Lazy load google maps api key
+ */
 // tslint:disable-next-line: no-use-before-declare
 @Injectable({ providedIn: forwardRef(() => AppModule) })
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {

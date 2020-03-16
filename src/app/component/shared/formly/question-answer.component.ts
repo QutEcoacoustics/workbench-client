@@ -2,6 +2,10 @@ import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
+/**
+ * Formly Question Answer Input.
+ * Inline question with input response
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-question-answer",

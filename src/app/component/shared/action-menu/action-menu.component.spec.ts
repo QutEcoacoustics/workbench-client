@@ -5,7 +5,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
-import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   Category,
@@ -16,6 +15,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { testBawServices } from "src/app/test.helper";
+import { assertIcon, assertTooltip } from "src/testHelpers";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 

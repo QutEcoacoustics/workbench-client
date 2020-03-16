@@ -2,6 +2,9 @@ import { Component, Input } from "@angular/core";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 
+/**
+ * Error Handler Wrapper
+ */
 @Component({
   selector: "app-error-handler",
   template: `

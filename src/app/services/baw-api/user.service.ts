@@ -10,6 +10,10 @@ import { ShowResolver } from "./resolver-common";
 
 const endpoint = stringTemplate`/my_account`;
 
+/**
+ * User Service.
+ * Handles API routes pertaining to session user.
+ */
 @Injectable()
 export class UserService extends BawApiService<User>
   implements ApiShow<User, [], IdOr<User>> {
