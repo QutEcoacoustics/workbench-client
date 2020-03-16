@@ -6,7 +6,14 @@ import {
   SortType,
   TableColumn
 } from "@swimlane/ngx-datatable";
-import { takeUntil } from "rxjs/operators";
+import { of, Subject } from "rxjs";
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  flatMap,
+  takeUntil
+} from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -34,6 +41,7 @@ export abstract class PagedTableTemplate<
   public error: ApiErrorDetails;
   public loadingData: boolean;
   public pageNumber: number;
+  public filterEvent$ = new Subject<string>();
   protected filters: Filters;
 
   constructor(
@@ -43,6 +51,19 @@ export abstract class PagedTableTemplate<
     super();
     this.pageNumber = 0;
     this.filters = {};
+    this.filterEvent$
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        () => {
+          this.getModels();
+        },
+        // Filter event doesn't have an error output
+        err => {}
+      );
   }
 
   public setPage(pageInfo: TablePage) {
@@ -57,7 +78,7 @@ export abstract class PagedTableTemplate<
   public onFilter(filter: KeyboardEvent) {
     const filterText = (filter.target as HTMLInputElement).value;
 
-    if (!filter) {
+    if (!filterText) {
       this.filters.filter = undefined;
     } else {
       this.filters.filter = {
@@ -67,7 +88,7 @@ export abstract class PagedTableTemplate<
       };
     }
 
-    this.getModels();
+    this.filterEvent$.next(filterText);
   }
 
   public onSort(event: SortEvent) {
@@ -84,6 +105,8 @@ export abstract class PagedTableTemplate<
   }
 
   public getModels() {
+    console.log("getModels");
+
     this.loadingData = true;
     this.rows = [];
 
