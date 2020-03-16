@@ -51,7 +51,13 @@ export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
       { name: "Id" },
       { name: "Command" }
     ];
-
+    this.sortKeys = {
+      name: "name",
+      version: "version",
+      id: "id",
+      command: "executableCommand"
+    };
+    this.filterKey = "name";
     this.getModels();
   }
 }

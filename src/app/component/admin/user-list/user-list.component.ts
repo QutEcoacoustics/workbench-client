@@ -54,6 +54,11 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
       { name: "Last Login" },
       { name: "Confirmed" }
     ];
+    this.sortKeys = {
+      user: "userName",
+      lastLogin: "lastSeenAt"
+    };
+    this.filterKey = "userName";
     this.getModels();
   }
 

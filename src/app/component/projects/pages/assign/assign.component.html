@@ -10,6 +10,18 @@
     </p>
     <p>Only the selected sites will be part of this project.</p>
 
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Filter</span>
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter Sites"
+        (keyup)="onFilter($event)"
+      />
+    </div>
+
     <ngx-datatable
       #table
       bawDatatableDefaults
@@ -19,10 +31,10 @@
       [selectAllRowsOnPage]="false"
       [selected]="selected"
       [selectionType]="SelectionType.checkbox"
-      [externalPaging]="true"
       [count]="totalModels"
       [offset]="pageNumber"
       (page)="setPage($event)"
+      (sort)="onSort($event)"
       (select)="onSelect($event)"
     >
       <ngx-datatable-column
@@ -37,19 +49,11 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         name="Site Id"
-        [width]="75"
-        [sortable]="false"
+        [minWidth]="75"
+        [maxWidth]="75"
       ></ngx-datatable-column>
-      <ngx-datatable-column
-        name="Name"
-        [width]="150"
-        [sortable]="false"
-      ></ngx-datatable-column>
-      <ngx-datatable-column
-        name="Description"
-        [width]="400"
-        [sortable]="false"
-      ></ngx-datatable-column>
+      <ngx-datatable-column name="Name"></ngx-datatable-column>
+      <ngx-datatable-column name="Description"></ngx-datatable-column>
     </ngx-datatable>
 
     <app-error-handler [error]="error"></app-error-handler>
