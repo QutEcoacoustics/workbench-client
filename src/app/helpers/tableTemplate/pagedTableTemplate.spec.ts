@@ -1,5 +1,11 @@
 import { Component, ViewChild } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from "@angular/core/testing";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
 import { SharedModule } from "src/app/component/shared/shared.module";
@@ -21,7 +27,7 @@ class MockComponent extends PagedTableTemplate<
   Project
 > {
   // TODO Check if this bug has been fixed
-  // Unsure why but this line is required on in unit tests
+  // Unsure why but this line is required in unit tests
   // Specifically: a unit test which is run with another .spec.ts file
   // in the pool of tests. If this test suite is run in isolation it
   // will pass without this line.
@@ -237,6 +243,175 @@ describe("PagedTableTemplate", () => {
 
       expect(component.pageNumber).toBe(2);
     });
+  });
+
+  describe("onFilter", () => {
+    beforeEach(() => {
+      spyOn(api, "filter").and.callFake(() => {
+        return new BehaviorSubject<Project[]>([]);
+      });
+    });
+
+    function createInput() {
+      return document.createElement("input");
+    }
+
+    function createFilterEvent(
+      filterKey: string,
+      value: string,
+      mockInput: HTMLInputElement
+    ) {
+      component.filterKey = filterKey;
+      mockInput.value = value;
+
+      component.onFilter({ target: mockInput } as any);
+      fixture.detectChanges();
+    }
+
+    it("should handle empty filter", fakeAsync(() => {
+      const mockInput = createInput();
+      createFilterEvent("testing", "", mockInput);
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({ filter: undefined });
+    }));
+
+    it("should handle random filterKey", fakeAsync(() => {
+      const mockInput = createInput();
+      createFilterEvent("custom", "a", mockInput);
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        filter: { custom: { contains: "a" } }
+      });
+    }));
+
+    it("should handle single character filter", fakeAsync(() => {
+      const mockInput = createInput();
+      createFilterEvent("testing", "a", mockInput);
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        filter: { testing: { contains: "a" } }
+      });
+    }));
+
+    it("should handle multi character filter", fakeAsync(() => {
+      const mockInput = createInput();
+      createFilterEvent("testing", "testing", mockInput);
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        filter: { testing: { contains: "testing" } }
+      });
+    }));
+
+    it("should debounce filters", fakeAsync(() => {
+      const input = "testing";
+      const mockInput = createInput();
+      createFilterEvent("testing", "", mockInput);
+
+      for (let i = 0; i < input.length; i++) {
+        const subSet = input.substring(0, i);
+        createFilterEvent("testing", subSet, mockInput);
+      }
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should call last filter value", fakeAsync(() => {
+      const input = "testing";
+      const mockInput = createInput();
+      createFilterEvent("testing", "", mockInput);
+
+      for (let i = 0; i < input.length; i++) {
+        const subSet = input.substring(0, i + 1);
+        createFilterEvent("testing", subSet, mockInput);
+      }
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        filter: { testing: { contains: "testing" } }
+      });
+    }));
+  });
+
+  describe("onSort", () => {
+    beforeEach(() => {
+      spyOn(api, "filter").and.callFake(() => {
+        return new BehaviorSubject<Project[]>([]);
+      });
+    });
+
+    function createSortEvent(
+      sortKeys: { [key: string]: string },
+      value: "asc" | "desc",
+      prop: string
+    ) {
+      component.sortKeys = sortKeys;
+      component.onSort({
+        newValue: value,
+        prevValue: undefined,
+        column: {
+          sortable: true,
+          prop,
+          name: "Do Not Read"
+        }
+      });
+    }
+
+    it("should handle no sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, undefined, "testing");
+      fixture.detectChanges();
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({ sorting: undefined });
+    }));
+
+    it("should handle asc sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      fixture.detectChanges();
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        sorting: { orderBy: "customKey", direction: "asc" }
+      });
+    }));
+
+    it("should handle desc sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "desc", "testing");
+      fixture.detectChanges();
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        sorting: { orderBy: "customKey", direction: "desc" }
+      });
+    }));
+
+    it("should handle single sortKey", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      fixture.detectChanges();
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        sorting: { orderBy: "customKey", direction: "asc" }
+      });
+    }));
+
+    it("should handle multiple sortKeys", fakeAsync(() => {
+      createSortEvent(
+        { testing: "customKey", testing2: "extraCustomKey" },
+        "asc",
+        "testing"
+      );
+      fixture.detectChanges();
+
+      tick(1000);
+      expect(api.filter).toHaveBeenCalledWith({
+        sorting: { orderBy: "customKey", direction: "asc" }
+      });
+    }));
   });
 
   describe("totalModels", () => {

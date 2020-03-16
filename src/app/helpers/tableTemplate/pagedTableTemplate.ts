@@ -6,14 +6,8 @@ import {
   SortType,
   TableColumn
 } from "@swimlane/ngx-datatable";
-import { of, Subject } from "rxjs";
-import {
-  debounceTime,
-  delay,
-  distinctUntilChanged,
-  flatMap,
-  takeUntil
-} from "rxjs/operators";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
@@ -105,8 +99,6 @@ export abstract class PagedTableTemplate<
   }
 
   public getModels() {
-    console.log("getModels");
-
     this.loadingData = true;
     this.rows = [];
 
@@ -141,7 +133,7 @@ export interface TablePage {
   offset: number;
 }
 
-interface SortEvent {
+export interface SortEvent {
   newValue: "asc" | "desc";
   prevValue: "asc" | "desc";
   column: {
