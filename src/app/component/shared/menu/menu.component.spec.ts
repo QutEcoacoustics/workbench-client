@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
-import { isGuestPredicate, isLoggedInPredicate } from "src/app/app.menus";
 import {
   AnyMenuItem,
   MenuAction,
