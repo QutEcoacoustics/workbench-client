@@ -5,6 +5,10 @@ import { Site } from "src/app/models/Site";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { WidgetComponent } from "../widget/widget.component";
 
+/**
+ * Permissions Shield Component.
+ * Displays the user badges and access levels for the model.
+ */
 @Component({
   selector: "app-permissions-shield",
   template: `

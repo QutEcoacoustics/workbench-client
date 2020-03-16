@@ -21,6 +21,10 @@ import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Badge } from "./user-badge/user-badge.component";
 
+/**
+ * App User Badges Component.
+ * A group of user badge permissions for a model.
+ */
 @Component({
   selector: "app-user-badges",
   template: `

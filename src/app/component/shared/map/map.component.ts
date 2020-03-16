@@ -1,6 +1,9 @@
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { Site } from "src/app/models/Site";
 
+/**
+ * Google Maps Wrapper Component
+ */
 @Component({
   selector: "app-map",
   template: `

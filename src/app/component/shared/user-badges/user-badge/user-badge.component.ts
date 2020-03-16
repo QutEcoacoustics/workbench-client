@@ -9,6 +9,10 @@ import { List } from "immutable";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { User } from "src/app/models/User";
 
+/**
+ * App User Badge Component.
+ * A single menu widget displaying a user account and its relationship to the model
+ */
 @Component({
   selector: "app-user-badge",
   template: `

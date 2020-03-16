@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
+/**
+ * Internal Menu Link Component
+ */
 @Component({
   selector: "app-menu-internal-link",
   template: `

@@ -12,6 +12,10 @@ import {
   isInternalRoute
 } from "src/app/interfaces/menusInterfaces";
 
+/**
+ * Header Dropdown Item.
+ * Displays a dropdown list of items for the user to choose from.
+ */
 @Component({
   selector: "app-header-dropdown",
   template: `

@@ -5,6 +5,9 @@ import moment from "moment";
 import "moment-timezone";
 import { Timezone, TimezoneService } from "../timezone/timezone.service";
 
+/**
+ * Timezone Input
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-timezone-input",

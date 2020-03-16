@@ -20,6 +20,9 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem } from "../../sites.menus";
 import { fields } from "./new.json";
 
+/**
+ * New Site Component
+ */
 @Page({
   category: projectCategory,
   menus: {

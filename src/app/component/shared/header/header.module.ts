@@ -11,6 +11,9 @@ import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.compo
 import { HeaderItemComponent } from "./header-item/header-item.component";
 import { HeaderComponent } from "./header.component";
 
+/**
+ * Header Module
+ */
 @NgModule({
   declarations: [HeaderComponent, HeaderItemComponent, HeaderDropdownComponent],
   imports: [CommonModule, RouterModule, NgbModule, FontAwesomeModule],

@@ -21,6 +21,9 @@ import {
 import { siteMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
 
+/**
+ * Edit Site Component
+ */
 @Page({
   category: sitesCategory,
   menus: {

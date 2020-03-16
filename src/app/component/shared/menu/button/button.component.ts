@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { MenuAction } from "src/app/interfaces/menusInterfaces";
 
+/**
+ * Menu Button Component
+ */
 @Component({
   selector: "app-menu-button",
   template: `

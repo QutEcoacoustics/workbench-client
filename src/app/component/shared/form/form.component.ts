@@ -15,6 +15,9 @@ import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ApiResponse } from "src/app/services/baw-api/baw-api.service";
 
+/**
+ * Formly Form Wrapper
+ */
 @Component({
   selector: "app-form",
   templateUrl: "./form.component.html",

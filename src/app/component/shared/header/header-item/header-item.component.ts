@@ -12,6 +12,10 @@ import {
   NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 
+/**
+ * Header Item Component.
+ * Displays a header link.
+ */
 @Component({
   selector: "app-header-item",
   template: `

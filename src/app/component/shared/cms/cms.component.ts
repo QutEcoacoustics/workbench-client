@@ -12,6 +12,9 @@ import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
+/**
+ * CMS Wrapper
+ */
 @Component({
   selector: "app-cms",
   template: `

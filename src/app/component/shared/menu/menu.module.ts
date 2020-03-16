@@ -16,6 +16,9 @@ import { MenuExternalLinkComponent } from "./external-link/external-link.compone
 import { MenuInternalLinkComponent } from "./internal-link/internal-link.component";
 import { MenuComponent } from "./menu.component";
 
+/**
+ * Menus Module
+ */
 @NgModule({
   declarations: [
     MenuButtonComponent,

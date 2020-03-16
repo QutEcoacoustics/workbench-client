@@ -1,6 +1,11 @@
 import { Directive } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
+/**
+ * File Value Accessor
+ * Grabs the files from a file input and sets them as the value of the
+ * input.
+ */
 @Directive({
   // tslint:disable-next-line
   selector: "input[type=file]",

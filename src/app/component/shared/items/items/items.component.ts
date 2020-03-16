@@ -6,6 +6,10 @@ import {
 } from "@angular/core";
 import { ItemInterface } from "../item/item.component";
 
+/**
+ * Items Component.
+ * This creates a list of items split into two columns.
+ */
 @Component({
   selector: "app-items",
   template: `

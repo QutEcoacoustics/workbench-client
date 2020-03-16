@@ -9,6 +9,11 @@ import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
+/**
+ * Action Menu Component.
+ * A menu on the right side of the page displaying actions available
+ * to the user.
+ */
 @Component({
   selector: "app-action-menu",
   template: `

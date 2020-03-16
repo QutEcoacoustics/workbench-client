@@ -11,6 +11,12 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
+/**
+ * Secondary Menu Component.
+ * A menu on the left side of the page displaying easy access links
+ * to variables root pages. It also displays a breadcrumb showing the
+ * user the path they've taken.
+ */
 @Component({
   selector: "app-secondary-menu",
   template: `
