@@ -8,6 +8,9 @@ import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
+/**
+ * Statistics Component
+ */
 @Page({
   category: statisticsCategory,
   menus: {

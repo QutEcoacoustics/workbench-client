@@ -6,7 +6,6 @@ import { fromJS, List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
-import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   Category,
@@ -16,6 +15,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { testBawServices } from "src/app/test.helper";
+import { assertIcon, assertTooltip } from "src/testHelpers";
 import { homeCategory } from "../../home/home.menus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";

@@ -5,7 +5,6 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { List } from "immutable";
 import { isGuestPredicate, isLoggedInPredicate } from "src/app/app.menus";
-import { assertIcon, assertTooltip } from "src/app/helpers/tests/helpers";
 import {
   AnyMenuItem,
   MenuAction,
@@ -16,7 +15,7 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
 import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
-import { getText } from "src/testHelpers";
+import { assertIcon, assertTooltip, getText } from "src/testHelpers";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";

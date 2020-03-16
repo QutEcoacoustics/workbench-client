@@ -8,6 +8,9 @@ import { statisticsRoute } from "./statistics.menus";
 const components = [StatisticsComponent];
 const routes = statisticsRoute.compileRoutes(GetRouteConfigForPage);
 
+/**
+ * Statistics module
+ */
 @NgModule({
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],

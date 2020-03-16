@@ -8,6 +8,10 @@ import {
 } from "@swimlane/ngx-datatable";
 import { PageComponent } from "../page/pageComponent";
 
+/**
+ * Table Template Class.
+ * Handles creating all the generic logic required for a simple datatable containing component.
+ */
 export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 

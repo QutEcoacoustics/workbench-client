@@ -12,6 +12,11 @@ import { ApiFilter } from "src/app/services/baw-api/api-common";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { PageComponent } from "../page/pageComponent";
 
+/**
+ * Paged Template Class.
+ * Handles creating all the generic logic required for a datatable containing component
+ * which requires the use of external sorting and paging.
+ */
 export abstract class PagedTableTemplate<
   T,
   M extends AbstractModel

@@ -12,6 +12,10 @@ import { Resolvers } from "./resolver-common";
 const scriptId: IdParamOptional<Script> = id;
 const endpoint = stringTemplate`/scripts/${scriptId}`;
 
+/**
+ * Scripts Service.
+ * Handles API routes pertaining to scripts.
+ */
 @Injectable()
 export class ScriptsService extends StandardApi<Script, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {

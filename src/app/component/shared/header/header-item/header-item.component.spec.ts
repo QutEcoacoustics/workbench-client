@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { assertRoute } from "src/app/helpers/tests/helpers";
 import { MenuLink, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { assertRoute } from "src/testHelpers";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {

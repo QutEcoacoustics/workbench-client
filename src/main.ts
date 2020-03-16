@@ -12,6 +12,7 @@ if (environment.production) {
   enableProdMode();
 }
 
+// Fetch API config from baw server and add it to the initial bootstrap
 const apiConfig = fetchRetry("assets/environment.json", 1000, 5)
   .then(data => {
     return new Configuration(data as Partial<Configuration>);

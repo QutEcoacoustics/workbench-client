@@ -36,6 +36,9 @@ export class AppInitializer {
   }
 }
 
+/**
+ * App CMS pages
+ */
 export interface CMS {
   credits: string;
   disclaimers: string;
@@ -46,6 +49,9 @@ export interface CMS {
   sendAudio: string;
 }
 
+/**
+ * App values
+ */
 export interface Values {
   keys: {
     googleMaps: string;
@@ -58,6 +64,9 @@ export interface Values {
   cms: CMS;
 }
 
+/**
+ * App environment
+ */
 export interface Environment {
   environment: string;
   apiRoot: string;
@@ -96,6 +105,10 @@ export class Configuration implements Configuration {
   }
 }
 
+/**
+ * Determine if a variable is of the Configuration type
+ * @param config Variable to evaluate
+ */
 export function isConfiguration(
   config: Configuration
 ): config is Configuration {
@@ -104,6 +117,10 @@ export function isConfiguration(
 
 type Links = HeaderLink | HeaderDropDownLink;
 
+/**
+ * Determine if a variable is of the HeaderLink type
+ * @param link Variable to evaluate
+ */
 export function isHeaderLink(link: Links): link is HeaderLink {
   return "title" in link;
 }

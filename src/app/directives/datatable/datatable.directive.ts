@@ -1,6 +1,10 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 
+/**
+ * Datatable default directives.
+ * Assigns defaults to ngx-datatable element.
+ */
 @Directive({
   selector: "[bawDatatableDefaults]"
 })
