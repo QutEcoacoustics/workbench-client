@@ -81,9 +81,9 @@ export function inputValue(wrapper: any, selector: string, value: string) {
 }
 
 /**
- * Click formly form submit button and update component
+ * Click formly form submit button and update component.
+ * Requires `fakeAsync` to use.
  * @param fixture Component fixture
- * @requires fakeAsync
  */
 export function submitForm(fixture: ComponentFixture<any>) {
   const button = fixture.nativeElement.querySelector("button[type='submit']");
