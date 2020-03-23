@@ -17,25 +17,14 @@ export function GetRouteConfigForPage(
 ) {
   const page = getPageInfo(component);
 
-  if (!page) {
+  if (!page || !page.route.fullRoute) {
     return;
   }
 
-  const resolvers = {};
-  // Assign category resolvers if the page is the top level category page
-  if (page.category.route === page.self.route && page.category.resolvers) {
-    Object.assign(resolvers, page.category.resolvers);
-  }
-  // Assign custom page resolvers
-  if (page.resolvers) {
-    Object.assign(resolvers, page.resolvers);
-  }
-
-  Object.assign(config, {
-    // data is inherited in child routes
+  return {
+    ...config, // data is inherited in child routes
     data: page,
-    runGuardsAndResolvers: "paramsOrQueryParamsChange",
-    resolve: resolvers,
+    resolve: page.resolvers,
     children: [
       {
         path: "",
@@ -62,5 +51,5 @@ export function GetRouteConfigForPage(
         component: ResolverHandlerComponent
       }
     ]
-  } as Route);
+  } as Route;
 }

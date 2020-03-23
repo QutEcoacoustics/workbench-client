@@ -4,7 +4,7 @@ import { Route, Routes } from "@angular/router";
 export type RouteConfigCallback = (
   component: Type<any> | null,
   config: Partial<Route>
-) => void;
+) => Route;
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
@@ -50,12 +50,18 @@ export class StrongRoute {
       }
     }
 
-    this.config = { path: name, ...config };
-
     const [full, parameters] = this.rootToHere();
     this.full = full;
     this.parameters = parameters;
-    this.fullRoute = full.map(x => x.name).join("/");
+    this.fullRoute =
+      full.length > 0
+        ? full
+            .slice(1)
+            .map(x => x.name)
+            .join("/")
+        : undefined;
+
+    this.config = { path: this.fullRoute, pathMatch: "full", ...config };
   }
 
   /**
@@ -120,39 +126,19 @@ export class StrongRoute {
    */
   compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
+    const output: Routes = [];
 
-    const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
-      const aParamRoute = a.path.startsWith(":");
-      const bParamRoute = b.path.startsWith(":");
+    const recursiveAdd = (current: StrongRoute): void => {
+      const route = callback(current.pageComponent, current.config);
+      current.children.forEach(recursiveAdd);
 
-      // If one of the routes is a parameter route
-      if (aParamRoute || bParamRoute) {
-        // If both are parameter routes, they are equal
-        if (aParamRoute && bParamRoute) {
-          return 0;
-        }
-        // Else give priority to the non-parameter route
-        return aParamRoute ? 1 : -1;
+      if (route) {
+        output.push(route);
       }
-
-      return 0;
     };
 
-    const recursiveAdd = (current: StrongRoute): Route => {
-      // provide an opportunity to modify the route config just before we
-      // generate it.
-      callback(current.pageComponent, current.config);
-      const thisRoute = current.routeConfig;
-      const childRoutes = current.children.map(recursiveAdd);
-      thisRoute.children = [...(thisRoute.children || []), ...childRoutes].sort(
-        sortRoutes
-      );
-      return thisRoute;
-    };
-
-    const output = rootRoute.children.map(recursiveAdd).sort(sortRoutes);
-
-    return output instanceof Array ? output : [output];
+    rootRoute.children.forEach(recursiveAdd);
+    return output;
   }
 
   /**

@@ -39,6 +39,10 @@ export const siteMenuItemActions = [
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
+  resolvers: {
+    project: "ProjectShowResolver",
+    site: "SiteShowResolver"
+  },
   self: siteMenuItem
 })
 @Component({

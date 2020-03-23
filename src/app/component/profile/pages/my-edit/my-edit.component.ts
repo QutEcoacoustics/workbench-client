@@ -25,6 +25,9 @@ import { fields } from "./my-edit.json";
     ]),
     links: List()
   },
+  resolvers: {
+    user: "UserShowResolver"
+  },
   self: editMyAccountMenuItem
 })
 @Component({

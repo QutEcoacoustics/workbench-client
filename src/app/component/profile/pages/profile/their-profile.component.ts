@@ -32,6 +32,9 @@ export const theirProfileMenuItemActions = [
     actions: List<AnyMenuItem>(theirProfileMenuItemActions),
     links: List()
   },
+  resolvers: {
+    account: "AccountShowResolver"
+  },
   self: theirProfileMenuItem
 })
 @Component({

@@ -31,6 +31,10 @@ import { fields } from "./edit.json";
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
+  resolvers: {
+    project: "ProjectShowResolver",
+    site: "SiteShowResolver"
+  },
   self: editSiteMenuItem
 })
 @Component({

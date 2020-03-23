@@ -56,11 +56,6 @@ export interface Category extends LabelAndIcon {
    * Parent category
    */
   parent?: Category;
-
-  /**
-   * List of resolvers
-   */
-  resolvers?: Resolvers;
 }
 
 /**

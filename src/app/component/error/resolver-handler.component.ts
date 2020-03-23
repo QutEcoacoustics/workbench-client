@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { Category, Resolvers } from "src/app/interfaces/menusInterfaces";
+import { Resolvers } from "src/app/interfaces/menusInterfaces";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 
@@ -37,22 +37,8 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
   }
 
   private handleResolvers(data: PageInfoInterface) {
+    // Find page resolvers
     const resolvers: Resolvers = {};
-    const categories: Category[] = [];
-
-    // Scale category parents and add in reverse order (this is to preserve any overwrites)
-    let category = data.category;
-    while (category) {
-      categories.push(category);
-      category = category.parent;
-    }
-    for (let i = categories.length - 1; i >= 0; i--) {
-      if (categories[i].resolvers) {
-        Object.assign(resolvers, categories[i].resolvers);
-      }
-    }
-
-    // Add final custom resolvers
     if (data.resolvers) {
       Object.assign(resolvers, data.resolvers);
     }

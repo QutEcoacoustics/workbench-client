@@ -19,10 +19,7 @@ export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
   route: sitesRoute.add(":siteId"),
-  parent: projectCategory,
-  resolvers: {
-    site: "SiteShowResolver"
-  }
+  parent: projectCategory
 };
 
 export const newSiteMenuItem = MenuRoute({
