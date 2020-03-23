@@ -272,15 +272,17 @@ describe("StrongRoute", () => {
           ]
         }
       ];
-      const homeRoute = strongRoute.add("home");
-      homeRoute.add(":id");
-      homeRoute.add("house");
-      const compiledRoutes = homeRoute.compileRoutes(callback);
+      const paramRoute = strongRoute
+        .add("home")
+        .add(":id")
+        .add("house");
+      paramRoute.pageComponent = MockComponent;
+      const compiledRoutes = paramRoute.compileRoutes(callback);
 
       expect(compiledRoutes).toEqual(routes);
     });
 
-    it("should order base StrongRoute routes", () => {
+    it("should compile StrongRoute with custom config", () => {
       const routes: Routes = [
         {
           path: "home",
@@ -313,11 +315,9 @@ describe("StrongRoute", () => {
           ]
         }
       ];
-
-      strongRoute.add("home");
-      strongRoute.add(":id");
-      strongRoute.add("house");
-      const compiledRoutes = strongRoute.compileRoutes(callback);
+      const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
+      paramRoute.pageComponent = MockComponent;
+      const compiledRoutes = paramRoute.compileRoutes(callback);
 
       expect(compiledRoutes).toEqual(routes);
     });

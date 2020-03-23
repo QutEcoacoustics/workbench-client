@@ -77,6 +77,8 @@ export function maxValidationMessage(err, field) {
  * Toastr Service global defaults
  */
 export const toastrRoot = {
+  closeButton: true,
+  enableHtml: true,
   positionClass: "toast-top-center"
 };
 

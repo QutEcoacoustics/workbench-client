@@ -55,14 +55,6 @@
         "label": "Image",
         "required": false
       }
-    },
-    {
-      "key": "timezoneInformation",
-      "type": "timezone",
-      "templateOptions": {
-        "label": "Time Zone",
-        "required": false
-      }
     }
   ]
 }

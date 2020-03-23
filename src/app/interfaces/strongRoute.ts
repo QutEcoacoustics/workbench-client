@@ -34,7 +34,7 @@ export class StrongRoute {
     parent: StrongRoute,
     name: string,
     config: Partial<Route>,
-    isRoot?: boolean
+    isFeatureModule?: boolean
   ) {
     this.root = this;
     this.name = name;
@@ -44,7 +44,7 @@ export class StrongRoute {
     if (parent) {
       this.parent = parent;
 
-      if (!isRoot) {
+      if (!isFeatureModule) {
         this.root = parent.root;
         this.parent.children.push(this);
       }
@@ -158,8 +158,6 @@ export class StrongRoute {
         // Else give priority to the non-parameter route
         return aParamRoute ? 1 : -1;
       }
-
-      return 0;
     };
 
     const recursiveAdd = (current: StrongRoute): void => {

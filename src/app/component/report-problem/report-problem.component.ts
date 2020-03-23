@@ -25,7 +25,6 @@ import {
         [schema]="schema"
         [title]="'Report Problem'"
         [subTitle]="subTitle"
-        [error]="error"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -36,7 +35,6 @@ import {
 export class ReportProblemComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   schema = { model: {}, fields };
-  error: string;
   loading: boolean;
   subTitle: string;
 

@@ -21,7 +21,6 @@ import { fields } from "./contact-us.json";
       <app-form
         [schema]="schema"
         [title]="'Contact Us'"
-        [error]="error"
         [submitLabel]="'Submit'"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
@@ -32,7 +31,6 @@ import { fields } from "./contact-us.json";
 export class ContactUsComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   schema = { model: {}, fields };
-  error: string;
   loading: boolean;
 
   constructor() {

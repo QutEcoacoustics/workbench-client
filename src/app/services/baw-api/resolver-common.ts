@@ -164,7 +164,7 @@ export class ShowResolver<
 }
 
 // Resolver model output
-export interface ResolvedModel<T> {
+export interface ResolvedModel<T = AbstractModel | AbstractModel[]> {
   model?: T;
   error?: ApiErrorDetails;
 }

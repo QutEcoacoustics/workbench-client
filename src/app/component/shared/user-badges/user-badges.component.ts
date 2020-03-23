@@ -9,11 +9,7 @@ import {
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import {
-  DateTimeTimezone,
-  defaultDateTimeTimezone,
-  Id
-} from "src/app/interfaces/apiInterfaces";
+import { DateTimeTimezone, Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
@@ -121,24 +117,6 @@ export class UserBadgesComponent extends WithUnsubscribe()
   }
 
   private getLengthOfTime(time: DateTimeTimezone): string {
-    if (time === defaultDateTimeTimezone) {
-      return undefined;
-    }
-
-    const diff = time.diffNow(["years", "months", "days"]);
-    const years = Math.floor(Math.abs(diff.years));
-    const months = Math.floor(Math.abs(diff.months));
-    const days = Math.floor(Math.abs(diff.days));
-
-    // Diff values will be negative
-    if (years > 0) {
-      return `${years} year${years > 1 ? "s" : ""} ago`;
-    } else if (months > 0) {
-      return `${months} month${months > 1 ? "s" : ""} ago`;
-    } else if (days > 0) {
-      return `${days} day${days > 1 ? "s" : ""} ago`;
-    } else {
-      return "Less than a day ago";
-    }
+    return time ? time.toRelative() : undefined;
   }
 }

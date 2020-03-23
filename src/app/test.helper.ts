@@ -88,7 +88,7 @@ export const testBawServices = [
  */
 export function mockActivatedRoute(
   data: {
-    [key: string]: ResolvedModel<any>;
+    [key: string]: ResolvedModel;
   } = {},
   params: { [key: string]: string | number } = {},
   queryParams: Params = {}

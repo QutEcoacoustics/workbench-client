@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import {
   myAccountMenuItem,
   theirProfileMenuItem
@@ -6,6 +5,7 @@ import {
 import {
   AuthToken,
   DateTimeTimezone,
+  dateTimeTimezone,
   Id,
   ImageSizes,
   ImageURL,
@@ -48,12 +48,7 @@ export class User extends AbstractModel implements UserInterface {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-
-    if (user.lastSeenAt) {
-      this.lastSeenAt = DateTime.fromISO(user.lastSeenAt as string, {
-        setZone: true
-      });
-    }
+    this.lastSeenAt = dateTimeTimezone(user.lastSeenAt as string);
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {

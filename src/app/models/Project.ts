@@ -1,9 +1,8 @@
-import { DateTime } from "luxon";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
 import {
   DateTimeTimezone,
-  defaultDateTimeTimezone,
+  dateTimeTimezone,
   Description,
   Id,
   Ids,
@@ -46,19 +45,10 @@ export class Project extends AbstractModel implements ProjectInterface {
   constructor(project: ProjectInterface) {
     super(project);
 
-    // TODO: most of these are redundant - reimplement with properties?
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
-    this.createdAt = project.createdAt
-      ? DateTime.fromISO(project.createdAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
-    this.updatedAt = project.updatedAt
-      ? DateTime.fromISO(project.updatedAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
+    this.createdAt = dateTimeTimezone(project.createdAt as string);
+    this.updatedAt = dateTimeTimezone(project.updatedAt as string);
     this.siteIds = new Set(project.siteIds || []);
   }
 
@@ -72,14 +62,11 @@ export class Project extends AbstractModel implements ProjectInterface {
 
   toJSON() {
     // TODO Add image key
-
-    const json = {};
-
-    this.addIfExists(json, "id", this.id);
-    this.addIfExists(json, "name", this.name);
-    this.addIfExists(json, "description", this.description);
-
-    return json;
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description
+    };
   }
 
   /**
@@ -102,11 +89,3 @@ export class Project extends AbstractModel implements ProjectInterface {
     return projectMenuItem.route.format({ projectId: this.id });
   }
 }
-
-export const mockProject = new Project({
-  id: 1,
-  name: "name",
-  description: "description",
-  creatorId: 1,
-  siteIds: new Set([1])
-});

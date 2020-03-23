@@ -1,8 +1,7 @@
-import { DateTime } from "luxon";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
-  defaultDateTimeTimezone,
+  dateTimeTimezone,
   Description,
   Id,
   Ids,
@@ -56,16 +55,8 @@ export class Site extends AbstractModel implements SiteInterface {
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
     this.projectIds = new Set(site.projectIds || []);
-    this.createdAt = site.createdAt
-      ? DateTime.fromISO(site.createdAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
-    this.updatedAt = site.updatedAt
-      ? DateTime.fromISO(site.updatedAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
+    this.createdAt = dateTimeTimezone(site.createdAt as string);
+    this.updatedAt = dateTimeTimezone(site.updatedAt as string);
   }
 
   static fromJSON = (obj: any) => {

@@ -26,7 +26,6 @@ import { fields as annotationFields } from "./download-annotations.json";
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
         [schema]="annotationSchema"
-        [error]="error"
         [submitLabel]="'Download Annotations'"
         [submitLoading]="annotationLoading"
         (onSubmit)="submitDownloadAnnotation($event)"
@@ -35,7 +34,6 @@ import { fields as annotationFields } from "./download-annotations.json";
         title="Custom Data Request"
         subTitle="Use this form to request a customized annotations list or other data related to the audio recordings on this website. You <strong>do not need</strong> to use this form if you need the standard <strong>annotations CSV</strong> download. "
         [schema]="requestSchema"
-        [error]="error"
         [submitLabel]="'Submit'"
         [submitLoading]="requestLoading"
         (onSubmit)="submitDataRequest($event)"
@@ -47,7 +45,6 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public annotationLoading: boolean;
   public annotationSchema = { model: {}, fields: annotationFields };
-  public error: string;
   public page: string;
   public requestLoading: boolean;
   public requestSchema = { model: {}, fields: requestFields };

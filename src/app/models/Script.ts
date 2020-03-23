@@ -1,6 +1,10 @@
-import { DateTime } from "luxon";
 import { adminScriptsMenuItem } from "../component/admin/admin.menus";
-import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  dateTimeTimezone,
+  Id,
+  Param
+} from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
 /**
@@ -41,11 +45,7 @@ export class Script extends AbstractModel implements ScriptInterface {
   constructor(script: ScriptInterface) {
     super(script);
 
-    if (script.createdAt) {
-      this.createdAt = DateTime.fromISO(script.createdAt as string, {
-        setZone: true
-      });
-    }
+    this.createdAt = dateTimeTimezone(script.createdAt as string);
   }
 
   static fromJSON = (obj: any) => {
