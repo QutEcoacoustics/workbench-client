@@ -129,6 +129,31 @@ export class StrongRoute {
     const rootRoute = this.root;
     const output: Routes = [];
 
+    const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+      const aRoutes = a.path.split("/");
+      const bRoutes = b.path.split("/");
+      const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(":");
+      const bParamRoute = bRoutes[bRoutes.length - 1].startsWith(":");
+
+      // Order routes with less parents with priority
+      if (aRoutes.length !== bRoutes.length) {
+        return aRoutes.length > bRoutes.length ? 1 : -1;
+      }
+
+      // If one of the routes is a parameter route
+      if (aParamRoute || bParamRoute) {
+        // If both are parameter routes, they are equal
+        if (aParamRoute && bParamRoute) {
+          return 0;
+        }
+
+        // Else give priority to the non-parameter route
+        return aParamRoute ? 1 : -1;
+      }
+
+      return 0;
+    };
+
     const recursiveAdd = (current: StrongRoute): void => {
       const route = callback(current.pageComponent, current.config);
       current.children.forEach(recursiveAdd);
@@ -139,7 +164,7 @@ export class StrongRoute {
     };
 
     rootRoute.children.forEach(recursiveAdd);
-    return output;
+    return output.sort(sortRoutes);
   }
 
   /**

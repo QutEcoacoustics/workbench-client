@@ -178,12 +178,12 @@ describe("StrongRoute", () => {
     it("should compile StrongRoute with mixed routes", () => {
       const routes: Routes = [
         {
-          path: "home/:id/house",
+          path: "home",
           pathMatch: "full",
           children: [
             {
               path: "",
-              component: MockComponent
+              component: undefined
             }
           ]
         },
@@ -198,12 +198,12 @@ describe("StrongRoute", () => {
           ]
         },
         {
-          path: "home",
+          path: "home/:id/house",
           pathMatch: "full",
           children: [
             {
               path: "",
-              component: undefined
+              component: MockComponent
             }
           ]
         }
@@ -235,6 +235,89 @@ describe("StrongRoute", () => {
       const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
       paramRoute.pageComponent = MockComponent;
       const compiledRoutes = paramRoute.compileRoutes(callback);
+
+      expect(compiledRoutes).toEqual(routes);
+    });
+
+    it("should order child StrongRoute routes", () => {
+      const routes: Routes = [
+        {
+          path: "home",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: "home/house",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: "home/:id",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        }
+      ];
+      const homeRoute = strongRoute.add("home");
+      homeRoute.add(":id");
+      homeRoute.add("house");
+      const compiledRoutes = homeRoute.compileRoutes(callback);
+
+      expect(compiledRoutes).toEqual(routes);
+    });
+
+    it("should order base StrongRoute routes", () => {
+      const routes: Routes = [
+        {
+          path: "home",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: "house",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: ":id",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: undefined
+            }
+          ]
+        }
+      ];
+
+      strongRoute.add("home");
+      strongRoute.add(":id");
+      strongRoute.add("house");
+      const compiledRoutes = strongRoute.compileRoutes(callback);
 
       expect(compiledRoutes).toEqual(routes);
     });
