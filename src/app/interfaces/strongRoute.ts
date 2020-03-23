@@ -53,13 +53,14 @@ export class StrongRoute {
     const [full, parameters] = this.rootToHere();
     this.full = full;
     this.parameters = parameters;
-    this.fullRoute =
-      full.length > 1
-        ? (this.fullRoute = full
-            .slice(1)
-            .map(x => x.name)
-            .join("/"))
-        : "";
+
+    if (full.length > 1) {
+      this.fullRoute = this.toRoute().join("/");
+    } else if (full.length === 1) {
+      this.fullRoute = this.name;
+    } else {
+      this.fullRoute = undefined;
+    }
 
     this.config = { path: this.fullRoute, pathMatch: "full", ...config };
   }
@@ -90,7 +91,7 @@ export class StrongRoute {
     if (!args) {
       // Should only be unit tests which encounter this
       console.error("Route arguments are " + args);
-      return this.fullRoute;
+      return "";
     }
 
     if (Object.keys(args).length < this.parameters.length) {
@@ -143,13 +144,15 @@ export class StrongRoute {
 
   /**
    * String representation of the route
+   * eg. "/home/house"
    */
   toString(): string {
-    return this.fullRoute;
+    return "/" + (this.fullRoute ? this.fullRoute : "");
   }
 
   /**
    * Router representation of the route
+   * eg. ["home", "house"]
    */
   toRoute(): string[] {
     return this.full.slice(1).map(x => x.name);
