@@ -29,6 +29,9 @@ import { fields } from "./new.json";
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     links: List()
   },
+  resolvers: {
+    project: "ProjectShowResolver"
+  },
   self: newSiteMenuItem
 })
 @Component({

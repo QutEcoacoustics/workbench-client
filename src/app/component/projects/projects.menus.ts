@@ -18,10 +18,7 @@ export const projectsRoute = StrongRoute.Base.add("projects");
 export const projectsCategory: Category = {
   label: "Projects",
   icon: ["fas", "globe-asia"],
-  route: projectsRoute,
-  resolvers: {
-    projects: "ProjectListResolver"
-  }
+  route: projectsRoute
 };
 
 export const projectsMenuItem = MenuRoute({
@@ -58,11 +55,7 @@ export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
   route: projectsRoute.add(":projectId"),
-  parent: projectsCategory,
-  resolvers: {
-    project: "ProjectShowResolver",
-    sites: "SiteListResolver"
-  }
+  parent: projectsCategory
 };
 
 export const projectMenuItem = MenuRoute({

@@ -26,6 +26,9 @@ import { projectMenuItemActions } from "../details/details.component";
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },
+  resolvers: {
+    project: "ProjectShowResolver"
+  },
   self: editProjectPermissionsMenuItem
 })
 @Component({

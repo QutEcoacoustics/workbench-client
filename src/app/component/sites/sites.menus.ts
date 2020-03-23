@@ -3,7 +3,6 @@ import {
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
-  isAdminPredicate,
   isLoggedInPredicate,
   isProjectOwnerPredicate
 } from "src/app/app.menus";
@@ -14,16 +13,13 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { projectCategory, projectMenuItem } from "../projects/projects.menus";
 
-export const sitesRoute = projectMenuItem.route.add("sites");
+export const sitesRoute = projectMenuItem.route.add("sites", {}, true);
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
   route: sitesRoute.add(":siteId"),
-  parent: projectCategory,
-  resolvers: {
-    site: "SiteShowResolver"
-  }
+  parent: projectCategory
 };
 
 export const newSiteMenuItem = MenuRoute({

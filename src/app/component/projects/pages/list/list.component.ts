@@ -25,6 +25,9 @@ export const projectsMenuItemActions = [
     actions: List<AnyMenuItem>(projectsMenuItemActions),
     links: List()
   },
+  resolvers: {
+    projects: "ProjectListResolver"
+  },
   self: projectsMenuItem
 })
 @Component({

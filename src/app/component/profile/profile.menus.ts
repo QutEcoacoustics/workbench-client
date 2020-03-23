@@ -19,10 +19,7 @@ export const myAccountRoute = StrongRoute.Base.add("my_account");
 export const myAccountCategory: Category = {
   icon: defaultUserIcon,
   label: "My Profile",
-  route: myAccountRoute,
-  resolvers: {
-    user: "UserShowResolver"
-  }
+  route: myAccountRoute
 };
 
 export const myAccountMenuItem = MenuRoute({
@@ -86,10 +83,7 @@ export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
 export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
   label: "Their Profile",
-  route: theirProfileRoute,
-  resolvers: {
-    account: "AccountShowResolver"
-  }
+  route: theirProfileRoute
 };
 
 export const theirProfileMenuItem = MenuRoute({

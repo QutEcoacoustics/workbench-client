@@ -41,6 +41,7 @@ export class PageInfo implements PageInfoInterface {
     Object.assign(this, args);
     this.component = target;
     this.route.pageComponent = target;
+    this.resolvers = args.resolvers ? args.resolvers : {};
   }
 
   get route() {

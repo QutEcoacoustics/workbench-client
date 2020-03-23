@@ -113,15 +113,15 @@ describe("StrongRoute", () => {
     class MockComponent {}
 
     function callback(component: Type<any>, config: Partial<Route>) {
-      Object.assign(config, {
+      return {
+        ...config,
         children: [
           {
             path: "",
-            pathMatch: "full",
             component
           }
         ]
-      } as Route);
+      } as Route;
     }
 
     beforeEach(() => {
@@ -139,10 +139,10 @@ describe("StrongRoute", () => {
       const routes: Routes = [
         {
           path: "home",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: MockComponent
             }
           ]
@@ -159,10 +159,10 @@ describe("StrongRoute", () => {
       const routes: Routes = [
         {
           path: ":id",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: MockComponent
             }
           ]
@@ -179,31 +179,31 @@ describe("StrongRoute", () => {
       const routes: Routes = [
         {
           path: "home",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: undefined
-            },
+            }
+          ]
+        },
+        {
+          path: "home/:id",
+          pathMatch: "full",
+          children: [
             {
-              path: ":id",
-              children: [
-                {
-                  path: "",
-                  pathMatch: "full",
-                  component: undefined
-                },
-                {
-                  path: "house",
-                  children: [
-                    {
-                      path: "",
-                      pathMatch: "full",
-                      component: MockComponent
-                    }
-                  ]
-                }
-              ]
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: "home/:id/house",
+          pathMatch: "full",
+          children: [
+            {
+              path: "",
+              component: MockComponent
             }
           ]
         }
@@ -218,35 +218,56 @@ describe("StrongRoute", () => {
       expect(compiledRoutes).toEqual(routes);
     });
 
+    it("should compile StrongRoute with custom config", () => {
+      const routes: Routes = [
+        {
+          path: ":id",
+          pathMatch: "full",
+          redirectTo: "/test",
+          children: [
+            {
+              path: "",
+              component: MockComponent
+            }
+          ]
+        }
+      ];
+      const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
+      paramRoute.pageComponent = MockComponent;
+      const compiledRoutes = paramRoute.compileRoutes(callback);
+
+      expect(compiledRoutes).toEqual(routes);
+    });
+
     it("should order child StrongRoute routes", () => {
       const routes: Routes = [
         {
           path: "home",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: undefined
-            },
+            }
+          ]
+        },
+        {
+          path: "home/house",
+          pathMatch: "full",
+          children: [
             {
-              path: "house",
-              children: [
-                {
-                  path: "",
-                  pathMatch: "full",
-                  component: undefined
-                }
-              ]
-            },
+              path: "",
+              component: undefined
+            }
+          ]
+        },
+        {
+          path: "home/:id",
+          pathMatch: "full",
+          children: [
             {
-              path: ":id",
-              children: [
-                {
-                  path: "",
-                  pathMatch: "full",
-                  component: undefined
-                }
-              ]
+              path: "",
+              component: undefined
             }
           ]
         }
@@ -263,30 +284,30 @@ describe("StrongRoute", () => {
       const routes: Routes = [
         {
           path: "home",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: undefined
             }
           ]
         },
         {
           path: "house",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: undefined
             }
           ]
         },
         {
           path: ":id",
+          pathMatch: "full",
           children: [
             {
               path: "",
-              pathMatch: "full",
               component: undefined
             }
           ]
@@ -310,7 +331,7 @@ describe("StrongRoute", () => {
     });
 
     it("should handle base StrongRoute", () => {
-      expect(strongRoute.toString()).toBe("");
+      expect(strongRoute.toString()).toBe("/");
     });
 
     it("should handle child route", () => {
