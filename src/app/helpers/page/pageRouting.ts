@@ -17,7 +17,8 @@ export function GetRouteConfigForPage(
 ) {
   const page = getPageInfo(component);
 
-  if (!page || !page.route.fullRoute) {
+  // tslint:disable-next-line: triple-equals
+  if (!page || page.route.fullRoute == null) {
     return;
   }
 

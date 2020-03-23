@@ -54,12 +54,12 @@ export class StrongRoute {
     this.full = full;
     this.parameters = parameters;
     this.fullRoute =
-      full.length > 0
-        ? full
+      full.length > 1
+        ? (this.fullRoute = full
             .slice(1)
             .map(x => x.name)
-            .join("/")
-        : undefined;
+            .join("/"))
+        : "";
 
     this.config = { path: this.fullRoute, pathMatch: "full", ...config };
   }
