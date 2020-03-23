@@ -3,7 +3,6 @@ import {
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
-  isAdminPredicate,
   isLoggedInPredicate,
   isProjectOwnerPredicate
 } from "src/app/app.menus";
@@ -14,7 +13,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { projectCategory, projectMenuItem } from "../projects/projects.menus";
 
-export const sitesRoute = projectMenuItem.route.add("sites");
+export const sitesRoute = projectMenuItem.route.add("sites", {}, true);
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],

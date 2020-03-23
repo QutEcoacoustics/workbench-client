@@ -28,23 +28,26 @@ export class StrongRoute {
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
+   * @param isRoot Is this a root category
    */
   private constructor(
     parent: StrongRoute,
     name: string,
-    config: Partial<Route>
+    config: Partial<Route>,
+    isRoot?: boolean
   ) {
+    this.root = this;
     this.name = name;
+    this.parent = null;
+    this.isParameter = this.name ? name.startsWith(":") : false;
 
     if (parent) {
       this.parent = parent;
-      this.root = parent.root;
-      this.parent.children.push(this);
-      this.isParameter = name.startsWith(":");
-    } else {
-      this.parent = null;
-      this.root = this;
-      this.isParameter = false;
+
+      if (!isRoot) {
+        this.root = parent.root;
+        this.parent.children.push(this);
+      }
     }
 
     this.config = { path: name, ...config };
@@ -66,9 +69,10 @@ export class StrongRoute {
    * Add a child route
    * @param name Route name
    * @param config Additional router configurations
+   * @param isRoot Is this a root category
    */
-  add(name: string, config: Partial<Route> = {}) {
-    return new StrongRoute(this, name, config);
+  add(name: string, config: Partial<Route> = {}, isRoot?: boolean) {
+    return new StrongRoute(this, name, config, isRoot);
   }
 
   /**
