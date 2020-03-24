@@ -28,13 +28,13 @@ export class StrongRoute {
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
-   * @param isFeatureModule Is this a feature module
+   * @param isRoot Is this a root StrongRoute
    */
   private constructor(
     parent: StrongRoute,
     name: string,
     config: Partial<Route>,
-    isFeatureModule?: boolean
+    isRoot?: boolean
   ) {
     this.root = this;
     this.name = name;
@@ -44,7 +44,7 @@ export class StrongRoute {
     if (parent) {
       this.parent = parent;
 
-      if (!isFeatureModule) {
+      if (!isRoot) {
         this.root = parent.root;
         this.parent.children.push(this);
       }
@@ -82,7 +82,7 @@ export class StrongRoute {
   }
 
   /**
-   * Add a child route
+   * Add a new feature module route (inherit parent path without recalculating parent routes)
    * @param name Route name
    * @param config Additional router configurations
    */
