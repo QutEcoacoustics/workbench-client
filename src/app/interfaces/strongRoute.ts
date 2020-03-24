@@ -76,10 +76,18 @@ export class StrongRoute {
    * Add a child route
    * @param name Route name
    * @param config Additional router configurations
-   * @param isRoot Is this a root category
    */
-  add(name: string, config: Partial<Route> = {}, isRoot?: boolean) {
-    return new StrongRoute(this, name, config, isRoot);
+  add(name: string, config: Partial<Route> = {}) {
+    return new StrongRoute(this, name, config);
+  }
+
+  /**
+   * Add a child route
+   * @param name Route name
+   * @param config Additional router configurations
+   */
+  addNested(name: string, config: Partial<Route> = {}) {
+    return new StrongRoute(this, name, config, true);
   }
 
   /**

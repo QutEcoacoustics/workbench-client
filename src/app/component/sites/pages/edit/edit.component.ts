@@ -11,8 +11,12 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import {
+  siteResolvers,
+  SitesService
+} from "src/app/services/baw-api/sites.service";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -32,8 +36,8 @@ import { fields } from "./edit.json";
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver",
-    site: "SiteShowResolver"
+    project: projectResolvers.show,
+    site: siteResolvers.show
   },
   self: editSiteMenuItem
 })

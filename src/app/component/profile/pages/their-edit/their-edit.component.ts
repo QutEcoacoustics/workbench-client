@@ -6,7 +6,10 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { AccountService } from "src/app/services/baw-api/account.service";
+import {
+  accountResolvers,
+  AccountService
+} from "src/app/services/baw-api/account.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirEditProfileMenuItem,
@@ -26,7 +29,7 @@ import { fields } from "./their-edit.json";
     links: List()
   },
   resolvers: {
-    account: "AccountShowResolver"
+    account: accountResolvers.show
   },
   self: theirEditProfileMenuItem
 })

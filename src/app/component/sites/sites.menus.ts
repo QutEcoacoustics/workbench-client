@@ -13,7 +13,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { projectCategory, projectMenuItem } from "../projects/projects.menus";
 
-export const sitesRoute = projectMenuItem.route.add("sites", {}, true);
+export const sitesRoute = projectMenuItem.route.addNested("sites");
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],

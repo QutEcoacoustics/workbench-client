@@ -11,7 +11,9 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   annotationsMenuItem,
   deleteSiteMenuItem,
@@ -40,8 +42,8 @@ export const siteMenuItemActions = [
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver",
-    site: "SiteShowResolver"
+    project: projectResolvers.show,
+    site: siteResolvers.show
   },
   self: siteMenuItem
 })

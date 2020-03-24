@@ -10,7 +10,10 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   deleteProjectMenuItem,
@@ -28,7 +31,7 @@ import { projectMenuItemActions } from "../details/details.component";
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver"
+    project: projectResolvers.show
   },
   self: deleteProjectMenuItem
 })

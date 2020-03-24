@@ -33,8 +33,9 @@ export class Resolvers<
 
     const listProvider = new ListResolver<T, A>(deps, ids).create(name);
     const showProvider = new ShowResolver<T, A>(deps, id, ids).create(name);
+    const providers = [...listProvider.providers, ...showProvider.providers];
 
-    return [...listProvider, ...showProvider];
+    return { ...listProvider, ...showProvider, providers };
   }
 }
 
@@ -83,13 +84,16 @@ export class ListResolver<
       }
     }
 
-    return [
-      {
-        provide: name + "ListResolver",
-        useClass: Resolver,
-        deps
-      }
-    ];
+    return {
+      list: name + "ListResolver",
+      providers: [
+        {
+          provide: name + "ListResolver",
+          useClass: Resolver,
+          deps
+        }
+      ]
+    };
   }
 }
 
@@ -146,13 +150,16 @@ export class ShowResolver<
       }
     }
 
-    return [
-      {
-        provide: name + "ShowResolver",
-        useClass: Resolver,
-        deps
-      }
-    ];
+    return {
+      show: name + "ShowResolver",
+      providers: [
+        {
+          provide: name + "ShowResolver",
+          useClass: Resolver,
+          deps
+        }
+      ]
+    };
   }
 }
 

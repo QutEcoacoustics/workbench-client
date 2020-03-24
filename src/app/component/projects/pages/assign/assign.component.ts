@@ -8,7 +8,7 @@ import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemp
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -26,7 +26,7 @@ import { projectMenuItemActions } from "../details/details.component";
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver"
+    project: projectResolvers.show
   },
   self: assignSiteMenuItem
 })

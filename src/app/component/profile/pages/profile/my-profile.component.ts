@@ -8,6 +8,7 @@ import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { userResolvers } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
   myAccountCategory,
@@ -33,7 +34,7 @@ export const myProfileMenuItemActions = [
     links: List()
   },
   resolvers: {
-    user: "UserShowResolver"
+    user: userResolvers.show
   },
   self: myAccountMenuItem
 })

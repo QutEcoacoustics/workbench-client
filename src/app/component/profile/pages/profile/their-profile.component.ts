@@ -7,6 +7,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { accountResolvers } from "src/app/services/baw-api/account.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirAnnotationsMenuItem,
@@ -33,7 +34,7 @@ export const theirProfileMenuItemActions = [
     links: List()
   },
   resolvers: {
-    account: "AccountShowResolver"
+    account: accountResolvers.show
   },
   self: theirProfileMenuItem
 })

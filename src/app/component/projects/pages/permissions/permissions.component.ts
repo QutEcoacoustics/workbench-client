@@ -10,7 +10,10 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { Project } from "src/app/models/Project";
 import { User } from "src/app/models/User";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectPermissionsMenuItem,
@@ -27,7 +30,7 @@ import { projectMenuItemActions } from "../details/details.component";
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver"
+    project: projectResolvers.show
   },
   self: editProjectPermissionsMenuItem
 })

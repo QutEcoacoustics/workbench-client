@@ -7,7 +7,10 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { UserService } from "src/app/services/baw-api/user.service";
+import {
+  userResolvers,
+  UserService
+} from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
   myAccountCategory,
@@ -26,7 +29,7 @@ import { fields } from "./my-edit.json";
     links: List()
   },
   resolvers: {
-    user: "UserShowResolver"
+    user: userResolvers.show
   },
   self: editMyAccountMenuItem
 })

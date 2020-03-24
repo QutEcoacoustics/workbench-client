@@ -10,7 +10,9 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -38,8 +40,8 @@ export const projectMenuItemActions = [
     links: List()
   },
   resolvers: {
-    project: "ProjectShowResolver",
-    sites: "SiteListResolver"
+    project: projectResolvers.show,
+    sites: siteResolvers.list
   },
   self: projectMenuItem
 })
