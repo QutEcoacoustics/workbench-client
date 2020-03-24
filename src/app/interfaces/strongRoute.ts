@@ -28,13 +28,13 @@ export class StrongRoute {
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
-   * @param isRoot Is this a root category
+   * @param isFeatureModule Is this a feature module
    */
   private constructor(
     parent: StrongRoute,
     name: string,
     config: Partial<Route>,
-    isRoot?: boolean
+    isFeatureModule?: boolean
   ) {
     this.root = this;
     this.name = name;
@@ -44,7 +44,7 @@ export class StrongRoute {
     if (parent) {
       this.parent = parent;
 
-      if (!isRoot) {
+      if (!isFeatureModule) {
         this.root = parent.root;
         this.parent.children.push(this);
       }
@@ -86,7 +86,7 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  addNested(name: string, config: Partial<Route> = {}) {
+  addFeatureModule(name: string, config: Partial<Route> = {}) {
     return new StrongRoute(this, name, config, true);
   }
 
