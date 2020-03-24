@@ -8,6 +8,7 @@ import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { userResolvers } from "src/app/services/baw-api/user.service";
 import {
   editMyAccountMenuItem,
   myAccountCategory,
@@ -26,11 +27,16 @@ export const myProfileMenuItemActions = [
   myAnnotationsMenuItem
 ];
 
+const userKey = "user";
+
 @Page({
   category: myAccountCategory,
   menus: {
     actions: List<AnyMenuItem>(myProfileMenuItemActions),
     links: List()
+  },
+  resolvers: {
+    [userKey]: userResolvers.show
   },
   self: myAccountMenuItem
 })
@@ -51,7 +57,7 @@ export class MyProfileComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const userModel: ResolvedModel<User> = this.route.snapshot.data.user;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data[userKey];
 
     if (userModel.error) {
       return;

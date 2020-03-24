@@ -15,10 +15,13 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem } from "../../sites.menus";
 import { fields } from "./new.json";
+
+const projectKey = "project";
 
 /**
  * New Site Component
@@ -28,6 +31,9 @@ import { fields } from "./new.json";
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show
   },
   self: newSiteMenuItem
 })
@@ -62,8 +68,9 @@ export class NewComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

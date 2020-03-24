@@ -11,8 +11,12 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import {
+  siteResolvers,
+  SitesService
+} from "src/app/services/baw-api/sites.service";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -20,6 +24,9 @@ import {
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
+
+const projectKey = "project";
+const siteKey = "site";
 
 /**
  * Edit Site Component
@@ -30,6 +37,10 @@ import { fields } from "./edit.json";
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show
   },
   self: editSiteMenuItem
 })
@@ -66,9 +77,10 @@ export class EditComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
 
     if (projectModel.error || siteModel.error) {
       return;

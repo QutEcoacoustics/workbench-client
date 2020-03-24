@@ -4,7 +4,7 @@ import { Route, Routes } from "@angular/router";
 export type RouteConfigCallback = (
   component: Type<any> | null,
   config: Partial<Route>
-) => void;
+) => Route;
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
@@ -28,31 +28,41 @@ export class StrongRoute {
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
+   * @param isRoot Is this a root StrongRoute
    */
   private constructor(
     parent: StrongRoute,
     name: string,
-    config: Partial<Route>
+    config: Partial<Route>,
+    isRoot?: boolean
   ) {
+    this.root = this;
     this.name = name;
+    this.parent = null;
+    this.isParameter = this.name ? name.startsWith(":") : false;
 
     if (parent) {
       this.parent = parent;
-      this.root = parent.root;
-      this.parent.children.push(this);
-      this.isParameter = name.startsWith(":");
-    } else {
-      this.parent = null;
-      this.root = this;
-      this.isParameter = false;
-    }
 
-    this.config = { path: name, ...config };
+      if (!isRoot) {
+        this.root = parent.root;
+        this.parent.children.push(this);
+      }
+    }
 
     const [full, parameters] = this.rootToHere();
     this.full = full;
     this.parameters = parameters;
-    this.fullRoute = full.map(x => x.name).join("/");
+
+    if (full.length > 1) {
+      this.fullRoute = this.toRoute().join("/");
+    } else if (full.length === 1) {
+      this.fullRoute = this.name;
+    } else {
+      this.fullRoute = undefined;
+    }
+
+    this.config = { path: this.fullRoute, pathMatch: "full", ...config };
   }
 
   /**
@@ -72,6 +82,15 @@ export class StrongRoute {
   }
 
   /**
+   * Add a new feature module route (inherit parent path without recalculating parent routes)
+   * @param name Route name
+   * @param config Additional router configurations
+   */
+  addFeatureModule(name: string, config: Partial<Route> = {}) {
+    return new StrongRoute(this, name, config, true);
+  }
+
+  /**
    * Method used for templating a route with parameters.
    * Use this in a template like so:
    * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
@@ -80,7 +99,7 @@ export class StrongRoute {
     if (!args) {
       // Should only be unit tests which encounter this
       console.error("Route arguments are " + args);
-      return this.fullRoute;
+      return "";
     }
 
     if (Object.keys(args).length < this.parameters.length) {
@@ -116,10 +135,18 @@ export class StrongRoute {
    */
   compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
+    const output: Routes = [];
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
-      const aParamRoute = a.path.startsWith(":");
-      const bParamRoute = b.path.startsWith(":");
+      const aRoutes = a.path.split("/");
+      const bRoutes = b.path.split("/");
+      const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(":");
+      const bParamRoute = bRoutes[bRoutes.length - 1].startsWith(":");
+
+      // Order routes with less parents with priority
+      if (aRoutes.length !== bRoutes.length) {
+        return aRoutes.length > bRoutes.length ? 1 : -1;
+      }
 
       // If one of the routes is a parameter route
       if (aParamRoute || bParamRoute) {
@@ -127,6 +154,7 @@ export class StrongRoute {
         if (aParamRoute && bParamRoute) {
           return 0;
         }
+
         // Else give priority to the non-parameter route
         return aParamRoute ? 1 : -1;
       }
@@ -134,32 +162,30 @@ export class StrongRoute {
       return 0;
     };
 
-    const recursiveAdd = (current: StrongRoute): Route => {
-      // provide an opportunity to modify the route config just before we
-      // generate it.
-      callback(current.pageComponent, current.config);
-      const thisRoute = current.routeConfig;
-      const childRoutes = current.children.map(recursiveAdd);
-      thisRoute.children = [...(thisRoute.children || []), ...childRoutes].sort(
-        sortRoutes
-      );
-      return thisRoute;
+    const recursiveAdd = (current: StrongRoute): void => {
+      const route = callback(current.pageComponent, current.config);
+      current.children.forEach(recursiveAdd);
+
+      if (route) {
+        output.push(route);
+      }
     };
 
-    const output = rootRoute.children.map(recursiveAdd).sort(sortRoutes);
-
-    return output instanceof Array ? output : [output];
+    rootRoute.children.forEach(recursiveAdd);
+    return output.sort(sortRoutes);
   }
 
   /**
    * String representation of the route
+   * eg. "/home/house"
    */
   toString(): string {
-    return this.fullRoute;
+    return "/" + (this.fullRoute ? this.fullRoute : "");
   }
 
   /**
    * Router representation of the route
+   * eg. ["home", "house"]
    */
   toRoute(): string[] {
     return this.full.slice(1).map(x => x.name);

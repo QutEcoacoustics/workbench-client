@@ -16,9 +16,16 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import {
+  siteResolvers,
+  SitesService
+} from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
+
+const projectKey = "project";
+const siteKey = "site";
 
 /**
  * Delete Site Component
@@ -29,6 +36,10 @@ import { siteMenuItemActions } from "../details/details.component";
     actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show
   },
   self: deleteSiteMenuItem
 })
@@ -64,9 +75,10 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
 
     if (projectModel.error || siteModel.error) {
       return;

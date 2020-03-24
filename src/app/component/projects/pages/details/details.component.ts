@@ -10,7 +10,9 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -30,12 +32,19 @@ export const projectMenuItemActions = [
   deleteProjectMenuItem
 ];
 
+const projectKey = "project";
+const sitesKey = "sites";
+
 @Page({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [sitesKey]: siteResolvers.list
   },
   self: projectMenuItem
 })
@@ -53,9 +62,12 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModels: ResolvedModel<Site[]> = this.route.snapshot.data.sites;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModels: ResolvedModel<Site[]> = this.route.snapshot.data[
+      sitesKey
+    ];
 
     if (projectModel.error || siteModels.error) {
       return;

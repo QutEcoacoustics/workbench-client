@@ -8,7 +8,7 @@ import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemp
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
@@ -18,12 +18,17 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show
   },
   self: assignSiteMenuItem
 })
@@ -61,8 +66,9 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site>
     };
     this.filterKey = "name";
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

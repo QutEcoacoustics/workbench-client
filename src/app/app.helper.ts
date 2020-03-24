@@ -151,10 +151,10 @@ export const providers = [
   ShallowSitesService,
   SitesService,
   UserService,
-  ...accountResolvers,
-  ...projectResolvers,
-  ...scriptResolvers,
-  ...siteResolvers,
-  ...shallowSiteResolvers,
-  ...userResolvers
+  ...accountResolvers.providers,
+  ...projectResolvers.providers,
+  ...scriptResolvers.providers,
+  ...siteResolvers.providers,
+  ...shallowSiteResolvers.providers,
+  ...userResolvers.providers
 ];

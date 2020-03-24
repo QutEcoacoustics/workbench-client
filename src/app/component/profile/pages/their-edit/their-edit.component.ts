@@ -6,7 +6,10 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
-import { AccountService } from "src/app/services/baw-api/account.service";
+import {
+  accountResolvers,
+  AccountService
+} from "src/app/services/baw-api/account.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirEditProfileMenuItem,
@@ -16,6 +19,8 @@ import {
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 import { fields } from "./their-edit.json";
 
+const accountKey = "account";
+
 @Page({
   category: theirProfileCategory,
   menus: {
@@ -24,6 +29,9 @@ import { fields } from "./their-edit.json";
       ...theirProfileMenuItemActions
     ]),
     links: List()
+  },
+  resolvers: {
+    [accountKey]: accountResolvers.show
   },
   self: theirEditProfileMenuItem
 })
@@ -57,7 +65,7 @@ export class TheirEditComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const userModel: ResolvedModel<User> = this.route.snapshot.data.account;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data[accountKey];
 
     if (userModel.error) {
       return;

@@ -10,7 +10,10 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   deleteProjectMenuItem,
@@ -20,12 +23,17 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show
   },
   self: deleteProjectMenuItem
 })
@@ -58,8 +66,9 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

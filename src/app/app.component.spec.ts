@@ -36,10 +36,7 @@ describe("AppComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        RouterTestingModule.withRoutes([
-          homeMenuItem.route.routeConfig,
-          projectsMenuItem.route.routeConfig
-        ]),
+        RouterTestingModule,
         HttpClientTestingModule,
         LoadingBarHttpClientModule
       ],

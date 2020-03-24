@@ -10,7 +10,10 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectMenuItem,
@@ -20,12 +23,17 @@ import {
 import { projectMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show
   },
   self: editProjectMenuItem
 })
@@ -59,8 +67,9 @@ export class EditComponent extends WithFormCheck(PageComponent)
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

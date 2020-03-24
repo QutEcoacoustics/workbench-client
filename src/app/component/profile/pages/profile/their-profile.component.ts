@@ -7,6 +7,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
+import { accountResolvers } from "src/app/services/baw-api/account.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirAnnotationsMenuItem,
@@ -26,11 +27,16 @@ export const theirProfileMenuItemActions = [
   theirAnnotationsMenuItem
 ];
 
+const accountKey = "account";
+
 @Page({
   category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>(theirProfileMenuItemActions),
     links: List()
+  },
+  resolvers: {
+    [accountKey]: accountResolvers.show
   },
   self: theirProfileMenuItem
 })
@@ -51,7 +57,9 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const accountModel: ResolvedModel<User> = this.route.snapshot.data.account;
+    const accountModel: ResolvedModel<User> = this.route.snapshot.data[
+      accountKey
+    ];
 
     if (accountModel.error) {
       return;

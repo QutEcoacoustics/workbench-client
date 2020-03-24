@@ -10,7 +10,10 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { TableTemplate } from "src/app/helpers/tableTemplate/tableTemplate";
 import { Project } from "src/app/models/Project";
 import { User } from "src/app/models/User";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   editProjectPermissionsMenuItem,
@@ -19,12 +22,17 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show
   },
   self: editProjectPermissionsMenuItem
 })
@@ -74,8 +82,9 @@ export class PermissionsComponent extends TableTemplate<TableRow>
       { label: "Owner", value: "owner" }
     ];
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

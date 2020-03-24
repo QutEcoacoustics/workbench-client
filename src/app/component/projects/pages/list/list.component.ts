@@ -6,6 +6,7 @@ import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   newProjectMenuItem,
@@ -19,11 +20,16 @@ export const projectsMenuItemActions = [
   requestProjectMenuItem
 ];
 
+const projectsKey = "projects";
+
 @Page({
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>(projectsMenuItemActions),
     links: List()
+  },
+  resolvers: {
+    [projectsKey]: projectResolvers.list
   },
   self: projectsMenuItem
 })
@@ -49,8 +55,9 @@ export class ListComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const projects: ResolvedModel<Project[]> = this.route.snapshot.data
-      .projects;
+    const projects: ResolvedModel<Project[]> = this.route.snapshot.data[
+      projectsKey
+    ];
 
     if (projects.error) {
       return;
