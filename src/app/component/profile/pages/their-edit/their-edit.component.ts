@@ -19,6 +19,8 @@ import {
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 import { fields } from "./their-edit.json";
 
+const accountKey = "account";
+
 @Page({
   category: theirProfileCategory,
   menus: {
@@ -29,7 +31,7 @@ import { fields } from "./their-edit.json";
     links: List()
   },
   resolvers: {
-    account: accountResolvers.show
+    [accountKey]: accountResolvers.show
   },
   self: theirEditProfileMenuItem
 })
@@ -63,7 +65,7 @@ export class TheirEditComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const userModel: ResolvedModel<User> = this.route.snapshot.data.account;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data[accountKey];
 
     if (userModel.error) {
       return;

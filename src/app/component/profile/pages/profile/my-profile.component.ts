@@ -27,6 +27,8 @@ export const myProfileMenuItemActions = [
   myAnnotationsMenuItem
 ];
 
+const userKey = "user";
+
 @Page({
   category: myAccountCategory,
   menus: {
@@ -34,7 +36,7 @@ export const myProfileMenuItemActions = [
     links: List()
   },
   resolvers: {
-    user: userResolvers.show
+    [userKey]: userResolvers.show
   },
   self: myAccountMenuItem
 })
@@ -55,7 +57,7 @@ export class MyProfileComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const userModel: ResolvedModel<User> = this.route.snapshot.data.user;
+    const userModel: ResolvedModel<User> = this.route.snapshot.data[userKey];
 
     if (userModel.error) {
       return;

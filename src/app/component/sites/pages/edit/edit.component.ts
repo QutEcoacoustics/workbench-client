@@ -25,6 +25,9 @@ import {
 import { siteMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
 
+const projectKey = "project";
+const siteKey = "site";
+
 /**
  * Edit Site Component
  */
@@ -36,8 +39,8 @@ import { fields } from "./edit.json";
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show,
-    site: siteResolvers.show
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show
   },
   self: editSiteMenuItem
 })
@@ -74,9 +77,10 @@ export class EditComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
 
     if (projectModel.error || siteModel.error) {
       return;

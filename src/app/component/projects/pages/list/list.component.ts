@@ -20,6 +20,8 @@ export const projectsMenuItemActions = [
   requestProjectMenuItem
 ];
 
+const projectsKey = "projects";
+
 @Page({
   category: projectsCategory,
   menus: {
@@ -27,7 +29,7 @@ export const projectsMenuItemActions = [
     links: List()
   },
   resolvers: {
-    projects: projectResolvers.list
+    [projectsKey]: projectResolvers.list
   },
   self: projectsMenuItem
 })
@@ -53,8 +55,9 @@ export class ListComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const projects: ResolvedModel<Project[]> = this.route.snapshot.data
-      .projects;
+    const projects: ResolvedModel<Project[]> = this.route.snapshot.data[
+      projectsKey
+    ];
 
     if (projects.error) {
       return;

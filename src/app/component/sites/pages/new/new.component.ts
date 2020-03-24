@@ -21,6 +21,8 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 import { newSiteMenuItem } from "../../sites.menus";
 import { fields } from "./new.json";
 
+const projectKey = "project";
+
 /**
  * New Site Component
  */
@@ -31,7 +33,7 @@ import { fields } from "./new.json";
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show
+    [projectKey]: projectResolvers.show
   },
   self: newSiteMenuItem
 })
@@ -66,8 +68,9 @@ export class NewComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

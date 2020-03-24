@@ -22,6 +22,8 @@ import {
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
@@ -30,7 +32,7 @@ import { projectMenuItemActions } from "../details/details.component";
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show
+    [projectKey]: projectResolvers.show
   },
   self: editProjectPermissionsMenuItem
 })
@@ -80,8 +82,9 @@ export class PermissionsComponent extends TableTemplate<TableRow>
       { label: "Owner", value: "owner" }
     ];
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;

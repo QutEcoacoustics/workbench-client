@@ -31,6 +31,9 @@ export const siteMenuItemActions = [
   deleteSiteMenuItem
 ];
 
+const projectKey = "project";
+const siteKey = "site";
+
 /**
  * Site Details Component
  */
@@ -42,8 +45,8 @@ export const siteMenuItemActions = [
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show,
-    site: siteResolvers.show
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show
   },
   self: siteMenuItem
 })
@@ -64,9 +67,10 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
 
     if (projectModel.error || siteModel.error) {
       return;

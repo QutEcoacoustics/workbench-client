@@ -24,6 +24,9 @@ import {
 } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 
+const projectKey = "project";
+const siteKey = "site";
+
 /**
  * Delete Site Component
  */
@@ -35,8 +38,8 @@ import { siteMenuItemActions } from "../details/details.component";
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show,
-    site: siteResolvers.show
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show
   },
   self: deleteSiteMenuItem
 })
@@ -72,9 +75,10 @@ export class DeleteComponent extends WithFormCheck(PageComponent)
   ngOnInit() {
     this.loading = false;
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
+    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
 
     if (projectModel.error || siteModel.error) {
       return;

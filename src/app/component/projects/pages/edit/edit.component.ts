@@ -23,6 +23,8 @@ import {
 import { projectMenuItemActions } from "../details/details.component";
 import { fields } from "./edit.json";
 
+const projectKey = "project";
+
 @Page({
   category: projectCategory,
   menus: {
@@ -31,7 +33,7 @@ import { fields } from "./edit.json";
     links: List()
   },
   resolvers: {
-    project: projectResolvers.show
+    [projectKey]: projectResolvers.show
   },
   self: editProjectMenuItem
 })
@@ -65,8 +67,9 @@ export class EditComponent extends WithFormCheck(PageComponent)
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
+      projectKey
+    ];
 
     if (projectModel.error) {
       return;
