@@ -22,7 +22,7 @@ import {
   sitesCategory
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
-import { fields } from "./edit.json";
+import { fields } from "../../site.json";
 
 const projectKey = "project";
 const siteKey = "site";

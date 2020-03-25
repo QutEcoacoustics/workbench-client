@@ -6,23 +6,22 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   defaultSuccessMsg,
-  extendedErrorMsg,
   FormTemplate
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   projectResolvers,
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
+import { fields } from "../../project.json";
 import {
   editProjectMenuItem,
   projectCategory,
   projectMenuItem
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
-import { fields } from "./edit.json";
+import { projectErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 
@@ -70,9 +69,7 @@ export class EditComponent extends FormTemplate<Project> implements OnInit {
       router,
       projectKey,
       model => defaultSuccessMsg("updated", model.name),
-      (err: ApiErrorDetails) => {
-        return extendedErrorMsg(err, { name: value => `name ${value[0]}` });
-      }
+      projectErrorMsg
     );
   }
 

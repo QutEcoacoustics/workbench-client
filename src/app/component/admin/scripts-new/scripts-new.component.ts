@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -18,6 +18,9 @@ import {
 import { adminScriptsMenuItemActions } from "../scripts/scripts.component";
 import { fields } from "./new.json";
 
+/**
+ * New Scripts Component
+ */
 @Page({
   category: adminScriptsCategory,
   menus: {
@@ -44,8 +47,7 @@ import { fields } from "./new.json";
     </app-form>
   `
 })
-export class AdminScriptsNewComponent extends FormTemplate<Script>
-  implements OnInit {
+export class AdminScriptsNewComponent extends FormTemplate<Script> {
   public fields = fields;
 
   constructor(
