@@ -20,8 +20,8 @@ import {
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../project.json";
 import { EditComponent } from "./edit.component";
-import { fields } from "./edit.json";
 
 describe("ProjectsEditComponent", () => {
   let api: ProjectsService;

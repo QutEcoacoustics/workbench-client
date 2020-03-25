@@ -81,6 +81,10 @@ export class LoginComponent extends FormTemplate<LoginDetails>
   ngOnInit() {
     super.ngOnInit();
 
+    if (this.api.isLoggedIn()) {
+      this.notifications.error("You are already logged in.");
+    }
+
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
     const navigationId = (this.location.getState() as any).navigationId;

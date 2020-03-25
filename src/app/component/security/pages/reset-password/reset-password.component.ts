@@ -31,9 +31,10 @@ import { fields } from "./reset-password.json";
   template: `
     <app-wip>
       <app-form
-        [schema]="schema"
-        [title]="'Forgot your password?'"
-        [submitLabel]="'Send me reset password instructions'"
+        title="Forgot your password?"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Send me reset password instructions"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -42,8 +43,9 @@ import { fields } from "./reset-password.json";
 })
 export class ResetPasswordComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  schema = { model: {}, fields };
-  loading: boolean;
+  public model = {};
+  public fields = fields;
+  public loading: boolean;
 
   constructor() {
     super();

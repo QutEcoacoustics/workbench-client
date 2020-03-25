@@ -74,7 +74,11 @@ describe("WithFormCheck", () => {
     selector: "app-testing",
     template: `
       <div>
-        <app-form *ngFor="let schema of schemas" [schema]="schema"></app-form>
+        <app-form
+          *ngFor="let schema of schemas"
+          [model]="schema.model"
+          [fields]="schema.fields"
+        ></app-form>
       </div>
     `
   })

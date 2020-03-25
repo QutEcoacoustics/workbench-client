@@ -21,7 +21,6 @@ import {
   MockBawApiService,
   MockModel
 } from "./services/baw-api/mock/baseApiMock.service";
-import { MockReadonlyApiService } from "./services/baw-api/mock/readonlyApiMock.service";
 import { MockSecurityService } from "./services/baw-api/mock/securityMock.service";
 import { MockShowApiService } from "./services/baw-api/mock/showApiMock.service";
 import { MockStandardApiService } from "./services/baw-api/mock/standardApiMock.service";
@@ -72,7 +71,7 @@ export const testBawServices = [
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
-  { provide: AccountService, useClass: MockReadonlyApiService },
+  { provide: AccountService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },

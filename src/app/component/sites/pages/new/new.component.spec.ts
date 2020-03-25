@@ -22,8 +22,8 @@ import {
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../site.json";
 import { NewComponent } from "./new.component";
-import { fields } from "./new.json";
 
 describe("SitesNewComponent", () => {
   let api: SitesService;

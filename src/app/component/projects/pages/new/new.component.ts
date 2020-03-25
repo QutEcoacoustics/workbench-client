@@ -32,6 +32,7 @@ import { projectsMenuItemActions } from "../list/list.component";
   selector: "app-projects-new",
   template: `
     <app-form
+      *ngIf="!failure"
       title="New Project"
       [model]="model"
       [fields]="fields"

@@ -16,10 +16,11 @@ import { fields } from "./register.json";
   template: `
     <app-wip>
       <app-form
-        [schema]="schema"
-        [size]="'small'"
-        [title]="'Register'"
-        [submitLabel]="'Register'"
+        title="Register"
+        size="small"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Register"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -27,7 +28,8 @@ import { fields } from "./register.json";
   `
 })
 export class RegisterComponent extends PageComponent implements OnInit {
-  public schema = { model: {}, fields };
+  public model = {};
+  public fields = fields;
   public loading: boolean;
 
   constructor(
