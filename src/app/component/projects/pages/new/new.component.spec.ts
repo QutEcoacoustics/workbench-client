@@ -4,7 +4,7 @@ import {
   flush,
   TestBed
 } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -13,7 +13,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import {
   getInputs,
   inputValue,
@@ -34,7 +34,13 @@ describe("ProjectsNewComponent", () => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute()
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);

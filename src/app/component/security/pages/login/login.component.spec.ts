@@ -46,11 +46,7 @@ describe("LoginComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            undefined,
-            undefined,
-            redirect ? { redirect } : undefined
-          )
+          useClass: mockActivatedRoute({}, {}, {}, redirect ? { redirect } : {})
         }
       ]
     }).compileComponents();

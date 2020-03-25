@@ -70,7 +70,7 @@ describe("MenuComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(data, { attribute: 10 })
+          useClass: mockActivatedRoute({}, data, { attribute: 10 })
         }
       ]
     }).compileComponents();

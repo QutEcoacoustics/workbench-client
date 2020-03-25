@@ -6,6 +6,8 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { SiteCardComponent } from "../../site-card/site-card.component";
 import { DetailsComponent } from "./details.component";
@@ -30,16 +32,22 @@ describe("ProjectDetailsComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            project: {
-              model: project,
-              error: projectError
+          useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show,
+              sites: siteResolvers.list
             },
-            sites: {
-              model: sites,
-              error: sitesError
+            {
+              project: {
+                model: project,
+                error: projectError
+              },
+              sites: {
+                model: sites,
+                error: sitesError
+              }
             }
-          })
+          )
         }
       ]
     }).compileComponents();

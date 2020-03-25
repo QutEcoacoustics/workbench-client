@@ -81,20 +81,20 @@ export const testBawServices = [
 
 /**
  * Create a mock ActivatedRoute class
+ * @param resolvers Activated Route Data Resolvers
  * @param data Activated Route Data
  * @param params Activated Route Params
  * @param queryParams Activated Route Query Params
  */
 export function mockActivatedRoute(
-  data: {
-    [key: string]: ResolvedModel;
-  } = {},
+  resolvers: { [key: string]: string } = {},
+  data: { [key: string]: ResolvedModel } = {},
   params: { [key: string]: string | number } = {},
   queryParams: Params = {}
 ) {
   return class MockActivatedRoute {
-    public snapshot = { data, params, queryParams };
-    public data = new BehaviorSubject<any>(data);
+    public snapshot = { data: { resolvers, ...data }, params, queryParams };
+    public data = new BehaviorSubject<any>({ resolvers, ...data });
     public params = new BehaviorSubject<any>(params);
     public queryParams = new BehaviorSubject<Params>(queryParams);
   };
