@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Script } from "src/app/models/Script";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ScriptsService } from "src/app/services/baw-api/scripts.service";
 import {
   adminNewScriptsMenuItem,
@@ -33,48 +33,33 @@ import { fields } from "./new.json";
   selector: "app-scripts-new",
   template: `
     <app-form
+      *ngIf="!failure"
       title="New Script"
       submitLabel="New Script"
-      [schema]="schema"
+      [model]="model"
+      [fields]="fields"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     >
     </app-form>
   `
 })
-export class AdminScriptsNewComponent extends WithFormCheck(PageComponent)
+export class AdminScriptsNewComponent extends FormTemplate<Script>
   implements OnInit {
-  public schema = { model: {}, fields };
-  public loading: boolean;
+  public fields = fields;
 
   constructor(
     private api: ScriptsService,
-    private router: Router,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(notifications, route, router, undefined, model =>
+      defaultSuccessMsg("created", model.name)
+    );
   }
 
-  ngOnInit(): void {
-    this.schema.model["executableSettingsMediaType"] = "text/plain";
-  }
-
-  public submit($event) {
-    this.loading = true;
-
-    this.api
-      .create(new Script($event))
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        script => {
-          this.resetForms();
-          this.notification.success("Script was successfully created.");
-          this.router.navigateByUrl(script.redirectPath());
-        },
-        (err: ApiErrorDetails) => {
-          this.notification.error(err.message);
-          this.loading = false;
-        }
-      );
+  protected apiAction(model: Partial<Script>) {
+    return this.api.create(new Script(model));
   }
 }

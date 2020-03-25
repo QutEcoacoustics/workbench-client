@@ -70,7 +70,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, siteKey, model =>
-      defaultSuccessMsg(model.name)
+      defaultSuccessMsg("updated", model.name)
     );
   }
 

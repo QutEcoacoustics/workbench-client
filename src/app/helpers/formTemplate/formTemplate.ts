@@ -54,7 +54,7 @@ export abstract class FormTemplate<M extends AbstractModel>
     protected router: Router,
     private modelKey: string,
     private successMsg: (model: M) => string = model =>
-      defaultSuccessMsg(model.id.toString()),
+      defaultSuccessMsg("updated", model.id.toString()),
     private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg
   ) {
     super();
@@ -124,8 +124,11 @@ export abstract class FormTemplate<M extends AbstractModel>
  * Default success message on form submission
  * @param name Model name
  */
-export function defaultSuccessMsg(name: string) {
-  return "Successfully updated " + name;
+export function defaultSuccessMsg(
+  action: "created" | "updated" | "destroyed",
+  name: string
+) {
+  return `Successfully ${action} ${name}`;
 }
 
 /**

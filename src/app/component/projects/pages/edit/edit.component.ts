@@ -69,7 +69,7 @@ export class EditComponent extends FormTemplate<Project> implements OnInit {
       route,
       router,
       projectKey,
-      model => defaultSuccessMsg(model.name),
+      model => defaultSuccessMsg("updated", model.name),
       (err: ApiErrorDetails) => {
         return extendedErrorMsg(err, { name: value => `name ${value[0]}` });
       }
