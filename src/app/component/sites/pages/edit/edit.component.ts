@@ -16,13 +16,13 @@ import {
   siteResolvers,
   SitesService
 } from "src/app/services/baw-api/sites.service";
+import { fields } from "../../site.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
-import { fields } from "../../site.json";
 
 const projectKey = "project";
 const siteKey = "site";

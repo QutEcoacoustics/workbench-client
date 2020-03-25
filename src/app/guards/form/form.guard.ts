@@ -23,7 +23,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     /**
      * Determine if any forms have been touched
      */
-    isFormTouched(): boolean {
+    public isFormTouched(): boolean {
       return this.appForms
         ? this.appForms.some(appForm => appForm.form.dirty)
         : false;
@@ -32,7 +32,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     /**
      * Reset all forms on the page, this should be used before navigation
      */
-    resetForms() {
+    public resetForms() {
       if (!this.appForms) {
         return;
       }

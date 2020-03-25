@@ -54,7 +54,7 @@ const siteKey = "site";
       btnColor="btn-danger"
       submitLabel="Delete"
       [submitLoading]="loading"
-      (onSubmit)="submit()"
+      (onSubmit)="submit($event)"
     ></app-form>
   `
 })

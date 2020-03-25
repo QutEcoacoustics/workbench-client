@@ -51,7 +51,7 @@ const projectKey = "project";
       btnColor="btn-danger"
       submitLabel="Delete"
       [submitLoading]="loading"
-      (onSubmit)="submit()"
+      (onSubmit)="submit($event)"
     ></app-form>
   `
 })
