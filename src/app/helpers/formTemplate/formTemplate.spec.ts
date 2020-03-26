@@ -1,3 +1,10 @@
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  defaultErrorMsg,
+  defaultSuccessMsg,
+  extendedErrorMsg
+} from "./formTemplate";
+
 xdescribe("formTemplate", () => {
   describe("resolvers", () => {
     it("should handle no resolvers", () => {});
@@ -45,19 +52,82 @@ xdescribe("formTemplate", () => {
   });
 });
 
-xdescribe("defaultSuccessMsg", () => {
-  it("should handle model name", () => {});
-  it("should handle created action", () => {});
-  it("should handle updated action", () => {});
-  it("should handle destroyed action", () => {});
+describe("defaultSuccessMsg", () => {
+  it("should handle model name", () => {
+    expect(defaultSuccessMsg("created", "custom name")).toBe(
+      "Successfully created custom name"
+    );
+  });
+
+  it("should handle created action", () => {
+    expect(defaultSuccessMsg("created", "name")).toBe(
+      "Successfully created name"
+    );
+  });
+
+  it("should handle updated action", () => {
+    expect(defaultSuccessMsg("updated", "name")).toBe(
+      "Successfully updated name"
+    );
+  });
+
+  it("should handle destroyed action", () => {
+    expect(defaultSuccessMsg("destroyed", "name")).toBe(
+      "Successfully destroyed name"
+    );
+  });
 });
 
-xdescribe("defaultErrorMsg", () => {
-  it("should return error message", () => {});
+describe("defaultErrorMsg", () => {
+  it("should return error message", () => {
+    const apiError: ApiErrorDetails = {
+      status: 400,
+      message: "Custom Message"
+    } as ApiErrorDetails;
+
+    expect(defaultErrorMsg(apiError)).toBe("Custom Message");
+  });
 });
 
-xdescribe("extendedErrorMsg", () => {
-  it("should return error message", () => {});
-  it("should return error message with single info field", () => {});
-  it("should return error message with multiple info fields", () => {});
+describe("extendedErrorMsg", () => {
+  it("should return error message", () => {
+    const apiError: ApiErrorDetails = {
+      status: 400,
+      message: "Custom Message"
+    } as ApiErrorDetails;
+
+    expect(extendedErrorMsg(apiError, {})).toBe("Custom Message");
+  });
+
+  it("should return error message with single info field", () => {
+    const apiError: ApiErrorDetails = {
+      status: 400,
+      message: "Custom Message",
+      info: {
+        name: "this name already exists"
+      }
+    } as ApiErrorDetails;
+
+    expect(
+      extendedErrorMsg(apiError, { name: value => "custom message: " + value })
+    ).toBe("Custom Message<br />custom message: this name already exists");
+  });
+
+  it("should return error message with multiple info fields", () => {
+    const apiError: ApiErrorDetails = {
+      status: 400,
+      message: "Custom Message",
+      info: {
+        name: "this name already exists",
+        foo: "bar"
+      }
+    } as ApiErrorDetails;
+
+    expect(
+      extendedErrorMsg(apiError, {
+        name: () => "custom message",
+        foo: value => value
+      })
+    ).toBe("Custom Message<br />custom message<br />bar");
+  });
 });
