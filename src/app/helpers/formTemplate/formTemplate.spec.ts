@@ -204,10 +204,54 @@ describe("formTemplate", () => {
     });
   });
 
-  xdescribe("hasFormCheck", () => {
-    it("should extend WithFormCheck", () => {});
-    it("should disable isFormTouched", () => {});
-    it("should disable resetForms", () => {});
+  describe("hasFormCheck", () => {
+    it("should extend WithFormCheck", () => {
+      configureTestingModule();
+      fixture.detectChanges();
+
+      expect(component.isFormTouched).toBeTruthy();
+      expect(component.resetForms).toBeTruthy();
+    });
+
+    it("should have isFormTouched when hasFormCheck is true", () => {
+      configureTestingModule();
+      component["hasFormCheck"] = true;
+      component.appForms = [{ form: { dirty: true } }] as any;
+      fixture.detectChanges();
+
+      expect(component.isFormTouched()).toBeTruthy();
+    });
+
+    it("should disable isFormTouched when hasFormCheck is false", () => {
+      configureTestingModule();
+      component["hasFormCheck"] = false;
+      component.appForms = [{ form: { dirty: true } }] as any;
+      fixture.detectChanges();
+
+      expect(component.isFormTouched()).toBeFalsy();
+    });
+
+    it("should have resetForms when hasFormCheck is true", () => {
+      const spy = jasmine.createSpy();
+      configureTestingModule();
+      component["hasFormCheck"] = true;
+      component.appForms = [{ form: { markAsPristine: spy } }] as any;
+      fixture.detectChanges();
+
+      component.resetForms();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should disable resetForms when hasFormCheck is false", () => {
+      const spy = jasmine.createSpy();
+      configureTestingModule();
+      component["hasFormCheck"] = false;
+      component.appForms = [{ form: { markAsPristine: spy } }] as any;
+      fixture.detectChanges();
+
+      component.resetForms();
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   xdescribe("submit", () => {
