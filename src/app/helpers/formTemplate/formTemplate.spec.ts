@@ -147,12 +147,61 @@ describe("formTemplate", () => {
     });
   });
 
-  xdescribe("modelKey", () => {
-    it("should handle undefined modelKey", () => {});
-    it("should find model with single resolver", () => {});
-    it("should find model with multiple resolvers", () => {});
-    it("should handle failure to find model", () => {});
-    it("should handle failure to find resolvers", () => {});
+  describe("modelKey", () => {
+    it("should handle undefined modelKey", () => {
+      configureTestingModule();
+      component["modelKey"] = undefined;
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+      expect(component.model).toEqual({} as MockModel);
+    });
+
+    it("should find model with single resolver", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver" },
+        { mockModel: makeResolvedModel(defaultModel) }
+      );
+      component["modelKey"] = "mockModel";
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+      expect(component.model).toBe(defaultModel);
+    });
+
+    it("should find model with multiple resolvers", () => {
+      configureTestingModule(
+        { mockModels: "MockModelsResolver", mockModel: "MockModelResolver" },
+        {
+          mockModels: makeResolvedModel([defaultModel]),
+          mockModel: makeResolvedModel(defaultModel)
+        }
+      );
+      component["modelKey"] = "mockModel";
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+      expect(component.model).toBe(defaultModel);
+    });
+
+    it("should handle failure to find model", () => {
+      configureTestingModule(
+        { mockModels: "MockModelsResolver" },
+        { mockModels: makeResolvedModel([defaultModel]) }
+      );
+      component["modelKey"] = "mockModel";
+      fixture.detectChanges();
+
+      expect(component.failure).toBeTruthy();
+    });
+
+    it("should handle failure to find resolver", () => {
+      configureTestingModule({ mockModel: "MockModelsResolver" });
+      component["modelKey"] = "mockModel";
+      fixture.detectChanges();
+
+      expect(component.failure).toBeTruthy();
+    });
   });
 
   xdescribe("hasFormCheck", () => {
