@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BehaviorSubject } from "rxjs";
+import { Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
@@ -9,7 +10,6 @@ import { AccountService } from "src/app/services/baw-api/account.service";
 import { testBawServices } from "src/app/test.helper";
 import { MenuModule } from "../menu/menu.module";
 import { UserBadgesComponent } from "./user-badges.component";
-import { Id } from "src/app/interfaces/apiInterfaces";
 
 describe("UserBadgesComponent", () => {
   const defaultId: Id = 1;

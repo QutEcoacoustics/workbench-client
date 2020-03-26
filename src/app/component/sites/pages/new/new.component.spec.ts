@@ -118,12 +118,12 @@ describe("SitesNewComponent", () => {
       ).toBeFalsy();
     });
 
-    it("should contain five inputs", () => {
+    it("should contain six inputs", () => {
       configureTestingModule(defaultProject, undefined);
 
       expect(
         fixture.nativeElement.querySelectorAll("form formly-field").length
-      ).toBe(6); // FieldGroup adds a formly-field
+      ).toBe(7); // FieldGroup adds a formly-field
     });
 
     /* Site Name Input */
