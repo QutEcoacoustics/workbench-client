@@ -33,7 +33,7 @@ export abstract class FormTemplate<M extends AbstractModel>
   /**
    * Formly fields
    */
-  public fields: FormlyFieldConfig[];
+  public fields: FormlyFieldConfig[] = [];
   /**
    * Success Message
    */

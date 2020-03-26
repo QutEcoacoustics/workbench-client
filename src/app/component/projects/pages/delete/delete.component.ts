@@ -56,7 +56,6 @@ const projectKey = "project";
   `
 })
 export class DeleteComponent extends FormTemplate<Project> implements OnInit {
-  public fields = [];
   public title: string;
 
   constructor(

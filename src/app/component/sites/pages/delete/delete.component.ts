@@ -59,7 +59,6 @@ const siteKey = "site";
   `
 })
 export class DeleteComponent extends FormTemplate<Site> implements OnInit {
-  public fields = [];
   public title: string;
 
   constructor(
