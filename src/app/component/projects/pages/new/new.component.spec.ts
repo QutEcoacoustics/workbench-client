@@ -154,7 +154,7 @@ describe("ProjectsNewComponent", () => {
       submitForm(fixture);
 
       expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved: name has already been taken"
+        "Record could not be saved<br />name has already been taken"
       );
     }));
 
@@ -253,17 +253,17 @@ describe("ProjectsNewComponent", () => {
         return new BehaviorSubject<Project>(
           new Project({
             id: 1,
-            name: "Test Project"
+            name: "Custom Project"
           })
         );
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[0], "input", "Test Project");
+      inputValue(inputs[0], "input", "Custom Project");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Project was successfully created."
+        "Successfully created Custom Project"
       );
     }));
 

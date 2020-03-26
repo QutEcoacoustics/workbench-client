@@ -286,7 +286,7 @@ describe("LoginComponent", () => {
       submit();
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Successfully signed in."
+        "Successfully signed in"
       );
     }));
   });

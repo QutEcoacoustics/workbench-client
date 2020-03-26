@@ -19,6 +19,7 @@ import {
   theirProfileMenuItem
 } from "../../profile.menus";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
+import { fields } from "./their-edit.json";
 
 const accountKey = "account";
 
@@ -53,6 +54,7 @@ const accountKey = "account";
   `
 })
 export class TheirEditComponent extends FormTemplate<User> implements OnInit {
+  public fields = fields;
   public title: string;
 
   constructor(

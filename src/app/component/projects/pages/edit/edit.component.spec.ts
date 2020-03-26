@@ -262,7 +262,7 @@ describe("ProjectsEditComponent", () => {
       submitForm(fixture);
 
       expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved: name has already been taken"
+        "Record could not be saved<br />name has already been taken"
       );
     }));
 
@@ -340,7 +340,11 @@ describe("ProjectsEditComponent", () => {
     xit("should call update with image", fakeAsync(() => {}));
 
     it("should call update on submit", fakeAsync(() => {
-      configureTestingModule(defaultProject, undefined);
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
       spyOn(api, "update").and.callFake(() => {
         return new BehaviorSubject<Project>(
           new Project({
@@ -351,11 +355,11 @@ describe("ProjectsEditComponent", () => {
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[nameIndex], "input", "Test Project");
+      inputValue(inputs[nameIndex], "input", "Custom Project");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Project was successfully updated."
+        "Successfully updated Custom Project"
       );
     }));
 

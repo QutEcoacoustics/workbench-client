@@ -167,13 +167,6 @@ export class SessionUser extends User implements SessionUserInterface {
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-  public readonly timezoneInformation?: TimezoneInformation;
-  public readonly imageUrls?: ImageURL[];
-  public readonly lastSeenAt?: DateTimeTimezone;
-  public readonly preferences?: any;
-  public readonly isConfirmed?: boolean;
-  public readonly rolesMask?: number;
-  public readonly rolesMaskNames?: string[];
 
   /**
    * Constructor

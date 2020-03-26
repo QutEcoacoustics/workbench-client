@@ -137,11 +137,11 @@ describe("SitesEditComponent", () => {
       ).toBeFalsy();
     });
 
-    it("should contain six inputs", () => {
+    it("should contain five inputs", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       expect(
         fixture.nativeElement.querySelectorAll("form formly-field").length
-      ).toBe(7); // FieldGroup adds a formly-field
+      ).toBe(6); // FieldGroup adds a formly-field
     });
 
     it("should display form with site name in title", fakeAsync(() => {
@@ -250,7 +250,7 @@ describe("SitesEditComponent", () => {
     );
 
     /* Site Timezone Input */
-    testFormlyField(
+    /* testFormlyField(
       "Site Timezone Input",
       () => {
         configureTestingModule(
@@ -265,7 +265,7 @@ describe("SitesEditComponent", () => {
       "timezone",
       false,
       "Time Zone"
-    );
+    ); */
 
     // TODO Add input validation for custom location logic
 
@@ -428,7 +428,11 @@ describe("SitesEditComponent", () => {
     xit("should call update with all inputs", fakeAsync(() => {}));
 
     it("should create success notification on submit", fakeAsync(() => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      const site = new Site({
+        id: 1,
+        name: "Custom Site"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
       spyOn(api, "update").and.callFake(() => {
         return new BehaviorSubject<Site>(
           new Site({
@@ -443,7 +447,7 @@ describe("SitesEditComponent", () => {
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Site was successfully updated."
+        "Successfully updated Custom Site"
       );
     }));
 

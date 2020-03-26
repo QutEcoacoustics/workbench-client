@@ -118,12 +118,12 @@ describe("SitesNewComponent", () => {
       ).toBeFalsy();
     });
 
-    it("should contain three inputs", () => {
+    it("should contain five inputs", () => {
       configureTestingModule(defaultProject, undefined);
 
       expect(
         fixture.nativeElement.querySelectorAll("form formly-field").length
-      ).toBe(7);
+      ).toBe(6); // FieldGroup adds a formly-field
     });
 
     /* Site Name Input */
@@ -195,7 +195,7 @@ describe("SitesNewComponent", () => {
     );
 
     /* Site Timezone Input */
-    testFormlyField(
+    /* testFormlyField(
       "Site Timezone Input",
       () => {
         configureTestingModule(defaultProject, undefined);
@@ -205,7 +205,7 @@ describe("SitesNewComponent", () => {
       "timezone",
       false,
       "Time Zone"
-    );
+    ); */
 
     // TODO Add input validation for custom location logic
   });
@@ -379,17 +379,17 @@ describe("SitesNewComponent", () => {
         return new BehaviorSubject<Site>(
           new Site({
             id: 1,
-            name: "Test Site"
+            name: "Custom Site"
           })
         );
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[nameIndex], "input", "Custom Site");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Site was successfully created."
+        "Successfully created Custom Site"
       );
     }));
 

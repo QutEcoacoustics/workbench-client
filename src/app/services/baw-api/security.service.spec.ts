@@ -158,30 +158,28 @@ describe("SecurityService", () => {
 
     // TODO Update this test
     it("store user", fakeAsync(() => {
-      const user = new User({
+      const userDetails = {
         id: 1,
         userName: "username",
         isConfirmed: false,
         lastSeenAt: "1970-01-01T00:00:00.000+10:00",
         rolesMask: 2,
         rolesMaskNames: ["user"]
-      });
-      const session = new SessionUser({
+      };
+      const authDetails = {
         authToken: "xxxxxxxxxxxxxxxx",
         userName: "username"
-      });
+      };
+
+      const user = new User(userDetails);
+      const session = new SessionUser(authDetails);
       createResponse("/security/", defaultLoginDetails, session, user);
       service.signIn(defaultLoginDetails).subscribe(() => {}, shouldNotFail);
 
       expect(service.getLocalUser()).toEqual(
         new SessionUser({
-          id: 1,
-          userName: "username",
-          authToken: "xxxxxxxxxxxxxxxx",
-          isConfirmed: false,
-          lastSeenAt: "1970-01-01T00:00:00.000+10:00",
-          rolesMask: 2,
-          rolesMaskNames: ["user"]
+          ...userDetails,
+          ...authDetails
         })
       );
     }));

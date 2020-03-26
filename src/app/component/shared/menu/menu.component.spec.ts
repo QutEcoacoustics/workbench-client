@@ -1033,7 +1033,7 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([link]);
       fixture.detectChanges();
 
-      expect(link.predicate).toHaveBeenCalledWith(null, {});
+      expect(link.predicate).toHaveBeenCalledWith(null, { resolvers: {} });
     });
 
     it("should call predicate with user with authenticated", () => {
@@ -1053,11 +1053,14 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([link]);
       fixture.detectChanges();
 
-      expect(link.predicate).toHaveBeenCalledWith(sessionUser, {});
+      expect(link.predicate).toHaveBeenCalledWith(sessionUser, {
+        resolvers: {}
+      });
     });
 
     it("should call predicate with page data when unauthenticated", () => {
       const pageData = {
+        resolvers: {},
         value1: 1,
         value2: 2
       };
@@ -1082,6 +1085,7 @@ describe("MenuComponent", () => {
 
     it("should call predicate with page data when authenticated", () => {
       const pageData = {
+        resolvers: {},
         value1: 1,
         value2: 2
       };
