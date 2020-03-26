@@ -1,20 +1,153 @@
+import { Component } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { Resolvers } from "src/app/interfaces/menusInterfaces";
+import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import {
+  mockActivatedRoute,
+  MockData,
+  MockResolvers
+} from "src/app/test.helper";
 import {
   defaultErrorMsg,
   defaultSuccessMsg,
-  extendedErrorMsg
+  extendedErrorMsg,
+  FormTemplate
 } from "./formTemplate";
 
-xdescribe("formTemplate", () => {
-  describe("resolvers", () => {
-    it("should handle no resolvers", () => {});
-    it("should handle single resolver", () => {});
-    it("should handle multiple resolvers", () => {});
-    it("should handle single resolver failure", () => {});
-    it("should handle any resolver failure", () => {});
+class MockModel extends AbstractModel {
+  public redirectPath(): string {
+    return "";
+  }
+  public toJSON(): object {
+    return this;
+  }
+}
+
+@Component({
+  selector: "app-test-component",
+  template: `
+    <div></div>
+  `
+})
+class MockComponent extends FormTemplate<MockModel> {
+  constructor(
+    protected notifications: ToastrService,
+    protected route: ActivatedRoute,
+    protected router: Router
+  ) {
+    super(notifications, route, router, undefined);
+  }
+
+  protected apiAction(model: Partial<MockModel>) {
+    return new BehaviorSubject<MockModel>(new MockModel(model));
+  }
+}
+
+describe("formTemplate", () => {
+  let component: MockComponent;
+  let fixture: ComponentFixture<MockComponent>;
+  let defaultError: ApiErrorDetails;
+  let defaultModel: MockModel;
+  let defaultResolvers: Resolvers;
+
+  function configureTestingModule(
+    resolvers: MockResolvers = {},
+    data: MockData = {}
+  ) {
+    TestBed.configureTestingModule({
+      declarations: [MockComponent],
+      imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(resolvers, data)
+        }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MockComponent);
+    component = fixture.componentInstance;
+  }
+
+  function makeResolvedModel(
+    model?: AbstractModel | AbstractModel[],
+    error?: ApiErrorDetails
+  ): ResolvedModel {
+    return model ? { model } : { error };
+  }
+
+  beforeEach(() => {
+    defaultError = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
+    defaultModel = new MockModel({ id: 1 });
+    defaultResolvers = { mockModel: "MockModelResolver" };
   });
 
-  describe("modelKey", () => {
+  describe("resolvers", () => {
+    it("should handle no resolvers", () => {
+      configureTestingModule();
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+    });
+
+    it("should handle single resolver", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver" },
+        { mockModel: makeResolvedModel(defaultModel) }
+      );
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+    });
+
+    it("should handle multiple resolvers", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
+        {
+          mockModel: makeResolvedModel(defaultModel),
+          mockModels: makeResolvedModel([defaultModel])
+        }
+      );
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+    });
+
+    it("should handle single resolver failure", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver" },
+        {
+          mockModel: makeResolvedModel(undefined, defaultError)
+        }
+      );
+      fixture.detectChanges();
+
+      expect(component.failure).toBeTruthy();
+    });
+
+    it("should handle any resolver failure", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
+        {
+          mockModel: makeResolvedModel(defaultModel),
+          mockModels: makeResolvedModel(undefined, defaultError)
+        }
+      );
+      fixture.detectChanges();
+
+      expect(component.failure).toBeTruthy();
+    });
+  });
+
+  xdescribe("modelKey", () => {
     it("should handle undefined modelKey", () => {});
     it("should find model with single resolver", () => {});
     it("should find model with multiple resolvers", () => {});
@@ -22,29 +155,29 @@ xdescribe("formTemplate", () => {
     it("should handle failure to find resolvers", () => {});
   });
 
-  describe("hasFormCheck", () => {
+  xdescribe("hasFormCheck", () => {
     it("should extend WithFormCheck", () => {});
     it("should disable isFormTouched", () => {});
     it("should disable resetForms", () => {});
   });
 
-  describe("submit", () => {
+  xdescribe("submit", () => {
     it("should call apiAction on submit", () => {});
     it("should reset form on successful submission", () => {});
     it("should redirect user on successful submission", () => {});
   });
 
-  describe("successMessage", () => {
+  xdescribe("successMessage", () => {
     it("should handle update form success message", () => {});
     it("should handle new form success message", () => {});
   });
 
-  describe("notifications", () => {
+  xdescribe("notifications", () => {
     it("should display notification on successful submission", () => {});
     it("should display notification on failed submission", () => {});
   });
 
-  describe("loading", () => {
+  xdescribe("loading", () => {
     it("should be false initially", () => {});
     it("should be set true on submit", () => {});
     it("should be set true on successful submission", () => {});
