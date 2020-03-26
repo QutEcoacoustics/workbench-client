@@ -68,6 +68,7 @@ export class UserBadgesComponent extends WithUnsubscribe()
     this.generateBadges();
   }
 
+  // TODO If user already being searched for, don't re-request
   generateBadges() {
     if (this.model.creatorId) {
       this.created = { label: "Created By" };
