@@ -156,7 +156,6 @@ describe("SecurityService", () => {
       }, shouldNotFail);
     }));
 
-    // TODO Update this test
     it("store user", fakeAsync(() => {
       const userDetails = {
         id: 1,
@@ -178,8 +177,8 @@ describe("SecurityService", () => {
 
       expect(service.getLocalUser()).toEqual(
         new SessionUser({
-          ...userDetails,
-          ...authDetails
+          ...authDetails,
+          ...userDetails
         })
       );
     }));

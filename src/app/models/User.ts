@@ -123,7 +123,7 @@ export class User extends AbstractModel implements UserInterface {
       rolesMaskNames: this.rolesMaskNames,
       timezoneInformation: this.timezoneInformation,
       imageUrls: this.imageUrls,
-      lastSeenAt: this.lastSeenAt ? this.lastSeenAt.toString() : undefined,
+      lastSeenAt: this.lastSeenAt?.toISO(),
       preferences: this.preferences,
       isConfirmed: this.isConfirmed
     };

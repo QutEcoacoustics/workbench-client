@@ -83,7 +83,8 @@ export class SecurityService extends BawApiService<SessionUser> {
 
         return this.userService.show().pipe(
           map(user => {
-            return new SessionUser({ ...user, ...sessionUser });
+            // Order is important, ...sessionUser must come first
+            return new SessionUser({ ...sessionUser, ...user });
           })
         );
       }),
