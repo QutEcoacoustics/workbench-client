@@ -19,10 +19,10 @@ import { fields } from "./contact-us.json";
   template: `
     <app-wip>
       <app-form
-        [schema]="schema"
-        [title]="'Contact Us'"
-        [error]="error"
-        [submitLabel]="'Submit'"
+        title="Contact Us"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Submit"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -31,17 +31,15 @@ import { fields } from "./contact-us.json";
 })
 export class ContactUsComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  schema = { model: {}, fields };
-  error: string;
-  loading: boolean;
+  public model = {};
+  public fields = fields;
+  public loading: boolean;
 
   constructor() {
     super();
   }
 
-  ngOnInit() {
-    this.loading = false;
-  }
+  ngOnInit() {}
 
   /**
    * Form submission

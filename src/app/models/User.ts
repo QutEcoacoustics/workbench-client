@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import {
   myAccountMenuItem,
   theirProfileMenuItem
@@ -6,6 +5,7 @@ import {
 import {
   AuthToken,
   DateTimeTimezone,
+  dateTimeTimezone,
   Id,
   ImageSizes,
   ImageURL,
@@ -48,12 +48,7 @@ export class User extends AbstractModel implements UserInterface {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-
-    if (user.lastSeenAt) {
-      this.lastSeenAt = DateTime.fromISO(user.lastSeenAt as string, {
-        setZone: true
-      });
-    }
+    this.lastSeenAt = dateTimeTimezone(user.lastSeenAt as string);
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map(imageUrl => {
@@ -128,7 +123,7 @@ export class User extends AbstractModel implements UserInterface {
       rolesMaskNames: this.rolesMaskNames,
       timezoneInformation: this.timezoneInformation,
       imageUrls: this.imageUrls,
-      lastSeenAt: this.lastSeenAt ? this.lastSeenAt.toString() : undefined,
+      lastSeenAt: this.lastSeenAt?.toISO(),
       preferences: this.preferences,
       isConfirmed: this.isConfirmed
     };
@@ -172,13 +167,6 @@ export class SessionUser extends User implements SessionUserInterface {
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-  public readonly timezoneInformation?: TimezoneInformation;
-  public readonly imageUrls?: ImageURL[];
-  public readonly lastSeenAt?: DateTimeTimezone;
-  public readonly preferences?: any;
-  public readonly isConfirmed?: boolean;
-  public readonly rolesMask?: number;
-  public readonly rolesMaskNames?: string[];
 
   /**
    * Constructor

@@ -13,7 +13,11 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import {
+  siteResolvers,
+  SitesService
+} from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import {
   getInputs,
@@ -21,8 +25,8 @@ import {
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../site.json";
 import { EditComponent } from "./edit.component";
-import { fields } from "./edit.json";
 
 describe("SitesEditComponent", () => {
   let api: SitesService;
@@ -54,16 +58,22 @@ describe("SitesEditComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            project: {
-              model: project,
-              error: projectError
+          useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show,
+              site: siteResolvers.show
             },
-            site: {
-              model: site,
-              error: siteError
+            {
+              project: {
+                model: project,
+                error: projectError
+              },
+              site: {
+                model: site,
+                error: siteError
+              }
             }
-          })
+          )
         }
       ]
     }).compileComponents();
@@ -240,7 +250,7 @@ describe("SitesEditComponent", () => {
     );
 
     /* Site Timezone Input */
-    testFormlyField(
+    /* testFormlyField(
       "Site Timezone Input",
       () => {
         configureTestingModule(
@@ -255,7 +265,7 @@ describe("SitesEditComponent", () => {
       "timezone",
       false,
       "Time Zone"
-    );
+    ); */
 
     // TODO Add input validation for custom location logic
 
@@ -418,7 +428,11 @@ describe("SitesEditComponent", () => {
     xit("should call update with all inputs", fakeAsync(() => {}));
 
     it("should create success notification on submit", fakeAsync(() => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      const site = new Site({
+        id: 1,
+        name: "Custom Site"
+      });
+      configureTestingModule(defaultProject, undefined, site, undefined);
       spyOn(api, "update").and.callFake(() => {
         return new BehaviorSubject<Site>(
           new Site({
@@ -433,7 +447,7 @@ describe("SitesEditComponent", () => {
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Site was successfully updated."
+        "Successfully updated Custom Site"
       );
     }));
 

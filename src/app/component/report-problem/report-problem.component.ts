@@ -22,11 +22,11 @@ import {
   template: `
     <app-wip>
       <app-form
-        [schema]="schema"
-        [title]="'Report Problem'"
+        title="Report Problem"
         [subTitle]="subTitle"
-        [error]="error"
-        [submitLabel]="'Submit'"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Submit"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -35,19 +35,17 @@ import {
 })
 export class ReportProblemComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  schema = { model: {}, fields };
-  error: string;
-  loading: boolean;
-  subTitle: string;
+  public model = {};
+  public fields = fields;
+  public loading: boolean;
+  public subTitle: string;
 
   constructor() {
     super();
   }
 
   ngOnInit() {
-    this.loading = false;
-    this.subTitle = `
-    Complete the form below to report a problem.
+    this.subTitle = `Complete the form below to report a problem.
     Alternatively, we have a <a href='https://github.com/QutEcoacoustics/baw-server/issues'>Github Issues</a> page.`;
   }
 

@@ -83,7 +83,8 @@ export class SecurityService extends BawApiService<SessionUser> {
 
         return this.userService.show().pipe(
           map(user => {
-            return new SessionUser({ ...user, ...sessionUser });
+            // Order is important, ...sessionUser must come first
+            return new SessionUser({ ...sessionUser, ...user });
           })
         );
       }),
@@ -97,14 +98,15 @@ export class SecurityService extends BawApiService<SessionUser> {
 }
 
 export interface LoginDetailsInterface {
-  login: string;
-  password: string;
+  login?: string;
+  password?: string;
 }
 
 export class LoginDetails extends AbstractModel
   implements LoginDetailsInterface {
-  login: string;
-  password: string;
+  public readonly kind: "LoginDetails" = "LoginDetails";
+  public readonly login: string;
+  public readonly password: string;
 
   constructor(details: LoginDetailsInterface) {
     super(details);

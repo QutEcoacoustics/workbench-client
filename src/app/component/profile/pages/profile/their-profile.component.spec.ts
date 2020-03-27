@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { User } from "src/app/models/User";
+import { accountResolvers } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { TheirProfileComponent } from "./their-profile.component";
@@ -22,12 +23,17 @@ describe("TheirProfileComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            account: {
-              model: user,
-              error
+          useClass: mockActivatedRoute(
+            {
+              account: accountResolvers.show
+            },
+            {
+              account: {
+                model: user,
+                error
+              }
             }
-          })
+          )
         }
       ]
     }).compileComponents();

@@ -2,28 +2,27 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   siteResolvers,
   SitesService
 } from "src/app/services/baw-api/sites.service";
+import { fields } from "../../site.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
-import { fields } from "./edit.json";
 
 const projectKey = "project";
 const siteKey = "site";
@@ -47,77 +46,51 @@ const siteKey = "site";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <app-wip *ngIf="site">
+    <!-- Move ngIf to app-form when app-wip removed -->
+    <app-wip *ngIf="!failure">
       <app-form
-        [schema]="schema"
-        [title]="'Edit ' + site.name"
-        [submitLabel]="'Submit'"
+        [title]="title"
+        [model]="model"
+        [fields]="fields"
         [submitLoading]="loading"
+        submitLabel="Submit"
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
   `
 })
-export class EditComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-  public schema = { model: {}, fields };
-  public site: Site;
+export class EditComponent extends FormTemplate<Site> implements OnInit {
+  public fields = fields;
+  public title: string;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private api: SitesService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(notifications, route, router, siteKey, model =>
+      defaultSuccessMsg("updated", model.name)
+    );
   }
 
   ngOnInit() {
-    this.loading = false;
+    super.ngOnInit();
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
-
-    if (projectModel.error || siteModel.error) {
-      return;
+    if (!this.failure) {
+      this.title = `Edit ${this.model.name}`;
     }
-
-    this.project = projectModel.model;
-    this.site = siteModel.model;
-
-    this.schema.model["name"] = this.site.name;
-    this.schema.model["description"] = this.site.description;
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
+  public get project(): Project {
+    return this.models.project as Project;
+  }
 
-    const updatedSite = new Site({
-      id: this.site.id,
-      ...$event
-    });
+  protected redirectionPath(model: Site) {
+    return model.redirectPath(this.project);
+  }
 
-    this.api
-      .update(updatedSite, this.project)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () => {
-          this.resetForms();
-          this.notification.success("Site was successfully updated.");
-          this.router.navigateByUrl(this.site.redirectPath(this.project));
-        },
-        (err: ApiErrorDetails) => {
-          this.notification.error(err.message);
-          this.loading = false;
-        }
-      );
+  protected apiAction(model: Partial<Site>) {
+    return this.api.update(new Site(model), this.project);
   }
 }

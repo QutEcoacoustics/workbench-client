@@ -30,9 +30,10 @@ import { fields } from "./request.json";
     <app-wip>
       <app-form
         *ngIf="projects"
-        [schema]="schema"
-        [title]="'Request project access'"
-        [submitLabel]="'Submit request'"
+        title="Request project access"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Submit request"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -43,9 +44,10 @@ import { fields } from "./request.json";
 export class RequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public error: ApiErrorDetails;
+  public fields = fields;
   public loading: boolean;
+  public model = {};
   public projects: Project[];
-  public schema = { model: {}, fields };
 
   constructor(private api: ProjectsService) {
     super();
@@ -61,14 +63,12 @@ export class RequestComponent extends WithFormCheck(PageComponent)
       .subscribe(
         projects => {
           this.projects = projects;
-          this.schema.fields[0].templateOptions.options = projects.map(
-            project => {
-              return {
-                value: project.id,
-                label: project.name
-              };
-            }
-          );
+          this.fields[0].templateOptions.options = projects.map(project => {
+            return {
+              value: project.id,
+              label: project.name
+            };
+          });
         },
         (err: ApiErrorDetails) => {
           this.error = err;

@@ -5,7 +5,10 @@ import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { RequestComponent } from "./request.component";
 
@@ -27,12 +30,17 @@ describe("ProjectsRequestComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            project: {
-              model: project,
-              error: projectError
+          useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show
+            },
+            {
+              project: {
+                model: project,
+                error: projectError
+              }
             }
-          })
+          )
         }
       ]
     }).compileComponents();

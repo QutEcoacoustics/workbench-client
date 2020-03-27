@@ -25,8 +25,8 @@ import { fields as annotationFields } from "./download-annotations.json";
       <app-form
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
-        [schema]="annotationSchema"
-        [error]="error"
+        [model]="annotationModel"
+        [fields]="annotationFields"
         [submitLabel]="'Download Annotations'"
         [submitLoading]="annotationLoading"
         (onSubmit)="submitDownloadAnnotation($event)"
@@ -34,8 +34,8 @@ import { fields as annotationFields } from "./download-annotations.json";
       <app-form
         title="Custom Data Request"
         subTitle="Use this form to request a customized annotations list or other data related to the audio recordings on this website. You <strong>do not need</strong> to use this form if you need the standard <strong>annotations CSV</strong> download. "
-        [schema]="requestSchema"
-        [error]="error"
+        [model]="requestModel"
+        [fields]="requestFields"
         [submitLabel]="'Submit'"
         [submitLoading]="requestLoading"
         (onSubmit)="submitDataRequest($event)"
@@ -46,11 +46,12 @@ import { fields as annotationFields } from "./download-annotations.json";
 export class DataRequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public annotationLoading: boolean;
-  public annotationSchema = { model: {}, fields: annotationFields };
-  public error: string;
+  public annotationModel = {};
+  public annotationFields = annotationFields;
   public page: string;
   public requestLoading: boolean;
-  public requestSchema = { model: {}, fields: requestFields };
+  public requestModel = {};
+  public requestFields = requestFields;
 
   constructor(private env: AppConfigService) {
     super();
@@ -58,7 +59,6 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
 
   ngOnInit() {
     this.page = this.env.values.cms.downloadAnnotations;
-    this.requestLoading = false;
   }
 
   /**

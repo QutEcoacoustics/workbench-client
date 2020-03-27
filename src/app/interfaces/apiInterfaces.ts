@@ -32,15 +32,15 @@ export type AuthToken = string;
 export type Description = string;
 /**
  * BAW API DateTime
- * Defaults to 1970-01-01T00:00:00.000
  */
 export type DateTimeTimezone = DateTime;
 /**
- * Default value for BAW API DateTime
+ * Convert timestamp string into DateTimeTimezone
+ * @param timestamp Timestamp string
  */
-export const defaultDateTimeTimezone = DateTime.fromISO(
-  "1970-01-01T00:00:00.000"
-);
+export function dateTimeTimezone(timestamp: string): DateTimeTimezone {
+  return timestamp ? DateTime.fromISO(timestamp, { setZone: true }) : undefined;
+}
 /**
  * BAW API Latitude
  */

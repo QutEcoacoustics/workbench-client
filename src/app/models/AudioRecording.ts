@@ -1,7 +1,6 @@
-import { DateTime } from "luxon";
 import {
   DateTimeTimezone,
-  defaultDateTimeTimezone,
+  dateTimeTimezone,
   Id,
   Uuid
 } from "../interfaces/apiInterfaces";
@@ -50,21 +49,9 @@ export class AudioRecording extends AbstractModel
     super(audioRecording);
 
     this.kind = "AudioRecording";
-    this.recordedDate = audioRecording.recordedDate
-      ? DateTime.fromISO(audioRecording.recordedDate as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
-    this.createdAt = audioRecording.createdAt
-      ? DateTime.fromISO(audioRecording.createdAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
-    this.updatedAt = audioRecording.updatedAt
-      ? DateTime.fromISO(audioRecording.updatedAt as string, {
-          setZone: true
-        })
-      : defaultDateTimeTimezone;
+    this.recordedDate = dateTimeTimezone(audioRecording.recordedDate as string);
+    this.createdAt = dateTimeTimezone(audioRecording.createdAt as string);
+    this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
   }
 
   static fromJSON = (obj: any) => {

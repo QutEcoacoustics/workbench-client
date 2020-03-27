@@ -1,8 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { ToastrService } from "ngx-toastr";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { User } from "src/app/models/User";
@@ -10,7 +13,6 @@ import {
   accountResolvers,
   AccountService
 } from "src/app/services/baw-api/account.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
@@ -38,48 +40,43 @@ const accountKey = "account";
 @Component({
   selector: "app-their-profile-edit",
   template: `
-    <app-wip>
-      <ng-container *ngIf="user">
-        <app-form
-          [schema]="schema"
-          [title]="'Editing profile for ' + user.userName"
-          [submitLabel]="'Update User'"
-          [submitLoading]="loading"
-          [btnColor]="'btn-warning'"
-          (onSubmit)="submit($event)"
-        ></app-form>
-      </ng-container>
+    <app-wip *ngIf="!failure">
+      <app-form
+        [title]="title"
+        btnColor="btn-warning"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Update User"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></app-form>
     </app-wip>
   `
 })
-export class TheirEditComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public schema = { model: { name: "" }, fields };
-  public user: User;
+export class TheirEditComponent extends FormTemplate<User> implements OnInit {
+  public fields = fields;
+  public title: string;
 
-  constructor(private api: AccountService, private route: ActivatedRoute) {
-    super();
+  constructor(
+    private api: AccountService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, accountKey, model =>
+      defaultSuccessMsg("updated", model.userName)
+    );
   }
 
   ngOnInit() {
-    this.loading = false;
+    super.ngOnInit();
 
-    const userModel: ResolvedModel<User> = this.route.snapshot.data[accountKey];
-
-    if (userModel.error) {
-      return;
+    if (!this.failure) {
+      this.title = `Editing profile for ${this.model.userName}`;
     }
-
-    this.user = userModel.model;
-    this.schema.model.name = this.user.userName;
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    console.log($event);
+  protected apiAction(model: Partial<User>) {
+    return this.api.update(new User(model));
   }
 }

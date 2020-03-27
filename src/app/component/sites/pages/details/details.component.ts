@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
@@ -40,7 +41,7 @@ const siteKey = "site";
 @Page({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>(siteMenuItemActions),
+    actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
     links: List()
   },

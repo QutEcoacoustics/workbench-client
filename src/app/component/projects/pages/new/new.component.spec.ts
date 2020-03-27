@@ -4,7 +4,7 @@ import {
   flush,
   TestBed
 } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -13,15 +13,15 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { testBawServices } from "src/app/test.helper";
+import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import {
   getInputs,
   inputValue,
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../project.json";
 import { NewComponent } from "./new.component";
-import { fields } from "./new.json";
 
 describe("ProjectsNewComponent", () => {
   let api: ProjectsService;
@@ -34,7 +34,13 @@ describe("ProjectsNewComponent", () => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
       declarations: [NewComponent],
-      providers: [...testBawServices]
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute()
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
@@ -148,7 +154,7 @@ describe("ProjectsNewComponent", () => {
       submitForm(fixture);
 
       expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved: name has already been taken"
+        "Record could not be saved<br />name has already been taken"
       );
     }));
 
@@ -247,17 +253,17 @@ describe("ProjectsNewComponent", () => {
         return new BehaviorSubject<Project>(
           new Project({
             id: 1,
-            name: "Test Project"
+            name: "Custom Project"
           })
         );
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[0], "input", "Test Project");
+      inputValue(inputs[0], "input", "Custom Project");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Project was successfully created."
+        "Successfully created Custom Project"
       );
     }));
 

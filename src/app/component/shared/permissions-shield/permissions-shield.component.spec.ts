@@ -5,6 +5,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
@@ -34,22 +36,28 @@ describe("PermissionsShieldComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            project:
-              project || projectError
-                ? {
-                    model: project,
-                    error: projectError
-                  }
-                : undefined,
-            site:
-              site || siteError
-                ? {
-                    model: site,
-                    error: siteError
-                  }
-                : undefined
-          })
+          useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show,
+              site: siteResolvers.show
+            },
+            {
+              project:
+                project || projectError
+                  ? {
+                      model: project,
+                      error: projectError
+                    }
+                  : undefined,
+              site:
+                site || siteError
+                  ? {
+                      model: site,
+                      error: siteError
+                    }
+                  : undefined
+            }
+          )
         }
       ]
     }).compileComponents();

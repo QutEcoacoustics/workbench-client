@@ -3,13 +3,14 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import { homeMenuItem } from "src/app/component/home/home.menus";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import {
+  defaultErrorMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   LoginDetails,
   SecurityService
@@ -40,18 +41,20 @@ import { fields } from "./login.json";
   selector: "app-authentication-login",
   template: `
     <app-form
-      [schema]="schema"
-      [size]="'small'"
-      [title]="'Log in'"
-      [submitLabel]="'Log in'"
+      *ngIf="!failure"
+      title="Log in"
+      size="small"
+      [model]="model"
+      [fields]="fields"
+      submitLabel="Log in"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
   `
 })
-export class LoginComponent extends PageComponent implements OnInit {
-  public schema = { model: {}, fields };
-  public loading: boolean;
+export class LoginComponent extends FormTemplate<LoginDetails>
+  implements OnInit {
+  public fields = fields;
   private redirectBack: boolean;
   private redirectUrl: string;
 
@@ -60,19 +63,31 @@ export class LoginComponent extends PageComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     private api: SecurityService,
     private location: Location,
-    private notifications: ToastrService,
-    private route: ActivatedRoute,
-    private router: Router
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(
+      notifications,
+      route,
+      router,
+      undefined,
+      () => "Successfully signed in",
+      defaultErrorMsg,
+      false
+    );
   }
 
   ngOnInit() {
-    this.loading = false;
+    super.ngOnInit();
+
+    if (this.api.isLoggedIn()) {
+      this.notifications.error("You are already logged in.");
+    }
+
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
-    const state: LocationState = this.location.getState() as LocationState;
-
+    const navigationId = (this.location.getState() as any).navigationId;
     const redirect: string | boolean | undefined = this.route.snapshot
       .queryParams.redirect;
 
@@ -98,38 +113,23 @@ export class LoginComponent extends PageComponent implements OnInit {
     }
 
     // Redirect to previous page unless there is no router history
-    if (state.navigationId !== noHistory) {
+    if (navigationId !== noHistory) {
       this.redirectBack = true;
     }
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
+  protected redirectUser() {
+    if (this.redirectBack) {
+      this.location.back();
+    } else if (this.redirectUrl.startsWith("/")) {
+      this.router.navigateByUrl(this.redirectUrl);
+    } else {
+      this.externalRedirect(this.redirectUrl);
+    }
+  }
 
-    this.api
-      .signIn(new LoginDetails($event))
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () => {
-          this.notifications.success("Successfully signed in.");
-
-          if (this.redirectBack) {
-            this.location.back();
-          } else if (this.redirectUrl.startsWith("/")) {
-            this.router.navigateByUrl(this.redirectUrl);
-          } else {
-            this.externalRedirect(this.redirectUrl);
-          }
-        },
-        (err: ApiErrorDetails) => {
-          this.notifications.error(err.message);
-          this.loading = false;
-        }
-      );
+  protected apiAction(model: Partial<LoginDetails>) {
+    return this.api.signIn(new LoginDetails(model));
   }
 
   /**
@@ -141,8 +141,4 @@ export class LoginComponent extends PageComponent implements OnInit {
   public externalRedirect(redirect: string) {
     this.document.location.href = redirect;
   }
-}
-
-interface LocationState {
-  navigationId: 1;
 }

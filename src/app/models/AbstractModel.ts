@@ -25,16 +25,9 @@ export abstract class AbstractModel {
   public readonly id?: Id;
 
   /**
-   * Create model
-   * @param _new Class Builder
-   * @param raw Raw object json
+   * Model Identifier
    */
-  public static Create<T extends AbstractModel>(
-    _new: new (_: object) => T,
-    raw: object
-  ): T {
-    return new _new(raw);
-  }
+  public readonly kind: string;
 
   /**
    * Redirect path to view model on website. This is a string which can be
