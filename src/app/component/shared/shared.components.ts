@@ -12,6 +12,7 @@ import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
+import { CheckboxComponent } from "./checkbox/checkbox.component";
 import { CmsComponent } from "./cms/cms.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -30,19 +31,20 @@ import { TimezoneFormPipe } from "./timezone/timezone.pipe";
 import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
-  FooterComponent,
   ActionMenuComponent,
-  SecondaryMenuComponent,
-  FormComponent,
-  ErrorHandlerComponent,
-  WIPComponent,
+  CheckboxComponent,
   CmsComponent,
+  ErrorHandlerComponent,
+  FooterComponent,
+  FormComponent,
   FormlyImageInput,
-  FormlyTimezoneInput,
   FormlyQuestionAnswer,
   FormlyQuestionAnswerAction,
+  FormlyTimezoneInput,
+  LoadingComponent,
+  SecondaryMenuComponent,
   TimezoneFormPipe,
-  LoadingComponent
+  WIPComponent
 ];
 
 export const sharedModules = [
