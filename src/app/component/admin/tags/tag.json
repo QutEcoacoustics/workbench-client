@@ -1,0 +1,49 @@
+{
+  "fields": [
+    {
+      "key": "text",
+      "type": "input",
+      "templateOptions": {
+        "label": "Text",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "typeOfTag",
+      "type": "select",
+      "templateOptions": {
+        "label": "Type of Tag",
+        "required": true,
+        "options": []
+      }
+    },
+    {
+      "key": "notes",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Notes",
+        "required": false,
+        "rows": 8
+      }
+    },
+    {
+      "key": "retired",
+      "type": "input",
+      "templateOptions": {
+        "label": "Retired",
+        "type": "checkbox",
+        "required": false
+      }
+    },
+    {
+      "key": "isTaxanomic",
+      "type": "input",
+      "templateOptions": {
+        "label": "Is Taxanomic",
+        "type": "checkbox",
+        "required": false
+      }
+    }
+  ]
+}

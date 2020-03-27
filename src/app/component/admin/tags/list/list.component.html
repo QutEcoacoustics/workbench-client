@@ -1,0 +1,66 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Tag List</h1>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [externalPaging]="true"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+  >
+    <ngx-datatable-column name="Text" [sortable]="false">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        <fa-icon [icon]="['fas', 'book']"></fa-icon>
+        Text
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Taxanomic" [sortable]="false">
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Retired"
+      [width]="90"
+      [maxWidth]="90"
+      [sortable]="false"
+    >
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="mx-auto" style="width: 24px;">
+          <div class="custom-control custom-checkbox">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              disabled
+              [id]="row.text + '-checkbox'"
+              [checked]="value"
+            />
+            <label class="custom-control-label" for="checkbox"></label>
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Type" [sortable]="false">
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Tag"
+      [width]="130"
+      [maxWidth]="130"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-warning mr-1" [routerLink]="[editPath(value)]">
+          Edit
+        </a>
+        <a class="btn btn-sm btn-danger" [routerLink]="[deletePath(value)]">
+          Delete
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-error-handler [error]="error"></app-error-handler>

@@ -1,5 +1,7 @@
 import {
   defaultAudioIcon,
+  defaultDeleteIcon,
+  defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate
 } from "src/app/app.menus";
@@ -73,10 +75,20 @@ export const adminNewScriptsMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
+/**
+ * Admin Tags
+ */
+
+export const adminTagsCategory: Category = {
+  icon: ["fas", "tag"],
+  label: "Tags",
+  route: adminRoute.add("tags")
+};
+
 export const adminTagsMenuItem = MenuRoute({
   icon: ["fas", "tag"],
   label: "Tags",
-  route: adminRoute.add("tags"),
+  route: adminTagsCategory.route,
   tooltip: () => "Manage tags",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
@@ -85,8 +97,26 @@ export const adminTagsMenuItem = MenuRoute({
 export const adminNewTagMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New Tag",
-  route: adminTagsMenuItem.route.add("new"),
+  route: adminTagsCategory.route.add("new"),
   tooltip: () => "Create a new tag",
+  parent: adminTagsMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminEditTagMenuItem = MenuRoute({
+  icon: defaultEditIcon,
+  label: "Edit Tag",
+  route: adminTagsCategory.route.add("edit"),
+  tooltip: () => "Edit an existing tag",
+  parent: adminTagsMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminDeleteTagMenuItem = MenuRoute({
+  icon: defaultDeleteIcon,
+  label: "Destroy Tag",
+  route: adminTagsCategory.route.add("destroy"),
+  tooltip: () => "Destroy an existing tag",
   parent: adminTagsMenuItem,
   predicate: isAdminPredicate
 });
@@ -94,7 +124,7 @@ export const adminNewTagMenuItem = MenuRoute({
 export const adminTagGroupsMenuItem = MenuRoute({
   icon: ["fas", "tags"],
   label: "Tag Group",
-  route: adminRoute.add("tags"),
+  route: adminRoute.add("tag_groups"),
   tooltip: () => "Manage tags",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
