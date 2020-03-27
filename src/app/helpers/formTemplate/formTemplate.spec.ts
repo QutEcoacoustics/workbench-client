@@ -311,15 +311,12 @@ describe("formTemplate", () => {
   });
 
   describe("successMessage", () => {
-    beforeEach(() => {
-      spyOn(component, "resetForms").and.stub();
-    });
-
     it("should handle update form success message", () => {
       configureTestingModule(
         { mockModel: "MockModelResolver" },
         { mockModel: makeResolvedModel(defaultModel) }
       );
+      spyOn(component, "resetForms").and.stub();
       component["modelKey"] = "mockModel";
       component["successMsg"] = model =>
         "custom success message with id: " + model.id;
@@ -335,6 +332,7 @@ describe("formTemplate", () => {
 
     it("should handle new form success message", () => {
       configureTestingModule();
+      spyOn(component, "resetForms").and.stub();
       component["successMsg"] = model =>
         "custom success message with id: " + model.id;
       fixture.detectChanges();
