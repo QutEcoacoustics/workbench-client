@@ -220,8 +220,11 @@ describe("formTemplate", () => {
   });
 
   describe("hasFormCheck", () => {
-    it("should extend WithFormCheck", () => {
+    beforeEach(() => {
       configureTestingModule();
+    });
+
+    it("should extend WithFormCheck", () => {
       fixture.detectChanges();
 
       expect(component.isFormTouched).toBeTruthy();
@@ -229,7 +232,6 @@ describe("formTemplate", () => {
     });
 
     it("should have isFormTouched when hasFormCheck is true", () => {
-      configureTestingModule();
       component["hasFormCheck"] = true;
       component.appForms = [{ form: { dirty: true } }] as any;
       fixture.detectChanges();
@@ -238,7 +240,6 @@ describe("formTemplate", () => {
     });
 
     it("should disable isFormTouched when hasFormCheck is false", () => {
-      configureTestingModule();
       component["hasFormCheck"] = false;
       component.appForms = [{ form: { dirty: true } }] as any;
       fixture.detectChanges();
@@ -248,7 +249,6 @@ describe("formTemplate", () => {
 
     it("should have resetForms when hasFormCheck is true", () => {
       const spy = jasmine.createSpy();
-      configureTestingModule();
       component["hasFormCheck"] = true;
       component.appForms = [{ form: { markAsPristine: spy } }] as any;
       fixture.detectChanges();
@@ -259,7 +259,6 @@ describe("formTemplate", () => {
 
     it("should disable resetForms when hasFormCheck is false", () => {
       const spy = jasmine.createSpy();
-      configureTestingModule();
       component["hasFormCheck"] = false;
       component.appForms = [{ form: { markAsPristine: spy } }] as any;
       fixture.detectChanges();
@@ -275,6 +274,7 @@ describe("formTemplate", () => {
     beforeEach(() => {
       spy = jasmine.createSpy();
       configureTestingModule();
+      spyOn(component, "resetForms").and.stub();
     });
 
     it("should call apiAction on submit", () => {
@@ -286,8 +286,6 @@ describe("formTemplate", () => {
     });
 
     it("should reset form on successful submission", () => {
-      spyOn(component, "resetForms").and.stub();
-      component["apiAction"] = spy.and.callFake(successResponse);
       fixture.detectChanges();
 
       component.submit({ id: 1 });
@@ -295,7 +293,6 @@ describe("formTemplate", () => {
     });
 
     it("should not reset form on failed submission", () => {
-      spyOn(component, "resetForms").and.stub();
       component["apiAction"] = spy.and.callFake(errorResponse);
       fixture.detectChanges();
 
@@ -304,7 +301,6 @@ describe("formTemplate", () => {
     });
 
     it("should redirect user on successful submission", () => {
-      spyOn(component, "resetForms").and.stub();
       fixture.detectChanges();
 
       component.submit({ id: 1 });
@@ -317,9 +313,51 @@ describe("formTemplate", () => {
     it("should handle new form success message", () => {});
   });
 
-  xdescribe("notifications", () => {
-    it("should display notification on successful submission", () => {});
-    it("should display notification on failed submission", () => {});
+  describe("notifications", () => {
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      spy = jasmine.createSpy();
+      configureTestingModule();
+      spyOn(component, "resetForms").and.stub();
+    });
+
+    it("should display success notification on successful submission", () => {
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(notifications.success).toHaveBeenCalled();
+    });
+
+    it("should display success message on successful submission", () => {
+      component["successMsg"] = model =>
+        "custom success message with id: " + model.id;
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(notifications.success).toHaveBeenCalledWith(
+        "custom success message with id: 1"
+      );
+    });
+
+    it("should display error notification on failed submission", () => {
+      component["apiAction"] = spy.and.callFake(errorResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(notifications.error).toHaveBeenCalled();
+    });
+
+    it("should display error message on failed submission", () => {
+      component["apiAction"] = spy.and.callFake(errorResponse);
+      component["errorMsg"] = err => "custom error message: " + err.message;
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(notifications.error).toHaveBeenCalledWith(
+        "custom error message: " + defaultError.message
+      );
+    });
   });
 
   xdescribe("loading", () => {
