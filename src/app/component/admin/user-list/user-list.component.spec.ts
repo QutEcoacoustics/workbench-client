@@ -134,12 +134,6 @@ describe("AdminUserListComponent", () => {
       });
       spyOn(api, "filter").and.callFake((filter: Filters) => {
         if (counter === 1) {
-          console.log(
-            "Second Filter: ",
-            filter.paging.page,
-            expectation.paging.page
-          );
-
           expect(filter).toEqual(expectation);
           done();
         } else {

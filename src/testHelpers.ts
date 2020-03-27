@@ -105,6 +105,15 @@ export function assertValidationMessage(wrapper: any, message: string) {
 }
 
 /**
+ * Assert form component handles pre-loading model failure
+ * @param fixture Component fixture
+ */
+export function assertFormErrorHandling(fixture: ComponentFixture<any>) {
+  const body = fixture.nativeElement;
+  expect(body.childElementCount).toBe(0);
+}
+
+/**
  * Test a formly field
  * @param field Input to test
  * @param key Input ID/Key
@@ -164,4 +173,44 @@ export function testFormlyField(
       });
     }
   });
+}
+
+export function testFormlyFields(
+  formInputs: {
+    testGroup: string;
+    setup: () => void;
+    field: any;
+    key: string;
+    htmlType: string;
+    required: boolean;
+    label?: string;
+    type?: string;
+    description?: string;
+  }[]
+) {
+  formInputs.forEach(
+    ({
+      testGroup,
+      setup,
+      field,
+      key,
+      htmlType,
+      required,
+      label,
+      type,
+      description
+    }) => {
+      testFormlyField(
+        testGroup,
+        setup,
+        field,
+        key,
+        htmlType,
+        required,
+        label,
+        type,
+        description
+      );
+    }
+  );
 }
