@@ -7,73 +7,57 @@ describe("StrongRoute", () => {
     expect(route.children).toEqual(children);
   }
 
-  describe("Base StrongRoute", () => {
-    let baseRoute: StrongRoute;
+  describe("StrongRoutes", () => {
+    const parents = [
+      {
+        title: "Base Route",
+        parent: () => StrongRoute.Base
+      },
+      {
+        title: "Child Route",
+        parent: () => StrongRoute.Base.add("parent")
+      },
+      {
+        title: "Feature Module Route",
+        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing")
+      }
+    ];
 
-    beforeEach(() => {
-      baseRoute = StrongRoute.Base;
-    });
+    parents.forEach(parent => {
+      let parentRoute: StrongRoute;
 
-    it("should create base route", () => {
-      expect(baseRoute).toBeTruthy();
-      assertChildren(baseRoute, []);
-    });
+      describe(parent.title, () => {
+        beforeEach(() => {
+          parentRoute = parent.parent();
+        });
 
-    it("should add route", () => {
-      const homeRoute = baseRoute.add("home");
-      assertChildren(baseRoute, [homeRoute]);
-    });
+        it("should create base route", () => {
+          expect(parentRoute).toBeTruthy();
+          assertChildren(parentRoute, []);
+        });
 
-    it("should add multiple routes", () => {
-      const homeRoute = baseRoute.add("home");
-      const houseRoute = baseRoute.add("house");
-      assertChildren(baseRoute, [homeRoute, houseRoute]);
-    });
+        it("should add route", () => {
+          const homeRoute = parentRoute.add("home");
+          assertChildren(parentRoute, [homeRoute]);
+        });
 
-    it("should add parameter route", () => {
-      const paramRoute = baseRoute.add(":id");
-      assertChildren(baseRoute, [paramRoute]);
-    });
+        it("should add multiple routes", () => {
+          const homeRoute = parentRoute.add("home");
+          const houseRoute = parentRoute.add("house");
+          assertChildren(parentRoute, [homeRoute, houseRoute]);
+        });
 
-    it("should add mixed routes", () => {
-      const homeRoute = baseRoute.add("home");
-      const paramRoute = baseRoute.add(":id");
-      assertChildren(baseRoute, [homeRoute, paramRoute]);
-    });
-  });
+        it("should add parameter route", () => {
+          const paramRoute = parentRoute.add(":id");
+          assertChildren(parentRoute, [paramRoute]);
+        });
 
-  describe("Child StrongRoute", () => {
-    let parentRoute: StrongRoute;
-
-    beforeEach(() => {
-      parentRoute = StrongRoute.Base.add("parent");
-    });
-
-    it("should create base route", () => {
-      expect(parentRoute).toBeTruthy();
-      assertChildren(parentRoute, []);
-    });
-
-    it("should add route", () => {
-      const homeRoute = parentRoute.add("home");
-      assertChildren(parentRoute, [homeRoute]);
-    });
-
-    it("should add multiple routes", () => {
-      const homeRoute = parentRoute.add("home");
-      const houseRoute = parentRoute.add("house");
-      assertChildren(parentRoute, [homeRoute, houseRoute]);
-    });
-
-    it("should add parameter route", () => {
-      const paramRoute = parentRoute.add(":id");
-      assertChildren(parentRoute, [paramRoute]);
-    });
-
-    it("should add mixed routes", () => {
-      const homeRoute = parentRoute.add("home");
-      const paramRoute = parentRoute.add(":id");
-      assertChildren(parentRoute, [homeRoute, paramRoute]);
+        it("should add mixed routes", () => {
+          const homeRoute = parentRoute.add("home");
+          const paramRoute = parentRoute.add(":id");
+          assertChildren(parentRoute, [homeRoute, paramRoute]);
+        });
+      });
     });
   });
 
@@ -108,7 +92,18 @@ describe("StrongRoute", () => {
   });
 
   describe("Compile Routes", () => {
-    let strongRoute: StrongRoute;
+    const parents = [
+      {
+        title: "Base Route",
+        baseRef: "",
+        parent: () => StrongRoute.Base
+      },
+      {
+        title: "Feature Module Route",
+        baseRef: "test/testing/",
+        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing")
+      }
+    ];
 
     class MockComponent {}
 
@@ -124,202 +119,208 @@ describe("StrongRoute", () => {
       } as Route;
     }
 
-    beforeEach(() => {
-      strongRoute = StrongRoute.Base;
-    });
+    parents.forEach(parent => {
+      describe(parent.title, () => {
+        let strongRoute: StrongRoute;
 
-    it("should compile base route", () => {
-      const routes: Routes = [];
-      strongRoute.pageComponent = MockComponent;
-      const compiledRoutes = strongRoute.compileRoutes(callback);
-      expect(compiledRoutes).toEqual(routes);
-    });
+        beforeEach(() => {
+          strongRoute = parent.parent();
+        });
 
-    it("should compile StrongRoute with route", () => {
-      const routes: Routes = [
-        {
-          path: "home",
-          pathMatch: "full",
-          children: [
+        it("should compile base route", () => {
+          const routes: Routes = [];
+          strongRoute.pageComponent = MockComponent;
+          const compiledRoutes = strongRoute.compileRoutes(callback);
+          expect(compiledRoutes).toEqual(routes);
+        });
+
+        it("should compile StrongRoute with route", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: MockComponent
+              path: parent.baseRef + "home",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: MockComponent
+                }
+              ]
             }
-          ]
-        }
-      ];
-      const homeRoute = strongRoute.add("home");
-      homeRoute.pageComponent = MockComponent;
-      const compiledRoutes = homeRoute.compileRoutes(callback);
+          ];
+          const homeRoute = strongRoute.add("home");
+          homeRoute.pageComponent = MockComponent;
+          const compiledRoutes = homeRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
-    });
+          expect(compiledRoutes).toEqual(routes);
+        });
 
-    it("should compile StrongRoute with parameter route", () => {
-      const routes: Routes = [
-        {
-          path: ":id",
-          pathMatch: "full",
-          children: [
+        it("should compile StrongRoute with parameter route", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: MockComponent
+              path: parent.baseRef + ":id",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: MockComponent
+                }
+              ]
             }
-          ]
-        }
-      ];
-      const paramRoute = strongRoute.add(":id");
-      paramRoute.pageComponent = MockComponent;
-      const compiledRoutes = paramRoute.compileRoutes(callback);
+          ];
+          const paramRoute = strongRoute.add(":id");
+          paramRoute.pageComponent = MockComponent;
+          const compiledRoutes = paramRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
-    });
+          expect(compiledRoutes).toEqual(routes);
+        });
 
-    it("should compile StrongRoute with mixed routes", () => {
-      const routes: Routes = [
-        {
-          path: "home",
-          pathMatch: "full",
-          children: [
+        it("should compile StrongRoute with mixed routes", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: "home/:id",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "home",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: "home/:id/house",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "home/:id",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: MockComponent
+              path: parent.baseRef + "home/:id/house",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: MockComponent
+                }
+              ]
             }
-          ]
-        }
-      ];
-      const paramRoute = strongRoute
-        .add("home")
-        .add(":id")
-        .add("house");
-      paramRoute.pageComponent = MockComponent;
-      const compiledRoutes = paramRoute.compileRoutes(callback);
+          ];
+          const paramRoute = strongRoute
+            .add("home")
+            .add(":id")
+            .add("house");
+          paramRoute.pageComponent = MockComponent;
+          const compiledRoutes = paramRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
-    });
+          expect(compiledRoutes).toEqual(routes);
+        });
 
-    it("should compile StrongRoute with custom config", () => {
-      const routes: Routes = [
-        {
-          path: ":id",
-          pathMatch: "full",
-          redirectTo: "/test",
-          children: [
+        it("should compile StrongRoute with custom config", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: MockComponent
+              path: parent.baseRef + ":id",
+              pathMatch: "full",
+              redirectTo: "/test",
+              children: [
+                {
+                  path: "",
+                  component: MockComponent
+                }
+              ]
             }
-          ]
-        }
-      ];
-      const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
-      paramRoute.pageComponent = MockComponent;
-      const compiledRoutes = paramRoute.compileRoutes(callback);
+          ];
+          const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
+          paramRoute.pageComponent = MockComponent;
+          const compiledRoutes = paramRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
-    });
+          expect(compiledRoutes).toEqual(routes);
+        });
 
-    it("should order child StrongRoute routes", () => {
-      const routes: Routes = [
-        {
-          path: "home",
-          pathMatch: "full",
-          children: [
+        it("should order child StrongRoute routes", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: "home/house",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "home",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: "home/:id",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "home/house",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: undefined
+              path: parent.baseRef + "home/:id",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
             }
-          ]
-        }
-      ];
-      const homeRoute = strongRoute.add("home");
-      homeRoute.add(":id");
-      homeRoute.add("house");
-      const compiledRoutes = homeRoute.compileRoutes(callback);
+          ];
+          const homeRoute = strongRoute.add("home");
+          homeRoute.add(":id");
+          homeRoute.add("house");
+          const compiledRoutes = homeRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
-    });
+          expect(compiledRoutes).toEqual(routes);
+        });
 
-    it("should order base StrongRoute routes", () => {
-      const routes: Routes = [
-        {
-          path: "home",
-          pathMatch: "full",
-          children: [
+        it("should order base StrongRoute routes", () => {
+          const routes: Routes = [
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: "house",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "home",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: undefined
-            }
-          ]
-        },
-        {
-          path: ":id",
-          pathMatch: "full",
-          children: [
+              path: parent.baseRef + "house",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
+            },
             {
-              path: "",
-              component: undefined
+              path: parent.baseRef + ":id",
+              pathMatch: "full",
+              children: [
+                {
+                  path: "",
+                  component: undefined
+                }
+              ]
             }
-          ]
-        }
-      ];
+          ];
 
-      strongRoute.add("home");
-      strongRoute.add(":id");
-      strongRoute.add("house");
-      const compiledRoutes = strongRoute.compileRoutes(callback);
+          strongRoute.add("home");
+          strongRoute.add(":id");
+          strongRoute.add("house");
+          const compiledRoutes = strongRoute.compileRoutes(callback);
 
-      expect(compiledRoutes).toEqual(routes);
+          expect(compiledRoutes).toEqual(routes);
+        });
+      });
     });
   });
 
