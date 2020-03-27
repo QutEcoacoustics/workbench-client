@@ -84,12 +84,3 @@ export class Site extends AbstractModel implements SiteInterface {
     });
   }
 }
-
-export const mockSite = new Site({
-  id: 1,
-  name: "name",
-  description: "description",
-  creatorId: 1,
-  projectIds: new Set([0]),
-  imageUrl: "/assets/images/site/site_span4.png"
-});
