@@ -33,7 +33,7 @@ export abstract class FormTemplate<M extends AbstractModel>
   /**
    * Formly fields
    */
-  public fields: FormlyFieldConfig[];
+  public fields: FormlyFieldConfig[] = [];
   /**
    * Success Message
    */
@@ -70,7 +70,7 @@ export abstract class FormTemplate<M extends AbstractModel>
       const resolvedModel: ResolvedModel = data[key];
 
       // If error detected, return
-      if (resolvedModel.error) {
+      if (!resolvedModel || resolvedModel.error) {
         this.failure = true;
         return;
       }
@@ -80,8 +80,13 @@ export abstract class FormTemplate<M extends AbstractModel>
 
     // Find primary model
     this.model = this.models[this.modelKey] as M;
-    if (!this.model) {
+
+    if (!this.modelKey) {
       this.model = {} as M;
+    } else if (!this.model) {
+      // Model wasn't found, return failure
+      this.failure = true;
+      return;
     }
 
     /*
