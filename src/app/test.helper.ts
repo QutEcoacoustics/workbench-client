@@ -100,6 +100,12 @@ export function mockActivatedRoute(
   };
 }
 
-export type MockResolvers = { [key: string]: string };
-export type MockData = { [key: string]: ResolvedModel };
-export type MockParams = { [key: string]: string | number };
+export interface MockResolvers {
+  [key: string]: string;
+}
+export interface MockData {
+  [key: string]: ResolvedModel;
+}
+export interface MockParams {
+  [key: string]: string | number;
+}
