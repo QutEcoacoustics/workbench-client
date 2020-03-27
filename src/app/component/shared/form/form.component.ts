@@ -23,10 +23,6 @@ import { AbstractModel } from "src/app/models/AbstractModel";
   encapsulation: ViewEncapsulation.None
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
-  /**
-   * DEPRECATED
-   */
-  @Input() schema: any;
   @Input() btnColor: ButtonClassTypes = "btn-success";
   @Input() fields: FormlyFieldConfig[];
   @Input() fieldsUrl: string;

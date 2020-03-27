@@ -16,13 +16,13 @@ import {
   siteResolvers,
   SitesService
 } from "src/app/services/baw-api/sites.service";
+import { fields } from "../../site.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
-import { fields } from "./edit.json";
 
 const projectKey = "project";
 const siteKey = "site";
@@ -70,7 +70,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, siteKey, model =>
-      defaultSuccessMsg(model.name)
+      defaultSuccessMsg("updated", model.name)
     );
   }
 

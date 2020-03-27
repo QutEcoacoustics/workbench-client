@@ -1,25 +1,24 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import { projectMenuItemActions } from "src/app/component/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem
 } from "src/app/component/projects/projects.menus";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import { SitesService } from "src/app/services/baw-api/sites.service";
+import { fields } from "../../site.json";
 import { newSiteMenuItem } from "../../sites.menus";
-import { fields } from "./new.json";
 
 const projectKey = "project";
 
@@ -41,64 +40,39 @@ const projectKey = "project";
   selector: "app-sites-new",
   template: `
     <app-form
-      *ngIf="project"
-      [schema]="schema"
-      [title]="'New Site'"
-      [submitLabel]="'Submit'"
+      *ngIf="!failure"
+      title="New Site"
+      [model]="model"
+      [fields]="fields"
       [submitLoading]="loading"
+      submitLabel="Submit"
       (onSubmit)="submit($event)"
     ></app-form>
   `
 })
-export class NewComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public project: Project;
-  public schema = { model: {}, fields };
+export class NewComponent extends FormTemplate<Site> {
+  public fields = fields;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private api: SitesService,
-    private notification: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(notifications, route, router, undefined, model =>
+      defaultSuccessMsg("created", model.name)
+    );
   }
 
-  ngOnInit() {
-    this.loading = false;
-
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
-
-    if (projectModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
+  public get project(): Project {
+    return this.models.project as Project;
   }
 
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
+  protected redirectionPath(model: Site) {
+    return model.redirectPath(this.project);
+  }
 
-    this.api
-      .create(new Site($event), this.project)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        site => {
-          this.resetForms();
-          this.notification.success("Site was successfully created.");
-          this.router.navigateByUrl(site.redirectPath(this.project));
-        },
-        (err: ApiErrorDetails) => {
-          this.notification.error(err.message);
-          this.loading = false;
-        }
-      );
+  protected apiAction(model: Partial<Site>) {
+    return this.api.create(new Site(model), this.project);
   }
 }

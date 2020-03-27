@@ -31,9 +31,10 @@ import { fields } from "./unlock-account.json";
   template: `
     <app-wip>
       <app-form
-        [schema]="schema"
-        [title]="'Resend unlock instructions'"
-        [submitLabel]="'Resend unlock instructions'"
+        title="Resend unlock instructions"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Resend unlock instructions"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
@@ -42,8 +43,9 @@ import { fields } from "./unlock-account.json";
 })
 export class UnlockAccountComponent extends WithFormCheck(PageComponent)
   implements OnInit {
-  schema = { model: {}, fields };
-  loading: boolean;
+  public model = {};
+  public fields = fields;
+  public loading: boolean;
 
   constructor() {
     super();

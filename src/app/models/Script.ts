@@ -46,6 +46,9 @@ export class Script extends AbstractModel implements ScriptInterface {
     super(script);
 
     this.createdAt = dateTimeTimezone(script.createdAt as string);
+    this.executableSettingsMediaType = script.executableSettingsMediaType
+      ? script.executableSettingsMediaType
+      : "text/plain";
   }
 
   static fromJSON = (obj: any) => {

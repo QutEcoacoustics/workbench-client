@@ -39,23 +39,25 @@ const userKey = "user";
   selector: "app-my-account-edit",
   template: `
     <app-wip>
-      <ng-container *ngIf="user">
+      <ng-container *ngIf="model">
         <app-form
-          [schema]="schema"
-          [title]="'Profile Settings'"
-          [submitLabel]="'Update'"
+          title="Profile Settings"
+          [model]="model"
+          [fields]="fields"
+          btnColor="btn-warning"
+          submitLabel="Update"
           [submitLoading]="loading"
-          [btnColor]="'btn-warning'"
           (onSubmit)="submitEdit($event)"
         ></app-form>
 
         <app-form
-          [schema]="{ model: {}, fields: [] }"
-          [title]="'Cancel my account'"
-          [subTitle]="'Unhappy? You can permanently cancel your account.'"
-          [submitLabel]="'Cancel my account'"
+          title="Cancel my account"
+          subTitle="Unhappy? You can permanently cancel your account."
+          [model]="model"
+          [fields]="[]"
+          btnColor="btn-danger"
+          submitLabel="Cancel my account"
           [submitLoading]="loading"
-          [btnColor]="'btn-danger'"
           (onSubmit)="submitDelete($event)"
         >
         </app-form>
@@ -66,8 +68,8 @@ const userKey = "user";
 export class MyEditComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public loading: boolean;
-  public schema = { model: { edit: { name: "" } }, fields };
-  public user: User;
+  public model: User;
+  public fields = fields;
 
   constructor(private route: ActivatedRoute, private api: UserService) {
     super();
@@ -81,8 +83,7 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
       return;
     }
 
-    this.user = userModel.model;
-    this.schema.model.edit.name = this.user.userName;
+    this.model = userModel.model;
   }
 
   /**

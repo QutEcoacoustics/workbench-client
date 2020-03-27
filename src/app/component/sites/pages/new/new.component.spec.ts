@@ -13,6 +13,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import {
@@ -22,8 +23,8 @@ import {
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../site.json";
 import { NewComponent } from "./new.component";
-import { fields } from "./new.json";
 
 describe("SitesNewComponent", () => {
   let api: SitesService;
@@ -53,6 +54,9 @@ describe("SitesNewComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show
+            },
             {
               project: {
                 model: project,
@@ -114,12 +118,12 @@ describe("SitesNewComponent", () => {
       ).toBeFalsy();
     });
 
-    it("should contain three inputs", () => {
+    it("should contain six inputs", () => {
       configureTestingModule(defaultProject, undefined);
 
       expect(
         fixture.nativeElement.querySelectorAll("form formly-field").length
-      ).toBe(7);
+      ).toBe(7); // FieldGroup adds a formly-field
     });
 
     /* Site Name Input */
@@ -191,7 +195,7 @@ describe("SitesNewComponent", () => {
     );
 
     /* Site Timezone Input */
-    testFormlyField(
+    /* testFormlyField(
       "Site Timezone Input",
       () => {
         configureTestingModule(defaultProject, undefined);
@@ -201,7 +205,7 @@ describe("SitesNewComponent", () => {
       "timezone",
       false,
       "Time Zone"
-    );
+    ); */
 
     // TODO Add input validation for custom location logic
   });
@@ -375,17 +379,17 @@ describe("SitesNewComponent", () => {
         return new BehaviorSubject<Site>(
           new Site({
             id: 1,
-            name: "Test Site"
+            name: "Custom Site"
           })
         );
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[nameIndex], "input", "Test Site");
+      inputValue(inputs[nameIndex], "input", "Custom Site");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Site was successfully created."
+        "Successfully created Custom Site"
       );
     }));
 

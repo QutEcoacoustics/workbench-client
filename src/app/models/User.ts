@@ -123,7 +123,7 @@ export class User extends AbstractModel implements UserInterface {
       rolesMaskNames: this.rolesMaskNames,
       timezoneInformation: this.timezoneInformation,
       imageUrls: this.imageUrls,
-      lastSeenAt: this.lastSeenAt ? this.lastSeenAt.toString() : undefined,
+      lastSeenAt: this.lastSeenAt?.toISO(),
       preferences: this.preferences,
       isConfirmed: this.isConfirmed
     };
@@ -167,13 +167,6 @@ export class SessionUser extends User implements SessionUserInterface {
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-  public readonly timezoneInformation?: TimezoneInformation;
-  public readonly imageUrls?: ImageURL[];
-  public readonly lastSeenAt?: DateTimeTimezone;
-  public readonly preferences?: any;
-  public readonly isConfirmed?: boolean;
-  public readonly rolesMask?: number;
-  public readonly rolesMaskNames?: string[];
 
   /**
    * Constructor

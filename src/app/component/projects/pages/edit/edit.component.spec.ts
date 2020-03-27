@@ -12,7 +12,10 @@ import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import {
   getInputs,
@@ -20,8 +23,8 @@ import {
   submitForm,
   testFormlyField
 } from "src/testHelpers";
+import { fields } from "../../project.json";
 import { EditComponent } from "./edit.component";
-import { fields } from "./edit.json";
 
 describe("ProjectsEditComponent", () => {
   let api: ProjectsService;
@@ -47,12 +50,17 @@ describe("ProjectsEditComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({
-            project: {
-              model: project,
-              error: projectError
+          useClass: mockActivatedRoute(
+            {
+              project: projectResolvers.show
+            },
+            {
+              project: {
+                model: project,
+                error: projectError
+              }
             }
-          })
+          )
         }
       ]
     }).compileComponents();
@@ -254,7 +262,7 @@ describe("ProjectsEditComponent", () => {
       submitForm(fixture);
 
       expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved: name has already been taken"
+        "Record could not be saved<br />name has already been taken"
       );
     }));
 
@@ -332,7 +340,11 @@ describe("ProjectsEditComponent", () => {
     xit("should call update with image", fakeAsync(() => {}));
 
     it("should call update on submit", fakeAsync(() => {
-      configureTestingModule(defaultProject, undefined);
+      const project = new Project({
+        id: 1,
+        name: "Custom Project"
+      });
+      configureTestingModule(project, undefined);
       spyOn(api, "update").and.callFake(() => {
         return new BehaviorSubject<Project>(
           new Project({
@@ -343,11 +355,11 @@ describe("ProjectsEditComponent", () => {
       });
 
       const inputs = getInputs(fixture);
-      inputValue(inputs[nameIndex], "input", "Test Project");
+      inputValue(inputs[nameIndex], "input", "Custom Project");
       submitForm(fixture);
 
       expect(notifications.success).toHaveBeenCalledWith(
-        "Project was successfully updated."
+        "Successfully updated Custom Project"
       );
     }));
 

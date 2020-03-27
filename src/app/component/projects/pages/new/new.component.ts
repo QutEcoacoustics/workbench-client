@@ -1,22 +1,24 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
+import {
+  defaultSuccessMsg,
+  extendedErrorMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { fields } from "../../project.json";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem
 } from "../../projects.menus";
 import { projectsMenuItemActions } from "../list/list.component";
-import { fields } from "./new.json";
 
 @Page({
   category: projectsCategory,
@@ -30,57 +32,44 @@ import { fields } from "./new.json";
   selector: "app-projects-new",
   template: `
     <app-form
-      [schema]="schema"
-      [title]="'New Project'"
-      [submitLabel]="'Submit'"
+      *ngIf="!failure"
+      title="New Project"
+      [model]="model"
+      [fields]="fields"
+      submitLabel="Submit"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
   `
 })
-export class NewComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
-  public loading: boolean;
-  public schema = { model: {}, fields };
+export class NewComponent extends FormTemplate<Project> {
+  public fields = fields;
 
   constructor(
-    private router: Router,
     private api: ProjectsService,
-    private notifications: ToastrService
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
   ) {
-    super();
+    super(
+      notifications,
+      route,
+      router,
+      undefined,
+      model => defaultSuccessMsg("created", model.name),
+      projectErrorMsg
+    );
   }
 
-  ngOnInit() {}
-
-  /**
-   * Form submission
-   * @param $event Form response
-   */
-  submit($event: any) {
-    this.loading = true;
-
-    this.api
-      .create(new Project($event))
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        project => {
-          this.resetForms();
-          this.notifications.success("Project was successfully created.");
-          this.router.navigateByUrl(project.redirectPath());
-        },
-        (err: ApiErrorDetails) => {
-          let errMsg: string;
-
-          if (err.info && err.info.name && err.info.name.length === 1) {
-            errMsg = err.message + ": name " + err.info.name[0];
-          } else {
-            errMsg = err.message;
-          }
-
-          this.notifications.error(errMsg);
-          this.loading = false;
-        }
-      );
+  protected apiAction(model: Partial<Project>) {
+    return this.api.create(new Project(model));
   }
+}
+
+/**
+ * Handle project form error messages
+ * @param err Api error details
+ */
+export function projectErrorMsg(err: ApiErrorDetails) {
+  return extendedErrorMsg(err, { name: value => `name ${value[0]}` });
 }

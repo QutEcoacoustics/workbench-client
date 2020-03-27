@@ -33,7 +33,7 @@ export abstract class FormTemplate<M extends AbstractModel>
   /**
    * Formly fields
    */
-  public fields: FormlyFieldConfig[];
+  public fields: FormlyFieldConfig[] = [];
   /**
    * Success Message
    */
@@ -54,8 +54,9 @@ export abstract class FormTemplate<M extends AbstractModel>
     protected router: Router,
     private modelKey: string,
     private successMsg: (model: M) => string = model =>
-      defaultSuccessMsg(model.id.toString()),
-    private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg
+      defaultSuccessMsg("updated", model.id.toString()),
+    private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
+    private hasFormCheck = true
   ) {
     super();
   }
@@ -69,7 +70,7 @@ export abstract class FormTemplate<M extends AbstractModel>
       const resolvedModel: ResolvedModel = data[key];
 
       // If error detected, return
-      if (resolvedModel.error) {
+      if (!resolvedModel || resolvedModel.error) {
         this.failure = true;
         return;
       }
@@ -77,9 +78,34 @@ export abstract class FormTemplate<M extends AbstractModel>
       this.models[key] = resolvedModel.model;
     }
 
-    // Find primary model and calculate success message
+    // Find primary model
     this.model = this.models[this.modelKey] as M;
-    this.successMessage = this.successMsg(this.model);
+
+    if (!this.modelKey) {
+      this.model = {} as M;
+    } else if (!this.model) {
+      // Model wasn't found, return failure
+      this.failure = true;
+      return;
+    }
+
+    /*
+    First pass attempt a generating success message. This is required
+    for forms which will modify the model later without changing the
+    success message (ie. update/delete form).
+    */
+    if (this.model.kind) {
+      this.successMessage = this.successMsg(this.model);
+    }
+
+    // Override form checking
+    if (!this.hasFormCheck) {
+      this.isFormTouched = () => {
+        return false;
+      };
+
+      this.resetForms = () => {};
+    }
   }
 
   /**
@@ -93,16 +119,32 @@ export abstract class FormTemplate<M extends AbstractModel>
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (model: M) => {
+          /*
+          First pass attempt a generating success message. This is required
+          for forms which do not initially have a model (ie. new model form).
+          */
+          if (!this.successMessage) {
+            this.successMessage = this.successMsg(model);
+          }
+
           this.resetForms();
           this.loading = false;
           this.notifications.success(this.successMessage);
-          this.router.navigateByUrl(this.redirectionPath(model));
+          this.redirectUser(model);
         },
         (err: ApiErrorDetails) => {
           this.loading = false;
           this.notifications.error(this.errorMsg(err));
         }
       );
+  }
+
+  /**
+   * Redirect user after successful submission
+   * @param model Model
+   */
+  protected redirectUser(model: M): void {
+    this.router.navigateByUrl(this.redirectionPath(model));
   }
 
   /**
@@ -124,8 +166,11 @@ export abstract class FormTemplate<M extends AbstractModel>
  * Default success message on form submission
  * @param name Model name
  */
-export function defaultSuccessMsg(name: string) {
-  return "Successfully updated " + name;
+export function defaultSuccessMsg(
+  action: "created" | "updated" | "destroyed",
+  name: string
+) {
+  return `Successfully ${action} ${name}`;
 }
 
 /**

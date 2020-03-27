@@ -11,7 +11,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  ReadonlyApi
+  StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  * Handles API routes pertaining to user accounts.
  */
 @Injectable()
-export class AccountService extends ReadonlyApi<User, []> {
+export class AccountService extends StandardApi<User, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, User);
   }
@@ -32,13 +32,20 @@ export class AccountService extends ReadonlyApi<User, []> {
   list(): Observable<User[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-
   filter(filters: Filters): Observable<User[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-
   show(model: IdOr<User>): Observable<User> {
     return this.apiShow(endpoint(model, Empty));
+  }
+  create(model: User): Observable<User> {
+    return this.apiCreate(endpoint(model, Empty), model);
+  }
+  update(model: User): Observable<User> {
+    return this.apiUpdate(endpoint(model, Empty), model);
+  }
+  destroy(model: IdOr<User>): Observable<User | void> {
+    return this.apiDestroy(endpoint(model, Empty));
   }
 }
 
