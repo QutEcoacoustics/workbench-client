@@ -14,11 +14,7 @@ import {
   adminTagsMenuItem
 } from "../../admin.menus";
 
-export const adminTagsMenuItemActions = [
-  adminNewTagMenuItem,
-  adminEditTagMenuItem,
-  adminDeleteTagMenuItem
-];
+export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Page({
   category: adminTagsCategory,
