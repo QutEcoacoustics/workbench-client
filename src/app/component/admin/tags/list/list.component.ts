@@ -58,9 +58,14 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag>
       { name: "Taxanomic" },
       { name: "Retired" },
       { name: "type" },
-      { name: "Actions" },
       { name: "Tag" }
     ];
+    this.sortKeys = {
+      text: "text",
+      taxanomic: "isTaxanomic",
+      retired: "retired",
+      type: "typeOfTag"
+    };
 
     this.getModels();
   }

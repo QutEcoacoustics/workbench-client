@@ -29,6 +29,7 @@ export class TagsService extends StandardApi<Tag, []> {
         new Tag({
           id: index,
           text: "PLACEHOLDER TAG",
+          count: Math.floor(Math.random() * 10000),
           isTaxanomic: index % 5 === 0,
           typeOfTag: "general",
           retired: index % 5 === 0,

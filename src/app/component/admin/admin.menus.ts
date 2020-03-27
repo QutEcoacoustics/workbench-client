@@ -114,9 +114,9 @@ export const adminEditTagMenuItem = MenuRoute({
 
 export const adminDeleteTagMenuItem = MenuRoute({
   icon: defaultDeleteIcon,
-  label: "Destroy Tag",
-  route: adminTagsCategory.route.add("destroy"),
-  tooltip: () => "Destroy an existing tag",
+  label: "Delete Tag",
+  route: adminTagsCategory.route.add("delete"),
+  tooltip: () => "Delete an existing tag",
   parent: adminTagsMenuItem,
   predicate: isAdminPredicate
 });
