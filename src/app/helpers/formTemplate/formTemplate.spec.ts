@@ -22,6 +22,8 @@ import {
 } from "./formTemplate";
 
 class MockModel extends AbstractModel {
+  public kind: "MockModel" = "MockModel";
+
   public redirectPath(): string {
     return "";
   }
@@ -308,9 +310,40 @@ describe("formTemplate", () => {
     });
   });
 
-  xdescribe("successMessage", () => {
-    it("should handle update form success message", () => {});
-    it("should handle new form success message", () => {});
+  describe("successMessage", () => {
+    beforeEach(() => {
+      spyOn(component, "resetForms").and.stub();
+    });
+
+    it("should handle update form success message", () => {
+      configureTestingModule(
+        { mockModel: "MockModelResolver" },
+        { mockModel: makeResolvedModel(defaultModel) }
+      );
+      component["modelKey"] = "mockModel";
+      component["successMsg"] = model =>
+        "custom success message with id: " + model.id;
+      fixture.detectChanges();
+
+      // ID should not match the output because the success
+      // message is calculated with the original model
+      component.submit({ id: 5 });
+      expect(component["successMessage"]).toBe(
+        "custom success message with id: 1"
+      );
+    });
+
+    it("should handle new form success message", () => {
+      configureTestingModule();
+      component["successMsg"] = model =>
+        "custom success message with id: " + model.id;
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component["successMessage"]).toBe(
+        "custom success message with id: 1"
+      );
+    });
   });
 
   describe("notifications", () => {
@@ -360,11 +393,43 @@ describe("formTemplate", () => {
     });
   });
 
-  xdescribe("loading", () => {
-    it("should be false initially", () => {});
-    it("should be set true on submit", () => {});
-    it("should be set true on successful submission", () => {});
-    it("should be set true on failed submit", () => {});
+  describe("loading", () => {
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      spy = jasmine.createSpy();
+      configureTestingModule();
+    });
+
+    it("should be false initially", () => {
+      fixture.detectChanges();
+
+      expect(component.loading).toBeFalsy();
+    });
+
+    it("should be set true on submit", () => {
+      component["apiAction"] = spy.and.callFake(() => new Subject<MockModel>());
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component.loading).toBeTruthy();
+    });
+
+    it("should be set false on successful submission", () => {
+      component["apiAction"] = spy.and.callFake(successResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component.loading).toBeFalsy();
+    });
+
+    it("should be set false on failed submit", () => {
+      component["apiAction"] = spy.and.callFake(errorResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component.loading).toBeFalsy();
+    });
   });
 });
 
