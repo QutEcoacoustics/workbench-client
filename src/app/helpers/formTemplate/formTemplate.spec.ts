@@ -3,10 +3,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { Resolvers } from "src/app/interfaces/menusInterfaces";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
@@ -56,7 +55,10 @@ describe("formTemplate", () => {
   let fixture: ComponentFixture<MockComponent>;
   let defaultError: ApiErrorDetails;
   let defaultModel: MockModel;
-  let defaultResolvers: Resolvers;
+  let notifications: ToastrService;
+  let router: Router;
+  let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
+  let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
 
   function configureTestingModule(
     resolvers: MockResolvers = {},
@@ -74,7 +76,13 @@ describe("formTemplate", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
+    notifications = TestBed.inject(ToastrService);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
+
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
   }
 
   function makeResolvedModel(
@@ -87,7 +95,14 @@ describe("formTemplate", () => {
   beforeEach(() => {
     defaultError = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
     defaultModel = new MockModel({ id: 1 });
-    defaultResolvers = { mockModel: "MockModelResolver" };
+    successResponse = model => {
+      return new BehaviorSubject<MockModel>(new MockModel(model));
+    };
+    errorResponse = () => {
+      const subject = new Subject<MockModel>();
+      subject.error(defaultError);
+      return subject;
+    };
   });
 
   describe("resolvers", () => {
@@ -254,10 +269,47 @@ describe("formTemplate", () => {
     });
   });
 
-  xdescribe("submit", () => {
-    it("should call apiAction on submit", () => {});
-    it("should reset form on successful submission", () => {});
-    it("should redirect user on successful submission", () => {});
+  describe("submit", () => {
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      spy = jasmine.createSpy();
+      configureTestingModule();
+    });
+
+    it("should call apiAction on submit", () => {
+      component["apiAction"] = spy.and.callFake(successResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should reset form on successful submission", () => {
+      spyOn(component, "resetForms").and.stub();
+      component["apiAction"] = spy.and.callFake(successResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component.resetForms).toHaveBeenCalled();
+    });
+
+    it("should not reset form on failed submission", () => {
+      spyOn(component, "resetForms").and.stub();
+      component["apiAction"] = spy.and.callFake(errorResponse);
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(component.resetForms).not.toHaveBeenCalled();
+    });
+
+    it("should redirect user on successful submission", () => {
+      spyOn(component, "resetForms").and.stub();
+      fixture.detectChanges();
+
+      component.submit({ id: 1 });
+      expect(router.navigateByUrl).toHaveBeenCalled();
+    });
   });
 
   xdescribe("successMessage", () => {
