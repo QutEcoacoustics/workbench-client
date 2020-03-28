@@ -17,7 +17,9 @@ import { CmsComponent } from "./cms/cms.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
+import { FormlyCheckboxInput } from "./formly/checkbox-input.component";
 import { FileValueAccessor } from "./formly/file-input.directive";
+import { FormlyHorizontalWrapper } from "./formly/horizontal-wrapper";
 import { FormlyImageInput } from "./formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./formly/question-answer.component";
@@ -37,6 +39,8 @@ export const sharedComponents = [
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
+  FormlyCheckboxInput,
+  FormlyHorizontalWrapper,
   FormlyImageInput,
   FormlyQuestionAnswer,
   FormlyQuestionAnswerAction,

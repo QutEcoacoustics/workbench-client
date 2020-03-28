@@ -29,19 +29,19 @@
     },
     {
       "key": "retired",
-      "type": "input",
+      "type": "checkbox",
+      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Retired",
-        "type": "checkbox",
         "required": false
       }
     },
     {
       "key": "isTaxanomic",
-      "type": "input",
+      "type": "checkbox",
+      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Is Taxanomic",
-        "type": "checkbox",
         "required": false
       }
     }

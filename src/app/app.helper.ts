@@ -3,6 +3,8 @@ import { APP_INITIALIZER } from "@angular/core";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
+import { FormlyCheckboxInput } from "./component/shared/formly/checkbox-input.component";
+import { FormlyHorizontalWrapper } from "./component/shared/formly/horizontal-wrapper";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
 import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
 import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
@@ -89,6 +91,10 @@ export const toastrRoot = {
 export const formlyRoot = {
   types: [
     {
+      name: "checkbox",
+      component: FormlyCheckboxInput
+    },
+    {
       name: "image",
       component: FormlyImageInput
     },
@@ -104,6 +110,9 @@ export const formlyRoot = {
       name: "question-answer-action",
       component: FormlyQuestionAnswerAction
     }
+  ],
+  wrappers: [
+    { name: "form-field-horizontal", component: FormlyHorizontalWrapper }
   ],
   validationMessages: [
     { name: "required", message: "This field is required" },
