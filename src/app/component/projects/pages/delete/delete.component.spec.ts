@@ -1,13 +1,8 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
@@ -17,7 +12,7 @@ import {
   ProjectsService
 } from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { submitForm } from "src/testHelpers";
+import { assertFormErrorHandling } from "src/testHelpers";
 import { projectsMenuItem } from "../../projects.menus";
 import { DeleteComponent } from "./delete.component";
 
@@ -80,145 +75,39 @@ describe("ProjectsDeleteComponent", () => {
     };
   });
 
-  it("should create", () => {
-    configureTestingModule(defaultProject, undefined);
-
-    expect(component).toBeTruthy();
+  describe("form", () => {
+    it("should have no fields", () => {
+      configureTestingModule(defaultProject, undefined);
+      expect(component.fields).toEqual([]);
+    });
   });
 
-  it("should handle project error", fakeAsync(() => {
-    configureTestingModule(undefined, defaultError);
-
-    const body = fixture.nativeElement;
-    expect(body.childElementCount).toBe(0);
-  }));
-
-  describe("form", () => {
-    it("should eventually load form", () => {
+  describe("component", () => {
+    it("should create", () => {
       configureTestingModule(defaultProject, undefined);
-      expect(
-        fixture.nativeElement.querySelector("button[type='submit']")
-      ).toBeTruthy();
-      expect(
-        fixture.nativeElement.querySelector("button[type='submit']").disabled
-      ).toBeFalsy();
+      expect(component).toBeTruthy();
     });
 
-    it("should display form with project name in title", fakeAsync(() => {
-      const project = new Project({
-        id: 1,
-        name: "Custom Project"
-      });
-      configureTestingModule(project, undefined);
+    it("should handle project error", () => {
+      configureTestingModule(undefined, defaultError);
+      assertFormErrorHandling(fixture);
+    });
 
-      const title = fixture.nativeElement.querySelector("h2");
-      expect(title).toBeTruthy();
-      expect(title.innerText).toContain("Custom Project");
-    }));
-
-    it("should display form with red delete button", fakeAsync(() => {
+    it("should call api", () => {
       configureTestingModule(defaultProject, undefined);
+      spyOn(api, "destroy").and.callThrough();
+      component.submit({});
+      expect(api.destroy).toHaveBeenCalled();
+    });
 
-      const button = fixture.nativeElement.querySelector("button.btn-danger");
-      expect(button).toBeTruthy();
-      expect(button.innerText).toContain("Delete");
-    }));
-  });
-
-  describe("failed submissions", () => {
-    it("should display form error on failure to submit", fakeAsync(() => {
-      const project = new Project({
-        id: 1,
-        name: "Custom Project"
-      });
-      configureTestingModule(project, undefined);
-      spyOn(api, "destroy").and.callFake(() => {
-        const subject = new Subject<void>();
-
-        subject.error({
-          status: 401,
-          message: "You need to log in or register before continuing."
-        } as ApiErrorDetails);
-
-        return subject;
-      });
-
-      submitForm(fixture);
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "You need to log in or register before continuing."
-      );
-    }));
-
-    it("should re-enable submit button after failed submission", fakeAsync(() => {
+    it("should redirect to projects", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "destroy").and.callFake(() => {
-        const subject = new Subject<Project>();
+      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
 
-        subject.error({
-          message: "Sign in to access this feature.",
-          info: 401
-        } as ApiErrorDetails);
-
-        return subject;
-      });
-
-      submitForm(fixture);
-
-      flush();
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector(
-        "button[type='submit']"
-      );
-      expect(button).toBeTruthy();
-      expect(button.disabled).toBeFalsy("Button should not be disabled");
-    }));
-  });
-
-  describe("successful submissions", () => {
-    it("should delete project on submit", fakeAsync(() => {
-      const project = new Project({
-        id: 1,
-        name: "Custom Project"
-      });
-      configureTestingModule(project, undefined);
-      const deleteSpy = spyOn(api, "destroy").and.callFake(() => {
-        return new BehaviorSubject<null>(null);
-      });
-
-      submitForm(fixture);
-      expect(deleteSpy).toHaveBeenCalledWith(project);
-    }));
-
-    it("should navigate on successful submit", fakeAsync(() => {
-      const project = new Project({
-        id: 1,
-        name: "Custom Project"
-      });
-      configureTestingModule(project, undefined);
-      spyOn(api, "destroy").and.callFake(() => {
-        return new BehaviorSubject<null>(null);
-      });
-
-      submitForm(fixture);
-
-      expect(router.navigateByUrl).toHaveBeenCalled();
+      component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         projectsMenuItem.route.toString()
       );
-    }));
-
-    it("should disable submit button while submitting", fakeAsync(() => {
-      configureTestingModule(defaultProject, undefined);
-      spyOn(api, "destroy").and.stub();
-
-      submitForm(fixture);
-
-      const button = fixture.nativeElement.querySelector(
-        "button[type='submit']"
-      );
-      expect(button.disabled).toBeTruthy();
-    }));
+    });
   });
 });

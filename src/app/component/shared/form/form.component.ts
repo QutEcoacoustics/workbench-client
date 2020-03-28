@@ -28,7 +28,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() fieldsUrl: string;
   @Input() model: AbstractModel;
   @Input() size: "small" | "default" = "default";
-  @Input() submitLabel: string;
+  @Input() submitLabel = "Submit";
   @Input() submitLoading: boolean;
   @Input() subTitle?: string;
   @Input() title?: string;
@@ -50,7 +50,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
       // TODO Retrieve Schema from url
       // this.convertFunctions(this.fields);
     } else {
-      this.convertFunctions(this.fields);
+      this.fields = this.convertFunctions(this.fields);
     }
   }
 
@@ -61,6 +61,10 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    * @param fields Form fields
    */
   convertFunctions(fields: any) {
+    if (!fields) {
+      return [];
+    }
+
     fields.forEach((field: any) => {
       const validator = field.validators;
 
@@ -71,6 +75,8 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
         );
       }
     });
+
+    return fields;
   }
 
   /**
