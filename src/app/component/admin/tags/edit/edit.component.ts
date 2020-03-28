@@ -13,6 +13,7 @@ import {
   TagsService
 } from "src/app/services/baw-api/tags.service";
 import {
+  adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
   adminTagsMenuItem
@@ -25,7 +26,12 @@ const tagKey = "tag";
 @Page({
   category: adminTagsCategory,
   menus: {
-    actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
+    actions: List([
+      adminTagsMenuItem,
+      ...adminTagsMenuItemActions,
+      adminEditTagMenuItem,
+      adminDeleteTagMenuItem
+    ]),
     links: List()
   },
   resolvers: {
@@ -58,7 +64,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, model =>
+    super(notifications, route, router, tagKey, model =>
       defaultSuccessMsg("updated", model.text)
     );
   }

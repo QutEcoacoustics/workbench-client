@@ -1,11 +1,12 @@
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
 import { AbstractModel } from "src/app/models/AbstractModel";
+import { id, IdOr } from "../api-common";
 import { Filters, Meta } from "../baw-api.service";
 
 export function listMock<M extends AbstractModel>(
   classBuilder: (index: number) => M
-) {
+): Observable<M[]> {
   const models: M[] = [];
 
   for (let i = 0; i < 25; i++) {
@@ -18,7 +19,7 @@ export function listMock<M extends AbstractModel>(
 export function filterMock<M extends AbstractModel>(
   filters: Filters,
   classBuilder: (index: number) => M
-) {
+): Observable<M[]> {
   const models: M[] = [];
   const meta: Meta = {
     status: 200,
@@ -48,4 +49,11 @@ export function filterMock<M extends AbstractModel>(
   }
 
   return of(models).pipe(delay(1000));
+}
+
+export function showMock<M extends AbstractModel>(
+  model: IdOr<M>,
+  classBuilder: (modelId: number) => M
+): Observable<M> {
+  return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(1000));
 }

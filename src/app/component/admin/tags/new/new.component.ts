@@ -30,7 +30,7 @@ import { fields } from "../tag.json";
   template: `
     <app-form
       *ngIf="!failure"
-      title="New Site"
+      title="New Tag"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"

@@ -14,6 +14,7 @@ import {
 } from "src/app/services/baw-api/tags.service";
 import {
   adminDeleteTagMenuItem,
+  adminEditTagMenuItem,
   adminTagsCategory,
   adminTagsMenuItem
 } from "../../admin.menus";
@@ -24,7 +25,12 @@ const tagKey = "tag";
 @Page({
   category: adminTagsCategory,
   menus: {
-    actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
+    actions: List([
+      adminTagsMenuItem,
+      ...adminTagsMenuItemActions,
+      adminEditTagMenuItem,
+      adminDeleteTagMenuItem
+    ]),
     links: List()
   },
   resolvers: {
@@ -57,7 +63,7 @@ export class AdminTagsDeleteComponent extends FormTemplate<Tag>
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, model =>
+    super(notifications, route, router, tagKey, model =>
       defaultSuccessMsg("destroyed", model.text)
     );
   }
