@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -39,6 +39,19 @@ export class TagsService extends StandardApi<Tag, []> {
   }
   destroy(model: IdOr<Tag>): Observable<Tag | void> {
     return this.apiDestroy(endpoint(model));
+  }
+
+  /**
+   * List type of tags
+   */
+  typeOfTags(): Observable<string[]> {
+    return of([
+      "General",
+      "Common Name",
+      "Species Name",
+      "Looks Like",
+      "Sounds Like"
+    ]);
   }
 }
 
