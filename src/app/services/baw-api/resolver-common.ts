@@ -17,10 +17,14 @@ import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
 
 /**
- * Baw Resolve Wrapper Class
+ * Baw Resolver Wrapper Class
  */
 export abstract class BawResolver<
+  // Output Model
+  O extends any,
+  // API Service Model
   M extends AbstractModel,
+  // API Service
   A extends
     | BawApiService<M>
     | ApiList<M, any[]>
@@ -42,7 +46,7 @@ export abstract class BawResolver<
     const ids = this.ids;
     const resolverFn = this.resolverFn;
 
-    class Resolver implements Resolve<ResolvedModel<M | M[]>> {
+    class Resolver implements Resolve<ResolvedModel<O>> {
       constructor(private api: A) {}
 
       /**
@@ -51,7 +55,7 @@ export abstract class BawResolver<
        */
       public resolve(
         route: ActivatedRouteSnapshot
-      ): Observable<ResolvedModel<M | M[]>> {
+      ): Observable<ResolvedModel<O>> {
         // Grab Model ID from URL
         const modelId = id ? convertToId(route.paramMap.get(id)) : undefined;
         // Grab additional ID's from URL
@@ -59,7 +63,13 @@ export abstract class BawResolver<
           ? ids.map(urlId => convertToId(route.paramMap.get(urlId)))
           : [];
 
-        return resolverFn(route, this.api, modelId, args);
+        return resolverFn(route, this.api, modelId, args).pipe(
+          map(model => ({ model })), // Modify output to match ResolvedModel interface
+          take(1), // Only take first response
+          catchError((error: ApiErrorDetails) => {
+            return of({ error }); // Modify output to match ResolvedModel interface
+          })
+        );
       }
     }
 
@@ -74,7 +84,7 @@ export abstract class BawResolver<
    */
   public abstract createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<M | M[]>>>,
+    resolver: Type<Resolve<ResolvedModel<O>>>,
     deps: Type<A>[]
   ): T & { providers: BawProvider[] };
 
@@ -90,7 +100,7 @@ export abstract class BawResolver<
     api: A,
     id: Id,
     ids: Id[]
-  ): Observable<ResolvedModel<M | M[]>>;
+  ): Observable<O>;
 }
 
 /**
@@ -133,7 +143,7 @@ export class Resolvers<
 export class ListResolver<
   M extends AbstractModel,
   A extends ApiList<M, any[]>
-> extends BawResolver<M, A, { list: string }> {
+> extends BawResolver<M[], M, A, { list: string }> {
   constructor(deps: Type<A>[], ids?: string[]) {
     super(deps, undefined, ids);
   }
@@ -156,14 +166,7 @@ export class ListResolver<
   }
 
   public resolverFn(_: ActivatedRouteSnapshot, api: A, __: Id, ids: Id[]) {
-    // Return models
-    return api.list(...ids).pipe(
-      map(model => ({ model })), // Modify output to match ResolvedModel interface
-      take(1), // Only take first response
-      catchError((error: ApiErrorDetails) => {
-        return of({ error }); // Modify output to match ResolvedModel interface
-      })
-    );
+    return api.list(...ids);
   }
 }
 
@@ -175,7 +178,7 @@ export class ListResolver<
 export class ShowResolver<
   M extends AbstractModel,
   A extends ApiShow<M, any[], IdOr<M>>
-> extends BawResolver<M, A, { show: string }> {
+> extends BawResolver<M, M, A, { show: string }> {
   constructor(deps: Type<A>[], id?: string, ids?: string[]) {
     super(deps, id, ids);
   }
@@ -198,24 +201,22 @@ export class ShowResolver<
   }
 
   public resolverFn(_: ActivatedRouteSnapshot, api: A, id: Id, ids: Id[]) {
-    // Return model
-    return api.show(id, ...ids).pipe(
-      map(model => ({ model })), // Modify output to match ResolvedModel interface
-      take(1), // Only take first response
-      catchError((error: ApiErrorDetails) => {
-        return of({ error }); // Modify output to match ResolvedModel interface
-      })
-    );
+    return api.show(id, ...ids);
   }
 }
 
+/**
+ * App provider details
+ */
 export interface BawProvider {
   provide: string;
   useClass: Type<Resolve<any>>;
   deps: Type<any>[];
 }
 
-// Resolver model output
+/**
+ * Resolver model output
+ */
 export interface ResolvedModel<T = AbstractModel | AbstractModel[]> {
   model?: T;
   error?: ApiErrorDetails;

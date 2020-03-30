@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Type } from "@angular/core";
+import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
@@ -8,7 +9,12 @@ import { Tag } from "src/app/models/Tag";
 import { Empty, id, IdOr, IdParamOptional, StandardApi } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, showMock } from "./mock/api-commonMock";
-import { Resolvers } from "./resolver-common";
+import {
+  BawProvider,
+  BawResolver,
+  ResolvedModel,
+  Resolvers
+} from "./resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}`;
@@ -44,7 +50,7 @@ export class TagsService extends StandardApi<Tag, []> {
   /**
    * List type of tags
    */
-  typeOfTags(): Observable<string[]> {
+  typeOfTags(): Observable<TypeOfTag[]> {
     return of([
       "General",
       "Common Name",
@@ -75,3 +81,44 @@ function createTag(modelId: Id) {
     updatedAt: "2020-03-10T10:51:04.576+10:00"
   });
 }
+
+class TypeOfTagsResolver extends BawResolver<
+  TypeOfTag[],
+  Tag,
+  TagsService,
+  { typeOfTags: string }
+> {
+  constructor() {
+    super([TagsService], undefined, undefined);
+  }
+
+  public createProviders(
+    name: string,
+    resolver: Type<Resolve<ResolvedModel<TypeOfTag[]>>>,
+    deps: Type<TagsService>[]
+  ): { typeOfTags: string } & {
+    providers: BawProvider[];
+  } {
+    return {
+      typeOfTags: name + "TypeOfTagsResolver",
+      providers: [
+        {
+          provide: name + "TypeOfTagsResolver",
+          useClass: resolver,
+          deps
+        }
+      ]
+    };
+  }
+
+  public resolverFn(
+    _: ActivatedRouteSnapshot,
+    api: TagsService,
+    __: number,
+    ___: number[]
+  ): Observable<TypeOfTag[]> {
+    return api.typeOfTags();
+  }
+}
+
+type TypeOfTag = string;
