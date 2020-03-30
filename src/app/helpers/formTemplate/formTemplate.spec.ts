@@ -63,7 +63,7 @@ describe("formTemplate", () => {
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
 
   function configureTestingModule(
-    resolvers: MockResolvers = {},
+    resolvers?: MockResolvers,
     data: MockData = {}
   ) {
     TestBed.configureTestingModule({
@@ -110,6 +110,13 @@ describe("formTemplate", () => {
   describe("resolvers", () => {
     it("should handle no resolvers", () => {
       configureTestingModule();
+      fixture.detectChanges();
+
+      expect(component.failure).toBeFalsy();
+    });
+
+    it("should handle empty resolvers", () => {
+      configureTestingModule({});
       fixture.detectChanges();
 
       expect(component.failure).toBeFalsy();
