@@ -5,13 +5,20 @@ import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { TagGroup } from "src/app/models/TagGroup";
-import { Empty, id, IdOr, IdParamOptional, StandardApi } from "./api-common";
+import {
+  Empty,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi
+} from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, showMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
-const endpoint = stringTemplate`/tag_groups/${tagGroupId}`;
+const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
 
 /**
  * Scripts Service.
@@ -35,13 +42,13 @@ export class TagGroupService extends StandardApi<TagGroup, []> {
     return showMock(model, modelId => createTagGroup(modelId));
   }
   create(model: TagGroup): Observable<TagGroup> {
-    return this.apiCreate(endpoint(Empty), model);
+    return this.apiCreate(endpoint(Empty, Empty), model);
   }
   update(model: TagGroup): Observable<TagGroup> {
-    return this.apiUpdate(endpoint(model), model);
+    return this.apiUpdate(endpoint(model, Empty), model);
   }
   destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
-    return this.apiDestroy(endpoint(model));
+    return this.apiDestroy(endpoint(model, Empty));
   }
 }
 
