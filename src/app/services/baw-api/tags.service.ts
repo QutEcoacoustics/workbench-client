@@ -8,7 +8,14 @@ import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { Tag } from "src/app/models/Tag";
-import { Empty, id, IdOr, IdParamOptional, StandardApi } from "./api-common";
+import {
+  Empty,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi
+} from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, showMock } from "./mock/api-commonMock";
 import {
@@ -19,7 +26,7 @@ import {
 } from "./resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
-const endpoint = stringTemplate`/tags/${tagId}`;
+const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 export class TagType {
   constructor(public name: string) {}
@@ -45,13 +52,13 @@ export class TagsService extends StandardApi<Tag, []> {
     return showMock(model, modelId => createTag(modelId));
   }
   create(model: Tag): Observable<Tag> {
-    return this.apiCreate(endpoint(Empty), model);
+    return this.apiCreate(endpoint(Empty, Empty), model);
   }
   update(model: Tag): Observable<Tag> {
-    return this.apiUpdate(endpoint(model), model);
+    return this.apiUpdate(endpoint(model, Empty), model);
   }
   destroy(model: IdOr<Tag>): Observable<Tag | void> {
-    return this.apiDestroy(endpoint(model));
+    return this.apiDestroy(endpoint(model, Empty));
   }
   /**
    * List type of tags
