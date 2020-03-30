@@ -33,6 +33,7 @@ export abstract class BawResolver<
     | ApiCreate<M, any[]>
     | ApiUpdate<M, any[]>
     | ApiDestroy<M, any[], IdOr<M>>,
+  // Resolver output model name
   T = { customResolver: string }
 > {
   constructor(

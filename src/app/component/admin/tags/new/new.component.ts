@@ -8,7 +8,11 @@ import {
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Tag } from "src/app/models/Tag";
-import { TagsService } from "src/app/services/baw-api/tags.service";
+import {
+  tagResolvers,
+  TagsService,
+  TypeOfTag
+} from "src/app/services/baw-api/tags.service";
 import {
   adminNewTagMenuItem,
   adminTagsCategory,
@@ -17,11 +21,16 @@ import {
 import { adminTagsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag.json";
 
+const typeOfTagsKey = "typeOfTags";
+
 @Page({
   category: adminTagsCategory,
   menus: {
     actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
     links: List()
+  },
+  resolvers: {
+    [typeOfTagsKey]: tagResolvers.typeOfTags
   },
   self: adminNewTagMenuItem
 })
@@ -55,10 +64,20 @@ export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
 
   ngOnInit() {
     super.ngOnInit();
+    const typeOfTagIndex = 1;
 
     if (!this.failure) {
-      // TODO Update typeOfTag with options
+      this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
+        tagType => ({
+          label: tagType,
+          value: tagType
+        })
+      );
     }
+  }
+
+  public get typeOfTags(): TypeOfTag[] {
+    return (this.models[typeOfTagsKey] as unknown) as TypeOfTag[];
   }
 
   protected apiAction(model: Partial<Tag>) {

@@ -10,7 +10,8 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { Tag } from "src/app/models/Tag";
 import {
   tagResolvers,
-  TagsService
+  TagsService,
+  TypeOfTag
 } from "src/app/services/baw-api/tags.service";
 import {
   adminDeleteTagMenuItem,
@@ -22,6 +23,7 @@ import { adminTagsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag.json";
 
 const tagKey = "tag";
+const typeOfTagsKey = "typeOfTags";
 
 @Page({
   category: adminTagsCategory,
@@ -35,7 +37,8 @@ const tagKey = "tag";
     links: List()
   },
   resolvers: {
-    [tagKey]: tagResolvers.show
+    [tagKey]: tagResolvers.show,
+    [typeOfTagsKey]: tagResolvers.typeOfTags
   },
   self: adminEditTagMenuItem
 })
@@ -71,11 +74,21 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
 
   ngOnInit() {
     super.ngOnInit();
+    const typeOfTagIndex = 1;
 
     if (!this.failure) {
       this.title = `Edit ${this.model.text}`;
-      // TODO Update typeOfTag with options
+      this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
+        tagType => ({
+          label: tagType,
+          value: tagType
+        })
+      );
     }
+  }
+
+  public get typeOfTags(): TypeOfTag[] {
+    return (this.models[typeOfTagsKey] as unknown) as TypeOfTag[];
   }
 
   protected apiAction(model: Partial<Tag>) {

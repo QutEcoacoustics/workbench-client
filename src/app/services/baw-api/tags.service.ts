@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
+import { delay } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -18,6 +19,7 @@ import {
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}`;
+export type TypeOfTag = string;
 
 @Injectable()
 export class TagsService extends StandardApi<Tag, []> {
@@ -28,14 +30,11 @@ export class TagsService extends StandardApi<Tag, []> {
   list(): Observable<Tag[]> {
     return this.filter({});
   }
-
   filter(filters: Filters): Observable<Tag[]> {
     return filterMock<Tag>(filters, index => createTag(index));
   }
-
   show(model: IdOr<Tag>): Observable<Tag> {
     return showMock(model, modelId => createTag(modelId));
-    // return this.apiShow(endpoint(model));
   }
   create(model: Tag): Observable<Tag> {
     return this.apiCreate(endpoint(Empty), model);
@@ -46,7 +45,6 @@ export class TagsService extends StandardApi<Tag, []> {
   destroy(model: IdOr<Tag>): Observable<Tag | void> {
     return this.apiDestroy(endpoint(model));
   }
-
   /**
    * List type of tags
    */
@@ -57,14 +55,9 @@ export class TagsService extends StandardApi<Tag, []> {
       "Species Name",
       "Looks Like",
       "Sounds Like"
-    ]);
+    ]).pipe(delay(1000));
   }
 }
-
-export const tagResolvers = new Resolvers<Tag, TagsService>(
-  [TagsService],
-  "tagId"
-).create("Tag");
 
 function createTag(modelId: Id) {
   return new Tag({
@@ -80,6 +73,26 @@ function createTag(modelId: Id) {
     createdAt: "2020-03-10T10:51:04.576+10:00",
     updatedAt: "2020-03-10T10:51:04.576+10:00"
   });
+}
+
+class TagResolvers {
+  public create(name: string) {
+    const additionalProvider = new Resolvers<Tag, TagsService>(
+      [TagsService],
+      "tagId"
+    ).create(name);
+    const typeOfTagsProvider = new TypeOfTagsResolver().create(name);
+    const providers = [
+      ...additionalProvider.providers,
+      ...typeOfTagsProvider.providers
+    ];
+
+    return {
+      ...additionalProvider,
+      ...typeOfTagsProvider,
+      providers
+    };
+  }
 }
 
 class TypeOfTagsResolver extends BawResolver<
@@ -121,4 +134,4 @@ class TypeOfTagsResolver extends BawResolver<
   }
 }
 
-type TypeOfTag = string;
+export const tagResolvers = new TagResolvers().create("Tag");
