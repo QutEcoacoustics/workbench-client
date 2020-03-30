@@ -11,7 +11,7 @@ import { Tag } from "src/app/models/Tag";
 import {
   tagResolvers,
   TagsService,
-  TypeOfTag
+  TagType
 } from "src/app/services/baw-api/tags.service";
 import {
   adminNewTagMenuItem,
@@ -69,15 +69,15 @@ export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     if (!this.failure) {
       this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
         tagType => ({
-          label: tagType,
-          value: tagType
+          label: tagType.toString(),
+          value: tagType.name
         })
       );
     }
   }
 
-  public get typeOfTags(): TypeOfTag[] {
-    return (this.models[typeOfTagsKey] as unknown) as TypeOfTag[];
+  public get typeOfTags(): TagType[] {
+    return (this.models[typeOfTagsKey] as unknown) as TagType[];
   }
 
   protected apiAction(model: Partial<Tag>) {

@@ -1,8 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import _ from "lodash";
 import { Observable, of } from "rxjs";
-import { delay } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
@@ -19,7 +20,14 @@ import {
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}`;
-export type TypeOfTag = string;
+
+export class TagType {
+  constructor(public name: string) {}
+
+  toString() {
+    return _.startCase(this.name);
+  }
+}
 
 @Injectable()
 export class TagsService extends StandardApi<Tag, []> {
@@ -47,15 +55,16 @@ export class TagsService extends StandardApi<Tag, []> {
   }
   /**
    * List type of tags
+   * TODO Replace with reference to baw server
    */
-  typeOfTags(): Observable<TypeOfTag[]> {
+  typeOfTags(): Observable<TagType[]> {
     return of([
-      "General",
-      "Common Name",
-      "Species Name",
-      "Looks Like",
-      "Sounds Like"
-    ]).pipe(delay(1000));
+      "general",
+      "common_name",
+      "species_name",
+      "looks_like",
+      "sounds_like"
+    ]).pipe(map(types => types.map(type => new TagType(type))));
   }
 }
 
@@ -96,7 +105,7 @@ class TagResolvers {
 }
 
 class TypeOfTagsResolver extends BawResolver<
-  TypeOfTag[],
+  TagType[],
   Tag,
   TagsService,
   { typeOfTags: string }
@@ -107,7 +116,7 @@ class TypeOfTagsResolver extends BawResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<TypeOfTag[]>>>,
+    resolver: Type<Resolve<ResolvedModel<TagType[]>>>,
     deps: Type<TagsService>[]
   ): { typeOfTags: string } & {
     providers: BawProvider[];
@@ -125,11 +134,9 @@ class TypeOfTagsResolver extends BawResolver<
   }
 
   public resolverFn(
-    _: ActivatedRouteSnapshot,
-    api: TagsService,
-    __: number,
-    ___: number[]
-  ): Observable<TypeOfTag[]> {
+    __: ActivatedRouteSnapshot,
+    api: TagsService
+  ): Observable<TagType[]> {
     return api.typeOfTags();
   }
 }

@@ -10,8 +10,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { Tag } from "src/app/models/Tag";
 import {
   tagResolvers,
-  TagsService,
-  TypeOfTag
+  TagsService
 } from "src/app/services/baw-api/tags.service";
 import {
   adminDeleteTagMenuItem,
@@ -22,7 +21,6 @@ import {
 import { adminTagsMenuItemActions } from "../list/list.component";
 
 const tagKey = "tag";
-const typeOfTagsKey = "typeOfTags";
 
 @Page({
   category: adminTagsCategory,
@@ -36,8 +34,7 @@ const typeOfTagsKey = "typeOfTags";
     links: List()
   },
   resolvers: {
-    [tagKey]: tagResolvers.show,
-    [typeOfTagsKey]: tagResolvers.typeOfTags
+    [tagKey]: tagResolvers.show
   },
   self: adminDeleteTagMenuItem
 })
@@ -73,21 +70,10 @@ export class AdminTagsDeleteComponent extends FormTemplate<Tag>
 
   ngOnInit(): void {
     super.ngOnInit();
-    const typeOfTagIndex = 1;
 
     if (!this.failure) {
       this.title = `Are you certain you wish to delete ${this.model.text}?`;
-      this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
-        tagType => ({
-          label: tagType,
-          value: tagType
-        })
-      );
     }
-  }
-
-  public get typeOfTags(): TypeOfTag[] {
-    return (this.models[typeOfTagsKey] as unknown) as TypeOfTag[];
   }
 
   protected redirectionPath() {
