@@ -91,6 +91,10 @@ export const adminNewTagMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
+/**
+ * Admin Tag Groups
+ */
+
 export const adminTagGroupsMenuItem = MenuRoute({
   icon: ["fas", "tags"],
   label: "Tag Group",
