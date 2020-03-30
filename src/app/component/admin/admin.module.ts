@@ -4,9 +4,9 @@ import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
-import { AdminScriptsNewComponent } from "./scripts-new/scripts-new.component";
-import { AdminScriptsComponent } from "./scripts/scripts.component";
-import { AdminUserListComponent } from "./user-list/user-list.component";
+import { AdminScriptsComponent } from "./scripts/list/list.component";
+import { AdminScriptsNewComponent } from "./scripts/new/new.component";
+import { AdminUserListComponent } from "./users/list/list.component";
 
 const components = [
   AdminDashboardComponent,

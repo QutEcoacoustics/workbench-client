@@ -14,9 +14,9 @@ import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
   adminScriptsMenuItem
-} from "../admin.menus";
-import { adminScriptsMenuItemActions } from "../scripts/scripts.component";
-import { fields } from "./new.json";
+} from "../../admin.menus";
+import { adminScriptsMenuItemActions } from "../list/list.component";
+import { fields } from "../scripts.json";
 
 /**
  * New Scripts Component
@@ -33,7 +33,7 @@ import { fields } from "./new.json";
   self: adminNewScriptsMenuItem
 })
 @Component({
-  selector: "app-scripts-new",
+  selector: "app-admin-scripts-new",
   template: `
     <app-form
       *ngIf="!failure"

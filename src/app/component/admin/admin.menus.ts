@@ -28,7 +28,7 @@ export const adminDashboardMenuItem = MenuRoute({
 
 export const adminUserListMenuItem = MenuRoute({
   icon: ["fas", "user-cog"],
-  label: "User List",
+  label: "Users",
   route: adminRoute.add("user_accounts"),
   tooltip: () => "Manage user accounts",
   parent: adminDashboardMenuItem,

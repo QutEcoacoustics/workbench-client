@@ -8,13 +8,13 @@ import { AccountService } from "src/app/services/baw-api/account.service";
 import {
   theirEditProfileMenuItem,
   theirProfileMenuItem
-} from "../../profile/profile.menus";
+} from "../../../profile/profile.menus";
 import {
   adminCategory,
   adminDashboardMenuItem,
   adminUserListMenuItem
-} from "../admin.menus";
-import { adminMenuItemActions } from "../dashboard/dashboard.component";
+} from "../../admin.menus";
+import { adminMenuItemActions } from "../../dashboard/dashboard.component";
 
 @Page({
   category: adminCategory,
@@ -28,9 +28,9 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
   self: adminUserListMenuItem
 })
 @Component({
-  selector: "app-user-list",
-  templateUrl: "./user-list.component.html",
-  styleUrls: ["./user-list.component.scss"]
+  selector: "app-admin-users",
+  templateUrl: "./list.component.html",
+  styleUrls: ["./list.component.scss"]
 })
 export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
   implements OnInit {

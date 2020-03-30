@@ -8,9 +8,9 @@ import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { testBawServices } from "src/app/test.helper";
-import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.component";
-import { SharedModule } from "../../shared/shared.module";
-import { AdminUserListComponent } from "./user-list.component";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
+import { SharedModule } from "../../../shared/shared.module";
+import { AdminUserListComponent } from "./list.component";
 
 describe("AdminUserListComponent", () => {
   let fixture: ComponentFixture<AdminUserListComponent>;
