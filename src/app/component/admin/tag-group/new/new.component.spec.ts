@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
+import { TagGroupService } from "src/app/services/baw-api/tag-group.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { AdminTagGroupsNewComponent } from "./new.component";
-import { TagGroupService } from "src/app/services/baw-api/tag-group.service";
-import { ToastrService } from "ngx-toastr";
 
 describe("AdminTagGroupsNewComponent", () => {
   let api: TagGroupService;
