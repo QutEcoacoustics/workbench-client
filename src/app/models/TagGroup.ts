@@ -11,10 +11,10 @@ import { AbstractModel } from "./AbstractModel";
  */
 export interface TagGroupInterface {
   id?: Id;
-  groupIdentifier: string;
-  createdAt: DateTimeTimezone | string;
-  creatorId: Id;
-  tagId: Id;
+  groupIdentifier?: string;
+  createdAt?: DateTimeTimezone | string;
+  creatorId?: Id;
+  tagId?: Id;
 }
 
 /**
@@ -23,10 +23,10 @@ export interface TagGroupInterface {
 export class TagGroup extends AbstractModel implements TagGroupInterface {
   public readonly kind: "TagGroup" = "TagGroup";
   public readonly id?: Id;
-  public readonly groupIdentifier: string;
-  public readonly createdAt: DateTimeTimezone;
-  public readonly creatorId: Id;
-  public readonly tagId: Id;
+  public readonly groupIdentifier?: string;
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly creatorId?: Id;
+  public readonly tagId?: Id;
 
   constructor(tagGroup: TagGroupInterface) {
     super(tagGroup);

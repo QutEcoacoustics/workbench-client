@@ -16,6 +16,11 @@ import {
 } from "../../admin.menus";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
+export const adminTagGroupMenuItemActions = [
+  adminNewTagGroupMenuItem,
+  adminEditTagGroupMenuItem,
+  adminDeleteTagGroupMenuItem
+];
 
 @Page({
   category: adminTagGroupsCategory,

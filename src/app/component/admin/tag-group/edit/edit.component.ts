@@ -1,11 +1,77 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { TagGroup } from "src/app/models/TagGroup";
+import {
+  tagGroupResolvers,
+  TagGroupService
+} from "src/app/services/baw-api/tag-group.service";
+import {
+  adminEditTagGroupMenuItem,
+  adminTagGroupsCategory,
+  adminTagGroupsMenuItem
+} from "../../admin.menus";
+import { adminTagGroupMenuItemActions } from "../list/list.component";
+import { fields } from "../tag-group.json";
 
+const tagGroupKey = "tagGroup";
+
+@Page({
+  category: adminTagGroupsCategory,
+  menus: {
+    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+    links: List()
+  },
+  resolvers: {
+    [tagGroupKey]: tagGroupResolvers.show
+  },
+  self: adminEditTagGroupMenuItem
+})
 @Component({
   selector: "app-admin-tag-groups-edit",
-  template: ``
+  template: `
+    <app-form
+      *ngIf="!failure"
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></app-form>
+  `
 })
-export class AdminTagGroupsEditComponent implements OnInit {
-  constructor() {}
+export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
+  implements OnInit {
+  public fields = fields;
+  public title: string;
 
-  ngOnInit(): void {}
+  constructor(
+    private api: TagGroupService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, tagGroupKey, model =>
+      defaultSuccessMsg("updated", model.groupIdentifier)
+    );
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    if (!this.failure) {
+      this.title = `Edit ${this.model.groupIdentifier}`;
+    }
+  }
+
+  protected apiAction(model: Partial<TagGroup>) {
+    return this.api.update(new TagGroup(model));
+  }
 }

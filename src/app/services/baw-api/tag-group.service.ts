@@ -7,7 +7,7 @@ import { Id } from "src/app/interfaces/apiInterfaces";
 import { TagGroup } from "src/app/models/TagGroup";
 import { Empty, id, IdOr, IdParamOptional, StandardApi } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock } from "./mock/api-commonMock";
+import { filterMock, showMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
@@ -32,7 +32,7 @@ export class TagGroupService extends StandardApi<TagGroup, []> {
   }
 
   show(model: IdOr<TagGroup>): Observable<TagGroup> {
-    return this.apiShow(endpoint(model));
+    return showMock(model, modelId => createTagGroup(modelId));
   }
   create(model: TagGroup): Observable<TagGroup> {
     return this.apiCreate(endpoint(Empty), model);
