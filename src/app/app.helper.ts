@@ -21,6 +21,10 @@ import {
 } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
+  audioRecordingResolvers,
+  AudioRecordingService
+} from "./services/baw-api/audio-recording.service";
+import {
   projectResolvers,
   ProjectsService
 } from "./services/baw-api/projects.service";
@@ -147,6 +151,7 @@ export const providers = [
   FormTouchedGuard,
   AppConfigService,
   AccountService,
+  AudioRecordingService,
   ProjectsService,
   ScriptsService,
   SecurityService,
@@ -154,6 +159,7 @@ export const providers = [
   SitesService,
   UserService,
   ...accountResolvers.providers,
+  ...audioRecordingResolvers.providers,
   ...projectResolvers.providers,
   ...scriptResolvers.providers,
   ...siteResolvers.providers,

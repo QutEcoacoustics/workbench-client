@@ -5,6 +5,7 @@ import {
   Uuid
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
+import { adminAudioRecordingsMenuItem } from "../component/admin/admin.menus";
 
 /**
  * An audio recording model
@@ -54,7 +55,7 @@ export class AudioRecording extends AbstractModel
     this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
   }
 
-  static fromJSON = (obj: any) => {
+  public static fromJSON = (obj: any) => {
     if (typeof obj === "string") {
       obj = JSON.parse(obj);
     }
@@ -62,15 +63,26 @@ export class AudioRecording extends AbstractModel
     return new AudioRecording(obj);
   };
 
-  toJSON() {
-    // TODO Implement
-
+  public toJSON() {
     return {
-      id: this.id
+      id: this.id,
+      uuid: this.uuid,
+      recordedDate: this.recordedDate?.toISO(),
+      siteId: this.siteId,
+      durationSeconds: this.durationSeconds,
+      sampleRateHertz: this.sampleRateHertz,
+      channels: this.channels,
+      bitRateBps: this.bitRateBps,
+      mediaType: this.mediaType,
+      dataLengthBytes: this.dataLengthBytes,
+      status: this.status,
+      createdAt: this.createdAt?.toISO(),
+      updatedAt: this.updatedAt?.toISO()
     };
   }
 
   redirectPath(): string {
-    throw new Error("Not Implemented");
+    // TODO Change to Audio Recording Page
+    return adminAudioRecordingsMenuItem.route.toString();
   }
 }

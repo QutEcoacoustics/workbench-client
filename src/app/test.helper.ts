@@ -13,6 +13,7 @@ import {
 } from "./services/app-config/appConfigMock.service";
 import { AccountService } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
+import { AudioRecordingService } from "./services/baw-api/audio-recording.service";
 import {
   BawApiService,
   STUB_MODEL_BUILDER
@@ -72,6 +73,7 @@ export const testBawServices = [
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockStandardApiService },
+  { provide: AudioRecordingService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },
