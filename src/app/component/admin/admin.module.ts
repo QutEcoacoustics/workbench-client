@@ -10,6 +10,10 @@ import { AdminTagGroupsDeleteComponent } from "./tag-group/delete/delete.compone
 import { AdminTagGroupsEditComponent } from "./tag-group/edit/edit.component";
 import { AdminTagGroupsComponent } from "./tag-group/list/list.component";
 import { AdminTagGroupsNewComponent } from "./tag-group/new/new.component";
+import { AdminTagsDeleteComponent } from "./tags/delete/delete.component";
+import { AdminTagsEditComponent } from "./tags/edit/edit.component";
+import { AdminTagsComponent } from "./tags/list/list.component";
+import { AdminTagsNewComponent } from "./tags/new/new.component";
 import { AdminUserListComponent } from "./user-list/user-list.component";
 
 const components = [
@@ -20,6 +24,10 @@ const components = [
   AdminTagGroupsDeleteComponent,
   AdminTagGroupsEditComponent,
   AdminTagGroupsNewComponent,
+  AdminTagsComponent,
+  AdminTagsDeleteComponent,
+  AdminTagsEditComponent,
+  AdminTagsNewComponent,
   AdminUserListComponent
 ];
 const routes = adminRoute.compileRoutes(GetRouteConfigForPage);

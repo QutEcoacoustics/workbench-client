@@ -33,6 +33,7 @@ import {
   SitesService
 } from "./services/baw-api/sites.service";
 import { TagGroupService } from "./services/baw-api/tag-group.service";
+import { TagsService } from "./services/baw-api/tags.service";
 import { UserService } from "./services/baw-api/user.service";
 
 /**
@@ -77,6 +78,7 @@ export const testBawServices = [
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },
   { provide: ShallowSitesService, useClass: MockStandardApiService },
+  { provide: TagsService, useClass: MockStandardApiService },
   { provide: TagGroupService, useClass: MockStandardApiService },
   { provide: UserService, useClass: MockShowApiService }
 ];

@@ -74,10 +74,22 @@ export const adminNewScriptsMenuItem = MenuRoute({
   predicate: isAdminPredicate
 });
 
+/**
+ * Admin Tags
+ */
+
+const adminTagsRoute = adminRoute.add("tags");
+
+export const adminTagsCategory: Category = {
+  icon: ["fas", "tag"],
+  label: "Tags",
+  route: adminTagsRoute
+};
+
 export const adminTagsMenuItem = MenuRoute({
   icon: ["fas", "tag"],
   label: "Tags",
-  route: adminRoute.add("tags"),
+  route: adminTagsRoute,
   tooltip: () => "Manage tags",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate
@@ -86,8 +98,28 @@ export const adminTagsMenuItem = MenuRoute({
 export const adminNewTagMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New Tag",
-  route: adminTagsMenuItem.route.add("new"),
+  route: adminTagsRoute.add("new"),
   tooltip: () => "Create a new tag",
+  parent: adminTagsMenuItem,
+  predicate: isAdminPredicate
+});
+
+const adminTagRoute = adminTagsRoute.add(":tagId");
+
+export const adminEditTagMenuItem = MenuRoute({
+  icon: defaultEditIcon,
+  label: "Edit Tag",
+  route: adminTagRoute.add("edit"),
+  tooltip: () => "Edit an existing tag",
+  parent: adminTagsMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminDeleteTagMenuItem = MenuRoute({
+  icon: defaultDeleteIcon,
+  label: "Delete Tag",
+  route: adminTagRoute.add("delete"),
+  tooltip: () => "Delete an existing tag",
   parent: adminTagsMenuItem,
   predicate: isAdminPredicate
 });
