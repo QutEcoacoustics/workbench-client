@@ -11,7 +11,7 @@ import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
   adminScriptsMenuItem
-} from "../admin.menus";
+} from "../../admin.menus";
 
 export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 
@@ -27,9 +27,9 @@ export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
   self: adminScriptsMenuItem
 })
 @Component({
-  selector: "app-scripts",
-  templateUrl: "./scripts.component.html",
-  styleUrls: ["./scripts.component.scss"]
+  selector: "app-admin-scripts",
+  templateUrl: "./list.component.html",
+  styleUrls: ["./list.component.scss"]
 })
 export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
   implements OnInit {

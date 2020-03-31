@@ -65,15 +65,7 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   }
 
   list(): Observable<Site[]> {
-    return listMock<Site>(
-      index =>
-        new Site({
-          id: index,
-          name: "PLACEHOLDER SITE",
-          description: "PLACEHOLDER DESCRIPTION",
-          creatorId: 1
-        })
-    );
+    return this.filter({});
     // return this.apiList(endpointShallow(Empty, Empty));
   }
   filter(filters: Filters): Observable<Site[]> {

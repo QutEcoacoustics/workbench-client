@@ -18,8 +18,7 @@ export const sitesRoute = projectMenuItem.route.addFeatureModule("sites");
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
-  route: sitesRoute.add(":siteId"),
-  parent: projectCategory
+  route: sitesRoute.add(":siteId")
 };
 
 export const newSiteMenuItem = MenuRoute({

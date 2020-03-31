@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AdminScriptsComponent } from "./scripts.component";
+import { AdminTagGroupsComponent } from "./list.component";
 
-xdescribe("AdminScriptsComponent", () => {
-  let component: AdminScriptsComponent;
-  let fixture: ComponentFixture<AdminScriptsComponent>;
+xdescribe("AdminTagGroupsComponent", () => {
+  let component: AdminTagGroupsComponent;
+  let fixture: ComponentFixture<AdminTagGroupsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminScriptsComponent]
+      declarations: [AdminTagGroupsComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdminScriptsComponent);
+    fixture = TestBed.createComponent(AdminTagGroupsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
