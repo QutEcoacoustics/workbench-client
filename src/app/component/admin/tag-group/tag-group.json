@@ -1,0 +1,22 @@
+{
+  "fields": [
+    {
+      "key": "tagId",
+      "type": "input",
+      "templateOptions": {
+        "label": "Tag",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "groupIdentifier",
+      "type": "input",
+      "templateOptions": {
+        "label": "Group Identifier",
+        "type": "text",
+        "required": true
+      }
+    }
+  ]
+}

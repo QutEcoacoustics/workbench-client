@@ -5,45 +5,42 @@ import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
+import { TagGroup } from "src/app/models/TagGroup";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
-  projectResolvers,
-  ProjectsService
-} from "src/app/services/baw-api/projects.service";
+  tagGroupResolvers,
+  TagGroupService
+} from "src/app/services/baw-api/tag-group.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { assertFormErrorHandling } from "src/testHelpers";
-import { projectsMenuItem } from "../../projects.menus";
-import { DeleteComponent } from "./delete.component";
+import { adminTagGroupsMenuItem } from "../../admin.menus";
+import { AdminTagGroupsDeleteComponent } from "./delete.component";
 
-describe("ProjectsDeleteComponent", () => {
-  let api: ProjectsService;
-  let component: DeleteComponent;
+describe("AdminTagGroupsDeleteComponent", () => {
+  let api: TagGroupService;
+  let component: AdminTagGroupsDeleteComponent;
   let defaultError: ApiErrorDetails;
-  let defaultProject: Project;
-  let fixture: ComponentFixture<DeleteComponent>;
+  let defaultTagGroup: TagGroup;
+  let fixture: ComponentFixture<AdminTagGroupsDeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(tagGroup: TagGroup, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [DeleteComponent],
+      declarations: [AdminTagGroupsDeleteComponent],
       providers: [
         ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              project: projectResolvers.show
+              tagGroup: tagGroupResolvers.show
             },
             {
-              project: {
-                model: project,
-                error: projectError
+              tagGroup: {
+                model: tagGroup,
+                error
               }
             }
           )
@@ -51,11 +48,11 @@ describe("ProjectsDeleteComponent", () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(AdminTagGroupsDeleteComponent);
+    api = TestBed.inject(TagGroupService);
     router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService);
     notifications = TestBed.inject(ToastrService);
+    component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();
     spyOn(notifications, "error").and.stub();
@@ -65,9 +62,10 @@ describe("ProjectsDeleteComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
+    defaultTagGroup = new TagGroup({
       id: 1,
-      name: "Project"
+      groupIdentifier: "Group Identifier",
+      tagId: 1
     });
     defaultError = {
       status: 401,
@@ -77,36 +75,36 @@ describe("ProjectsDeleteComponent", () => {
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultTagGroup, undefined);
       expect(component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultTagGroup, undefined);
       expect(component).toBeTruthy();
     });
 
-    it("should handle project error", () => {
+    it("should handle tag group error", () => {
       configureTestingModule(undefined, defaultError);
       assertFormErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultTagGroup, undefined);
       spyOn(api, "destroy").and.callThrough();
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
-    it("should redirect to projects", () => {
-      configureTestingModule(defaultProject, undefined);
+    it("should redirect to tag group list", () => {
+      configureTestingModule(defaultTagGroup, undefined);
       spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(
-        projectsMenuItem.route.toString()
+        adminTagGroupsMenuItem.route.toString()
       );
     });
   });

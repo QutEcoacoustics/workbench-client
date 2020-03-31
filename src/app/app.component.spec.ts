@@ -17,7 +17,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { appLibraryImports } from "./app.module";
 import { homeMenuItem } from "./component/home/home.menus";
-import { projectsMenuItem } from "./component/projects/projects.menus";
+import { SharedModule } from "./component/shared/shared.module";
 import { Project } from "./models/Project";
 import { AppConfigService } from "./services/app-config/app-config.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
@@ -36,6 +36,7 @@ describe("AppComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
+        SharedModule,
         RouterTestingModule,
         HttpClientTestingModule,
         LoadingBarHttpClientModule

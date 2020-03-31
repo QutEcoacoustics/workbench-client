@@ -1,20 +1,10 @@
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { HomeComponent } from "src/app/component/home/home.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { testAppInitializer } from "src/app/test.helper";
-import {
-  getInputs,
-  inputValue,
-  submitForm,
-  testFormlyField
-} from "src/testHelpers";
+import { testFormlyFields } from "src/testHelpers";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { fields } from "./reset-password.json";
 
@@ -23,75 +13,48 @@ describe("ResetPasswordComponent", () => {
   let fixture: ComponentFixture<ResetPasswordComponent>;
   let notifications: ToastrService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule],
-      declarations: [ResetPasswordComponent, HomeComponent],
-      providers: [...testAppInitializer]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ResetPasswordComponent);
-    component = fixture.componentInstance;
-    notifications = TestBed.inject(ToastrService);
-    fixture.detectChanges();
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  const formInputs = [
+    {
+      testGroup: "Username/Email Address Input",
+      setup: undefined,
+      field: fields[0],
+      key: "login",
+      htmlType: "input",
+      required: true,
+      label: "Username or Email Address",
+      type: "text",
+      description: undefined
+    }
+  ];
 
   describe("form", () => {
-    it("should load form", () => {
-      expect(
-        fixture.nativeElement.querySelector("button[type='submit']")
-      ).toBeTruthy();
-      expect(
-        fixture.nativeElement.querySelector("button[type='submit']").disabled
-      ).toBeFalsy();
-    });
-
-    it("should only contain one input", () => {
-      expect(fixture.nativeElement.querySelectorAll("input").length).toBe(1);
-    });
-
-    /* Username/Email Address Input */
-    testFormlyField(
-      "Username/Email Address Input",
-      undefined,
-      fields[0],
-      "login",
-      "input",
-      true,
-      "Username or Email Address",
-      "text"
-    );
+    testFormlyFields(formInputs);
   });
 
-  describe("submit logic", () => {
-    it("should show error message with missing email", fakeAsync(() => {
-      submitForm(fixture);
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Please fill all required fields."
-      );
+  describe("component", () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [...appLibraryImports, SharedModule],
+        declarations: [ResetPasswordComponent, HomeComponent],
+        providers: [...testAppInitializer]
+      }).compileComponents();
     }));
 
-    it("should call submit function with username/email", fakeAsync(() => {
-      spyOn(component, "submit");
+    beforeEach(() => {
+      fixture = TestBed.createComponent(ResetPasswordComponent);
+      component = fixture.componentInstance;
+      notifications = TestBed.inject(ToastrService);
+      fixture.detectChanges();
 
-      const inputs = getInputs(fixture);
-      inputValue(inputs[0], "input", "username");
-      submitForm(fixture);
+      spyOn(notifications, "success").and.stub();
+      spyOn(notifications, "error").and.stub();
+    });
 
-      expect(component.submit).toHaveBeenCalledWith({ login: "username" });
-    }));
+    it("should create", () => {
+      expect(component).toBeTruthy();
+    });
+
+    // TODO should call api
+    xit("should call api", () => {});
   });
-
-  // TODO
-  xit("should reset password on submit", () => {});
 });

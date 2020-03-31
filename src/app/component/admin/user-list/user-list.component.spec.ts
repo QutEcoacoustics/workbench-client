@@ -134,12 +134,6 @@ describe("AdminUserListComponent", () => {
       });
       spyOn(api, "filter").and.callFake((filter: Filters) => {
         if (counter === 1) {
-          console.log(
-            "Second Filter: ",
-            filter.paging.page,
-            expectation.paging.page
-          );
-
           expect(filter).toEqual(expectation);
           done();
         } else {
@@ -382,7 +376,7 @@ describe("AdminUserListComponent", () => {
   describe("actions", () => {
     it("should link to user account", () => {
       const user = new User({
-        id: 1,
+        id: 5,
         userName: "username",
         isConfirmed: false
       });
@@ -395,16 +389,16 @@ describe("AdminUserListComponent", () => {
 
       expect(
         userLink.attributes.getNamedItem("ng-reflect-router-link").value
-      ).toBe("/user_accounts/1");
+      ).toBe("/user_accounts/5");
     });
 
     it("should link to edit user account", () => {
       const user = new User({
-        id: 1,
+        id: 5,
         userName: "username",
         isConfirmed: false
       });
-      apiResponse([defaultUser], defaultPaging);
+      apiResponse([user], defaultPaging);
       fixture.detectChanges();
 
       const row = getRows()[0];
@@ -413,7 +407,7 @@ describe("AdminUserListComponent", () => {
 
       expect(
         editLink.attributes.getNamedItem("ng-reflect-router-link").value
-      ).toBe("/user_accounts/1/edit");
+      ).toBe("/user_accounts/5/edit");
     });
   });
 });

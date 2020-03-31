@@ -37,6 +37,10 @@ import {
   siteResolvers,
   SitesService
 } from "./services/baw-api/sites.service";
+import {
+  tagGroupResolvers,
+  TagGroupService
+} from "./services/baw-api/tag-group.service";
 import { tagResolvers, TagsService } from "./services/baw-api/tags.service";
 import { userResolvers, UserService } from "./services/baw-api/user.service";
 
@@ -163,6 +167,7 @@ export const providers = [
   ShallowSitesService,
   SitesService,
   TagsService,
+  TagGroupService,
   UserService,
   ...accountResolvers.providers,
   ...projectResolvers.providers,
@@ -170,5 +175,6 @@ export const providers = [
   ...siteResolvers.providers,
   ...shallowSiteResolvers.providers,
   ...tagResolvers.providers,
+  ...tagGroupResolvers.providers,
   ...userResolvers.providers
 ];
