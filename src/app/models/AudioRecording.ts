@@ -91,7 +91,6 @@ export class AudioRecording extends AbstractModel
     return {
       id: this.id,
       uuid: this.uuid,
-      recordedDate: this.recordedDate?.toISO(),
       siteId: this.siteId,
       durationSeconds: this.durationSeconds,
       sampleRateHertz: this.sampleRateHertz,
@@ -99,9 +98,7 @@ export class AudioRecording extends AbstractModel
       bitRateBps: this.bitRateBps,
       mediaType: this.mediaType,
       dataLengthBytes: this.dataLengthBytes,
-      status: this.status,
-      createdAt: this.createdAt?.toISO(),
-      updatedAt: this.updatedAt?.toISO()
+      status: this.status
     };
   }
 

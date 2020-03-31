@@ -68,6 +68,9 @@ function createAudioRecording(modelId: Id) {
     mediaType: "audio/wav",
     dataLengthBytes: 0,
     status: "ready",
+    uploaderId: 2,
+    creatorId: 1,
+    updaterId: 7,
     createdAt: "2018-01-16T10:36:45.801+10:00",
     updatedAt: "2018-01-16T10:36:46.539+10:00"
   });

@@ -49,6 +49,15 @@ import { tagResolvers, TagsService } from "./services/baw-api/tags.service";
 import { userResolvers, UserService } from "./services/baw-api/user.service";
 
 /**
+ * Determines if variable is null or undefined
+ * @param variable Variable to validate
+ */
+export function isUninitialized(variable: any): boolean {
+  // tslint:disable-next-line: triple-equals
+  return variable == null; // Same as checking === null and === undefined
+}
+
+/**
  * Input min length validation message
  * @param err Error message
  * @param field Formly field

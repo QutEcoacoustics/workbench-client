@@ -233,3 +233,21 @@ export interface ResolvedModel<
 function convertToId(id: string): Id {
   return parseInt(id, 10);
 }
+
+/**
+ * Verify all resolvers resolve without errors
+ * @param data Page Data
+ */
+export function verifyResolvers(data: any): boolean {
+  // Grab all models
+  for (const key of Object.keys(data.resolvers)) {
+    const resolvedModel: ResolvedModel = data[key];
+
+    // If error detected, return
+    if (!resolvedModel || resolvedModel.error) {
+      return false;
+    }
+  }
+
+  return true;
+}

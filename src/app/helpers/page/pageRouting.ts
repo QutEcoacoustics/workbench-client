@@ -5,6 +5,7 @@ import { ActionMenuComponent } from "src/app/component/shared/action-menu/action
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
 import { FormTouchedGuard } from "src/app/guards/form/form.guard";
 import { getPageInfo } from "./pageComponent";
+import { isUninitialized } from "src/app/app.helper";
 
 /**
  * Dynamically create routes for an angular component
@@ -17,8 +18,7 @@ export function GetRouteConfigForPage(
 ) {
   const page = getPageInfo(component);
 
-  // tslint:disable-next-line: triple-equals
-  if (!page || page.route.fullRoute == null) {
+  if (!page || isUninitialized(page.route.fullRoute)) {
     return;
   }
 

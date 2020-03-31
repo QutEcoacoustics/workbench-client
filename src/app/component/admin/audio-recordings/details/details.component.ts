@@ -1,18 +1,27 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { Observable } from "rxjs";
-import { FormTemplate } from "src/app/helpers/formTemplate/formTemplate";
+import { ListDetail } from "src/app/component/shared/question-answer/question-answer.component";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { audioRecordingResolvers } from "src/app/services/baw-api/audio-recording.service";
+import { verifyResolvers } from "src/app/services/baw-api/resolver-common";
 import {
   adminAudioRecordingCategory,
   adminAudioRecordingMenuItem,
   adminAudioRecordingsMenuItem
 } from "../../admin.menus";
 import { fields } from "./audioRecording.json";
+import _ from "lodash";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { Id } from "src/app/interfaces/apiInterfaces";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { takeUntil } from "rxjs/operators";
+import { isUninitialized } from "src/app/app.helper";
 
 const audioRecordingKey = "audioRecording";
 
@@ -30,28 +39,108 @@ const audioRecordingKey = "audioRecording";
 @Component({
   selector: "app-admin-audio-recording",
   template: `
-    <app-form
-      *ngIf="!failure"
-      title="Audio Recording Details"
-      [model]="model"
-      [fields]="fields"
-      [noSubmit]="true"
-    ></app-form>
+    <div *ngIf="!failure">
+      <h1>Audio Recording Details</h1>
+      <app-question-answer [details]="details.toArray()"></app-question-answer>
+      <app-error-handler [error]="error"></app-error-handler>
+    </div>
   `
 })
-export class AdminAudioRecordingComponent extends FormTemplate<AudioRecording> {
+export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
+  implements OnInit {
+  public audioRecording: AudioRecording;
+  public details: List<ListDetail> = List([]);
+  public error: ApiErrorDetails;
+  public failure: boolean;
   public fields = fields;
 
   constructor(
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    private accountsApi: AccountService,
+    private sitesApi: SitesService,
+    private projectsApi: ProjectsService,
+    private route: ActivatedRoute
   ) {
-    super(notifications, route, router, audioRecordingKey, () => "");
+    super();
   }
 
-  // No API Action
-  protected apiAction(): Observable<void | AudioRecording> {
-    throw new Error("Method not implemented.");
+  ngOnInit(): void {
+    const data = this.route.snapshot.data;
+    if (!verifyResolvers(data)) {
+      this.failure = true;
+    }
+    this.audioRecording = data[audioRecordingKey].model;
+
+    const keys = [
+      "id",
+      "uuid",
+      "uploader",
+      "recordedDate",
+      "sites",
+      "durationSeconds",
+      "sampleRateHertz",
+      "channels",
+      "mediaType",
+      "dataLengthBytes",
+      "fileHash",
+      "status",
+      "notes",
+      "creator",
+      "updater",
+      "deleter",
+      "createdAt",
+      "updatedAt",
+      "originalFileName",
+      "recordedUtcOffset",
+      "projects",
+      "annotations"
+    ];
+
+    keys.forEach(key => {
+      this.details = this.details.push({
+        label: _.startCase(key),
+        value: this.audioRecording[key],
+        loading: false
+      });
+    });
+
+    const sitesIndex = 3;
+    const projectsIndex = 19;
+    const creatorIndex = 13;
+    const updaterIndex = 14;
+    const deleterIndex = 15;
+
+    // Retrieve users
+    this.retrieveUser(this.audioRecording.creatorId, creatorIndex);
+    this.retrieveUser(this.audioRecording.updaterId, updaterIndex);
+    this.retrieveUser(this.audioRecording.deleterId, deleterIndex);
+  }
+
+  private retrieveUser(id: Id, index: number) {
+    if (isUninitialized(id)) {
+      return undefined;
+    }
+
+    const detail = this.details.get(index);
+    detail.loading = true;
+    this.details = this.details.set(index, detail);
+
+    this.accountsApi
+      .show(id)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        account => {
+          detail.value = account.userName + " (" + account.id + ")";
+          detail.loading = false;
+          detail.route = account.redirectPath();
+          this.details = this.details.set(index, detail);
+        },
+        () => {
+          // User details are accessible to any logged in users so this must
+          // be a ghost user
+          detail.value = "Unknown (" + id + ")";
+          detail.loading = false;
+          this.details = this.details.set(index, detail);
+        }
+      );
   }
 }

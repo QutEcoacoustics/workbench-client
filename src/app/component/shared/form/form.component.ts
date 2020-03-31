@@ -27,7 +27,6 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() fields: FormlyFieldConfig[];
   @Input() fieldsUrl: string;
   @Input() model: AbstractModel;
-  @Input() noSubmit: boolean;
   @Input() size: "small" | "default" = "default";
   @Input() submitLabel = "Submit";
   @Input() submitLoading: boolean;
