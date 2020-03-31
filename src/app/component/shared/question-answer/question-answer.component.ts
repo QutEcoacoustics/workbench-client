@@ -19,11 +19,11 @@ import { DateTime, Duration } from "luxon";
               <a
                 *ngIf="detail.route; else plainText"
                 [routerLink]="[detail.route]"
+                [innerHTML]="humanize(detail.value)"
               >
-                {{ humanize(detail.value) }}
               </a>
               <ng-template #plainText>
-                {{ humanize(detail.value) }}
+                <span [innerHTML]="humanize(detail.value)"></span>
               </ng-template>
             </p>
             <ng-template #loading>
@@ -49,8 +49,11 @@ export class QuestionAnswerComponent {
       // TODO Implement humanization of duration
       return JSON.stringify(value.toObject());
     }
+    if (value instanceof Array) {
+      console.log("Array Value: ", value);
+    }
     if (typeof value === "object") {
-      return JSON.stringify(value);
+      return `<pre>${JSON.stringify(value)}</pre>`;
     }
 
     return value ? value.toString() : "(no value)";
@@ -63,6 +66,6 @@ export interface ListDetail extends ListDetailValue {
 }
 
 export interface ListDetailValue {
-  value: string | number | object | ListDetailValue;
+  value: string | number | object | ListDetailValue[];
   route?: string;
 }

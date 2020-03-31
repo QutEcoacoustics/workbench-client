@@ -16,12 +16,16 @@ import _ from "lodash";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
+import {
+  SitesService,
+  ShallowSitesService
+} from "src/app/services/baw-api/sites.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, flatMap } from "rxjs/operators";
 import { isUninitialized } from "src/app/app.helper";
+import { Site } from "src/app/models/Site";
 
 const audioRecordingKey = "audioRecording";
 
@@ -40,8 +44,13 @@ const audioRecordingKey = "audioRecording";
   selector: "app-admin-audio-recording",
   template: `
     <div *ngIf="!failure">
-      <h1>Audio Recording Details</h1>
-      <app-question-answer [details]="details.toArray()"></app-question-answer>
+      <!-- TODO *ngIf="!error" -->
+      <div>
+        <h1>Audio Recording Details</h1>
+        <app-question-answer
+          [details]="details.toArray()"
+        ></app-question-answer>
+      </div>
       <app-error-handler [error]="error"></app-error-handler>
     </div>
   `
@@ -56,7 +65,7 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
 
   constructor(
     private accountsApi: AccountService,
-    private sitesApi: SitesService,
+    private sitesApi: ShallowSitesService,
     private projectsApi: ProjectsService,
     private route: ActivatedRoute
   ) {
@@ -103,8 +112,8 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
       });
     });
 
-    const sitesIndex = 3;
-    const projectsIndex = 19;
+    const sitesIndex = 4;
+    const projectsIndex = 20;
     const creatorIndex = 13;
     const updaterIndex = 14;
     const deleterIndex = 15;
@@ -113,23 +122,57 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     this.retrieveUser(this.audioRecording.creatorId, creatorIndex);
     this.retrieveUser(this.audioRecording.updaterId, updaterIndex);
     this.retrieveUser(this.audioRecording.deleterId, deleterIndex);
+
+    const siteDetails = this.setLoading(sitesIndex);
+    const projectDetails = this.setLoading(projectsIndex);
+    let site: Site;
+
+    this.sitesApi
+      .show(this.audioRecording.siteId)
+      .pipe(
+        flatMap(model => {
+          site = model;
+          siteDetails.value = `${site.name} (${site.id})`;
+          this.details = this.details.set(sitesIndex, siteDetails);
+          return this.projectsApi.filter({
+            filter: { siteIds: { in: [this.audioRecording.siteId] } }
+          });
+        }),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        projects => {
+          projectDetails.value = projects.map(project => ({
+            value: `${project.name} (${project.id})`,
+            route: project.redirectPath()
+          }));
+          projectDetails.loading = false;
+          this.details = this.details.set(projectsIndex, projectDetails);
+        },
+        (err: ApiErrorDetails) => {
+          this.error = err;
+        }
+      );
   }
 
-  private retrieveUser(id: Id, index: number) {
-    if (isUninitialized(id)) {
+  /**
+   * Retrieve account data and update details page
+   * @param accountId Account ID
+   * @param index Key index
+   */
+  private retrieveUser(accountId: Id, index: number) {
+    if (isUninitialized(accountId)) {
       return undefined;
     }
 
-    const detail = this.details.get(index);
-    detail.loading = true;
-    this.details = this.details.set(index, detail);
+    const detail = this.setLoading(index);
 
     this.accountsApi
-      .show(id)
+      .show(accountId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         account => {
-          detail.value = account.userName + " (" + account.id + ")";
+          detail.value = `${account.userName} (${account.id})`;
           detail.loading = false;
           detail.route = account.redirectPath();
           this.details = this.details.set(index, detail);
@@ -137,10 +180,17 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
         () => {
           // User details are accessible to any logged in users so this must
           // be a ghost user
-          detail.value = "Unknown (" + id + ")";
+          detail.value = `Unknown (${accountId})`;
           detail.loading = false;
           this.details = this.details.set(index, detail);
         }
       );
+  }
+
+  private setLoading(index: number) {
+    const detail = this.details.get(index);
+    detail.loading = true;
+    this.details = this.details.set(index, detail);
+    return detail;
   }
 }
