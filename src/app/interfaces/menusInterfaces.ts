@@ -51,11 +51,6 @@ export interface Category extends LabelAndIcon {
    *  Local route of category Eg. 'security'
    */
   route: StrongRoute;
-
-  /**
-   * Parent category
-   */
-  parent?: Category;
 }
 
 /**

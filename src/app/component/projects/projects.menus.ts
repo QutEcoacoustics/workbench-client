@@ -54,8 +54,7 @@ export const requestProjectMenuItem = MenuRoute({
 export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
-  route: projectsRoute.add(":projectId"),
-  parent: projectsCategory
+  route: projectsRoute.add(":projectId")
 };
 
 export const projectMenuItem = MenuRoute({

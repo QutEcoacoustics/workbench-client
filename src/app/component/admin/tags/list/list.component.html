@@ -1,0 +1,67 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Tag List</h1>
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Filter</span>
+    </div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter Tags"
+      (keyup)="onFilter($event)"
+    />
+  </div>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Text"> </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Count"
+      width="80"
+      maxWidth="80"
+      [sortable]="false"
+    >
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Taxanomic" width="100" maxWidth="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Retired" width="90" maxWidth="90">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <app-checkbox
+          [id]="row.text"
+          [checked]="value"
+          [disabled]="true"
+        ></app-checkbox>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Type"> </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Tag"
+      [width]="130"
+      [maxWidth]="130"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-warning mr-1" [routerLink]="[editPath(value)]">
+          Edit
+        </a>
+        <a class="btn btn-sm btn-danger" [routerLink]="[deletePath(value)]">
+          Delete
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-error-handler [error]="error"></app-error-handler>
