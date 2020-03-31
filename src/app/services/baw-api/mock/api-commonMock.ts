@@ -4,6 +4,8 @@ import { AbstractModel } from "src/app/models/AbstractModel";
 import { id, IdOr } from "../api-common";
 import { Filters, Meta } from "../baw-api.service";
 
+const delayPeriod = 1000;
+
 export function listMock<M extends AbstractModel>(
   classBuilder: (index: number) => M
 ): Observable<M[]> {
@@ -13,7 +15,7 @@ export function listMock<M extends AbstractModel>(
     models.push(classBuilder(i));
   }
 
-  return of(models).pipe(delay(1000));
+  return of(models).pipe(delay(delayPeriod));
 }
 
 export function filterMock<M extends AbstractModel>(
@@ -48,12 +50,12 @@ export function filterMock<M extends AbstractModel>(
     models.push(model);
   }
 
-  return of(models).pipe(delay(1000));
+  return of(models).pipe(delay(delayPeriod));
 }
 
 export function showMock<M extends AbstractModel>(
   model: IdOr<M>,
   classBuilder: (modelId: number) => M
 ): Observable<M> {
-  return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(1000));
+  return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(delayPeriod));
 }

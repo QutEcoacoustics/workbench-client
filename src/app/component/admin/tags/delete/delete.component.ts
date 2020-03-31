@@ -73,7 +73,6 @@ export class AdminTagsDeleteComponent extends FormTemplate<Tag>
 
     if (!this.failure) {
       this.title = `Are you certain you wish to delete ${this.model.text}?`;
-      // TODO Update typeOfTag with options
     }
   }
 

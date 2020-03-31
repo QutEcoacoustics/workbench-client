@@ -62,8 +62,22 @@ export abstract class FormTemplate<M extends AbstractModel>
   }
 
   ngOnInit() {
+    // Override form checking
+    if (!this.hasFormCheck) {
+      this.isFormTouched = () => {
+        return false;
+      };
+
+      this.resetForms = () => {};
+    }
+
     // Retrieve models from router
     const data = this.route.snapshot.data as PageInfo;
+
+    // If no resolvers, return early
+    if (!data.resolvers) {
+      return;
+    }
 
     // Grab all models
     for (const key of Object.keys(data.resolvers)) {
@@ -96,15 +110,6 @@ export abstract class FormTemplate<M extends AbstractModel>
     */
     if (this.model.kind) {
       this.successMessage = this.successMsg(this.model);
-    }
-
-    // Override form checking
-    if (!this.hasFormCheck) {
-      this.isFormTouched = () => {
-        return false;
-      };
-
-      this.resetForms = () => {};
     }
   }
 
