@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AdminScriptsNewComponent } from "./scripts-new.component";
+import { AdminScriptsNewComponent } from "./new.component";
 
 xdescribe("AdminScriptsNewComponent", () => {
   let component: AdminScriptsNewComponent;
