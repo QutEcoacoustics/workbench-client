@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AdminAudioRecordingsComponent } from "./list.component";
+import { AdminAudioRecordingComponent } from "./details.component";
 
-xdescribe("AdminAudioRecordingsComponent", () => {
-  let component: AdminAudioRecordingsComponent;
-  let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
+describe("AdminAudioRecordingComponent", () => {
+  let component: AdminAudioRecordingComponent;
+  let fixture: ComponentFixture<AdminAudioRecordingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminAudioRecordingsComponent]
+      declarations: [AdminAudioRecordingComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
+    fixture = TestBed.createComponent(AdminAudioRecordingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

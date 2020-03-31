@@ -17,11 +17,11 @@ import { adminMenuItemActions } from "../../dashboard/dashboard.component";
   self: adminAudioRecordingsMenuItem
 })
 @Component({
-  selector: "app-list",
+  selector: "app-admin-audio-recordings",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"]
 })
-export class AdminAudioRecordingsListComponent
+export class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit {
   constructor(api: AudioRecordingService) {
@@ -60,8 +60,9 @@ export class AdminAudioRecordingsListComponent
     this.getModels();
   }
 
-  public audioRecordingRedirectPath(row: TableRow) {
-    return row.model.redirectPath();
+  playRedirectPath(model: AudioRecording) {
+    // TODO Replace with play path
+    return "/broken_link";
   }
 }
 

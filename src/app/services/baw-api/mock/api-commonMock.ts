@@ -59,10 +59,3 @@ export function showMock<M extends AbstractModel>(
 ): Observable<M> {
   return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(delayPeriod));
 }
-
-export function showMock<M extends AbstractModel>(
-  model: IdOr<M>,
-  classBuilder: (modelId: number) => M
-): Observable<M> {
-  return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(1000));
-}

@@ -3,7 +3,8 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
 import { SharedModule } from "../shared/shared.module";
 import { adminRoute } from "./admin.menus";
-import { AdminAudioRecordingsListComponent } from "./audio-recordings/list/list.component";
+import { AdminAudioRecordingComponent } from "./audio-recordings/details/details.component";
+import { AdminAudioRecordingsComponent } from "./audio-recordings/list/list.component";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
 import { AdminScriptsComponent } from "./scripts/list/list.component";
 import { AdminScriptsNewComponent } from "./scripts/new/new.component";
@@ -18,7 +19,8 @@ import { AdminTagsNewComponent } from "./tags/new/new.component";
 import { AdminUserListComponent } from "./users/list/list.component";
 
 const components = [
-  AdminAudioRecordingsListComponent,
+  AdminAudioRecordingsComponent,
+  AdminAudioRecordingComponent,
   AdminDashboardComponent,
   AdminScriptsComponent,
   AdminScriptsNewComponent,

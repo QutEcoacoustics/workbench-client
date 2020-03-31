@@ -1,5 +1,5 @@
 import { Duration } from "luxon";
-import { adminAudioRecordingsMenuItem } from "../component/admin/admin.menus";
+import { adminAudioRecordingMenuItem } from "../component/admin/admin.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
@@ -107,6 +107,8 @@ export class AudioRecording extends AbstractModel
 
   redirectPath(): string {
     // TODO Change to Audio Recording Page
-    return adminAudioRecordingsMenuItem.route.toString();
+    return adminAudioRecordingMenuItem.route.format({
+      audioRecordingId: this.id
+    });
   }
 }

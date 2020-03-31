@@ -14,7 +14,7 @@ import {
   StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock } from "./mock/api-commonMock";
+import { filterMock, showMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
@@ -37,7 +37,7 @@ export class AudioRecordingService extends StandardApi<AudioRecording, []> {
     return filterMock(filters, modelId => createAudioRecording(modelId));
   }
   show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
-    return this.apiShow(endpoint(model, Empty));
+    return showMock(model, modelId => createAudioRecording(modelId));
   }
   create(model: AudioRecording): Observable<AudioRecording> {
     return this.apiCreate(endpoint(Empty, Empty), model);

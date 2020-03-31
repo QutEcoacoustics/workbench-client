@@ -13,9 +13,6 @@
     (sort)="onSort($event)"
   >
     <ngx-datatable-column name="Id" width="50" maxWidth="50">
-      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="audioRecordingRedirectPath(row)">{{ value }}</a>
-      </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
       name="Site"
@@ -28,18 +25,29 @@
     <ngx-datatable-column name="Recorded"></ngx-datatable-column>
     <ngx-datatable-column
       name="Annotations"
+      width="100"
+      maxWidth="100"
       [sortable]="false"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      [width]="70"
-      [maxWidth]="70"
+      width="130"
+      maxWidth="130"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-default" [routerLink]="value.redirectPath()">
+        <a
+          class="btn btn-sm btn-default mr-2"
+          [routerLink]="value.redirectPath()"
+        >
+          View
+        </a>
+        <a
+          class="btn btn-sm btn-default"
+          [routerLink]="playRedirectPath(value)"
+        >
           Play
         </a>
       </ng-template>

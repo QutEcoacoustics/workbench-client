@@ -178,12 +178,27 @@ export const adminDeleteTagGroupMenuItem = MenuRoute({
  * Admin Audio Recordings
  */
 
+export const adminAudioRecordingCategory: Category = {
+  icon: defaultAudioIcon,
+  label: "Audio Recordings",
+  route: adminRoute.add("audio_recordings")
+};
+
 export const adminAudioRecordingsMenuItem = MenuRoute({
   icon: defaultAudioIcon,
   label: "Audio Recordings",
-  route: adminRoute.add("audio_recordings"),
+  route: adminAudioRecordingCategory.route,
   tooltip: () => "Manage audio recordings",
   parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate
+});
+
+export const adminAudioRecordingMenuItem = MenuRoute({
+  icon: ["fas", "play-circle"],
+  label: "Audio Recording",
+  route: adminAudioRecordingsMenuItem.route.add(":audioRecordingId"),
+  tooltip: () => "Manage audio recording",
+  parent: adminAudioRecordingsMenuItem,
   predicate: isAdminPredicate
 });
 
