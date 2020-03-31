@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
+import { AbstractData } from "src/app/models/AbstractData";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
@@ -29,7 +30,13 @@ export abstract class FormTemplate<M extends AbstractModel>
   /**
    * Extra models stored in data
    */
-  public models: { [key: string]: AbstractModel | AbstractModel[] } = {};
+  public models: {
+    [key: string]:
+      | AbstractModel
+      | AbstractModel[]
+      | AbstractData
+      | AbstractData[];
+  } = {};
   /**
    * Formly fields
    */

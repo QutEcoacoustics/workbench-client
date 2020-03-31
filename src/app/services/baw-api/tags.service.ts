@@ -7,6 +7,7 @@ import { map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
+import { AbstractData } from "src/app/models/AbstractData";
 import { Tag } from "src/app/models/Tag";
 import {
   Empty,
@@ -28,8 +29,13 @@ import {
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
-export class TagType {
-  constructor(public name: string) {}
+export class TagType extends AbstractData {
+  public readonly kind: "TagType" = "TagType";
+  public readonly name: string;
+
+  constructor(data: { name: string }) {
+    super(data);
+  }
 
   toString() {
     return _.startCase(this.name);
@@ -71,7 +77,7 @@ export class TagsService extends StandardApi<Tag, []> {
       "species_name",
       "looks_like",
       "sounds_like"
-    ]).pipe(map(types => types.map(type => new TagType(type))));
+    ]).pipe(map(types => types.map(type => new TagType({ name: type }))));
   }
 }
 

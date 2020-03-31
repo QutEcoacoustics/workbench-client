@@ -23,7 +23,7 @@ import { adminTagsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag.json";
 
 const tagKey = "tag";
-const typeOfTagsKey = "typeOfTags";
+const tagTypesKey = "tagTypes";
 
 @Page({
   category: adminTagsCategory,
@@ -38,7 +38,7 @@ const typeOfTagsKey = "typeOfTags";
   },
   resolvers: {
     [tagKey]: tagResolvers.show,
-    [typeOfTagsKey]: tagResolvers.typeOfTags
+    [tagTypesKey]: tagResolvers.typeOfTags
   },
   self: adminEditTagMenuItem
 })
@@ -88,7 +88,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
   }
 
   public get typeOfTags(): TagType[] {
-    return (this.models[typeOfTagsKey] as unknown) as TagType[];
+    return (this.models[tagTypesKey] as unknown) as TagType[];
   }
 
   protected apiAction(model: Partial<Tag>) {

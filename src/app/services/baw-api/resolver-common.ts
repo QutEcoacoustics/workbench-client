@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
 import { Id } from "src/app/interfaces/apiInterfaces";
+import { AbstractData } from "src/app/models/AbstractData";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import {
   ApiCreate,
@@ -21,7 +22,7 @@ import { BawApiService } from "./baw-api.service";
  */
 export abstract class BawResolver<
   // Output Model
-  O extends any,
+  O extends AbstractData | AbstractData[] | AbstractModel | AbstractModel[],
   // API Service Model
   M extends AbstractModel,
   // API Service
@@ -218,7 +219,9 @@ export interface BawProvider {
 /**
  * Resolver model output
  */
-export interface ResolvedModel<T = AbstractModel | AbstractModel[]> {
+export interface ResolvedModel<
+  T = AbstractModel | AbstractModel[] | AbstractData | AbstractData[]
+> {
   model?: T;
   error?: ApiErrorDetails;
 }
