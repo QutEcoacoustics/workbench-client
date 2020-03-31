@@ -1,11 +1,13 @@
+import { Duration } from "luxon";
+import { adminAudioRecordingsMenuItem } from "../component/admin/admin.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
+  duration,
   Id,
   Uuid
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { adminAudioRecordingsMenuItem } from "../component/admin/admin.menus";
 
 /**
  * An audio recording model
@@ -13,17 +15,26 @@ import { adminAudioRecordingsMenuItem } from "../component/admin/admin.menus";
 export interface AudioRecordingInterface {
   id?: Id;
   uuid?: Uuid;
+  uploaderId?: Id;
   recordedDate?: DateTimeTimezone | string;
   siteId?: Id;
-  durationSeconds?: number;
+  durationSeconds?: Duration | number;
   sampleRateHertz?: number;
   channels?: number;
   bitRateBps?: number;
   mediaType?: string;
-  dataLengthBytes?: number;
+  dataLengthBytes?: BigInt | number;
+  fileHash?: string;
   status?: "ready" | "uploading" | "corrupt";
+  notes?: string;
+  creatorId?: Id;
+  updaterId?: Id;
+  deleterId?: Id;
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
+  deletedAt?: DateTimeTimezone | string;
+  originalFileName?: string;
+  recordedUtcOffset?: string;
 }
 
 /**
@@ -34,23 +45,36 @@ export class AudioRecording extends AbstractModel
   public readonly kind: "AudioRecording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
+  public readonly uploaderId?: Id;
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
-  public readonly durationSeconds?: number;
+  public readonly durationSeconds?: Duration;
   public readonly sampleRateHertz?: number;
   public readonly channels?: number;
   public readonly bitRateBps?: number;
   public readonly mediaType?: string;
-  public readonly dataLengthBytes?: number;
+  public readonly dataLengthBytes?: BigInt;
+  public readonly fileHash?: string;
   public readonly status?: "ready" | "uploading" | "corrupt";
+  public readonly notes?: string;
+  public readonly creatorId?: Id;
+  public readonly updaterId?: Id;
+  public readonly deleterId?: Id;
   public readonly createdAt?: DateTimeTimezone;
   public readonly updatedAt?: DateTimeTimezone;
+  public readonly deletedAt?: DateTimeTimezone;
+  public readonly originalFileName?: string;
+  public readonly recordedUtcOffset?: string;
 
   constructor(audioRecording: AudioRecordingInterface) {
     super(audioRecording);
 
     this.kind = "AudioRecording";
     this.recordedDate = dateTimeTimezone(audioRecording.recordedDate as string);
+    this.durationSeconds = duration(audioRecording.durationSeconds as number);
+    this.dataLengthBytes = audioRecording.dataLengthBytes
+      ? BigInt(audioRecording.dataLengthBytes)
+      : undefined;
     this.createdAt = dateTimeTimezone(audioRecording.createdAt as string);
     this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
   }

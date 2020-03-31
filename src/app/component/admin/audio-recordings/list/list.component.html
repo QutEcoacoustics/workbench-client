@@ -1,18 +1,6 @@
 <ng-container *ngIf="rows && !error">
   <h1>Audio Recordings</h1>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Filter</span>
-    </div>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Filter Audio Recordings"
-      (keyup)="onFilter($event)"
-    />
-  </div>
-
   <ngx-datatable
     #table
     bawDatatableDefaults
@@ -24,8 +12,18 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Id"></ngx-datatable-column>
-    <ngx-datatable-column name="Site"></ngx-datatable-column>
+    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <a [routerLink]="audioRecordingRedirectPath(row)">{{ value }}</a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Site"
+      width="50"
+      maxWidth="50"
+      [sortable]="false"
+    >
+    </ngx-datatable-column>
     <ngx-datatable-column name="Duration"></ngx-datatable-column>
     <ngx-datatable-column name="Recorded"></ngx-datatable-column>
     <ngx-datatable-column

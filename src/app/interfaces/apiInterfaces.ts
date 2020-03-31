@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 
 /**
  * BAW API ID
@@ -40,6 +40,22 @@ export type DateTimeTimezone = DateTime;
  */
 export function dateTimeTimezone(timestamp: string): DateTimeTimezone {
   return timestamp ? DateTime.fromISO(timestamp, { setZone: true }) : undefined;
+}
+/**
+ * Convert duration string into Duration
+ * @param seconds Duration seconds
+ */
+export function duration(seconds: number): Duration {
+  return seconds
+    ? Duration.fromObject({
+        years: 0,
+        months: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds
+      }).normalize()
+    : undefined;
 }
 /**
  * BAW API Latitude

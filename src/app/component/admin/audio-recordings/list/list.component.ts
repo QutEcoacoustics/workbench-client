@@ -11,8 +11,8 @@ import { adminMenuItemActions } from "../../dashboard/dashboard.component";
 @Page({
   category: adminCategory,
   menus: {
-    links: List(adminMenuItemActions),
-    actions: List()
+    links: List(),
+    actions: List(adminMenuItemActions)
   },
   self: adminAudioRecordingsMenuItem
 })
@@ -29,8 +29,12 @@ export class AdminAudioRecordingsListComponent
       audioRecordings.map(audioRecording => ({
         id: audioRecording.id,
         site: audioRecording.siteId,
-        duration: "unknown",
+        // TODO Utilise luxon Duration humanization (not supported 31/03/2020)
+        duration:
+          audioRecording.durationSeconds.shiftTo("minutes", "seconds").minutes + // Added seconds so I don't have to round minutes
+          " minutes",
         recorded: audioRecording.recordedDate.toRelative(),
+        // TODO Retrieve number of annotations
         annotations: -1,
         model: audioRecording
       }))
@@ -54,6 +58,10 @@ export class AdminAudioRecordingsListComponent
     };
 
     this.getModels();
+  }
+
+  public audioRecordingRedirectPath(row: TableRow) {
+    return row.model.redirectPath();
   }
 }
 
