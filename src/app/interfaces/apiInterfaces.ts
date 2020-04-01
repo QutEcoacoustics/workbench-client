@@ -1,4 +1,5 @@
-import { DateTime, Duration } from "luxon";
+import { DateTime, Duration, ToRelativeOptions } from "luxon";
+import { isUninitialized } from "../helpers";
 
 /**
  * BAW API ID
@@ -31,6 +32,21 @@ export type AuthToken = string;
  */
 export type Description = string;
 /**
+ * BAW Notes
+ */
+export type Notes = Blob;
+/**
+ * Attempt to parse notes
+ * @param blob Notes
+ */
+export function notes(blob: string): Blob {
+  if (isUninitialized(blob)) {
+    return undefined;
+  }
+
+  return new Blob([blob], { type: "text/plain" });
+}
+/**
  * BAW API DateTime
  */
 export type DateTimeTimezone = DateTime;
@@ -56,6 +72,23 @@ export function duration(seconds: number): Duration {
         seconds
       }).normalize()
     : undefined;
+}
+/**
+ * Humanize a durations length of time.
+ * TODO Replace with luxon official solution
+ * @param dur Duration
+ */
+export function humanizeDuration(
+  dur: Duration,
+  opts: ToRelativeOptions = {}
+): string {
+  let dateTime = DateTime.local();
+  dateTime = dateTime.minus(dur);
+
+  let output = dateTime.toRelative({ round: false, ...opts });
+  output = output.replace("in ", "");
+  output = output.replace(" ago", "");
+  return output;
 }
 /**
  * BAW API Latitude

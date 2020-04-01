@@ -1,10 +1,13 @@
 import { Duration } from "luxon";
 import { adminAudioRecordingMenuItem } from "../component/admin/admin.menus";
+import { isUninitialized } from "../helpers";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
   duration,
   Id,
+  Notes,
+  notes,
   Uuid
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
@@ -26,7 +29,7 @@ export interface AudioRecordingInterface {
   dataLengthBytes?: BigInt | number;
   fileHash?: string;
   status?: "ready" | "uploading" | "corrupt";
-  notes?: string;
+  notes?: Notes | string;
   creatorId?: Id;
   updaterId?: Id;
   deleterId?: Id;
@@ -56,7 +59,7 @@ export class AudioRecording extends AbstractModel
   public readonly dataLengthBytes?: BigInt;
   public readonly fileHash?: string;
   public readonly status?: "ready" | "uploading" | "corrupt";
-  public readonly notes?: string;
+  public readonly notes?: Notes;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
@@ -72,11 +75,12 @@ export class AudioRecording extends AbstractModel
     this.kind = "AudioRecording";
     this.recordedDate = dateTimeTimezone(audioRecording.recordedDate as string);
     this.durationSeconds = duration(audioRecording.durationSeconds as number);
-    this.dataLengthBytes = audioRecording.dataLengthBytes
+    this.dataLengthBytes = !isUninitialized(audioRecording.dataLengthBytes)
       ? BigInt(audioRecording.dataLengthBytes)
       : undefined;
     this.createdAt = dateTimeTimezone(audioRecording.createdAt as string);
     this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
+    this.notes = notes(audioRecording.notes as string);
   }
 
   public static fromJSON = (obj: any) => {

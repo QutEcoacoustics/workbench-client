@@ -59,6 +59,7 @@ function createAudioRecording(modelId: Id) {
   return new AudioRecording({
     id: modelId,
     uuid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    uploaderId: 2,
     recordedDate: "2011-03-24T21:00:00.000+10:00",
     siteId: 1,
     durationSeconds: Math.floor(Math.random() * 7200),
@@ -67,8 +68,10 @@ function createAudioRecording(modelId: Id) {
     bitRateBps: 1411200,
     mediaType: "audio/wav",
     dataLengthBytes: 0,
+    fileHash: "SHA: 2346ad27d7568ba9896f1b7da6b5991251debdf2",
     status: "ready",
-    uploaderId: 2,
+    notes:
+      '{"relative_path"=>"ULI25_NEW/Data/ULI25_20190909_043707.wav", "duration_adjustment_for_overlap"=>[{"changed_at"=>"2020-02-04T04:59:16Z", "overlap_amount"=>2.978, "old_duration"=>3597.978, "new_duration"=>3595.0, "other_uuid"=>"938742fc-3fcc-4ba0-85ed-d4137e5079be"}]}',
     creatorId: 1,
     updaterId: 7,
     createdAt: "2018-01-16T10:36:45.801+10:00",

@@ -4,8 +4,8 @@ import { ResolverHandlerComponent } from "src/app/component/error/resolver-handl
 import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
 import { FormTouchedGuard } from "src/app/guards/form/form.guard";
+import { isUninitialized } from "src/app/helpers";
 import { getPageInfo } from "./pageComponent";
-import { isUninitialized } from "src/app/app.helper";
 
 /**
  * Dynamically create routes for an angular component

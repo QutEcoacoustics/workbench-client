@@ -28,6 +28,7 @@ import { HeaderModule } from "./header/header.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingComponent } from "./loading/loading.component";
 import { MenuModule } from "./menu/menu.module";
+import { AnswerComponent } from "./question-answer/answer/answer.component";
 import { QuestionAnswerComponent } from "./question-answer/question-answer.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { TimezoneFormPipe } from "./timezone/timezone.pipe";
@@ -35,6 +36,7 @@ import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
   ActionMenuComponent,
+  AnswerComponent,
   CheckboxComponent,
   CmsComponent,
   ErrorHandlerComponent,

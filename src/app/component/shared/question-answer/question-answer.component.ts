@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { DateTime, Duration } from "luxon";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-question-answer",
@@ -15,20 +16,7 @@ import { DateTime, Duration } from "luxon";
             </p>
           </div>
           <div class="col-sm-9">
-            <p *ngIf="!detail.loading; else loading">
-              <a
-                *ngIf="detail.route; else plainText"
-                [routerLink]="[detail.route]"
-                [innerHTML]="humanize(detail.value)"
-              >
-              </a>
-              <ng-template #plainText>
-                <span [innerHTML]="humanize(detail.value)"></span>
-              </ng-template>
-            </p>
-            <ng-template #loading>
-              <p>loading</p>
-            </ng-template>
+            <app-answer [detail]="detail"></app-answer>
           </div>
         </div>
       </div>
@@ -40,32 +28,21 @@ export class QuestionAnswerComponent {
   @Input() details: ListDetail[] = [];
 
   constructor() {}
-
-  humanize(value: any) {
-    if (value instanceof DateTime) {
-      return value.toISO() + " (" + value.toRelative() + ")";
-    }
-    if (value instanceof Duration) {
-      // TODO Implement humanization of duration
-      return JSON.stringify(value.toObject());
-    }
-    if (value instanceof Array) {
-      console.log("Array Value: ", value);
-    }
-    if (typeof value === "object") {
-      return `<pre>${JSON.stringify(value)}</pre>`;
-    }
-
-    return value ? value.toString() : "(no value)";
-  }
 }
 
 export interface ListDetail extends ListDetailValue {
   label: string;
-  loading: boolean;
 }
 
 export interface ListDetailValue {
-  value: string | number | object | ListDetailValue[];
+  value:
+    | Observable<ListDetailValue>
+    | string
+    | number
+    | DateTime
+    | Duration
+    | Blob
+    | object
+    | ListDetailValue[];
   route?: string;
 }

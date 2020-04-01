@@ -1,31 +1,28 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
+import _ from "lodash";
+import { catchError, map, takeUntil } from "rxjs/operators";
 import { ListDetail } from "src/app/component/shared/question-answer/question-answer.component";
+import { isUninitialized } from "src/app/helpers";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
 import { Page } from "src/app/helpers/page/pageDecorator";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { Id } from "src/app/interfaces/apiInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "src/app/services/baw-api/audio-recording.service";
+import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
+import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { verifyResolvers } from "src/app/services/baw-api/resolver-common";
+import { ShallowSitesService } from "src/app/services/baw-api/sites.service";
 import {
   adminAudioRecordingCategory,
   adminAudioRecordingMenuItem,
   adminAudioRecordingsMenuItem
 } from "../../admin.menus";
 import { fields } from "./audioRecording.json";
-import _ from "lodash";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { AccountService } from "src/app/services/baw-api/account.service";
-import {
-  SitesService,
-  ShallowSitesService
-} from "src/app/services/baw-api/sites.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { takeUntil, flatMap } from "rxjs/operators";
-import { isUninitialized } from "src/app/app.helper";
-import { Site } from "src/app/models/Site";
 
 const audioRecordingKey = "audioRecording";
 
@@ -107,8 +104,7 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     keys.forEach(key => {
       this.details = this.details.push({
         label: _.startCase(key),
-        value: this.audioRecording[key],
-        loading: false
+        value: this.audioRecording[key]
       });
     });
 
@@ -122,36 +118,49 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     this.retrieveUser(this.audioRecording.creatorId, creatorIndex);
     this.retrieveUser(this.audioRecording.updaterId, updaterIndex);
     this.retrieveUser(this.audioRecording.deleterId, deleterIndex);
+    this.retrieveSite(this.audioRecording.siteId, sitesIndex);
+    this.retrieveProjects(this.audioRecording.siteId, projectsIndex);
+  }
 
-    const siteDetails = this.setLoading(sitesIndex);
-    const projectDetails = this.setLoading(projectsIndex);
-    let site: Site;
+  private retrieveSite(siteId: Id, index: number) {
+    if (isUninitialized(siteId)) {
+      return;
+    }
 
-    this.sitesApi
+    this.details.get(index).value = this.sitesApi
       .show(this.audioRecording.siteId)
       .pipe(
-        flatMap(model => {
-          site = model;
-          siteDetails.value = `${site.name} (${site.id})`;
-          this.details = this.details.set(sitesIndex, siteDetails);
-          return this.projectsApi.filter({
-            filter: { siteIds: { in: [this.audioRecording.siteId] } }
-          });
+        map(site => {
+          return {
+            value: `${site.name} (${site.id})`
+          };
+        }),
+        catchError(() => {
+          return [{ value: "Unknown Site (" + siteId + ")" }];
         }),
         takeUntil(this.unsubscribe)
-      )
-      .subscribe(
-        projects => {
-          projectDetails.value = projects.map(project => ({
+      );
+  }
+
+  private retrieveProjects(siteId: Id, index: number) {
+    if (isUninitialized(siteId)) {
+      return;
+    }
+
+    this.details.get(index).value = this.projectsApi
+      .filter({ filter: { "sites.id": { in: [1] } } })
+      .pipe(
+        map(projects => {
+          return projects.map(project => ({
             value: `${project.name} (${project.id})`,
             route: project.redirectPath()
           }));
-          projectDetails.loading = false;
-          this.details = this.details.set(projectsIndex, projectDetails);
-        },
-        (err: ApiErrorDetails) => {
+        }),
+        catchError((err: ApiErrorDetails) => {
           this.error = err;
-        }
+          return [{ value: undefined }];
+        }),
+        takeUntil(this.unsubscribe)
       );
   }
 
@@ -162,35 +171,24 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
    */
   private retrieveUser(accountId: Id, index: number) {
     if (isUninitialized(accountId)) {
-      return undefined;
+      return;
     }
 
-    const detail = this.setLoading(index);
-
-    this.accountsApi
-      .show(accountId)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        account => {
-          detail.value = `${account.userName} (${account.id})`;
-          detail.loading = false;
-          detail.route = account.redirectPath();
-          this.details = this.details.set(index, detail);
-        },
-        () => {
-          // User details are accessible to any logged in users so this must
-          // be a ghost user
-          detail.value = `Unknown (${accountId})`;
-          detail.loading = false;
-          this.details = this.details.set(index, detail);
+    this.details.get(index).value = this.accountsApi.show(accountId).pipe(
+      map(account => {
+        return {
+          value: `${account.userName} (${account.id})`,
+          route: account.redirectPath()
+        };
+      }),
+      catchError((err: ApiErrorDetails) => {
+        if (err.status === apiReturnCodes.notFound) {
+          return [{ value: "Deleted User (" + accountId + ")" }];
+        } else {
+          return [{ value: "Unknown User (" + accountId + ")" }];
         }
-      );
-  }
-
-  private setLoading(index: number) {
-    const detail = this.details.get(index);
-    detail.loading = true;
-    this.details = this.details.set(index, detail);
-    return detail;
+      }),
+      takeUntil(this.unsubscribe)
+    );
   }
 }
