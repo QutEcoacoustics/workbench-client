@@ -8,17 +8,22 @@ import { ListDetail, ListDetailValue } from "../question-answer.component";
 @Component({
   selector: "app-answer",
   template: `
-    <p *ngIf="!loading; else isLoading">
-      <a *ngIf="route; else plainText" [routerLink]="[route]">
-        {{ value }}
-      </a>
-      <ng-template #plainText>
-        <pre *ngIf="codeStyling">{{ value }}</pre>
-        <span *ngIf="!codeStyling">{{ value }}</span>
+    <ng-container *ngIf="!children; else hasChildren">
+      <p *ngIf="!loading; else isLoading">
+        <a *ngIf="route; else plainText" [routerLink]="[route]">
+          {{ value }}
+        </a>
+        <ng-template #plainText>
+          <pre *ngIf="codeStyling">{{ value }}</pre>
+          <span *ngIf="!codeStyling">{{ value }}</span>
+        </ng-template>
+      </p>
+      <ng-template #isLoading>
+        <p>loading</p>
       </ng-template>
-    </p>
-    <ng-template #isLoading>
-      <p>loading</p>
+    </ng-container>
+    <ng-template #hasChildren>
+      <app-answer *ngFor="let child of children" [detail]="child"></app-answer>
     </ng-template>
   `
 })
@@ -28,20 +33,25 @@ export class AnswerComponent implements OnInit {
   public value: string;
   public route: string;
   public loading: boolean;
+  public children: ListDetail[];
   private noValue = "(no value)";
   private error = "(error)";
 
   constructor() {}
 
   ngOnInit(): void {
+    this.humanize(this.detail.value);
+  }
+
+  /**
+   * Convert answer to a human readable output
+   * @param answer Answer output
+   */
+  private humanize(answer: any) {
     if (this.detail.route) {
       this.route = this.detail.route;
     }
 
-    this.humanize(this.detail.value);
-  }
-
-  private humanize(answer: any) {
     if (isUninitialized(answer)) {
       this.value = this.noValue;
     } else if (answer instanceof Observable) {
@@ -51,7 +61,7 @@ export class AnswerComponent implements OnInit {
     } else if (answer instanceof Duration) {
       this.value = humanizeDuration(answer);
     } else if (answer instanceof Array) {
-      console.log("Array Value: ", answer);
+      this.children = answer;
     } else if (answer instanceof Blob) {
       this.humanizeBlob(answer);
     } else if (typeof answer === "object") {
@@ -61,6 +71,10 @@ export class AnswerComponent implements OnInit {
     }
   }
 
+  /**
+   * Convert object to human readable output
+   * @param answer Answer output
+   */
   private humanizeObject(answer: object) {
     this.codeStyling = true;
     try {
@@ -70,6 +84,10 @@ export class AnswerComponent implements OnInit {
     }
   }
 
+  /**
+   * Convert blob to human readable output
+   * @param answer Answer output
+   */
   private humanizeBlob(answer: Blob) {
     this.loading = true;
     this.codeStyling = true;
@@ -83,13 +101,17 @@ export class AnswerComponent implements OnInit {
     reader.readAsText(answer);
   }
 
+  /**
+   * Await observable and convert to human readable output
+   * @param answer Answer output
+   */
   private humanizeObservable(answer: Observable<ListDetailValue>) {
     this.loading = true;
 
     answer.subscribe(
       output => {
         this.loading = false;
-        this.value = output.value ? output.value.toString() : this.error;
+        this.humanize(output.value);
         this.route = output.route;
       },
       () => {

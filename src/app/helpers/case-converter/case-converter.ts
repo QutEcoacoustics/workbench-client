@@ -2,6 +2,8 @@ import camelCase from "lodash.camelcase";
 import snakeCase from "lodash.snakecase";
 import * as whitelist from "./whitelist.json";
 
+const fullStopReplacement = "xxx";
+
 /**
  * Deeply converts keys of an object from one case to another.
  * Function was created here: https://github.com/travelperk/case-converter
@@ -56,15 +58,37 @@ const convertCase = (
 };
 
 /**
+ * Encode full stops so that they aren't converted by lodash
+ * @param string String to modify
+ */
+function encodeFullStops(string?: string) {
+  return string ? string.replace(".", fullStopReplacement) : string;
+}
+
+/**
+ * Decode full stops after lodash conversion
+ * @param string String to modify
+ */
+function decodeFullStops(string?: string) {
+  return string ? string.replace(fullStopReplacement, ".") : string;
+}
+
+/**
  * Convert object to camelCase
  * @param obj Object to convert
  */
-export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
+export const toCamelCase = (obj: any) =>
+  convertCase(obj, (string?: string) =>
+    decodeFullStops(camelCase(encodeFullStops(string)))
+  );
 
 /**
  * Convert object to snake_case
  * @param obj Object to convert
  */
-export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);
+export const toSnakeCase = (obj: any) =>
+  convertCase(obj, (string?: string) =>
+    decodeFullStops(snakeCase(encodeFullStops(string)))
+  );
 
 export default { toCamelCase, toSnakeCase };

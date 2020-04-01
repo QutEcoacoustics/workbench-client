@@ -122,6 +122,11 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     this.retrieveProjects(this.audioRecording.siteId, projectsIndex);
   }
 
+  /**
+   * Create observable which outputs site
+   * @param siteId Site ID
+   * @param index Key index
+   */
   private retrieveSite(siteId: Id, index: number) {
     if (isUninitialized(siteId)) {
       return;
@@ -142,19 +147,29 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
       );
   }
 
+  /**
+   * Create observable which outputs list of projects
+   * @param siteId Site ID
+   * @param index Key index
+   */
   private retrieveProjects(siteId: Id, index: number) {
     if (isUninitialized(siteId)) {
       return;
     }
 
     this.details.get(index).value = this.projectsApi
-      .filter({ filter: { "sites.id": { in: [1] } } })
+      .filter({
+        sorting: { orderBy: "id", direction: "asc" },
+        filter: { "sites.id": { in: [1] } }
+      })
       .pipe(
         map(projects => {
-          return projects.map(project => ({
-            value: `${project.name} (${project.id})`,
-            route: project.redirectPath()
-          }));
+          return {
+            value: projects.map(project => ({
+              value: `${project.name} (${project.id})`,
+              route: project.redirectPath()
+            }))
+          };
         }),
         catchError((err: ApiErrorDetails) => {
           this.error = err;
@@ -165,7 +180,7 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   }
 
   /**
-   * Retrieve account data and update details page
+   * Create observable which outputs account details
    * @param accountId Account ID
    * @param index Key index
    */
