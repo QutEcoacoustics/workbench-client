@@ -515,6 +515,7 @@ describe("HeaderComponent", () => {
   });
 
   describe("navbar collapsed logic", () => {
+    // TODO Fix these tests, they don't appear to actually tests the component
     it("should collapse at bootstrap md size", () => {
       setUser(false);
       fixture.detectChanges();

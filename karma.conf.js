@@ -44,35 +44,35 @@ module.exports = function(config) {
         {
           name: "extra-small",
           size: {
-            width: 320,
+            width: 575, // Bootstrap xs = 0 -> 575
             height: 480
           }
         },
         {
           name: "small",
           size: {
-            width: 480,
+            width: 767, // Bootstrap s = 576 -> 767
             height: 720
           }
         },
         {
           name: "medium",
           size: {
-            width: 768,
+            width: 991, // Bootstrap m = 768 -> 991
             height: 1024
           }
         },
         {
           name: "large",
           size: {
-            width: 992,
+            width: 1199, // Bootstrap l = 992 -> 1199
             height: 1024
           }
         },
         {
           name: "extra-large",
           size: {
-            width: 1200,
+            width: 1200, // Bootstrap xl = 1200 -> inf
             height: 900
           }
         }

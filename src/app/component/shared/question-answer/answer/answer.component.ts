@@ -19,7 +19,7 @@ import { ListDetailValue } from "../question-answer.component";
         </ng-template>
       </p>
       <ng-template #isLoading>
-        <p>{{ loadingText }}</p>
+        <p id="loading">{{ loadingText }}</p>
       </ng-template>
     </ng-container>
     <ng-template #hasChildren>
@@ -92,14 +92,17 @@ export class AnswerComponent implements OnInit {
   private humanizeBlob(answer: Blob) {
     this.loading = true;
     this.codeStyling = true;
-    const reader = new FileReader();
 
-    reader.addEventListener("loadend", e => {
-      this.loading = false;
-      this.value = e.target.result as string;
-    });
-
-    reader.readAsText(answer);
+    answer
+      .text()
+      .then(text => {
+        this.loading = false;
+        this.value = text;
+      })
+      .catch(() => {
+        this.loading = false;
+        this.value = this.errorText;
+      });
   }
 
   /**

@@ -8,8 +8,8 @@ import { Observable } from "rxjs";
     <div>
       <div *ngFor="let detail of details">
         <div class="row">
-          <div class="col-sm-3 text-left text-sm-right">
-            <p>
+          <div class="col-sm-3">
+            <p class="text-left text-sm-right">
               <strong>
                 {{ detail.label }}
               </strong>
@@ -36,13 +36,13 @@ export interface ListDetail extends ListDetailValue {
 
 export interface ListDetailValue {
   value:
-    | Observable<ListDetailValue>
     | string
     | number
+    | object
+    | Blob
     | DateTime
     | Duration
-    | Blob
-    | object
-    | ListDetailValue[];
+    | ListDetailValue[]
+    | Observable<ListDetailValue>;
   route?: string;
 }
