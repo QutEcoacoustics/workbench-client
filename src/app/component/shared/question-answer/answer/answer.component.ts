@@ -3,7 +3,7 @@ import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { isUninitialized } from "src/app/helpers";
 import { humanizeDuration } from "src/app/interfaces/apiInterfaces";
-import { ListDetail, ListDetailValue } from "../question-answer.component";
+import { ListDetailValue } from "../question-answer.component";
 
 @Component({
   selector: "app-answer",
@@ -19,7 +19,7 @@ import { ListDetail, ListDetailValue } from "../question-answer.component";
         </ng-template>
       </p>
       <ng-template #isLoading>
-        <p>loading</p>
+        <p>{{ loadingText }}</p>
       </ng-template>
     </ng-container>
     <ng-template #hasChildren>
@@ -28,14 +28,15 @@ import { ListDetail, ListDetailValue } from "../question-answer.component";
   `
 })
 export class AnswerComponent implements OnInit {
-  @Input() detail: ListDetail;
+  @Input() detail: ListDetailValue;
+  public children: ListDetailValue[];
   public codeStyling: boolean;
-  public value: string;
-  public route: string;
   public loading: boolean;
-  public children: ListDetail[];
-  private noValue = "(no value)";
-  private error = "(error)";
+  public loadingText = "(loading)";
+  public route: string;
+  public value: string;
+  private errorText = "(error)";
+  private noValueText = "(no value)";
 
   constructor() {}
 
@@ -53,7 +54,7 @@ export class AnswerComponent implements OnInit {
     }
 
     if (isUninitialized(answer)) {
-      this.value = this.noValue;
+      this.value = this.noValueText;
     } else if (answer instanceof Observable) {
       this.humanizeObservable(answer);
     } else if (answer instanceof DateTime) {
@@ -80,7 +81,7 @@ export class AnswerComponent implements OnInit {
     try {
       this.value = JSON.stringify(answer);
     } catch (err) {
-      this.value = this.error;
+      this.value = this.errorText;
     }
   }
 
@@ -116,7 +117,7 @@ export class AnswerComponent implements OnInit {
       },
       () => {
         this.loading = false;
-        this.value = this.error;
+        this.value = this.errorText;
       }
     );
   }
