@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
     <div>
       <div *ngFor="let detail of details">
         <div class="row">
-          <div class="col-sm-3 text-right">
+          <div class="col-sm-3 text-left text-sm-right">
             <p>
               <strong>
                 {{ detail.label }}
