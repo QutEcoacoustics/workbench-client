@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import filesize from "filesize";
 import { List } from "immutable";
 import _ from "lodash";
 import { catchError, map, takeUntil } from "rxjs/operators";
@@ -108,13 +109,19 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
       });
     });
 
+    const dataLengthBytes = 9;
     const sitesIndex = 4;
     const projectsIndex = 20;
     const creatorIndex = 13;
     const updaterIndex = 14;
     const deleterIndex = 15;
 
-    // Retrieve users
+    //
+    this.details.get(dataLengthBytes).value = filesize(
+      this.audioRecording.dataLengthBytes
+    );
+
+    // Retrieve models
     this.retrieveUser(this.audioRecording.creatorId, creatorIndex);
     this.retrieveUser(this.audioRecording.updaterId, updaterIndex);
     this.retrieveUser(this.audioRecording.deleterId, deleterIndex);

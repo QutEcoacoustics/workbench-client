@@ -67,7 +67,7 @@ function createAudioRecording(modelId: Id) {
     channels: 2,
     bitRateBps: 1411200,
     mediaType: "audio/wav",
-    dataLengthBytes: 0,
+    dataLengthBytes: 1000000,
     fileHash: "SHA: 2346ad27d7568ba9896f1b7da6b5991251debdf2",
     status: "ready",
     notes:

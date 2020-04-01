@@ -26,7 +26,7 @@ export interface AudioRecordingInterface {
   channels?: number;
   bitRateBps?: number;
   mediaType?: string;
-  dataLengthBytes?: BigInt | number;
+  dataLengthBytes?: number;
   fileHash?: string;
   status?: "ready" | "uploading" | "corrupt";
   notes?: Notes | string;
@@ -56,7 +56,7 @@ export class AudioRecording extends AbstractModel
   public readonly channels?: number;
   public readonly bitRateBps?: number;
   public readonly mediaType?: string;
-  public readonly dataLengthBytes?: BigInt;
+  public readonly dataLengthBytes?: number;
   public readonly fileHash?: string;
   public readonly status?: "ready" | "uploading" | "corrupt";
   public readonly notes?: Notes;
@@ -75,9 +75,6 @@ export class AudioRecording extends AbstractModel
     this.kind = "AudioRecording";
     this.recordedDate = dateTimeTimezone(audioRecording.recordedDate as string);
     this.durationSeconds = duration(audioRecording.durationSeconds as number);
-    this.dataLengthBytes = !isUninitialized(audioRecording.dataLengthBytes)
-      ? BigInt(audioRecording.dataLengthBytes)
-      : undefined;
     this.createdAt = dateTimeTimezone(audioRecording.createdAt as string);
     this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
     this.notes = notes(audioRecording.notes as string);
