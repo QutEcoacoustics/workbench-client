@@ -93,16 +93,30 @@ export class AnswerComponent implements OnInit {
     this.loading = true;
     this.codeStyling = true;
 
-    answer
-      .text()
-      .then(text => {
+    // Cross browser compatibility
+    if (answer.text) {
+      // New method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
+      answer
+        .text()
+        .then(text => {
+          this.loading = false;
+          this.value = text;
+        })
+        .catch(() => {
+          this.loading = false;
+          this.value = this.errorText;
+        });
+    } else {
+      // Old method (https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText)
+      const reader = new FileReader();
+
+      reader.addEventListener("loadend", e => {
         this.loading = false;
-        this.value = text;
-      })
-      .catch(() => {
-        this.loading = false;
-        this.value = this.errorText;
+        this.value = e.target.result.toString();
       });
+
+      reader.readAsText(answer);
+    }
   }
 
   /**

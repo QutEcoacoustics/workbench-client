@@ -222,6 +222,14 @@ describe("AnswerComponent", () => {
   });
 
   describe("Blob input", () => {
+    const compatibleBrowser = new Blob(["compatibility"], {
+      type: "text/plain"
+    });
+
+    if (!compatibleBrowser.text) {
+      return;
+    }
+
     function setBlob(promise: Promise<string>) {
       const blob = new Blob(["testing"], { type: "text/plain" });
       spyOn(blob, "text").and.callFake(() => promise);

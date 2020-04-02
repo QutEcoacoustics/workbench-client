@@ -23,7 +23,6 @@ import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsMenuItem
 } from "../../admin.menus";
-import { fields } from "./audioRecording.json";
 
 const audioRecordingKey = "audioRecording";
 
@@ -59,7 +58,6 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   public details: List<ListDetail> = List([]);
   public error: ApiErrorDetails;
   public failure: boolean;
-  public fields = fields;
 
   constructor(
     private accountsApi: AccountService,
