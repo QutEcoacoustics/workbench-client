@@ -105,8 +105,6 @@ export class AudioRecording extends AbstractModel
 
   redirectPath(): string {
     // TODO Change to Audio Recording Page
-    return adminAudioRecordingMenuItem.route.format({
-      audioRecordingId: this.id
-    });
+    return "/broken_link";
   }
 }

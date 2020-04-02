@@ -41,8 +41,7 @@ const audioRecordingKey = "audioRecording";
   selector: "app-admin-audio-recording",
   template: `
     <div *ngIf="!failure">
-      <!-- TODO *ngIf="!error" -->
-      <div>
+      <div *ngIf="!error">
         <h1>Audio Recording Details</h1>
         <app-question-answer
           [details]="details.toArray()"
@@ -72,6 +71,7 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     const data = this.route.snapshot.data;
     if (!verifyResolvers(data)) {
       this.failure = true;
+      return;
     }
     this.audioRecording = data[audioRecordingKey].model;
 

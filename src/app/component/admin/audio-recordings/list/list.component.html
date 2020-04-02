@@ -40,14 +40,11 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-default mr-2"
-          [routerLink]="value.redirectPath()"
+          [routerLink]="viewRedirectPath(value)"
         >
           View
         </a>
-        <a
-          class="btn btn-sm btn-default"
-          [routerLink]="playRedirectPath(value)"
-        >
+        <a class="btn btn-sm btn-default" [routerLink]="value.redirectPath()">
           Play
         </a>
       </ng-template>

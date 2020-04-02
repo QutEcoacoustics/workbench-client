@@ -5,7 +5,11 @@ import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemp
 import { humanizeDuration, Id } from "src/app/interfaces/apiInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { AudioRecordingService } from "src/app/services/baw-api/audio-recording.service";
-import { adminAudioRecordingsMenuItem, adminCategory } from "../../admin.menus";
+import {
+  adminAudioRecordingsMenuItem,
+  adminCategory,
+  adminAudioRecordingMenuItem
+} from "../../admin.menus";
 import { adminMenuItemActions } from "../../dashboard/dashboard.component";
 
 @Page({
@@ -59,9 +63,10 @@ export class AdminAudioRecordingsComponent
     this.getModels();
   }
 
-  playRedirectPath(model: AudioRecording) {
-    // TODO Replace with play path
-    return "/broken_link";
+  viewRedirectPath(model: AudioRecording) {
+    return adminAudioRecordingMenuItem.route.format({
+      audioRecordingId: model.id
+    });
   }
 }
 

@@ -168,6 +168,18 @@ describe("AnswerComponent", () => {
       const value = getCodeValues()[0];
       expect(value.innerText.trim()).toBe('{"value1":42,"value2":"test"}');
     });
+
+    it("should display object error", () => {
+      // Create cyclic object should fail JSON.stringify
+      const cyclicObject = { a: [] };
+      cyclicObject.a.push(cyclicObject);
+
+      component.detail = { value: cyclicObject };
+      fixture.detectChanges();
+
+      const value = getCodeValues()[0];
+      expect(value.innerText.trim()).toBe("(error)");
+    });
   });
 
   describe("DateTime input", () => {
@@ -221,6 +233,7 @@ describe("AnswerComponent", () => {
     });
   });
 
+  // TODO Replace with tests that doesn't require intercepting function calls
   describe("Blob input", () => {
     const compatibleBrowser = new Blob(["compatibility"], {
       type: "text/plain"
