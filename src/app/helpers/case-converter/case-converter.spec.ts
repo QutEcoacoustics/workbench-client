@@ -20,10 +20,10 @@ const conversionCallbacks = [
 ];
 
 conversionCallbacks.forEach((test) => {
-  let fieldOne = test.fieldOne;
-  let fieldTwo = test.fieldTwo;
-  let whitelistKey = test.whitelistKey;
-  let whitelistValue = test.whitelistValue;
+  const fieldOne = test.fieldOne;
+  const fieldTwo = test.fieldTwo;
+  const whitelistKey = test.whitelistKey;
+  const whitelistValue = test.whitelistValue;
 
   describe(test.name, () => {
     it("simple objects", () => {
