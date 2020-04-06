@@ -34,10 +34,14 @@ const projectKey = "project";
   styleUrls: ["./harvest.component.scss"],
 })
 export class HarvestComponent implements OnInit {
-  public state: Harvest;
+  public stage: Harvest;
   public harvest = Harvest;
   public failure: boolean;
   public project: Project;
+  public buttons: {
+    previous: { disabled?: boolean; text?: string };
+    next: { disabled?: boolean; text?: string };
+  };
 
   constructor(private route: ActivatedRoute) {}
 
@@ -52,7 +56,53 @@ export class HarvestComponent implements OnInit {
     }
 
     this.project = resolvedProject.model;
-    this.state = Harvest.Start;
+    this.stage = Harvest.Start;
+    this.updateNavigation();
+  }
+
+  public nextStage() {
+    this.stage++;
+    this.updateNavigation();
+  }
+
+  public previousStage() {
+    this.stage--;
+    this.updateNavigation();
+  }
+
+  private updateNavigation() {
+    switch (this.stage) {
+      case Harvest.Start: {
+        this.buttons = {
+          previous: {},
+          next: { text: "Start" },
+        };
+        break;
+      }
+      case Harvest.Credentials: {
+        this.buttons = {
+          previous: { text: "Cancel" },
+          next: { text: "Finished Uploading" },
+        };
+        break;
+      }
+      case Harvest.Review: {
+        this.buttons = {
+          previous: { text: "Re-submit Files" },
+          next: { text: "Finish Review" },
+        };
+        break;
+      }
+      case Harvest.Check:
+      case Harvest.Harvest:
+      case Harvest.Summary: {
+        this.buttons = {
+          previous: {},
+          next: {},
+        };
+        break;
+      }
+    }
   }
 }
 

@@ -5,12 +5,126 @@
     Harvest
   </h1>
 
-  <div [ngSwitch]="state">
-    <div *ngSwitchCase="harvest.Start"></div>
-    <div *ngSwitchCase="harvest.Credentials">Credentials</div>
-    <div *ngSwitchCase="harvest.Check">Check</div>
-    <div *ngSwitchCase="harvest.Review">Review</div>
-    <div *ngSwitchCase="harvest.Harvest">Harvest</div>
-    <div *ngSwitchCase="harvest.Summary">Summary</div>
+  <div [ngSwitch]="stage">
+    <!-- Details about harvesting files -->
+    <div *ngSwitchCase="harvest.Start">
+      <h3>Basic Details</h3>
+
+      <p>
+        Harvesting is the name we use for the process of adding collections of
+        audio to the bioacoustic workbench. It is a process that is optimised
+        for mass injestion of data (e.g. 3TB, or 4000 files at a time). This
+        process performs several actions such as:
+      </p>
+
+      <ul>
+        <li>
+          Converting audio files to formats compatible with our website
+        </li>
+        <li>
+          Basic integrity checks on the data harvested
+        </li>
+        <li>
+          Gathering metadata about the audio (format, channels, bitrate, sample
+          rate, duration, etc.)
+        </li>
+        <li>
+          Assigning audio to sites and projects
+        </li>
+      </ul>
+    </div>
+
+    <!-- User credentials for accessing SFTP -->
+    <div *ngSwitchCase="harvest.Credentials">
+      <h3>Credentials</h3>
+
+      <p>
+        Upload your audio files using the details below. The URI will send you
+        to an SFTP server which will be available to upload to for the next
+        [INSERT] hours. Please keep track of the username, password, and URI as
+        they are specific to this upload attempt and will not exist afterwards.
+      </p>
+
+      <h4>Details</h4>
+      <ul>
+        <li><b>Username: </b>aJoEi4aEz6</li>
+        <li><b>Password: </b>delicate contempt received two yet</li>
+        <li>
+          <b>URI: </b>
+          <a href="https://ecosounds.org/harvest/v2OSqt7VHu">
+            https://ecosounds.org/harvest/v2OSqt7VHu
+          </a>
+        </li>
+      </ul>
+
+      <h4>Current Progress</h4>
+
+      <ul>
+        <li><b>Uploaded Files: </b>xxx</li>
+        <li><b>Uploaded Bytes: </b>xxxxx MB</li>
+      </ul>
+    </div>
+
+    <!-- Checking uploaded files progress bar -->
+    <div *ngSwitchCase="harvest.Check">
+      <h3>Checking Files</h3>
+
+      <p>Running an automated check of files uploaded.</p>
+
+      <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
+      <p>
+        <ngb-progressbar
+          type="success"
+          [value]="25"
+          [showValue]="true"
+        ></ngb-progressbar>
+      </p>
+    </div>
+
+    <!-- Review file uploads -->
+    <div *ngSwitchCase="harvest.Review">
+      <h3>Review</h3>
+    </div>
+
+    <!-- Harvesting uploaded files progress bar -->
+    <div *ngSwitchCase="harvest.Harvest">
+      <h3>Harvesting Files</h3>
+
+      <p>Harvesting files into system.</p>
+
+      <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
+      <p>
+        <ngb-progressbar
+          type="success"
+          [value]="25"
+          [showValue]="true"
+        ></ngb-progressbar>
+      </p>
+    </div>
+
+    <!-- View summary report -->
+    <div *ngSwitchCase="harvest.Summary">
+      <h3>Complete</h3>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="clearfix">
+      <button
+        *ngIf="buttons.previous?.text"
+        class="btn btn-danger float-left"
+        [disabled]="buttons.previous?.disabled"
+        (click)="previousStage()"
+      >
+        {{ buttons.previous?.text }}
+      </button>
+      <button
+        *ngIf="buttons.next?.text"
+        class="btn btn-success float-right"
+        [disabled]="buttons.next?.disabled"
+        (click)="nextStage()"
+      >
+        {{ buttons.next?.text }}
+      </button>
+    </div>
   </div>
 </div>
