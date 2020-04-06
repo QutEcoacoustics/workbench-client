@@ -1,11 +1,12 @@
 import {
+  defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   defaultPermissionsIcon,
   isAdminPredicate,
   isLoggedInPredicate,
-  isProjectOwnerPredicate
+  isProjectOwnerPredicate,
 } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
@@ -18,7 +19,7 @@ export const projectsRoute = StrongRoute.Base.add("projects");
 export const projectsCategory: Category = {
   label: "Projects",
   icon: ["fas", "globe-asia"],
-  route: projectsRoute
+  route: projectsRoute,
 };
 
 export const projectsMenuItem = MenuRoute({
@@ -26,7 +27,7 @@ export const projectsMenuItem = MenuRoute({
   label: "Projects",
   order: 4,
   route: projectsRoute,
-  tooltip: () => "View projects I have access to"
+  tooltip: () => "View projects I have access to",
 });
 
 export const newProjectMenuItem = MenuRoute({
@@ -35,7 +36,7 @@ export const newProjectMenuItem = MenuRoute({
   parent: projectsMenuItem,
   predicate: isLoggedInPredicate,
   route: projectsRoute.add("new"),
-  tooltip: () => "Create a new project"
+  tooltip: () => "Create a new project",
 });
 
 export const requestProjectMenuItem = MenuRoute({
@@ -44,7 +45,7 @@ export const requestProjectMenuItem = MenuRoute({
   parent: projectsMenuItem,
   predicate: isLoggedInPredicate,
   route: projectsRoute.add("request"),
-  tooltip: () => "Request access to a project not listed here"
+  tooltip: () => "Request access to a project not listed here",
 });
 
 /*
@@ -54,7 +55,7 @@ export const requestProjectMenuItem = MenuRoute({
 export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
-  route: projectsRoute.add(":projectId")
+  route: projectsRoute.add(":projectId"),
 };
 
 export const projectMenuItem = MenuRoute({
@@ -62,7 +63,7 @@ export const projectMenuItem = MenuRoute({
   label: "Project",
   parent: projectsMenuItem,
   route: projectCategory.route,
-  tooltip: () => "The current project"
+  tooltip: () => "The current project",
 });
 
 export const editProjectMenuItem = MenuRoute({
@@ -71,7 +72,7 @@ export const editProjectMenuItem = MenuRoute({
   parent: projectMenuItem,
   predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for this project"
+  tooltip: () => "Change the details for this project",
 });
 
 export const editProjectPermissionsMenuItem = MenuRoute({
@@ -80,7 +81,7 @@ export const editProjectPermissionsMenuItem = MenuRoute({
   parent: projectMenuItem,
   predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("permissions"),
-  tooltip: () => "Edit this projects permissions"
+  tooltip: () => "Edit this projects permissions",
 });
 
 export const assignSiteMenuItem = MenuRoute({
@@ -89,7 +90,7 @@ export const assignSiteMenuItem = MenuRoute({
   parent: projectMenuItem,
   predicate: isAdminPredicate,
   route: projectMenuItem.route.add("assign"),
-  tooltip: () => "Change which sites belong to this project"
+  tooltip: () => "Change which sites belong to this project",
 });
 
 export const deleteProjectMenuItem = MenuRoute({
@@ -98,5 +99,14 @@ export const deleteProjectMenuItem = MenuRoute({
   parent: projectMenuItem,
   predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("delete"),
-  tooltip: () => "Delete this project"
+  tooltip: () => "Delete this project",
+});
+
+export const harvestProjectMenuItem = MenuRoute({
+  icon: defaultAudioIcon,
+  label: "Harvest Data",
+  parent: projectMenuItem,
+  predicate: isProjectOwnerPredicate,
+  route: projectMenuItem.route.add("harvest"),
+  tooltip: () => "Upload new audio to this project",
 });

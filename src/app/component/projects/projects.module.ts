@@ -8,6 +8,7 @@ import { AssignComponent } from "./pages/assign/assign.component";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
+import { HarvestComponent } from "./pages/harvest/harvest.component";
 import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { PermissionsComponent } from "./pages/permissions/permissions.component";
@@ -20,12 +21,13 @@ const components = [
   DeleteComponent,
   DetailsComponent,
   EditComponent,
+  HarvestComponent,
   ListComponent,
   NewComponent,
   PermissionsComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent
+  SiteCardComponent,
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
@@ -36,8 +38,8 @@ const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  exports: [RouterModule, ...components]
+  exports: [RouterModule, ...components],
 })
 export class ProjectsModule {}

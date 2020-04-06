@@ -1,0 +1,16 @@
+<div *ngIf="!failure">
+  <h1>
+    <small class="text-muted"> Project: {{ project.name }} </small>
+    <br />
+    Harvest
+  </h1>
+
+  <div [ngSwitch]="state">
+    <div *ngSwitchCase="harvest.Start"></div>
+    <div *ngSwitchCase="harvest.Credentials">Credentials</div>
+    <div *ngSwitchCase="harvest.Check">Check</div>
+    <div *ngSwitchCase="harvest.Review">Review</div>
+    <div *ngSwitchCase="harvest.Harvest">Harvest</div>
+    <div *ngSwitchCase="harvest.Summary">Summary</div>
+  </div>
+</div>

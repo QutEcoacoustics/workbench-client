@@ -18,9 +18,10 @@ import {
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
+  harvestProjectMenuItem,
   projectCategory,
   projectMenuItem,
-  projectsMenuItem
+  projectsMenuItem,
 } from "../../projects.menus";
 
 export const projectMenuItemActions = [
@@ -29,7 +30,8 @@ export const projectMenuItemActions = [
   editProjectPermissionsMenuItem,
   newSiteMenuItem,
   assignSiteMenuItem,
-  deleteProjectMenuItem
+  deleteProjectMenuItem,
+  harvestProjectMenuItem,
 ];
 
 const projectKey = "project";
@@ -40,18 +42,18 @@ const sitesKey = "sites";
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List()
+    links: List(),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [sitesKey]: siteResolvers.list
+    [sitesKey]: siteResolvers.list,
   },
-  self: projectMenuItem
+  self: projectMenuItem,
 })
 @Component({
   selector: "app-projects-details",
   templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"]
+  styleUrls: ["./details.component.scss"],
 })
 export class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
