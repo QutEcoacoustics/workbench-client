@@ -42,6 +42,7 @@ export class HarvestComponent implements OnInit {
     previous: { disabled?: boolean; text?: string };
     next: { disabled?: boolean; text?: string };
   };
+  public progress: number;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -56,7 +57,7 @@ export class HarvestComponent implements OnInit {
     }
 
     this.project = resolvedProject.model;
-    this.stage = Harvest.Start;
+    this.stage = Harvest.Summary;
     this.updateNavigation();
   }
 
@@ -68,6 +69,20 @@ export class HarvestComponent implements OnInit {
   public previousStage() {
     this.stage--;
     this.updateNavigation();
+  }
+
+  private mockTimer() {
+    this.progress = 0;
+
+    const interval = setInterval(() => {
+      this.progress++;
+
+      if (this.progress >= 100) {
+        this.progress = 100;
+        this.nextStage();
+        clearInterval(interval);
+      }
+    }, 300);
   }
 
   private updateNavigation() {
@@ -86,6 +101,14 @@ export class HarvestComponent implements OnInit {
         };
         break;
       }
+      case Harvest.Check: {
+        this.buttons = {
+          previous: {},
+          next: {},
+        };
+        this.mockTimer();
+        break;
+      }
       case Harvest.Review: {
         this.buttons = {
           previous: { text: "Re-submit Files" },
@@ -93,8 +116,14 @@ export class HarvestComponent implements OnInit {
         };
         break;
       }
-      case Harvest.Check:
-      case Harvest.Harvest:
+      case Harvest.Harvest: {
+        this.buttons = {
+          previous: {},
+          next: {},
+        };
+        this.mockTimer();
+        break;
+      }
       case Harvest.Summary: {
         this.buttons = {
           previous: {},

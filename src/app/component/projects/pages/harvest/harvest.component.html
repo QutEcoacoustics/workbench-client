@@ -75,7 +75,7 @@
       <p>
         <ngb-progressbar
           type="success"
-          [value]="25"
+          [value]="progress"
           [showValue]="true"
         ></ngb-progressbar>
       </p>
@@ -96,7 +96,7 @@
       <p>
         <ngb-progressbar
           type="success"
-          [value]="25"
+          [value]="progress"
           [showValue]="true"
         ></ngb-progressbar>
       </p>
@@ -105,6 +105,12 @@
     <!-- View summary report -->
     <div *ngSwitchCase="harvest.Summary">
       <h3>Complete</h3>
+
+      <div class="clearfix">
+        <button class="btn btn-primary float-right">
+          Download Report
+        </button>
+      </div>
     </div>
 
     <!-- Navigation buttons -->
