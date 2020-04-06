@@ -13,7 +13,7 @@ import {
   IdParam,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, listMock } from "./mock/api-commonMock";
@@ -38,7 +38,11 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
   filter(filters: Filters, project: IdOr<Project>): Observable<Site[]> {
-    return this.apiFilter(endpoint(project, Empty, Filter), filters);
+    return filterMock(
+      filters,
+      (index) => new Site({ id: index, name: "PLACEHOLDER" })
+    );
+    // return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
   show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.apiShow(endpoint(project, model, Empty));
@@ -71,12 +75,12 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   filter(filters: Filters): Observable<Site[]> {
     return filterMock<Site>(
       filters,
-      index =>
+      (index) =>
         new Site({
           id: index,
           name: "PLACEHOLDER SITE",
           description: "PLACEHOLDER DESCRIPTION",
-          creatorId: 1
+          creatorId: 1,
         })
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);

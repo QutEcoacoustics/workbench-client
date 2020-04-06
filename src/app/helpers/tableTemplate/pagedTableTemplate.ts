@@ -4,7 +4,7 @@ import {
   DatatableComponent,
   SelectionType,
   SortType,
-  TableColumn
+  TableColumn,
 } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
@@ -61,14 +61,14 @@ export abstract class PagedTableTemplate<
           this.getModels();
         },
         // Filter event doesn't have an error output
-        err => {}
+        (err) => {}
       );
   }
 
   public setPage(pageInfo: TablePage) {
     this.pageNumber = pageInfo.offset;
     this.filters.paging = {
-      page: pageInfo.offset + 1
+      page: pageInfo.offset + 1,
     };
 
     this.getModels();
@@ -82,8 +82,8 @@ export abstract class PagedTableTemplate<
     } else {
       this.filters.filter = {
         [this.filterKey]: {
-          contains: filterText
-        }
+          contains: filterText,
+        },
       };
     }
 
@@ -96,22 +96,22 @@ export abstract class PagedTableTemplate<
     } else {
       this.filters.sorting = {
         orderBy: this.sortKeys[event.column.prop],
-        direction: event.newValue
+        direction: event.newValue,
       };
     }
 
     this.getModels();
   }
 
-  public getModels() {
+  public getModels(...args: AbstractModel[]) {
     this.loadingData = true;
     this.rows = [];
 
     this.api
-      .filter(this.filters)
+      .filter(this.filters, ...args)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        models => {
+        (models) => {
           this.rows = this.rowsCallback(models);
           this.loadingData = false;
 

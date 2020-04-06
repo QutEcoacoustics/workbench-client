@@ -105,7 +105,7 @@
     <div *ngSwitchCase="harvest.Harvest">
       <h3>Harvesting Files</h3>
 
-      <p>Harvesting files into system.</p>
+      <p>Harvesting files into the system.</p>
 
       <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
       <p>
@@ -121,15 +121,14 @@
     <div *ngSwitchCase="harvest.Summary">
       <h3>Complete</h3>
 
-      <!-- ngFor each project -->
-      <h4>Project: xxxxxx</h4>
-      <!-- Insert Table -->
-
       <div class="clearfix">
         <button class="btn btn-primary float-right">
           Download Report
         </button>
       </div>
+
+      <app-project-harvest-complete [project]="project">
+      </app-project-harvest-complete>
     </div>
 
     <!-- Navigation buttons -->

@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import filesize from "filesize";
 import { List } from "immutable";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
@@ -13,7 +14,6 @@ import {
   projectMenuItem,
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
-import filesize from "filesize";
 
 const projectKey = "project";
 
@@ -45,7 +45,8 @@ export class HarvestComponent implements OnInit {
   public progress: number;
   public project: Project;
   public stage: Harvest;
-  private interval: NodeJS.Timer;
+  private interval: number;
+  private intervalSpeed = 25; // 300
 
   constructor(private route: ActivatedRoute) {}
 
@@ -85,7 +86,7 @@ export class HarvestComponent implements OnInit {
   private mockTimer(callback?: () => void) {
     this.progress = 0;
 
-    this.interval = setInterval(() => {
+    this.interval = (setInterval as any)(() => {
       this.progress++;
 
       if (this.progress >= 100) {
@@ -96,7 +97,7 @@ export class HarvestComponent implements OnInit {
           callback();
         }
       }
-    }, 300);
+    }, this.intervalSpeed);
   }
 
   private updateNavigation() {
