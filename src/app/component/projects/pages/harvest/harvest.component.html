@@ -11,10 +11,12 @@
       <h3>Basic Details</h3>
 
       <p>
-        Harvesting is the name we use for the process of adding collections of
-        audio to the bioacoustic workbench. It is a process that is optimised
-        for mass injestion of data (e.g. 3TB, or 4000 files at a time). This
-        process performs several actions such as:
+        Harvesting is the name we use for the process of uploading audio data to
+        our website. It is a process that is optimized for the mass ingestion of
+        data (e.g 3TB, or 4000 files at a time). For our users this allows you
+        to submit your recorded environmental audio for analysis and view the
+        results directly through the website. Currently this process performs
+        several actions such as:
       </p>
 
       <ul>
@@ -39,10 +41,11 @@
       <h3>Credentials</h3>
 
       <p>
-        Upload your audio files using the details below. The URI will send you
-        to an SFTP server which will be available to upload to for the next
-        [INSERT] hours. Please keep track of the username, password, and URI as
-        they are specific to this upload attempt and will not exist afterwards.
+        To begin the process of harvesting your audio data, you will need to
+        upload the files to our SFTP server. The URI will send you to our server
+        which will be available to upload to for the next [INSERT] hours. Please
+        keep track of the username, password, and URI as they are specific to
+        this upload attempt and will not exist afterwards.
       </p>
 
       <h4>Details</h4>
@@ -60,8 +63,8 @@
       <h4>Current Progress</h4>
 
       <ul>
-        <li><b>Uploaded Files: </b>xxx</li>
-        <li><b>Uploaded Bytes: </b>xxxxx MB</li>
+        <li><b>Uploaded Files: </b>{{ progress }}</li>
+        <li><b>Uploaded Bytes: </b>{{ filesize(progress * 30000000) }}</li>
       </ul>
     </div>
 
@@ -69,7 +72,14 @@
     <div *ngSwitchCase="harvest.Check">
       <h3>Checking Files</h3>
 
-      <p>Running an automated check of files uploaded.</p>
+      <p>
+        Running an automated check of files uploaded. This is to ensure all the
+        audio files have not been corrupted, and will attempt to extract useful
+        metadata. Once this process is complete, you will be able to see a list
+        of uploaded files, their project id (PID), site id (SID), and point id
+        (PoID).<br />The progress bar below shows you the current progress, and
+        will update automatically without refreshing the page.
+      </p>
 
       <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
       <p>
@@ -84,6 +94,11 @@
     <!-- Review file uploads -->
     <div *ngSwitchCase="harvest.Review">
       <h3>Review</h3>
+
+      <p>
+        Please review the files you have uploaded. If there are any
+        unrecoverable errors, hit the re-submit button to manually fix the file.
+      </p>
     </div>
 
     <!-- Harvesting uploaded files progress bar -->
@@ -105,6 +120,10 @@
     <!-- View summary report -->
     <div *ngSwitchCase="harvest.Summary">
       <h3>Complete</h3>
+
+      <!-- ngFor each project -->
+      <h4>Project: xxxxxx</h4>
+      <!-- Insert Table -->
 
       <div class="clearfix">
         <button class="btn btn-primary float-right">

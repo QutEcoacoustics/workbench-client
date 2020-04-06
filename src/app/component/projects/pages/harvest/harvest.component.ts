@@ -13,6 +13,7 @@ import {
   projectMenuItem,
 } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
+import filesize from "filesize";
 
 const projectKey = "project";
 
@@ -34,15 +35,17 @@ const projectKey = "project";
   styleUrls: ["./harvest.component.scss"],
 })
 export class HarvestComponent implements OnInit {
-  public stage: Harvest;
-  public harvest = Harvest;
-  public failure: boolean;
-  public project: Project;
   public buttons: {
     previous: { disabled?: boolean; text?: string };
     next: { disabled?: boolean; text?: string };
   };
+  public failure: boolean;
+  public filesize = filesize;
+  public harvest = Harvest;
   public progress: number;
+  public project: Project;
+  public stage: Harvest;
+  private interval: NodeJS.Timer;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -57,35 +60,50 @@ export class HarvestComponent implements OnInit {
     }
 
     this.project = resolvedProject.model;
-    this.stage = Harvest.Summary;
+    this.stage = Harvest.Start;
     this.updateNavigation();
   }
 
   public nextStage() {
     this.stage++;
+    clearInterval(this.interval);
     this.updateNavigation();
   }
 
   public previousStage() {
-    this.stage--;
+    // Review page should go to Credentials
+    if (this.stage === Harvest.Review) {
+      this.stage = Harvest.Credentials;
+    } else {
+      this.stage--;
+    }
+
+    clearInterval(this.interval);
     this.updateNavigation();
   }
 
-  private mockTimer() {
+  private mockTimer(callback?: () => void) {
     this.progress = 0;
 
-    const interval = setInterval(() => {
+    this.interval = setInterval(() => {
       this.progress++;
 
       if (this.progress >= 100) {
         this.progress = 100;
-        this.nextStage();
-        clearInterval(interval);
+        clearInterval(this.interval);
+
+        if (callback) {
+          callback();
+        }
       }
     }, 300);
   }
 
   private updateNavigation() {
+    const callback = () => {
+      this.nextStage();
+    };
+
     switch (this.stage) {
       case Harvest.Start: {
         this.buttons = {
@@ -99,6 +117,7 @@ export class HarvestComponent implements OnInit {
           previous: { text: "Cancel" },
           next: { text: "Finished Uploading" },
         };
+        this.mockTimer();
         break;
       }
       case Harvest.Check: {
@@ -106,7 +125,7 @@ export class HarvestComponent implements OnInit {
           previous: {},
           next: {},
         };
-        this.mockTimer();
+        this.mockTimer(callback);
         break;
       }
       case Harvest.Review: {
@@ -121,7 +140,7 @@ export class HarvestComponent implements OnInit {
           previous: {},
           next: {},
         };
-        this.mockTimer();
+        this.mockTimer(callback);
         break;
       }
       case Harvest.Summary: {
