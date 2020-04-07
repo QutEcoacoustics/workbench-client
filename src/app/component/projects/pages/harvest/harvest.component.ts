@@ -46,7 +46,7 @@ export class HarvestComponent implements OnInit {
   public project: Project;
   public stage: Harvest;
   private interval: number;
-  private intervalSpeed = 25; // 300
+  private intervalSpeed = 300;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -86,6 +86,7 @@ export class HarvestComponent implements OnInit {
   private mockTimer(callback?: () => void) {
     this.progress = 0;
 
+    // https://github.com/TypeStrong/atom-typescript/issues/1053
     this.interval = (setInterval as any)(() => {
       this.progress++;
 
