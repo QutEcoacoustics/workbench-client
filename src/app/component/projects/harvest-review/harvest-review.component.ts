@@ -56,8 +56,6 @@ export class HarvestReviewComponent implements OnInit {
       sitePool,
       pointPool
     );
-
-    console.log(this.files);
   }
 
   private generateRootFolder(
