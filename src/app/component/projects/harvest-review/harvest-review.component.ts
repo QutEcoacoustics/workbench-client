@@ -4,6 +4,7 @@ import { TreeNode } from "primeng/api/treenode";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { Status } from "../../shared/indicator/indicator.component";
+import { AbstractModel } from "src/app/models/AbstractModel";
 
 @Component({
   selector: "app-project-harvest-review",
@@ -12,59 +13,11 @@ import { Status } from "../../shared/indicator/indicator.component";
 })
 export class HarvestReviewComponent implements OnInit {
   public filesize = filesize;
-  public files: TreeNode[] = [
-    {
-      data: {
-        name: "Creek",
-        status: Status.Success,
-        summary: {
-          projects: new Set([]),
-          sites: new Set([]),
-          points: new Set([]),
-          fileCount: 0,
-          bytes: 0,
-        },
-      },
-      children: [],
-    },
-    {
-      data: {
-        name: "Woodland",
-        status: Status.Success,
-        summary: {
-          projects: new Set([]),
-          sites: new Set([]),
-          points: new Set([]),
-          fileCount: 0,
-          bytes: 0,
-        },
-      },
-      children: [],
-    },
-    {
-      data: {
-        name: "Desert",
-        status: Status.Success,
-        summary: {
-          projects: new Set([]),
-          sites: new Set([]),
-          points: new Set([]),
-          fileCount: 0,
-          bytes: 0,
-        },
-      },
-      children: [],
-    },
-  ];
+  public files: TreeNode[] = [];
   public columns = 4;
   public status = Status;
 
   constructor() {}
-
-  test(arg) {
-    console.log(arg);
-    return "";
-  }
 
   ngOnInit(): void {
     const projectPool = [
@@ -85,95 +38,106 @@ export class HarvestReviewComponent implements OnInit {
       (id) => new Site({ id, name: "Point" + id })
     );
 
-    this.generateSites(
-      this.files[0],
+    this.generateRootFolder(
+      "Creek",
       projectPool.slice(0, 3),
       sitePool,
       pointPool
     );
-    this.generateSites(
-      this.files[1],
+    this.generateRootFolder(
+      "Woodland",
       projectPool.slice(3, 7),
       sitePool,
       pointPool
     );
-    this.generateSites(
-      this.files[2],
+    this.generateRootFolder(
+      "Desert",
       projectPool.slice(2, 5),
       sitePool,
       pointPool
     );
+
+    console.log(this.files);
   }
 
-  private generateSites(
-    parent: TreeNode,
+  private generateRootFolder(
+    name: string,
     projectPool: Project[],
     sitePool: Site[],
     pointPool: Site[]
   ) {
+    const { children, status, models } = this.generateFolders(
+      projectPool,
+      sitePool,
+      pointPool
+    );
+
+    this.files.push({
+      data: {
+        name: name,
+        status,
+        ...models,
+      },
+      children,
+    });
+  }
+
+  private generateFolders(
+    projectPool: Project[],
+    sitePool: Site[],
+    pointPool: Site[]
+  ) {
+    let status: Status = Status.Success;
     const children = [];
+    const models = {
+      projects: new Set([]),
+      sites: new Set([]),
+      points: new Set([]),
+    };
 
     for (let i = 0; i < 30; i++) {
-      const child = {
-        data: {
-          name: `201810${i}_AAO [-27.3866 152.8761]`,
-          status: Status.Success,
-          summary: {
-            projects: new Set([]),
-            sites: new Set([]),
-            points: new Set([]),
-            fileCount: 0,
-            bytes: 0,
-          },
-        },
-      };
-
-      this.generatePoints(
-        child,
+      const {
+        children: fileChildren,
+        status: fileStatus,
+        models: fileModels,
+      } = this.generateFiles(
         (hour: number) => `201810_${hour}0000_REC [-27.3866 152.8761].flac`,
         projectPool,
         sitePool,
         pointPool
       );
 
+      const child = {
+        data: {
+          name: `201810${i}_AAO [-27.3866 152.8761]`,
+          status: fileStatus,
+          ...fileModels,
+        },
+        children: fileChildren,
+      };
+
+      // Append to sets
+      models.projects = union(fileModels.projects, child.data.projects);
+      models.sites = union(fileModels.sites, child.data.sites);
+      models.points = union(fileModels.points, child.data.points);
+
+      // Apply worst status
+      if (fileStatus > status) {
+        status = fileStatus;
+      }
+
       children.push(child);
     }
 
-    // Find summary and status data
-    const projects = [];
-    const sites = [];
-    const points = [];
-    let status = Status.Success;
-    children.forEach((child) => {
-      if (child.data.status > status) {
-        status = child.data.status;
-      }
-
-      projects.push(...child.data.summary.projects);
-      sites.push(...child.data.summary.sites);
-      points.push(...child.data.summary.points);
-    });
-
-    // Push worst status
-    if (status > parent.data.status) {
-      parent.data.status = status;
-    }
-
-    // Push summary
-    parent.data.summary = {
-      projects: new Set(projects),
-      sites: new Set(sites),
-      points: new Set(points),
-      fileCount: children.length * 24,
-      bytes: children.length * 24 * 31234321,
+    // Return results
+    return {
+      children,
+      status,
+      models,
     };
-
-    // Push children
-    parent.children = children;
   }
 
-  private generatePoints(
-    parent: TreeNode,
+  private generateFiles(
     nameCallback: (hour: number) => string,
     projectPool: Project[],
     sitePool: Site[],
@@ -181,60 +145,76 @@ export class HarvestReviewComponent implements OnInit {
   ) {
     let status = Status.Success;
     const children = [];
+    const models = {
+      projects: new Set([]),
+      sites: new Set([]),
+      points: new Set([]),
+    };
+
+    // Create children
     for (let i = 0; i < 24; i++) {
-      // Randomly assign status
-      let childStatus = Status.Success;
-      const rand = Math.random();
-      if (rand > 0.999) {
-        childStatus = Status.Error;
-      } else if (rand > 0.99) {
-        childStatus = Status.Warning;
-      }
+      const childStatus = this.getRandomStatus();
+      const projects = this.getRandomModel(projectPool, childStatus);
+      const sites = this.getRandomModel(sitePool, childStatus);
+      const points = this.getRandomModel(pointPool, childStatus, true);
 
       children.push({
         data: {
           name: nameCallback(i),
           status: childStatus,
-          project:
-            childStatus !== Status.Error
-              ? projectPool[Math.floor(Math.random() * projectPool.length)]
-              : undefined,
-          site:
-            childStatus !== Status.Error
-              ? sitePool[Math.floor(Math.random() * sitePool.length)]
-              : undefined,
-          point:
-            childStatus === Status.Success
-              ? pointPool[Math.floor(Math.random() * pointPool.length)]
-              : undefined,
+          projects,
+          sites,
+          points,
         },
       });
 
-      // Update with worst status
+      // Append to sets
+      models.projects = union(models.projects, projects);
+      models.sites = union(models.sites, sites);
+      models.points = union(models.points, points);
+
+      // Apply worst status
       if (childStatus > status) {
         status = childStatus;
       }
     }
 
-    // Push worst status
-    if (status > parent.data.status) {
-      parent.data.status = status;
-    }
-
-    // Push summary data
-    parent.data.summary = {
-      projects: new Set(
-        children.map((child) => child.data.project).filter(Boolean)
-      ),
-      sites: new Set(children.map((child) => child.data.site).filter(Boolean)),
-      points: new Set(
-        children.map((child) => child.data.point).filter(Boolean)
-      ),
-      fileCount: children.length,
-      bytes: children.length * 31234321,
+    // Return results
+    return {
+      children,
+      status,
+      models,
     };
-
-    // Push children
-    parent.children = children;
   }
+
+  private getRandomModel(
+    pool: AbstractModel[],
+    status: Status,
+    isPoint?: boolean
+  ) {
+    if ((isPoint && status >= Status.Warning) || status === Status.Error) {
+      return new Set([]);
+    } else {
+      return new Set([pool[Math.floor(Math.random() * pool.length)]]);
+    }
+  }
+
+  private getRandomStatus() {
+    const rand = Math.random();
+    if (rand > 0.999) {
+      return Status.Error;
+    } else if (rand > 0.99) {
+      return Status.Warning;
+    } else {
+      return Status.Success;
+    }
+  }
+}
+
+function union(setA: Set<any>, setB: Set<any>) {
+  let _union = new Set(setA);
+  for (let elem of setB) {
+    _union.add(elem);
+  }
+  return _union;
 }
