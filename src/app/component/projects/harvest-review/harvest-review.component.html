@@ -28,25 +28,28 @@
             Summary
           </td>
           <td>
-            <ul class="m-0">
-              <li *ngFor="let project of rowData.summary.projects">
-                {{ project?.name }}
-              </li>
-            </ul>
+            <span
+              class="badge badge-primary m-1"
+              *ngFor="let project of rowData.summary.projects"
+            >
+              {{ project?.name }}
+            </span>
           </td>
           <td>
-            <ul class="m-0">
-              <li *ngFor="let site of rowData.summary.sites">
-                {{ site?.name }}
-              </li>
-            </ul>
+            <span
+              class="badge badge-primary m-1"
+              *ngFor="let site of rowData.summary.sites"
+            >
+              {{ site?.name }}
+            </span>
           </td>
           <td>
-            <ul class="m-0">
-              <li *ngFor="let point of rowData.summary.points">
-                {{ point?.name }}
-              </li>
-            </ul>
+            <span
+              class="badge badge-primary m-1"
+              *ngFor="let point of rowData.summary.points"
+            >
+              {{ point?.name }}
+            </span>
           </td>
         </tr>
         <tr *ngIf="rowNode.node.expanded">

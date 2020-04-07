@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import filesize from "filesize";
 import { List } from "immutable";
+import { MenuItem } from "primeng/api/menuitem";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -33,6 +34,7 @@ const projectKey = "project";
   selector: "app-harvest",
   templateUrl: "./harvest.component.html",
   styleUrls: ["./harvest.component.scss"],
+  encapsulation: ViewEncapsulation.None,
 })
 export class HarvestComponent implements OnInit {
   public buttons: {
@@ -45,6 +47,14 @@ export class HarvestComponent implements OnInit {
   public progress: number;
   public project: Project;
   public stage: Harvest;
+  public stages: MenuItem[] = [
+    { label: "Start" },
+    { label: "Credentials" },
+    { label: "Check" },
+    { label: "Review" },
+    { label: "Harvest" },
+    { label: "Summary" },
+  ];
   private interval: number;
   private intervalSpeed = 300;
 
