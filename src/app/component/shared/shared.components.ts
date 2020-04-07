@@ -26,6 +26,7 @@ import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.comp
 import { FormlyQuestionAnswer } from "./formly/question-answer.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { HeaderModule } from "./header/header.module";
+import { IndicatorComponent } from "./indicator/indicator.component";
 import { ItemsModule } from "./items/items.module";
 import { LoadingComponent } from "./loading/loading.component";
 import { MenuModule } from "./menu/menu.module";
@@ -46,6 +47,7 @@ export const sharedComponents = [
   FormlyQuestionAnswer,
   FormlyQuestionAnswerAction,
   FormlyTimezoneInput,
+  IndicatorComponent,
   LoadingComponent,
   SecondaryMenuComponent,
   TimezoneFormPipe,

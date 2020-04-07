@@ -1,0 +1,23 @@
+<ng-container [ngSwitch]="status">
+  <ng-container *ngSwitchCase="options.Warning">
+    <fa-icon
+      style="color: orange;"
+      class="float-right"
+      [icon]="['fas', 'exclamation-triangle']"
+    ></fa-icon>
+  </ng-container>
+  <ng-container *ngSwitchCase="options.Error">
+    <fa-icon
+      style="color: red;"
+      class="float-right"
+      [icon]="['fas', 'times']"
+    ></fa-icon>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <fa-icon
+      style="color: limegreen;"
+      class="float-right"
+      [icon]="['fas', 'check']"
+    ></fa-icon>
+  </ng-container>
+</ng-container>

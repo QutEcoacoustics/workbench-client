@@ -2,18 +2,57 @@
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>
-      <th>Size</th>
-      <th>Type</th>
+      <th>Project</th>
+      <th>Site</th>
+      <th>Point</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
     <tr>
-      <td>
-        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        {{ rowData.name }}
-      </td>
-      <td>{{ rowData.size }}</td>
-      <td>{{ rowData.type }}</td>
+      <ng-container *ngIf="rowNode.node.children; else point">
+        <td [colSpan]="columns">
+          <div class="clearfix">
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            {{ rowData.name }}
+
+            <app-indicator
+              class="float-right"
+              [status]="rowData.status"
+            ></app-indicator>
+          </div>
+        </td>
+      </ng-container>
+      <ng-template #point>
+        <td>
+          {{ rowData.name }}
+        </td>
+        <td>
+          <ng-container *ngIf="rowData.project">
+            <a [routerLink]="rowData.project.redirectPath()">
+              {{ rowData.project.name }}
+            </a>
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="rowData.site">
+            <a [routerLink]="rowData.site.redirectPath(rowData.project)">
+              {{ rowData.site.name }}
+            </a>
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="rowData.point">
+            <a [routerLink]="rowData.point.redirectPath(rowData.project)">
+              {{ rowData.point.name }}
+            </a>
+          </ng-container>
+
+          <app-indicator
+            class="float-right"
+            [status]="rowData.status"
+          ></app-indicator>
+        </td>
+      </ng-template>
     </tr>
   </ng-template>
 </p-treeTable>

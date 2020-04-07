@@ -6,12 +6,13 @@ import {
   sharedComponents,
   sharedModules
 } from "./shared.components";
+import { IndicatorComponent } from './indicator/indicator.component';
 
 /**
  * Shared Components Module
  */
 @NgModule({
-  declarations: [...sharedComponents, ...formlyAccessors],
+  declarations: [...sharedComponents, ...formlyAccessors, IndicatorComponent],
   imports: sharedModules,
   exports: [...sharedModules, ...sharedComponents]
 })
