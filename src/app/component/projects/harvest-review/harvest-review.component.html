@@ -13,33 +13,30 @@
       <tr>
         <td>
           <div class="clearfix">
-            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            <p-treeTableToggler
+              *ngIf="rowNode.node.children"
+              [rowNode]="rowNode"
+            ></p-treeTableToggler>
             {{ rowData.name }}
           </div>
         </td>
         <td>
-          <span
-            *ngFor="let project of rowData.projects"
-            class="badge badge-primary m-1"
-          >
-            {{ project.name }}
-          </span>
+          <app-pill-list
+            [numPills]="3"
+            [text]="getText(rowData.projects)"
+          ></app-pill-list>
         </td>
         <td>
-          <span
-            *ngFor="let site of rowData.sites"
-            class="badge badge-primary m-1"
-          >
-            {{ site.name }}
-          </span>
+          <app-pill-list
+            [numPills]="3"
+            [text]="getText(rowData.sites)"
+          ></app-pill-list>
         </td>
         <td>
-          <span
-            *ngFor="let point of rowData.points"
-            class="badge badge-primary m-1"
-          >
-            {{ point.name }}
-          </span>
+          <app-pill-list
+            [numPills]="3"
+            [text]="getText(rowData.points)"
+          ></app-pill-list>
         </td>
         <td>
           <app-indicator [status]="rowData.status"></app-indicator>

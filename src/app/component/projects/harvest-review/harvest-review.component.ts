@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import filesize from "filesize";
 import { TreeNode } from "primeng/api/treenode";
+import { AbstractModel } from "src/app/models/AbstractModel";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { Status } from "../../shared/indicator/indicator.component";
-import { AbstractModel } from "src/app/models/AbstractModel";
 
 @Component({
   selector: "app-project-harvest-review",
@@ -12,10 +11,8 @@ import { AbstractModel } from "src/app/models/AbstractModel";
   styleUrls: ["./harvest-review.component.scss"],
 })
 export class HarvestReviewComponent implements OnInit {
-  public filesize = filesize;
   public files: TreeNode[] = [];
   public columns = 4;
-  public status = Status;
 
   constructor() {}
 
@@ -56,6 +53,20 @@ export class HarvestReviewComponent implements OnInit {
       sitePool,
       pointPool
     );
+
+    console.log(this.files);
+  }
+
+  public getText(models: Set<Project | Site>) {
+    if (!models) {
+      return [];
+    }
+
+    const text = [];
+    models.forEach((model) => {
+      text.push(model.name);
+    });
+    return text;
   }
 
   private generateRootFolder(
@@ -72,7 +83,7 @@ export class HarvestReviewComponent implements OnInit {
 
     this.files.push({
       data: {
-        name: name,
+        name,
         status,
         ...models,
       },
@@ -210,8 +221,8 @@ export class HarvestReviewComponent implements OnInit {
 }
 
 function union(setA: Set<any>, setB: Set<any>) {
-  let _union = new Set(setA);
-  for (let elem of setB) {
+  const _union = new Set(setA);
+  for (const elem of setB) {
     _union.add(elem);
   }
   return _union;

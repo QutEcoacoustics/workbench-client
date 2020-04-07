@@ -5,7 +5,7 @@
     Harvest
   </h1>
 
-  <p-steps [model]="stages"></p-steps>
+  <p-steps [model]="stages" [activeIndex]="stage"></p-steps>
 
   <div [ngSwitch]="stage">
     <!-- Details about harvesting files -->

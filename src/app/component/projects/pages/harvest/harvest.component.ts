@@ -34,6 +34,7 @@ const projectKey = "project";
   selector: "app-harvest",
   templateUrl: "./harvest.component.html",
   styleUrls: ["./harvest.component.scss"],
+  // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
 export class HarvestComponent implements OnInit {
