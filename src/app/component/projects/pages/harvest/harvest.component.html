@@ -64,7 +64,11 @@
 
       <ul>
         <li><b>Uploaded Files: </b>{{ progress }}</li>
-        <li><b>Uploaded Bytes: </b>{{ filesize(progress * 30000000) }}</li>
+        <li>
+          <b>Uploaded Bytes: </b>{{ progress * 31234321 }} ({{
+            filesize(progress * 31234321)
+          }})
+        </li>
       </ul>
     </div>
 

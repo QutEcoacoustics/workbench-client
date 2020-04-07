@@ -1,58 +1,96 @@
-<p-treeTable [value]="files">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Name</th>
-      <th>Project</th>
-      <th>Site</th>
-      <th>Point</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-    <tr>
+<div class="pb-3">
+  <p-treeTable [value]="files">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Project</th>
+        <th>Site</th>
+        <th>Point</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
       <ng-container *ngIf="rowNode.node.children; else point">
-        <td [colSpan]="columns">
-          <div class="clearfix">
-            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+        <tr>
+          <td [colSpan]="columns">
+            <div class="clearfix">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{ rowData.name }}
+
+              <app-indicator
+                class="float-right"
+                [status]="rowData.status"
+              ></app-indicator>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="rowNode.node.expanded">
+          <td>
+            Summary
+          </td>
+          <td>
+            <ul class="m-0">
+              <li *ngFor="let project of rowData.summary.projects">
+                {{ project?.name }}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul class="m-0">
+              <li *ngFor="let site of rowData.summary.sites">
+                {{ site?.name }}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul class="m-0">
+              <li *ngFor="let point of rowData.summary.points">
+                {{ point?.name }}
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr *ngIf="rowNode.node.expanded">
+          <td>File Count:</td>
+          <td class="text-right">{{ rowData.summary.fileCount }}</td>
+          <td>Bytes:</td>
+          <td class="text-right">
+            {{ filesize(rowData.summary.bytes) }}
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #point>
+        <tr>
+          <td>
             {{ rowData.name }}
+          </td>
+          <td>
+            <ng-container *ngIf="rowData.project">
+              <a [routerLink]="rowData.project.redirectPath()">
+                {{ rowData.project.name }}
+              </a>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="rowData.site">
+              <a [routerLink]="rowData.site.redirectPath(rowData.project)">
+                {{ rowData.site.name }}
+              </a>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="rowData.point">
+              <a [routerLink]="['/broken_link']">
+                {{ rowData.point.name }}
+              </a>
+            </ng-container>
 
             <app-indicator
               class="float-right"
               [status]="rowData.status"
             ></app-indicator>
-          </div>
-        </td>
-      </ng-container>
-      <ng-template #point>
-        <td>
-          {{ rowData.name }}
-        </td>
-        <td>
-          <ng-container *ngIf="rowData.project">
-            <a [routerLink]="rowData.project.redirectPath()">
-              {{ rowData.project.name }}
-            </a>
-          </ng-container>
-        </td>
-        <td>
-          <ng-container *ngIf="rowData.site">
-            <a [routerLink]="rowData.site.redirectPath(rowData.project)">
-              {{ rowData.site.name }}
-            </a>
-          </ng-container>
-        </td>
-        <td>
-          <ng-container *ngIf="rowData.point">
-            <a [routerLink]="rowData.point.redirectPath(rowData.project)">
-              {{ rowData.point.name }}
-            </a>
-          </ng-container>
-
-          <app-indicator
-            class="float-right"
-            [status]="rowData.status"
-          ></app-indicator>
-        </td>
+          </td>
+        </tr>
       </ng-template>
-    </tr>
-  </ng-template>
-</p-treeTable>
+    </ng-template>
+  </p-treeTable>
+</div>
