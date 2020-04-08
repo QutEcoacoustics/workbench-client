@@ -72,7 +72,7 @@ export class HarvestComponent implements OnInit {
     }
 
     this.project = resolvedProject.model;
-    this.stage = Harvest.Review;
+    this.stage = Harvest.Start;
     this.updateNavigation();
   }
 

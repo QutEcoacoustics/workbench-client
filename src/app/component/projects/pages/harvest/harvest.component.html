@@ -13,12 +13,11 @@
       <h3>Basic Details</h3>
 
       <p>
-        Harvesting is the name we use for the process of uploading audio data to
-        our website. It is a process that is optimized for the mass ingestion of
-        data (e.g 3TB, or 4000 files at a time). For our users this allows you
-        to submit your recorded environmental audio for analysis and view the
-        results directly through the website. Currently this process performs
-        several actions such as:
+        Harvesting is the name we use for the process of uploading/ingesting
+        large amounts of audio data (e.g 3TB, or 4000 files at a time) into our
+        website. For our users, this allows you to submit your recorded
+        environment audio for analysis and view the results directly through the
+        website. Currently harvesting performs several actions such as:
       </p>
 
       <ul>
@@ -36,6 +35,15 @@
           Assigning audio to sites and projects
         </li>
       </ul>
+
+      <p>
+        If you wish to upload your recorded audio data, press the button at the
+        bottom right which will guide you through the process. Please be aware
+        that this will take a long time to complete, however you are not
+        required to perform it all in one sitting. If you leave this page and
+        come back, it will automatically detect what stage of harvesting you
+        were at.
+      </p>
     </div>
 
     <!-- User credentials for accessing SFTP -->
@@ -43,11 +51,75 @@
       <h3>Credentials</h3>
 
       <p>
-        To begin the process of harvesting your audio data, you will need to
-        upload the files to our SFTP server. The URI will send you to our server
-        which will be available to upload to for the next [INSERT] hours. Please
-        keep track of the username, password, and URI as they are specific to
-        this upload attempt and will not exist afterwards.
+        The initial step to harvesting is to upload your audio data to our
+        server. The credentials you can see below are generated with one-time
+        details that will expire after [INSERT] hours. Please keep track of the
+        username, password, and URI until you have finished your upload. To
+        access the server, open the URI link in a new tab/window and enter your
+        credentials (username/password) when prompted. The file structure you
+        use is very important when you upload, and we ask you follow the
+        following format:
+      </p>
+
+      <pre>
+/{{ "{" }}project{{ "}" }}/{{ "{" }}deployment{{ "}" }}/{{ "{" }}site{{
+          "}"
+        }}/[{{ "{" }}memory_card{{ "}" }}/]</pre
+      >
+
+      <h4>Syntax</h4>
+      <ul>
+        <li>
+          / represents a folder separator (either on Windows (\) or Linux (/))
+        </li>
+        <li>
+          The very first / represents the root folder (i.e the folder that we
+          see when we initially enter the server)
+        </li>
+        <li>
+          The tokens between the square braces ([ and ]) represent optional
+          folders
+        </li>
+        <li>
+          The tokens between the curly braces ({{ "{" }} and {{ "}" }})
+          represent folder names
+        </li>
+      </ul>
+
+      <h4>Token Guide</h4>
+      <ul>
+        <li>
+          {{ "{" }}project{{ "}" }}: A short name for the project the audio is
+          being collected for. Ideally should be similar to the project name
+          user on the workbench
+        </li>
+        <li>
+          {{ "{" }}deployment{{ "}" }}: A human readable date that roughly
+          represents when the data was collected. Optionally it may include the
+          deployment dates as a range.
+        </li>
+        <li>
+          {{ "{" }}site{{ "}" }}: A short name that describes the site (the
+          location on the ground) where the sensor was deployed. Ideally this
+          name should be similar to site name used on the workbench
+        </li>
+        <li>
+          {{ "{" }}memory_card{{ "}" }}: An optional folder. If the sensor used
+          more than one memory card, audio should be kept in the same folders
+          that represent the memory card it was recorded on.
+        </li>
+      </ul>
+
+      <h4>Store of other data</h4>
+      <p>
+        We generally encourage users to copy in any relevant data. In
+        particular, leaving notes that describe the data (e.g “left mic failed”,
+        or “RTC failed, dates invalid”), or copies of their records. Any
+        metadata is appreciated.
+      </p>
+      <p>
+        Most data should be put in the site folders as usually, most important
+        information is related to a sensor.
       </p>
 
       <h4>Details</h4>
@@ -79,12 +151,18 @@
       <h3>Checking Files</h3>
 
       <p>
-        Running an automated check of files uploaded. This is to ensure all the
-        audio files have not been corrupted, and will attempt to extract useful
-        metadata. Once this process is complete, you will be able to see a list
-        of uploaded files, their project id (PID), site id (SID), and point id
-        (PoID).<br />The progress bar below shows you the current progress, and
-        will update automatically without refreshing the page.
+        Currently our system is running an initial check of the files uploaded.
+        This is to ensure the audio files are valid, and will attempt to extract
+        useful metadata. Once checking is complete, you will be able to view a
+        list of uploaded files, their projects, sites, points, and status
+        (success, warning, error).
+      </p>
+      <p>
+        The progress bar below shows you the current progress, and will update
+        automatically without refreshing the page. You can optionally leave this
+        page and come back at another time, and the site will take you to the
+        most up-to-date stage of harvest (i.e if checking is complete, you will
+        arrive on the Review page).
       </p>
 
       <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
@@ -102,8 +180,14 @@
       <h3>Review</h3>
 
       <p>
-        Please review the files you have uploaded. If there are any
-        unrecoverable errors, hit the re-submit button to manually fix the file.
+        This is a review of the audio data you have uploaded. Data is
+        automatically categorized into three different states: Success, Warning,
+        and Error. Success implies that the previous step was able to
+        successfully extract the project, site, and point of an audio file.
+        Warning indicates that some errors may have been experienced attempting
+        to extract metadata from the audio file, and it may be missing project,
+        site, or point information. Error means an unrecoverable issue has
+        occurred and you may need to re-upload the file.
       </p>
 
       <app-project-harvest-review></app-project-harvest-review>
@@ -113,7 +197,12 @@
     <div *ngSwitchCase="harvest.Harvest">
       <h3>Harvesting Files</h3>
 
-      <p>Harvesting files into the system.</p>
+      <p>
+        Harvesting the files into the system. This is transferring the files
+        from the server you uploaded to, into the relevant storage required to
+        view on the website. The progress bar below shows you the current
+        progress, and will update automatically without refreshing the page.
+      </p>
 
       <!-- Was planning on stacked progress bar (error/warning/success): https://github.com/ng-bootstrap/ng-bootstrap/issues/905 -->
       <p>
@@ -127,7 +216,12 @@
 
     <!-- View summary report -->
     <div *ngSwitchCase="harvest.Summary">
-      <h3>Complete</h3>
+      <h3>Summary</h3>
+
+      <p>
+        This is a summary of all the projects, sites, and points that have been
+        updated.
+      </p>
 
       <div class="clearfix">
         <button class="btn btn-primary float-right">
