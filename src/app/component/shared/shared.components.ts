@@ -14,6 +14,8 @@ import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxComponent } from "./checkbox/checkbox.component";
 import { CmsComponent } from "./cms/cms.component";
+import { DetailViewComponent } from "./detail-view/detail-view.component";
+import { ViewComponent } from "./detail-view/view/view.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
@@ -36,6 +38,7 @@ export const sharedComponents = [
   ActionMenuComponent,
   CheckboxComponent,
   CmsComponent,
+  DetailViewComponent,
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
@@ -48,7 +51,8 @@ export const sharedComponents = [
   LoadingComponent,
   SecondaryMenuComponent,
   TimezoneFormPipe,
-  WIPComponent
+  ViewComponent,
+  WIPComponent,
 ];
 
 export const sharedModules = [
@@ -69,6 +73,6 @@ export const sharedModules = [
   CardsModule,
   HeaderModule,
   ItemsModule,
-  MenuModule
+  MenuModule,
 ];
 export const formlyAccessors = [FileValueAccessor];

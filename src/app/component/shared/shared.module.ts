@@ -4,7 +4,7 @@ import { fontAwesomeLibraries } from "src/app/app.helper";
 import {
   formlyAccessors,
   sharedComponents,
-  sharedModules
+  sharedModules,
 } from "./shared.components";
 
 /**
@@ -13,7 +13,7 @@ import {
 @NgModule({
   declarations: [...sharedComponents, ...formlyAccessors],
   imports: sharedModules,
-  exports: [...sharedModules, ...sharedComponents]
+  exports: [...sharedModules, ...sharedComponents],
 })
 export class SharedModule {
   constructor(library: FaIconLibrary) {
