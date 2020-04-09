@@ -1,19 +1,19 @@
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/projects.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import {
   newProjectMenuItem,
-  requestProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
+  requestProjectMenuItem,
 } from "@component/projects/projects.menus";
-import { Page } from "@helpers/page/pageDecorator";
-import { List } from "immutable";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { projectResolvers } from "@baw-api/projects.service";
-import { Component, OnInit } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Card } from "@shared/cards/cards.component";
-import { ActivatedRoute } from "@angular/router";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
+import { Card } from "@shared/cards/cards.component";
+import { List } from "immutable";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
