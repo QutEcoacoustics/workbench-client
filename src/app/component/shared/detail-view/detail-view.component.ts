@@ -10,22 +10,15 @@ import { AbstractModel } from "src/app/models/AbstractModel";
 @Component({
   selector: "app-detail-view",
   template: `
-    <div>
-      <div *ngFor="let field of fields">
-        <div class="row">
-          <div class="col-sm-3">
-            <p class="text-left text-sm-right">
-              <strong>
-                {{ field.templateOptions.label }}
-              </strong>
-            </p>
-          </div>
-          <div class="col-sm-9">
-            <app-render-view [view]="model[field.key]"></app-render-view>
-          </div>
-        </div>
-      </div>
-    </div>
+    <dl *ngFor="let field of fields" class="row">
+      <dt class="col-sm-3 text-left text-sm-right font-weight-bold">
+        {{ field.templateOptions.label }}
+      </dt>
+      <app-render-view
+        class="col-sm-9"
+        [view]="model[field.key]"
+      ></app-render-view>
+    </dl>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

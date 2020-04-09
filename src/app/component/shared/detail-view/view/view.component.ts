@@ -6,14 +6,17 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
   selector: "app-render-view",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
-      <pre *ngIf="styling === FieldStyling.Code">{{ display }}</pre>
-      <p *ngIf="styling === FieldStyling.Plain">{{ display }}</p>
-      <app-checkbox
-        *ngIf="styling === FieldStyling.Checkbox"
-        [checked]="display"
-        [disabled]="true"
-        [isCentered]="false"
-      ></app-checkbox>
+      <dl *ngIf="styling === FieldStyling.Code">
+        <pre>{{ display }}</pre>
+      </dl>
+      <dl *ngIf="styling === FieldStyling.Plain">{{ display }}</dl>
+      <dl *ngIf="styling === FieldStyling.Checkbox">
+        <app-checkbox
+          [checked]="display"
+          [disabled]="true"
+          [isCentered]="false"
+        ></app-checkbox>
+      </dl>
     </ng-container>
     <ng-template #hasChildren>
       <app-render-view
@@ -22,6 +25,13 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
       ></app-render-view>
     </ng-template>
   `,
+  styles: [
+    `
+      dl {
+        margin: 0px;
+      }
+    `,
+  ],
 })
 export class RenderViewComponent implements OnInit {
   @Input() view: ModelView;
