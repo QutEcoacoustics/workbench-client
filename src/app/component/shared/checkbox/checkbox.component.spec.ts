@@ -16,13 +16,38 @@ describe("CheckboxComponent", () => {
     component = fixture.componentInstance;
   });
 
+  afterAll(() => {
+    viewport.reset();
+  });
+
   it("should create", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  xit("should be centered", () => {});
-  xit("should not be centered", () => {});
+  it("should be centered", () => {
+    viewport.set("large");
+
+    component.isCentered = true;
+    fixture.detectChanges();
+
+    const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
+    const computedStyles = window.getComputedStyle(checkbox);
+    expect(computedStyles.marginLeft).toBe("475.5px");
+    expect(computedStyles.marginRight).toBe("475.5px");
+  });
+
+  it("should not be centered", () => {
+    viewport.set("large");
+
+    component.isCentered = false;
+    fixture.detectChanges();
+
+    const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
+    const computedStyles = window.getComputedStyle(checkbox);
+    expect(computedStyles.marginLeft).toBe("0px");
+    expect(computedStyles.marginRight).toBe("0px");
+  });
 
   it("should be checked", () => {
     component.checked = true;

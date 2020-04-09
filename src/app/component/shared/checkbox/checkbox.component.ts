@@ -8,7 +8,7 @@ import {
 @Component({
   selector: "app-checkbox",
   template: `
-    <div [ngClass]="ngClass" style="width: 24px;">
+    <div [ngClass]="{ 'mx-auto': isCentered }" style="width: 24px;">
       <div class="custom-control custom-checkbox">
         <input
           type="checkbox"
@@ -27,7 +27,7 @@ export class CheckboxComponent implements OnInit {
   @Input() id: string;
   @Input() checked: boolean;
   @Input() disabled: boolean;
-  @Input() ngClass: { [key: string]: boolean } = { "mx-auto": true };
+  @Input() isCentered: boolean = true;
 
   constructor() {}
 
