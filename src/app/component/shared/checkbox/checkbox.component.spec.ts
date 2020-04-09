@@ -33,8 +33,8 @@ describe("CheckboxComponent", () => {
 
     const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
     const computedStyles = window.getComputedStyle(checkbox);
-    expect(computedStyles.marginLeft).toBe("475.5px");
-    expect(computedStyles.marginRight).toBe("475.5px");
+    expect(computedStyles.marginLeft).toBe("579px");
+    expect(computedStyles.marginRight).toBe("579px");
   });
 
   it("should not be centered", () => {

@@ -5,7 +5,7 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
-  TestBed
+  TestBed,
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -57,15 +57,15 @@ describe("HeaderComponent", () => {
       declarations: [
         HeaderComponent,
         HeaderItemComponent,
-        HeaderDropdownComponent
+        HeaderDropdownComponent,
       ],
       imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
-        HttpClientModule
+        HttpClientModule,
       ],
-      providers: [...testBawServices]
+      providers: [...testBawServices],
     }).compileComponents();
   }));
 
@@ -99,8 +99,8 @@ describe("HeaderComponent", () => {
           login: true,
           profile: false,
           logout: false,
-          admin: false
-        }
+          admin: false,
+        },
       },
       {
         type: "logged in",
@@ -109,8 +109,8 @@ describe("HeaderComponent", () => {
           login: false,
           profile: true,
           logout: true,
-          admin: false
-        }
+          admin: false,
+        },
       },
       {
         type: "admin",
@@ -119,12 +119,12 @@ describe("HeaderComponent", () => {
           login: false,
           profile: true,
           logout: true,
-          admin: true
-        }
-      }
+          admin: true,
+        },
+      },
     ];
 
-    userRoles.forEach(userType => {
+    userRoles.forEach((userType) => {
       describe(userType.type + " user", () => {
         let isLoggedIn: boolean;
         let user: SessionUser;
@@ -140,7 +140,7 @@ describe("HeaderComponent", () => {
               authToken: "xxxxxxxxxxxxxxx",
               userName: "Username",
               rolesMask: userType.type === "admin" ? 1 : 2,
-              rolesMaskNames: userType.type === "user" ? ["user"] : ["admin"]
+              rolesMaskNames: userType.type === "user" ? ["user"] : ["admin"],
             });
           }
         });
@@ -282,33 +282,33 @@ describe("HeaderComponent", () => {
                   size: "extralarge",
                   url: "http://brokenlink/",
                   width: 300,
-                  height: 300
+                  height: 300,
                 },
                 {
                   size: "large",
                   url: "http://brokenlink/",
                   width: 220,
-                  height: 220
+                  height: 220,
                 },
                 {
                   size: "medium",
                   url: "http://brokenlink/",
                   width: 140,
-                  height: 140
+                  height: 140,
                 },
                 {
                   size: "small",
                   url: "http://brokenlink/",
                   width: 60,
-                  height: 60
+                  height: 60,
                 },
                 {
                   size: "tiny",
                   url: "http://brokenlink/",
                   width: 30,
-                  height: 30
-                }
-              ]
+                  height: 30,
+                },
+              ],
             });
             setUser(isLoggedIn, customUser);
             fixture.detectChanges();
@@ -379,7 +379,7 @@ describe("HeaderComponent", () => {
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
         })
       );
       spyOn(api, "signOut").and.callFake(() => {
@@ -404,7 +404,7 @@ describe("HeaderComponent", () => {
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
         })
       );
       spyOn(api, "signOut").and.callFake(() => {
@@ -421,7 +421,7 @@ describe("HeaderComponent", () => {
       logout.click();
 
       expect(router.navigate).toHaveBeenCalledWith([
-        homeMenuItem.route.toString()
+        homeMenuItem.route.toString(),
       ]);
     }));
 
@@ -449,7 +449,7 @@ describe("HeaderComponent", () => {
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
         });
       });
       fixture.detectChanges();
@@ -493,7 +493,7 @@ describe("HeaderComponent", () => {
           userName: "custom username",
           rolesMask: 2,
           rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00"
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
         });
       });
       fixture.detectChanges();
@@ -514,6 +514,7 @@ describe("HeaderComponent", () => {
     }));
   });
 
+  // TODO Fix these tests, they don't appear to actually tests the component
   describe("navbar collapsed logic", () => {
     it("should collapse at bootstrap md size", () => {
       setUser(false);
