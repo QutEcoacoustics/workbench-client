@@ -26,6 +26,13 @@
       }
     },
     {
+      "key": "timezoneInformation",
+      "type": "input",
+      "templateOptions": {
+        "label": "Time Zone"
+      }
+    },
+    {
       "key": "password",
       "type": "input",
       "templateOptions": {
@@ -35,18 +42,65 @@
       }
     },
     {
-      "key": "timezoneInformation",
-      "type": "input",
-      "templateOptions": {
-        "label": "Time Zone"
-      }
-    },
-    {
       "key": "imageUrls",
       "type": "input",
       "templateOptions": {
         "label": "Image",
         "type": "file"
+      }
+    },
+    {
+      "key": "emailConfirmation",
+      "type": "checkbox",
+      "hide": true,
+      "wrappers": ["form-field-horizontal"],
+      "templateOptions": {
+        "label": "Email Confirmation"
+      }
+    },
+    {
+      "key": "isConfirmed",
+      "type": "checkbox",
+      "hide": true,
+      "wrappers": ["form-field-horizontal"],
+      "templateOptions": {
+        "label": "Account Confirmation"
+      }
+    },
+    {
+      "key": "confirmedAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Last Seen At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "resetPasswordSentAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Reset Password Sent At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "rememberCreatedAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Remember Created At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "signInCount",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Sign In Count",
+        "type": "number"
       }
     },
     {
@@ -59,29 +113,84 @@
       }
     },
     {
-      "key": "preferences",
-      "type": "textarea",
-      "hide": true,
-      "templateOptions": {
-        "label": "Preferences"
-      }
-    },
-    {
-      "key": "isConfirmed",
-      "type": "checkbox",
-      "hide": true,
-      "wrappers": ["form-field-horizontal"],
-      "templateOptions": {
-        "label": "Is Confirmed"
-      }
-    },
-    {
-      "key": "rolesMask",
+      "key": "currentSignInAt",
       "type": "input",
       "hide": true,
       "templateOptions": {
-        "label": "Roles Mask",
+        "label": "Current Sign In At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "lastSignInAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Last Sign In At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "currentSignInIp",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Current Sign In IP",
+        "type": "text"
+      }
+    },
+    {
+      "key": "lastSignInIp",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Last Sign In IP",
+        "type": "text"
+      }
+    },
+    {
+      "key": "confirmationSentAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Confirmation Sent At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "failedAttempts",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Failed Attempts",
         "type": "number"
+      }
+    },
+    {
+      "key": "lockedAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Locked At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "createdAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "updatedAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updated At",
+        "type": "text"
       }
     },
     {
@@ -90,6 +199,15 @@
       "hide": true,
       "templateOptions": {
         "label": "Roles Mask Names"
+      }
+    },
+    {
+      "key": "imageUpdatedAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Image Updated At",
+        "type": "text"
       }
     }
   ]

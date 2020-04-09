@@ -51,7 +51,9 @@ const accountKey = "account";
         (onSubmit)="submit($event)"
       ></app-form>
 
-      <!-- <app-detail-view [model]="model" [fields]="fields"></app-detail-view> -->
+      <hr />
+
+      <app-detail-view [model]="model" [fields]="fields"></app-detail-view>
     </app-wip>
   `,
 })
