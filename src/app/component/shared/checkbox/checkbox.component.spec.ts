@@ -7,7 +7,7 @@ describe("CheckboxComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CheckboxComponent]
+      declarations: [CheckboxComponent],
     }).compileComponents();
   }));
 
@@ -20,6 +20,9 @@ describe("CheckboxComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  xit("should be centered", () => {});
+  xit("should not be centered", () => {});
 
   it("should be checked", () => {
     component.checked = true;

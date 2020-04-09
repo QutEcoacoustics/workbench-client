@@ -8,6 +8,12 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     <ng-container *ngIf="!children; else hasChildren">
       <pre *ngIf="styling === CodeStyling.Code">{{ display }}</pre>
       <p *ngIf="styling === CodeStyling.Plain">{{ display }}</p>
+      <app-checkbox
+        *ngIf="styling === CodeStyling.Checkbox"
+        [checked]="display"
+        [disabled]="true"
+        [ngClass]="{}"
+      ></app-checkbox>
     </ng-container>
     <ng-template #hasChildren>
       <app-view *ngFor="let child of children" [view]="child"></app-view>
@@ -16,7 +22,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 })
 export class ViewComponent implements OnInit {
   @Input() view: ModelView;
-  public display: string;
+  public display: string | number | boolean;
   public children: ModelView[];
   public styling: CodeStyling = CodeStyling.Plain;
   public CodeStyling = CodeStyling;
@@ -43,11 +49,18 @@ export class ViewComponent implements OnInit {
       this.humanizeBlob(value);
     } else if (typeof value === "object") {
       this.humanizeObject(value);
+    } else if (typeof value === "boolean") {
+      this.styling = CodeStyling.Checkbox;
+      this.display = value;
     } else {
       this.display = value.toString();
     }
   }
 
+  /**
+   * Convert object to human readable output
+   * @param answer Answer output
+   */
   private humanizeObject(value: object) {
     this.setLoading();
 
@@ -59,9 +72,13 @@ export class ViewComponent implements OnInit {
     }
   }
 
-  // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
+  /**
+   * Convert blob to human readable output
+   * @param answer Answer output
+   */
   private humanizeBlob(value: Blob) {
     this.setLoading();
+    // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
     reader.addEventListener("loadend", (e) => {
       this.styling = CodeStyling.Code;
@@ -70,6 +87,9 @@ export class ViewComponent implements OnInit {
     reader.readAsText(value);
   }
 
+  /**
+   * Indicate answer is still loading
+   */
   private setLoading() {
     this.styling = CodeStyling.Plain;
     this.display = this.loadingText;
@@ -79,8 +99,9 @@ export class ViewComponent implements OnInit {
 type ModelView = any;
 
 enum CodeStyling {
-  Plain,
+  Checkbox,
   Code,
   Link,
+  Plain,
   Route,
 }
