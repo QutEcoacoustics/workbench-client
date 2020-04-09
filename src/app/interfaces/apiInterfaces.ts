@@ -1,4 +1,4 @@
-import { humanizeDuration } from "humanize-duration";
+import humanizeDuration from "humanize-duration";
 import { DateTime, Duration } from "luxon";
 
 /**

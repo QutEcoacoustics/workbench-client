@@ -23,8 +23,6 @@ import { FormlyCheckboxInput } from "./formly/checkbox-input.component";
 import { FileValueAccessor } from "./formly/file-input.directive";
 import { FormlyHorizontalWrapper } from "./formly/horizontal-wrapper";
 import { FormlyImageInput } from "./formly/image-input.component";
-import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.component";
-import { FormlyQuestionAnswer } from "./formly/question-answer.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { HeaderModule } from "./header/header.module";
 import { ItemsModule } from "./items/items.module";
@@ -45,8 +43,6 @@ export const sharedComponents = [
   FormlyCheckboxInput,
   FormlyHorizontalWrapper,
   FormlyImageInput,
-  FormlyQuestionAnswer,
-  FormlyQuestionAnswerAction,
   FormlyTimezoneInput,
   LoadingComponent,
   SecondaryMenuComponent,
