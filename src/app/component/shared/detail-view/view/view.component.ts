@@ -6,10 +6,12 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
   selector: "app-render-view",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
+      <dl *ngIf="styling === FieldStyling.Plain">
+        <p>{{ display }}</p>
+      </dl>
       <dl *ngIf="styling === FieldStyling.Code">
         <pre>{{ display }}</pre>
       </dl>
-      <dl *ngIf="styling === FieldStyling.Plain">{{ display }}</dl>
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
           [checked]="display"
@@ -57,7 +59,7 @@ export class RenderViewComponent implements OnInit {
     } else if (value instanceof Duration) {
       this.display = `${value.toISO()} (${toRelative(value)})`;
     } else if (value instanceof Array) {
-      this.children = value;
+      this.humanizeArray(value);
     } else if (value instanceof Blob) {
       this.humanizeBlob(value);
     } else if (typeof value === "object") {
@@ -73,7 +75,7 @@ export class RenderViewComponent implements OnInit {
 
   /**
    * Convert object to human readable output
-   * @param answer Answer output
+   * @param value Display output
    */
   private humanizeObject(value: object) {
     this.setLoading();
@@ -88,7 +90,7 @@ export class RenderViewComponent implements OnInit {
 
   /**
    * Convert blob to human readable output
-   * @param answer Answer output
+   * @param value Display output
    */
   private humanizeBlob(value: Blob) {
     this.setLoading();
@@ -98,7 +100,23 @@ export class RenderViewComponent implements OnInit {
       this.styling = FieldStyling.Code;
       this.display = e.target.result.toString();
     });
+    reader.onerror = () => {
+      this.display = this.errorText;
+      reader.abort();
+    };
     reader.readAsText(value);
+  }
+
+  /**
+   * Convert array to human readable output
+   * @param value Display output
+   */
+  private humanizeArray(value: ModelView[]) {
+    if (value.length > 0) {
+      this.children = value;
+    } else {
+      this.display = this.noValueText;
+    }
   }
 
   /**
@@ -110,7 +128,16 @@ export class RenderViewComponent implements OnInit {
   }
 }
 
-type ModelView = any;
+type ModelView =
+  | undefined
+  | string
+  | number
+  | boolean
+  | DateTime
+  | Duration
+  | Blob
+  | object
+  | ModelView[];
 
 enum FieldStyling {
   Checkbox,
