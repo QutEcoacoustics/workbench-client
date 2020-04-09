@@ -4,7 +4,7 @@ import {
   Category,
   MenuRoute,
   Menus,
-  Resolvers
+  ResolverList,
 } from "src/app/interfaces/menusInterfaces";
 
 /**
@@ -20,7 +20,7 @@ export interface PageInfoInterface extends Data {
   category: Category;
   menus: Menus;
   fullscreen?: boolean;
-  resolvers?: Resolvers;
+  resolvers?: ResolverList;
 }
 
 /**
@@ -32,7 +32,7 @@ export class PageInfo implements PageInfoInterface {
   public category: Category;
   public menus: Menus;
   public fullscreen: boolean;
-  public resolvers: Resolvers;
+  public resolvers: ResolverList;
 
   constructor(target: Type<any>, args: PageInfoInterface) {
     if (!args.self) {
