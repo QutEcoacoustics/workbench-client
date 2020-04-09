@@ -1,19 +1,19 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import {
-  defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { TagGroup } from "src/app/models/TagGroup";
-import { TagGroupService } from "src/app/services/baw-api/tag-group.service";
+import { TagGroupService } from "@baw-api/tag-group.service";
 import {
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem
-} from "../../admin.menus";
+  adminTagGroupsMenuItem,
+} from "@component/admin/admin.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { TagGroup } from "@models/TagGroup";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag-group.json";
 
@@ -21,9 +21,9 @@ import { fields } from "../tag-group.json";
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
-    links: List()
+    links: List(),
   },
-  self: adminNewTagGroupMenuItem
+  self: adminNewTagGroupMenuItem,
 })
 @Component({
   selector: "app-admin-tag-groups-new",
@@ -37,7 +37,7 @@ import { fields } from "../tag-group.json";
       submitLabel="Submit"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = fields;
@@ -48,7 +48,7 @@ export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, model =>
+    super(notifications, route, router, undefined, (model) =>
       defaultSuccessMsg("created", model.groupIdentifier)
     );
   }
