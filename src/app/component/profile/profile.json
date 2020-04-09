@@ -46,7 +46,8 @@
       "type": "input",
       "templateOptions": {
         "label": "Image",
-        "type": "file"
+        "type": "text",
+        "disabled": true
       }
     },
     {
