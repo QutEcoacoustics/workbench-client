@@ -1,18 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ProjectsService } from "@baw-api/projects.service";
 import {
   projectsCategory,
   projectsMenuItem,
-  requestProjectMenuItem
-} from "../../projects.menus";
+  requestProjectMenuItem,
+} from "@component/projects/projects.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 import { projectsMenuItemActions } from "../list/list.component";
 import { fields } from "./request.json";
 
@@ -20,9 +20,9 @@ import { fields } from "./request.json";
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
-    links: List()
+    links: List(),
   },
-  self: requestProjectMenuItem
+  self: requestProjectMenuItem,
 })
 @Component({
   selector: "app-projects-request",
@@ -39,7 +39,7 @@ import { fields } from "./request.json";
       ></app-form>
       <app-error-handler [error]="error"></app-error-handler>
     </app-wip>
-  `
+  `,
 })
 export class RequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
@@ -61,12 +61,12 @@ export class RequestComponent extends WithFormCheck(PageComponent)
       .list()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        projects => {
+        (projects) => {
           this.projects = projects;
-          this.fields[0].templateOptions.options = projects.map(project => {
+          this.fields[0].templateOptions.options = projects.map((project) => {
             return {
               value: project.id,
-              label: project.name
+              label: project.name,
             };
           });
         },

@@ -2,10 +2,10 @@ import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { projectResolvers } from "@baw-api/projects.service";
+import { Project } from "@models/Project";
+import { SharedModule } from "@shared/shared.module";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { ListComponent } from "./list.component";
 
@@ -23,17 +23,17 @@ describe("ProjectsListComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              projects: projectResolvers.list
+              projects: projectResolvers.list,
             },
             {
               projects: {
                 model: projects,
-                error
-              }
+                error,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListComponent);
@@ -54,7 +54,7 @@ describe("ProjectsListComponent", () => {
   beforeEach(() => {
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -75,8 +75,8 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Custom Project",
-        description: "Custom Description"
-      })
+        description: "Custom Description",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -90,8 +90,8 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Custom Project",
-        description: "Custom Description"
-      })
+        description: "Custom Description",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -104,8 +104,8 @@ describe("ProjectsListComponent", () => {
     const projects = [
       new Project({
         id: 1,
-        name: "Custom Project"
-      })
+        name: "Custom Project",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -119,8 +119,8 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Custom Project",
-        description: "Custom Description"
-      })
+        description: "Custom Description",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -134,18 +134,18 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Project 1",
-        description: "Description 1"
+        description: "Description 1",
       }),
       new Project({
         id: 2,
         name: "Project 2",
-        description: "Description 2"
+        description: "Description 2",
       }),
       new Project({
         id: 3,
         name: "Project 3",
-        description: "Description 3"
-      })
+        description: "Description 3",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -159,18 +159,18 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Project 1",
-        description: "Description 1"
+        description: "Description 1",
       }),
       new Project({
         id: 2,
         name: "Project 2",
-        description: "Description 2"
+        description: "Description 2",
       }),
       new Project({
         id: 3,
         name: "Project 3",
-        description: "Description 3"
-      })
+        description: "Description 3",
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();

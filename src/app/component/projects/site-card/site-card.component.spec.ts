@@ -1,8 +1,8 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { SharedModule } from "../../shared/shared.module";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { SharedModule } from "@shared/shared.module";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -12,7 +12,7 @@ describe("SiteCardComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
-      declarations: [SiteCardComponent]
+      declarations: [SiteCardComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteCardComponent);
@@ -25,7 +25,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -35,7 +35,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -48,7 +48,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -58,7 +58,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -74,7 +74,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 5,
@@ -84,7 +84,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -100,7 +100,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -110,7 +110,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -129,7 +129,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 5,
@@ -139,7 +139,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -155,7 +155,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -166,7 +166,7 @@ describe("SiteCardComponent", () => {
       locationObfuscated: true,
       customLatitude: 0,
       customLongitude: 0,
-      imageUrl: "http://brokenlink/"
+      imageUrl: "http://brokenlink/",
     });
 
     fixture.detectChanges();
@@ -183,7 +183,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 5,
@@ -194,7 +194,7 @@ describe("SiteCardComponent", () => {
       locationObfuscated: true,
       customLatitude: 0,
       customLongitude: 0,
-      imageUrl: "http://brokenlink/"
+      imageUrl: "http://brokenlink/",
     });
 
     fixture.detectChanges();
@@ -210,7 +210,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -220,7 +220,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -236,7 +236,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 5,
@@ -246,7 +246,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -262,7 +262,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -272,7 +272,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();
@@ -290,7 +290,7 @@ describe("SiteCardComponent", () => {
       name: "Test project",
       description: "A test project",
       creatorId: 1,
-      siteIds: new Set([])
+      siteIds: new Set([]),
     });
     component.site = new Site({
       id: 1,
@@ -300,7 +300,7 @@ describe("SiteCardComponent", () => {
       projectIds: new Set([1, 2, 3]),
       locationObfuscated: true,
       customLatitude: 0,
-      customLongitude: 0
+      customLongitude: 0,
     });
 
     fixture.detectChanges();

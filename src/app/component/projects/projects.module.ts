@@ -1,15 +1,15 @@
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
-import { MapModule } from "../shared/map/map.module";
+import { DeleteComponent } from "@component/sites/pages/delete/delete.component";
+import { DetailsComponent } from "@component/sites/pages/details/details.component";
+import { EditComponent } from "@component/sites/pages/edit/edit.component";
+import { NewComponent } from "@component/sites/pages/new/new.component";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { MapModule } from "@shared/map/map.module";
+import { SharedModule } from "@shared/shared.module";
 import { AssignComponent } from "./pages/assign/assign.component";
-import { DeleteComponent } from "./pages/delete/delete.component";
-import { DetailsComponent } from "./pages/details/details.component";
-import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
-import { NewComponent } from "./pages/new/new.component";
 import { PermissionsComponent } from "./pages/permissions/permissions.component";
 import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.menus";
@@ -25,7 +25,7 @@ const components = [
   PermissionsComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent
+  SiteCardComponent,
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
@@ -36,8 +36,8 @@ const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  exports: [RouterModule, ...components]
+  exports: [RouterModule, ...components],
 })
 export class ProjectsModule {}

@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ProjectsService } from "@baw-api/projects.service";
+import { Project } from "@models/Project";
+import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { testFormlyFields } from "src/testHelpers";
 import { fields } from "../../project.json";
@@ -30,7 +30,7 @@ describe("ProjectsNewComponent", () => {
       required: true,
       label: "Project Name",
       type: "text",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Project Description Input",
@@ -41,7 +41,7 @@ describe("ProjectsNewComponent", () => {
       required: false,
       label: "Description",
       type: undefined,
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Project Image Input",
@@ -52,8 +52,8 @@ describe("ProjectsNewComponent", () => {
       required: false,
       label: "Image",
       type: undefined,
-      description: undefined
-    }
+      description: undefined,
+    },
   ];
 
   describe("form", () => {
@@ -69,9 +69,9 @@ describe("ProjectsNewComponent", () => {
           ...testBawServices,
           {
             provide: ActivatedRoute,
-            useClass: mockActivatedRoute()
-          }
-        ]
+            useClass: mockActivatedRoute(),
+          },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(NewComponent);
@@ -103,7 +103,7 @@ describe("ProjectsNewComponent", () => {
 
         subject.error({
           message: "Sign in to access this feature.",
-          info: 401
+          info: 401,
         } as ApiErrorDetails);
 
         return subject;
@@ -129,8 +129,8 @@ describe("ProjectsNewComponent", () => {
             image_file_name: [],
             image_file_size: [],
             image_content_type: [],
-            image_updated_at: []
-          }
+            image_updated_at: [],
+          },
         } as ApiErrorDetails);
 
         return subject;
