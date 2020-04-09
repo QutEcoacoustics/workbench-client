@@ -21,7 +21,7 @@ import { AbstractModel } from "src/app/models/AbstractModel";
             </p>
           </div>
           <div class="col-sm-9">
-            <app-view [view]="model[field.key]"></app-view>
+            <app-render-view [view]="model[field.key]"></app-render-view>
           </div>
         </div>
       </div>

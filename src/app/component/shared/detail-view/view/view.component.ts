@@ -3,29 +3,32 @@ import { DateTime, Duration } from "luxon";
 import { toRelative } from "src/app/interfaces/apiInterfaces";
 
 @Component({
-  selector: "app-view",
+  selector: "app-render-view",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
-      <pre *ngIf="styling === CodeStyling.Code">{{ display }}</pre>
-      <p *ngIf="styling === CodeStyling.Plain">{{ display }}</p>
+      <pre *ngIf="styling === FieldStyling.Code">{{ display }}</pre>
+      <p *ngIf="styling === FieldStyling.Plain">{{ display }}</p>
       <app-checkbox
-        *ngIf="styling === CodeStyling.Checkbox"
+        *ngIf="styling === FieldStyling.Checkbox"
         [checked]="display"
         [disabled]="true"
-        [ngClass]="{}"
+        [isCentered]="false"
       ></app-checkbox>
     </ng-container>
     <ng-template #hasChildren>
-      <app-view *ngFor="let child of children" [view]="child"></app-view>
+      <app-render-view
+        *ngFor="let child of children"
+        [view]="child"
+      ></app-render-view>
     </ng-template>
   `,
 })
-export class ViewComponent implements OnInit {
+export class RenderViewComponent implements OnInit {
   @Input() view: ModelView;
   public display: string | number | boolean;
   public children: ModelView[];
-  public styling: CodeStyling = CodeStyling.Plain;
-  public CodeStyling = CodeStyling;
+  public styling: FieldStyling = FieldStyling.Plain;
+  public FieldStyling = FieldStyling;
   private errorText = "(error)";
   private loadingText = "(loading)";
   private noValueText = "(no value)";
@@ -48,9 +51,10 @@ export class ViewComponent implements OnInit {
     } else if (value instanceof Blob) {
       this.humanizeBlob(value);
     } else if (typeof value === "object") {
+      // TODO Implement optional treeview
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
-      this.styling = CodeStyling.Checkbox;
+      this.styling = FieldStyling.Checkbox;
       this.display = value;
     } else {
       this.display = value.toString();
@@ -65,7 +69,7 @@ export class ViewComponent implements OnInit {
     this.setLoading();
 
     try {
-      this.styling = CodeStyling.Code;
+      this.styling = FieldStyling.Code;
       this.display = JSON.stringify(value);
     } catch (err) {
       this.display = this.errorText;
@@ -81,24 +85,24 @@ export class ViewComponent implements OnInit {
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
     reader.addEventListener("loadend", (e) => {
-      this.styling = CodeStyling.Code;
+      this.styling = FieldStyling.Code;
       this.display = e.target.result.toString();
     });
     reader.readAsText(value);
   }
 
   /**
-   * Indicate answer is still loading
+   * Indicate view is still loading
    */
   private setLoading() {
-    this.styling = CodeStyling.Plain;
+    this.styling = FieldStyling.Plain;
     this.display = this.loadingText;
   }
 }
 
 type ModelView = any;
 
-enum CodeStyling {
+enum FieldStyling {
   Checkbox,
   Code,
   Link,

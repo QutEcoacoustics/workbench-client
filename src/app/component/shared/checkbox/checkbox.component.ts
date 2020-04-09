@@ -27,7 +27,7 @@ export class CheckboxComponent implements OnInit {
   @Input() id: string;
   @Input() checked: boolean;
   @Input() disabled: boolean;
-  @Input() isCentered: boolean = true;
+  @Input() isCentered = true;
 
   constructor() {}
 

@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { ViewComponent } from "./view.component";
+import { RenderViewComponent } from "./view.component";
 
-describe("ViewComponent", () => {
-  let component: ViewComponent;
-  let fixture: ComponentFixture<ViewComponent>;
+describe("RenderViewComponent", () => {
+  let component: RenderViewComponent;
+  let fixture: ComponentFixture<RenderViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ViewComponent],
+      declarations: [RenderViewComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ViewComponent);
+    fixture = TestBed.createComponent(RenderViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
