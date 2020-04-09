@@ -1,0 +1,96 @@
+{
+  "fields": [
+    {
+      "key": "id",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Id"
+      }
+    },
+    {
+      "key": "userName",
+      "type": "input",
+      "templateOptions": {
+        "label": "User name",
+        "required": true
+      }
+    },
+    {
+      "key": "email",
+      "type": "input",
+      "templateOptions": {
+        "type": "email",
+        "label": "Email",
+        "required": true
+      }
+    },
+    {
+      "key": "password",
+      "type": "input",
+      "templateOptions": {
+        "type": "password",
+        "label": "Password",
+        "minLength": 6
+      }
+    },
+    {
+      "key": "timezoneInformation",
+      "type": "input",
+      "templateOptions": {
+        "label": "Time Zone"
+      }
+    },
+    {
+      "key": "imageUrls",
+      "type": "input",
+      "templateOptions": {
+        "label": "Image",
+        "type": "file"
+      }
+    },
+    {
+      "key": "lastSeenAt",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Last Seen At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "preferences",
+      "type": "textarea",
+      "hide": true,
+      "templateOptions": {
+        "label": "Preferences"
+      }
+    },
+    {
+      "key": "isConfirmed",
+      "type": "checkbox",
+      "hide": true,
+      "wrappers": ["form-field-horizontal"],
+      "templateOptions": {
+        "label": "Is Confirmed"
+      }
+    },
+    {
+      "key": "rolesMask",
+      "type": "input",
+      "hide": true,
+      "templateOptions": {
+        "label": "Roles Mask",
+        "type": "number"
+      }
+    },
+    {
+      "key": "rolesMaskNames",
+      "type": "textarea",
+      "hide": true,
+      "templateOptions": {
+        "label": "Roles Mask Names"
+      }
+    }
+  ]
+}
