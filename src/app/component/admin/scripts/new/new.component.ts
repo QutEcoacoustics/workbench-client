@@ -1,22 +1,22 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ScriptsService } from "@baw-api/scripts.service";
 import {
   defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Script } from "src/app/models/Script";
-import { ScriptsService } from "src/app/services/baw-api/scripts.service";
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Script } from "@models/Script";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { adminScriptsMenuItemActions } from "../list/list.component";
+import { fields } from "../scripts.json";
 import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
-  adminScriptsMenuItem
-} from "../../admin.menus";
-import { adminScriptsMenuItemActions } from "../list/list.component";
-import { fields } from "../scripts.json";
+  adminScriptsMenuItem,
+} from "../scripts.menus";
 
 /**
  * New Scripts Component
@@ -26,11 +26,11 @@ import { fields } from "../scripts.json";
   menus: {
     actions: List<AnyMenuItem>([
       adminScriptsMenuItem,
-      ...adminScriptsMenuItemActions
+      ...adminScriptsMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
-  self: adminNewScriptsMenuItem
+  self: adminNewScriptsMenuItem,
 })
 @Component({
   selector: "app-admin-scripts-new",
@@ -45,7 +45,7 @@ import { fields } from "../scripts.json";
       (onSubmit)="submit($event)"
     >
     </app-form>
-  `
+  `,
 })
 export class AdminScriptsNewComponent extends FormTemplate<Script> {
   public fields = fields;
@@ -56,7 +56,7 @@ export class AdminScriptsNewComponent extends FormTemplate<Script> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, model =>
+    super(notifications, route, router, undefined, (model) =>
       defaultSuccessMsg("created", model.name)
     );
   }
