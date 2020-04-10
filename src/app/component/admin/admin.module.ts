@@ -6,21 +6,11 @@ import { adminRoute } from "./admin.menus";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
 import { ScriptsModule } from "./scripts/scripts.module";
 import { TagGroupsModule } from "./tag-group/tag-groups.module";
-import { AdminTagsDeleteComponent } from "./tags/delete/delete.component";
-import { AdminTagsEditComponent } from "./tags/edit/edit.component";
-import { AdminTagsComponent } from "./tags/list/list.component";
-import { AdminTagsNewComponent } from "./tags/new/new.component";
+import { TagsModule } from "./tags/tags.module";
 import { AdminUserListComponent } from "./users/list/list.component";
 
-const modules = [ScriptsModule, TagGroupsModule];
-const components = [
-  AdminDashboardComponent,
-  AdminTagsComponent,
-  AdminTagsDeleteComponent,
-  AdminTagsEditComponent,
-  AdminTagsNewComponent,
-  AdminUserListComponent,
-];
+const modules = [ScriptsModule, TagGroupsModule, TagsModule];
+const components = [AdminDashboardComponent, AdminUserListComponent];
 const routes = adminRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
