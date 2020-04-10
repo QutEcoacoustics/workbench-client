@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account.service";
