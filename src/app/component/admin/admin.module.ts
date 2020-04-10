@@ -4,24 +4,17 @@ import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
-import { AdminTagGroupsDeleteComponent } from "./tag-group/delete/delete.component";
-import { AdminTagGroupsEditComponent } from "./tag-group/edit/edit.component";
-import { AdminTagGroupsComponent } from "./tag-group/list/list.component";
-import { AdminTagGroupsNewComponent } from "./tag-group/new/new.component";
+import { ScriptsModule } from "./scripts/scripts.module";
+import { TagGroupsModule } from "./tag-group/tag-groups.module";
 import { AdminTagsDeleteComponent } from "./tags/delete/delete.component";
 import { AdminTagsEditComponent } from "./tags/edit/edit.component";
 import { AdminTagsComponent } from "./tags/list/list.component";
 import { AdminTagsNewComponent } from "./tags/new/new.component";
 import { AdminUserListComponent } from "./users/list/list.component";
-import { ScriptsModule } from "./scripts/scripts.module";
 
-const modules = [ScriptsModule];
+const modules = [ScriptsModule, TagGroupsModule];
 const components = [
   AdminDashboardComponent,
-  AdminTagGroupsComponent,
-  AdminTagGroupsDeleteComponent,
-  AdminTagGroupsEditComponent,
-  AdminTagGroupsNewComponent,
   AdminTagsComponent,
   AdminTagsDeleteComponent,
   AdminTagsEditComponent,
