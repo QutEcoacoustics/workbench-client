@@ -1,17 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { ScriptsService } from "@baw-api/scripts.service";
-import {
-  adminDashboardMenuItem,
-  adminNewScriptsMenuItem,
-  adminScriptsCategory,
-  adminScriptsMenuItem,
-} from "@component/admin/admin.menus";
+import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Script } from "@models/Script";
 import { List } from "immutable";
+import {
+  adminNewScriptsMenuItem,
+  adminScriptsCategory,
+  adminScriptsMenuItem,
+} from "../scripts.menus";
 
 export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 

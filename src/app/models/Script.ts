@@ -1,9 +1,9 @@
-import { adminScriptsMenuItem } from "../component/admin/admin.menus";
+import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
   Id,
-  Param
+  Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -69,7 +69,7 @@ export class Script extends AbstractModel implements ScriptInterface {
       executableSettings: this.executableSettings,
       executableSettingsMediaType: this.executableSettingsMediaType,
       analysisActionParams: this.analysisActionParams,
-      verified: this.verified
+      verified: this.verified,
     };
   }
 

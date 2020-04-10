@@ -42,34 +42,6 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-/*
-  Admin Scripts
-*/
-
-export const adminScriptsCategory: Category = {
-  icon: ["fas", "scroll"],
-  label: "Scripts",
-  route: adminRoute.add("scripts"),
-};
-
-export const adminScriptsMenuItem = MenuRoute({
-  icon: ["fas", "scroll"],
-  label: "Scripts",
-  route: adminScriptsCategory.route,
-  tooltip: () => "Manage custom scripts",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate,
-});
-
-export const adminNewScriptsMenuItem = MenuRoute({
-  icon: defaultNewIcon,
-  label: "New Script",
-  route: adminScriptsMenuItem.route.add("new"),
-  tooltip: () => "Create a new script",
-  parent: adminScriptsMenuItem,
-  predicate: isAdminPredicate,
-});
-
 /**
  * Admin Tags
  */

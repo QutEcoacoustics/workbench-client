@@ -10,11 +10,11 @@ import {
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
   adminOrphanSitesMenuItem,
-  adminScriptsMenuItem,
   adminTagGroupsMenuItem,
   adminTagsMenuItem,
   adminUserListMenuItem,
 } from "../admin.menus";
+import { adminScriptsMenuItem } from "../scripts/scripts.menus";
 
 export const adminMenuItemActions = [
   adminUserListMenuItem,

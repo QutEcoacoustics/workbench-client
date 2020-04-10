@@ -2,21 +2,21 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ScriptsService } from "@baw-api/scripts.service";
 import {
-  adminNewScriptsMenuItem,
-  adminScriptsCategory,
-  adminScriptsMenuItem,
-} from "@component/admin/admin.menus";
-import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { Script } from "src/app/models/Script";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import { fields } from "../scripts.json";
+import {
+  adminNewScriptsMenuItem,
+  adminScriptsCategory,
+  adminScriptsMenuItem,
+} from "../scripts.menus";
 
 /**
  * New Scripts Component
