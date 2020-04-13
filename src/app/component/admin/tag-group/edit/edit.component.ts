@@ -1,22 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import {
-  defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { TagGroup } from "src/app/models/TagGroup";
-import {
-  tagGroupResolvers,
-  TagGroupService
-} from "src/app/services/baw-api/tag-group.service";
+import { tagGroupResolvers, TagGroupService } from "@baw-api/tag-group.service";
 import {
   adminEditTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem
-} from "../../admin.menus";
+  adminTagGroupsMenuItem,
+} from "@component/admin/admin.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { TagGroup } from "@models/TagGroup";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import { fields } from "../tag-group.json";
 
@@ -26,12 +23,12 @@ const tagGroupKey = "tagGroup";
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    links: List()
+    links: List(),
   },
   resolvers: {
-    [tagGroupKey]: tagGroupResolvers.show
+    [tagGroupKey]: tagGroupResolvers.show,
   },
-  self: adminEditTagGroupMenuItem
+  self: adminEditTagGroupMenuItem,
 })
 @Component({
   selector: "app-admin-tag-groups-edit",
@@ -45,7 +42,7 @@ const tagGroupKey = "tagGroup";
       submitLabel="Submit"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
   implements OnInit {
@@ -58,7 +55,7 @@ export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagGroupKey, model =>
+    super(notifications, route, router, tagGroupKey, (model) =>
       defaultSuccessMsg("updated", model.groupIdentifier)
     );
   }

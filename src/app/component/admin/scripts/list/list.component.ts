@@ -1,17 +1,17 @@
 import { Component, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Script } from "src/app/models/Script";
-import { ScriptsService } from "src/app/services/baw-api/scripts.service";
+import { ScriptsService } from "@baw-api/scripts.service";
 import {
   adminDashboardMenuItem,
   adminNewScriptsMenuItem,
   adminScriptsCategory,
-  adminScriptsMenuItem
-} from "../../admin.menus";
+  adminScriptsMenuItem,
+} from "@component/admin/admin.menus";
+import { Page } from "@helpers/page/pageDecorator";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { Id } from "@interfaces/apiInterfaces";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Script } from "@models/Script";
+import { List } from "immutable";
 
 export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 
@@ -20,26 +20,26 @@ export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
   menus: {
     actions: List<AnyMenuItem>([
       adminDashboardMenuItem,
-      ...adminScriptsMenuItemActions
+      ...adminScriptsMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
-  self: adminScriptsMenuItem
+  self: adminScriptsMenuItem,
 })
 @Component({
   selector: "app-admin-scripts",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"]
+  styleUrls: ["./list.component.scss"],
 })
 export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
   implements OnInit {
   constructor(api: ScriptsService) {
-    super(api, scripts =>
-      scripts.map(script => ({
+    super(api, (scripts) =>
+      scripts.map((script) => ({
         name: script.name,
         version: script.version,
         id: script.id,
-        command: script.executableCommand
+        command: script.executableCommand,
       }))
     );
   }
@@ -49,13 +49,13 @@ export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
       { name: "Name" },
       { name: "Version" },
       { name: "Id" },
-      { name: "Command" }
+      { name: "Command" },
     ];
     this.sortKeys = {
       name: "name",
       version: "version",
       id: "id",
-      command: "executableCommand"
+      command: "executableCommand",
     };
     this.filterKey = "name";
     this.getModels();

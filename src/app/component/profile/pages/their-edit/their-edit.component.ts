@@ -1,23 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import {
-  defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
-import {
-  accountResolvers,
-  AccountService
-} from "src/app/services/baw-api/account.service";
+import { accountResolvers, AccountService } from "@baw-api/account.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
-  theirProfileMenuItem
-} from "../../profile.menus";
+  theirProfileMenuItem,
+} from "@component/profile/profile.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 import { fields } from "./their-edit.json";
 
@@ -28,14 +25,14 @@ const accountKey = "account";
   menus: {
     actions: List<AnyMenuItem>([
       theirProfileMenuItem,
-      ...theirProfileMenuItemActions
+      ...theirProfileMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
   resolvers: {
-    [accountKey]: accountResolvers.show
+    [accountKey]: accountResolvers.show,
   },
-  self: theirEditProfileMenuItem
+  self: theirEditProfileMenuItem,
 })
 @Component({
   selector: "app-their-profile-edit",
@@ -51,7 +48,7 @@ const accountKey = "account";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `
+  `,
 })
 export class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = fields;
@@ -63,7 +60,7 @@ export class TheirEditComponent extends FormTemplate<User> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, accountKey, model =>
+    super(notifications, route, router, accountKey, (model) =>
       defaultSuccessMsg("updated", model.userName)
     );
   }

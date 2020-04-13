@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
-  unlockAccountMenuItem
-} from "../../security.menus";
+  unlockAccountMenuItem,
+} from "@component/security/security.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { List } from "immutable";
 import { fields } from "./confirm-account.json";
 
 @Page({
@@ -20,11 +20,11 @@ import { fields } from "./confirm-account.json";
       loginMenuItem,
       confirmAccountMenuItem,
       resetPasswordMenuItem,
-      unlockAccountMenuItem
+      unlockAccountMenuItem,
     ]),
-    links: List()
+    links: List(),
   },
-  self: confirmAccountMenuItem
+  self: confirmAccountMenuItem,
 })
 @Component({
   selector: "app-confirm-account",
@@ -39,7 +39,7 @@ import { fields } from "./confirm-account.json";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `
+  `,
 })
 export class ConfirmPasswordComponent extends WithFormCheck(PageComponent)
   implements OnInit {
