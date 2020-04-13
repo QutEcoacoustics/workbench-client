@@ -138,6 +138,12 @@ export class StrongRoute {
     const output: Routes = [];
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+      if (a.path === null && b.path === null) {
+        return 0;
+      } else if (a.path === null || b.path === null) {
+        return a.path === null ? -1 : 1;
+      }
+
       const aRoutes = a.path.split("/");
       const bRoutes = b.path.split("/");
       const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(":");
