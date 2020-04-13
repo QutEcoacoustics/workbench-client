@@ -1,19 +1,23 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { Tag } from "src/app/models/Tag";
+import {
+  tagResolvers,
+  TagsService,
+  TagType
+} from "src/app/services/baw-api/tags.service";
 import {
   adminNewTagMenuItem,
   adminTagsCategory,
-  adminTagsMenuItem,
-} from "@component/admin/admin.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
-import { Tag } from "@models/Tag";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+  adminTagsMenuItem
+} from "../../admin.menus";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag.json";
 
@@ -23,12 +27,12 @@ const typeOfTagsKey = "typeOfTags";
   category: adminTagsCategory,
   menus: {
     actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
-    links: List(),
+    links: List()
   },
   resolvers: {
-    [typeOfTagsKey]: tagResolvers.typeOfTags,
+    [typeOfTagsKey]: tagResolvers.typeOfTags
   },
-  self: adminNewTagMenuItem,
+  self: adminNewTagMenuItem
 })
 @Component({
   selector: "app-admin-tags-new",
@@ -42,7 +46,7 @@ const typeOfTagsKey = "typeOfTags";
       submitLabel="Submit"
       (onSubmit)="submit($event)"
     ></app-form>
-  `,
+  `
 })
 export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   public fields = fields;
@@ -53,7 +57,7 @@ export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
+    super(notifications, route, router, undefined, model =>
       defaultSuccessMsg("created", model.text)
     );
   }
@@ -64,9 +68,9 @@ export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
 
     if (!this.failure) {
       this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
-        (tagType) => ({
+        tagType => ({
           label: tagType.toString(),
-          value: tagType.name,
+          value: tagType.name
         })
       );
     }

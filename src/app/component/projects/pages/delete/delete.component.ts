@@ -1,23 +1,26 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Project } from "src/app/models/Project";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import {
   deleteProjectMenuItem,
   projectCategory,
   projectMenuItem,
-  projectsMenuItem,
-} from "@component/projects/projects.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+  projectsMenuItem
+} from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -30,12 +33,12 @@ const projectKey = "project";
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
+    links: List()
   },
   resolvers: {
-    [projectKey]: projectResolvers.show,
+    [projectKey]: projectResolvers.show
   },
-  self: deleteProjectMenuItem,
+  self: deleteProjectMenuItem
 })
 @Component({
   selector: "app-projects-delete",
@@ -50,7 +53,7 @@ const projectKey = "project";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-  `,
+  `
 })
 export class DeleteComponent extends FormTemplate<Project> implements OnInit {
   public title: string;
@@ -61,7 +64,7 @@ export class DeleteComponent extends FormTemplate<Project> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, projectKey, (model) =>
+    super(notifications, route, router, projectKey, model =>
       defaultSuccessMsg("destroyed", model.name)
     );
   }

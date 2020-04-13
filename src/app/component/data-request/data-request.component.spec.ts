@@ -1,13 +1,13 @@
 import {
   HttpClientTestingModule,
-  HttpTestingController,
+  HttpTestingController
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
+import { SharedModule } from "../shared/shared.module";
 import { DataRequestComponent } from "./data-request.component";
 
 describe("DataRequestComponent", () => {
@@ -22,10 +22,10 @@ describe("DataRequestComponent", () => {
         ...appLibraryImports,
         SharedModule,
         HttpClientTestingModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       declarations: [DataRequestComponent],
-      providers: [...testAppInitializer],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

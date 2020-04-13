@@ -1,13 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
-import { Project } from "@models/Project";
-import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { Project } from "src/app/models/Project";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
 import { fields } from "../../project.json";
@@ -35,17 +38,17 @@ describe("ProjectsEditComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              project: projectResolvers.show,
+              project: projectResolvers.show
             },
             {
               project: {
                 model: project,
-                error: projectError,
-              },
+                error: projectError
+              }
             }
-          ),
-        },
-      ],
+          )
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditComponent);
@@ -64,11 +67,11 @@ describe("ProjectsEditComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project",
+      name: "Project"
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized",
+      message: "Unauthorized"
     };
   });
 
@@ -82,7 +85,7 @@ describe("ProjectsEditComponent", () => {
       required: true,
       label: "Project Name",
       type: "text",
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Project Description Input",
@@ -93,7 +96,7 @@ describe("ProjectsEditComponent", () => {
       required: false,
       label: "Description",
       type: undefined,
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Project Image Input",
@@ -104,8 +107,8 @@ describe("ProjectsEditComponent", () => {
       required: false,
       label: "Image",
       type: undefined,
-      description: undefined,
-    },
+      description: undefined
+    }
   ];
 
   describe("form", () => {
@@ -137,7 +140,7 @@ describe("ProjectsEditComponent", () => {
 
         subject.error({
           message: "Sign in to access this feature.",
-          info: 401,
+          info: 401
         } as ApiErrorDetails);
 
         return subject;
@@ -164,8 +167,8 @@ describe("ProjectsEditComponent", () => {
             image_file_name: [],
             image_file_size: [],
             image_content_type: [],
-            image_updated_at: [],
-          },
+            image_updated_at: []
+          }
         } as ApiErrorDetails);
 
         return subject;

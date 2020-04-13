@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
+import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
-  unlockAccountMenuItem,
-} from "@component/security/security.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { List } from "immutable";
+  unlockAccountMenuItem
+} from "../../security.menus";
 import { fields } from "./reset-password.json";
 
 @Page({
@@ -20,11 +20,11 @@ import { fields } from "./reset-password.json";
       loginMenuItem,
       confirmAccountMenuItem,
       resetPasswordMenuItem,
-      unlockAccountMenuItem,
+      unlockAccountMenuItem
     ]),
-    links: List(),
+    links: List()
   },
-  self: resetPasswordMenuItem,
+  self: resetPasswordMenuItem
 })
 @Component({
   selector: "app-reset-password",
@@ -39,7 +39,7 @@ import { fields } from "./reset-password.json";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `,
+  `
 })
 export class ResetPasswordComponent extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -2,20 +2,20 @@ import {
   async,
   ComponentFixture,
   fakeAsync,
-  TestBed,
+  TestBed
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { SecurityService } from "@baw-api/security.service";
-import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
 import {
   assertValidationMessage,
   getInputs,
   inputValue,
   submitForm,
-  testFormlyFields,
+  testFormlyFields
 } from "src/testHelpers";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.json";
@@ -45,7 +45,7 @@ describe("RegisterComponent", () => {
       required: true,
       label: "Username",
       type: "text",
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Email Input",
@@ -56,7 +56,7 @@ describe("RegisterComponent", () => {
       required: true,
       label: "Email Address",
       type: "email",
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Password Input",
@@ -67,7 +67,7 @@ describe("RegisterComponent", () => {
       required: true,
       label: "Password",
       type: "password",
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Password Confirmation Input",
@@ -78,8 +78,8 @@ describe("RegisterComponent", () => {
       required: true,
       label: "Password Confirmation",
       type: "password",
-      description: undefined,
-    },
+      description: undefined
+    }
   ];
 
   describe("form", () => {
@@ -91,7 +91,7 @@ describe("RegisterComponent", () => {
       TestBed.configureTestingModule({
         imports: [...appLibraryImports, RouterTestingModule, SharedModule],
         declarations: [RegisterComponent],
-        providers: [...testBawServices],
+        providers: [...testBawServices]
       }).compileComponents();
     }));
 

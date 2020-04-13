@@ -24,8 +24,8 @@ export type Icon = IconProp;
  * Angular Resolvers.
  * Used to inject api models into route data.
  */
-export interface ResolverList {
-  [key: string]: string;
+export interface Resolvers {
+  [key: string]: any;
 }
 
 /**
@@ -113,7 +113,7 @@ export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
   return Object.assign(item, {
     kind: "MenuLink" as "MenuLink",
     active: false,
-    indentation: 0,
+    indentation: 0
   });
 }
 
@@ -142,7 +142,7 @@ export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
     kind: "MenuRoute" as "MenuRoute",
     active: false,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
-    order: item.parent ? item.parent.order : item.order,
+    order: item.parent ? item.parent.order : item.order
   });
 }
 
@@ -162,7 +162,7 @@ export function MenuAction<T extends Omit<MenuAction, "kind">>(
   return Object.assign(item, {
     kind: "MenuAction" as "MenuAction",
     active: false,
-    indentation: 0,
+    indentation: 0
   });
 }
 

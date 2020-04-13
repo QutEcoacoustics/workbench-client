@@ -1,11 +1,15 @@
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultEditIcon,
   defaultUserIcon,
   isAdminPredicate,
-  isLoggedInPredicate,
+  isLoggedInPredicate
 } from "src/app/app.menus";
+import {
+  Category,
+  MenuLink,
+  MenuRoute
+} from "src/app/interfaces/menusInterfaces";
+import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const myAccountRoute = StrongRoute.Base.add("my_account");
 
@@ -15,7 +19,7 @@ export const myAccountRoute = StrongRoute.Base.add("my_account");
 export const myAccountCategory: Category = {
   icon: defaultUserIcon,
   label: "My Profile",
-  route: myAccountRoute,
+  route: myAccountRoute
 };
 
 export const myAccountMenuItem = MenuRoute({
@@ -24,7 +28,7 @@ export const myAccountMenuItem = MenuRoute({
   order: 2,
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
-  tooltip: () => "View profile",
+  tooltip: () => "View profile"
 });
 
 export const editMyAccountMenuItem = MenuRoute({
@@ -33,40 +37,40 @@ export const editMyAccountMenuItem = MenuRoute({
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for your profile",
+  tooltip: () => "Change the details for your profile"
 });
 
 export const myProjectsMenuItem = MenuLink({
   icon: ["fas", "globe-asia"],
   label: "My Projects",
-  predicate: (user) => !!user,
-  tooltip: (user) => `Projects ${user.userName} can access`,
-  uri: () => "BROKEN LINK",
+  predicate: user => !!user,
+  tooltip: user => `Projects ${user.userName} can access`,
+  uri: () => "BROKEN LINK"
 });
 
 export const mySitesMenuItem = MenuLink({
   icon: ["fas", "map-marker-alt"],
   label: "My Sites",
-  predicate: (user) => !!user,
-  tooltip: (user) => `Sites ${user.userName} can access`,
-  uri: () => "BROKEN LINK",
+  predicate: user => !!user,
+  tooltip: user => `Sites ${user.userName} can access`,
+  uri: () => "BROKEN LINK"
 });
 
 export const myBookmarksMenuItem = MenuLink({
   icon: ["fas", "bookmark"],
   label: "My Bookmarks",
-  predicate: (user) => !!user,
-  tooltip: (user) => `Bookmarks created by ${user.userName}`,
-  uri: () => "BROKEN LINK",
+  predicate: user => !!user,
+  tooltip: user => `Bookmarks created by ${user.userName}`,
+  uri: () => "BROKEN LINK"
 });
 
 export const myAnnotationsMenuItem = MenuLink({
   icon: ["fas", "border-all"],
   label: "My Annotations",
   order: 3,
-  predicate: (user) => !!user,
-  tooltip: (user) => `Annotations created by ${user.userName}`,
-  uri: () => "REPLACE_ME",
+  predicate: user => !!user,
+  tooltip: user => `Annotations created by ${user.userName}`,
+  uri: () => "REPLACE_ME"
 });
 
 /**
@@ -79,7 +83,7 @@ export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
 export const theirProfileCategory: Category = {
   icon: myAccountCategory.icon,
   label: "Their Profile",
-  route: theirProfileRoute,
+  route: theirProfileRoute
 };
 
 export const theirProfileMenuItem = MenuRoute({
@@ -88,7 +92,7 @@ export const theirProfileMenuItem = MenuRoute({
   order: myAccountMenuItem.order,
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
-  tooltip: () => "View their profile",
+  tooltip: () => "View their profile"
 });
 
 export const theirEditProfileMenuItem = MenuRoute({
@@ -97,37 +101,37 @@ export const theirEditProfileMenuItem = MenuRoute({
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for this profile",
+  tooltip: () => "Change the details for this profile"
 });
 
 export const theirProjectsMenuItem = MenuLink({
   icon: ["fas", "globe-asia"],
   label: "Their Projects",
-  predicate: (user) => !!user,
+  predicate: user => !!user,
   tooltip: () => "Projects they can access",
-  uri: () => "BROKEN LINK",
+  uri: () => "BROKEN LINK"
 });
 
 export const theirSitesMenuItem = MenuLink({
   icon: ["fas", "map-marker-alt"],
   label: "Their Sites",
-  predicate: (user) => !!user,
+  predicate: user => !!user,
   tooltip: () => "Sites they can access",
-  uri: () => "BROKEN LINK",
+  uri: () => "BROKEN LINK"
 });
 
 export const theirBookmarksMenuItem = MenuLink({
   icon: ["fas", "bookmark"],
   label: "Their Bookmarks",
-  predicate: (user) => !!user,
+  predicate: user => !!user,
   tooltip: () => "Bookmarks created by them",
-  uri: () => "BROKEN LINK",
+  uri: () => "BROKEN LINK"
 });
 
 export const theirAnnotationsMenuItem = MenuLink({
   icon: ["fas", "bullseye"],
   label: "Their Annotations",
-  predicate: (user) => !!user,
+  predicate: user => !!user,
   tooltip: () => "Annotations created by them",
-  uri: () => "BROKEN LINK",
+  uri: () => "BROKEN LINK"
 });

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
 import { testAppInitializer } from "src/app/test.helper";
+import { SharedModule } from "../shared/shared.module";
 import { ReportProblemComponent } from "./report-problem.component";
 
 describe("ReportProblemComponent", () => {
@@ -12,7 +12,7 @@ describe("ReportProblemComponent", () => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
       declarations: [ReportProblemComponent],
-      providers: [...testAppInitializer],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

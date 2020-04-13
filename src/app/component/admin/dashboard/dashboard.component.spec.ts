@@ -7,7 +7,7 @@ describe("AdminDashboardComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminDashboardComponent],
+      declarations: [AdminDashboardComponent]
     }).compileComponents();
   }));
 

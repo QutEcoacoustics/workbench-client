@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers } from "@baw-api/projects.service";
-import { SitesService } from "@baw-api/sites.service";
-import { Project } from "@models/Project";
-import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { Project } from "src/app/models/Project";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { SitesService } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { AssignComponent } from "./assign.component";
 
@@ -30,17 +30,17 @@ describe("AssignComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              project: projectResolvers.show,
+              project: projectResolvers.show
             },
             {
               project: {
                 model: project,
-                error: projectError,
-              },
+                error: projectError
+              }
             }
-          ),
-        },
-      ],
+          )
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AssignComponent);
@@ -53,11 +53,11 @@ describe("AssignComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project",
+      name: "Project"
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized",
+      message: "Unauthorized"
     };
   });
 

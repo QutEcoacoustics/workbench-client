@@ -1,15 +1,15 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers } from "@baw-api/projects.service";
-import { siteResolvers } from "@baw-api/sites.service";
-import { SiteCardComponent } from "@component/projects/site-card/site-card.component";
-import { Project } from "@models/Project";
-import { Site } from "@models/Site";
-import { MockMapComponent } from "@shared/map/mapMock";
-import { SharedModule } from "@shared/shared.module";
+import { MockMapComponent } from "src/app/component/shared/map/mapMock";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { Project } from "src/app/models/Project";
+import { Site } from "src/app/models/Site";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import { SiteCardComponent } from "../../site-card/site-card.component";
 import { DetailsComponent } from "./details.component";
 
 describe("ProjectDetailsComponent", () => {
@@ -35,21 +35,21 @@ describe("ProjectDetailsComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              sites: siteResolvers.list,
+              sites: siteResolvers.list
             },
             {
               project: {
                 model: project,
-                error: projectError,
+                error: projectError
               },
               sites: {
                 model: sites,
-                error: sitesError,
-              },
+                error: sitesError
+              }
             }
-          ),
-        },
-      ],
+          )
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
@@ -59,12 +59,12 @@ describe("ProjectDetailsComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project",
+      name: "Project"
     });
     defaultSites = [];
     defaultError = {
       status: 401,
-      message: "Unauthorized",
+      message: "Unauthorized"
     };
   });
 
@@ -101,7 +101,7 @@ describe("ProjectDetailsComponent", () => {
     it("should display project name", () => {
       const project = new Project({
         id: 1,
-        name: "Test project",
+        name: "Test project"
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -115,7 +115,7 @@ describe("ProjectDetailsComponent", () => {
     it("should display default project image", () => {
       const project = new Project({
         id: 1,
-        name: "Test project",
+        name: "Test project"
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -133,7 +133,7 @@ describe("ProjectDetailsComponent", () => {
       const project = new Project({
         id: 1,
         name: "Test project",
-        imageUrl: "http://brokenlink/",
+        imageUrl: "http://brokenlink/"
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -149,7 +149,7 @@ describe("ProjectDetailsComponent", () => {
       const project = new Project({
         id: 1,
         name: "Test project",
-        description: "A test project",
+        description: "A test project"
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -181,7 +181,7 @@ describe("ProjectDetailsComponent", () => {
       const site = new Site({
         id: 1,
         name: "Site",
-        description: "A sample site",
+        description: "A sample site"
       });
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
@@ -195,7 +195,7 @@ describe("ProjectDetailsComponent", () => {
       const site = new Site({
         id: 1,
         name: "Custom Site",
-        description: "A sample site",
+        description: "A sample site"
       });
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
@@ -211,13 +211,13 @@ describe("ProjectDetailsComponent", () => {
         new Site({
           id: 1,
           name: "Site 1",
-          description: "A sample site",
+          description: "A sample site"
         }),
         new Site({
           id: 2,
           name: "Site 2",
-          description: "A sample site",
-        }),
+          description: "A sample site"
+        })
       ];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);
@@ -232,13 +232,13 @@ describe("ProjectDetailsComponent", () => {
         new Site({
           id: 1,
           name: "Site 1",
-          description: "A sample site",
+          description: "A sample site"
         }),
         new Site({
           id: 2,
           name: "Site 2",
-          description: "A sample site",
-        }),
+          description: "A sample site"
+        })
       ];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);
@@ -273,7 +273,7 @@ describe("ProjectDetailsComponent", () => {
         description: "A sample site",
         locationObfuscated: true,
         customLatitude: 0,
-        customLongitude: 1,
+        customLongitude: 1
       });
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
@@ -292,7 +292,7 @@ describe("ProjectDetailsComponent", () => {
           description: "A sample site",
           locationObfuscated: true,
           customLatitude: 0,
-          customLongitude: 1,
+          customLongitude: 1
         }),
         new Site({
           id: 2,
@@ -300,8 +300,8 @@ describe("ProjectDetailsComponent", () => {
           description: "A sample site",
           locationObfuscated: true,
           customLatitude: 2,
-          customLongitude: 3,
-        }),
+          customLongitude: 3
+        })
       ];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);

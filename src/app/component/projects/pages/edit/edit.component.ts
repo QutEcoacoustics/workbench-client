@@ -1,22 +1,25 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import {
+  defaultSuccessMsg,
+  FormTemplate
+} from "src/app/helpers/formTemplate/formTemplate";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { Project } from "src/app/models/Project";
+import {
+  projectResolvers,
+  ProjectsService
+} from "src/app/services/baw-api/projects.service";
+import { fields } from "../../project.json";
 import {
   editProjectMenuItem,
   projectCategory,
-  projectMenuItem,
-} from "@component/projects/projects.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
-import { Project } from "@models/Project";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { fields } from "../../project.json";
+  projectMenuItem
+} from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 import { projectErrorMsg } from "../new/new.component";
 
@@ -27,12 +30,12 @@ const projectKey = "project";
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
+    links: List()
   },
   resolvers: {
-    [projectKey]: projectResolvers.show,
+    [projectKey]: projectResolvers.show
   },
-  self: editProjectMenuItem,
+  self: editProjectMenuItem
 })
 @Component({
   selector: "app-project-edit",
@@ -48,7 +51,7 @@ const projectKey = "project";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `,
+  `
 })
 export class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = fields;
@@ -65,7 +68,7 @@ export class EditComponent extends FormTemplate<Project> implements OnInit {
       route,
       router,
       projectKey,
-      (model) => defaultSuccessMsg("updated", model.name),
+      model => defaultSuccessMsg("updated", model.name),
       projectErrorMsg
     );
   }

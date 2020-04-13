@@ -1,14 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { apiReturnCodes } from "@baw-api/baw-api.service";
-import { PageInfoInterface } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ResolverList } from "@interfaces/menusInterfaces";
 import { takeUntil } from "rxjs/operators";
+import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { Resolvers } from "src/app/interfaces/menusInterfaces";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 
 @Component({
-  template: ` <app-error-handler [error]="error"></app-error-handler> `,
+  template: `
+    <app-error-handler [error]="error"></app-error-handler>
+  `
 })
 export class ResolverHandlerComponent extends WithUnsubscribe()
   implements OnInit {
@@ -24,11 +26,11 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
       (data: PageInfoInterface) => {
         this.handleResolvers(data);
       },
-      (err) => {
+      err => {
         console.error("ErrorHandlerComponent: ", err);
         this.error = {
           status: apiReturnCodes.unknown,
-          message: "Unable to load data from Server.",
+          message: "Unable to load data from Server."
         };
       }
     );
@@ -36,7 +38,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
 
   private handleResolvers(data: PageInfoInterface) {
     // Find page resolvers
-    const resolvers: ResolverList = {};
+    const resolvers: Resolvers = {};
     if (data.resolvers) {
       Object.assign(resolvers, data.resolvers);
     }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
-import { AppConfigService } from "@services/app-config/app-config.service";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { fields as requestFields } from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as annotationFields } from "./download-annotations.json";
@@ -12,9 +12,9 @@ import { fields as annotationFields } from "./download-annotations.json";
   category: dataRequestCategory,
   menus: {
     actions: List(),
-    links: List(),
+    links: List()
   },
-  self: dataRequestMenuItem,
+  self: dataRequestMenuItem
 })
 @Component({
   selector: "app-data-request",
@@ -41,7 +41,7 @@ import { fields as annotationFields } from "./download-annotations.json";
         (onSubmit)="submitDataRequest($event)"
       ></app-form>
     </app-wip>
-  `,
+  `
 })
 export class DataRequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { HomeComponent } from "@component/home/home.component";
-import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
+import { HomeComponent } from "src/app/component/home/home.component";
+import { SharedModule } from "src/app/component/shared/shared.module";
 import { testAppInitializer } from "src/app/test.helper";
 import { testFormlyFields } from "src/testHelpers";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
@@ -23,8 +23,8 @@ describe("ConfirmPasswordComponent", () => {
       required: true,
       label: "Username or Email Address",
       type: "text",
-      description: undefined,
-    },
+      description: undefined
+    }
   ];
 
   describe("form", () => {
@@ -36,7 +36,7 @@ describe("ConfirmPasswordComponent", () => {
       TestBed.configureTestingModule({
         imports: [...appLibraryImports, SharedModule],
         declarations: [ConfirmPasswordComponent, HomeComponent],
-        providers: [...testAppInitializer],
+        providers: [...testAppInitializer]
       }).compileComponents();
     }));
 

@@ -1,18 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { SecurityService } from "@baw-api/security.service";
-import {
-  registerMenuItem,
-  securityCategory,
-} from "@component/security/security.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { ToastrService } from "ngx-toastr";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { SecurityService } from "src/app/services/baw-api/security.service";
+import { registerMenuItem, securityCategory } from "../../security.menus";
 import { fields } from "./register.json";
 
 @Page({
   category: securityCategory,
   menus: null,
-  self: registerMenuItem,
+  self: registerMenuItem
 })
 @Component({
   selector: "app-authentication-register",
@@ -28,7 +25,7 @@ import { fields } from "./register.json";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `,
+  `
 })
 export class RegisterComponent extends PageComponent implements OnInit {
   public model = {};

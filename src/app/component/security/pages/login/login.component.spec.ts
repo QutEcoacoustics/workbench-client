@@ -2,14 +2,17 @@ import { Location } from "@angular/common";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { LoginDetails, SecurityService } from "@baw-api/security.service";
-import { HomeComponent } from "@component/home/home.component";
-import { testApiConfig } from "@services/app-config/appConfigMock.service";
-import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { HomeComponent } from "src/app/component/home/home.component";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { testApiConfig } from "src/app/services/app-config/appConfigMock.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import {
+  LoginDetails,
+  SecurityService
+} from "src/app/services/baw-api/security.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { testFormlyFields } from "src/testHelpers";
 import { LoginComponent } from "./login.component";
@@ -34,14 +37,9 @@ describe("LoginComponent", () => {
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            {},
-            {},
-            {},
-            redirect ? { redirect } : {}
-          ),
-        },
-      ],
+          useClass: mockActivatedRoute({}, {}, {}, redirect ? { redirect } : {})
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -57,7 +55,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
-      navigationId: navigationId ? navigationId : 1,
+      navigationId: navigationId ? navigationId : 1
     }));
   }
 
@@ -67,7 +65,7 @@ describe("LoginComponent", () => {
       subject.error({
         status: 401,
         message:
-          "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
+          "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
       } as ApiErrorDetails);
       return subject;
     });
@@ -83,7 +81,7 @@ describe("LoginComponent", () => {
       required: true,
       label: "Username or Email Address",
       type: "text",
-      description: undefined,
+      description: undefined
     },
     {
       testGroup: "Password Input",
@@ -94,8 +92,8 @@ describe("LoginComponent", () => {
       required: true,
       label: "Password",
       type: "password",
-      description: undefined,
-    },
+      description: undefined
+    }
   ];
 
   describe("form", () => {

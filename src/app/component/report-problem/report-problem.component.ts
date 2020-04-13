@@ -1,21 +1,21 @@
 import { Component, OnInit } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { List } from "immutable";
+import { WithFormCheck } from "src/app/guards/form/form.guard";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
 import { fields } from "./report-problem.json";
 import {
   reportProblemMenuItem,
-  reportProblemsCategory,
+  reportProblemsCategory
 } from "./report-problem.menus";
 
 @Page({
   category: reportProblemsCategory,
   menus: {
     actions: List(),
-    links: List(),
+    links: List()
   },
-  self: reportProblemMenuItem,
+  self: reportProblemMenuItem
 })
 @Component({
   selector: "app-report-problem",
@@ -31,7 +31,7 @@ import {
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `,
+  `
 })
 export class ReportProblemComponent extends WithFormCheck(PageComponent)
   implements OnInit {

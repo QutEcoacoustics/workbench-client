@@ -1,8 +1,18 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { projectResolvers } from "@baw-api/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/sites.service";
+import { List } from "immutable";
+import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
+import { newSiteMenuItem } from "src/app/component/sites/sites.menus";
+import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
+import { PageComponent } from "src/app/helpers/page/pageComponent";
+import { Page } from "src/app/helpers/page/pageDecorator";
+import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
+import { Project } from "src/app/models/Project";
+import { Site } from "src/app/models/Site";
+import { projectResolvers } from "src/app/services/baw-api/projects.service";
+import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -10,18 +20,8 @@ import {
   editProjectPermissionsMenuItem,
   projectCategory,
   projectMenuItem,
-  projectsMenuItem,
-} from "@component/projects/projects.menus";
-import { newSiteMenuItem } from "@component/sites/sites.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
-import { Site } from "@models/Site";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
-import { List } from "immutable";
+  projectsMenuItem
+} from "../../projects.menus";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -29,7 +29,7 @@ export const projectMenuItemActions = [
   editProjectPermissionsMenuItem,
   newSiteMenuItem,
   assignSiteMenuItem,
-  deleteProjectMenuItem,
+  deleteProjectMenuItem
 ];
 
 const projectKey = "project";
@@ -40,18 +40,18 @@ const sitesKey = "sites";
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
+    links: List()
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [sitesKey]: siteResolvers.list,
+    [sitesKey]: siteResolvers.list
   },
-  self: projectMenuItem,
+  self: projectMenuItem
 })
 @Component({
   selector: "app-projects-details",
   templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"],
+  styleUrls: ["./details.component.scss"]
 })
 export class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;

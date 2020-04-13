@@ -2,10 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit,
+  OnInit
 } from "@angular/core";
-import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Project } from "src/app/models/Project";
+import { Site } from "src/app/models/Site";
 
 @Component({
   selector: "app-site-card",
@@ -55,7 +55,7 @@ import { Site } from "@models/Site";
     </li>
   `,
   styleUrls: ["./site-card.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SiteCardComponent implements OnInit {
   @Input() project: Project;

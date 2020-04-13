@@ -1,11 +1,11 @@
 import {
   HttpClientTestingModule,
-  HttpTestingController,
+  HttpTestingController
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { SharedModule } from "@shared/shared.module";
+import { SharedModule } from "src/app/component/shared/shared.module";
+import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testAppInitializer } from "src/app/test.helper";
 import { EthicsComponent } from "./ethics.component";
 
@@ -19,7 +19,7 @@ describe("AboutEthicsComponent", () => {
     TestBed.configureTestingModule({
       imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
       declarations: [EthicsComponent],
-      providers: [...testAppInitializer],
+      providers: [...testAppInitializer]
     }).compileComponents();
   }));
 

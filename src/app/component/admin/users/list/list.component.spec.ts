@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AccountService } from "@baw-api/account.service";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
-import { User } from "@models/User";
-import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { User } from "src/app/models/User";
+import { AccountService } from "src/app/services/baw-api/account.service";
+import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { testBawServices } from "src/app/test.helper";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
+import { SharedModule } from "../../../shared/shared.module";
 import { AdminUserListComponent } from "./list.component";
 
 describe("AdminUserListComponent", () => {
@@ -33,15 +33,15 @@ describe("AdminUserListComponent", () => {
         page: 1,
         items: 25,
         total: users.length,
-        maxPage: 1,
+        maxPage: 1
       };
     }
 
-    users.forEach((user) => {
+    users.forEach(user => {
       user.addMetadata({
         message: "OK",
         status: 200,
-        paging,
+        paging
       });
     });
 
@@ -70,7 +70,7 @@ describe("AdminUserListComponent", () => {
     TestBed.configureTestingModule({
       declarations: [AdminUserListComponent],
       imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
-      providers: [...testBawServices],
+      providers: [...testBawServices]
     }).compileComponents();
   }));
 
@@ -81,7 +81,7 @@ describe("AdminUserListComponent", () => {
     defaultUser = new User({
       id: 1,
       userName: "username",
-      isConfirmed: false,
+      isConfirmed: false
     });
     defaultUsers = [];
     for (let i = 0; i < 25; i++) {
@@ -89,7 +89,7 @@ describe("AdminUserListComponent", () => {
         new User({
           id: i,
           userName: "user " + i,
-          isConfirmed: false,
+          isConfirmed: false
         })
       );
     }
@@ -97,7 +97,7 @@ describe("AdminUserListComponent", () => {
       page: 1,
       items: 25,
       total: 1,
-      maxPage: 1,
+      maxPage: 1
     };
   });
 
@@ -106,7 +106,7 @@ describe("AdminUserListComponent", () => {
       page: 1,
       items: 25,
       total: 100,
-      maxPage: 4,
+      maxPage: 4
     });
     fixture.detectChanges();
 
@@ -119,18 +119,18 @@ describe("AdminUserListComponent", () => {
       let counter = 0;
       const user = new User({
         id: 1,
-        userName: "user",
+        userName: "user"
       });
       const paging = {
         page: 1,
         items: 25,
         total: 100,
-        maxPage: 4,
+        maxPage: 4
       };
       user.addMetadata({
         message: "OK",
         status: 200,
-        paging,
+        paging
       });
       spyOn(api, "filter").and.callFake((filter: Filters) => {
         if (counter === 1) {
@@ -162,7 +162,7 @@ describe("AdminUserListComponent", () => {
       expect(api.filter).toHaveBeenCalledWith({});
     });
 
-    it("should request the second page from api", (done) => {
+    it("should request the second page from api", done => {
       secondApiResponse(done, { paging: { page: 2 } });
       fixture.detectChanges();
 
@@ -170,7 +170,7 @@ describe("AdminUserListComponent", () => {
       click(pageBtn);
     });
 
-    it("should request next page from api", (done) => {
+    it("should request next page from api", done => {
       secondApiResponse(done, { paging: { page: 2 } });
       fixture.detectChanges();
 
@@ -179,7 +179,7 @@ describe("AdminUserListComponent", () => {
       click(pageBtn);
     });
 
-    it("should request final page from api", (done) => {
+    it("should request final page from api", done => {
       secondApiResponse(done, { paging: { page: 4 } });
       fixture.detectChanges();
 
@@ -199,7 +199,7 @@ describe("AdminUserListComponent", () => {
 
       expect(errorHandler.error).toEqual({
         status: 401,
-        message: "Unauthorized",
+        message: "Unauthorized"
       });
     });
   });
@@ -235,7 +235,7 @@ describe("AdminUserListComponent", () => {
         page: 1,
         items: 25,
         total: 25,
-        maxPage: 1,
+        maxPage: 1
       });
       fixture.detectChanges();
 
@@ -249,7 +249,7 @@ describe("AdminUserListComponent", () => {
         page: 1,
         items: 25,
         total: 100,
-        maxPage: 4,
+        maxPage: 4
       });
       fixture.detectChanges();
 
@@ -266,7 +266,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 1,
         userName: "user 1",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
@@ -281,7 +281,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 1,
         userName: "username",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
@@ -297,7 +297,7 @@ describe("AdminUserListComponent", () => {
         id: 1,
         userName: "username",
         lastSeenAt: "2020-03-09T22:00:50.072+10:00",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
@@ -311,7 +311,7 @@ describe("AdminUserListComponent", () => {
         id: 1,
         userName: "username",
         lastSeenAt: "2020-03-09T22:00:50.072+10:00",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
@@ -327,7 +327,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 1,
         userName: "username",
-        isConfirmed: true,
+        isConfirmed: true
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
@@ -346,7 +346,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 1,
         userName: "username",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
@@ -378,7 +378,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 5,
         userName: "username",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
@@ -396,7 +396,7 @@ describe("AdminUserListComponent", () => {
       const user = new User({
         id: 5,
         userName: "username",
-        isConfirmed: false,
+        isConfirmed: false
       });
       apiResponse([user], defaultPaging);
       fixture.detectChanges();
