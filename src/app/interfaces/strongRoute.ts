@@ -171,7 +171,7 @@ export class StrongRoute {
       }
     };
 
-    rootRoute.children.forEach(recursiveAdd);
+    recursiveAdd(rootRoute);
     return output.sort(sortRoutes);
   }
 
@@ -188,7 +188,7 @@ export class StrongRoute {
    * eg. ["home", "house"]
    */
   toRoute(): string[] {
-    return this.full.slice(1).map(x => x.name);
+    return this.full.slice(1).map((x) => x.name);
   }
 
   /**

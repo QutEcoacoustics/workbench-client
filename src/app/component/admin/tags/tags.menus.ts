@@ -5,11 +5,9 @@ import {
   defaultNewIcon,
   isAdminPredicate,
 } from "src/app/app.menus";
-import { adminDashboardMenuItem } from "../admin.menus";
+import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
-export const adminTagsRoute = adminDashboardMenuItem.route.addFeatureModule(
-  "tags"
-);
+export const adminTagsRoute = adminRoute.addFeatureModule("tags");
 
 export const adminTagsCategory: Category = {
   icon: ["fas", "tag"],

@@ -1,10 +1,8 @@
 import { defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
 import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { adminDashboardMenuItem } from "../admin.menus";
+import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
-export const adminScriptsRoute = adminDashboardMenuItem.route.addFeatureModule(
-  "scripts"
-);
+export const adminScriptsRoute = adminRoute.addFeatureModule("scripts");
 
 export const adminScriptsCategory: Category = {
   icon: ["fas", "scroll"],
