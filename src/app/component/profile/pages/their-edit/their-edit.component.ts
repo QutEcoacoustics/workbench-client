@@ -15,6 +15,7 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { fields } from "../../profile.json";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
