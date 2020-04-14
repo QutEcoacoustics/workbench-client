@@ -7,6 +7,7 @@ import { MyProfileComponent } from "./pages/profile/my-profile.component";
 import { TheirProfileComponent } from "./pages/profile/their-profile.component";
 import { MyProjectsComponent } from "./pages/projects/my-projects.component";
 import { TheirProjectsComponent } from "./pages/projects/their-projects.component";
+import { MySitesComponent } from "./pages/sites/my-sites.component";
 import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
 import { myAccountRoute, theirProfileRoute } from "./profile.menus";
 
@@ -14,6 +15,7 @@ const MyAccountComponents = [
   MyProfileComponent,
   MyEditComponent,
   MyProjectsComponent,
+  MySitesComponent,
 ];
 const TheirProfileComponents = [
   TheirProfileComponent,
