@@ -1,6 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
 import {
-  async,
   ComponentFixture,
   fakeAsync,
   TestBed,
@@ -8,6 +7,7 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AbstractModel } from "@models/AbstractModel";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
 import { SharedModule } from "src/app/component/shared/shared.module";
@@ -22,7 +22,6 @@ import {
   testBawServices,
 } from "src/app/test.helper";
 import { PagedTableTemplate } from "./pagedTableTemplate";
-import { AbstractModel } from "@models/AbstractModel";
 
 class MockModel extends AbstractModel {
   public redirectPath(...args: any): string {

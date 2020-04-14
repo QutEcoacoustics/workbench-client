@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account.service";
 import { ProjectsService } from "@baw-api/projects.service";
@@ -46,6 +46,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
     { name: "Permission" },
   ];
 
+  // TODO Utilize https://github.com/QutEcoacoustics/baw-server/issues/438 service
   constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
