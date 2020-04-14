@@ -16,7 +16,7 @@ export interface ITag {
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
-  notes?: string;
+  notes?: Blob;
   creatorId?: Id;
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -34,7 +34,7 @@ export class Tag extends AbstractModel implements ITag {
   public readonly isTaxanomic?: boolean;
   public readonly typeOfTag?: string;
   public readonly retired?: boolean;
-  public readonly notes?: string;
+  public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly createdAt?: DateTimeTimezone;

@@ -21,8 +21,8 @@ export interface ISite {
   description?: Description;
   locationObfuscated?: boolean;
   creatorId?: Id;
-  createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
+  createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   projectIds?: Ids;
   customLatitude?: number;
@@ -41,8 +41,8 @@ export class Site extends AbstractModel implements ISite {
   public readonly description?: Description;
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
-  public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  public readonly createdAt?: DateTimeTimezone;
   public readonly updatedAt?: DateTimeTimezone;
   public readonly projectIds?: Ids;
   public readonly customLatitude?: number;

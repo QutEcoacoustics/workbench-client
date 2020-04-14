@@ -45,16 +45,16 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  public readonly createdAt?: DateTimeTimezone | string;
-  public readonly updatedAt?: DateTimeTimezone | string;
-  public readonly deletedAt?: DateTimeTimezone | string;
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly updatedAt?: DateTimeTimezone;
+  public readonly deletedAt?: DateTimeTimezone;
   public readonly description?: Description;
   public readonly savedSearchId?: Id;
-  public readonly startedAt?: DateTimeTimezone | string;
+  public readonly startedAt?: DateTimeTimezone;
   public readonly overallStatus?: Status;
-  public readonly overallStatusModifiedAt?: DateTimeTimezone | string;
+  public readonly overallStatusModifiedAt?: DateTimeTimezone;
   public readonly overallProgress?: Blob;
-  public readonly overallProgressModifiedAt?: DateTimeTimezone | string;
+  public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
@@ -81,7 +81,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     );
   }
 
-  public toJSON(): object {
+  public toJSON() {
     return {
       id: this.id,
       name: this.name,
@@ -95,4 +95,4 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 }
 
-type Status = "";
+type Status = "??? Anthony";

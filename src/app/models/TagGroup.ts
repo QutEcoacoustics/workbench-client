@@ -12,9 +12,9 @@ import { AbstractModel } from "./AbstractModel";
 export interface ITagGroup {
   id?: Id;
   groupIdentifier?: string;
-  createdAt?: DateTimeTimezone | string;
-  creatorId?: Id;
   tagId?: Id;
+  creatorId?: Id;
+  createdAt?: DateTimeTimezone | string;
 }
 
 /**
@@ -24,9 +24,9 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   public readonly kind: "TagGroup" = "TagGroup";
   public readonly id?: Id;
   public readonly groupIdentifier?: string;
-  public readonly createdAt?: DateTimeTimezone;
-  public readonly creatorId?: Id;
   public readonly tagId?: Id;
+  public readonly creatorId?: Id;
+  public readonly createdAt?: DateTimeTimezone;
 
   constructor(tagGroup: ITagGroup) {
     super(tagGroup);
@@ -38,7 +38,7 @@ export class TagGroup extends AbstractModel implements ITagGroup {
     return adminTagGroupsMenuItem.route.toString();
   }
 
-  public toJSON(): object {
+  public toJSON() {
     return {
       id: this.id,
       groupIdentifier: this.groupIdentifier,
