@@ -106,17 +106,18 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("resolvers", () => {
-    beforeEach(() => {
+    function setProject() {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-    });
+    }
 
     it("should handle resolver", () => {
       configureTestingModule(
         { model: "modelResolver" },
         { model: { model: new MockModel({ id: 1 }) } }
       );
+      setProject();
 
       fixture.detectChanges();
       expect(component.failure).toBeFalsy();
@@ -131,6 +132,7 @@ describe("PagedTableTemplate", () => {
           model2: { model: new MockModel({ id: 2 }) },
         }
       );
+      setProject();
 
       fixture.detectChanges();
       expect(component.failure).toBeFalsy();
@@ -143,6 +145,7 @@ describe("PagedTableTemplate", () => {
         { model: "modelResolver" },
         { model: { error: { status: 401, message: "Unauthorized" } } }
       );
+      setProject();
 
       fixture.detectChanges();
       expect(component.failure).toBeTrue();
@@ -156,6 +159,7 @@ describe("PagedTableTemplate", () => {
           model2: { error: { status: 401, message: "Unauthorized" } },
         }
       );
+      setProject();
 
       fixture.detectChanges();
       expect(component.failure).toBeTrue();
@@ -163,14 +167,18 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("rows", () => {
+    function setProjects(projects: Project[]) {
+      spyOn(api, "filter").and.callFake(() => {
+        return new BehaviorSubject<Project[]>(projects);
+      });
+    }
+
     beforeEach(() => {
       configureTestingModule();
     });
 
     it("should handle zero model response", () => {
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([]);
-      });
+      setProjects([]);
       fixture.detectChanges();
 
       expect(component.rows).toEqual([]);
@@ -189,35 +197,39 @@ describe("PagedTableTemplate", () => {
           total: 1,
         },
       });
-
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([project]);
-      });
+      setProjects([project]);
       fixture.detectChanges();
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
     });
 
-    it("should handle multi model response", () => {
-      const project = new Project({
+    it("should handle multiple model total", () => {
+      const project1 = new Project({
         id: 1,
-        name: "Project",
+        name: "Project 1",
       });
-      project.addMetadata({
-        status: 200,
-        message: "OK",
-        paging: {
-          page: 1,
-          total: 25,
-        },
+      const project2 = new Project({
+        id: 2,
+        name: "Project 2",
       });
+      [project1, project2].forEach((project) =>
+        project.addMetadata({
+          status: 200,
+          message: "OK",
+          paging: {
+            page: 1,
+            total: 25,
+          },
+        })
+      );
 
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([project]);
-      });
+      setProjects([project1, project2]);
       fixture.detectChanges();
 
-      expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
+      expect(component.rows).toEqual([
+        { id: 1, name: "Project 1" },
+        { id: 2, name: "Project 2" },
+      ]);
     });
   });
 
