@@ -41,7 +41,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
   Project
 > {
   public columns = [
-    { name: "Name" },
+    { name: "Project" },
     { name: "Sites" },
     { name: "Permission" },
   ];
@@ -52,7 +52,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
       api,
       (projects) =>
         projects.map((project) => ({
-          name: {
+          project: {
             label: project.name,
             route: project.redirectPath(),
           },
@@ -69,7 +69,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
 }
 
 interface TableRow {
-  name: {
+  project: {
     label: string;
     route: string;
   };
