@@ -3,11 +3,11 @@ import { ActivatedRoute } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { userResolvers } from "@baw-api/user.service";
 import {
-  editMyAccountMenuItem,
   myAccountCategory,
   myAccountMenuItem,
   myAnnotationsMenuItem,
   myBookmarksMenuItem,
+  myEditMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
 } from "@component/profile/profile.menus";
@@ -19,8 +19,8 @@ import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
 
-export const myProfileMenuItemActions = [
-  editMyAccountMenuItem,
+export const myAccountMenuItemActions = [
+  myEditMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
   myBookmarksMenuItem,
@@ -32,7 +32,7 @@ const userKey = "user";
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>(myProfileMenuItemActions),
+    actions: List<AnyMenuItem>(myAccountMenuItemActions),
     links: List(),
   },
   resolvers: {

@@ -12,7 +12,7 @@ import {
   ApiList,
   ApiShow,
   ApiUpdate,
-  IdOr
+  IdOr,
 } from "./api-common";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
@@ -62,11 +62,11 @@ export abstract class BawResolver<
         const modelId = id ? convertToId(route.paramMap.get(id)) : undefined;
         // Grab additional ID's from URL
         const args = ids
-          ? ids.map(urlId => convertToId(route.paramMap.get(urlId)))
+          ? ids.map((urlId) => convertToId(route.paramMap.get(urlId)))
           : [];
 
         return resolverFn(route, this.api, modelId, args).pipe(
-          map(model => ({ model })), // Modify output to match ResolvedModel interface
+          map((model) => ({ model })), // Modify output to match ResolvedModel interface
           take(1), // Only take first response
           catchError((error: ApiErrorDetails) => {
             return of({ error }); // Modify output to match ResolvedModel interface
@@ -161,9 +161,9 @@ export class ListResolver<
         {
           provide: name + "ListResolver",
           useClass: resolver,
-          deps
-        }
-      ]
+          deps,
+        },
+      ],
     };
   }
 
@@ -196,9 +196,9 @@ export class ShowResolver<
         {
           provide: name + "ShowResolver",
           useClass: resolver,
-          deps
-        }
-      ]
+          deps,
+        },
+      ],
     };
   }
 
@@ -232,4 +232,34 @@ export interface ResolvedModel<
  */
 function convertToId(id: string): Id {
   return parseInt(id, 10);
+}
+
+/**
+ * Verify all resolvers resolve without errors
+ * @param data Page Data
+ */
+export function retrieveResolvers(data: any): ResolvedModelList | false {
+  const models = {};
+
+  // Grab all models
+  for (const key of Object.keys(data.resolvers)) {
+    const resolvedModel: ResolvedModel = data[key];
+
+    // If error detected, return
+    if (!resolvedModel || resolvedModel.error) {
+      return false;
+    }
+
+    models[key] = resolvedModel.model;
+  }
+
+  return models;
+}
+
+export interface ResolvedModelList {
+  [key: string]:
+    | AbstractModel
+    | AbstractModel[]
+    | AbstractData
+    | AbstractData[];
 }

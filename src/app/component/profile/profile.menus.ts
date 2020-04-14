@@ -27,7 +27,7 @@ export const myAccountMenuItem = MenuRoute({
   tooltip: () => "View profile",
 });
 
-export const editMyAccountMenuItem = MenuRoute({
+export const myEditMenuItem = MenuRoute({
   icon: defaultEditIcon,
   label: "Edit my profile",
   parent: myAccountMenuItem,
@@ -36,12 +36,13 @@ export const editMyAccountMenuItem = MenuRoute({
   tooltip: () => "Change the details for your profile",
 });
 
-export const myProjectsMenuItem = MenuLink({
+export const myProjectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
   label: "My Projects",
-  predicate: (user) => !!user,
+  parent: myAccountMenuItem,
+  predicate: isLoggedInPredicate,
+  route: myAccountMenuItem.route.add("projects"),
   tooltip: (user) => `Projects ${user.userName} can access`,
-  uri: () => "BROKEN LINK",
 });
 
 export const mySitesMenuItem = MenuLink({
@@ -91,7 +92,7 @@ export const theirProfileMenuItem = MenuRoute({
   tooltip: () => "View their profile",
 });
 
-export const theirEditProfileMenuItem = MenuRoute({
+export const theirEditMenuItem = MenuRoute({
   icon: defaultEditIcon,
   label: "Edit their profile",
   parent: theirProfileMenuItem,
@@ -100,12 +101,13 @@ export const theirEditProfileMenuItem = MenuRoute({
   tooltip: () => "Change the details for this profile",
 });
 
-export const theirProjectsMenuItem = MenuLink({
+export const theirProjectsMenuItem = MenuRoute({
   icon: ["fas", "globe-asia"],
   label: "Their Projects",
-  predicate: (user) => !!user,
+  parent: theirProfileMenuItem,
+  predicate: isAdminPredicate,
+  route: myAccountMenuItem.route.add("projects"),
   tooltip: () => "Projects they can access",
-  uri: () => "BROKEN LINK",
 });
 
 export const theirSitesMenuItem = MenuLink({

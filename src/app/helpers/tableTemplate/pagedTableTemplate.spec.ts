@@ -4,7 +4,7 @@ import {
   ComponentFixture,
   fakeAsync,
   TestBed,
-  tick
+  tick,
 } from "@angular/core/testing";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -20,7 +20,7 @@ import { PagedTableTemplate } from "./pagedTableTemplate";
   selector: "app-test-component",
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
-  `
+  `,
 })
 class MockComponent extends PagedTableTemplate<
   { id: Id; name: string },
@@ -36,8 +36,8 @@ class MockComponent extends PagedTableTemplate<
   public columns = [{ prop: "id" }];
 
   constructor(api: ProjectsService) {
-    super(api, models =>
-      models.map(model => ({ id: model.id, name: model.name }))
+    super(api, (models) =>
+      models.map((model) => ({ id: model.id, name: model.name }))
     );
   }
 }
@@ -51,7 +51,7 @@ describe("PagedTableTemplate", () => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
       imports: [SharedModule],
-      providers: [...testBawServices]
+      providers: [...testBawServices],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
@@ -71,7 +71,7 @@ describe("PagedTableTemplate", () => {
       subject.error(error);
       return subject;
     });
-    component.getModels();
+    component.getPageData();
     fixture.detectChanges();
 
     expect(component.error).toEqual(error);
@@ -82,7 +82,7 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([]);
@@ -91,21 +91,21 @@ describe("PagedTableTemplate", () => {
     it("should handle single model response", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 1,
-          total: 1
-        }
+          total: 1,
+        },
       });
 
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
@@ -114,21 +114,21 @@ describe("PagedTableTemplate", () => {
     it("should handle multi model response", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 1,
-          total: 25
-        }
+          total: 25,
+        },
       });
 
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
@@ -172,7 +172,7 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(0);
@@ -181,15 +181,15 @@ describe("PagedTableTemplate", () => {
     it("should handle first page", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 1,
-          total: 25
-        }
+          total: 25,
+        },
       });
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
@@ -203,15 +203,15 @@ describe("PagedTableTemplate", () => {
     it("should handle random page", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 3,
-          total: 25
-        }
+          total: 25,
+        },
       });
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
@@ -225,15 +225,15 @@ describe("PagedTableTemplate", () => {
     it("should update before api response", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 3,
-          total: 25
-        }
+          total: 25,
+        },
       });
       spyOn(api, "filter").and.callFake(() => {
         return new Subject<Project[]>();
@@ -282,7 +282,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { custom: { contains: "a" } }
+        filter: { custom: { contains: "a" } },
       });
     }));
 
@@ -292,7 +292,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "a" } }
+        filter: { testing: { contains: "a" } },
       });
     }));
 
@@ -302,7 +302,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "testing" } }
+        filter: { testing: { contains: "testing" } },
       });
     }));
 
@@ -332,7 +332,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "testing" } }
+        filter: { testing: { contains: "testing" } },
       });
     }));
   });
@@ -356,8 +356,8 @@ describe("PagedTableTemplate", () => {
         column: {
           sortable: true,
           prop,
-          name: "Do Not Read"
-        }
+          name: "Do Not Read",
+        },
       });
     }
 
@@ -375,7 +375,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" }
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
 
@@ -385,7 +385,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "desc" }
+        sorting: { orderBy: "customKey", direction: "desc" },
       });
     }));
 
@@ -395,7 +395,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" }
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
 
@@ -409,7 +409,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" }
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
   });
@@ -419,7 +419,7 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(0);
@@ -428,21 +428,21 @@ describe("PagedTableTemplate", () => {
     it("should handle single model", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 1,
-          total: 1
-        }
+          total: 1,
+        },
       });
 
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(1);
@@ -451,21 +451,21 @@ describe("PagedTableTemplate", () => {
     it("should handle multiple models", () => {
       const project = new Project({
         id: 1,
-        name: "Project"
+        name: "Project",
       });
       project.addMetadata({
         status: 200,
         message: "OK",
         paging: {
           page: 1,
-          total: 100
-        }
+          total: 100,
+        },
       });
 
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(100);
@@ -481,7 +481,7 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new Subject<Project[]>();
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeTrue();
@@ -491,7 +491,7 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeFalse();
@@ -502,11 +502,11 @@ describe("PagedTableTemplate", () => {
         const subject = new Subject<Project[]>();
         subject.error({
           status: 401,
-          message: "Unauthorized"
+          message: "Unauthorized",
         } as ApiErrorDetails);
         return subject;
       });
-      component.getModels();
+      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeFalse();
