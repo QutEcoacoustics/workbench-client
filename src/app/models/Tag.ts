@@ -47,7 +47,7 @@ export class Tag extends AbstractModel implements TagInterface {
     this.updatedAt = dateTimeTimezone(tag.updatedAt as string);
   }
 
-  toJSON() {
+  public toJSON() {
     return {
       id: this.id,
       text: this.text,
@@ -56,14 +56,10 @@ export class Tag extends AbstractModel implements TagInterface {
       typeOfTag: this.typeOfTag,
       retired: this.retired,
       notes: this.notes,
-      creatorId: this.creatorId,
-      updaterId: this.updaterId,
-      createdAt: this.createdAt?.toISO(),
-      updatedAt: this.updatedAt?.toISO(),
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return adminTagsMenuItem.route.toString();
   }
 }

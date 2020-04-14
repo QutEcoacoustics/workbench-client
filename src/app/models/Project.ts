@@ -52,7 +52,7 @@ export class Project extends AbstractModel implements ProjectInterface {
     this.siteIds = new Set(project.siteIds || []);
   }
 
-  toJSON() {
+  public toJSON() {
     // TODO Add image key
     return {
       id: this.id,
@@ -65,7 +65,7 @@ export class Project extends AbstractModel implements ProjectInterface {
    * Generate card-item details
    * TODO Extract this out, should not be implemented here
    */
-  getCard(): Card {
+  public getCard(): Card {
     return {
       title: this.name,
       description: this.description,
@@ -77,7 +77,7 @@ export class Project extends AbstractModel implements ProjectInterface {
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return projectMenuItem.route.format({ projectId: this.id });
   }
 }

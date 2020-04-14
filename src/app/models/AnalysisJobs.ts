@@ -11,7 +11,7 @@ import { Duration } from "luxon";
 /**
  * An analysis job model.
  */
-export interface AnalysisJobInterface {
+export interface IAnalysisJob {
   id?: Id;
   name?: Param;
   annotationName?: string;
@@ -35,7 +35,7 @@ export interface AnalysisJobInterface {
   overallDataLengthBytes?: number;
 }
 
-export class AnalysisJob extends AbstractModel implements AnalysisJobInterface {
+export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly kind: "AnalysisJob" = "AnalysisJob";
   public readonly id?: Id;
   public readonly name?: Param;
@@ -64,7 +64,7 @@ export class AnalysisJob extends AbstractModel implements AnalysisJobInterface {
     // return duration(this.overallDurationSeconds) // TODO Awaiting PR #177
   }
 
-  constructor(analysisJob: AnalysisJobInterface) {
+  constructor(analysisJob: IAnalysisJob) {
     super(analysisJob);
 
     this.customSettings = new Blob([analysisJob.customSettings]);

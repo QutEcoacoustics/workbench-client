@@ -102,12 +102,12 @@ export class User extends AbstractModel implements UserInterface {
    * The admin role is 1, therefore a role mask of 1 (0001) or
    * 3 (0011) indicate an admin account.
    */
-  get isAdmin(): boolean {
+  public get isAdmin(): boolean {
     // tslint:disable-next-line: no-bitwise
     return !!(this.rolesMask & 1);
   }
 
-  toJSON() {
+  public toJSON() {
     return {
       id: this.id,
       userName: this.userName,
@@ -126,7 +126,7 @@ export class User extends AbstractModel implements UserInterface {
    * @param size Size of image
    * @returns Image URL
    */
-  getImage(size: ImageSizes): string {
+  public getImage(size: ImageSizes): string {
     for (const imageUrl of this.imageUrls) {
       if (imageUrl.size === size) {
         return imageUrl.url;
@@ -136,7 +136,7 @@ export class User extends AbstractModel implements UserInterface {
     return "/assets/images/user/user_span4.png";
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return theirProfileMenuItem.route
       .toString()
       .replace(":accountId", this.id.toString());
@@ -167,15 +167,7 @@ export class SessionUser extends User implements SessionUserInterface {
     super(sessionUser);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new SessionUser(obj);
-  };
-
-  toJSON() {
+  public toJSON() {
     return {
       authToken: this.authToken,
       userName: this.userName,
@@ -183,7 +175,7 @@ export class SessionUser extends User implements SessionUserInterface {
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return myAccountMenuItem.route.toString();
   }
 }

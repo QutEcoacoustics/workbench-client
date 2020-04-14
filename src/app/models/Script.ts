@@ -51,7 +51,7 @@ export class Script extends AbstractModel implements ScriptInterface {
       : "text/plain";
   }
 
-  toJSON() {
+  public toJSON() {
     return {
       id: this.id,
       name: this.name,
@@ -65,7 +65,7 @@ export class Script extends AbstractModel implements ScriptInterface {
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return adminScriptsMenuItem.route.toString();
   }
 }

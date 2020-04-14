@@ -10,7 +10,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * A bookmark model.
  */
-export interface BookmarkInterface {
+export interface IBookmark {
   id?: Id;
   audioRecordingId?: Id;
   offsetSeconds?: number;
@@ -23,7 +23,7 @@ export interface BookmarkInterface {
   category?: Category;
 }
 
-export class Bookmark extends AbstractModel implements BookmarkInterface {
+export class Bookmark extends AbstractModel implements IBookmark {
   public readonly kind: "Bookmark" = "Bookmark";
   public readonly id?: Id;
   public readonly audioRecordingId?: Id;
@@ -36,14 +36,14 @@ export class Bookmark extends AbstractModel implements BookmarkInterface {
   public readonly description?: Description;
   public readonly category?: Category;
 
-  constructor(bookmark: BookmarkInterface) {
+  constructor(bookmark: IBookmark) {
     super(bookmark);
 
     this.createdAt = dateTimeTimezone(bookmark.createdAt as string);
     this.updatedAt = dateTimeTimezone(bookmark.updatedAt as string);
   }
 
-  toJSON() {
+  public toJSON() {
     return {
       id: this.id,
       offsetSeconds: this.offsetSeconds,
@@ -53,7 +53,7 @@ export class Bookmark extends AbstractModel implements BookmarkInterface {
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return "/BROKEN_LINK";
     //return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
   }

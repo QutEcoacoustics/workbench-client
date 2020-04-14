@@ -10,7 +10,7 @@ import { Duration } from "luxon";
 /**
  * An audio recording model
  */
-export interface AudioRecordingInterface {
+export interface IAudioRecording {
   id?: Id;
   uuid?: Uuid;
   uploaderId?: Id;
@@ -38,8 +38,7 @@ export interface AudioRecordingInterface {
 /**
  * An audio recording model
  */
-export class AudioRecording extends AbstractModel
-  implements AudioRecordingInterface {
+export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly kind: "AudioRecording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
@@ -69,7 +68,7 @@ export class AudioRecording extends AbstractModel
     // return duration(this.durationSeconds) // TODO Awaiting PR #177
   }
 
-  constructor(audioRecording: AudioRecordingInterface) {
+  constructor(audioRecording: IAudioRecording) {
     super(audioRecording);
 
     this.kind = "AudioRecording";
@@ -95,7 +94,7 @@ export class AudioRecording extends AbstractModel
     };
   }
 
-  navigationPath(): string {
+  public navigationPath(): string {
     return "/BROKEN_LINK";
   }
 }

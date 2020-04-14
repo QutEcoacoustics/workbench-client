@@ -59,7 +59,7 @@ export class Site extends AbstractModel implements SiteInterface {
     this.updatedAt = dateTimeTimezone(site.updatedAt as string);
   }
 
-  toJSON() {
+  public toJSON() {
     // TODO Add image, latitude, longitude, timezone
 
     return {
@@ -69,7 +69,7 @@ export class Site extends AbstractModel implements SiteInterface {
     };
   }
 
-  navigationPath(project: Project): string {
+  public navigationPath(project: Project): string {
     return siteMenuItem.route.format({
       projectId: project.id,
       siteId: this.id,

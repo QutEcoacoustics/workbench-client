@@ -42,8 +42,6 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
     return {
       id: this.id,
       groupIdentifier: this.groupIdentifier,
-      createdAt: this.createdAt?.toISO(),
-      creatorId: this.creatorId,
       tagId: this.tagId,
     };
   }
