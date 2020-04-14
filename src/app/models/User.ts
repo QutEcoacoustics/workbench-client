@@ -1,6 +1,6 @@
 import {
   myAccountMenuItem,
-  theirProfileMenuItem
+  theirProfileMenuItem,
 } from "../component/profile/profile.menus";
 import {
   AuthToken,
@@ -10,7 +10,7 @@ import {
   ImageSizes,
   ImageURL,
   TimezoneInformation,
-  UserName
+  UserName,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -51,7 +51,7 @@ export class User extends AbstractModel implements UserInterface {
     this.lastSeenAt = dateTimeTimezone(user.lastSeenAt as string);
 
     this.imageUrls = user.imageUrls
-      ? user.imageUrls.map(imageUrl => {
+      ? user.imageUrls.map((imageUrl) => {
           // TODO Add /assets by default from the API so this check doesn't need to occur
           // Default values from API need to have /assets prepended
           if (
@@ -67,32 +67,32 @@ export class User extends AbstractModel implements UserInterface {
             size: "extralarge",
             url: "/assets/images/user/user_span4.png",
             width: 300,
-            height: 300
+            height: 300,
           },
           {
             size: "large",
             url: "/assets/images/user/user_span3.png",
             width: 220,
-            height: 220
+            height: 220,
           },
           {
             size: "medium",
             url: "/assets/images/user/user_span2.png",
             width: 140,
-            height: 140
+            height: 140,
           },
           {
             size: "small",
             url: "/assets/images/user/user_span1.png",
             width: 60,
-            height: 60
+            height: 60,
           },
           {
             size: "tiny",
             url: "/assets/images/user/user_spanhalf.png",
             width: 30,
-            height: 30
-          }
+            height: 30,
+          },
         ];
   }
 
@@ -107,14 +107,6 @@ export class User extends AbstractModel implements UserInterface {
     return !!(this.rolesMask & 1);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new User(obj);
-  };
-
   toJSON() {
     return {
       id: this.id,
@@ -125,7 +117,7 @@ export class User extends AbstractModel implements UserInterface {
       imageUrls: this.imageUrls,
       lastSeenAt: this.lastSeenAt?.toISO(),
       preferences: this.preferences,
-      isConfirmed: this.isConfirmed
+      isConfirmed: this.isConfirmed,
     };
   }
 
@@ -187,7 +179,7 @@ export class SessionUser extends User implements SessionUserInterface {
     return {
       authToken: this.authToken,
       userName: this.userName,
-      ...super.toJSON()
+      ...super.toJSON(),
     };
   }
 

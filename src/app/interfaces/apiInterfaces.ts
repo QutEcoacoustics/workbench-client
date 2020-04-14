@@ -57,7 +57,7 @@ export enum ImageSizes {
   large = "large",
   medium = "medium",
   small = "small",
-  tiny = "tiny"
+  tiny = "tiny",
 }
 /**
  * BAW API Timezone Details

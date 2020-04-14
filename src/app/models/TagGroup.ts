@@ -2,7 +2,7 @@ import { adminTagGroupsMenuItem } from "../component/admin/admin.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
-  Id
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -34,14 +34,6 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
     this.createdAt = dateTimeTimezone(tagGroup.createdAt as string);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new TagGroup(obj);
-  };
-
   public redirectPath(): string {
     return adminTagGroupsMenuItem.route.toString();
   }
@@ -52,7 +44,7 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
       groupIdentifier: this.groupIdentifier,
       createdAt: this.createdAt?.toISO(),
       creatorId: this.creatorId,
-      tagId: this.tagId
+      tagId: this.tagId,
     };
   }
 }

@@ -6,7 +6,7 @@ import {
   Description,
   Id,
   Ids,
-  Param
+  Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -52,20 +52,12 @@ export class Project extends AbstractModel implements ProjectInterface {
     this.siteIds = new Set(project.siteIds || []);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new Project(obj);
-  };
-
   toJSON() {
     // TODO Add image key
     return {
       id: this.id,
       name: this.name,
-      description: this.description
+      description: this.description,
     };
   }
 
@@ -79,9 +71,9 @@ export class Project extends AbstractModel implements ProjectInterface {
       description: this.description,
       image: {
         url: this.imageUrl,
-        alt: this.name
+        alt: this.name,
       },
-      route: this.redirectPath()
+      route: this.redirectPath(),
     };
   }
 

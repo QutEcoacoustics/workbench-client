@@ -10,11 +10,6 @@ export abstract class AbstractModel {
   }
 
   /**
-   * Create model from JSON
-   */
-  public static fromJSON: (obj: any) => AbstractModel;
-
-  /**
    * Hidden meta symbol
    */
   private static metaKey = Symbol("meta");

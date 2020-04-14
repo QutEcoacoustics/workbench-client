@@ -2,7 +2,7 @@ import { adminTagsMenuItem } from "../component/admin/admin.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
-  Id
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -47,14 +47,6 @@ export class Tag extends AbstractModel implements TagInterface {
     this.updatedAt = dateTimeTimezone(tag.updatedAt as string);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new Tag(obj);
-  };
-
   toJSON() {
     return {
       id: this.id,
@@ -67,7 +59,7 @@ export class Tag extends AbstractModel implements TagInterface {
       creatorId: this.creatorId,
       updaterId: this.updaterId,
       createdAt: this.createdAt?.toISO(),
-      updatedAt: this.updatedAt?.toISO()
+      updatedAt: this.updatedAt?.toISO(),
     };
   }
 

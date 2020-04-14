@@ -3,7 +3,7 @@ import {
   DateTimeTimezone,
   dateTimeTimezone,
   Id,
-  Param
+  Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -51,14 +51,6 @@ export class Script extends AbstractModel implements ScriptInterface {
       : "text/plain";
   }
 
-  static fromJSON = (obj: any) => {
-    if (obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new Script(obj);
-  };
-
   toJSON() {
     return {
       id: this.id,
@@ -69,7 +61,7 @@ export class Script extends AbstractModel implements ScriptInterface {
       executableSettings: this.executableSettings,
       executableSettingsMediaType: this.executableSettingsMediaType,
       analysisActionParams: this.analysisActionParams,
-      verified: this.verified
+      verified: this.verified,
     };
   }
 
