@@ -9,7 +9,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * A tag group model
  */
-export interface TagGroupInterface {
+export interface ITagGroup {
   id?: Id;
   groupIdentifier?: string;
   createdAt?: DateTimeTimezone | string;
@@ -20,7 +20,7 @@ export interface TagGroupInterface {
 /**
  * A tag group model
  */
-export class TagGroup extends AbstractModel implements TagGroupInterface {
+export class TagGroup extends AbstractModel implements ITagGroup {
   public readonly kind: "TagGroup" = "TagGroup";
   public readonly id?: Id;
   public readonly groupIdentifier?: string;
@@ -28,7 +28,7 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
   public readonly creatorId?: Id;
   public readonly tagId?: Id;
 
-  constructor(tagGroup: TagGroupInterface) {
+  constructor(tagGroup: ITagGroup) {
     super(tagGroup);
 
     this.createdAt = dateTimeTimezone(tagGroup.createdAt as string);

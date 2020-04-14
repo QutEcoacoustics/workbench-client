@@ -9,7 +9,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * Tag model interface
  */
-export interface TagInterface {
+export interface ITag {
   id?: Id;
   text?: string;
   count?: number;
@@ -26,7 +26,7 @@ export interface TagInterface {
 /**
  * Tag model
  */
-export class Tag extends AbstractModel implements TagInterface {
+export class Tag extends AbstractModel implements ITag {
   public readonly kind: "AbstractModel" = "AbstractModel";
   public readonly id?: Id;
   public readonly text?: string;
@@ -40,7 +40,7 @@ export class Tag extends AbstractModel implements TagInterface {
   public readonly createdAt?: DateTimeTimezone;
   public readonly updatedAt?: DateTimeTimezone;
 
-  constructor(tag: TagInterface) {
+  constructor(tag: ITag) {
     super(tag);
 
     this.createdAt = dateTimeTimezone(tag.createdAt as string);

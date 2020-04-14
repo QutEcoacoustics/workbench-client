@@ -13,7 +13,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * A project model.
  */
-export interface ProjectInterface {
+export interface IProject {
   id?: Id;
   name?: Param;
   imageUrl?: string;
@@ -29,7 +29,7 @@ export interface ProjectInterface {
 /**
  * A project model.
  */
-export class Project extends AbstractModel implements ProjectInterface {
+export class Project extends AbstractModel implements IProject {
   public readonly kind: "Project" = "Project";
   public readonly id?: Id;
   public readonly name?: Param;
@@ -42,7 +42,7 @@ export class Project extends AbstractModel implements ProjectInterface {
   public readonly ownerId?: Id;
   public readonly description?: Description;
 
-  constructor(project: ProjectInterface) {
+  constructor(project: IProject) {
     super(project);
 
     this.imageUrl =

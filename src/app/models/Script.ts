@@ -10,7 +10,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * A script model
  */
-export interface ScriptInterface {
+export interface IScript {
   id?: Id;
   name?: Param;
   description?: string;
@@ -26,7 +26,7 @@ export interface ScriptInterface {
   analysisActionParams?: string;
 }
 
-export class Script extends AbstractModel implements ScriptInterface {
+export class Script extends AbstractModel implements IScript {
   public readonly kind: "Script" = "Script";
   public readonly id?: Id;
   public readonly name?: Param;
@@ -42,7 +42,7 @@ export class Script extends AbstractModel implements ScriptInterface {
   public readonly executableSettingsMediaType?: string;
   public readonly analysisActionParams?: string;
 
-  constructor(script: ScriptInterface) {
+  constructor(script: IScript) {
     super(script);
 
     this.createdAt = dateTimeTimezone(script.createdAt as string);

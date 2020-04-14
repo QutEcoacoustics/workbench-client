@@ -14,7 +14,7 @@ import { Project } from "./Project";
 /**
  * A site model.
  */
-export interface SiteInterface {
+export interface ISite {
   id?: Id;
   name?: Param;
   imageUrl?: string;
@@ -33,7 +33,7 @@ export interface SiteInterface {
 /**
  * A site model.
  */
-export class Site extends AbstractModel implements SiteInterface {
+export class Site extends AbstractModel implements ISite {
   public readonly kind: "Site" = "Site";
   public readonly id?: Id;
   public readonly name?: Param;
@@ -49,7 +49,7 @@ export class Site extends AbstractModel implements SiteInterface {
   public readonly customLongitude?: number;
   public readonly timezoneInformation?: TimezoneInformation;
 
-  constructor(site: SiteInterface) {
+  constructor(site: ISite) {
     super(site);
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";

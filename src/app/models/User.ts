@@ -17,7 +17,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * A user model.
  */
-export interface UserInterface {
+export interface IUser {
   id?: Id;
   userName?: UserName;
   rolesMask?: number;
@@ -32,7 +32,7 @@ export interface UserInterface {
 /**
  * A user model.
  */
-export class User extends AbstractModel implements UserInterface {
+export class User extends AbstractModel implements IUser {
   public readonly kind: "User" | "SessionUser" = "User";
   public readonly id?: Id;
   public readonly userName?: UserName;
@@ -44,7 +44,7 @@ export class User extends AbstractModel implements UserInterface {
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
 
-  constructor(user: UserInterface) {
+  constructor(user: IUser) {
     super(user);
 
     this.userName = user.userName || "Deleted User";
@@ -146,7 +146,7 @@ export class User extends AbstractModel implements UserInterface {
 /**
  * A user model for the website user
  */
-export interface SessionUserInterface extends UserInterface {
+export interface SessionUserInterface extends IUser {
   userName?: UserName;
   authToken?: AuthToken;
 }
