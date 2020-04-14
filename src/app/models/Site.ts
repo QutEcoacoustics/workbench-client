@@ -6,7 +6,7 @@ import {
   Id,
   Ids,
   Param,
-  TimezoneInformation
+  TimezoneInformation,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Project } from "./Project";
@@ -69,18 +69,17 @@ export class Site extends AbstractModel implements SiteInterface {
 
   toJSON() {
     // TODO Add image, latitude, longitude, timezone
-
     return {
       id: this.id,
       name: this.name,
-      description: this.description
+      description: this.description,
     };
   }
 
-  redirectPath(project: Project): string {
+  redirectPath(project?: Project): string {
     return siteMenuItem.route.format({
-      projectId: project.id,
-      siteId: this.id
+      projectId: project?.id || this.projectIds[0] || -1,
+      siteId: this.id,
     });
   }
 }

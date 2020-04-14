@@ -32,7 +32,7 @@ const accountKey = "account";
   self: theirProjectsMenuItem,
 })
 @Component({
-  selector: "app-projects",
+  selector: "app-their-account-projects",
   templateUrl: "./projects.component.html",
   styleUrls: ["./projects.component.scss"],
 })

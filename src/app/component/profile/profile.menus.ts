@@ -111,12 +111,13 @@ export const theirProjectsMenuItem = MenuRoute({
   tooltip: () => "Projects they can access",
 });
 
-export const theirSitesMenuItem = MenuLink({
+export const theirSitesMenuItem = MenuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Their Sites",
-  predicate: (user) => !!user,
+  parent: theirProfileMenuItem,
+  predicate: isAdminPredicate,
+  route: theirProfileMenuItem.route.add("sites"),
   tooltip: () => "Sites they can access",
-  uri: () => "BROKEN LINK",
 });
 
 export const theirBookmarksMenuItem = MenuLink({

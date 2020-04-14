@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { accountResolvers } from "@baw-api/account.service";
 import { ShallowSitesService } from "@baw-api/sites.service";
-import { userResolvers } from "@baw-api/user.service";
 import {
-  myAccountCategory,
-  myAccountMenuItem,
-  mySitesMenuItem,
+  theirProfileCategory,
+  theirProfileMenuItem,
+  theirSitesMenuItem,
 } from "@component/profile/profile.menus";
 import { annotationsMenuItem } from "@component/sites/sites.menus";
 import { Page } from "@helpers/page/pageDecorator";
@@ -14,30 +14,30 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { myAccountMenuItemActions } from "../profile/my-profile.component";
+import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
 @Page({
-  category: myAccountCategory,
+  category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([
-      myAccountMenuItem,
-      ...myAccountMenuItemActions,
+      theirProfileMenuItem,
+      ...theirProfileMenuItemActions,
     ]),
     links: List(),
   },
   resolvers: {
-    [accountKey]: userResolvers.show,
+    [accountKey]: accountResolvers.show,
   },
-  self: mySitesMenuItem,
+  self: theirSitesMenuItem,
 })
 @Component({
-  selector: "app-my-account-sites",
+  selector: "app-their-account-sites",
   templateUrl: "./sites.component.html",
   styleUrls: ["./sites.component.scss"],
 })
-export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
+export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details
     super(
@@ -49,7 +49,7 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
             route: site.redirectPath(),
           },
           recentAudioUpload: "(none)",
-          permission: "UNKNOWN",
+          permission: "FIX ME",
           annotation: annotationsMenuItem.uri(undefined),
         })),
       route
