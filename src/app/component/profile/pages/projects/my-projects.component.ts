@@ -53,7 +53,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
             route: project.redirectPath(),
           },
           sites: project.siteIds.size,
-          permission: "UNKNOWN",
+          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
         })),
       route
     );
