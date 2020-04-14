@@ -1,24 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
-import {
-  accountResolvers,
-  AccountService,
-} from "src/app/services/baw-api/account.service";
-import { fields } from "../../profile.json";
+import { accountResolvers, AccountService } from "@baw-api/account.service";
 import {
   theirEditProfileMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
-} from "../../profile.menus";
+} from "@component/profile/profile.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
 
 const accountKey = "account";

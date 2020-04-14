@@ -1,18 +1,18 @@
 import { Component, OnInit } from "@angular/core";
+import { aboutCategory, contactUsMenuItem } from "@component/about/about.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
 import { List } from "immutable";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { aboutCategory, contactUsMenuItem } from "../../about.menus";
 import { fields } from "./contact-us.json";
 
 @Page({
   category: aboutCategory,
   menus: {
     actions: List(),
-    links: List()
+    links: List(),
   },
-  self: contactUsMenuItem
+  self: contactUsMenuItem,
 })
 @Component({
   selector: "app-about-contact-us",
@@ -27,7 +27,7 @@ import { fields } from "./contact-us.json";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `
+  `,
 })
 export class ContactUsComponent extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -1,6 +1,6 @@
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { homeCategory } from "../home/home.menus";
+import { homeCategory } from "@component/home/home.menus";
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 
 export const dataRequestRoute = StrongRoute.Base.add("data_request");
 
@@ -11,5 +11,5 @@ export const dataRequestMenuItem = MenuRoute({
   label: "Data Request",
   route: dataRequestRoute,
   tooltip: () => "Request customized data from the website",
-  order: 7
+  order: 7,
 });

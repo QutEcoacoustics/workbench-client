@@ -1,23 +1,23 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { List } from "immutable";
-import { Card } from "src/app/component/shared/cards/cards.component";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Project } from "src/app/models/Project";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { projectResolvers } from "@baw-api/projects.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
-  requestProjectMenuItem
-} from "../../projects.menus";
+  requestProjectMenuItem,
+} from "@component/projects/projects.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { Card } from "@shared/cards/cards.component";
+import { List } from "immutable";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
-  requestProjectMenuItem
+  requestProjectMenuItem,
 ];
 
 const projectsKey = "projects";
@@ -26,12 +26,12 @@ const projectsKey = "projects";
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>(projectsMenuItemActions),
-    links: List()
+    links: List(),
   },
   resolvers: {
-    [projectsKey]: projectResolvers.list
+    [projectsKey]: projectResolvers.list,
   },
-  self: projectsMenuItem
+  self: projectsMenuItem,
 })
 @Component({
   selector: "app-projects-list",
@@ -45,7 +45,7 @@ const projectsKey = "projects";
         <h4 class="text-center">Your list of projects is empty</h4>
       </ng-template>
     </ng-container>
-  `
+  `,
 })
 export class ListComponent extends PageComponent implements OnInit {
   public cardList: List<Card>;
@@ -63,6 +63,6 @@ export class ListComponent extends PageComponent implements OnInit {
       return;
     }
 
-    this.cardList = List(projects.model.map(project => project.getCard()));
+    this.cardList = List(projects.model.map((project) => project.getCard()));
   }
 }

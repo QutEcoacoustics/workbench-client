@@ -1,9 +1,9 @@
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
-import { MapModule } from "../shared/map/map.module";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { MapModule } from "@shared/map/map.module";
+import { SharedModule } from "@shared/shared.module";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
@@ -16,7 +16,7 @@ const components = [
   DetailsComponent,
   EditComponent,
   HarvestComponent,
-  NewComponent
+  NewComponent,
 ];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
@@ -30,8 +30,8 @@ const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
     MapModule,
     SharedModule,
     AgmSnazzyInfoWindowModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  exports: [RouterModule, ...components]
+  exports: [RouterModule, ...components],
 })
 export class SitesModule {}

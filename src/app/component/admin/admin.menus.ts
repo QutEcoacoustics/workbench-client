@@ -1,23 +1,19 @@
+import { sitesCategory } from "@component/sites/sites.menus";
+import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
-  isAdminPredicate
+  isAdminPredicate,
 } from "src/app/app.menus";
-import {
-  Category,
-  MenuLink,
-  MenuRoute
-} from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { sitesCategory } from "../sites/sites.menus";
 
 export const adminRoute = StrongRoute.Base.add("admin");
 export const adminCategory: Category = {
   icon: ["fas", "cog"],
   label: "Admin",
-  route: adminRoute
+  route: adminRoute,
 };
 
 export const adminDashboardMenuItem = MenuRoute({
@@ -25,7 +21,7 @@ export const adminDashboardMenuItem = MenuRoute({
   label: "Admin Home",
   route: adminRoute,
   tooltip: () => "Administrator dashboard",
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminUserListMenuItem = MenuRoute({
@@ -34,7 +30,7 @@ export const adminUserListMenuItem = MenuRoute({
   route: adminRoute.add("user_accounts"),
   tooltip: () => "Manage user accounts",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminOrphanSitesMenuItem = MenuRoute({
@@ -43,7 +39,7 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   route: adminRoute.add("sites"),
   tooltip: () => "Manage orphaned sites",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 /*
@@ -53,7 +49,7 @@ export const adminOrphanSitesMenuItem = MenuRoute({
 export const adminScriptsCategory: Category = {
   icon: ["fas", "scroll"],
   label: "Scripts",
-  route: adminRoute.add("scripts")
+  route: adminRoute.add("scripts"),
 };
 
 export const adminScriptsMenuItem = MenuRoute({
@@ -62,7 +58,7 @@ export const adminScriptsMenuItem = MenuRoute({
   route: adminScriptsCategory.route,
   tooltip: () => "Manage custom scripts",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminNewScriptsMenuItem = MenuRoute({
@@ -71,7 +67,7 @@ export const adminNewScriptsMenuItem = MenuRoute({
   route: adminScriptsMenuItem.route.add("new"),
   tooltip: () => "Create a new script",
   parent: adminScriptsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 /**
@@ -83,7 +79,7 @@ const adminTagsRoute = adminRoute.add("tags");
 export const adminTagsCategory: Category = {
   icon: ["fas", "tag"],
   label: "Tags",
-  route: adminTagsRoute
+  route: adminTagsRoute,
 };
 
 export const adminTagsMenuItem = MenuRoute({
@@ -92,7 +88,7 @@ export const adminTagsMenuItem = MenuRoute({
   route: adminTagsRoute,
   tooltip: () => "Manage tags",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminNewTagMenuItem = MenuRoute({
@@ -101,7 +97,7 @@ export const adminNewTagMenuItem = MenuRoute({
   route: adminTagsRoute.add("new"),
   tooltip: () => "Create a new tag",
   parent: adminTagsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 const adminTagRoute = adminTagsRoute.add(":tagId");
@@ -112,7 +108,7 @@ export const adminEditTagMenuItem = MenuRoute({
   route: adminTagRoute.add("edit"),
   tooltip: () => "Edit an existing tag",
   parent: adminTagsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminDeleteTagMenuItem = MenuRoute({
@@ -121,7 +117,7 @@ export const adminDeleteTagMenuItem = MenuRoute({
   route: adminTagRoute.add("delete"),
   tooltip: () => "Delete an existing tag",
   parent: adminTagsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 /**
@@ -133,7 +129,7 @@ const adminTagGroupsRoute = adminRoute.add("tag_groups");
 export const adminTagGroupsCategory: Category = {
   icon: ["fas", "tags"],
   label: "Tag Group",
-  route: adminTagGroupsRoute
+  route: adminTagGroupsRoute,
 };
 
 export const adminTagGroupsMenuItem = MenuRoute({
@@ -142,7 +138,7 @@ export const adminTagGroupsMenuItem = MenuRoute({
   route: adminTagGroupsRoute,
   tooltip: () => "Manage tag groups",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminNewTagGroupMenuItem = MenuRoute({
@@ -151,7 +147,7 @@ export const adminNewTagGroupMenuItem = MenuRoute({
   route: adminTagGroupsRoute.add("new"),
   tooltip: () => "Create a new tag group",
   parent: adminTagGroupsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 const adminTagGroupRoute = adminTagGroupsRoute.add(":tagGroupId");
@@ -162,7 +158,7 @@ export const adminEditTagGroupMenuItem = MenuRoute({
   route: adminTagGroupRoute.add("edit"),
   tooltip: () => "Update an existing tag group",
   parent: adminTagGroupsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminDeleteTagGroupMenuItem = MenuRoute({
@@ -171,7 +167,7 @@ export const adminDeleteTagGroupMenuItem = MenuRoute({
   route: adminTagGroupRoute.add("delete"),
   tooltip: () => "Delete an existing tag group",
   parent: adminTagGroupsMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminAudioRecordingsMenuItem = MenuRoute({
@@ -180,7 +176,7 @@ export const adminAudioRecordingsMenuItem = MenuRoute({
   route: adminRoute.add("audio_recordings"),
   tooltip: () => "Manage audio recordings",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminAnalysisJobsMenuItem = MenuRoute({
@@ -189,7 +185,7 @@ export const adminAnalysisJobsMenuItem = MenuRoute({
   route: adminRoute.add("analysis_jobs"),
   tooltip: () => "Manage analysis jobs",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });
 
 export const adminJobStatusMenuItem = MenuLink({
@@ -198,5 +194,5 @@ export const adminJobStatusMenuItem = MenuLink({
   tooltip: () => "Job queue status overview",
   uri: () => "/job_queue_status/overview",
   parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate
+  predicate: isAdminPredicate,
 });

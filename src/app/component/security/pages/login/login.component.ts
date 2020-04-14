@@ -1,28 +1,25 @@
 import { DOCUMENT, Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { homeMenuItem } from "src/app/component/home/home.menus";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import {
-  defaultErrorMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import {
-  LoginDetails,
-  SecurityService
-} from "src/app/services/baw-api/security.service";
-import url from "url";
+import { LoginDetails, SecurityService } from "@baw-api/security.service";
+import { homeMenuItem } from "@component/home/home.menus";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
-  unlockAccountMenuItem
-} from "../../security.menus";
+  unlockAccountMenuItem,
+} from "@component/security/security.menus";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import {
+  defaultErrorMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import url from "url";
 import { fields } from "./login.json";
 
 @Page({
@@ -31,11 +28,11 @@ import { fields } from "./login.json";
     actions: List<AnyMenuItem>([
       confirmAccountMenuItem,
       resetPasswordMenuItem,
-      unlockAccountMenuItem
+      unlockAccountMenuItem,
     ]),
-    links: List()
+    links: List(),
   },
-  self: loginMenuItem
+  self: loginMenuItem,
 })
 @Component({
   selector: "app-authentication-login",
@@ -50,7 +47,7 @@ import { fields } from "./login.json";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class LoginComponent extends FormTemplate<LoginDetails>
   implements OnInit {

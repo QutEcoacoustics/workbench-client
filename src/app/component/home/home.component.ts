@@ -1,27 +1,27 @@
 import { Component, OnInit } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ProjectsService } from "@baw-api/projects.service";
+import { SecurityService } from "@baw-api/security.service";
+import { projectsMenuItem } from "@component/projects/projects.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { Project } from "@models/Project";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 import { flatMap, map, takeUntil } from "rxjs/operators";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { Project } from "src/app/models/Project";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
-import { projectsMenuItem } from "../projects/projects.menus";
-import { Card } from "../shared/cards/cards.component";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Page({
   category: homeCategory,
   fullscreen: true,
   menus: null,
-  self: homeMenuItem
+  self: homeMenuItem,
 })
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.scss"]
+  styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent extends PageComponent implements OnInit {
   public page: string;
@@ -46,7 +46,7 @@ export class HomeComponent extends PageComponent implements OnInit {
           return this.projectApi.filter({ paging: { items: 3 } });
         }),
         map((data: Project[]) => {
-          return List(data.map(project => project.getCard()));
+          return List(data.map((project) => project.getCard()));
         }),
         takeUntil(this.unsubscribe)
       )
