@@ -22,7 +22,11 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Name"> </ngx-datatable-column>
+    <ngx-datatable-column name="Name">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a [routerLink]="[value.route]">{{ value.label }}</a>
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column name="Sites"> </ngx-datatable-column>
     <ngx-datatable-column name="Permission"> </ngx-datatable-column>
   </ngx-datatable>

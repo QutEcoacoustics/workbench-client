@@ -106,7 +106,7 @@ export const theirProjectsMenuItem = MenuRoute({
   label: "Their Projects",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: myAccountMenuItem.route.add("projects"),
+  route: theirProfileMenuItem.route.add("projects"),
   tooltip: () => "Projects they can access",
 });
 

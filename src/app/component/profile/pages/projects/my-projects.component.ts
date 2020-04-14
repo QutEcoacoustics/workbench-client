@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "@baw-api/projects.service";
 import { userResolvers } from "@baw-api/user.service";
@@ -48,7 +48,10 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
       api,
       (projects) =>
         projects.map((project) => ({
-          name: project.name,
+          name: {
+            label: project.name,
+            route: project.redirectPath(),
+          },
           sites: project.siteIds.size,
           permission: "UNKNOWN",
         })),
@@ -62,7 +65,10 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 }
 
 interface TableRow {
-  name: string;
+  name: {
+    label: string;
+    route: string;
+  };
   sites: number;
   permission: string;
 }

@@ -10,7 +10,7 @@ import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { AdminTagGroupsDeleteComponent } from "./delete.component";
 
 describe("AdminTagGroupsDeleteComponent", () => {
@@ -85,7 +85,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
     it("should handle tag group error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
