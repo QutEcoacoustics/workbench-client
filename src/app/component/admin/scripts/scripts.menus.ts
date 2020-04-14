@@ -1,5 +1,5 @@
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import { defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
 export const adminScriptsRoute = adminRoute.addFeatureModule("scripts");

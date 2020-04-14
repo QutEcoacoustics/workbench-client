@@ -7,9 +7,9 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { Script } from "src/app/models/Script";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import { fields } from "../scripts.json";
 import {

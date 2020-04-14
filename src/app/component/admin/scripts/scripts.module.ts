@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
-import { SharedModule } from "../../shared/shared.module";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { SharedModule } from "@shared/shared.module";
 import { AdminScriptsComponent } from "./list/list.component";
 import { AdminScriptsNewComponent } from "./new/new.component";
 import { adminScriptsRoute } from "./scripts.menus";
