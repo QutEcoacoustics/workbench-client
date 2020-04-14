@@ -34,7 +34,7 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
     this.createdAt = dateTimeTimezone(tagGroup.createdAt as string);
   }
 
-  public redirectPath(): string {
+  public navigationPath(): string {
     return adminTagGroupsMenuItem.route.toString();
   }
 

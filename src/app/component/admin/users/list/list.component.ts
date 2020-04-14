@@ -68,7 +68,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
    * @param user User account
    */
   public viewPath(user: User) {
-    return user.redirectPath();
+    return user.navigationPath();
   }
 
   /**

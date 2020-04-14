@@ -7,11 +7,11 @@ import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   deleteSiteMenuItem,
   siteMenuItem,
-  sitesCategory
+  sitesCategory,
 } from "src/app/component/sites/sites.menus";
 import {
   defaultSuccessMsg,
-  FormTemplate
+  FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
@@ -20,7 +20,7 @@ import { Site } from "src/app/models/Site";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import {
   siteResolvers,
-  SitesService
+  SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 
@@ -35,13 +35,13 @@ const siteKey = "site";
   menus: {
     actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List()
+    links: List(),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show
+    [siteKey]: siteResolvers.show,
   },
-  self: deleteSiteMenuItem
+  self: deleteSiteMenuItem,
 })
 @Component({
   selector: "app-projects-delete",
@@ -56,7 +56,7 @@ const siteKey = "site";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class DeleteComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
@@ -67,7 +67,7 @@ export class DeleteComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, siteKey, model =>
+    super(notifications, route, router, siteKey, (model) =>
       defaultSuccessMsg("destroyed", model.name)
     );
   }
@@ -85,7 +85,7 @@ export class DeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 
   protected redirectionPath() {
-    return this.project.redirectPath();
+    return this.project.navigationPath();
   }
 
   protected apiAction(model: Partial<Site>) {

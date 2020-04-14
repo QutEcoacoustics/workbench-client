@@ -65,7 +65,7 @@ export class Script extends AbstractModel implements ScriptInterface {
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return adminScriptsMenuItem.route.toString();
   }
 }

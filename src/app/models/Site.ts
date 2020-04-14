@@ -69,7 +69,7 @@ export class Site extends AbstractModel implements SiteInterface {
     };
   }
 
-  redirectPath(project: Project): string {
+  navigationPath(project: Project): string {
     return siteMenuItem.route.format({
       projectId: project.id,
       siteId: this.id,

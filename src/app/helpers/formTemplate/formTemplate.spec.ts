@@ -12,19 +12,19 @@ import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   mockActivatedRoute,
   MockData,
-  MockResolvers
+  MockResolvers,
 } from "src/app/test.helper";
 import {
   defaultErrorMsg,
   defaultSuccessMsg,
   extendedErrorMsg,
-  FormTemplate
+  FormTemplate,
 } from "./formTemplate";
 
 class MockModel extends AbstractModel {
   public kind: "MockModel" = "MockModel";
 
-  public redirectPath(): string {
+  public navigationPath(): string {
     return "";
   }
   public toJSON(): object {
@@ -34,9 +34,7 @@ class MockModel extends AbstractModel {
 
 @Component({
   selector: "app-test-component",
-  template: `
-    <div></div>
-  `
+  template: ` <div></div> `,
 })
 class MockComponent extends FormTemplate<MockModel> {
   constructor(
@@ -72,9 +70,9 @@ describe("formTemplate", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(resolvers, data)
-        }
-      ]
+          useClass: mockActivatedRoute(resolvers, data),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
@@ -97,7 +95,7 @@ describe("formTemplate", () => {
   beforeEach(() => {
     defaultError = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
     defaultModel = new MockModel({ id: 1 });
-    successResponse = model => {
+    successResponse = (model) => {
       return new BehaviorSubject<MockModel>(new MockModel(model));
     };
     errorResponse = () => {
@@ -137,7 +135,7 @@ describe("formTemplate", () => {
         { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
         {
           mockModel: makeResolvedModel(defaultModel),
-          mockModels: makeResolvedModel([defaultModel])
+          mockModels: makeResolvedModel([defaultModel]),
         }
       );
       fixture.detectChanges();
@@ -149,7 +147,7 @@ describe("formTemplate", () => {
       configureTestingModule(
         { mockModel: "MockModelResolver" },
         {
-          mockModel: makeResolvedModel(undefined, defaultError)
+          mockModel: makeResolvedModel(undefined, defaultError),
         }
       );
       fixture.detectChanges();
@@ -162,7 +160,7 @@ describe("formTemplate", () => {
         { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
         {
           mockModel: makeResolvedModel(defaultModel),
-          mockModels: makeResolvedModel(undefined, defaultError)
+          mockModels: makeResolvedModel(undefined, defaultError),
         }
       );
       fixture.detectChanges();
@@ -198,7 +196,7 @@ describe("formTemplate", () => {
         { mockModels: "MockModelsResolver", mockModel: "MockModelResolver" },
         {
           mockModels: makeResolvedModel([defaultModel]),
-          mockModel: makeResolvedModel(defaultModel)
+          mockModel: makeResolvedModel(defaultModel),
         }
       );
       component["modelKey"] = "mockModel";
@@ -325,7 +323,7 @@ describe("formTemplate", () => {
       );
       spyOn(component, "resetForms").and.stub();
       component["modelKey"] = "mockModel";
-      component["successMsg"] = model =>
+      component["successMsg"] = (model) =>
         "custom success message with id: " + model.id;
       fixture.detectChanges();
 
@@ -340,7 +338,7 @@ describe("formTemplate", () => {
     it("should handle new form success message", () => {
       configureTestingModule();
       spyOn(component, "resetForms").and.stub();
-      component["successMsg"] = model =>
+      component["successMsg"] = (model) =>
         "custom success message with id: " + model.id;
       fixture.detectChanges();
 
@@ -368,7 +366,7 @@ describe("formTemplate", () => {
     });
 
     it("should display success message on successful submission", () => {
-      component["successMsg"] = model =>
+      component["successMsg"] = (model) =>
         "custom success message with id: " + model.id;
       fixture.detectChanges();
 
@@ -388,7 +386,7 @@ describe("formTemplate", () => {
 
     it("should display error message on failed submission", () => {
       component["apiAction"] = spy.and.callFake(errorResponse);
-      component["errorMsg"] = err => "custom error message: " + err.message;
+      component["errorMsg"] = (err) => "custom error message: " + err.message;
       fixture.detectChanges();
 
       component.submit({ id: 1 });
@@ -468,7 +466,7 @@ describe("defaultErrorMsg", () => {
   it("should return error message", () => {
     const apiError: ApiErrorDetails = {
       status: 400,
-      message: "Custom Message"
+      message: "Custom Message",
     } as ApiErrorDetails;
 
     expect(defaultErrorMsg(apiError)).toBe("Custom Message");
@@ -479,7 +477,7 @@ describe("extendedErrorMsg", () => {
   it("should return error message", () => {
     const apiError: ApiErrorDetails = {
       status: 400,
-      message: "Custom Message"
+      message: "Custom Message",
     } as ApiErrorDetails;
 
     expect(extendedErrorMsg(apiError, {})).toBe("Custom Message");
@@ -490,12 +488,14 @@ describe("extendedErrorMsg", () => {
       status: 400,
       message: "Custom Message",
       info: {
-        name: "this name already exists"
-      }
+        name: "this name already exists",
+      },
     } as ApiErrorDetails;
 
     expect(
-      extendedErrorMsg(apiError, { name: value => "custom message: " + value })
+      extendedErrorMsg(apiError, {
+        name: (value) => "custom message: " + value,
+      })
     ).toBe("Custom Message<br />custom message: this name already exists");
   });
 
@@ -505,14 +505,14 @@ describe("extendedErrorMsg", () => {
       message: "Custom Message",
       info: {
         name: "this name already exists",
-        foo: "bar"
-      }
+        foo: "bar",
+      },
     } as ApiErrorDetails;
 
     expect(
       extendedErrorMsg(apiError, {
         name: () => "custom message",
-        foo: value => value
+        foo: (value) => value,
       })
     ).toBe("Custom Message<br />custom message<br />bar");
   });

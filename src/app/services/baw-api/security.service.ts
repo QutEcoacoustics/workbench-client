@@ -82,7 +82,7 @@ export class SecurityService extends BawApiService<SessionUser> {
         this.storeLocalUser(sessionUser);
 
         return this.userService.show().pipe(
-          map(user => {
+          map((user) => {
             // Order is important, ...sessionUser must come first
             return new SessionUser({ ...sessionUser, ...user });
           })
@@ -115,11 +115,11 @@ export class LoginDetails extends AbstractModel
   public toJSON(): object {
     return {
       login: this.login,
-      password: this.password
+      password: this.password,
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     throw new Error("Not Implemented");
   }
 }

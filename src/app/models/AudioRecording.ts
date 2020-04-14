@@ -95,7 +95,7 @@ export class AudioRecording extends AbstractModel
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return "/BROKEN_LINK";
   }
 }

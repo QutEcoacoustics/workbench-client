@@ -11,7 +11,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import {
   siteResolvers,
-  SitesService
+  SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { assertFormErrorHandling } from "src/testHelpers";
@@ -43,21 +43,21 @@ describe("SitesDeleteComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              site: siteResolvers.show
+              site: siteResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
+                error: projectError,
               },
               site: {
                 model: site,
-                error: siteError
-              }
+                error: siteError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteComponent);
@@ -76,15 +76,15 @@ describe("SitesDeleteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: 1,
-      name: "Site"
+      name: "Site",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -124,12 +124,12 @@ describe("SitesDeleteComponent", () => {
     });
 
     it("should redirect to projects", () => {
-      spyOn(defaultProject, "redirectPath");
+      spyOn(defaultProject, "navigationPath");
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
-      expect(defaultProject.redirectPath).toHaveBeenCalled();
+      expect(defaultProject.navigationPath).toHaveBeenCalled();
     });
   });
 });

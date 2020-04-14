@@ -19,7 +19,7 @@ export class MockModel extends AbstractModel {
     return json;
   }
 
-  public redirectPath(): string {
+  public navigationPath(): string {
     return "";
   }
 }

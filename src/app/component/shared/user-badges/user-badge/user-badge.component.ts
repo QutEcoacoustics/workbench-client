@@ -3,7 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { List } from "immutable";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
@@ -24,7 +24,7 @@ import { User } from "src/app/models/User";
       <div id="users">
         <div class="media" *ngFor="let user of users">
           <div class="image">
-            <a id="imageLink" [routerLink]="user.redirectPath()">
+            <a id="imageLink" [routerLink]="user.navigationPath()">
               <img
                 [src]="user.getImage(imageSize)"
                 [alt]="user.userName + ' profile picture'"
@@ -35,7 +35,7 @@ import { User } from "src/app/models/User";
             <a
               id="username"
               class="heading"
-              [routerLink]="user.redirectPath()"
+              [routerLink]="user.navigationPath()"
               >{{ user.userName }}</a
             >
             <br />
@@ -52,7 +52,7 @@ import { User } from "src/app/models/User";
     </ng-template>
   `,
   styleUrls: ["./user-badge.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserBadgeComponent implements OnInit, OnChanges {
   @Input() label: string;

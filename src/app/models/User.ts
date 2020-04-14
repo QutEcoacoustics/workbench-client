@@ -136,7 +136,7 @@ export class User extends AbstractModel implements UserInterface {
     return "/assets/images/user/user_span4.png";
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return theirProfileMenuItem.route
       .toString()
       .replace(":accountId", this.id.toString());
@@ -183,7 +183,7 @@ export class SessionUser extends User implements SessionUserInterface {
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return myAccountMenuItem.route.toString();
   }
 }

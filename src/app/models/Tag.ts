@@ -63,7 +63,7 @@ export class Tag extends AbstractModel implements TagInterface {
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return adminTagsMenuItem.route.toString();
   }
 }

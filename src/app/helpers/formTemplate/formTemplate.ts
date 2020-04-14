@@ -60,7 +60,7 @@ export abstract class FormTemplate<M extends AbstractModel>
     protected route: ActivatedRoute,
     protected router: Router,
     private modelKey: string,
-    private successMsg: (model: M) => string = model =>
+    private successMsg: (model: M) => string = (model) =>
       defaultSuccessMsg("updated", model.id.toString()),
     private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
     private hasFormCheck = true
@@ -164,7 +164,7 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param model Model
    */
   protected redirectionPath(model: M): string {
-    return model.redirectPath();
+    return model.navigationPath();
   }
 
   /**

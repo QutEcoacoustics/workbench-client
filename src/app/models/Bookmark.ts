@@ -53,7 +53,7 @@ export class Bookmark extends AbstractModel implements BookmarkInterface {
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return "/BROKEN_LINK";
     //return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
   }

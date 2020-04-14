@@ -73,11 +73,11 @@ export class Project extends AbstractModel implements ProjectInterface {
         url: this.imageUrl,
         alt: this.name,
       },
-      route: this.redirectPath(),
+      route: this.navigationPath(),
     };
   }
 
-  redirectPath(): string {
+  navigationPath(): string {
     return projectMenuItem.route.format({ projectId: this.id });
   }
 }

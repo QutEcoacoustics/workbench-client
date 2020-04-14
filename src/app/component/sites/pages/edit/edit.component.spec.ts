@@ -11,7 +11,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import {
   siteResolvers,
-  SitesService
+  SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
@@ -44,21 +44,21 @@ describe("SitesEditComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              site: siteResolvers.show
+              site: siteResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
+                error: projectError,
               },
               site: {
                 model: site,
-                error: siteError
-              }
+                error: siteError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditComponent);
@@ -77,15 +77,15 @@ describe("SitesEditComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: 1,
-      name: "Site"
+      name: "Site",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -99,7 +99,7 @@ describe("SitesEditComponent", () => {
       required: true,
       label: "Site Name",
       type: "text",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Description Input",
@@ -110,7 +110,7 @@ describe("SitesEditComponent", () => {
       required: false,
       label: "Description",
       type: undefined,
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Latitude Input",
@@ -121,7 +121,7 @@ describe("SitesEditComponent", () => {
       required: false,
       label: "Latitude",
       type: "number",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Longitude Input",
@@ -132,7 +132,7 @@ describe("SitesEditComponent", () => {
       required: false,
       label: "Longitude",
       type: "number",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Image Input",
@@ -143,8 +143,8 @@ describe("SitesEditComponent", () => {
       required: false,
       label: "Image",
       type: undefined,
-      description: undefined
-    }
+      description: undefined,
+    },
   ];
 
   describe("form", () => {
@@ -186,21 +186,21 @@ describe("SitesEditComponent", () => {
     it("should redirect to site", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "redirectPath").and.stub();
+      spyOn(site, "navigationPath").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 
       component.submit({});
-      expect(site.redirectPath).toHaveBeenCalled();
+      expect(site.navigationPath).toHaveBeenCalled();
     });
 
     it("should redirect to site with project", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "redirectPath").and.stub();
+      spyOn(site, "navigationPath").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 
       component.submit({});
-      expect(site.redirectPath).toHaveBeenCalledWith(defaultProject);
+      expect(site.navigationPath).toHaveBeenCalledWith(defaultProject);
     });
   });
 });

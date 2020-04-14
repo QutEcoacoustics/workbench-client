@@ -30,7 +30,7 @@ export abstract class AbstractModel {
    * for the project abstract model, this path should direct to the project page.
    * @param args Url arguments
    */
-  public abstract redirectPath(...args: any): string;
+  public abstract navigationPath(...args: any): string;
 
   /**
    * Convert model to JSON
