@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { TheirProjectsComponent } from "./their-projects.component";
 
+// TODO Implement
 xdescribe("TheirProjectsComponent", () => {
   let component: TheirProjectsComponent;
   let fixture: ComponentFixture<TheirProjectsComponent>;

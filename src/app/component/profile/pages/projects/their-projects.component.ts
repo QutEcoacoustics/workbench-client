@@ -57,7 +57,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
             route: project.redirectPath(),
           },
           sites: project.siteIds.size,
-          permission: "UNKNOWN",
+          permission: "FIX ME",
         })),
       route
     );
