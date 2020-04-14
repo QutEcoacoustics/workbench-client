@@ -6,6 +6,8 @@ import {
   TestBed,
   tick,
 } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
 import { SharedModule } from "src/app/component/shared/shared.module";
@@ -13,8 +15,23 @@ import { Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  MockData,
+  MockResolvers,
+  testBawServices,
+} from "src/app/test.helper";
 import { PagedTableTemplate } from "./pagedTableTemplate";
+import { AbstractModel } from "@models/AbstractModel";
+
+class MockModel extends AbstractModel {
+  public redirectPath(...args: any): string {
+    throw new Error("Method not implemented.");
+  }
+  public toJSON(): object {
+    throw new Error("Method not implemented.");
+  }
+}
 
 @Component({
   selector: "app-test-component",
@@ -35,9 +52,11 @@ class MockComponent extends PagedTableTemplate<
 
   public columns = [{ prop: "id" }];
 
-  constructor(api: ProjectsService) {
-    super(api, (models) =>
-      models.map((model) => ({ id: model.id, name: model.name }))
+  constructor(api: ProjectsService, route: ActivatedRoute) {
+    super(
+      api,
+      (models) => models.map((model) => ({ id: model.id, name: model.name })),
+      route
     );
   }
 }
@@ -47,42 +66,112 @@ describe("PagedTableTemplate", () => {
   let fixture: ComponentFixture<MockComponent>;
   let api: ProjectsService;
 
-  beforeEach(async(() => {
+  function configureTestingModule(
+    resolvers: MockResolvers = {},
+    data: MockData = {}
+  ) {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [SharedModule],
-      providers: [...testBawServices],
+      imports: [SharedModule, RouterTestingModule],
+      providers: [
+        ...testBawServices,
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(resolvers, data),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(ProjectsService);
     component = fixture.componentInstance;
-  }));
+  }
 
   it("should create", () => {
+    configureTestingModule();
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should handle error response", () => {
+    configureTestingModule();
     const error = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
     spyOn(api, "filter").and.callFake(() => {
       const subject = new Subject<Project[]>();
       subject.error(error);
       return subject;
     });
-    component.getPageData();
     fixture.detectChanges();
 
     expect(component.error).toEqual(error);
   });
 
+  describe("resolvers", () => {
+    beforeEach(() => {
+      spyOn(api, "filter").and.callFake(() => {
+        return new BehaviorSubject<Project[]>([]);
+      });
+    });
+
+    it("should handle resolver", () => {
+      configureTestingModule(
+        { model: "modelResolver" },
+        { model: { model: new MockModel({ id: 1 }) } }
+      );
+
+      fixture.detectChanges();
+      expect(component.failure).toBeFalsy();
+      expect(component.models.model).toEqual(new MockModel({ id: 1 }));
+    });
+
+    it("should handle multiple resolvers", () => {
+      configureTestingModule(
+        { model1: "model1Resolver", model2: "model2Resolver" },
+        {
+          model1: { model: new MockModel({ id: 1 }) },
+          model2: { model: new MockModel({ id: 2 }) },
+        }
+      );
+
+      fixture.detectChanges();
+      expect(component.failure).toBeFalsy();
+      expect(component.models.model1).toEqual(new MockModel({ id: 1 }));
+      expect(component.models.model2).toEqual(new MockModel({ id: 2 }));
+    });
+
+    it("should handle resolver error", () => {
+      configureTestingModule(
+        { model: "modelResolver" },
+        { model: { error: { status: 401, message: "Unauthorized" } } }
+      );
+
+      fixture.detectChanges();
+      expect(component.failure).toBeTrue();
+    });
+
+    it("should handle any resolver error", () => {
+      configureTestingModule(
+        { model1: "model1Resolver", model2: "model2Resolver" },
+        {
+          model1: { model: new MockModel({ id: 1 }) },
+          model2: { error: { status: 401, message: "Unauthorized" } },
+        }
+      );
+
+      fixture.detectChanges();
+      expect(component.failure).toBeTrue();
+    });
+  });
+
   describe("rows", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
+
     it("should handle zero model response", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([]);
@@ -105,7 +194,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
@@ -128,7 +216,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.rows).toEqual([{ id: 1, name: "Project" }]);
@@ -136,6 +223,10 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("setPage", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
+
     it("should handle zero models", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
@@ -168,11 +259,14 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("pageNumber", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
+
     it("should handle zero models", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(0);
@@ -247,6 +341,7 @@ describe("PagedTableTemplate", () => {
 
   describe("onFilter", () => {
     beforeEach(() => {
+      configureTestingModule();
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
@@ -309,7 +404,6 @@ describe("PagedTableTemplate", () => {
     it("should debounce filters", fakeAsync(() => {
       const input = "testing";
       const mockInput = createInput();
-      createFilterEvent("testing", "", mockInput);
 
       for (let i = 0; i < input.length; i++) {
         const subSet = input.substring(0, i);
@@ -317,13 +411,12 @@ describe("PagedTableTemplate", () => {
       }
 
       tick(1000);
-      expect(api.filter).toHaveBeenCalledTimes(1);
+      expect(api.filter).toHaveBeenCalledTimes(2); // Initial filter request on ngOnInit
     }));
 
     it("should call last filter value", fakeAsync(() => {
       const input = "testing";
       const mockInput = createInput();
-      createFilterEvent("testing", "", mockInput);
 
       for (let i = 0; i < input.length; i++) {
         const subSet = input.substring(0, i + 1);
@@ -339,6 +432,7 @@ describe("PagedTableTemplate", () => {
 
   describe("onSort", () => {
     beforeEach(() => {
+      configureTestingModule();
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
@@ -415,11 +509,14 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("totalModels", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
+
     it("should handle zero models", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(0);
@@ -442,7 +539,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(1);
@@ -465,7 +561,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(100);
@@ -473,6 +568,10 @@ describe("PagedTableTemplate", () => {
   });
 
   describe("loadingData", () => {
+    beforeEach(() => {
+      configureTestingModule();
+    });
+
     it("should be false initially", () => {
       expect(component.loadingData).toBeFalsy();
     });
@@ -481,7 +580,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new Subject<Project[]>();
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeTrue();
@@ -491,7 +589,6 @@ describe("PagedTableTemplate", () => {
       spyOn(api, "filter").and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeFalse();
@@ -506,7 +603,6 @@ describe("PagedTableTemplate", () => {
         } as ApiErrorDetails);
         return subject;
       });
-      component.getPageData();
       fixture.detectChanges();
 
       expect(component.loadingData).toBeFalse();
