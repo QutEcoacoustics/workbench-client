@@ -6,7 +6,7 @@ import {
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
-export interface IStudies {
+export interface IStudy {
   id?: Id;
   name?: Param;
   creatorId?: Id;
@@ -16,7 +16,7 @@ export interface IStudies {
   updatedAt?: DateTimeTimezone | string;
 }
 
-export class Studies extends AbstractModel implements IStudies {
+export class Study extends AbstractModel implements IStudy {
   public readonly kind: "Studies" = "Studies";
   public readonly id?: Id;
   public readonly name?: Param;
@@ -26,7 +26,7 @@ export class Studies extends AbstractModel implements IStudies {
   public readonly createdAt?: DateTimeTimezone;
   public readonly updatedAt?: DateTimeTimezone;
 
-  constructor(studies: IStudies) {
+  constructor(studies: IStudy) {
     super(studies);
 
     this.createdAt = dateTimeTimezone(studies.createdAt as string);
