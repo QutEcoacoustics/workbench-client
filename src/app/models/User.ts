@@ -19,14 +19,26 @@ import { AbstractModel } from "./AbstractModel";
  */
 export interface IUser {
   id?: Id;
+  email?: string;
   userName?: UserName;
+  signInCount?: number;
+  failedAttempts?: number;
   rolesMask?: number;
   rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageURL[];
-  lastSeenAt?: DateTimeTimezone | string;
-  preferences?: any;
+  preferences?: Blob;
   isConfirmed?: boolean;
+  resetPasswordSentAt?: DateTimeTimezone | string;
+  rememberCreatedAt?: DateTimeTimezone | string;
+  currentSignInAt?: DateTimeTimezone | string;
+  lastSignInAt?: DateTimeTimezone | string;
+  confirmedAt?: DateTimeTimezone | string;
+  confirmationSentAt?: DateTimeTimezone | string;
+  lockedAt?: DateTimeTimezone | string;
+  createdAt?: DateTimeTimezone | string;
+  updatedAt?: DateTimeTimezone | string;
+  lastSeenAt?: DateTimeTimezone | string;
 }
 
 /**
@@ -35,19 +47,44 @@ export interface IUser {
 export class User extends AbstractModel implements IUser {
   public readonly kind: "User" | "SessionUser" = "User";
   public readonly id?: Id;
+  public readonly email?: string;
   public readonly userName?: UserName;
-  public readonly timezoneInformation?: TimezoneInformation;
+  public readonly signInCount?: number;
+  public readonly failedAttempts?: number;
   public readonly imageUrls?: ImageURL[];
-  public readonly lastSeenAt?: DateTimeTimezone;
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
+  public readonly resetPasswordSentAt?: DateTimeTimezone;
+  public readonly rememberCreatedAt?: DateTimeTimezone;
+  public readonly currentSignInAt?: DateTimeTimezone;
+  public readonly lastSignInAt?: DateTimeTimezone;
+  public readonly confirmedAt?: DateTimeTimezone;
+  public readonly confirmationSentAt?: DateTimeTimezone;
+  public readonly lockedAt?: DateTimeTimezone;
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly updatedAt?: DateTimeTimezone;
+  public readonly timezoneInformation?: TimezoneInformation;
+  public readonly lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
     super(user);
 
     this.userName = user.userName || "Deleted User";
+    this.resetPasswordSentAt = dateTimeTimezone(
+      user.resetPasswordSentAt as string
+    );
+    this.rememberCreatedAt = dateTimeTimezone(user.rememberCreatedAt as string);
+    this.currentSignInAt = dateTimeTimezone(user.currentSignInAt as string);
+    this.lastSignInAt = dateTimeTimezone(user.lastSignInAt as string);
+    this.confirmedAt = dateTimeTimezone(user.confirmedAt as string);
+    this.confirmationSentAt = dateTimeTimezone(
+      user.confirmationSentAt as string
+    );
+    this.lockedAt = dateTimeTimezone(user.lockedAt as string);
+    this.createdAt = dateTimeTimezone(user.createdAt as string);
+    this.updatedAt = dateTimeTimezone(user.updatedAt as string);
     this.lastSeenAt = dateTimeTimezone(user.lastSeenAt as string);
 
     this.imageUrls = user.imageUrls
