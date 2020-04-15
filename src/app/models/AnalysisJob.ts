@@ -1,3 +1,4 @@
+import { Duration } from "luxon";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
@@ -6,7 +7,6 @@ import {
   Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Duration } from "luxon";
 
 /**
  * An analysis job model.
