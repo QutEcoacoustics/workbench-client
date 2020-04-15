@@ -15,7 +15,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, showMock } from "./mock/api-commonMock";
@@ -23,7 +23,7 @@ import {
   BawProvider,
   BawResolver,
   ResolvedModel,
-  Resolvers
+  Resolvers,
 } from "./resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
@@ -52,10 +52,10 @@ export class TagsService extends StandardApi<Tag, []> {
     return this.filter({});
   }
   filter(filters: Filters): Observable<Tag[]> {
-    return filterMock<Tag>(filters, index => createTag(index));
+    return filterMock<Tag>(filters, (index) => createTag(index));
   }
   show(model: IdOr<Tag>): Observable<Tag> {
-    return showMock(model, modelId => createTag(modelId));
+    return showMock(model, (modelId) => createTag(modelId));
   }
   create(model: Tag): Observable<Tag> {
     return this.apiCreate(endpoint(Empty, Empty), model);
@@ -76,8 +76,8 @@ export class TagsService extends StandardApi<Tag, []> {
       "common_name",
       "species_name",
       "looks_like",
-      "sounds_like"
-    ]).pipe(map(types => types.map(type => new TagType({ name: type }))));
+      "sounds_like",
+    ]).pipe(map((types) => types.map((type) => new TagType({ name: type }))));
   }
 }
 
@@ -89,11 +89,11 @@ function createTag(modelId: Id) {
     isTaxanomic: modelId % 5 === 0,
     typeOfTag: "general",
     retired: modelId % 5 === 0,
-    notes: "PLACEHOLDER NOTES",
+    notes: new Blob(["PLACEHOLDER NOTES"]),
     creatorId: 1,
     updaterId: 1,
     createdAt: "2020-03-10T10:51:04.576+10:00",
-    updatedAt: "2020-03-10T10:51:04.576+10:00"
+    updatedAt: "2020-03-10T10:51:04.576+10:00",
   });
 }
 
@@ -106,13 +106,13 @@ class TagResolvers {
     const typeOfTagsProvider = new TypeOfTagsResolver().create(name);
     const providers = [
       ...additionalProvider.providers,
-      ...typeOfTagsProvider.providers
+      ...typeOfTagsProvider.providers,
     ];
 
     return {
       ...additionalProvider,
       ...typeOfTagsProvider,
-      providers
+      providers,
     };
   }
 }
@@ -140,9 +140,9 @@ class TypeOfTagsResolver extends BawResolver<
         {
           provide: name + "TypeOfTagsResolver",
           useClass: resolver,
-          deps
-        }
-      ]
+          deps,
+        },
+      ],
     };
   }
 
