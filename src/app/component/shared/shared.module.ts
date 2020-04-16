@@ -3,17 +3,18 @@ import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import {
   formlyAccessors,
+  internalComponents,
   sharedComponents,
-  sharedModules
+  sharedModules,
 } from "./shared.components";
 
 /**
  * Shared Components Module
  */
 @NgModule({
-  declarations: [...sharedComponents, ...formlyAccessors],
+  declarations: [...internalComponents, ...formlyAccessors],
   imports: sharedModules,
-  exports: [...sharedModules, ...sharedComponents]
+  exports: [...sharedModules, ...sharedComponents],
 })
 export class SharedModule {
   constructor(library: FaIconLibrary) {

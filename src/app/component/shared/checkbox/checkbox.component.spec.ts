@@ -7,7 +7,7 @@ describe("CheckboxComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CheckboxComponent]
+      declarations: [CheckboxComponent],
     }).compileComponents();
   }));
 
@@ -16,9 +16,41 @@ describe("CheckboxComponent", () => {
     component = fixture.componentInstance;
   });
 
+  afterAll(() => {
+    viewport.reset();
+  });
+
   it("should create", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it("should be centered", () => {
+    viewport.set("large");
+
+    component.isCentered = true;
+    fixture.detectChanges();
+
+    const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
+    const computedStyles = window.getComputedStyle(checkbox);
+    const marginLeft = parseInt(computedStyles.marginLeft.substr(0, 3), 10);
+    const marginRight = parseInt(computedStyles.marginRight.substr(0, 3), 10);
+
+    expect(marginLeft).toBeGreaterThan(500);
+    expect(marginRight).toBeGreaterThan(500);
+    expect(marginLeft === marginRight).toBeTrue();
+  });
+
+  it("should not be centered", () => {
+    viewport.set("large");
+
+    component.isCentered = false;
+    fixture.detectChanges();
+
+    const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
+    const computedStyles = window.getComputedStyle(checkbox);
+    expect(computedStyles.marginLeft).toBe("0px");
+    expect(computedStyles.marginRight).toBe("0px");
   });
 
   it("should be checked", () => {
