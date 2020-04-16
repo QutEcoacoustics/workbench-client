@@ -13,7 +13,7 @@
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
     "directive-selector": [true, "attribute", ["app", "baw"], "camelCase"],
-    "component-selector": [true, "element", "app", "kebab-case"],
+    "component-selector": [true, "element", ["app", "baw"], "kebab-case"],
     "import-blacklist": [true, "rxjs/Rx"],
     "interface-name": false,
     "forin": false,

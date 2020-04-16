@@ -3,7 +3,7 @@ import { DateTime, Duration } from "luxon";
 import { toRelative } from "src/app/interfaces/apiInterfaces";
 
 @Component({
-  selector: "app-render-view",
+  selector: "baw-render-field",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
       <dl *ngIf="styling === FieldStyling.Plain">
@@ -21,10 +21,10 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
       </dl>
     </ng-container>
     <ng-template #hasChildren>
-      <app-render-view
+      <baw-render-field
         *ngFor="let child of children"
         [view]="child"
-      ></app-render-view>
+      ></baw-render-field>
     </ng-template>
   `,
   styles: [
@@ -35,7 +35,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     `,
   ],
 })
-export class RenderViewComponent implements OnInit {
+export class RenderFieldComponent implements OnInit {
   @Input() view: ModelView;
   public display: string | number | boolean;
   public children: ModelView[];

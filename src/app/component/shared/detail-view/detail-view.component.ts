@@ -8,16 +8,16 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { AbstractModel } from "src/app/models/AbstractModel";
 
 @Component({
-  selector: "app-detail-view",
+  selector: "baw-detail-view",
   template: `
     <div *ngFor="let field of fields" class="row">
       <dt class="col-sm-3 text-left text-sm-right font-weight-bold">
         {{ field.templateOptions.label }}
       </dt>
-      <app-render-view
+      <baw-render-field
         class="col-sm-9"
         [view]="model[field.key]"
-      ></app-render-view>
+      ></baw-render-field>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

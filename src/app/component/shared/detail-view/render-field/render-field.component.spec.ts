@@ -2,11 +2,11 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DateTime, Duration } from "luxon";
 import { CheckboxComponent } from "../../checkbox/checkbox.component";
-import { RenderViewComponent } from "./view.component";
+import { RenderFieldComponent } from "./render-field.component";
 
-describe("RenderViewComponent", () => {
-  let component: RenderViewComponent;
-  let fixture: ComponentFixture<RenderViewComponent>;
+describe("RenderFieldComponent", () => {
+  let component: RenderFieldComponent;
+  let fixture: ComponentFixture<RenderFieldComponent>;
 
   function getLoadingElements() {
     return getNormalValues();
@@ -34,13 +34,13 @@ describe("RenderViewComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RenderViewComponent, CheckboxComponent],
+      declarations: [RenderFieldComponent, CheckboxComponent],
       imports: [RouterTestingModule],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RenderViewComponent);
+    fixture = TestBed.createComponent(RenderFieldComponent);
     component = fixture.componentInstance;
   });
 
