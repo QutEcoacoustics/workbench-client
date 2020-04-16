@@ -2,11 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TagGroupService } from "@baw-api/tag-group.service";
 import {
-  adminNewTagGroupMenuItem,
-  adminTagGroupsCategory,
-  adminTagGroupsMenuItem,
-} from "@component/admin/admin.menus";
-import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
@@ -16,6 +11,11 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
 import { fields } from "../tag-group.json";
+import {
+  adminNewTagGroupMenuItem,
+  adminTagGroupsCategory,
+  adminTagGroupsMenuItem,
+} from "../tag-group.menus";
 
 @Page({
   category: adminTagGroupsCategory,
