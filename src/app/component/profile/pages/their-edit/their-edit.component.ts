@@ -50,7 +50,7 @@ const accountKey = "account";
 
       <hr />
 
-      <app-detail-view [model]="model" [fields]="fields"></app-detail-view>
+      <baw-detail-view [model]="model" [fields]="fields"></baw-detail-view>
     </app-wip>
   `,
 })
