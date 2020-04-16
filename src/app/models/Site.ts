@@ -77,8 +77,13 @@ export class Site extends AbstractModel implements SiteInterface {
   }
 
   redirectPath(project?: Project): string {
+    if (!project?.id && this.projectIds.size === 0) {
+      console.error("Site model has no project id, cannot find url.");
+      return "";
+    }
+
     return siteMenuItem.route.format({
-      projectId: project?.id || this.projectIds[0] || -1,
+      projectId: project?.id || this.projectIds[0],
       siteId: this.id,
     });
   }

@@ -62,6 +62,7 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
 }
 
 interface TableRow {
+  // name: Site
   site: {
     label: string;
     route: string;

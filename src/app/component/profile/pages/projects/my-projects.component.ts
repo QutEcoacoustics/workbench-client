@@ -65,6 +65,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 }
 
 interface TableRow {
+  // name: Project
   name: {
     label: string;
     route: string;
