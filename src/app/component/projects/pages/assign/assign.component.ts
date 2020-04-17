@@ -37,45 +37,35 @@ const projectKey = "project";
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"],
 })
-export class AssignComponent extends PagedTableTemplate<TableRow, Site>
-  implements OnInit {
+export class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   // TODO Move this back into the admin dashboard
+  public columns = [
+    { name: "Site Id" },
+    { name: "Name" },
+    { name: "Description" },
+  ];
+  public sortKeys = {
+    siteId: "id",
+    name: "name",
+    description: "description",
+  };
+  public filterKey = "name";
 
-  public project: Project;
-
-  constructor(private route: ActivatedRoute, api: ShallowSitesService) {
-    super(api, (sites) =>
-      sites.map((site) => ({
-        siteId: site.id,
-        name: site.name,
-        description: site.description,
-      }))
+  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+    super(
+      api,
+      (sites) =>
+        sites.map((site) => ({
+          siteId: site.id,
+          name: site.name,
+          description: site.description,
+        })),
+      route
     );
   }
 
-  ngOnInit() {
-    this.columns = [
-      { name: "Site Id" },
-      { name: "Name" },
-      { name: "Description" },
-    ];
-    this.sortKeys = {
-      siteId: "id",
-      name: "name",
-      description: "description",
-    };
-    this.filterKey = "name";
-
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
-
-    if (projectModel.error) {
-      return;
-    }
-
-    this.project = projectModel.model;
-    this.getModels();
+  public get project(): Project {
+    return this.models.project as Project;
   }
 
   public onSelect(event) {

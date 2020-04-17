@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { accountResolvers, AccountService } from "@baw-api/account.service";
 import {
-  theirEditProfileMenuItem,
+  theirEditMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
@@ -15,8 +15,8 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { fields } from "../../profile.json";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
-import { fields } from "./their-edit.json";
 
 const accountKey = "account";
 
@@ -32,7 +32,7 @@ const accountKey = "account";
   resolvers: {
     [accountKey]: accountResolvers.show,
   },
-  self: theirEditProfileMenuItem,
+  self: theirEditMenuItem,
 })
 @Component({
   selector: "app-their-profile-edit",
@@ -47,6 +47,10 @@ const accountKey = "account";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
+
+      <hr />
+
+      <baw-detail-view [model]="model" [fields]="fields"></baw-detail-view>
     </app-wip>
   `,
 })

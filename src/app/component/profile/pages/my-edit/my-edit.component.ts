@@ -3,9 +3,9 @@ import { ActivatedRoute } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { userResolvers, UserService } from "@baw-api/user.service";
 import {
-  editMyAccountMenuItem,
   myAccountCategory,
   myAccountMenuItem,
+  myEditMenuItem,
 } from "@component/profile/profile.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -13,7 +13,7 @@ import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { myProfileMenuItemActions } from "../profile/my-profile.component";
+import { myAccountMenuItemActions } from "../profile/my-profile.component";
 import { fields } from "./my-edit.json";
 
 const userKey = "user";
@@ -23,14 +23,14 @@ const userKey = "user";
   menus: {
     actions: List<AnyMenuItem>([
       myAccountMenuItem,
-      ...myProfileMenuItemActions,
+      ...myAccountMenuItemActions,
     ]),
     links: List(),
   },
   resolvers: {
     [userKey]: userResolvers.show,
   },
-  self: editMyAccountMenuItem,
+  self: myEditMenuItem,
 })
 @Component({
   selector: "app-my-account-edit",

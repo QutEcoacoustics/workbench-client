@@ -2,13 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 
 @Component({
   selector: "app-checkbox",
   template: `
-    <div class="mx-auto" style="width: 24px;">
+    <div [ngClass]="{ 'mx-auto': isCentered }" style="width: 24px;">
       <div class="custom-control custom-checkbox">
         <input
           type="checkbox"
@@ -21,12 +21,13 @@ import {
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent implements OnInit {
   @Input() id: string;
   @Input() checked: boolean;
   @Input() disabled: boolean;
+  @Input() isCentered = true;
 
   constructor() {}
 

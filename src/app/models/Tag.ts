@@ -1,4 +1,4 @@
-import { adminTagsMenuItem } from "../component/admin/admin.menus";
+import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,

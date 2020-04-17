@@ -1,10 +1,12 @@
-import { ViewChild } from "@angular/core";
+import { OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import {
   ColumnMode,
   DatatableComponent,
   SelectionType,
   SortType,
-  TableColumn
+  TableColumn,
 } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
@@ -19,10 +21,9 @@ import { PageComponent } from "../page/pageComponent";
  * Handles creating all the generic logic required for a datatable containing component
  * which requires the use of external sorting and paging.
  */
-export abstract class PagedTableTemplate<
-  T,
-  M extends AbstractModel
-> extends PageComponent {
+export abstract class PagedTableTemplate<T, M extends AbstractModel>
+  extends PageComponent
+  implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
   // Table variables
@@ -36,16 +37,24 @@ export abstract class PagedTableTemplate<
   public filterKey: string;
   public totalModels: number;
 
-  // State variables
+  /**
+   * API Error Response for Table Data
+   */
   public error: ApiErrorDetails;
+  /**
+   * API Error Response from Resolvers
+   */
+  public failure: boolean;
   public loadingData: boolean;
+  public models: ResolvedModelList = {};
   public pageNumber: number;
   public filterEvent$ = new Subject<string>();
   protected filters: Filters;
 
   constructor(
     private api: ApiFilter<any, any>,
-    private rowsCallback: (models: M[]) => T[]
+    private rowsCallback: (models: M[]) => T[],
+    private route?: ActivatedRoute
   ) {
     super();
     this.pageNumber = 0;
@@ -58,20 +67,34 @@ export abstract class PagedTableTemplate<
       )
       .subscribe(
         () => {
-          this.getModels();
+          this.getPageData();
         },
         // Filter event doesn't have an error output
-        err => {}
+        (err) => {}
       );
+  }
+
+  ngOnInit() {
+    if (this.route) {
+      // Retrieve models
+      const resolvedModels = retrieveResolvers(this.route.snapshot.data);
+      if (!resolvedModels) {
+        this.failure = true;
+        return;
+      }
+      this.models = resolvedModels;
+    }
+
+    this.getPageData();
   }
 
   public setPage(pageInfo: TablePage) {
     this.pageNumber = pageInfo.offset;
     this.filters.paging = {
-      page: pageInfo.offset + 1
+      page: pageInfo.offset + 1,
     };
 
-    this.getModels();
+    this.getPageData();
   }
 
   public onFilter(filter: KeyboardEvent) {
@@ -82,8 +105,8 @@ export abstract class PagedTableTemplate<
     } else {
       this.filters.filter = {
         [this.filterKey]: {
-          contains: filterText
-        }
+          contains: filterText,
+        },
       };
     }
 
@@ -96,14 +119,14 @@ export abstract class PagedTableTemplate<
     } else {
       this.filters.sorting = {
         orderBy: this.sortKeys[event.column.prop],
-        direction: event.newValue
+        direction: event.newValue,
       };
     }
 
-    this.getModels();
+    this.getPageData();
   }
 
-  public getModels() {
+  public getPageData() {
     this.loadingData = true;
     this.rows = [];
 
@@ -111,7 +134,7 @@ export abstract class PagedTableTemplate<
       .filter(this.filters)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        models => {
+        (models) => {
           this.rows = this.rowsCallback(models);
           this.loadingData = false;
 

@@ -14,7 +14,7 @@ import {
   SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
+import { assertResolverErrorHandling, testFormlyFields } from "src/testHelpers";
 import { fields } from "../../site.json";
 import { EditComponent } from "./edit.component";
 
@@ -162,7 +162,7 @@ describe("SitesEditComponent", () => {
 
     it("should handle project error", () => {
       configureTestingModule(undefined, defaultError, defaultSite, undefined);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should handle site error", () => {
@@ -172,7 +172,7 @@ describe("SitesEditComponent", () => {
         undefined,
         defaultError
       );
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

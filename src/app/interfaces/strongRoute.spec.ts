@@ -11,19 +11,19 @@ describe("StrongRoute", () => {
     const parents = [
       {
         title: "Base Route",
-        parent: () => StrongRoute.Base
+        parent: () => StrongRoute.Base,
       },
       {
         title: "Child Route",
-        parent: () => StrongRoute.Base.add("parent")
+        parent: () => StrongRoute.Base.add("parent"),
       },
       {
         title: "Feature Module Route",
-        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing")
-      }
+        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing"),
+      },
     ];
 
-    parents.forEach(parent => {
+    parents.forEach((parent) => {
       let parentRoute: StrongRoute;
 
       describe(parent.title, () => {
@@ -83,10 +83,7 @@ describe("StrongRoute", () => {
     });
 
     it("should format mix routes", () => {
-      const paramRoute = strongRoute
-        .add("home")
-        .add(":id")
-        .add("house");
+      const paramRoute = strongRoute.add("home").add(":id").add("house");
       expect(paramRoute.format({ id: 1 })).toBe("/home/1/house");
     });
   });
@@ -96,13 +93,13 @@ describe("StrongRoute", () => {
       {
         title: "Base Route",
         baseRef: "",
-        parent: () => StrongRoute.Base
+        parent: () => StrongRoute.Base,
       },
       {
         title: "Feature Module Route",
         baseRef: "test/testing/",
-        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing")
-      }
+        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing"),
+      },
     ];
 
     class MockComponent {}
@@ -113,39 +110,57 @@ describe("StrongRoute", () => {
         children: [
           {
             path: "",
-            component
-          }
-        ]
+            component,
+          },
+        ],
       } as Route;
     }
 
-    parents.forEach(parent => {
+    parents.forEach((parent) => {
       describe(parent.title, () => {
         let strongRoute: StrongRoute;
+        let rootRoute: Route;
 
         beforeEach(() => {
           strongRoute = parent.parent();
+
+          rootRoute = {
+            path:
+              parent.baseRef.length > 0
+                ? parent.baseRef.substr(0, parent.baseRef.length - 1)
+                : null,
+            pathMatch: "full",
+            children: [
+              {
+                path: "",
+                component: undefined,
+              },
+            ],
+          };
         });
 
         it("should compile base route", () => {
-          const routes: Routes = [];
+          rootRoute.children[0].component = MockComponent;
+          const routes: Routes = [rootRoute];
           strongRoute.pageComponent = MockComponent;
           const compiledRoutes = strongRoute.compileRoutes(callback);
+
           expect(compiledRoutes).toEqual(routes);
         });
 
         it("should compile StrongRoute with route", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + "home",
               pathMatch: "full",
               children: [
                 {
                   path: "",
-                  component: MockComponent
-                }
-              ]
-            }
+                  component: MockComponent,
+                },
+              ],
+            },
           ];
           const homeRoute = strongRoute.add("home");
           homeRoute.pageComponent = MockComponent;
@@ -156,16 +171,17 @@ describe("StrongRoute", () => {
 
         it("should compile StrongRoute with parameter route", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + ":id",
               pathMatch: "full",
               children: [
                 {
                   path: "",
-                  component: MockComponent
-                }
-              ]
-            }
+                  component: MockComponent,
+                },
+              ],
+            },
           ];
           const paramRoute = strongRoute.add(":id");
           paramRoute.pageComponent = MockComponent;
@@ -176,15 +192,16 @@ describe("StrongRoute", () => {
 
         it("should compile StrongRoute with mixed routes", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + "home",
               pathMatch: "full",
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + "home/:id",
@@ -192,9 +209,9 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + "home/:id/house",
@@ -202,15 +219,12 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: MockComponent
-                }
-              ]
-            }
+                  component: MockComponent,
+                },
+              ],
+            },
           ];
-          const paramRoute = strongRoute
-            .add("home")
-            .add(":id")
-            .add("house");
+          const paramRoute = strongRoute.add("home").add(":id").add("house");
           paramRoute.pageComponent = MockComponent;
           const compiledRoutes = paramRoute.compileRoutes(callback);
 
@@ -219,6 +233,7 @@ describe("StrongRoute", () => {
 
         it("should compile StrongRoute with custom config", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + ":id",
               pathMatch: "full",
@@ -226,10 +241,10 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: MockComponent
-                }
-              ]
-            }
+                  component: MockComponent,
+                },
+              ],
+            },
           ];
           const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
           paramRoute.pageComponent = MockComponent;
@@ -240,15 +255,16 @@ describe("StrongRoute", () => {
 
         it("should order child StrongRoute routes", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + "home",
               pathMatch: "full",
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + "home/house",
@@ -256,9 +272,9 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + "home/:id",
@@ -266,10 +282,10 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
-            }
+                  component: undefined,
+                },
+              ],
+            },
           ];
           const homeRoute = strongRoute.add("home");
           homeRoute.add(":id");
@@ -281,15 +297,16 @@ describe("StrongRoute", () => {
 
         it("should order base StrongRoute routes", () => {
           const routes: Routes = [
+            rootRoute,
             {
               path: parent.baseRef + "home",
               pathMatch: "full",
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + "house",
@@ -297,9 +314,9 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
+                  component: undefined,
+                },
+              ],
             },
             {
               path: parent.baseRef + ":id",
@@ -307,10 +324,10 @@ describe("StrongRoute", () => {
               children: [
                 {
                   path: "",
-                  component: undefined
-                }
-              ]
-            }
+                  component: undefined,
+                },
+              ],
+            },
           ];
 
           strongRoute.add("home");
@@ -346,10 +363,7 @@ describe("StrongRoute", () => {
     });
 
     it("should handle mixed routes", () => {
-      const grandChildRoute = strongRoute
-        .add("home")
-        .add(":id")
-        .add("house");
+      const grandChildRoute = strongRoute.add("home").add(":id").add("house");
       expect(grandChildRoute.toString()).toBe("/home/:id/house");
     });
 
@@ -377,10 +391,7 @@ describe("StrongRoute", () => {
     });
 
     it("should handle mixed routes", () => {
-      const grandChildRoute = strongRoute
-        .add("home")
-        .add(":id")
-        .add("house");
+      const grandChildRoute = strongRoute.add("home").add(":id").add("house");
       expect(grandChildRoute.toRoute()).toEqual(["home", ":id", "house"]);
     });
 

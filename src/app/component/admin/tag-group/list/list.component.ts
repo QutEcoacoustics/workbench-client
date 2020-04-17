@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { TagGroupService } from "@baw-api/tag-group.service";
-import {
-  adminDashboardMenuItem,
-  adminDeleteTagGroupMenuItem,
-  adminEditTagGroupMenuItem,
-  adminNewTagGroupMenuItem,
-  adminTagGroupsCategory,
-  adminTagGroupsMenuItem,
-} from "@component/admin/admin.menus";
+import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
+import {
+  adminDeleteTagGroupMenuItem,
+  adminEditTagGroupMenuItem,
+  adminNewTagGroupMenuItem,
+  adminTagGroupsCategory,
+  adminTagGroupsMenuItem,
+} from "../tag-group.menus";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
@@ -38,9 +38,16 @@ export const adminTagGroupMenuItemActions = [
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminTagGroupsComponent
-  extends PagedTableTemplate<TableRow, TagGroup>
-  implements OnInit {
+export class AdminTagGroupsComponent extends PagedTableTemplate<
+  TableRow,
+  TagGroup
+> {
+  public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
+  public sortKeys = {
+    tag: "tagId",
+    group: "groupIdentifier",
+  };
+
   constructor(api: TagGroupService) {
     super(api, (tagGroups) =>
       tagGroups.map((tagGroup) => ({
@@ -49,16 +56,6 @@ export class AdminTagGroupsComponent
         model: tagGroup,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
-    this.sortKeys = {
-      tag: "tagId",
-      group: "groupIdentifier",
-    };
-
-    this.getModels();
   }
 
   editPath(tagGroup: TagGroup): string {

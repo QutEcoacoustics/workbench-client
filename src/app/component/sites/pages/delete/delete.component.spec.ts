@@ -14,7 +14,7 @@ import {
   SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {
@@ -103,7 +103,7 @@ describe("SitesDeleteComponent", () => {
 
     it("should handle project error", () => {
       configureTestingModule(undefined, defaultError, defaultSite, undefined);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should handle site error", () => {
@@ -113,7 +113,7 @@ describe("SitesDeleteComponent", () => {
         undefined,
         defaultError
       );
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

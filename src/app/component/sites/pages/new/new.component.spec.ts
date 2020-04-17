@@ -11,7 +11,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
+import { assertResolverErrorHandling, testFormlyFields } from "src/testHelpers";
 import { fields } from "../../site.json";
 import { NewComponent } from "./new.component";
 
@@ -149,7 +149,7 @@ describe("SitesNewComponent", () => {
 
     it("should handle project error", fakeAsync(() => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     }));
 
     it("should call api", () => {

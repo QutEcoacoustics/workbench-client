@@ -1,4 +1,4 @@
-import { adminScriptsMenuItem } from "../component/admin/admin.menus";
+import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,

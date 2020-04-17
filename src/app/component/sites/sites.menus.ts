@@ -4,21 +4,21 @@ import {
   defaultEditIcon,
   defaultNewIcon,
   isLoggedInPredicate,
-  isProjectOwnerPredicate
+  isProjectOwnerPredicate,
 } from "src/app/app.menus";
 import {
   Category,
   MenuLink,
-  MenuRoute
+  MenuRoute,
 } from "src/app/interfaces/menusInterfaces";
-import { projectCategory, projectMenuItem } from "../projects/projects.menus";
+import { projectMenuItem } from "../projects/projects.menus";
 
 export const sitesRoute = projectMenuItem.route.addFeatureModule("sites");
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
-  route: sitesRoute.add(":siteId")
+  route: sitesRoute.add(":siteId"),
 };
 
 export const newSiteMenuItem = MenuRoute({
@@ -27,7 +27,7 @@ export const newSiteMenuItem = MenuRoute({
   parent: projectMenuItem,
   predicate: isProjectOwnerPredicate,
   route: sitesRoute.add("new"),
-  tooltip: () => "Create a new site"
+  tooltip: () => "Create a new site",
 });
 
 export const siteMenuItem = MenuRoute({
@@ -35,7 +35,7 @@ export const siteMenuItem = MenuRoute({
   label: "Site",
   parent: projectMenuItem,
   route: sitesCategory.route,
-  tooltip: () => "The current site"
+  tooltip: () => "The current site",
 });
 
 export const annotationsMenuItem = MenuLink({
@@ -43,7 +43,7 @@ export const annotationsMenuItem = MenuLink({
   label: "Download annotations",
   predicate: isLoggedInPredicate,
   tooltip: () => "Download annotations for this site",
-  uri: () => "REPLACE_ME"
+  uri: () => "REPLACE_ME",
 });
 
 export const editSiteMenuItem = MenuRoute({
@@ -52,7 +52,7 @@ export const editSiteMenuItem = MenuRoute({
   parent: siteMenuItem,
   predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for this site"
+  tooltip: () => "Change the details for this site",
 });
 
 export const harvestMenuItem = MenuRoute({
@@ -61,7 +61,7 @@ export const harvestMenuItem = MenuRoute({
   parent: siteMenuItem,
   predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("harvest"),
-  tooltip: () => "Upload new audio to this site"
+  tooltip: () => "Upload new audio to this site",
 });
 
 export const deleteSiteMenuItem = MenuRoute({
@@ -70,5 +70,5 @@ export const deleteSiteMenuItem = MenuRoute({
   parent: siteMenuItem,
   predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("delete"),
-  tooltip: () => "Delete this site"
+  tooltip: () => "Delete this site",
 });

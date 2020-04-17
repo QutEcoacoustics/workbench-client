@@ -61,7 +61,6 @@ export class Site extends AbstractModel implements ISite {
 
   public toJSON() {
     // TODO Add image, latitude, longitude, timezone
-
     return {
       id: this.id,
       name: this.name,
@@ -70,8 +69,13 @@ export class Site extends AbstractModel implements ISite {
   }
 
   public navigationPath(project: Project): string {
+    if (!project?.id && this.projectIds.size === 0) {
+      console.error("Site model has no project id, cannot find url.");
+      return "";
+    }
+
     return siteMenuItem.route.format({
-      projectId: project.id,
+      projectId: project?.id || this.projectIds[0],
       siteId: this.id,
     });
   }

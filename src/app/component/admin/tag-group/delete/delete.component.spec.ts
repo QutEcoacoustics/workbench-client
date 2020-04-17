@@ -3,14 +3,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { tagGroupResolvers, TagGroupService } from "@baw-api/tag-group.service";
-import { adminTagGroupsMenuItem } from "@component/admin/admin.menus";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
+import { adminTagGroupsMenuItem } from "../tag-group.menus";
 import { AdminTagGroupsDeleteComponent } from "./delete.component";
 
 describe("AdminTagGroupsDeleteComponent", () => {
@@ -85,7 +85,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
     it("should handle tag group error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
