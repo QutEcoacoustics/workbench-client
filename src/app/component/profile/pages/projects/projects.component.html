@@ -22,7 +22,7 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Name">
+    <ngx-datatable-column name="Project">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a [routerLink]="[value.route]">{{ value.label }}</a>
       </ng-template>

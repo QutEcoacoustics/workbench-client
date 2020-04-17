@@ -38,7 +38,7 @@ const accountKey = "account";
 })
 export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   public columns = [
-    { name: "Name" },
+    { name: "Project" },
     { name: "Sites" },
     { name: "Permission" },
   ];
@@ -48,7 +48,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
       api,
       (projects) =>
         projects.map((project) => ({
-          name: {
+          project: {
             label: project.name,
             route: project.redirectPath(),
           },
@@ -66,7 +66,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 
 interface TableRow {
   // name: Project
-  name: {
+  project: {
     label: string;
     route: string;
   };
