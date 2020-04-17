@@ -1,8 +1,8 @@
-import { adminTagGroupsMenuItem } from "../component/admin/admin.menus";
+import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
-  Id
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -52,7 +52,7 @@ export class TagGroup extends AbstractModel implements TagGroupInterface {
       groupIdentifier: this.groupIdentifier,
       createdAt: this.createdAt?.toISO(),
       creatorId: this.creatorId,
-      tagId: this.tagId
+      tagId: this.tagId,
     };
   }
 }

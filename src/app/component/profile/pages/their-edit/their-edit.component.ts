@@ -15,8 +15,8 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { fields } from "../../profile.json";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
-import { fields } from "./their-edit.json";
 
 const accountKey = "account";
 
@@ -47,6 +47,10 @@ const accountKey = "account";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></app-form>
+
+      <hr />
+
+      <baw-detail-view [model]="model" [fields]="fields"></baw-detail-view>
     </app-wip>
   `,
 })

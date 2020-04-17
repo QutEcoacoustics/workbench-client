@@ -1,19 +1,19 @@
 import { Component } from "@angular/core";
 import { TagGroupService } from "@baw-api/tag-group.service";
-import {
-  adminDashboardMenuItem,
-  adminDeleteTagGroupMenuItem,
-  adminEditTagGroupMenuItem,
-  adminNewTagGroupMenuItem,
-  adminTagGroupsCategory,
-  adminTagGroupsMenuItem,
-} from "@component/admin/admin.menus";
+import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
+import {
+  adminDeleteTagGroupMenuItem,
+  adminEditTagGroupMenuItem,
+  adminNewTagGroupMenuItem,
+  adminTagGroupsCategory,
+  adminTagGroupsMenuItem,
+} from "../tag-group.menus";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
