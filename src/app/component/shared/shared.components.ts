@@ -29,7 +29,6 @@ import { ItemsModule } from "./items/items.module";
 import { LoadingComponent } from "./loading/loading.component";
 import { MenuModule } from "./menu/menu.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
-import { TimezoneFormPipe } from "./timezone/timezone.pipe";
 import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
@@ -46,7 +45,6 @@ export const sharedComponents = [
   FormlyTimezoneInput,
   LoadingComponent,
   SecondaryMenuComponent,
-  TimezoneFormPipe,
   WIPComponent,
 ];
 

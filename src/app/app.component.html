@@ -9,20 +9,26 @@
       <div class="d-flex flex-wrap col p-0">
         <div
           id="secondary"
-          [ngClass]="{ secondary: menuLayout, hidden: !menuLayout }"
+          class="p-0 order-1 col-lg-2 col-sm-12"
+          [ngClass]="{ hidden: !menuLayout }"
         >
           <router-outlet name="secondary"></router-outlet>
         </div>
         <div
           id="page"
-          [ngClass]="{ page: menuLayout, 'full-width': !menuLayout }"
+          class="order-lg-2 order-3 col-lg-8 col-12"
+          [ngClass]="{
+            page: menuLayout,
+            'full-width': !menuLayout
+          }"
         >
           <router-outlet></router-outlet>
-          <router-outlet name="error"></router-outlet>
+          <router-outlet class="" name="error"></router-outlet>
         </div>
         <div
           id="action"
-          [ngClass]="{ action: menuLayout, hidden: !menuLayout }"
+          class="p-0 order-lg-3 order-2 col-lg-2 col-12"
+          [ngClass]="{ hidden: !menuLayout }"
         >
           <router-outlet name="action"></router-outlet>
         </div>

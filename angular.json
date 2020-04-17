@@ -36,7 +36,7 @@
               "src/styles.scss",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
-            "scripts": ["node_modules/marked/lib/marked.js"],
+            "scripts": [],
             "sourceMap": true
           },
           "configurations": {
@@ -133,7 +133,7 @@
               "src/styles.scss",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
-            "scripts": ["node_modules/marked/lib/marked.js"]
+            "scripts": []
           }
         },
         "lint": {
