@@ -52,10 +52,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
       api,
       (projects) =>
         projects.map((project) => ({
-          project: {
-            label: project.name,
-            route: project.viewUrl,
-          },
+          project,
           sites: project.siteIds.size,
           permission: "FIX ME",
         })),
@@ -69,11 +66,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
 }
 
 interface TableRow {
-  // name: Project
-  project: {
-    label: string;
-    route: string;
-  };
+  project: Project;
   sites: number;
   permission: string;
 }
