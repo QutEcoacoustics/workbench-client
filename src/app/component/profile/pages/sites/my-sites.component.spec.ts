@@ -1,42 +1,42 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { accountResolvers } from "@baw-api/account.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/projects.service";
-import { userResolvers } from "@baw-api/user.service";
-import { Project, ProjectInterface } from "@models/Project";
+import { ShallowSitesService } from "@baw-api/sites.service";
+import { Site, SiteInterface } from "@models/Site";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { assertResolverErrorHandling, assertRoute } from "src/testHelpers";
-import { MyProjectsComponent } from "./my-projects.component";
+import { MySitesComponent } from "./my-sites.component";
 
-describe("MyProjectsComponent", () => {
-  let api: ProjectsService;
-  let component: MyProjectsComponent;
+describe("MySitesComponent", () => {
+  let api: ShallowSitesService;
+  let component: MySitesComponent;
   let defaultUser: User;
   let defaultError: ApiErrorDetails;
-  let fixture: ComponentFixture<MyProjectsComponent>;
+  let fixture: ComponentFixture<MySitesComponent>;
 
   function configureTestingModule(model?: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      declarations: [MyProjectsComponent],
+      declarations: [MySitesComponent],
       imports: [SharedModule, RouterTestingModule],
       providers: [
         ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            { account: userResolvers.show },
+            { account: accountResolvers.show },
             { account: { model, error } }
           ),
         },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MyProjectsComponent);
-    api = TestBed.inject(ProjectsService);
+    fixture = TestBed.createComponent(MySitesComponent);
+    api = TestBed.inject(ShallowSitesService);
     component = fixture.componentInstance;
   }
 
@@ -70,9 +70,9 @@ describe("MyProjectsComponent", () => {
   });
 
   describe("table", () => {
-    function setProject(data: ProjectInterface) {
-      const project = new Project({ id: 1, name: "project", ...data });
-      project.addMetadata({
+    function setSite(data: SiteInterface) {
+      const site = new Site({ id: 1, name: "site", ...data });
+      site.addMetadata({
         status: 200,
         message: "OK",
         paging: {
@@ -84,45 +84,40 @@ describe("MyProjectsComponent", () => {
       });
 
       spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Project[]>([project]);
+        return new BehaviorSubject<Site[]>([site]);
       });
 
-      return project;
+      return site;
     }
 
     function getCells(): NodeListOf<HTMLDivElement> {
       return fixture.nativeElement.querySelectorAll("datatable-body-cell");
     }
 
-    it("should display project name", () => {
+    it("should display site name", () => {
       configureTestingModule(defaultUser);
-      setProject({ name: "custom project" });
+      setSite({ name: "custom site" });
       fixture.detectChanges();
 
-      expect(getCells()[0].innerText.trim()).toBe("custom project");
+      expect(getCells()[0].innerText.trim()).toBe("custom site");
     });
 
-    it("should display project name link", () => {
+    it("should display site name link", () => {
       configureTestingModule(defaultUser);
-      const project = setProject({ name: "custom project" });
+      const site = setSite({ projectIds: new Set([1]) });
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, project.redirectPath());
-    });
-
-    it("should display number of sites", () => {
-      configureTestingModule(defaultUser);
-      setProject({ siteIds: new Set([1, 2, 3, 4, 5]) });
-      fixture.detectChanges();
-
-      expect(getCells()[1].innerText).toBe("5");
+      assertRoute(link, site.redirectPath());
     });
 
     // TODO Implement
+    xit("should display no recent audio upload", () => {});
+    xit("should display recent audio upload", () => {});
     xit("should display reader permissions", () => {});
     xit("should display writer permissions", () => {});
     xit("should display owner permissions", () => {});
     xit("should display owner permissions link", () => {});
+    xit("should display annotation link", () => {});
   });
 });

@@ -9,7 +9,7 @@ import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
+import { assertResolverErrorHandling, testFormlyFields } from "src/testHelpers";
 import { fields } from "../../project.json";
 import { EditComponent } from "./edit.component";
 
@@ -120,7 +120,7 @@ describe("ProjectsEditComponent", () => {
 
     it("should handle project error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

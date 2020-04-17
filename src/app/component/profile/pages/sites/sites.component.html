@@ -1,14 +1,11 @@
 <div *ngIf="rows && !error && !failure">
   <h1>
-    Projects
+    Sites
     <small class="text-muted">accessible by {{ account.userName }}</small>
   </h1>
 
   <p>
-    You can request access to existing projects or create your own projects.
-  </p>
-  <p>
-    Displaying <strong>all {{ totalModels }}</strong> projects.
+    Displaying <strong>all {{ totalModels }}</strong> sites.
   </p>
 
   <ngx-datatable
@@ -22,13 +19,20 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Project">
+    <ngx-datatable-column name="Site">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a [routerLink]="[value.route]">{{ value.label }}</a>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Sites"> </ngx-datatable-column>
+    <ngx-datatable-column name="Recent Audio Upload"> </ngx-datatable-column>
     <ngx-datatable-column name="Permission"> </ngx-datatable-column>
+    <ngx-datatable-column name="Annotation" width="115" maxWidth="115">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-default" [routerLink]="[value]">
+          Annotation
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
   </ngx-datatable>
 </div>
 

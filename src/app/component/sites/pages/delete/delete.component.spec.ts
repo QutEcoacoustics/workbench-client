@@ -11,10 +11,10 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import {
   siteResolvers,
-  SitesService
+  SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {
@@ -43,21 +43,21 @@ describe("SitesDeleteComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              site: siteResolvers.show
+              site: siteResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
+                error: projectError,
               },
               site: {
                 model: site,
-                error: siteError
-              }
+                error: siteError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteComponent);
@@ -76,15 +76,15 @@ describe("SitesDeleteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: 1,
-      name: "Site"
+      name: "Site",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -103,7 +103,7 @@ describe("SitesDeleteComponent", () => {
 
     it("should handle project error", () => {
       configureTestingModule(undefined, defaultError, defaultSite, undefined);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should handle site error", () => {
@@ -113,7 +113,7 @@ describe("SitesDeleteComponent", () => {
         undefined,
         defaultError
       );
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
