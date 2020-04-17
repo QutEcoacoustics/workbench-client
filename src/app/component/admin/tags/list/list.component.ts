@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { TagsService } from "@baw-api/tags.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
@@ -32,8 +32,22 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag>
-  implements OnInit {
+export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
+  public columns = [
+    { name: "Text" },
+    { name: "Count" },
+    { name: "Taxanomic" },
+    { name: "Retired" },
+    { name: "type" },
+    { name: "Tag" },
+  ];
+  public sortKeys = {
+    text: "text",
+    taxanomic: "isTaxanomic",
+    retired: "retired",
+    type: "typeOfTag",
+  };
+
   constructor(api: TagsService) {
     super(api, (tags) =>
       tags.map((tag) => ({
@@ -45,25 +59,6 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag>
         tag,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [
-      { name: "Text" },
-      { name: "Count" },
-      { name: "Taxanomic" },
-      { name: "Retired" },
-      { name: "type" },
-      { name: "Tag" },
-    ];
-    this.sortKeys = {
-      text: "text",
-      taxanomic: "isTaxanomic",
-      retired: "retired",
-      type: "typeOfTag",
-    };
-
-    this.getModels();
   }
 
   editPath(tag: Tag): string {

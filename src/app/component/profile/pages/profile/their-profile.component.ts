@@ -5,7 +5,7 @@ import { ResolvedModel } from "@baw-api/resolver-common";
 import {
   theirAnnotationsMenuItem,
   theirBookmarksMenuItem,
-  theirEditProfileMenuItem,
+  theirEditMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
   theirProjectsMenuItem,
@@ -20,7 +20,7 @@ import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
 
 export const theirProfileMenuItemActions = [
-  theirEditProfileMenuItem,
+  theirEditMenuItem,
   theirProjectsMenuItem,
   theirSitesMenuItem,
   theirBookmarksMenuItem,
@@ -41,7 +41,7 @@ const accountKey = "account";
   self: theirProfileMenuItem,
 })
 @Component({
-  selector: "app-profile",
+  selector: "app-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })

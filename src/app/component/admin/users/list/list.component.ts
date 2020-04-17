@@ -7,7 +7,7 @@ import {
 } from "@component/admin/admin.menus";
 import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
 import {
-  theirEditProfileMenuItem,
+  theirEditMenuItem,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
 import { Page } from "@helpers/page/pageDecorator";
@@ -32,9 +32,19 @@ import { List } from "immutable";
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
-  implements OnInit {
+export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
+  public columns = [
+    { name: "Account" },
+    { name: "User" },
+    { name: "Last Login" },
+    { name: "Confirmed" },
+  ];
+  public sortKeys = {
+    user: "userName",
+    lastLogin: "lastSeenAt",
+  };
+  public filterKey = "userName";
 
   constructor(api: AccountService) {
     super(api, (accounts) =>
@@ -45,21 +55,6 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
         confirmed: account.isConfirmed,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [
-      { name: "Account" },
-      { name: "User" },
-      { name: "Last Login" },
-      { name: "Confirmed" },
-    ];
-    this.sortKeys = {
-      user: "userName",
-      lastLogin: "lastSeenAt",
-    };
-    this.filterKey = "userName";
-    this.getModels();
   }
 
   /**
@@ -76,7 +71,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
    * @param user User Account
    */
   public editPath(user: User) {
-    return theirEditProfileMenuItem.route
+    return theirEditMenuItem.route
       .toString()
       .replace(":accountId", user.id.toString());
   }

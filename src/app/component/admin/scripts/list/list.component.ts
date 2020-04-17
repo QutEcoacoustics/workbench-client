@@ -31,8 +31,24 @@ export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
-  implements OnInit {
+export class AdminScriptsComponent extends PagedTableTemplate<
+  TableRow,
+  Script
+> {
+  public columns = [
+    { name: "Name" },
+    { name: "Version" },
+    { name: "Id" },
+    { name: "Command" },
+  ];
+  public sortKeys = {
+    name: "name",
+    version: "version",
+    id: "id",
+    command: "executableCommand",
+  };
+  public filterKey = "name";
+
   constructor(api: ScriptsService) {
     super(api, (scripts) =>
       scripts.map((script) => ({
@@ -42,23 +58,6 @@ export class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script>
         command: script.executableCommand,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [
-      { name: "Name" },
-      { name: "Version" },
-      { name: "Id" },
-      { name: "Command" },
-    ];
-    this.sortKeys = {
-      name: "name",
-      version: "version",
-      id: "id",
-      command: "executableCommand",
-    };
-    this.filterKey = "name";
-    this.getModels();
   }
 }
 

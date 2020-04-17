@@ -9,7 +9,7 @@ import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { adminTagsMenuItem } from "../tags.menus";
 import { AdminTagsDeleteComponent } from "./delete.component";
 
@@ -84,7 +84,7 @@ describe("AdminTagsDeleteComponent", () => {
 
     it("should handle tag error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

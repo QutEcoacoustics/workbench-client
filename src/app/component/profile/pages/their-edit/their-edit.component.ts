@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { accountResolvers, AccountService } from "@baw-api/account.service";
 import {
-  theirEditProfileMenuItem,
+  theirEditMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
@@ -32,7 +32,7 @@ const accountKey = "account";
   resolvers: {
     [accountKey]: accountResolvers.show,
   },
-  self: theirEditProfileMenuItem,
+  self: theirEditMenuItem,
 })
 @Component({
   selector: "app-their-profile-edit",
