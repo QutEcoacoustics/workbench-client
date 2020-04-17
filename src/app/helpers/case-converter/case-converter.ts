@@ -1,5 +1,5 @@
-import camelCase from "lodash.camelcase";
-import snakeCase from "lodash.snakecase";
+import camelCase from "lodash/camelcase";
+import snakeCase from "lodash/snakecase";
 
 // List of whitelist keys which should have their values converted
 import * as whitelist from "./whitelist.json";

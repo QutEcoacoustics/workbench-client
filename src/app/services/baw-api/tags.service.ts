@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import _ from "lodash";
+import startCase from "lodash/startCase";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
@@ -38,7 +38,7 @@ export class TagType extends AbstractData {
   }
 
   toString() {
-    return _.startCase(this.name);
+    return startCase(this.name);
   }
 }
 

@@ -1,9 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
-import moment from "moment";
-import "moment-timezone";
-import { Timezone, TimezoneService } from "../timezone/timezone.service";
 
 /**
  * Timezone Input
@@ -11,9 +7,7 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-timezone-input",
-  template: `
-    <p>Timezone Input Placeholder</p>
-  `
+  template: ` <p>Timezone Input Placeholder</p> `,
 })
 // template: `
 //   <div class="form-group">
@@ -65,52 +59,9 @@ import { Timezone, TimezoneService } from "../timezone/timezone.service";
 // })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
-  timezones: Timezone[];
-  formControl: FormControl;
-  previousValue: string;
-  currentTime: string;
-
-  constructor(public service: TimezoneService) {
+  constructor() {
     super();
   }
 
-  ngOnInit() {
-    // this.timezones = this.service.getZones();
-    // this.previousValue = this.model[this.key];
-  }
-
-  /**
-   * Format a zone into a human readable format
-   * eg. Australia/Lord_Howe => Australia - Lord Howe
-   * @param zone Zone to format
-   */
-  formatTimezoneString(zone: string): string {
-    const arr = zone.split("/");
-    return arr[arr.length - 1].replace("_", " ");
-  }
-
-  /**
-   * Produce a string with the offset of a timezone
-   * @param zone Timezone
-   */
-  offsetOfTimezone(zone: string): string {
-    const abbreviation = moment.tz(zone).zoneAbbr();
-
-    // Check if abbreviation is known
-    if (abbreviation.includes("+") || abbreviation.includes("-")) {
-      return moment.tz(zone).format("(Z)");
-    } else {
-      return moment.tz(zone).format("z (Z)");
-    }
-  }
-
-  calculateCurrentTime() {
-    if (this.model[this.key] && this.model[this.key] !== "") {
-      this.currentTime = moment(new Date())
-        .tz(this.model[this.key])
-        .format("[Currently:] dddd, MMMM Do YYYY, h:mm:ss a z (Z)");
-    } else {
-      this.currentTime = "";
-    }
-  }
+  ngOnInit() {}
 }
