@@ -8,7 +8,7 @@ class MockModel extends AbstractModel {
     super(opts);
   }
 
-  public navigationPath(...args: any): string {
+  public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
   public toJSON(): object {

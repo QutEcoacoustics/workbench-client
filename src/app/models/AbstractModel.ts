@@ -28,9 +28,18 @@ export abstract class AbstractModel {
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.
+   */
+  public abstract get viewUrl(): string;
+
+  /**
+   * Redirect path to view model on website. This is a string which can be
+   * used by `Router.navigateByUrl()` without any processing. For example,
+   * for the project abstract model, this path should direct to the project page.
    * @param args Url arguments
    */
-  public abstract navigationPath(...args: any): string;
+  public getViewUrl(...args: any[]): string {
+    return this.viewUrl;
+  }
 
   /**
    * Convert model to JSON

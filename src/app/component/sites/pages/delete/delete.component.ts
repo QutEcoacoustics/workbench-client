@@ -85,7 +85,7 @@ export class DeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 
   protected redirectionPath() {
-    return this.project.navigationPath();
+    return this.project.viewUrl;
   }
 
   protected apiAction(model: Partial<Site>) {

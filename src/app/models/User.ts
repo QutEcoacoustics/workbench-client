@@ -173,7 +173,7 @@ export class User extends AbstractModel implements IUser {
     return "/assets/images/user/user_span4.png";
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return theirProfileMenuItem.route
       .toString()
       .replace(":accountId", this.id.toString());
@@ -212,7 +212,7 @@ export class SessionUser extends User implements SessionUserInterface {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return myAccountMenuItem.route.toString();
   }
 }

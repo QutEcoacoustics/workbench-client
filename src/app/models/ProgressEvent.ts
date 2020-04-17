@@ -35,7 +35,7 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

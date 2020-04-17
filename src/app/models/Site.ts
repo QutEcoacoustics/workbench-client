@@ -68,14 +68,21 @@ export class Site extends AbstractModel implements ISite {
     };
   }
 
-  public navigationPath(project?: Project): string {
-    if (!project?.id && this.projectIds.size === 0) {
+  public get viewUrl(): string {
+    if (this.projectIds.size === 0) {
       console.error("Site model has no project id, cannot find url.");
       return "";
     }
 
     return siteMenuItem.route.format({
-      projectId: project?.id || this.projectIds[0],
+      projectId: this.projectIds[0],
+      siteId: this.id,
+    });
+  }
+
+  public getViewUrl(project: Project): string {
+    return siteMenuItem.route.format({
+      projectId: project.id,
       siteId: this.id,
     });
   }

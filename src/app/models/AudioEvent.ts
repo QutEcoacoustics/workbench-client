@@ -57,7 +57,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

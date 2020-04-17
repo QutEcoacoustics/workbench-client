@@ -24,7 +24,7 @@ import {
 class MockModel extends AbstractModel {
   public kind: "MockModel" = "MockModel";
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "";
   }
   public toJSON(): object {

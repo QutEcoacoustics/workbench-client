@@ -55,7 +55,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

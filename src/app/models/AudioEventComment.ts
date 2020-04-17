@@ -57,7 +57,7 @@ export class AudioEventComment extends AbstractModel
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

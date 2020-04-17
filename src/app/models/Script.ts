@@ -65,7 +65,7 @@ export class Script extends AbstractModel implements IScript {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return adminScriptsMenuItem.route.toString();
   }
 }

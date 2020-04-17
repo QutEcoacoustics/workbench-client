@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { AbstractModel } from "src/app/models/AbstractModel";
+import { Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 
 export class MockModel extends AbstractModel {
   public readonly id: Id;
@@ -19,7 +19,7 @@ export class MockModel extends AbstractModel {
     return json;
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "";
   }
 }

@@ -186,21 +186,21 @@ describe("SitesEditComponent", () => {
     it("should redirect to site", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "navigationPath").and.stub();
+      spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 
       component.submit({});
-      expect(site.navigationPath).toHaveBeenCalled();
+      expect(site.getViewUrl).toHaveBeenCalled();
     });
 
     it("should redirect to site with project", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "navigationPath").and.stub();
+      spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 
       component.submit({});
-      expect(site.navigationPath).toHaveBeenCalledWith(defaultProject);
+      expect(site.getViewUrl).toHaveBeenCalledWith(defaultProject);
     });
   });
 });

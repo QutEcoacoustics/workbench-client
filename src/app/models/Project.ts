@@ -73,11 +73,11 @@ export class Project extends AbstractModel implements IProject {
         url: this.imageUrl,
         alt: this.name,
       },
-      route: this.navigationPath(),
+      route: this.viewUrl,
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return projectMenuItem.route.format({ projectId: this.id });
   }
 }

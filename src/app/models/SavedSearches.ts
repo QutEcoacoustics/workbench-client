@@ -45,7 +45,7 @@ export class SavedSearches extends AbstractModel implements ISavedSearches {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

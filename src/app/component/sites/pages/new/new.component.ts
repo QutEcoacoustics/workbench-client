@@ -69,7 +69,7 @@ export class NewComponent extends FormTemplate<Site> {
   }
 
   protected redirectionPath(model: Site) {
-    return model.navigationPath(this.project);
+    return model.getViewUrl(this.project);
   }
 
   protected apiAction(model: Partial<Site>) {

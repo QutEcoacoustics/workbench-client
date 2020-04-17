@@ -90,7 +90,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

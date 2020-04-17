@@ -50,7 +50,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
         projects.map((project) => ({
           project: {
             label: project.name,
-            route: project.navigationPath(),
+            route: project.viewUrl,
           },
           sites: project.siteIds.size,
           permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425

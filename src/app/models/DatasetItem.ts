@@ -44,7 +44,7 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

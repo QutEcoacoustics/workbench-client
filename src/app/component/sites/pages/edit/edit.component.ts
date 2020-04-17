@@ -87,7 +87,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
   }
 
   protected redirectionPath(model: Site) {
-    return model.navigationPath(this.project);
+    return model.getViewUrl(this.project);
   }
 
   protected apiAction(model: Partial<Site>) {

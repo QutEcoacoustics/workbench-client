@@ -155,7 +155,7 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param model Model
    */
   protected redirectionPath(model: M): string {
-    return model.navigationPath();
+    return model.viewUrl;
   }
 
   /**

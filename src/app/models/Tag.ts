@@ -59,7 +59,7 @@ export class Tag extends AbstractModel implements ITag {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return adminTagsMenuItem.route.toString();
   }
 }

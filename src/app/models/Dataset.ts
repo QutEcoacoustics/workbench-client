@@ -42,7 +42,7 @@ export class Dataset extends AbstractModel implements IDataset {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

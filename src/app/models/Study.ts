@@ -41,7 +41,7 @@ export class Study extends AbstractModel implements IStudy {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

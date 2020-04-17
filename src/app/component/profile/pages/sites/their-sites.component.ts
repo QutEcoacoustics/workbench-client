@@ -46,7 +46,7 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
         sites.map((site) => ({
           site: {
             label: site.name,
-            route: site.navigationPath(),
+            route: site.viewUrl,
           },
           recentAudioUpload: "(none)",
           permission: "FIX ME",

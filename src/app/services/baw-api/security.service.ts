@@ -1,11 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, flatMap, map } from "rxjs/operators";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser } from "src/app/models/User";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
 import { UserService } from "./user.service";
@@ -119,7 +119,7 @@ export class LoginDetails extends AbstractModel
     };
   }
 
-  navigationPath(): string {
+  public get viewUrl(): string {
     throw new Error("Not Implemented");
   }
 }

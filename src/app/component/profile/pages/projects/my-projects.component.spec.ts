@@ -108,7 +108,7 @@ describe("MyProjectsComponent", () => {
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, project.navigationPath());
+      assertRoute(link, project.viewUrl);
     });
 
     it("should display number of sites", () => {

@@ -96,7 +96,7 @@ describe("BawApiService", () => {
       return json;
     }
 
-    public navigationPath(): string {
+    public get viewUrl(): string {
       return "";
     }
   }

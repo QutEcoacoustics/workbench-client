@@ -40,7 +40,7 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }

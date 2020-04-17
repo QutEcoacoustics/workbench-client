@@ -108,7 +108,7 @@ describe("MySitesComponent", () => {
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, site.navigationPath());
+      assertRoute(link, site.viewUrl);
     });
 
     // TODO Implement

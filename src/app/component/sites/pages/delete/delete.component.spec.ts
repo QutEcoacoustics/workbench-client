@@ -124,12 +124,12 @@ describe("SitesDeleteComponent", () => {
     });
 
     it("should redirect to projects", () => {
-      spyOn(defaultProject, "navigationPath");
+      const spy = spyOnProperty(defaultProject, "viewUrl");
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
-      expect(defaultProject.navigationPath).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

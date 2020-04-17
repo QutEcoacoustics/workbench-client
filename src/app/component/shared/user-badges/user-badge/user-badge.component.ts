@@ -24,7 +24,7 @@ import { User } from "src/app/models/User";
       <div id="users">
         <div class="media" *ngFor="let user of users">
           <div class="image">
-            <a id="imageLink" [routerLink]="user.navigationPath()">
+            <a id="imageLink" [routerLink]="user.viewUrl">
               <img
                 [src]="user.getImage(imageSize)"
                 [alt]="user.userName + ' profile picture'"
@@ -32,12 +32,9 @@ import { User } from "src/app/models/User";
             </a>
           </div>
           <div class="body">
-            <a
-              id="username"
-              class="heading"
-              [routerLink]="user.navigationPath()"
-              >{{ user.userName }}</a
-            >
+            <a id="username" class="heading" [routerLink]="user.viewUrl">{{
+              user.userName
+            }}</a>
             <br />
             <p
               id="lengthOfTime"

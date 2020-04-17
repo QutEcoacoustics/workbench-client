@@ -94,7 +94,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
     };
   }
 
-  public navigationPath(): string {
+  public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }
