@@ -45,12 +45,13 @@ export const myProjectsMenuItem = MenuRoute({
   tooltip: (user) => `Projects ${user.userName} can access`,
 });
 
-export const mySitesMenuItem = MenuLink({
+export const mySitesMenuItem = MenuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "My Sites",
-  predicate: (user) => !!user,
+  parent: myAccountMenuItem,
+  predicate: isLoggedInPredicate,
+  route: myAccountMenuItem.route.add("sites"),
   tooltip: (user) => `Sites ${user.userName} can access`,
-  uri: () => "BROKEN LINK",
 });
 
 export const myBookmarksMenuItem = MenuLink({
@@ -110,12 +111,13 @@ export const theirProjectsMenuItem = MenuRoute({
   tooltip: () => "Projects they can access",
 });
 
-export const theirSitesMenuItem = MenuLink({
+export const theirSitesMenuItem = MenuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Their Sites",
-  predicate: (user) => !!user,
+  parent: theirProfileMenuItem,
+  predicate: isAdminPredicate,
+  route: theirProfileMenuItem.route.add("sites"),
   tooltip: () => "Sites they can access",
-  uri: () => "BROKEN LINK",
 });
 
 export const theirBookmarksMenuItem = MenuLink({

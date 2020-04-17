@@ -1,16 +1,17 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account.service";
-import { ProjectsService } from "@baw-api/projects.service";
+import { ShallowSitesService } from "@baw-api/sites.service";
 import {
   theirProfileCategory,
   theirProfileMenuItem,
-  theirProjectsMenuItem,
+  theirSitesMenuItem,
 } from "@component/profile/profile.menus";
+import { annotationsMenuItem } from "@component/sites/sites.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileMenuItemActions } from "../profile/their-profile.component";
@@ -29,35 +30,27 @@ const accountKey = "account";
   resolvers: {
     [accountKey]: accountResolvers.show,
   },
-  self: theirProjectsMenuItem,
+  self: theirSitesMenuItem,
 })
 @Component({
-  selector: "app-their-account-projects",
-  templateUrl: "./projects.component.html",
-  styleUrls: ["./projects.component.scss"],
+  selector: "app-their-account-sites",
+  templateUrl: "./sites.component.html",
+  styleUrls: ["./sites.component.scss"],
 })
-export class TheirProjectsComponent extends PagedTableTemplate<
-  TableRow,
-  Project
-> {
-  public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
-  ];
-
-  // TODO Utilize https://github.com/QutEcoacoustics/baw-server/issues/438 service
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
+  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+    // TODO Add missing details https://github.com/QutEcoacoustics/baw-server/issues/406
     super(
       api,
-      (projects) =>
-        projects.map((project) => ({
-          project: {
-            label: project.name,
-            route: project.redirectPath(),
+      (sites) =>
+        sites.map((site) => ({
+          site: {
+            label: site.name,
+            route: site.redirectPath(),
           },
-          sites: project.siteIds.size,
+          recentAudioUpload: "(none)",
           permission: "FIX ME",
+          annotation: annotationsMenuItem.uri(undefined),
         })),
       route
     );
@@ -69,11 +62,12 @@ export class TheirProjectsComponent extends PagedTableTemplate<
 }
 
 interface TableRow {
-  // name: Project
-  project: {
+  // name: Site
+  site: {
     label: string;
     route: string;
   };
-  sites: number;
+  recentAudioUpload: string;
   permission: string;
+  annotation: string;
 }
