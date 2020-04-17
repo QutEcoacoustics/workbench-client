@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AbstractModel } from "src/app/models/AbstractModel";
+import { AbstractModel } from "@models/AbstractModel";
 import { DetailViewComponent } from "./detail-view.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
@@ -8,7 +8,7 @@ class MockModel extends AbstractModel {
     super(opts);
   }
 
-  public redirectPath(...args: any): string {
+  public navigationPath(...args: any): string {
     throw new Error("Method not implemented.");
   }
   public toJSON(): object {

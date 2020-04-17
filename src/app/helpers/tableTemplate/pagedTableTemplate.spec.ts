@@ -24,7 +24,7 @@ import {
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
 class MockModel extends AbstractModel {
-  public redirectPath(...args: any): string {
+  public navigationPath(...args: any): string {
     throw new Error("Method not implemented.");
   }
   public toJSON(): object {

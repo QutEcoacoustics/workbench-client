@@ -54,7 +54,7 @@ export class TheirProjectsComponent extends PagedTableTemplate<
         projects.map((project) => ({
           project: {
             label: project.name,
-            route: project.redirectPath(),
+            route: project.navigationPath(),
           },
           sites: project.siteIds.size,
           permission: "FIX ME",

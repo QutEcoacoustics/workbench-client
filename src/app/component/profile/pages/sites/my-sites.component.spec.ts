@@ -4,7 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowSitesService } from "@baw-api/sites.service";
-import { Site, SiteInterface } from "@models/Site";
+import { ISite, Site } from "@models/Site";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
@@ -70,7 +70,7 @@ describe("MySitesComponent", () => {
   });
 
   describe("table", () => {
-    function setSite(data: SiteInterface) {
+    function setSite(data: ISite) {
       const site = new Site({ id: 1, name: "site", ...data });
       site.addMetadata({
         status: 200,
@@ -108,7 +108,7 @@ describe("MySitesComponent", () => {
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, site.redirectPath());
+      assertRoute(link, site.navigationPath());
     });
 
     // TODO Implement

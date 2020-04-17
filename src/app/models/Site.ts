@@ -68,7 +68,7 @@ export class Site extends AbstractModel implements ISite {
     };
   }
 
-  public navigationPath(project: Project): string {
+  public navigationPath(project?: Project): string {
     if (!project?.id && this.projectIds.size === 0) {
       console.error("Site model has no project id, cannot find url.");
       return "";

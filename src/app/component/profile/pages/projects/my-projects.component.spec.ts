@@ -4,7 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/projects.service";
 import { userResolvers } from "@baw-api/user.service";
-import { Project, ProjectInterface } from "@models/Project";
+import { IProject, Project } from "@models/Project";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
@@ -70,7 +70,7 @@ describe("MyProjectsComponent", () => {
   });
 
   describe("table", () => {
-    function setProject(data: ProjectInterface) {
+    function setProject(data: IProject): Project {
       const project = new Project({ id: 1, name: "project", ...data });
       project.addMetadata({
         status: 200,
@@ -108,7 +108,7 @@ describe("MyProjectsComponent", () => {
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, project.redirectPath());
+      assertRoute(link, project.navigationPath());
     });
 
     it("should display number of sites", () => {
