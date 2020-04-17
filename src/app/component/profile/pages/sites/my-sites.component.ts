@@ -40,6 +40,8 @@ const accountKey = "account";
 export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details
+    // https://github.com/QutEcoacoustics/baw-server/issues/438
+    // https://github.com/QutEcoacoustics/baw-server/issues/406
     super(
       api,
       (sites) =>
