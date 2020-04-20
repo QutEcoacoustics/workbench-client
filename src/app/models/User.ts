@@ -13,7 +13,6 @@ import {
   UserName,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Project } from "./Project";
 
 /**
  * A user model.
@@ -68,8 +67,6 @@ export class User extends AbstractModel implements IUser {
   public readonly updatedAt?: DateTimeTimezone;
   public readonly timezoneInformation?: TimezoneInformation;
   public readonly lastSeenAt?: DateTimeTimezone;
-
-  public project: Project;
 
   constructor(user: IUser) {
     super(user);
