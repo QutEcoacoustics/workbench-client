@@ -46,6 +46,10 @@ export class HomeComponent extends PageComponent implements OnInit {
           return this.projectApi.filter({ paging: { items: 3 } });
         }),
         map((data: Project[]) => {
+          console.log(data);
+          data[0].sites.subscribe((sites) => {
+            console.log(sites);
+          });
           return List(data.map((project) => project.getCard()));
         }),
         takeUntil(this.unsubscribe)
