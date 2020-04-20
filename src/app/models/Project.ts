@@ -23,13 +23,13 @@ import type { User } from "./User";
 export interface IProject {
   id?: Id;
   name?: Param;
+  description?: Description;
   imageUrl?: string;
   creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
   ownerId?: Id;
-  description?: Description;
   siteIds?: Ids;
 }
 
@@ -40,22 +40,24 @@ export class Project extends AbstractModel implements IProject {
   public readonly kind: "Project" = "Project";
   public readonly id?: Id;
   public readonly name?: Param;
+  public readonly description?: Description;
   public readonly imageUrl?: string;
-  @HasMany<Site, ShallowSitesService>(SHALLOW_SITES_SERVICE)
-  public readonly siteIds?: Ids;
   @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
   @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
+  @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly ownerId?: Id;
-  public readonly description?: Description;
+  @HasMany<Site, ShallowSitesService>(SHALLOW_SITES_SERVICE)
+  public readonly siteIds?: Ids;
 
   // Associations
   public readonly sites?: Observable<Site[]>;
   public readonly creator?: Observable<Id>;
   public readonly updater?: Observable<Id>;
+  public readonly owner?: Observable<Id>;
 
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);
