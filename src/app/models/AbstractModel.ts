@@ -10,6 +10,7 @@ import { Meta } from "../services/baw-api/baw-api.service";
  */
 export abstract class AbstractModel {
   constructor(raw: object, private injector?: Injector) {
+    this[AbstractModel.associationsKey] = {};
     return Object.assign(this, raw);
   }
 
@@ -17,6 +18,11 @@ export abstract class AbstractModel {
    * Hidden meta symbol
    */
   private static metaKey = Symbol("meta");
+
+  /**
+   * Hidden associations key
+   */
+  private static associationsKey = Symbol("associations");
 
   /**
    * Model ID
@@ -27,10 +33,6 @@ export abstract class AbstractModel {
    * Model Identifier
    */
   public readonly kind: string;
-
-  protected associations: {
-    [key: string]: AbstractModel | AbstractModel[];
-  } = {};
 
   /**
    * Redirect path to view model on website. This is a string which can be
@@ -67,60 +69,6 @@ export abstract class AbstractModel {
    */
   public getMetadata(): Meta {
     return this[AbstractModel.metaKey];
-  }
-
-  /**
-   * Retrieve models from the API
-   * @param serviceToken Service Token (ServiceTokens.ts)
-   * @param filters API Filters
-   * @param cacheFn Caching function for saving results
-   */
-  protected getModels<M extends AbstractModel, T extends ApiFilter<M, any>>(
-    serviceToken: InjectionToken<any>,
-    cacheFn: (models: M[]) => void,
-    ids: Ids,
-    key: string = "id"
-  ) {
-    const service = this.injector?.get<T>(serviceToken);
-    if (!service) {
-      return null;
-    }
-
-    return service.filter({ filter: { [key]: { in: ids } } }).pipe(
-      map((models: M[]) => {
-        cacheFn(models);
-        return models;
-      })
-    );
-  }
-
-  /**
-   * Retrieve model from the API
-   * @param serviceToken Service Token (ServiceTokens.ts)
-   * @param id Model ID
-   * @param ids Additional IDs
-   * @param cacheFn Caching function for saving results
-   */
-  protected getModel<
-    M extends AbstractModel,
-    T extends ApiShow<M, any, IdOr<M>>
-  >(
-    serviceToken: InjectionToken<any>,
-    cacheFn: (models: M) => void,
-    id: Id,
-    ids: Ids = new Set([])
-  ) {
-    const service = this.injector?.get<T>(serviceToken);
-    if (!service) {
-      return null;
-    }
-
-    return service.show(id, ...ids).pipe(
-      map((model: M) => {
-        cacheFn(model);
-        return model;
-      })
-    );
   }
 
   /**
@@ -195,13 +143,13 @@ function createGetter<M extends AbstractModel, T>(
       }
 
       // If field is undefined, return
-      if (!this[field]) {
-        return undefined;
+      if (this[field] === undefined || this[field] === null) {
+        return of(null);
       }
 
       // If result cached, return
-      if (this["associations"][association]) {
-        return of(this["associations"][association]);
+      if (this[AbstractModel["associationsKey"]][association]) {
+        return of(this[AbstractModel["associationsKey"]][association]);
       }
 
       // Create service and request from API
@@ -209,7 +157,7 @@ function createGetter<M extends AbstractModel, T>(
       return createService(service, this[field]).pipe(
         map((model: M | M[]) => {
           // Save to cache and return models
-          this["associations"][association] = model;
+          this[AbstractModel["associationsKey"]][association] = model;
           return model;
         })
       );

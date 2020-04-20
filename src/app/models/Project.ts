@@ -2,7 +2,7 @@ import { Injector } from "@angular/core";
 import { AccountService } from "@baw-api/account.service";
 import { ACCOUNT_SERVICE, SHALLOW_SITES_SERVICE } from "@baw-api/ServiceTokens";
 import type { ShallowSitesService } from "@baw-api/sites.service";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
 import {
