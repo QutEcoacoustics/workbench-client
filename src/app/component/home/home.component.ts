@@ -47,10 +47,10 @@ export class HomeComponent extends PageComponent implements OnInit {
         }),
         map((data: Project[]) => {
           console.log(data);
-          (data[0] as any).sites.subscribe((sites) => {
+          data[0].sites.subscribe((sites) => {
             console.log(sites);
           });
-          (data[0] as any).creator.subscribe((creator) => {
+          data[0].creator.subscribe((creator) => {
             console.log(creator);
           });
           return List(data.map((project) => project.getCard()));

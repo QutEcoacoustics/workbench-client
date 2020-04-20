@@ -52,6 +52,11 @@ export class Project extends AbstractModel implements IProject {
   public readonly ownerId?: Id;
   public readonly description?: Description;
 
+  // Associations
+  public readonly sites?: Observable<Site[]>;
+  public readonly creator?: Observable<Id>;
+  public readonly updater?: Observable<Id>;
+
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);
 
