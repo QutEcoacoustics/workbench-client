@@ -61,6 +61,10 @@ export class AudioEventComment extends AbstractModel
   @HasOne(ACCOUNT, (m: AudioEventComment) => m.deleterId)
   public deleter?: Observable<User>;
 
+  constructor(audioEventComment: IAudioEventComment) {
+    super(audioEventComment);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

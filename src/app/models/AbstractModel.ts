@@ -217,6 +217,10 @@ export function BawPersistAttr(model: AbstractModel, key: string) {
  * Convert a collection of ids into a set
  */
 export const BawCollection = createDecorator((model, key, ids: Id[]) => {
+  if (!(ids instanceof Array)) {
+    return;
+  }
+
   model[key] = new Set(ids || []);
 });
 
@@ -224,6 +228,10 @@ export const BawCollection = createDecorator((model, key, ids: Id[]) => {
  * Convert timestamp string into DateTimeTimezone
  */
 export const BawDateTime = createDecorator((model, key, timestamp: string) => {
+  if (typeof timestamp !== "string") {
+    return;
+  }
+
   model[key] = timestamp
     ? DateTime.fromISO(timestamp, { setZone: true })
     : null;
@@ -233,6 +241,10 @@ export const BawDateTime = createDecorator((model, key, timestamp: string) => {
  * Convert duration string into Duration
  */
 export const BawDuration = createDecorator((model, key, seconds: number) => {
+  if (typeof seconds !== "number") {
+    return;
+  }
+
   /*
     Extra object fields required, do not remove. Duration calculates itself
     based on the time spans provided, if years is removed for example,

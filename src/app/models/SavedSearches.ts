@@ -48,6 +48,10 @@ export class SavedSearches extends AbstractModel implements ISavedSearches {
   @HasOne(ACCOUNT, (m: SavedSearches) => m.deleterId)
   public deleter?: Observable<User>;
 
+  constructor(savedSearches: ISavedSearches) {
+    super(savedSearches);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

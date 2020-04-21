@@ -41,6 +41,10 @@ export class Study extends AbstractModel implements IStudy {
   @HasOne(ACCOUNT, (m: Study) => m.updaterId)
   public updater?: Observable<User>;
 
+  constructor(study: IStudy) {
+    super(study);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

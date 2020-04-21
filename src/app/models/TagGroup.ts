@@ -43,6 +43,10 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   @HasOne(ACCOUNT, (m: TagGroup) => m.creatorId)
   public creator?: Observable<User>;
 
+  constructor(tagGroup: ITagGroup) {
+    super(tagGroup);
+  }
+
   public get viewUrl(): string {
     return adminTagGroupsMenuItem.route.toString();
   }

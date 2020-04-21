@@ -60,6 +60,10 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   @HasOne(ACCOUNT, (m: AudioEvent) => m.deleterId)
   public deleter?: Observable<User>;
 
+  constructor(audioEvent: IAudioEvent) {
+    super(audioEvent);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

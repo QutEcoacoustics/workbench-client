@@ -58,6 +58,10 @@ export class Bookmark extends AbstractModel implements IBookmark {
   @HasOne(ACCOUNT, (m: Bookmark) => m.updaterId)
   public updater?: Observable<User>;
 
+  constructor(bookmark: IBookmark) {
+    super(bookmark);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
     //return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;

@@ -92,6 +92,10 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @HasOne(ACCOUNT, (m: AudioRecording) => m.deleterId)
   public deleter?: Observable<User>;
 
+  constructor(audioRecording: IAudioRecording) {
+    super(audioRecording);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

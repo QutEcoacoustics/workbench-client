@@ -44,6 +44,10 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   @HasOne(ACCOUNT, (m: AudioEventTag) => m.updaterId)
   public updater?: Observable<User>;
 
+  constructor(audioEventTag: IAudioEventTag) {
+    super(audioEventTag);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

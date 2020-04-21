@@ -34,6 +34,10 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   @HasOne(ACCOUNT, (m: ProgressEvent) => m.creatorId)
   public creator?: Observable<User>;
 
+  constructor(progressEvent: IProgressEvent) {
+    super(progressEvent);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

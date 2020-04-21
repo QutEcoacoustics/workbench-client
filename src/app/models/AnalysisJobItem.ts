@@ -39,6 +39,10 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   // Associations
   // TODO Add AnalysisJob, AudioRecording, Queue associations
 
+  constructor(analysisJobItem: IAnalysisJobItem) {
+    super(analysisJobItem);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

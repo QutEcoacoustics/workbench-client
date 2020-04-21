@@ -45,31 +45,9 @@ export class HomeComponent extends PageComponent implements OnInit {
         flatMap(() => {
           return this.projectApi.filter({ paging: { items: 3 } });
         }),
-        map((data: Project[]) => {
-          console.log(data[0]);
-          data[0].sites.subscribe(
-            (sites) => console.log("Sites: ", sites),
-            (error) => console.error("Sites: ", error),
-            () => console.log("Complete Sites")
-          );
-          data[0].creator.subscribe(
-            (creator) => console.log("Creator: ", creator),
-            (error) => console.error("Creator: ", error),
-            () => console.log("Complete Creator")
-          );
-          data[0].updater.subscribe(
-            (updater) => console.log("Updater: ", updater),
-            (error) => console.error("Updater: ", error),
-            () => console.log("Complete Updater")
-          );
-          data[0].owner.subscribe(
-            (owner) => console.log("Owner: ", owner),
-            (error) => console.error("Owner: ", error),
-            () => console.log("Complete Owner")
-          );
-
-          return List(data.map((project) => project.getCard()));
-        }),
+        map((data: Project[]) =>
+          List(data.map((project) => project.getCard()))
+        ),
         takeUntil(this.unsubscribe)
       )
       .subscribe(

@@ -61,6 +61,10 @@ export class Tag extends AbstractModel implements ITag {
   @HasOne(ACCOUNT, (m: Tag) => m.updaterId)
   public updater?: Observable<User>;
 
+  constructor(tag: ITag) {
+    super(tag);
+  }
+
   public get viewUrl(): string {
     return adminTagsMenuItem.route.toString();
   }

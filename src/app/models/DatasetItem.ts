@@ -43,6 +43,10 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
   @HasOne(ACCOUNT, (m: DatasetItem) => m.creatorId)
   public creator?: Observable<User>;
 
+  constructor(datasetItem: IDatasetItem) {
+    super(datasetItem);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

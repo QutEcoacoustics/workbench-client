@@ -45,6 +45,10 @@ export class Dataset extends AbstractModel implements IDataset {
   @HasOne(ACCOUNT, (m: Dataset) => m.updaterId)
   public updater?: Observable<User>;
 
+  constructor(dataset: IDataset) {
+    super(dataset);
+  }
+
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }

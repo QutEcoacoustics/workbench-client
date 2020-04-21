@@ -92,7 +92,6 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map((imageUrl) => {
           // TODO Add /assets by default from the API so this check doesn't need to occur
@@ -172,7 +171,7 @@ export class User extends AbstractModel implements IUser {
 /**
  * A user model for the website user
  */
-export interface SessionUserInterface extends IUser {
+export interface ISessionUser extends IUser {
   userName?: UserName;
   authToken?: AuthToken;
 }
@@ -180,7 +179,7 @@ export interface SessionUserInterface extends IUser {
 /**
  * A user model for the website user
  */
-export class SessionUser extends User implements SessionUserInterface {
+export class SessionUser extends User implements ISessionUser {
   public readonly kind: "User" | "SessionUser" = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
@@ -188,6 +187,10 @@ export class SessionUser extends User implements SessionUserInterface {
   public readonly authToken?: AuthToken;
   @BawPersistAttr
   public readonly userName?: UserName;
+
+  constructor(user: ISessionUser) {
+    super(user);
+  }
 
   public toJSON() {
     return {
