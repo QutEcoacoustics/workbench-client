@@ -42,22 +42,25 @@ export class Project extends AbstractModel implements IProject {
   public readonly name?: Param;
   public readonly description?: Description;
   public readonly imageUrl?: string;
-  @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly creatorId?: Id;
   public readonly createdAt?: DateTimeTimezone;
-  @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly updaterId?: Id;
   public readonly updatedAt?: DateTimeTimezone;
-  @HasOne<User, AccountService>(ACCOUNT_SERVICE)
   public readonly ownerId?: Id;
-  @HasMany<Site, ShallowSitesService>(SHALLOW_SITES_SERVICE)
   public readonly siteIds?: Ids;
 
   // Associations
-  public readonly sites?: Observable<Site[]>;
-  public readonly creator?: Observable<Id>;
-  public readonly updater?: Observable<Id>;
-  public readonly owner?: Observable<Id>;
+  @HasMany<ShallowSitesService>(
+    SHALLOW_SITES_SERVICE,
+    (p: Project) => p.siteIds
+  )
+  public sites?: Observable<Site[]>;
+  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.creatorId)
+  public creator?: Observable<User>;
+  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.updaterId)
+  public updater?: Observable<User>;
+  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.ownerId)
+  public owner?: Observable<User>;
 
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);

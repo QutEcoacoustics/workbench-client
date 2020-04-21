@@ -1,5 +1,5 @@
 import { InjectionToken, Injector } from "@angular/core";
-import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
+import { ApiFilter, ApiShow, IdOr, param } from "@baw-api/api-common";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Id, Ids } from "../interfaces/apiInterfaces";
@@ -10,7 +10,6 @@ import { Meta } from "../services/baw-api/baw-api.service";
  */
 export abstract class AbstractModel {
   constructor(raw: object, private injector?: Injector) {
-    this[AbstractModel.associationsKey] = {};
     return Object.assign(this, raw);
   }
 
@@ -18,11 +17,6 @@ export abstract class AbstractModel {
    * Hidden meta symbol
    */
   private static metaKey = Symbol("meta");
-
-  /**
-   * Hidden associations key
-   */
-  private static associationsKey = Symbol("associations");
 
   /**
    * Model ID
@@ -85,46 +79,47 @@ export abstract class AbstractModel {
 }
 
 /**
- * Associate multiple IDs with list of models
+ * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
- * @param key Key to match ids against
+ * @param modelIdentifier Parameter to read IDs from
+ * @param modelPrimaryKey Key to match ids against
  */
-export function HasMany<M extends AbstractModel, T extends ApiFilter<M, any>>(
+export function HasMany<T extends ApiFilter<AbstractModel, any>>(
   serviceToken: InjectionToken<any>,
-  key: string = "id"
+  modelIdentifier: (model: AbstractModel) => Ids,
+  modelPrimaryKey: string = "id"
 ) {
-  return function (target: AbstractModel, field: string) {
-    // Extract association name (ie. siteIds => sites)
-    const association = field.replace("Ids", "s");
-
-    createGetter<M, T>(
+  return function (model: AbstractModel, associationKey: string) {
+    createGetter<T>(
       serviceToken,
-      target,
-      association,
-      field,
-      (service, ids: Ids) => service.filter({ filter: { [key]: { in: ids } } })
+      model,
+      associationKey,
+      modelIdentifier,
+      (service, ids: Ids) =>
+        service.filter({ filter: { [modelPrimaryKey]: { in: ids } } })
     );
   };
 }
 
 /**
- * Associate single ID with model
+ * Associate model with ID
  * @param serviceToken Injection token for API Service
+ * @param modelIdentifier Parameter to read ID from
  * @param ids Additional IDs
  */
 export function HasOne<
-  M extends AbstractModel,
-  T extends ApiShow<M, any, IdOr<M>>
->(serviceToken: InjectionToken<any>, ids: string[] = []) {
-  return function (target: AbstractModel, field: string) {
-    // Extract association name (ie. siteId => site)
-    const association = field.replace("Id", "");
-
-    createGetter<M, T>(
+  T extends ApiShow<AbstractModel, any, IdOr<AbstractModel>>
+>(
+  serviceToken: InjectionToken<any>,
+  modelIdentifier: (model: AbstractModel) => Id,
+  ids: string[] = []
+) {
+  return function (model: AbstractModel, associationKey: string) {
+    createGetter<T>(
       serviceToken,
-      target,
-      association,
-      field,
+      model,
+      associationKey,
+      modelIdentifier,
       (service, id: Id) => service.show(id, ...ids)
     );
   };
@@ -135,14 +130,14 @@ export function HasOne<
  * @param serviceToken Injection token for API Service
  * @param target Target model
  * @param associationKey Key to identify associated model
- * @param property Property to extract IDs from
+ * @param params Property to extract IDs from
  * @param createRequest Create API Request
  */
-function createGetter<M extends AbstractModel, T>(
+function createGetter<T>(
   serviceToken: InjectionToken<any>,
   target: AbstractModel,
   associationKey: string,
-  property: string,
+  modelIdentifier: (model: AbstractModel) => Id | Ids,
   createRequest: (
     service: T,
     params: Id | Ids
@@ -157,23 +152,27 @@ function createGetter<M extends AbstractModel, T>(
       }
 
       // If field is undefined, return
-      const params = this[property];
-      if (params === undefined || params === null) {
+      const identifier = modelIdentifier(this);
+      if (identifier === undefined || identifier === null) {
         return of(null);
       }
 
       // If result cached, return
-      const cache: object = this[AbstractModel["associationsKey"]];
-      if (cache.hasOwnProperty(associationKey)) {
-        return of(cache[associationKey]);
+      const cachedModel = `_${associationKey}`;
+      if (this[cachedModel]) {
+        return of(this[cachedModel]);
       }
 
       // Create service and request from API
       const service = injector.get<T>(serviceToken);
-      return createRequest(service, params).pipe(
-        map((model: M | M[]) => {
-          // Save to cache and return model
-          cache[associationKey] = model;
+      return createRequest(service, identifier).pipe(
+        map((model) => {
+          // Cache model and return
+          Object.defineProperty(target, cachedModel, {
+            value: model,
+            configurable: false,
+          });
+
           return model;
         })
       );
