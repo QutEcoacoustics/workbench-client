@@ -4,8 +4,9 @@ import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
 import {
+  BawCollection,
+  BawDateTime,
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Ids,
@@ -41,10 +42,13 @@ export class Project extends AbstractModel implements IProject {
   public readonly description?: Description;
   public readonly imageUrl?: string;
   public readonly creatorId?: Id;
-  public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime
+  public createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  @BawDateTime
   public readonly updatedAt?: DateTimeTimezone;
   public readonly ownerId?: Id;
+  @BawCollection
   public readonly siteIds?: Ids;
 
   // Associations
@@ -62,9 +66,6 @@ export class Project extends AbstractModel implements IProject {
 
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
-    this.createdAt = dateTimeTimezone(project.createdAt as string);
-    this.updatedAt = dateTimeTimezone(project.updatedAt as string);
-    this.siteIds = new Set(project.siteIds || []);
   }
 
   public toJSON() {

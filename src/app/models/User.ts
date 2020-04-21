@@ -4,8 +4,8 @@ import {
 } from "../component/profile/profile.menus";
 import {
   AuthToken,
+  BawDateTime,
   DateTimeTimezone,
-  dateTimeTimezone,
   Id,
   ImageSizes,
   ImageURL,
@@ -56,36 +56,32 @@ export class User extends AbstractModel implements IUser {
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
-  public readonly resetPasswordSentAt?: DateTimeTimezone;
-  public readonly rememberCreatedAt?: DateTimeTimezone;
-  public readonly currentSignInAt?: DateTimeTimezone;
-  public readonly lastSignInAt?: DateTimeTimezone;
-  public readonly confirmedAt?: DateTimeTimezone;
-  public readonly confirmationSentAt?: DateTimeTimezone;
-  public readonly lockedAt?: DateTimeTimezone;
-  public readonly createdAt?: DateTimeTimezone;
-  public readonly updatedAt?: DateTimeTimezone;
   public readonly timezoneInformation?: TimezoneInformation;
-  public readonly lastSeenAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly resetPasswordSentAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly rememberCreatedAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly currentSignInAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly lastSignInAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly confirmedAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly confirmationSentAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly lockedAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime
+  public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime
+  public lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.resetPasswordSentAt = dateTimeTimezone(
-      user.resetPasswordSentAt as string
-    );
-    this.rememberCreatedAt = dateTimeTimezone(user.rememberCreatedAt as string);
-    this.currentSignInAt = dateTimeTimezone(user.currentSignInAt as string);
-    this.lastSignInAt = dateTimeTimezone(user.lastSignInAt as string);
-    this.confirmedAt = dateTimeTimezone(user.confirmedAt as string);
-    this.confirmationSentAt = dateTimeTimezone(
-      user.confirmationSentAt as string
-    );
-    this.lockedAt = dateTimeTimezone(user.lockedAt as string);
-    this.createdAt = dateTimeTimezone(user.createdAt as string);
-    this.updatedAt = dateTimeTimezone(user.updatedAt as string);
-    this.lastSeenAt = dateTimeTimezone(user.lastSeenAt as string);
 
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map((imageUrl) => {

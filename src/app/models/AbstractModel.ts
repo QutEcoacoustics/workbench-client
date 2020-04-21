@@ -129,14 +129,14 @@ export function HasOne(
 /**
  * Insert a getter function into the model
  * @param serviceToken Injection token for API Service
- * @param target Target model
+ * @param model Target model
  * @param associationKey Key to identify associated model
  * @param params Property to extract IDs from
  * @param createRequest Create API Request
  */
 function createGetter<S>(
   serviceToken: ServiceToken<S>,
-  target: AbstractModel,
+  model: AbstractModel,
   associationKey: string,
   modelIdentifier: (model: AbstractModel) => Id | Ids,
   createRequest: (
@@ -144,7 +144,7 @@ function createGetter<S>(
     params: Id | Ids
   ) => Observable<AbstractModel | AbstractModel[]>
 ) {
-  Object.defineProperty(target, associationKey, {
+  Object.defineProperty(model, associationKey, {
     get(this: AbstractModel) {
       // If model has no injector, error out
       const injector = this["injector"];
@@ -160,21 +160,21 @@ function createGetter<S>(
 
       // If result cached, return
       const cachedModel = `_${associationKey}`;
-      if (this[cachedModel]) {
+      if (this.hasOwnProperty(cachedModel)) {
         return of(this[cachedModel]);
       }
 
       // Create service and request from API
       const service = injector.get(serviceToken.token);
       return createRequest(service, identifier).pipe(
-        map((model) => {
+        map((response) => {
           // Cache model and return
-          Object.defineProperty(target, cachedModel, {
-            value: model,
+          Object.defineProperty(model, cachedModel, {
+            value: response,
             configurable: false,
           });
 
-          return model;
+          return response;
         })
       );
     },
