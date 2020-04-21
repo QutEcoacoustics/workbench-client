@@ -4,15 +4,15 @@ import { projectResolvers, ProjectsService } from "./projects.service";
 import { scriptResolvers, ScriptsService } from "./scripts.service";
 import { SecurityService } from "./security.service";
 import {
-  ACCOUNT_SERVICE,
-  PROJECTS_SERVICE,
-  SCRIPTS_SERVICE,
-  SECURITY_SERVICE,
-  SHALLOW_SITES_SERVICE,
-  SITES_SERVICE,
-  TAGS_SERVICE,
-  TAG_GROUP_SERVICE,
-  USER_SERVICE,
+  ACCOUNT,
+  PROJECT,
+  SCRIPT,
+  SECURITY,
+  SHALLOW_SITE,
+  SITE,
+  TAG,
+  TAG_GROUP,
+  USER,
 } from "./ServiceTokens";
 import {
   shallowSiteResolvers,
@@ -35,15 +35,15 @@ const services = [
   TagsService,
   TagGroupService,
   UserService,
-  { provide: ACCOUNT_SERVICE, useExisting: AccountService },
-  { provide: PROJECTS_SERVICE, useExisting: ProjectsService },
-  { provide: SCRIPTS_SERVICE, useExisting: ScriptsService },
-  { provide: SECURITY_SERVICE, useExisting: SecurityService },
-  { provide: SHALLOW_SITES_SERVICE, useExisting: ShallowSitesService },
-  { provide: SITES_SERVICE, useExisting: SitesService },
-  { provide: TAGS_SERVICE, useExisting: TagsService },
-  { provide: TAG_GROUP_SERVICE, useExisting: TagGroupService },
-  { provide: USER_SERVICE, useExisting: UserService },
+  { provide: ACCOUNT, useExisting: AccountService },
+  { provide: PROJECT, useExisting: ProjectsService },
+  { provide: SCRIPT, useExisting: ScriptsService },
+  { provide: SECURITY, useExisting: SecurityService },
+  { provide: SHALLOW_SITE, useExisting: ShallowSitesService },
+  { provide: SITE, useExisting: SitesService },
+  { provide: TAG, useExisting: TagsService },
+  { provide: TAG_GROUP, useExisting: TagGroupService },
+  { provide: USER, useExisting: UserService },
 ];
 
 const resolvers = [

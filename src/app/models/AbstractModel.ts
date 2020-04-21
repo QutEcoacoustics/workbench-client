@@ -1,9 +1,12 @@
 import { InjectionToken, Injector } from "@angular/core";
-import { ApiFilter, ApiShow, IdOr, param } from "@baw-api/api-common";
+import { SHALLOW_SITE, USER } from "@baw-api/ServiceTokens";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Id, Ids } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
+import type { ShallowSitesService } from "@baw-api/sites.service";
+import type { AccountService } from "@baw-api/account.service";
+import { ApiShow, IdOr, ApiFilter } from "@baw-api/api-common";
 
 /**
  * BAW Server Abstract Model
@@ -84,13 +87,13 @@ export abstract class AbstractModel {
  * @param modelIdentifier Parameter to read IDs from
  * @param modelPrimaryKey Key to match ids against
  */
-export function HasMany<T extends ApiFilter<AbstractModel, any>>(
-  serviceToken: InjectionToken<any>,
+export function HasMany(
+  serviceToken: InjectionToken<ApiFilter<AbstractModel, any[]>>,
   modelIdentifier: (model: AbstractModel) => Ids,
   modelPrimaryKey: string = "id"
 ) {
   return function (model: AbstractModel, associationKey: string) {
-    createGetter<T>(
+    createGetter<ApiFilter<AbstractModel, any[]>>(
       serviceToken,
       model,
       associationKey,
@@ -107,15 +110,15 @@ export function HasMany<T extends ApiFilter<AbstractModel, any>>(
  * @param modelIdentifier Parameter to read ID from
  * @param ids Additional IDs
  */
-export function HasOne<
-  T extends ApiShow<AbstractModel, any, IdOr<AbstractModel>>
->(
-  serviceToken: InjectionToken<any>,
+export function HasOne(
+  serviceToken: InjectionToken<
+    ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
+  >,
   modelIdentifier: (model: AbstractModel) => Id,
   ids: string[] = []
 ) {
   return function (model: AbstractModel, associationKey: string) {
-    createGetter<T>(
+    createGetter<ApiShow<AbstractModel, any[], IdOr<AbstractModel>>>(
       serviceToken,
       model,
       associationKey,
@@ -133,13 +136,13 @@ export function HasOne<
  * @param params Property to extract IDs from
  * @param createRequest Create API Request
  */
-function createGetter<T>(
-  serviceToken: InjectionToken<any>,
+function createGetter<S>(
+  serviceToken: InjectionToken<S>,
   target: AbstractModel,
   associationKey: string,
   modelIdentifier: (model: AbstractModel) => Id | Ids,
   createRequest: (
-    service: T,
+    service: S,
     params: Id | Ids
   ) => Observable<AbstractModel | AbstractModel[]>
 ) {
@@ -164,7 +167,7 @@ function createGetter<T>(
       }
 
       // Create service and request from API
-      const service = injector.get<T>(serviceToken);
+      const service = injector.get(serviceToken);
       return createRequest(service, identifier).pipe(
         map((model) => {
           // Cache model and return

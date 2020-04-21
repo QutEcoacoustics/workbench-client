@@ -1,7 +1,5 @@
 import { Injector } from "@angular/core";
-import { AccountService } from "@baw-api/account.service";
-import { ACCOUNT_SERVICE, SHALLOW_SITES_SERVICE } from "@baw-api/ServiceTokens";
-import type { ShallowSitesService } from "@baw-api/sites.service";
+import { SITE, USER } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
@@ -50,16 +48,13 @@ export class Project extends AbstractModel implements IProject {
   public readonly siteIds?: Ids;
 
   // Associations
-  @HasMany<ShallowSitesService>(
-    SHALLOW_SITES_SERVICE,
-    (p: Project) => p.siteIds
-  )
+  @HasMany(SITE, (p: Project) => p.siteIds)
   public sites?: Observable<Site[]>;
-  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.creatorId)
+  @HasOne(USER, (p: Project) => p.creatorId)
   public creator?: Observable<User>;
-  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.updaterId)
+  @HasOne(USER, (p: Project) => p.updaterId)
   public updater?: Observable<User>;
-  @HasOne<AccountService>(ACCOUNT_SERVICE, (p: Project) => p.ownerId)
+  @HasOne(USER, (p: Project) => p.ownerId)
   public owner?: Observable<User>;
 
   constructor(project: IProject, injector?: Injector) {
