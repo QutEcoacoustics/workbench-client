@@ -1,14 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import startCase from "lodash/startCase";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
 import { Id } from "src/app/interfaces/apiInterfaces";
-import { AbstractData } from "src/app/models/AbstractData";
-import { Tag } from "src/app/models/Tag";
+import { Tag, TagType } from "src/app/models/Tag";
 import {
   Empty,
   id,
@@ -28,19 +26,6 @@ import {
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
-
-export class TagType extends AbstractData {
-  public readonly kind: "TagType" = "TagType";
-  public readonly name: string;
-
-  constructor(data: { name: string }) {
-    super(data);
-  }
-
-  toString() {
-    return startCase(this.name);
-  }
-}
 
 @Injectable()
 export class TagsService extends StandardApi<Tag, []> {
@@ -70,7 +55,7 @@ export class TagsService extends StandardApi<Tag, []> {
    * List type of tags
    * TODO Replace with reference to baw server
    */
-  typeOfTags(): Observable<TagType[]> {
+  tagTypes(): Observable<TagType[]> {
     return of([
       "general",
       "common_name",
@@ -103,25 +88,25 @@ class TagResolvers {
       [TagsService],
       "tagId"
     ).create(name);
-    const typeOfTagsProvider = new TypeOfTagsResolver().create(name);
+    const tagTypeProvider = new TagTypeResolvers().create(name);
     const providers = [
       ...additionalProvider.providers,
-      ...typeOfTagsProvider.providers,
+      ...tagTypeProvider.providers,
     ];
 
     return {
       ...additionalProvider,
-      ...typeOfTagsProvider,
+      ...tagTypeProvider,
       providers,
     };
   }
 }
 
-class TypeOfTagsResolver extends BawResolver<
+class TagTypeResolvers extends BawResolver<
   TagType[],
   Tag,
   TagsService,
-  { typeOfTags: string }
+  { tagTypes: string }
 > {
   constructor() {
     super([TagsService], undefined, undefined);
@@ -131,14 +116,14 @@ class TypeOfTagsResolver extends BawResolver<
     name: string,
     resolver: Type<Resolve<ResolvedModel<TagType[]>>>,
     deps: Type<TagsService>[]
-  ): { typeOfTags: string } & {
+  ): { tagTypes: string } & {
     providers: BawProvider[];
   } {
     return {
-      typeOfTags: name + "TypeOfTagsResolver",
+      tagTypes: name + "TagTypesResolver",
       providers: [
         {
-          provide: name + "TypeOfTagsResolver",
+          provide: name + "TagTypesResolver",
           useClass: resolver,
           deps,
         },
@@ -150,7 +135,7 @@ class TypeOfTagsResolver extends BawResolver<
     __: ActivatedRouteSnapshot,
     api: TagsService
   ): Observable<TagType[]> {
-    return api.typeOfTags();
+    return api.tagTypes();
   }
 }
 

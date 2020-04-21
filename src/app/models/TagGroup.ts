@@ -1,10 +1,15 @@
+import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
+import { Observable } from "rxjs";
+import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { Tag } from "./Tag";
+import type { User } from "./User";
 
 /**
  * A tag group model
@@ -22,27 +27,23 @@ export interface ITagGroup {
  */
 export class TagGroup extends AbstractModel implements ITagGroup {
   public readonly kind: "TagGroup" = "TagGroup";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly groupIdentifier?: string;
+  @BawPersistAttr
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
 
-  constructor(tagGroup: ITagGroup) {
-    super(tagGroup);
-
-    this.createdAt = dateTimeTimezone(tagGroup.createdAt as string);
-  }
+  // Associations
+  @HasOne(TAG, (m: TagGroup) => m.creatorId)
+  public tag?: Observable<Tag>;
+  @HasOne(ACCOUNT, (m: TagGroup) => m.creatorId)
+  public creator?: Observable<User>;
 
   public get viewUrl(): string {
     return adminTagGroupsMenuItem.route.toString();
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      groupIdentifier: this.groupIdentifier,
-      tagId: this.tagId,
-    };
   }
 }

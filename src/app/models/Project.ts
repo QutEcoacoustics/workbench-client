@@ -60,13 +60,13 @@ export class Project extends AbstractModel implements IProject {
   public readonly siteIds?: Ids;
 
   // Associations
-  @HasMany(SHALLOW_SITE, (p: Project) => p.siteIds)
+  @HasMany(SHALLOW_SITE, (m: Project) => m.siteIds)
   public sites?: Observable<Site[]>;
-  @HasOne(ACCOUNT, (p: Project) => p.creatorId)
+  @HasOne(ACCOUNT, (m: Project) => m.creatorId)
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (p: Project) => p.updaterId)
+  @HasOne(ACCOUNT, (m: Project) => m.updaterId)
   public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (p: Project) => p.ownerId)
+  @HasOne(ACCOUNT, (m: Project) => m.ownerId)
   public owner?: Observable<User>;
 
   constructor(project: IProject, injector?: Injector) {

@@ -1,10 +1,13 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
+import { Observable } from "rxjs";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-  Param,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 export interface IStudy {
   id?: Id;
@@ -18,28 +21,25 @@ export interface IStudy {
 
 export class Study extends AbstractModel implements IStudy {
   public readonly kind: "Studies" = "Studies";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawPersistAttr
   public readonly datasetId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
-  constructor(studies: IStudy) {
-    super(studies);
-
-    this.createdAt = dateTimeTimezone(studies.createdAt as string);
-    this.updatedAt = dateTimeTimezone(studies.updatedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      datasetId: this.datasetId,
-    };
-  }
+  // Associations
+  // TODO Add Dataset association
+  @HasOne(ACCOUNT, (m: Study) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Study) => m.updaterId)
+  public updater?: Observable<User>;
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";

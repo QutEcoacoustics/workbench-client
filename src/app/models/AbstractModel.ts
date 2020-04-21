@@ -261,7 +261,7 @@ function createDecorator(
     model: AbstractModel,
     key: string
   ) => {
-    const fieldKey = opts.key || key;
+    const fieldKey = opts?.key || key;
     const symbolKey = Symbol("_" + fieldKey);
 
     Object.defineProperty(model, fieldKey, {

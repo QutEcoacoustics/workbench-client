@@ -1,9 +1,5 @@
-import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { AbstractModel, BawDateTime, BawPersistAttr } from "./AbstractModel";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -20,44 +16,33 @@ export interface IAnalysisJobItem {
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly kind: "AnalysisJobItem" = "AnalysisJobItem";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly analysisJobId?: Id;
+  @BawPersistAttr
   public readonly audioRecordingId?: Id;
+  @BawPersistAttr
   public readonly queueId?: string;
   public readonly status?: Status;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly queuedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly workStartedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly completedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly cancelStartedAt?: DateTimeTimezone;
 
-  constructor(analysisJobItem: IAnalysisJobItem) {
-    super(analysisJobItem);
-
-    this.createdAt = dateTimeTimezone(analysisJobItem.createdAt as string);
-    this.queuedAt = dateTimeTimezone(analysisJobItem.queuedAt as string);
-    this.workStartedAt = dateTimeTimezone(
-      analysisJobItem.workStartedAt as string
-    );
-    this.completedAt = dateTimeTimezone(analysisJobItem.completedAt as string);
-    this.cancelStartedAt = dateTimeTimezone(
-      analysisJobItem.cancelStartedAt as string
-    );
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      analysisJobId: this.analysisJobId,
-      audioRecordingId: this.audioRecordingId,
-      queueId: this.queueId,
-      status: this.status,
-    };
-  }
+  // Associations
+  // TODO Add AnalysisJob, AudioRecording, Queue associations
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";
   }
 }
 
+// TODO
 export type Status = "new" | "??? Anthony";

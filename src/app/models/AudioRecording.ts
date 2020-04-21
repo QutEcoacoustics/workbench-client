@@ -1,11 +1,16 @@
+import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
+import { Observable } from "rxjs";
+import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-  Uuid,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawDuration,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { Site } from "./Site";
+import type { User } from "./User";
 
 /**
  * An audio recording model
@@ -39,60 +44,53 @@ export interface IAudioRecording {
  * An audio recording model
  */
 export class AudioRecording extends AbstractModel implements IAudioRecording {
-  public readonly kind: "AudioRecording";
+  public readonly kind: "AudioRecording" = "AudioRecording";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
   public readonly recordedDate?: DateTimeTimezone;
+  @BawPersistAttr
   public readonly siteId?: Id;
+  @BawDuration({ key: "durationSeconds" })
+  public readonly duration: Duration;
+  @BawPersistAttr
   public readonly durationSeconds?: number;
+  @BawPersistAttr
   public readonly sampleRateHertz?: number;
+  @BawPersistAttr
   public readonly channels?: number;
   public readonly bitRateBps?: number;
   public readonly mediaType?: string;
   public readonly dataLengthBytes?: number;
   public readonly fileHash?: string;
   public readonly status?: Status;
+  @BawPersistAttr
   public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly originalFileName?: string;
   public readonly recordedUtcOffset?: string;
 
-  public get duration() {
-    return new Duration();
-    // return duration(this.durationSeconds) // TODO Awaiting PR #177
-  }
-
-  constructor(audioRecording: IAudioRecording) {
-    super(audioRecording);
-
-    this.kind = "AudioRecording";
-    this.recordedDate = dateTimeTimezone(audioRecording.recordedDate as string);
-    this.createdAt = dateTimeTimezone(audioRecording.createdAt as string);
-    this.updatedAt = dateTimeTimezone(audioRecording.updatedAt as string);
-    this.deletedAt = dateTimeTimezone(audioRecording.deletedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      uuid: this.uuid,
-      siteId: this.siteId,
-      durationSeconds: this.durationSeconds,
-      sampleRateHertz: this.sampleRateHertz,
-      channels: this.channels,
-      bitRateBps: this.bitRateBps,
-      mediaType: this.mediaType,
-      dataLengthBytes: this.dataLengthBytes,
-      status: this.status,
-      notes: this.notes,
-    };
-  }
+  // Associations
+  @HasOne(ACCOUNT, (m: AudioRecording) => m.uploaderId)
+  public uploader?: Observable<User>;
+  @HasOne(SHALLOW_SITE, (m: AudioRecording) => m.siteId)
+  public site?: Observable<Site>;
+  @HasOne(ACCOUNT, (m: AudioRecording) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AudioRecording) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AudioRecording) => m.deleterId)
+  public deleter?: Observable<User>;
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";

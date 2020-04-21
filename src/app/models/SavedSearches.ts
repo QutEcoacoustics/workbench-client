@@ -1,11 +1,18 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
+  DateTimeTimezone,
+  Description,
   Id,
   Param,
-  Description,
-  DateTimeTimezone,
-  dateTimeTimezone,
 } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { Observable } from "rxjs";
+import {
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 export interface ISavedSearches {
   id?: Id;
@@ -20,30 +27,26 @@ export interface ISavedSearches {
 
 export class SavedSearches extends AbstractModel implements ISavedSearches {
   public readonly kind: "SavedSearches" = "SavedSearches";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly description?: Description;
+  @BawPersistAttr
   public readonly storedQuery?: Blob;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
 
-  constructor(savedSearches: ISavedSearches) {
-    super(savedSearches);
-
-    this.createdAt = dateTimeTimezone(savedSearches.createdAt as string);
-    this.deletedAt = dateTimeTimezone(savedSearches.deletedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description,
-      storedQuery: this.storedQuery,
-    };
-  }
+  // Associations
+  @HasOne(ACCOUNT, (m: SavedSearches) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: SavedSearches) => m.deleterId)
+  public deleter?: Observable<User>;
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";

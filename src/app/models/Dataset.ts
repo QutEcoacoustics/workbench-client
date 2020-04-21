@@ -1,11 +1,18 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { Observable } from "rxjs";
+import {
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 export interface IDataset {
   id?: Id;
@@ -19,28 +26,24 @@ export interface IDataset {
 
 export class Dataset extends AbstractModel implements IDataset {
   public readonly kind: "Dataset" = "Dataset";
+  @BawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly description?: Description;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
-  constructor(dataset: IDataset) {
-    super(dataset);
-
-    this.createdAt = dateTimeTimezone(dataset.createdAt as string);
-    this.updatedAt = dateTimeTimezone(dataset.updatedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description,
-    };
-  }
+  // Associations
+  @HasOne(ACCOUNT, (m: Dataset) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Dataset) => m.updaterId)
+  public updater?: Observable<User>;
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";

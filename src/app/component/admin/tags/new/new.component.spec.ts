@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
+import { tagResolvers, TagsService } from "@baw-api/tags.service";
+import { TagType } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
@@ -32,7 +33,7 @@ describe("AdminTagsNewComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              typeOfTags: tagResolvers.typeOfTags,
+              typeOfTags: tagResolvers.tagTypes,
             },
             {
               tagTypes: {

@@ -189,13 +189,6 @@ export class SessionUser extends User implements SessionUserInterface {
   @BawPersistAttr
   public readonly userName?: UserName;
 
-  /**
-   * Constructor
-   */
-  constructor(sessionUser: SessionUserInterface) {
-    super(sessionUser);
-  }
-
   public toJSON() {
     return {
       authToken: this.authToken,

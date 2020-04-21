@@ -1,11 +1,14 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
+import { Observable } from "rxjs";
+import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-  Param,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 /**
  * A script model
@@ -28,41 +31,42 @@ export interface IScript {
 
 export class Script extends AbstractModel implements IScript {
   public readonly kind: "Script" = "Script";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly description?: string;
+  @BawPersistAttr
   public readonly analysisIdentifier?: string;
+  @BawPersistAttr
   public readonly version?: number;
+  @BawPersistAttr
   public readonly verified?: boolean;
   public readonly groupId?: Id;
   public readonly creatorId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawPersistAttr
   public readonly executableCommand?: string;
+  @BawPersistAttr
   public readonly executableSettings?: string;
+  @BawPersistAttr
   public readonly executableSettingsMediaType?: string;
+  @BawPersistAttr
   public readonly analysisActionParams?: string;
+
+  // Associations
+  // TODO Add Group associations
+  @HasOne(ACCOUNT, (m: Script) => m.creatorId)
+  public creator?: Observable<User>;
 
   constructor(script: IScript) {
     super(script);
 
-    this.createdAt = dateTimeTimezone(script.createdAt as string);
     this.executableSettingsMediaType = script.executableSettingsMediaType
       ? script.executableSettingsMediaType
       : "text/plain";
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      analysisIdentifier: this.analysisIdentifier,
-      version: this.version,
-      executableCommand: this.executableCommand,
-      executableSettings: this.executableSettings,
-      executableSettingsMediaType: this.executableSettingsMediaType,
-      analysisActionParams: this.analysisActionParams,
-      verified: this.verified,
-    };
   }
 
   public get viewUrl(): string {

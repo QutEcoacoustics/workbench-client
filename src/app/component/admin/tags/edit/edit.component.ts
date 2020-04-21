@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
+import { tagResolvers, TagsService } from "@baw-api/tags.service";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Page } from "@helpers/page/pageDecorator";
-import { Tag } from "@models/Tag";
+import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagsMenuItemActions } from "../list/list.component";
@@ -34,7 +34,7 @@ const tagTypesKey = "tagTypes";
   },
   resolvers: {
     [tagKey]: tagResolvers.show,
-    [tagTypesKey]: tagResolvers.typeOfTags,
+    [tagTypesKey]: tagResolvers.tagTypes,
   },
   self: adminEditTagMenuItem,
 })
