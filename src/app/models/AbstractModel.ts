@@ -173,13 +173,13 @@ function createGetter<S>(
         throw new Error("Model does not have injector service.");
       }
 
-      // If field is undefined, return
+      // If field is undefined, return null result
       const identifier = modelIdentifier(this);
       if (identifier === undefined || identifier === null) {
         return of(null);
       }
 
-      // If result cached, return
+      // If result cached (eg. sites cached at _sites), return cached result
       const cachedModel = `_${associationKey}`;
       if (this.hasOwnProperty(cachedModel)) {
         return of(this[cachedModel]);
@@ -257,13 +257,14 @@ export const BawDuration = createDecorator((model, key, seconds: number) => {
 function createDecorator(
   setter: (model: AbstractModel, key: symbol, ...args: any[]) => void
 ) {
-  return (opts?: { persist?: boolean }) => (
+  return (opts?: BawDecoratorOptions) => (
     model: AbstractModel,
     key: string
   ) => {
-    const symbolKey = Symbol("_" + key);
+    const fieldKey = opts.key || key;
+    const symbolKey = Symbol("_" + fieldKey);
 
-    Object.defineProperty(model, key, {
+    Object.defineProperty(model, fieldKey, {
       get() {
         return model[symbolKey];
       },
@@ -274,7 +275,18 @@ function createDecorator(
     });
 
     if (opts?.persist) {
-      BawPersistAttr(model, key);
+      BawPersistAttr(model, fieldKey);
     }
   };
+}
+
+interface BawDecoratorOptions {
+  /**
+   * Persist key in models toJSON() method
+   */
+  persist?: boolean;
+  /**
+   * Override key to read field data from another field
+   */
+  key?: string;
 }
