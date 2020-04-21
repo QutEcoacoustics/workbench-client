@@ -1,12 +1,10 @@
-import { InjectionToken, Injector } from "@angular/core";
-import { SHALLOW_SITE, USER } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
+import { ServiceToken } from "@baw-api/ServiceTokens";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Id, Ids } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
-import type { ShallowSitesService } from "@baw-api/sites.service";
-import type { AccountService } from "@baw-api/account.service";
-import { ApiShow, IdOr, ApiFilter } from "@baw-api/api-common";
 
 /**
  * BAW Server Abstract Model
@@ -88,11 +86,11 @@ export abstract class AbstractModel {
  * @param modelPrimaryKey Key to match ids against
  */
 export function HasMany(
-  serviceToken: InjectionToken<ApiFilter<AbstractModel, any[]>>,
+  serviceToken: ServiceToken<ApiFilter<AbstractModel, any[]>>,
   modelIdentifier: (model: AbstractModel) => Ids,
   modelPrimaryKey: string = "id"
 ) {
-  return function (model: AbstractModel, associationKey: string) {
+  return (model: AbstractModel, associationKey: string) => {
     createGetter<ApiFilter<AbstractModel, any[]>>(
       serviceToken,
       model,
@@ -111,13 +109,13 @@ export function HasMany(
  * @param ids Additional IDs
  */
 export function HasOne(
-  serviceToken: InjectionToken<
+  serviceToken: ServiceToken<
     ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
   >,
   modelIdentifier: (model: AbstractModel) => Id,
   ids: string[] = []
 ) {
-  return function (model: AbstractModel, associationKey: string) {
+  return (model: AbstractModel, associationKey: string) => {
     createGetter<ApiShow<AbstractModel, any[], IdOr<AbstractModel>>>(
       serviceToken,
       model,
@@ -137,7 +135,7 @@ export function HasOne(
  * @param createRequest Create API Request
  */
 function createGetter<S>(
-  serviceToken: InjectionToken<S>,
+  serviceToken: ServiceToken<S>,
   target: AbstractModel,
   associationKey: string,
   modelIdentifier: (model: AbstractModel) => Id | Ids,
@@ -167,7 +165,7 @@ function createGetter<S>(
       }
 
       // Create service and request from API
-      const service = injector.get(serviceToken);
+      const service = injector.get(serviceToken.token);
       return createRequest(service, identifier).pipe(
         map((model) => {
           // Cache model and return

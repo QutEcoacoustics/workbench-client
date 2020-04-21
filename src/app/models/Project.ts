@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { SITE, USER } from "@baw-api/ServiceTokens";
+import { SHALLOW_SITE, USER } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
@@ -48,7 +48,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly siteIds?: Ids;
 
   // Associations
-  @HasMany(SITE, (p: Project) => p.siteIds)
+  @HasMany(SHALLOW_SITE, (p: Project) => p.siteIds)
   public sites?: Observable<Site[]>;
   @HasOne(USER, (p: Project) => p.creatorId)
   public creator?: Observable<User>;
