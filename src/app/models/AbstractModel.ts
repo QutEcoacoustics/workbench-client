@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ServiceToken } from "@baw-api/ServiceTokens";
+import { DateTime, Duration } from "luxon";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Id, Ids } from "../interfaces/apiInterfaces";
@@ -30,6 +31,11 @@ export abstract class AbstractModel {
   public readonly kind: string;
 
   /**
+   * Model attributes. This is used to generate the toJSON() output of the model.
+   */
+  private _attributes: string[];
+
+  /**
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.
@@ -49,7 +55,22 @@ export abstract class AbstractModel {
   /**
    * Convert model to JSON
    */
-  public abstract toJSON(): object;
+  public toJSON() {
+    const output = {};
+    this._attributes.forEach((attribute) => {
+      const value = this[attribute];
+      if (value instanceof Set) {
+        output[attribute] = Array.from(value);
+      } else if (value instanceof DateTime) {
+        output[attribute] = value.toISO();
+      } else if (value instanceof Duration) {
+        output[attribute] = value.as("seconds");
+      } else {
+        output[attribute] = this[attribute];
+      }
+    });
+    return output;
+  }
 
   /**
    * Add hidden metadata to model
@@ -179,4 +200,81 @@ function createGetter<S>(
       );
     },
   });
+}
+
+/**
+ * Add key to the models attributes
+ */
+export function BawPersistAttr(model: AbstractModel, key: string) {
+  if (!model["_attributes"]) {
+    model["_attributes"] = [];
+  }
+
+  model["_attributes"].push(key);
+}
+
+/**
+ * Convert a collection of ids into a set
+ */
+export const BawCollection = createDecorator((model, key, ids: Id[]) => {
+  model[key] = new Set(ids || []);
+});
+
+/**
+ * Convert timestamp string into DateTimeTimezone
+ */
+export const BawDateTime = createDecorator((model, key, timestamp: string) => {
+  model[key] = timestamp
+    ? DateTime.fromISO(timestamp, { setZone: true })
+    : null;
+});
+
+/**
+ * Convert duration string into Duration
+ */
+export const BawDuration = createDecorator((model, key, seconds: number) => {
+  /*
+    Extra object fields required, do not remove. Duration calculates itself
+    based on the time spans provided, if years is removed for example,
+    the output will just keep incrementing months (i.e 24 months, instead of 2 years).
+  */
+  model[key] = seconds
+    ? Duration.fromObject({
+        years: 0,
+        months: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds,
+      }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
+    : null;
+});
+
+/**
+ * Abstract code required for baw decorators
+ * @param setter Function to run on construction
+ */
+function createDecorator(
+  setter: (model: AbstractModel, key: symbol, ...args: any[]) => void
+) {
+  return (opts?: { persist?: boolean }) => (
+    model: AbstractModel,
+    key: string
+  ) => {
+    const symbolKey = Symbol("_" + key);
+
+    Object.defineProperty(model, key, {
+      get() {
+        return model[symbolKey];
+      },
+      set(...args: any[]) {
+        setter(model, symbolKey, ...args);
+        // TODO Remove setter after change
+      },
+    });
+
+    if (opts?.persist) {
+      BawPersistAttr(model, key);
+    }
+  };
 }

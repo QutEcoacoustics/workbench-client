@@ -4,7 +4,6 @@ import {
 } from "../component/profile/profile.menus";
 import {
   AuthToken,
-  BawDateTime,
   DateTimeTimezone,
   Id,
   ImageSizes,
@@ -12,7 +11,7 @@ import {
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, BawDateTime, BawPersistAttr } from "./AbstractModel";
 
 /**
  * A user model.
@@ -46,36 +45,47 @@ export interface IUser {
  */
 export class User extends AbstractModel implements IUser {
   public readonly kind: "User" | "SessionUser" = "User";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly email?: string;
+  @BawPersistAttr
   public readonly userName?: UserName;
+  @BawPersistAttr
   public readonly signInCount?: number;
+  @BawPersistAttr
   public readonly failedAttempts?: number;
+  @BawPersistAttr
   public readonly imageUrls?: ImageURL[];
+  @BawPersistAttr
   public readonly preferences?: any;
+  @BawPersistAttr
   public readonly isConfirmed?: boolean;
+  @BawPersistAttr
   public readonly rolesMask?: number;
+  @BawPersistAttr
   public readonly rolesMaskNames?: string[];
+  @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly resetPasswordSentAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly rememberCreatedAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly currentSignInAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly lastSignInAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly confirmedAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly confirmationSentAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly lockedAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime
+  @BawDateTime({ persist: true })
   public lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
@@ -139,21 +149,6 @@ export class User extends AbstractModel implements IUser {
     // tslint:disable-next-line: no-bitwise
     return !!(this.rolesMask & 1);
   }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      userName: this.userName,
-      rolesMask: this.rolesMask,
-      rolesMaskNames: this.rolesMaskNames,
-      timezoneInformation: this.timezoneInformation,
-      imageUrls: this.imageUrls,
-      lastSeenAt: this.lastSeenAt?.toISO(),
-      preferences: this.preferences,
-      isConfirmed: this.isConfirmed,
-    };
-  }
-
   /**
    * Get image from imageUrls which relates to the given size
    * @param size Size of image
@@ -170,9 +165,7 @@ export class User extends AbstractModel implements IUser {
   }
 
   public get viewUrl(): string {
-    return theirProfileMenuItem.route
-      .toString()
-      .replace(":accountId", this.id.toString());
+    return theirProfileMenuItem.route.format({ accountId: this.id });
   }
 }
 
@@ -189,8 +182,11 @@ export interface SessionUserInterface extends IUser {
  */
 export class SessionUser extends User implements SessionUserInterface {
   public readonly kind: "User" | "SessionUser" = "SessionUser";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly authToken?: AuthToken;
+  @BawPersistAttr
   public readonly userName?: UserName;
 
   /**
