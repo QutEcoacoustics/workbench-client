@@ -284,18 +284,18 @@ function createDecorator(
     Object.defineProperty(model, key, {
       get() {
         // If model was never set, it must be undefined
-        if (model[decoratedKey] === undefined) {
-          setValue(model, decoratedKey, undefined);
+        if (this[decoratedKey] === undefined) {
+          setValue(this, decoratedKey, undefined);
         }
 
-        return model[decoratedKey];
+        return this[decoratedKey];
       },
       set(args: any) {
         // Ignore setter method if key reads value from override key
         if (opts?.key) {
           return;
         }
-        setValue(model, decoratedKey, args);
+        setValue(this, decoratedKey, args);
       },
     });
 
@@ -306,12 +306,12 @@ function createDecorator(
 
       Object.defineProperty(model, opts.key, {
         get() {
-          return model[overrideKey];
+          return this[overrideKey];
         },
         set(args: any) {
           // Update override key and set decorated key
-          model[overrideKey] = args;
-          setValue(model, decoratedKey, args);
+          this[overrideKey] = args;
+          setValue(this, decoratedKey, args);
         },
       });
     }
