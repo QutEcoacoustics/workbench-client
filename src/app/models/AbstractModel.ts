@@ -89,6 +89,7 @@ export abstract class AbstractModel {
 
   /**
    * Add property to object if it exists (not undefined/null)
+   * @deprecated
    * @param object Output object
    * @param key Key name
    * @param value Key value
