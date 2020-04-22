@@ -269,10 +269,10 @@ export const BawDuration = createDecorator(
 
 /**
  * Abstract code required for baw decorators
- * @param setter Function to run on construction
+ * @param setValue Set the value of the models decorated key
  */
 function createDecorator(
-  setter: (model: AbstractModel, key: symbol, ...args: any[]) => void
+  setValue: (model: AbstractModel, key: symbol, ...args: any[]) => void
 ) {
   return (opts?: BawDecoratorOptions) => (
     model: AbstractModel,
@@ -283,6 +283,11 @@ function createDecorator(
 
     Object.defineProperty(model, key, {
       get() {
+        // If model was never set, it must be undefined
+        if (model[decoratedKey] === undefined) {
+          setValue(model, decoratedKey, undefined);
+        }
+
         return model[decoratedKey];
       },
       set(args: any) {
@@ -290,7 +295,7 @@ function createDecorator(
         if (opts?.key) {
           return;
         }
-        setter(model, decoratedKey, args);
+        setValue(model, decoratedKey, args);
       },
     });
 
@@ -306,7 +311,7 @@ function createDecorator(
         set(args: any) {
           // Update override key and set decorated key
           model[overrideKey] = args;
-          setter(model, decoratedKey, args);
+          setValue(model, decoratedKey, args);
         },
       });
     }

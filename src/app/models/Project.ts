@@ -34,7 +34,7 @@ export interface IProject {
   updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
   ownerId?: Id;
-  siteIds?: Ids;
+  siteIds?: Ids | Id[];
 }
 
 /**

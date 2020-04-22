@@ -190,7 +190,7 @@ describe("Attribute Decorators", () => {
         }
       }
 
-      return new MockModel({ ids: data });
+      return new MockModel(data === undefined ? {} : { ids: data });
     }
 
     it("should handle persist option", () => {
@@ -260,7 +260,7 @@ describe("Attribute Decorators", () => {
         }
       }
 
-      return new MockModel({ date: data });
+      return new MockModel(data === undefined ? {} : { date: data });
     }
 
     it("should handle persist option", () => {
@@ -323,7 +323,7 @@ describe("Attribute Decorators", () => {
         }
       }
 
-      return new MockModel({ duration: data });
+      return new MockModel(data === undefined ? {} : { duration: data });
     }
 
     beforeEach(() => {

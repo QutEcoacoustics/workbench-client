@@ -113,7 +113,7 @@ describe("MyProjectsComponent", () => {
 
     it("should display number of sites", () => {
       configureTestingModule(defaultUser);
-      setProject({ siteIds: new Set([1, 2, 3, 4, 5]) });
+      setProject({ siteIds: [1, 2, 3, 4, 5] });
       fixture.detectChanges();
 
       expect(getCells()[1].innerText).toBe("5");

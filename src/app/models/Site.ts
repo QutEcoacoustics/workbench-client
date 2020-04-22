@@ -33,7 +33,7 @@ export interface ISite {
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
-  projectIds?: Ids;
+  projectIds?: Ids | Id[];
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
