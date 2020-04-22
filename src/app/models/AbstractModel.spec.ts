@@ -19,6 +19,7 @@ import {
   BawDuration,
   BawPersistAttr,
   HasMany,
+  HasOne,
 } from "./AbstractModel";
 
 describe("AbstractModel", () => {
@@ -418,10 +419,17 @@ describe("Association Decorators", () => {
   }));
 
   describe("HasMany", () => {
-    function createModel(data: object, modelInjector: Injector, key?: string) {
+    function createModel(
+      data: object,
+      modelInjector: Injector,
+      key: string = undefined,
+      ...modelParameters: ((target) => Id)[]
+    ) {
       class MockModel extends AbstractModel {
         public readonly ids: Ids;
-        @HasMany(MOCK, (m: MockModel) => m.ids, key)
+        public readonly param1: Id;
+        public readonly param2: Id;
+        @HasMany(MOCK, (m: MockModel) => m.ids, key, ...modelParameters)
         public readonly models: Observable<ChildModel[]>;
 
         public get viewUrl(): string {
@@ -496,6 +504,41 @@ describe("Association Decorators", () => {
           }, shouldNotFail);
         });
 
+        it("should handle single parameter", () => {
+          interceptApiRequest([]);
+          const model = createModel(
+            { ids: idsType.multiple, param1: 5 },
+            injector,
+            undefined,
+            (target) => target.param1
+          );
+          model.models.subscribe();
+          expect(api.filter).toHaveBeenCalledWith(
+            {
+              filter: { id: { in: [1, 2] } },
+            },
+            [5]
+          );
+        });
+
+        it("should handle multiple parameters", () => {
+          interceptApiRequest([]);
+          const model = createModel(
+            { ids: idsType.multiple, param1: 5, param2: 10 },
+            injector,
+            undefined,
+            (target) => target.param1,
+            (target) => target.param2
+          );
+          model.models.subscribe();
+          expect(api.filter).toHaveBeenCalledWith(
+            {
+              filter: { id: { in: [1, 2] } },
+            },
+            [5, 10]
+          );
+        });
+
         it("should handle error", (done) => {
           interceptApiRequest(undefined, {
             status: 401,
@@ -512,9 +555,12 @@ describe("Association Decorators", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.multiple }, injector);
           model.models.subscribe();
-          expect(api.filter).toHaveBeenCalledWith({
-            filter: { id: { in: [1, 2] } },
-          });
+          expect(api.filter).toHaveBeenCalledWith(
+            {
+              filter: { id: { in: [1, 2] } },
+            },
+            []
+          );
         });
 
         it("should handle custom primary key", () => {
@@ -525,9 +571,12 @@ describe("Association Decorators", () => {
             "customKey"
           );
           model.models.subscribe();
-          expect(api.filter).toHaveBeenCalledWith({
-            filter: { customKey: { in: [1, 2] } },
-          });
+          expect(api.filter).toHaveBeenCalledWith(
+            {
+              filter: { customKey: { in: [1, 2] } },
+            },
+            []
+          );
         });
 
         it("should load cached data", fakeAsync(() => {
@@ -554,11 +603,43 @@ describe("Association Decorators", () => {
   });
 
   xdescribe("HasOne", () => {
+    function createModel(
+      data: object,
+      modelInjector: Injector,
+      ...modelParameters: ((target: AbstractModel) => Id)[]
+    ) {
+      class MockModel extends AbstractModel {
+        public readonly id: Id;
+        @HasOne(MOCK, (m: MockModel) => m.id, ...modelParameters)
+        public readonly models: Observable<ChildModel[]>;
+
+        public get viewUrl(): string {
+          throw new Error("Method not implemented.");
+        }
+      }
+
+      return new MockModel(data, modelInjector);
+    }
+
+    function interceptApiRequest(
+      models?: ChildModel[],
+      error?: ApiErrorDetails
+    ) {
+      spyOn(api, "filter").and.callFake(() => {
+        if (!error) {
+          return new BehaviorSubject<ChildModel[]>(models);
+        } else {
+          const subject = new Subject<ChildModel[]>();
+          subject.error(error);
+          return subject;
+        }
+      });
+    }
+
     it("should handle undefined", () => {});
     it("should handle response", () => {});
-    it("should handle no additional ids", () => {});
-    it("should handle single additional id", () => {});
-    it("should handle multiple additional ids", () => {});
+    it("should handle single parameter", () => {});
+    it("should handle multiple parameters", () => {});
     it("should handle error", () => {});
     it("should handle additional keys", () => {});
   });

@@ -109,14 +109,19 @@ export abstract class AbstractModel {
  */
 export function HasMany(
   serviceToken: ServiceToken<ApiFilter<AbstractModel, any[]>>,
-  modelIdentifier: (model: AbstractModel) => Ids,
-  modelPrimaryKey: string = "id"
+  modelIdentifier: (target: AbstractModel) => Ids,
+  modelPrimaryKey: string = "id",
+  ...modelParameters: ((target: AbstractModel) => Id)[]
 ) {
   return createModelDecorator<ApiFilter<AbstractModel, any[]>>(
     serviceToken,
     modelIdentifier,
-    (service, ids: Ids) =>
-      service.filter({ filter: { [modelPrimaryKey]: { in: Array.from(ids) } } })
+    modelParameters,
+    (service, ids: Ids, ...params: any[]) =>
+      service.filter(
+        { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
+        ...params
+      )
   );
 }
 
@@ -130,13 +135,16 @@ export function HasOne(
   serviceToken: ServiceToken<
     ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
   >,
-  modelIdentifier: (model: AbstractModel) => Id,
-  ids: string[] = []
+  modelIdentifier: (target: AbstractModel) => Id,
+  ...modelParameters: ((target: AbstractModel) => Id)[]
 ) {
   return createModelDecorator<
     ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
-  >(serviceToken, modelIdentifier, (service, id: Id) =>
-    service.show(id, ...ids)
+  >(
+    serviceToken,
+    modelIdentifier,
+    modelParameters,
+    (service, id: Id, ...params: any[]) => service.show(id, ...params)
   );
 }
 
@@ -149,9 +157,11 @@ export function HasOne(
 function createModelDecorator<S>(
   serviceToken: ServiceToken<S>,
   modelIdentifier: (target: AbstractModel) => Id | Ids,
+  modelParameters: ((target: AbstractModel) => Id)[],
   createRequest: (
     service: S,
-    params: Id | Ids
+    id: Id | Ids,
+    ...params: any[]
   ) => Observable<AbstractModel | AbstractModel[]>
 ) {
   /**
@@ -203,9 +213,22 @@ function createModelDecorator<S>(
       return of([]);
     }
 
+    // Get model parameters
+    const parameters = modelParameters.map((param) => {
+      const paramValue = param(target);
+      if (paramValue === undefined || paramValue === null) {
+        console.warn("Model is missing parameter: ", {
+          target,
+          associationKey,
+          param,
+        });
+      }
+      return paramValue;
+    });
+
     // Create service and request from API
     const service = injector.get(serviceToken.token);
-    const request = createRequest(service, identifier).pipe(
+    const request = createRequest(service, identifier, parameters).pipe(
       map((response) => {
         // Change cached value to BehaviorSubject so that it will instantly return
         updateCache(target, cachedModelKey, new BehaviorSubject(response));
