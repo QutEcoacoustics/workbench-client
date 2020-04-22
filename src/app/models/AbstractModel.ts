@@ -217,8 +217,8 @@ export function BawPersistAttr(model: AbstractModel, key: string) {
 /**
  * Convert a collection of ids into a set
  */
-export const BawCollection = createDecorator((model, key, ids: Id[]) => {
-  if (!(ids instanceof Array)) {
+export const BawCollection = createDecorator((model, key, ids: Id[] | Ids) => {
+  if (ids instanceof Set) {
     return;
   }
 
@@ -228,40 +228,44 @@ export const BawCollection = createDecorator((model, key, ids: Id[]) => {
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export const BawDateTime = createDecorator((model, key, timestamp: string) => {
-  if (typeof timestamp !== "string") {
-    return;
-  }
+export const BawDateTime = createDecorator(
+  (model, key, timestamp: string | DateTime) => {
+    if (timestamp instanceof DateTime) {
+      return;
+    }
 
-  model[key] = timestamp
-    ? DateTime.fromISO(timestamp, { setZone: true })
-    : null;
-});
+    model[key] = timestamp
+      ? DateTime.fromISO(timestamp, { setZone: true })
+      : null;
+  }
+);
 
 /**
  * Convert duration string into Duration
  */
-export const BawDuration = createDecorator((model, key, seconds: number) => {
-  if (typeof seconds !== "number") {
-    return;
-  }
+export const BawDuration = createDecorator(
+  (model, key, seconds: number | Duration) => {
+    if (seconds instanceof Duration) {
+      return;
+    }
 
-  /*
+    /*
     Extra object fields required, do not remove. Duration calculates itself
     based on the time spans provided, if years is removed for example,
     the output will just keep incrementing months (i.e 24 months, instead of 2 years).
   */
-  model[key] = seconds
-    ? Duration.fromObject({
-        years: 0,
-        months: 0,
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds,
-      }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
-    : null;
-});
+    model[key] = seconds
+      ? Duration.fromObject({
+          years: 0,
+          months: 0,
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds,
+        }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
+      : null;
+  }
+);
 
 /**
  * Abstract code required for baw decorators
@@ -274,21 +278,42 @@ function createDecorator(
     model: AbstractModel,
     key: string
   ) => {
-    const fieldKey = opts?.key || key;
-    const symbolKey = Symbol("_" + fieldKey);
+    // Store decorated keys value
+    const decoratedKey = Symbol("_" + key);
 
-    Object.defineProperty(model, fieldKey, {
+    Object.defineProperty(model, key, {
       get() {
-        return model[symbolKey];
+        return model[decoratedKey];
       },
-      set(...args: any[]) {
-        setter(model, symbolKey, ...args);
-        // TODO Remove setter after change
+      set(args: any) {
+        // Ignore setter method if key reads value from override key
+        if (opts?.key) {
+          return;
+        }
+        setter(model, decoratedKey, args);
       },
     });
 
+    // If override key provided, intercept its getter to update the decorated key
+    if (opts?.key) {
+      // Store override keys value
+      const overrideKey = Symbol("_" + opts.key);
+
+      Object.defineProperty(model, opts.key, {
+        get() {
+          return model[overrideKey];
+        },
+        set(args: any) {
+          // Update override key and set decorated key
+          model[overrideKey] = args;
+          setter(model, decoratedKey, args);
+        },
+      });
+    }
+
+    // Should key persist in toJSON method
     if (opts?.persist) {
-      BawPersistAttr(model, fieldKey);
+      BawPersistAttr(model, key);
     }
   };
 }
