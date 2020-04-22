@@ -5,14 +5,6 @@ import { AbstractModel } from "@models/AbstractModel";
 export class MockModel extends AbstractModel {
   public readonly id: Id;
 
-  static fromJSON(obj: any) {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new MockModel(obj);
-  }
-
   public toJSON() {
     const json = {};
     this.addIfExists(json, "id", this.id);

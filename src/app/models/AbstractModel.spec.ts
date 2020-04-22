@@ -1,12 +1,25 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Injector } from "@angular/core";
+import { async, TestBed } from "@angular/core/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { shouldNotFail, shouldNotSucceed } from "@baw-api/baw-api.service.spec";
+import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
+import {
+  MOCK,
+  MockStandardApiService,
+} from "@baw-api/mock/standardApiMock.service";
+import { Id, Ids } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { testBawServices } from "../test.helper";
 import {
   AbstractModel,
-  BawPersistAttr,
   BawCollection,
   BawDateTime,
   BawDuration,
+  BawPersistAttr,
+  HasMany,
 } from "./AbstractModel";
-import { Ids, Id } from "@interfaces/apiInterfaces";
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
@@ -387,18 +400,145 @@ describe("Attribute Decorators", () => {
 });
 
 describe("Association Decorators", () => {
-  xdescribe("HasMany", () => {
-    it("should handle undefined", () => {});
-    it("should handle single", () => {});
-    it("should handle multiple", () => {});
-    it("should handle error", () => {});
-    it("should handle default primary key", () => {});
-    it("should handle custom primary key", () => {});
+  let injector: Injector;
+  let api: MockStandardApiService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        ...testBawServices,
+        MockStandardApiService,
+        { provide: MOCK.token, useExisting: MockStandardApiService },
+      ],
+    });
+
+    api = TestBed.inject(MockStandardApiService);
+    injector = TestBed.inject(Injector);
+  }));
+
+  describe("HasMany", () => {
+    function createModel(data: object, modelInjector: Injector, key?: string) {
+      class MockModel extends AbstractModel {
+        public readonly ids: Ids;
+        @HasMany(MOCK, (m: MockModel) => m.ids, key)
+        public readonly models: Observable<ChildModel[]>;
+
+        public get viewUrl(): string {
+          throw new Error("Method not implemented.");
+        }
+      }
+
+      return new MockModel(data, modelInjector);
+    }
+
+    function interceptApiRequest(
+      models?: ChildModel[],
+      error?: ApiErrorDetails
+    ) {
+      spyOn(api, "filter").and.callFake(() => {
+        if (!error) {
+          return new BehaviorSubject<ChildModel[]>(models);
+        } else {
+          const subject = new Subject<ChildModel[]>();
+          subject.error(error);
+          return subject;
+        }
+      });
+    }
+
+    it("should handle undefined modelIdentifier", (done) => {
+      const model = createModel({ ids: undefined }, injector);
+      model.models.subscribe((models) => {
+        expect(models).toEqual([]);
+        done();
+      }, shouldNotFail);
+    });
+
+    [
+      {
+        type: "Set",
+        empty: new Set([]),
+        single: new Set([1]),
+        multiple: new Set([1, 2]),
+      },
+      { type: "Array", empty: [], single: [1], multiple: [1, 2] },
+    ].forEach((idsType) => {
+      describe(idsType.type, () => {
+        it("should handle empty", (done) => {
+          interceptApiRequest([]);
+          const model = createModel({ ids: idsType.empty }, injector);
+          model.models.subscribe((models) => {
+            expect(models).toEqual([]);
+            done();
+          }, shouldNotFail);
+        });
+
+        it("should handle single modelIdentifier", (done) => {
+          interceptApiRequest([new ChildModel({ id: 1 })]);
+          const model = createModel({ ids: idsType.single }, injector);
+          model.models.subscribe((models) => {
+            expect(models).toEqual([new ChildModel({ id: 1 })]);
+            done();
+          }, shouldNotFail);
+        });
+
+        it("should handle multiple modelIdentifiers", (done) => {
+          const response = [
+            new ChildModel({ id: 1 }),
+            new ChildModel({ id: 2 }),
+          ];
+          interceptApiRequest(response);
+          const model = createModel({ ids: idsType.multiple }, injector);
+          model.models.subscribe((models) => {
+            expect(models).toEqual(response);
+            done();
+          }, shouldNotFail);
+        });
+
+        it("should handle error", (done) => {
+          interceptApiRequest(undefined, {
+            status: 401,
+            message: "Unauthorized",
+          });
+          const model = createModel({ ids: idsType.empty }, injector);
+          model.models.subscribe(shouldNotSucceed, (error) => {
+            expect(error).toEqual({ status: 401, message: "Unauthorized" });
+            done();
+          });
+        });
+
+        it("should handle default primary key", () => {
+          interceptApiRequest([]);
+          const model = createModel({ ids: idsType.multiple }, injector);
+          model.models.subscribe();
+          expect(api.filter).toHaveBeenCalledWith({
+            filter: { id: { in: [1, 2] } },
+          });
+        });
+
+        it("should handle custom primary key", () => {
+          interceptApiRequest([]);
+          const model = createModel(
+            { ids: idsType.multiple },
+            injector,
+            "customKey"
+          );
+          model.models.subscribe();
+          expect(api.filter).toHaveBeenCalledWith({
+            filter: { customKey: { in: [1, 2] } },
+          });
+        });
+      });
+    });
   });
 
   xdescribe("HasOne", () => {
     it("should handle undefined", () => {});
     it("should handle response", () => {});
+    it("should handle no additional ids", () => {});
+    it("should handle single additional id", () => {});
+    it("should handle multiple additional ids", () => {});
     it("should handle error", () => {});
     it("should handle additional keys", () => {});
   });

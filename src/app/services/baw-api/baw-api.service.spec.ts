@@ -467,6 +467,7 @@ describe("BawApiService", () => {
       });
     }
 
+    // TODO Add check to ensure models receive injector
     describe("apiList", () => {
       it("should call httpGet", () => {
         const response = {
@@ -545,6 +546,7 @@ describe("BawApiService", () => {
       });
     });
 
+    // TODO Add check to ensure models receive injector
     describe("apiFilter", () => {
       it("should call httpPost", () => {
         const response = {
@@ -624,6 +626,7 @@ describe("BawApiService", () => {
       });
     });
 
+    // TODO Add check to ensure models receive injector
     describe("apiShow", () => {
       it("should call httpGet", () => {
         const response = {
@@ -688,6 +691,7 @@ describe("BawApiService", () => {
       });
     });
 
+    // TODO Add check to ensure models receive injector
     describe("apiCreate", () => {
       it("should call httpPost", () => {
         const response = {
@@ -773,6 +777,7 @@ describe("BawApiService", () => {
       });
     });
 
+    // TODO Add check to ensure models receive injector
     describe("apiUpdate", () => {
       it("should call httpPatch", () => {
         const response = {
@@ -858,6 +863,7 @@ describe("BawApiService", () => {
       });
     });
 
+    // TODO Add check to ensure models receive injector
     describe("apiDestroy", () => {
       it("should call httpDelete", () => {
         const response = {

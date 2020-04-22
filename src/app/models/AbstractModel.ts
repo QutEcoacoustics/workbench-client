@@ -104,7 +104,7 @@ export abstract class AbstractModel {
 /**
  * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
- * @param modelIdentifier Parameter to read IDs from
+ * @param modelIdentifier Property to read IDs from
  * @param modelPrimaryKey Key to match ids against
  */
 export function HasMany(
@@ -112,22 +112,18 @@ export function HasMany(
   modelIdentifier: (model: AbstractModel) => Ids,
   modelPrimaryKey: string = "id"
 ) {
-  return (model: AbstractModel, associationKey: string) => {
-    createGetter<ApiFilter<AbstractModel, any[]>>(
-      serviceToken,
-      model,
-      associationKey,
-      modelIdentifier,
-      (service, ids: Ids) =>
-        service.filter({ filter: { [modelPrimaryKey]: { in: ids } } })
-    );
-  };
+  return createModelDecorator<ApiFilter<AbstractModel, any[]>>(
+    serviceToken,
+    modelIdentifier,
+    (service, ids: Ids) =>
+      service.filter({ filter: { [modelPrimaryKey]: { in: Array.from(ids) } } })
+  );
 }
 
 /**
  * Associate model with ID
  * @param serviceToken Injection token for API Service
- * @param modelIdentifier Parameter to read ID from
+ * @param modelIdentifier Property to read ID from
  * @param ids Additional IDs
  */
 export function HasOne(
@@ -137,70 +133,79 @@ export function HasOne(
   modelIdentifier: (model: AbstractModel) => Id,
   ids: string[] = []
 ) {
-  return (model: AbstractModel, associationKey: string) => {
-    createGetter<ApiShow<AbstractModel, any[], IdOr<AbstractModel>>>(
-      serviceToken,
-      model,
-      associationKey,
-      modelIdentifier,
-      (service, id: Id) => service.show(id, ...ids)
-    );
-  };
+  return createModelDecorator<
+    ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
+  >(serviceToken, modelIdentifier, (service, id: Id) =>
+    service.show(id, ...ids)
+  );
 }
 
 /**
  * Insert a getter function into the model
  * @param serviceToken Injection token for API Service
- * @param model Target model
- * @param associationKey Key to identify associated model
- * @param params Property to extract IDs from
+ * @param modelIdentifier Property to extract IDs from
  * @param createRequest Create API Request
  */
-function createGetter<S>(
+function createModelDecorator<S>(
   serviceToken: ServiceToken<S>,
-  model: AbstractModel,
-  associationKey: string,
-  modelIdentifier: (model: AbstractModel) => Id | Ids,
+  modelIdentifier: (target: AbstractModel) => Id | Ids,
   createRequest: (
     service: S,
     params: Id | Ids
   ) => Observable<AbstractModel | AbstractModel[]>
 ) {
-  Object.defineProperty(model, associationKey, {
-    get(this: AbstractModel) {
-      // If model has no injector, error out
-      const injector = this["injector"];
-      if (!injector) {
-        throw new Error("Model does not have injector service.");
-      }
+  /**
+   * Get the associated model for a target model
+   * @param target Target Model
+   * @param associationKey Associated model key
+   */
+  function getAssociatedModel(
+    target: AbstractModel,
+    associationKey: string
+  ): Observable<null | AbstractModel | AbstractModel[]> {
+    // Check for any cached models
+    const cachedModelKey = "_" + associationKey;
+    if (target.hasOwnProperty(cachedModelKey)) {
+      return of(target[cachedModelKey]);
+    }
 
-      // If field is undefined, return null result
-      const identifier = modelIdentifier(this);
-      if (identifier === undefined || identifier === null) {
-        return of(null);
-      }
+    // Get Angular Injector Service
+    const injector = target["injector"];
+    if (!injector) {
+      throw new Error("Model does not have injector service.");
+    }
 
-      // If result cached (eg. sites cached at _sites), return cached result
-      const cachedModel = `_${associationKey}`;
-      if (this.hasOwnProperty(cachedModel)) {
-        return of(this[cachedModel]);
-      }
+    // Get model identifying ID/s
+    const identifier = modelIdentifier(target);
+    if (identifier === undefined || identifier === null) {
+      console.warn("Model is missing identifier: ", {
+        target,
+        associationKey,
+        identifier,
+      });
+      return of([]);
+    }
 
-      // Create service and request from API
-      const service = injector.get(serviceToken.token);
-      return createRequest(service, identifier).pipe(
-        map((response) => {
-          // Cache model and return
-          Object.defineProperty(model, cachedModel, {
-            value: response,
-            configurable: false,
-          });
+    // Create service and request from API
+    const service = injector.get(serviceToken.token);
+    return createRequest(service, identifier).pipe(
+      map((response) => {
+        Object.defineProperty(target, cachedModelKey, {
+          value: response,
+          configurable: false,
+        });
+        return response;
+      })
+    );
+  }
 
-          return response;
-        })
-      );
-    },
-  });
+  return (target: AbstractModel, associationKey: string) => {
+    Object.defineProperty(target, associationKey, {
+      get(this: AbstractModel) {
+        return getAssociatedModel(this, associationKey);
+      },
+    });
+  };
 }
 
 /**
