@@ -2,7 +2,7 @@ import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ServiceToken } from "@baw-api/ServiceTokens";
 import { DateTime, Duration } from "luxon";
-import { Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Id, Ids } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
@@ -155,6 +155,23 @@ function createModelDecorator<S>(
   ) => Observable<AbstractModel | AbstractModel[]>
 ) {
   /**
+   * Update cached model
+   * @param target Target Model
+   * @param key Cache Key
+   * @param value Model
+   */
+  function updateCache(
+    target: AbstractModel,
+    key: string,
+    value: Observable<AbstractModel | AbstractModel[]>
+  ) {
+    Object.defineProperty(target, key, {
+      value,
+      configurable: false,
+    });
+  }
+
+  /**
    * Get the associated model for a target model
    * @param target Target Model
    * @param associationKey Associated model key
@@ -166,7 +183,7 @@ function createModelDecorator<S>(
     // Check for any cached models
     const cachedModelKey = "_" + associationKey;
     if (target.hasOwnProperty(cachedModelKey)) {
-      return of(target[cachedModelKey]);
+      return target[cachedModelKey];
     }
 
     // Get Angular Injector Service
@@ -188,15 +205,17 @@ function createModelDecorator<S>(
 
     // Create service and request from API
     const service = injector.get(serviceToken.token);
-    return createRequest(service, identifier).pipe(
+    const request = createRequest(service, identifier).pipe(
       map((response) => {
-        Object.defineProperty(target, cachedModelKey, {
-          value: response,
-          configurable: false,
-        });
+        // Change cached value to BehaviorSubject so that it will instantly return
+        updateCache(target, cachedModelKey, new BehaviorSubject(response));
         return response;
       })
     );
+
+    // Save request to cache so other requests are ignored
+    updateCache(target, cachedModelKey, request);
+    return request;
   }
 
   return (target: AbstractModel, associationKey: string) => {

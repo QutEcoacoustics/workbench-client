@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { async, TestBed } from "@angular/core/testing";
+import { async, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { shouldNotFail, shouldNotSucceed } from "@baw-api/baw-api.service.spec";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
@@ -529,6 +529,26 @@ describe("Association Decorators", () => {
             filter: { customKey: { in: [1, 2] } },
           });
         });
+
+        it("should load cached data", fakeAsync(() => {
+          spyOn(api, "filter").and.callFake(() => {
+            const subject = new Subject<ChildModel[]>();
+            setTimeout(() => {
+              subject.next([new ChildModel({ id: 1 })]);
+            }, 100);
+            return subject;
+          });
+
+          const model = createModel({ ids: idsType.single }, injector);
+          for (let i = 0; i < 5; i++) {
+            model.models.subscribe((models) => {
+              expect(models).toEqual([new ChildModel({ id: 1 })]);
+            }, shouldNotFail);
+          }
+
+          tick(100);
+          expect(api.filter).toHaveBeenCalledTimes(1);
+        }));
       });
     });
   });
