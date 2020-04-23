@@ -1,16 +1,10 @@
 import { HttpClient } from "@angular/common/http";
-import {
-  Inject,
-  Injectable,
-  InjectionToken,
-  Injector,
-  Optional,
-} from "@angular/core";
+import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser } from "src/app/models/User";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -71,7 +65,7 @@ export abstract class BawApiService<T extends AbstractModel> {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: object, injector?: Injector) => T,
-    @Optional() protected injector?: Injector
+    protected injector?: Injector
   ) {
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {

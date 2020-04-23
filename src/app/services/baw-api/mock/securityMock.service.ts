@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
+import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable } from "rxjs";
-import { SessionUser } from "src/app/models/User";
 import { BawApiService } from "../baw-api.service";
 
 @Injectable()

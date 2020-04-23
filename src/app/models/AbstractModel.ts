@@ -1,4 +1,4 @@
-import { Injector } from "@angular/core";
+import { Injector, Optional } from "@angular/core";
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ServiceToken } from "@baw-api/ServiceTokens";
 import { DateTime, Duration } from "luxon";
@@ -11,7 +11,7 @@ import { Meta } from "../services/baw-api/baw-api.service";
  * BAW Server Abstract Model
  */
 export abstract class AbstractModel {
-  constructor(raw: object, private injector?: Injector) {
+  constructor(raw: object, @Optional() private injector?: Injector) {
     return Object.assign(this, raw);
   }
 
@@ -85,19 +85,6 @@ export abstract class AbstractModel {
    */
   public getMetadata(): Meta {
     return this[AbstractModel.metaKey];
-  }
-
-  /**
-   * Add property to object if it exists (not undefined/null)
-   * @deprecated
-   * @param object Output object
-   * @param key Key name
-   * @param value Key value
-   */
-  protected addIfExists(object: any, key: string, value: any) {
-    if (value) {
-      object[key] = value;
-    }
   }
 }
 

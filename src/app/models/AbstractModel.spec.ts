@@ -3,10 +3,7 @@ import { Injector } from "@angular/core";
 import { async, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { shouldNotFail, shouldNotSucceed } from "@baw-api/baw-api.service.spec";
-import {
-  MockModel as ChildModel,
-  MockModel,
-} from "@baw-api/mock/baseApiMock.service";
+import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
 import {
   MOCK,
   MockStandardApiService,
@@ -425,7 +422,7 @@ describe("Association Decorators", () => {
     function createModel(
       data: object,
       modelInjector: Injector,
-      key: string = undefined,
+      key?: string,
       ...modelParameters: ((target) => Id)[]
     ) {
       class MockModel extends AbstractModel {

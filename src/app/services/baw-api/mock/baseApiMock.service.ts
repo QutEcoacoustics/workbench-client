@@ -6,9 +6,7 @@ export class MockModel extends AbstractModel {
   public readonly id: Id;
 
   public toJSON() {
-    const json = {};
-    this.addIfExists(json, "id", this.id);
-    return json;
+    return { id: this.id };
   }
 
   public get viewUrl(): string {

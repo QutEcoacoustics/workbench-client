@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { ServiceToken } from "@baw-api/ServiceTokens";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { StandardApi } from "../api-common";
 import { MockModel } from "./baseApiMock.service";
 
