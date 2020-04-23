@@ -86,7 +86,7 @@ export class User extends AbstractModel implements IUser {
   @BawDateTime({ persist: true })
   public readonly updatedAt?: DateTimeTimezone;
   @BawDateTime({ persist: true })
-  public lastSeenAt?: DateTimeTimezone;
+  public readonly lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
     super(user);

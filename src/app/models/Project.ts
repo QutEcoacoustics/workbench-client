@@ -51,7 +51,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly imageUrl?: string;
   public readonly creatorId?: Id;
   @BawDateTime()
-  public createdAt?: DateTimeTimezone;
+  public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
   @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;

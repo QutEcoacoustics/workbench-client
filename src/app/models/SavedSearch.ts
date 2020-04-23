@@ -14,7 +14,7 @@ import {
 } from "./AbstractModel";
 import type { User } from "./User";
 
-export interface ISavedSearches {
+export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
@@ -25,7 +25,7 @@ export interface ISavedSearches {
   deletedAt?: DateTimeTimezone | string;
 }
 
-export class SavedSearches extends AbstractModel implements ISavedSearches {
+export class SavedSearch extends AbstractModel implements ISavedSearch {
   public readonly kind: "SavedSearches" = "SavedSearches";
   @BawPersistAttr
   public readonly id?: Id;
@@ -43,12 +43,12 @@ export class SavedSearches extends AbstractModel implements ISavedSearches {
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: SavedSearches) => m.creatorId)
+  @HasOne(ACCOUNT, (m: SavedSearch) => m.creatorId)
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: SavedSearches) => m.deleterId)
+  @HasOne(ACCOUNT, (m: SavedSearch) => m.deleterId)
   public deleter?: Observable<User>;
 
-  constructor(savedSearches: ISavedSearches) {
+  constructor(savedSearches: ISavedSearch) {
     super(savedSearches);
   }
 
