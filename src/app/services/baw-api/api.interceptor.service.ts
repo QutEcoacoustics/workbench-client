@@ -5,19 +5,16 @@ import {
   HttpInterceptor,
   HttpParams,
   HttpRequest,
-  HttpResponse
+  HttpResponse,
 } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import {
-  API_ROOT,
-  CMS_ROOT
-} from "src/app/helpers/app-initializer/app-initializer";
+import { API_ROOT, CMS_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   toCamelCase,
-  toSnakeCase
-} from "src/app/helpers/case-converter/case-converter";
+  toSnakeCase,
+} from "@helpers/case-converter/case-converter";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security.service";
 
@@ -57,8 +54,8 @@ export class BawApiInterceptor implements HttpInterceptor {
       request = request.clone({
         setHeaders: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
     }
 
@@ -66,14 +63,14 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (this.api.isLoggedIn()) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Token token="${this.api.getLocalUser().authToken}"`
-        }
+          Authorization: `Token token="${this.api.getLocalUser().authToken}"`,
+        },
       });
     }
 
     // Convert outgoing data
     request = request.clone({
-      body: toSnakeCase(request.body)
+      body: toSnakeCase(request.body),
     });
 
     // Convert http parameter data (GET Requests)
@@ -96,12 +93,12 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     request = request.clone({
-      params: newParams
+      params: newParams,
     });
 
     return next.handle(request).pipe(
       // Convert incoming data
-      map(resp => {
+      map((resp) => {
         if (resp instanceof HttpResponse) {
           return resp.clone({ body: toCamelCase(resp.body) });
         }
@@ -123,7 +120,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     } else if (isErrorResponse(response)) {
       const error: ApiErrorDetails = {
         status: response.status,
-        message: response.error.meta.error.details
+        message: response.error.meta.error.details,
       };
 
       if (response.error.meta.error.info) {
@@ -134,7 +131,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     } else {
       return throwError({
         status: response.status,
-        message: response.message
+        message: response.message,
       } as ApiErrorDetails);
     }
   }

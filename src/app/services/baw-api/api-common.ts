@@ -1,7 +1,7 @@
+import { PartialWith } from "@helpers/advancedTypes";
+import { Param } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { PartialWith } from "src/app/helpers/advancedTypes";
-import { Param } from "src/app/interfaces/apiInterfaces";
-import { AbstractModel } from "src/app/models/AbstractModel";
 import { BawApiService, Filters } from "./baw-api.service";
 
 /**

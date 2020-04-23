@@ -1,12 +1,12 @@
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { Subject } from "rxjs";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
 import { testAppInitializer } from "src/app/test.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService, Filters } from "./baw-api.service";
@@ -14,7 +14,7 @@ import {
   apiErrorDetails,
   apiErrorInfoDetails,
   shouldNotFail,
-  shouldNotSucceed
+  shouldNotSucceed,
 } from "./baw-api.service.spec";
 import { MockBawApiService } from "./mock/baseApiMock.service";
 import { SitesService } from "./sites.service";
@@ -52,8 +52,8 @@ describe("SitesService", () => {
       providers: [
         ...testAppInitializer,
         SitesService,
-        { provide: BawApiService, useClass: MockBawApiService }
-      ]
+        { provide: BawApiService, useClass: MockBawApiService },
+      ],
     });
 
     service = TestBed.inject(SitesService);
@@ -85,7 +85,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
       const siteModels = [];
 
@@ -131,8 +131,8 @@ describe("SitesService", () => {
           id: 1,
           name: "name",
           creatorId: 2,
-          projectIds: new Set([1, 2, 3])
-        })
+          projectIds: new Set([1, 2, 3]),
+        }),
       ];
 
       createSuccess("/projects/1/sites/", siteModels);
@@ -151,14 +151,14 @@ describe("SitesService", () => {
           id: 1,
           name: "name",
           creatorId: 2,
-          projectIds: new Set([1, 2, 3])
+          projectIds: new Set([1, 2, 3]),
         }),
         new Site({
           id: 5,
           name: "name",
           creatorId: 10,
-          projectIds: new Set([10, 20, 30])
-        })
+          projectIds: new Set([10, 20, 30]),
+        }),
       ];
 
       createSuccess("/projects/1/sites/", siteModels);
@@ -219,7 +219,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
       const siteModels = [];
 
@@ -268,8 +268,8 @@ describe("SitesService", () => {
           id: 1,
           name: "name",
           creatorId: 2,
-          projectIds: new Set([1, 2, 3])
-        })
+          projectIds: new Set([1, 2, 3]),
+        }),
       ];
 
       createSuccess("/projects/1/sites/filter", filters, siteModels);
@@ -289,14 +289,14 @@ describe("SitesService", () => {
           id: 1,
           name: "name",
           creatorId: 2,
-          projectIds: new Set([1, 2, 3])
+          projectIds: new Set([1, 2, 3]),
         }),
         new Site({
           id: 5,
           name: "name",
           creatorId: 10,
-          projectIds: new Set([10, 20, 30])
-        })
+          projectIds: new Set([10, 20, 30]),
+        }),
       ];
 
       createSuccess("/projects/1/sites/filter", filters, siteModels);
@@ -361,7 +361,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -379,7 +379,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -397,13 +397,13 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
       const siteModel = new Site({
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -421,7 +421,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/5/sites/1", siteModel);
@@ -439,7 +439,7 @@ describe("SitesService", () => {
         id: 5,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/1/sites/5", siteModel);
@@ -457,7 +457,7 @@ describe("SitesService", () => {
         id: 5,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1, 2, 3])
+        projectIds: new Set([1, 2, 3]),
       });
 
       createSuccess("/projects/1/sites/5", siteModel);
@@ -517,7 +517,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createSuccess("/projects/1/sites/", siteModel);
@@ -535,13 +535,13 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
       const siteModel = new Site({
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createSuccess("/projects/1/sites/", siteModel);
@@ -559,7 +559,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createSuccess("/projects/5/sites/", siteModel);
@@ -577,7 +577,7 @@ describe("SitesService", () => {
         id: 1,
         name: "Custom Name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createSuccess("/projects/1/sites/", siteModel);
@@ -596,7 +596,7 @@ describe("SitesService", () => {
         name: "name",
         description: "Custom Description",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createSuccess("/projects/1/sites/", siteModel);
@@ -614,7 +614,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createError("apiCreate", "/projects/1/sites/", apiErrorDetails);
@@ -634,7 +634,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([])
+        projectIds: new Set([]),
       });
 
       createError("apiCreate", "/projects/1/sites/", apiErrorInfoDetails);
@@ -671,7 +671,7 @@ describe("SitesService", () => {
 
     it("should handle response", fakeAsync(() => {
       const siteModel = new Site({
-        id: 1
+        id: 1,
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -694,10 +694,10 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
       const siteModel = new Site({
-        id: 1
+        id: 1,
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -712,7 +712,7 @@ describe("SitesService", () => {
 
     it("should handle response with random project id", fakeAsync(() => {
       const siteModel = new Site({
-        id: 1
+        id: 1,
       });
 
       createSuccess("/projects/5/sites/1", siteModel);
@@ -727,7 +727,7 @@ describe("SitesService", () => {
 
     it("should handle response with random site id", fakeAsync(() => {
       const siteModel = new Site({
-        id: 5
+        id: 5,
       });
 
       createSuccess("/projects/1/sites/5", siteModel);
@@ -743,7 +743,7 @@ describe("SitesService", () => {
     it("should handle response with name", fakeAsync(() => {
       const siteModel = new Site({
         id: 1,
-        name: "Custom Name"
+        name: "Custom Name",
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -759,7 +759,7 @@ describe("SitesService", () => {
     it("should handle response with description", fakeAsync(() => {
       const siteModel = new Site({
         id: 1,
-        description: "Custom Description"
+        description: "Custom Description",
       });
 
       createSuccess("/projects/1/sites/1", siteModel);
@@ -776,7 +776,7 @@ describe("SitesService", () => {
 
     it("should handle error", fakeAsync(() => {
       const siteModel = new Site({
-        id: 1
+        id: 1,
       });
 
       createError("apiUpdate", "/projects/1/sites/1", apiErrorDetails);
@@ -793,7 +793,7 @@ describe("SitesService", () => {
 
     it("should handle error with info", fakeAsync(() => {
       const siteModel = new Site({
-        id: 1
+        id: 1,
       });
 
       createError("apiUpdate", "/projects/1/sites/1", apiErrorInfoDetails);
@@ -835,7 +835,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        projectIds: new Set([1])
+        projectIds: new Set([1]),
       });
 
       createSuccess("/projects/1/sites/1");
@@ -862,7 +862,7 @@ describe("SitesService", () => {
         id: 1,
         name: "name",
         creatorId: 2,
-        siteIds: new Set([1])
+        siteIds: new Set([1]),
       });
 
       createSuccess("/projects/1/sites/1");
@@ -907,11 +907,11 @@ describe("SitesService", () => {
     it("should handle non-void response", fakeAsync(() => {
       const model = new Site({
         id: 1,
-        name: "name"
+        name: "name",
       });
       createSuccess("/projects/1/sites/1", model);
 
-      service.destroy(model, 1).subscribe(_model => {
+      service.destroy(model, 1).subscribe((_model) => {
         expect(_model).toEqual(model);
       }, shouldNotFail);
 

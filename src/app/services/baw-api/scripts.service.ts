@@ -1,17 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Id } from "@interfaces/apiInterfaces";
+import { Script } from "@models/Script";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { Script } from "src/app/models/Script";
 import {
   Empty,
   id,
   IdOr,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { filterMock, listMock } from "./mock/api-commonMock";
@@ -31,12 +31,12 @@ export class ScriptsService extends StandardApi<Script, []> {
   }
 
   list(): Observable<Script[]> {
-    return listMock<Script>(modelId => createScript(modelId));
+    return listMock<Script>((modelId) => createScript(modelId));
     // return this.apiList(endpoint(Empty, Empty));
   }
 
   filter(filters: Filters): Observable<Script[]> {
-    return filterMock<Script>(filters, modelId => createScript(modelId));
+    return filterMock<Script>(filters, (modelId) => createScript(modelId));
     // return this.apiList(endpoint(Empty, Filter));
   }
 
@@ -73,6 +73,6 @@ function createScript(modelId: Id) {
     executableCommand: "placeholder",
     executableSettings: "placeholder",
     executableSettingsMediaType: "text/plain",
-    analysisActionParams: JSON.stringify({})
+    analysisActionParams: JSON.stringify({}),
   });
 }

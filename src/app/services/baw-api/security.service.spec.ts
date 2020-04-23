@@ -1,18 +1,18 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
+import { SessionUser, User } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
-import { SessionUser, User } from "src/app/models/User";
 import { testAppInitializer } from "src/app/test.helper";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   apiErrorDetails,
   shouldNotComplete,
   shouldNotFail,
-  shouldNotSucceed
+  shouldNotSucceed,
 } from "./baw-api.service.spec";
 import { MockShowApiService } from "./mock/showApiMock.service";
 import { LoginDetails, SecurityService } from "./security.service";
@@ -54,10 +54,10 @@ describe("SecurityService", () => {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
-          multi: true
+          multi: true,
         },
-        SecurityService
-      ]
+        SecurityService,
+      ],
     });
 
     service = TestBed.inject(SecurityService);
@@ -66,15 +66,15 @@ describe("SecurityService", () => {
 
     defaultUser = new User({
       id: 1,
-      userName: "username"
+      userName: "username",
     });
     defaultSessionUser = new SessionUser({
       authToken: "xxxxxxxxxxxxxxx",
-      userName: "username"
+      userName: "username",
     });
     defaultLoginDetails = new LoginDetails({
       login: "username",
-      password: "password"
+      password: "password",
     });
   });
 
@@ -123,7 +123,7 @@ describe("SecurityService", () => {
           const subject = new Subject<User>();
           subject.error({
             status: 401,
-            message: "Unauthorized"
+            message: "Unauthorized",
           } as ApiErrorDetails);
           return subject;
         }
@@ -163,11 +163,11 @@ describe("SecurityService", () => {
         isConfirmed: false,
         lastSeenAt: "1970-01-01T00:00:00.000+10:00",
         rolesMask: 2,
-        rolesMaskNames: ["user"]
+        rolesMaskNames: ["user"],
       };
       const authDetails = {
         authToken: "xxxxxxxxxxxxxxxx",
-        userName: "username"
+        userName: "username",
       };
 
       const user = new User(userDetails);
@@ -178,7 +178,7 @@ describe("SecurityService", () => {
       expect(service.getLocalUser()).toEqual(
         new SessionUser({
           ...authDetails,
-          ...userDetails
+          ...userDetails,
         })
       );
     }));

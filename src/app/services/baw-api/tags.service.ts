@@ -1,11 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Tag, TagType } from "@models/Tag";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Tag, TagType } from "src/app/models/Tag";
 import {
   Empty,
   Filter,
