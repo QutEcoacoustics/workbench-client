@@ -121,7 +121,8 @@ export function HasMany(
       service.filter(
         { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
         ...params
-      )
+      ),
+    []
   );
 }
 
@@ -162,7 +163,8 @@ function createModelDecorator<S>(
     service: S,
     id: Id | Ids,
     ...params: any[]
-  ) => Observable<AbstractModel | AbstractModel[]>
+  ) => Observable<AbstractModel | AbstractModel[]>,
+  failureValue: any = null
 ) {
   /**
    * Update cached model
@@ -210,7 +212,7 @@ function createModelDecorator<S>(
         associationKey,
         identifier,
       });
-      return of([]);
+      return of(failureValue);
     }
 
     // Get model parameters

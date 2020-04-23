@@ -3,7 +3,10 @@ import { Injector } from "@angular/core";
 import { async, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { shouldNotFail, shouldNotSucceed } from "@baw-api/baw-api.service.spec";
-import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
+import {
+  MockModel as ChildModel,
+  MockModel,
+} from "@baw-api/mock/baseApiMock.service";
 import {
   MOCK,
   MockStandardApiService,
@@ -430,7 +433,7 @@ describe("Association Decorators", () => {
         public readonly param1: Id;
         public readonly param2: Id;
         @HasMany(MOCK, (m: MockModel) => m.ids, key, ...modelParameters)
-        public readonly models: Observable<ChildModel[]>;
+        public readonly childModels: Observable<ChildModel[]>;
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
@@ -457,7 +460,7 @@ describe("Association Decorators", () => {
 
     it("should handle undefined modelIdentifier", (done) => {
       const model = createModel({ ids: undefined }, injector);
-      model.models.subscribe((models) => {
+      model.childModels.subscribe((models) => {
         expect(models).toEqual([]);
         done();
       }, shouldNotFail);
@@ -476,7 +479,7 @@ describe("Association Decorators", () => {
         it("should handle empty", (done) => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.empty }, injector);
-          model.models.subscribe((models) => {
+          model.childModels.subscribe((models) => {
             expect(models).toEqual([]);
             done();
           }, shouldNotFail);
@@ -485,7 +488,7 @@ describe("Association Decorators", () => {
         it("should handle single modelIdentifier", (done) => {
           interceptApiRequest([new ChildModel({ id: 1 })]);
           const model = createModel({ ids: idsType.single }, injector);
-          model.models.subscribe((models) => {
+          model.childModels.subscribe((models) => {
             expect(models).toEqual([new ChildModel({ id: 1 })]);
             done();
           }, shouldNotFail);
@@ -498,7 +501,7 @@ describe("Association Decorators", () => {
           ];
           interceptApiRequest(response);
           const model = createModel({ ids: idsType.multiple }, injector);
-          model.models.subscribe((models) => {
+          model.childModels.subscribe((models) => {
             expect(models).toEqual(response);
             done();
           }, shouldNotFail);
@@ -512,7 +515,7 @@ describe("Association Decorators", () => {
             undefined,
             (target) => target.param1
           );
-          model.models.subscribe();
+          model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
             {
               filter: { id: { in: [1, 2] } },
@@ -530,7 +533,7 @@ describe("Association Decorators", () => {
             (target) => target.param1,
             (target) => target.param2
           );
-          model.models.subscribe();
+          model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
             {
               filter: { id: { in: [1, 2] } },
@@ -545,7 +548,7 @@ describe("Association Decorators", () => {
             message: "Unauthorized",
           });
           const model = createModel({ ids: idsType.empty }, injector);
-          model.models.subscribe(shouldNotSucceed, (error) => {
+          model.childModels.subscribe(shouldNotSucceed, (error) => {
             expect(error).toEqual({ status: 401, message: "Unauthorized" });
             done();
           });
@@ -554,7 +557,7 @@ describe("Association Decorators", () => {
         it("should handle default primary key", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.multiple }, injector);
-          model.models.subscribe();
+          model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
             {
               filter: { id: { in: [1, 2] } },
@@ -570,7 +573,7 @@ describe("Association Decorators", () => {
             injector,
             "customKey"
           );
-          model.models.subscribe();
+          model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
             {
               filter: { customKey: { in: [1, 2] } },
@@ -590,7 +593,7 @@ describe("Association Decorators", () => {
 
           const model = createModel({ ids: idsType.single }, injector);
           for (let i = 0; i < 5; i++) {
-            model.models.subscribe((models) => {
+            model.childModels.subscribe((models) => {
               expect(models).toEqual([new ChildModel({ id: 1 })]);
             }, shouldNotFail);
           }
@@ -602,16 +605,18 @@ describe("Association Decorators", () => {
     });
   });
 
-  xdescribe("HasOne", () => {
+  describe("HasOne", () => {
     function createModel(
       data: object,
       modelInjector: Injector,
-      ...modelParameters: ((target: AbstractModel) => Id)[]
+      ...modelParameters: ((target) => Id)[]
     ) {
       class MockModel extends AbstractModel {
         public readonly id: Id;
+        public readonly param1: Id;
+        public readonly param2: Id;
         @HasOne(MOCK, (m: MockModel) => m.id, ...modelParameters)
-        public readonly models: Observable<ChildModel[]>;
+        public readonly childModel: Observable<ChildModel>;
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
@@ -621,26 +626,100 @@ describe("Association Decorators", () => {
       return new MockModel(data, modelInjector);
     }
 
-    function interceptApiRequest(
-      models?: ChildModel[],
-      error?: ApiErrorDetails
-    ) {
-      spyOn(api, "filter").and.callFake(() => {
+    function interceptApiRequest(model?: ChildModel, error?: ApiErrorDetails) {
+      spyOn(api, "show").and.callFake(() => {
         if (!error) {
-          return new BehaviorSubject<ChildModel[]>(models);
+          return new BehaviorSubject<ChildModel>(model);
         } else {
-          const subject = new Subject<ChildModel[]>();
+          const subject = new Subject<ChildModel>();
           subject.error(error);
           return subject;
         }
       });
     }
 
-    it("should handle undefined", () => {});
-    it("should handle response", () => {});
-    it("should handle single parameter", () => {});
-    it("should handle multiple parameters", () => {});
-    it("should handle error", () => {});
-    it("should handle additional keys", () => {});
+    it("should handle undefined modelIdentifier", (done) => {
+      const model = createModel({ id: undefined }, injector);
+      model.childModel.subscribe((response) => {
+        expect(response).toBe(null);
+        done();
+      }, shouldNotFail);
+    });
+
+    it("should handle response", (done) => {
+      interceptApiRequest(new ChildModel({ id: 1 }));
+      const model = createModel({ id: 1 }, injector);
+      model.childModel.subscribe((response) => {
+        expect(response).toEqual(new ChildModel({ id: 1 }));
+        done();
+      }, shouldNotFail);
+    });
+
+    it("should handle single parameter", () => {
+      interceptApiRequest(new ChildModel({ id: 1 }));
+      const model = createModel(
+        { id: 1, param1: 5 },
+        injector,
+        (target) => target.param1
+      );
+      model.childModel.subscribe();
+      expect(api.show).toHaveBeenCalledWith(1, [5]);
+    });
+
+    it("should handle multiple parameters", () => {
+      interceptApiRequest(new ChildModel({ id: 1 }));
+      const model = createModel(
+        { id: 1, param1: 5, param2: 10 },
+        injector,
+        (target) => target.param1,
+        (target) => target.param2
+      );
+      model.childModel.subscribe();
+      expect(api.show).toHaveBeenCalledWith(1, [5, 10]);
+    });
+
+    it("should handle undefined modelParameter", () => {
+      interceptApiRequest(new ChildModel({ id: 1 }));
+      const model = createModel(
+        { id: 1, param1: 5 },
+        injector,
+        (target) => target.param1,
+        (target) => target.param2
+      );
+      model.childModel.subscribe();
+      expect(api.show).toHaveBeenCalledWith(1, [5, undefined]);
+    });
+
+    it("should handle error", (done) => {
+      interceptApiRequest(undefined, {
+        status: 401,
+        message: "Unauthorized",
+      });
+      const model = createModel({ id: 1 }, injector);
+      model.childModel.subscribe(shouldNotSucceed, (error) => {
+        expect(error).toEqual({ status: 401, message: "Unauthorized" });
+        done();
+      });
+    });
+
+    it("should load cached data", fakeAsync(() => {
+      spyOn(api, "show").and.callFake(() => {
+        const subject = new Subject<ChildModel>();
+        setTimeout(() => {
+          subject.next(new ChildModel({ id: 1 }));
+        }, 100);
+        return subject;
+      });
+
+      const model = createModel({ id: 1 }, injector);
+      for (let i = 0; i < 5; i++) {
+        model.childModel.subscribe((models) => {
+          expect(models).toEqual(new ChildModel({ id: 1 }));
+        }, shouldNotFail);
+      }
+
+      tick(100);
+      expect(api.show).toHaveBeenCalledTimes(1);
+    }));
   });
 });
