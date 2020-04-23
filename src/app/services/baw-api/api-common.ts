@@ -4,28 +4,54 @@ import { Param } from "src/app/interfaces/apiInterfaces";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { BawApiService, Filters } from "./baw-api.service";
 
+/**
+ * Convert baw model or id to id
+ */
 export type IdOr<T extends AbstractModel> = T | number;
+
+/**
+ * Convert baw model or id to parameter
+ */
 export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
+
+/**
+ * Convert baw model or id to optional parameter
+ */
 export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
   if (x === Empty) {
-    return Empty;
+    return x;
+  } else if (x instanceof AbstractModel) {
+    return x.id.toString();
+  } else {
+    return x.toString();
   }
-
-  return (x instanceof AbstractModel ? x.id : x).toString();
 }
+
+/**
+ * Create parameter (used by stringTemplate)
+ * @param x Api parameter
+ */
 export function param(x: Param) {
   return x;
 }
-export function option(x?: "new" | "filter" | "") {
-  return x ? x : "";
+
+/**
+ * Create option (used by stringTemplate)
+ * @param x Api option
+ */
+export function option(x?: New | Filter | Empty) {
+  return x ? x : Empty;
 }
+
 export type Empty = "";
-export const Empty = "";
-export const New = "new";
-export const Filter = "filter";
+export type New = "new";
+export type Filter = "filter";
+export const Empty: Empty = "";
+export const New: New = "new";
+export const Filter: Filter = "filter";
 
 /**
  * API List functionality

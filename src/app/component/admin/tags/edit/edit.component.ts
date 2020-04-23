@@ -87,6 +87,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     return (this.models[tagTypesKey] as unknown) as TagType[];
   }
 
+  // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   protected apiAction(model: Partial<Tag>) {
     return this.api.update(new Tag(model));
   }
