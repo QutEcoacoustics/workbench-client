@@ -1,10 +1,15 @@
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { accountResolvers, AccountService } from "./account.service";
+import {
+  analysisJobResolvers,
+  AnalysisJobsService,
+} from "./analysis-jobs.service";
 import { projectResolvers, ProjectsService } from "./projects.service";
 import { scriptResolvers, ScriptsService } from "./scripts.service";
 import { SecurityService } from "./security.service";
 import {
   ACCOUNT,
+  ANALYSIS_JOB,
   PROJECT,
   SCRIPT,
   SECURITY,
@@ -27,6 +32,7 @@ import { userResolvers, UserService } from "./user.service";
 const services = [
   AppConfigService,
   AccountService,
+  AnalysisJobsService,
   ProjectsService,
   ScriptsService,
   SecurityService,
@@ -36,6 +42,7 @@ const services = [
   TagGroupService,
   UserService,
   { provide: ACCOUNT.token, useExisting: AccountService },
+  { provide: ANALYSIS_JOB.token, useExisting: AnalysisJobsService },
   { provide: PROJECT.token, useExisting: ProjectsService },
   { provide: SCRIPT.token, useExisting: ScriptsService },
   { provide: SECURITY.token, useExisting: SecurityService },
@@ -48,6 +55,7 @@ const services = [
 
 const resolvers = [
   ...accountResolvers.providers,
+  ...analysisJobResolvers.providers,
   ...projectResolvers.providers,
   ...scriptResolvers.providers,
   ...siteResolvers.providers,
