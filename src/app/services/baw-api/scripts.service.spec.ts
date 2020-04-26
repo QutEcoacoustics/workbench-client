@@ -9,13 +9,12 @@ import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
-  validateApiUpdate,
 } from "./api-common.helper";
 import { BawApiService } from "./baw-api.service";
 import { MockBawApiService } from "./mock/baseApiMock.service";
 import { ScriptsService } from "./scripts.service";
 
-xdescribe("ScriptsService", function () {
+describe("ScriptsService", function () {
   beforeEach(async(function () {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -40,10 +39,6 @@ xdescribe("ScriptsService", function () {
     new Script({ id: 5 })
   );
   validateApiCreate<Script, ScriptsService>("/scripts/", new Script({ id: 5 }));
-  validateApiUpdate<Script, ScriptsService>(
-    "/scripts/5",
-    new Script({ id: 5 })
-  );
   validateApiDestroy<Script, ScriptsService>(
     "/scripts/5",
     5,

@@ -5,17 +5,17 @@ import { Observable } from "rxjs";
 import { BawApiService, Filters } from "./baw-api.service";
 
 /**
- * Convert baw model or id to id
+ * Variable is an id or AbstractModel
  */
 export type IdOr<T extends AbstractModel> = T | number;
 
 /**
- * Convert baw model or id to parameter
+ * Variable is an id or parameter
  */
 export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
 
 /**
- * Convert baw model or id to optional parameter
+ * Variable is optional id or parameter
  */
 export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
@@ -146,6 +146,24 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
     model: PartialWith<M, "id">,
     ...urlParameters: P
   ): Observable<M>;
+  abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
+}
+
+/**
+ * Api Class without the ability to update a model
+ */
+export abstract class ImmutableApi<M extends AbstractModel, P extends any[]>
+  extends BawApiService<M>
+  implements
+    ApiList<M, P>,
+    ApiFilter<M, P>,
+    ApiShow<M, P, IdOr<M>>,
+    ApiCreate<M, P>,
+    ApiDestroy<M, P, IdOr<M>> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract create(model: M, ...urlParameters: P): Observable<M>;
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
 }
 
