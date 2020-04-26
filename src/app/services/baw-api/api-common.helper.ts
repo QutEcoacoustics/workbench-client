@@ -25,14 +25,15 @@ export const defaultFilters: Filters = {
 export function validateApiList<
   M extends AbstractModel,
   S extends ApiList<M, any[]>
->(endpoint: string, models: M[] = []) {
+>(endpoint: string, models: M[] = [], ...parameters: any[]) {
   describe("Api List", function () {
     it("should handle list endpoint", function () {
       const api: S = this.service as S;
       api["apiList"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
-      api.list().subscribe();
+      api.list(...parameters).subscribe();
+
       expect(api["apiList"]).toHaveBeenCalledWith(endpoint);
     });
   });
@@ -41,14 +42,20 @@ export function validateApiList<
 export function validateApiFilter<
   M extends AbstractModel,
   S extends ApiFilter<M, any[]>
->(endpoint: string, models: M[] = [], filters: Filters = defaultFilters) {
+>(
+  endpoint: string,
+  models: M[] = [],
+  filters: Filters = defaultFilters,
+  ...parameters: any[]
+) {
   describe("Api Filter", function () {
     it("should handle filter endpoint", function () {
       const api: S = this.service as S;
       api["apiFilter"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
-      api.filter(filters).subscribe();
+      api.filter(filters, ...parameters).subscribe();
+
       expect(api["apiFilter"]).toHaveBeenCalledWith(endpoint, filters);
     });
   });
@@ -57,7 +64,7 @@ export function validateApiFilter<
 export function validateApiShow<
   M extends AbstractModel,
   S extends ApiShow<M, any[], IdOr<M>>
->(endpoint: string, id: Id, model: M) {
+>(endpoint: string, id: Id, model: M, ...parameters: any[]) {
   describe("Api Show", function () {
     let api: S;
 
@@ -69,12 +76,12 @@ export function validateApiShow<
     });
 
     it("should handle show endpoint using model", function () {
-      api.show(model).subscribe();
+      api.show(model, ...parameters).subscribe();
       expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
     });
 
     it("should handle show endpoint using id", function () {
-      api.show(id).subscribe();
+      api.show(id, ...parameters).subscribe();
       expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
     });
   });
@@ -83,14 +90,15 @@ export function validateApiShow<
 export function validateApiCreate<
   M extends AbstractModel,
   S extends ApiCreate<M, any[]>
->(endpoint: string, model: M) {
+>(endpoint: string, model: M, ...parameters: any[]) {
   describe("Api Create", function () {
     it("should handle create endpoint", function () {
       const api: S = this.service as S;
       api["apiCreate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
-      api.create(model).subscribe();
+      api.create(model, ...parameters).subscribe();
+
       expect(api["apiCreate"]).toHaveBeenCalledWith(endpoint, model);
     });
   });
@@ -99,14 +107,15 @@ export function validateApiCreate<
 export function validateApiUpdate<
   M extends AbstractModel,
   S extends ApiUpdate<M, any[]>
->(endpoint: string, model: M) {
+>(endpoint: string, model: M, ...parameters: any[]) {
   describe("Api Update", function () {
     it("should handle update endpoint", function () {
       const api: S = this.service as S;
       api["apiUpdate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
-      api.update(model).subscribe();
+      api.update(model, ...parameters).subscribe();
+
       expect(api["apiUpdate"]).toHaveBeenCalledWith(endpoint, model);
     });
   });
@@ -115,7 +124,7 @@ export function validateApiUpdate<
 export function validateApiDestroy<
   M extends AbstractModel,
   S extends ApiDestroy<M, any[], IdOr<M>>
->(endpoint: string, id: Id, model: M) {
+>(endpoint: string, id: Id, model: M, ...parameters: any[]) {
   describe("Api Destroy", function () {
     let api: S;
 
@@ -127,12 +136,12 @@ export function validateApiDestroy<
     });
 
     it("should handle destroy endpoint using model", function () {
-      api.destroy(model).subscribe();
+      api.destroy(model, ...parameters).subscribe();
       expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
     });
 
     it("should handle destroy endpoint using id", function () {
-      api.destroy(id).subscribe();
+      api.destroy(id, ...parameters).subscribe();
       expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
     });
   });
