@@ -264,6 +264,12 @@ describe("BawApiService", () => {
       signOut();
       expect(service.getLocalUser()).toBe(null);
     });
+
+    it("should handle corrupted user data", () => {
+      localStorage.setItem("baw.client.user", '{"');
+      expect(service.getLocalUser()).toBe(null);
+      expect(service.isLoggedIn()).toBe(false);
+    });
   });
 
   describe("HTTP Request Methods", () => {

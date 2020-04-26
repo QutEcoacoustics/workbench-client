@@ -37,7 +37,7 @@ describe("SecurityService", () => {
     url: string,
     error: ApiErrorDetails
   ) {
-    spyOn<any>(service as any, func).and.callFake((path: string) => {
+    service[func] = jasmine.createSpy().and.callFake((path: string) => {
       expect(path).toBe(url);
       const subject = new Subject();
       subject.error(error);
@@ -183,7 +183,7 @@ describe("SecurityService", () => {
       );
     }));
 
-    it("should update authTrigger trigger", fakeAsync(() => {
+    it("should trigger authTrigger", fakeAsync(() => {
       const spy = jasmine.createSpy();
       createResponse(
         "/security/",
@@ -225,7 +225,17 @@ describe("SecurityService", () => {
         });
     }));
 
-    // TODO Add check for authTrigger triggering on error
+    it("should trigger authTrigger on error", fakeAsync(() => {
+      const noop = () => {};
+      const spy = jasmine.createSpy();
+      createError("apiCreate", "/security/", apiErrorDetails);
+
+      service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
+      service.signIn(defaultLoginDetails).subscribe(noop, noop);
+
+      // Should call auth trigger twice, first time is when the subscription is created
+      expect(spy).toHaveBeenCalledTimes(2);
+    }));
   });
 
   describe("signOut", () => {
@@ -257,7 +267,7 @@ describe("SecurityService", () => {
       expect(service.getLocalUser()).toBeFalsy();
     }));
 
-    it("should update authTrigger trigger", fakeAsync(() => {
+    it("should trigger authTrigger", fakeAsync(() => {
       const spy = jasmine.createSpy();
       createSuccess("/security/");
 
@@ -276,6 +286,16 @@ describe("SecurityService", () => {
       });
     }));
 
-    // TODO Add check for authTrigger triggering on error
+    it("should trigger authTrigger on error", fakeAsync(() => {
+      const noop = () => {};
+      const spy = jasmine.createSpy();
+      createError("apiDestroy", "/security/", apiErrorDetails);
+
+      service.getAuthTrigger().subscribe(spy, shouldNotFail, shouldNotComplete);
+      service.signOut().subscribe(noop, noop);
+
+      // Should call auth trigger twice, first time is when the subscription is created
+      expect(spy).toHaveBeenCalledTimes(2);
+    }));
   });
 });

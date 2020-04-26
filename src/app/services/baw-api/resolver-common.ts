@@ -19,6 +19,7 @@ import { BawApiService } from "./baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class
+ * This allows a service to define its own custom resolver
  */
 export abstract class BawResolver<
   // Output Model
