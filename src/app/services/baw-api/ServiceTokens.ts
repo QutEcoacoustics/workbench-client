@@ -5,6 +5,7 @@ import type { AudioEventCommentsService } from "./audio-event-comments.service";
 import type { AudioEventsService } from "./audio-events.service";
 import type { BookmarksService } from "./bookmarks.service";
 import type { ProjectsService } from "./projects.service";
+import type { SavedSearchesService } from "./saved-searches.service";
 import type { ScriptsService } from "./scripts.service";
 import type { SecurityService } from "./security.service";
 import type { ShallowSitesService, SitesService } from "./sites.service";
@@ -35,6 +36,9 @@ export const AUDIO_EVENT_COMMENT = new ServiceToken<AudioEventCommentsService>(
 );
 export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
 export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
+export const SAVED_SEARCH = new ServiceToken<SavedSearchesService>(
+  "SAVED_SEARCHES_SERVICE"
+);
 export const SCRIPT = new ServiceToken<ScriptsService>("SCRIPTS_SERVICE");
 export const SECURITY = new ServiceToken<SecurityService>("SECURITY_SERVICE");
 export const SHALLOW_SITE = new ServiceToken<ShallowSitesService>(

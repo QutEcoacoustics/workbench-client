@@ -4,6 +4,7 @@ import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
 import { AudioEventCommentsService } from "@baw-api/audio-event-comments.service";
 import { AudioEventsService } from "@baw-api/audio-events.service";
 import { BookmarksService } from "@baw-api/bookmarks.service";
+import { SavedSearchesService } from "@baw-api/saved-searches.service";
 import { BehaviorSubject } from "rxjs";
 import {
   API_CONFIG,
@@ -83,6 +84,7 @@ export const testBawServices = [
   { provide: AudioEventsService, useClass: MockStandardApiService },
   { provide: BookmarksService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
+  { provide: SavedSearchesService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },
   { provide: ShallowSitesService, useClass: MockStandardApiService },

@@ -14,6 +14,10 @@ import {
 } from "./audio-events.service";
 import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
 import { projectResolvers, ProjectsService } from "./projects.service";
+import {
+  SavedSearchesService,
+  savedSearchResolvers,
+} from "./saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./scripts.service";
 import { SecurityService } from "./security.service";
 import {
@@ -23,6 +27,7 @@ import {
   AUDIO_EVENT_COMMENT,
   BOOKMARK,
   PROJECT,
+  SAVED_SEARCH,
   SCRIPT,
   SECURITY,
   SHALLOW_SITE,
@@ -49,6 +54,7 @@ const services = [
   AudioEventsService,
   BookmarksService,
   ProjectsService,
+  SavedSearchesService,
   ScriptsService,
   SecurityService,
   ShallowSitesService,
@@ -65,6 +71,7 @@ const services = [
   { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
   { provide: BOOKMARK.token, useExisting: BookmarksService },
   { provide: PROJECT.token, useExisting: ProjectsService },
+  { provide: SAVED_SEARCH.token, useExisting: SavedSearchesService },
   { provide: SCRIPT.token, useExisting: ScriptsService },
   { provide: SECURITY.token, useExisting: SecurityService },
   { provide: SHALLOW_SITE.token, useExisting: ShallowSitesService },
@@ -81,6 +88,7 @@ const resolvers = [
   ...audioEventResolvers.providers,
   ...bookmarkResolvers.providers,
   ...projectResolvers.providers,
+  ...savedSearchResolvers.providers,
   ...scriptResolvers.providers,
   ...siteResolvers.providers,
   ...shallowSiteResolvers.providers,
