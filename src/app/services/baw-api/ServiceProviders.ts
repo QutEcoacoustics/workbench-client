@@ -32,6 +32,7 @@ import {
   SECURITY,
   SHALLOW_SITE,
   SITE,
+  STUDY,
   TAG,
   TAG_GROUP,
   USER,
@@ -42,6 +43,7 @@ import {
   siteResolvers,
   SitesService,
 } from "./sites.service";
+import { StudiesService, studyResolvers } from "./studies.service";
 import { tagGroupResolvers, TagGroupService } from "./tag-group.service";
 import { tagResolvers, TagsService } from "./tags.service";
 import { userResolvers, UserService } from "./user.service";
@@ -59,6 +61,7 @@ const services = [
   SecurityService,
   ShallowSitesService,
   SitesService,
+  StudiesService,
   TagsService,
   TagGroupService,
   UserService,
@@ -76,6 +79,7 @@ const services = [
   { provide: SECURITY.token, useExisting: SecurityService },
   { provide: SHALLOW_SITE.token, useExisting: ShallowSitesService },
   { provide: SITE.token, useExisting: SitesService },
+  { provide: STUDY.token, useExisting: StudiesService },
   { provide: TAG.token, useExisting: TagsService },
   { provide: TAG_GROUP.token, useExisting: TagGroupService },
   { provide: USER.token, useExisting: UserService },
@@ -92,6 +96,7 @@ const resolvers = [
   ...scriptResolvers.providers,
   ...siteResolvers.providers,
   ...shallowSiteResolvers.providers,
+  ...studyResolvers.providers,
   ...tagResolvers.providers,
   ...tagGroupResolvers.providers,
   ...userResolvers.providers,
