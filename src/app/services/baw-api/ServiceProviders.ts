@@ -4,12 +4,17 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis-jobs.service";
+import {
+  audioEventResolvers,
+  AudioEventsService,
+} from "./audio-events.service";
 import { projectResolvers, ProjectsService } from "./projects.service";
 import { scriptResolvers, ScriptsService } from "./scripts.service";
 import { SecurityService } from "./security.service";
 import {
   ACCOUNT,
   ANALYSIS_JOB,
+  AUDIO_EVENT,
   PROJECT,
   SCRIPT,
   SECURITY,
@@ -33,6 +38,7 @@ const services = [
   AppConfigService,
   AccountService,
   AnalysisJobsService,
+  AudioEventsService,
   ProjectsService,
   ScriptsService,
   SecurityService,
@@ -43,6 +49,7 @@ const services = [
   UserService,
   { provide: ACCOUNT.token, useExisting: AccountService },
   { provide: ANALYSIS_JOB.token, useExisting: AnalysisJobsService },
+  { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
   { provide: PROJECT.token, useExisting: ProjectsService },
   { provide: SCRIPT.token, useExisting: ScriptsService },
   { provide: SECURITY.token, useExisting: SecurityService },
@@ -56,6 +63,7 @@ const services = [
 const resolvers = [
   ...accountResolvers.providers,
   ...analysisJobResolvers.providers,
+  ...audioEventResolvers.providers,
   ...projectResolvers.providers,
   ...scriptResolvers.providers,
   ...siteResolvers.providers,

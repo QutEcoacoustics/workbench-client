@@ -1,5 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
+import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
+import { AudioEventsService } from "@baw-api/audio-events.service";
 import { BehaviorSubject } from "rxjs";
 import {
   API_CONFIG,
@@ -35,7 +37,6 @@ import {
 import { TagGroupService } from "./services/baw-api/tag-group.service";
 import { TagsService } from "./services/baw-api/tags.service";
 import { UserService } from "./services/baw-api/user.service";
-import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
 
 /**
  * Create mock initializer values
@@ -76,6 +77,7 @@ export const testBawServices = [
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockStandardApiService },
   { provide: AnalysisJobsService, useClass: MockStandardApiService },
+  { provide: AudioEventsService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },
