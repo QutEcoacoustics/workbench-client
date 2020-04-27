@@ -34,17 +34,11 @@ export class AudioEventCommentsService extends StandardApi<
   list(analysis: IdOr<AnalysisJob>): Observable<AudioEventComment[]> {
     return this.apiList(endpoint(analysis, Empty, Empty));
   }
-  apiList(arg0: any): any {
-    throw new Error("Method not implemented.");
-  }
   filter(
     filters: Filters,
     analysis: IdOr<AnalysisJob>
   ): Observable<AudioEventComment[]> {
     return this.apiFilter(endpoint(analysis, Empty, Filter), filters);
-  }
-  apiFilter(arg0: any, filters: any): any {
-    throw new Error("Method not implemented.");
   }
   show(
     model: IdOr<AudioEventComment>,
@@ -52,17 +46,11 @@ export class AudioEventCommentsService extends StandardApi<
   ): Observable<AudioEventComment> {
     return this.apiShow(endpoint(analysis, model, Empty));
   }
-  apiShow(arg0: any): any {
-    throw new Error("Method not implemented.");
-  }
   create(
     model: AudioEventComment,
     analysis: IdOr<AnalysisJob>
   ): Observable<AudioEventComment> {
     return this.apiCreate(endpoint(analysis, Empty, Empty), model);
-  }
-  apiCreate(arg0: any, model: AudioEventComment): any {
-    throw new Error("Method not implemented.");
   }
   update(
     model: AudioEventComment,
@@ -70,17 +58,11 @@ export class AudioEventCommentsService extends StandardApi<
   ): Observable<AudioEventComment> {
     return this.apiUpdate(endpoint(analysis, model, Empty), model);
   }
-  apiUpdate(arg0: any, model: AudioEventComment): any {
-    throw new Error("Method not implemented.");
-  }
   destroy(
     model: IdOr<AudioEventComment>,
     analysis: IdOr<AnalysisJob>
   ): Observable<AudioEventComment | void> {
     return this.apiDestroy(endpoint(analysis, model, Empty));
-  }
-  apiDestroy(arg0: any): any {
-    throw new Error("Method not implemented.");
   }
 }
 

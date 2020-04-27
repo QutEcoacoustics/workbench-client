@@ -9,6 +9,10 @@ import type {
   QuestionsService,
   ShallowQuestionsService,
 } from "./questions.service";
+import type {
+  ResponsesService,
+  ShallowResponsesService,
+} from "./responses.service";
 import type { SavedSearchesService } from "./saved-searches.service";
 import type { ScriptsService } from "./scripts.service";
 import type { SecurityService } from "./security.service";
@@ -44,6 +48,10 @@ export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
 export const QUESTION = new ServiceToken<QuestionsService>("QUESTIONS_SERVICE");
 export const SHALLOW_QUESTION = new ServiceToken<ShallowQuestionsService>(
   "SHALLOW_QUESTIONS_SERVICE"
+);
+export const RESPONSE = new ServiceToken<ResponsesService>("RESPONSES_SERVICE");
+export const SHALLOW_RESPONSE = new ServiceToken<ShallowResponsesService>(
+  "SHALLOW_RESPONSES_SERVICE"
 );
 export const SAVED_SEARCH = new ServiceToken<SavedSearchesService>(
   "SAVED_SEARCHES_SERVICE"
