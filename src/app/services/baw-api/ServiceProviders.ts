@@ -5,6 +5,10 @@ import {
   AnalysisJobsService,
 } from "./analysis-jobs.service";
 import {
+  audioEventCommentResolvers,
+  AudioEventCommentsService,
+} from "./audio-event-comments.service";
+import {
   audioEventResolvers,
   AudioEventsService,
 } from "./audio-events.service";
@@ -15,6 +19,7 @@ import {
   ACCOUNT,
   ANALYSIS_JOB,
   AUDIO_EVENT,
+  AUDIO_EVENT_COMMENT,
   PROJECT,
   SCRIPT,
   SECURITY,
@@ -38,6 +43,7 @@ const services = [
   AppConfigService,
   AccountService,
   AnalysisJobsService,
+  AudioEventCommentsService,
   AudioEventsService,
   ProjectsService,
   ScriptsService,
@@ -49,6 +55,10 @@ const services = [
   UserService,
   { provide: ACCOUNT.token, useExisting: AccountService },
   { provide: ANALYSIS_JOB.token, useExisting: AnalysisJobsService },
+  {
+    provide: AUDIO_EVENT_COMMENT.token,
+    useExisting: AudioEventCommentsService,
+  },
   { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
   { provide: PROJECT.token, useExisting: ProjectsService },
   { provide: SCRIPT.token, useExisting: ScriptsService },
@@ -63,6 +73,7 @@ const services = [
 const resolvers = [
   ...accountResolvers.providers,
   ...analysisJobResolvers.providers,
+  ...audioEventCommentResolvers.providers,
   ...audioEventResolvers.providers,
   ...projectResolvers.providers,
   ...scriptResolvers.providers,

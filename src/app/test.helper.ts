@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
 import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
+import { AudioEventCommentsService } from "@baw-api/audio-event-comments.service";
 import { AudioEventsService } from "@baw-api/audio-events.service";
 import { BehaviorSubject } from "rxjs";
 import {
@@ -77,6 +78,7 @@ export const testBawServices = [
   { provide: SecurityService, useClass: MockSecurityService },
   { provide: AccountService, useClass: MockStandardApiService },
   { provide: AnalysisJobsService, useClass: MockStandardApiService },
+  { provide: AudioEventCommentsService, useClass: MockStandardApiService },
   { provide: AudioEventsService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
