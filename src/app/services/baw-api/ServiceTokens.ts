@@ -4,6 +4,7 @@ import type { AnalysisJobsService } from "./analysis-jobs.service";
 import type { AudioEventCommentsService } from "./audio-event-comments.service";
 import type { AudioEventsService } from "./audio-events.service";
 import type { BookmarksService } from "./bookmarks.service";
+import type { ProgressEventsService } from "./progress-events.service";
 import type { ProjectsService } from "./projects.service";
 import type {
   QuestionsService,
@@ -44,6 +45,9 @@ export const AUDIO_EVENT_COMMENT = new ServiceToken<AudioEventCommentsService>(
   "AUDIO_EVENT_COMMENTS_SERVICE"
 );
 export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
+export const PROGRESS_EVENT = new ServiceToken<ProgressEventsService>(
+  "PROGRESS_EVENTS_SERVICE"
+);
 export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
 export const QUESTION = new ServiceToken<QuestionsService>("QUESTIONS_SERVICE");
 export const SHALLOW_QUESTION = new ServiceToken<ShallowQuestionsService>(

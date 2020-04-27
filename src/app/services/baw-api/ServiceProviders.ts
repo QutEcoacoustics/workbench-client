@@ -13,6 +13,10 @@ import {
   AudioEventsService,
 } from "./audio-events.service";
 import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
+import {
+  progressEventResolvers,
+  ProgressEventsService,
+} from "./progress-events.service";
 import { projectResolvers, ProjectsService } from "./projects.service";
 import {
   questionResolvers,
@@ -38,6 +42,7 @@ import {
   AUDIO_EVENT,
   AUDIO_EVENT_COMMENT,
   BOOKMARK,
+  PROGRESS_EVENT,
   PROJECT,
   QUESTION,
   RESPONSE,
@@ -71,6 +76,7 @@ const services = [
   AudioEventCommentsService,
   AudioEventsService,
   BookmarksService,
+  ProgressEventsService,
   ProjectsService,
   QuestionsService,
   ShallowQuestionsService,
@@ -93,6 +99,7 @@ const services = [
   },
   { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
   { provide: BOOKMARK.token, useExisting: BookmarksService },
+  { provide: PROGRESS_EVENT.token, useExisting: ProgressEventsService },
   { provide: PROJECT.token, useExisting: ProjectsService },
   { provide: QUESTION.token, useExisting: QuestionsService },
   { provide: SHALLOW_QUESTION.token, useExisting: ShallowQuestionsService },
@@ -115,6 +122,7 @@ const resolvers = [
   ...audioEventCommentResolvers.providers,
   ...audioEventResolvers.providers,
   ...bookmarkResolvers.providers,
+  ...progressEventResolvers.providers,
   ...projectResolvers.providers,
   ...questionResolvers.providers,
   ...shallowQuestionResolvers.providers,

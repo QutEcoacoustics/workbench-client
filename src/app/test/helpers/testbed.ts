@@ -15,6 +15,7 @@ import { MockImmutableApiService } from "@baw-api/mock/immutableApiMock.service"
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { MockShowApiService } from "@baw-api/mock/showApiMock.service";
 import { MockStandardApiService } from "@baw-api/mock/standardApiMock.service";
+import { ProgressEventsService } from "@baw-api/progress-events.service";
 import { ProjectsService } from "@baw-api/projects.service";
 import {
   QuestionsService,
@@ -83,6 +84,7 @@ export const testBawServices = [
   { provide: AudioEventCommentsService, useClass: MockStandardApiService },
   { provide: AudioEventsService, useClass: MockStandardApiService },
   { provide: BookmarksService, useClass: MockStandardApiService },
+  { provide: ProgressEventsService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: QuestionsService, useClass: MockStandardApiService },
   { provide: ShallowQuestionsService, useClass: MockStandardApiService },
