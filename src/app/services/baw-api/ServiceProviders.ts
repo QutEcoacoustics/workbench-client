@@ -1,3 +1,4 @@
+import { Question } from "@models/Question";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { accountResolvers, AccountService } from "./account.service";
 import {
@@ -15,6 +16,12 @@ import {
 import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
 import { projectResolvers, ProjectsService } from "./projects.service";
 import {
+  questionResolvers,
+  QuestionsService,
+  shallowQuestionResolvers,
+  ShallowQuestionsService,
+} from "./questions.service";
+import {
   SavedSearchesService,
   savedSearchResolvers,
 } from "./saved-searches.service";
@@ -27,9 +34,11 @@ import {
   AUDIO_EVENT_COMMENT,
   BOOKMARK,
   PROJECT,
+  QUESTION,
   SAVED_SEARCH,
   SCRIPT,
   SECURITY,
+  SHALLOW_QUESTION,
   SHALLOW_SITE,
   SITE,
   STUDY,
@@ -56,6 +65,8 @@ const services = [
   AudioEventsService,
   BookmarksService,
   ProjectsService,
+  QuestionsService,
+  ShallowQuestionsService,
   SavedSearchesService,
   ScriptsService,
   SecurityService,
@@ -74,6 +85,8 @@ const services = [
   { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
   { provide: BOOKMARK.token, useExisting: BookmarksService },
   { provide: PROJECT.token, useExisting: ProjectsService },
+  { provide: QUESTION.token, useExisting: Question },
+  { provide: SHALLOW_QUESTION.token, useExisting: ShallowQuestionsService },
   { provide: SAVED_SEARCH.token, useExisting: SavedSearchesService },
   { provide: SCRIPT.token, useExisting: ScriptsService },
   { provide: SECURITY.token, useExisting: SecurityService },
@@ -92,6 +105,8 @@ const resolvers = [
   ...audioEventResolvers.providers,
   ...bookmarkResolvers.providers,
   ...projectResolvers.providers,
+  ...questionResolvers.providers,
+  ...shallowQuestionResolvers.providers,
   ...savedSearchResolvers.providers,
   ...scriptResolvers.providers,
   ...siteResolvers.providers,
