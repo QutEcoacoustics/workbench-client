@@ -10,8 +10,11 @@ import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { testFormlyFields } from "src/testHelpers";
+import { testFormlyFields } from "src/app/test/helpers/formly";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { LoginComponent } from "./login.component";
 import { fields } from "./login.json";
 

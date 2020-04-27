@@ -19,7 +19,7 @@ import { AppConfigService } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {

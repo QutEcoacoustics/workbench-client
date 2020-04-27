@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { testAppInitializer } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { ContactUsComponent } from "./contact-us.component";
 
 describe("ContactUsComponent", () => {

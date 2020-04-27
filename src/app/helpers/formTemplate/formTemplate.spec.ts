@@ -13,7 +13,7 @@ import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-} from "src/app/test.helper";
+} from "src/app/test/helpers/testbed";
 import {
   defaultErrorMsg,
   defaultSuccessMsg,

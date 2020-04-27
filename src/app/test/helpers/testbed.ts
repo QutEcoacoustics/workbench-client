@@ -1,50 +1,45 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
+import { AccountService } from "@baw-api/account.service";
 import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
+import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { AudioEventCommentsService } from "@baw-api/audio-event-comments.service";
 import { AudioEventsService } from "@baw-api/audio-events.service";
+import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmarks.service";
+import {
+  MockBawApiService,
+  MockModel,
+} from "@baw-api/mock/baseApiMock.service";
+import { MockImmutableApiService } from "@baw-api/mock/immutableApiMock.service";
+import { MockSecurityService } from "@baw-api/mock/securityMock.service";
+import { MockShowApiService } from "@baw-api/mock/showApiMock.service";
+import { MockStandardApiService } from "@baw-api/mock/standardApiMock.service";
+import { ProjectsService } from "@baw-api/projects.service";
 import {
   QuestionsService,
   ShallowQuestionsService,
 } from "@baw-api/questions.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import { SavedSearchesService } from "@baw-api/saved-searches.service";
+import { ScriptsService } from "@baw-api/scripts.service";
+import { SecurityService } from "@baw-api/security.service";
+import { ShallowSitesService, SitesService } from "@baw-api/sites.service";
 import { StudiesService } from "@baw-api/studies.service";
-import { BehaviorSubject } from "rxjs";
+import { TagGroupService } from "@baw-api/tag-group.service";
+import { TagsService } from "@baw-api/tags.service";
+import { UserService } from "@baw-api/user.service";
 import {
   API_CONFIG,
   API_ROOT,
   CMS_ROOT,
-} from "./helpers/app-initializer/app-initializer";
-import { AppConfigService } from "./services/app-config/app-config.service";
+} from "@helpers/app-initializer/app-initializer";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import {
   AppConfigMockService,
   testApiConfig,
-} from "./services/app-config/appConfigMock.service";
-import { AccountService } from "./services/baw-api/account.service";
-import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
-import {
-  BawApiService,
-  STUB_MODEL_BUILDER,
-} from "./services/baw-api/baw-api.service";
-import {
-  MockBawApiService,
-  MockModel,
-} from "./services/baw-api/mock/baseApiMock.service";
-import { MockSecurityService } from "./services/baw-api/mock/securityMock.service";
-import { MockShowApiService } from "./services/baw-api/mock/showApiMock.service";
-import { MockStandardApiService } from "./services/baw-api/mock/standardApiMock.service";
-import { ProjectsService } from "./services/baw-api/projects.service";
-import { ResolvedModel } from "./services/baw-api/resolver-common";
-import { ScriptsService } from "./services/baw-api/scripts.service";
-import { SecurityService } from "./services/baw-api/security.service";
-import {
-  ShallowSitesService,
-  SitesService,
-} from "./services/baw-api/sites.service";
-import { TagGroupService } from "./services/baw-api/tag-group.service";
-import { TagsService } from "./services/baw-api/tags.service";
-import { UserService } from "./services/baw-api/user.service";
+} from "@services/app-config/appConfigMock.service";
+import { BehaviorSubject } from "rxjs";
 
 /**
  * Create mock initializer values
@@ -92,7 +87,7 @@ export const testBawServices = [
   { provide: QuestionsService, useClass: MockStandardApiService },
   { provide: ShallowQuestionsService, useClass: MockStandardApiService },
   { provide: SavedSearchesService, useClass: MockStandardApiService },
-  { provide: ScriptsService, useClass: MockStandardApiService },
+  { provide: ScriptsService, useClass: MockImmutableApiService },
   { provide: SitesService, useClass: MockStandardApiService },
   { provide: ShallowSitesService, useClass: MockStandardApiService },
   { provide: StudiesService, useClass: MockStandardApiService },

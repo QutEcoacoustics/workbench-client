@@ -7,7 +7,10 @@ import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { siteResolvers } from "src/app/services/baw-api/sites.service";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
@@ -30,7 +33,7 @@ describe("PermissionsShieldComponent", () => {
       declarations: [
         PermissionsShieldComponent,
         UserBadgesComponent,
-        UserBadgeComponent
+        UserBadgeComponent,
       ],
       providers: [
         ...testBawServices,
@@ -39,27 +42,27 @@ describe("PermissionsShieldComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              site: siteResolvers.show
+              site: siteResolvers.show,
             },
             {
               project:
                 project || projectError
                   ? {
                       model: project,
-                      error: projectError
+                      error: projectError,
                     }
                   : undefined,
               site:
                 site || siteError
                   ? {
                       model: site,
-                      error: siteError
+                      error: siteError,
                     }
-                  : undefined
+                  : undefined,
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsShieldComponent);
@@ -70,15 +73,15 @@ describe("PermissionsShieldComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: 1,
-      name: "Site"
+      name: "Site",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -90,7 +93,7 @@ describe("PermissionsShieldComponent", () => {
       createdAt: "2019-01-01",
       updaterId: 1,
       updatedAt: "2019-01-01",
-      ownerId: 1
+      ownerId: 1,
     });
 
     configureTestingModule(project, undefined, undefined, undefined);
@@ -107,7 +110,7 @@ describe("PermissionsShieldComponent", () => {
       creatorId: 1,
       createdAt: "2019-01-01",
       updaterId: 1,
-      updatedAt: "2019-01-01"
+      updatedAt: "2019-01-01",
     });
 
     configureTestingModule(undefined, undefined, site, undefined);

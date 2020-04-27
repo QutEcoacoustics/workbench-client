@@ -20,7 +20,7 @@ import {
   MockData,
   MockResolvers,
   testBawServices,
-} from "src/app/test.helper";
+} from "src/app/test/helpers/testbed";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
 class MockModel extends AbstractModel {

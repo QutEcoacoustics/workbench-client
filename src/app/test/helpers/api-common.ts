@@ -9,8 +9,8 @@ import {
   ApiShow,
   ApiUpdate,
   IdOr,
-} from "./api-common";
-import { Filters } from "./baw-api.service";
+} from "../../services/baw-api/api-common";
+import { Filters } from "../../services/baw-api/baw-api.service";
 
 export const defaultFilters: Filters = {
   filter: {},

@@ -11,11 +11,11 @@ import {
   Category,
   MenuLink,
   MenuRoute,
-  NavigableMenuItem
+  NavigableMenuItem,
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { testBawServices } from "src/app/test.helper";
-import { assertIcon, assertTooltip } from "src/testHelpers";
+import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { homeCategory } from "../../home/home.menus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
@@ -31,12 +31,12 @@ describe("SecondaryMenuComponent", () => {
     icon: ["fas", "question-circle"],
     tooltip: () => "Self Tooltip",
     order: 999, // Force to be last link
-    route: defaultRoute
+    route: defaultRoute,
   });
   const defaultCategory = {
     label: "Custom Category",
     icon: ["fas", "home"],
-    route: defaultRoute
+    route: defaultRoute,
   } as Category;
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -60,7 +60,7 @@ describe("SecondaryMenuComponent", () => {
     class MockActivatedRoute {
       public data = new BehaviorSubject<PageInfoInterface>(data);
       public snapshot = {
-        params
+        params,
       };
     }
     TestBed.configureTestingModule({
@@ -68,8 +68,8 @@ describe("SecondaryMenuComponent", () => {
       declarations: [SecondaryMenuComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
+        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(SecondaryMenuComponent);
     component = fixture.componentInstance;
@@ -100,8 +100,8 @@ describe("SecondaryMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -115,8 +115,8 @@ describe("SecondaryMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -133,8 +133,8 @@ describe("SecondaryMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: undefined
-        }
+          links: undefined,
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -149,8 +149,8 @@ describe("SecondaryMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -170,16 +170,16 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              route: defaultRoute
+              route: defaultRoute,
             }),
             MenuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/"
-            })
-          ])
-        }
+              uri: () => "http://brokenlink/",
+            }),
+          ]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -197,13 +197,13 @@ describe("SecondaryMenuComponent", () => {
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip",
           order: 999,
-          route: defaultRoute
+          route: defaultRoute,
         }),
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -223,7 +223,7 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "question"],
         order: 999,
         tooltip: () => "Custom Tooltip 1",
-        route: parentRoute
+        route: parentRoute,
       });
 
       createTestBed({}, {
@@ -233,13 +233,13 @@ describe("SecondaryMenuComponent", () => {
           tooltip: () => "Custom Tooltip 2",
           order: 999,
           parent: parentLink,
-          route: childRoute
+          route: childRoute,
         }),
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -264,7 +264,7 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "question"],
         order: 999,
         tooltip: () => "Custom Tooltip 1",
-        route: grandParentRoute
+        route: grandParentRoute,
       });
       const parentLink = MenuRoute({
         label: "Parent Label",
@@ -272,7 +272,7 @@ describe("SecondaryMenuComponent", () => {
         order: 999,
         tooltip: () => "Custom Tooltip 2",
         parent: grandParentLink,
-        route: parentRoute
+        route: parentRoute,
       });
 
       createTestBed({}, {
@@ -282,13 +282,13 @@ describe("SecondaryMenuComponent", () => {
           tooltip: () => "Custom Tooltip 3",
           order: 999,
           parent: parentLink,
-          route: childRoute
+          route: childRoute,
         }),
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -317,7 +317,7 @@ describe("SecondaryMenuComponent", () => {
         order: 999,
         tooltip: () => "Custom Tooltip 1",
         route: parentRoute,
-        predicate: () => false
+        predicate: () => false,
       });
 
       createTestBed({}, {
@@ -328,13 +328,13 @@ describe("SecondaryMenuComponent", () => {
           order: 999,
           parent: parentLink,
           route: childRoute,
-          predicate: () => false
+          predicate: () => false,
         }),
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -363,10 +363,10 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              route: defaultRoute
-            })
-          ])
-        }
+              route: defaultRoute,
+            }),
+          ]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -394,16 +394,16 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              route: defaultRoute
+              route: defaultRoute,
             }),
             MenuRoute({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              route: defaultRoute
-            })
-          ])
-        }
+              route: defaultRoute,
+            }),
+          ]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -437,10 +437,10 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/"
-            })
-          ])
-        }
+              uri: () => "http://brokenlink/",
+            }),
+          ]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -467,16 +467,16 @@ describe("SecondaryMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              uri: () => "http://brokenlink/1"
+              uri: () => "http://brokenlink/1",
             }),
             MenuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              uri: () => "http://brokenlink/2"
-            })
-          ])
-        }
+              uri: () => "http://brokenlink/2",
+            }),
+          ]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -507,16 +507,16 @@ describe("SecondaryMenuComponent", () => {
           label: "Home",
           route: homeRoute,
           tooltip: () => "Home page",
-          order: 1
-        })
+          order: 1,
+        }),
       ]);
 
       createTestBed({}, {
         self: defaultSelfLink,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -541,23 +541,23 @@ describe("SecondaryMenuComponent", () => {
           label: "Home",
           route: homeRoute,
           tooltip: () => "Home page",
-          order: 1
+          order: 1,
         }),
         MenuRoute({
           icon: ["fas", "globe-asia"],
           label: "Projects",
           route: projectsRoute,
           tooltip: () => "View projects I have access to",
-          order: 4
-        })
+          order: 4,
+        }),
       ]);
 
       createTestBed({}, {
         self: defaultSelfLink,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -585,7 +585,7 @@ describe("SecondaryMenuComponent", () => {
         label: "Projects",
         route: projectsRoute,
         tooltip: () => "View projects I have access to",
-        order: 4
+        order: 4,
       });
 
       DefaultMenu.contextLinks = List<NavigableMenuItem>([
@@ -594,17 +594,17 @@ describe("SecondaryMenuComponent", () => {
           label: "Home",
           route: homeRoute,
           tooltip: () => "Home page",
-          order: 1
+          order: 1,
         }),
-        selfRoute
+        selfRoute,
       ]);
 
       createTestBed({}, {
         self: selfRoute,
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();

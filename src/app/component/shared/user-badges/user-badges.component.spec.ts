@@ -7,7 +7,7 @@ import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { AccountService } from "src/app/services/baw-api/account.service";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { MenuModule } from "../menu/menu.module";
 import { UserBadgesComponent } from "./user-badges.component";
 
@@ -24,7 +24,7 @@ describe("UserBadgesComponent", () => {
     TestBed.configureTestingModule({
       imports: [MenuModule, HttpClientTestingModule, RouterTestingModule],
       declarations: [UserBadgesComponent],
-      providers: [...testBawServices]
+      providers: [...testBawServices],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserBadgesComponent);
@@ -33,15 +33,15 @@ describe("UserBadgesComponent", () => {
 
     defaultProject = new Project({
       id: defaultId,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: defaultId,
-      name: "Site"
+      name: "Site",
     });
     defaultUser = new User({
       id: defaultId,
-      userName: "UserName"
+      userName: "UserName",
     });
   });
 
@@ -85,30 +85,30 @@ describe("UserBadgesComponent", () => {
       title: "Created By",
       keys: {
         creatorId: defaultId,
-        createdAt: "2019-12-18T11:16:08.233+10:00"
-      }
+        createdAt: "2019-12-18T11:16:08.233+10:00",
+      },
     },
     {
       title: "Updated By",
       keys: {
         updaterId: defaultId,
-        updatedBy: "2019-12-18T11:16:08.233+10:00"
-      }
+        updatedBy: "2019-12-18T11:16:08.233+10:00",
+      },
     },
     {
       title: "Owned By",
       keys: {
-        ownerId: defaultId
-      }
-    }
+        ownerId: defaultId,
+      },
+    },
   ];
 
-  userTypes.forEach(userType => {
+  userTypes.forEach((userType) => {
     describe(userType.title + " User Badge", () => {
       beforeEach(() => {
         component.model = new Project({
           ...defaultProject,
-          ...userType.keys
+          ...userType.keys,
         });
       });
 
@@ -149,7 +149,7 @@ describe("UserBadgesComponent", () => {
       createdAt: "2019-12-18T11:16:08.233+10:00",
       updaterId: defaultId,
       updatedAt: "2019-12-18T11:16:08.233+10:00",
-      ownerId: defaultId
+      ownerId: defaultId,
     });
     fixture.detectChanges();
 
@@ -165,7 +165,7 @@ describe("UserBadgesComponent", () => {
       creatorId: defaultId,
       createdAt: "2019-12-18T11:16:08.233+10:00",
       updaterId: defaultId,
-      updatedAt: "2019-12-18T11:16:08.233+10:00"
+      updatedAt: "2019-12-18T11:16:08.233+10:00",
     });
 
     fixture.detectChanges();
@@ -179,7 +179,7 @@ describe("UserBadgesComponent", () => {
     component.model = new Project({
       ...defaultProject,
       creatorId: defaultId,
-      createdAt: "2019-12-18T11:16:08.233+10:00"
+      createdAt: "2019-12-18T11:16:08.233+10:00",
     });
     const spy = spyOn(
       component.model.createdAt,
