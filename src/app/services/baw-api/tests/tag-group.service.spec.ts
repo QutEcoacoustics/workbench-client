@@ -1,8 +1,10 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { MockBawApiService } from "@baw-api/mock/baseApiMock.service";
+import { TagGroupService } from "@baw-api/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,10 +12,8 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "../../test/helpers/api-common";
-import { BawApiService } from "./baw-api.service";
-import { MockBawApiService } from "./mock/baseApiMock.service";
-import { TagGroupService } from "./tag-group.service";
+} from "src/app/test/helpers/api-common";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 
 describe("TagGroupService", function () {
   beforeEach(function () {

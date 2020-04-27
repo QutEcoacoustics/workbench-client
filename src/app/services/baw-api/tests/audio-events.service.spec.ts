@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioEvent } from "@models/AudioEvent";
-import { testAppInitializer } from "src/app/test.helper";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,10 +9,11 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "./api-common.helper";
-import { AudioEventsService } from "./audio-events.service";
-import { BawApiService } from "./baw-api.service";
-import { MockBawApiService } from "./mock/baseApiMock.service";
+} from "src/app/test/helpers/api-common";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
+import { AudioEventsService } from "../audio-events.service";
+import { BawApiService } from "../baw-api.service";
+import { MockBawApiService } from "../mock/baseApiMock.service";
 
 describe("AudioEventsService", function () {
   beforeEach(function () {

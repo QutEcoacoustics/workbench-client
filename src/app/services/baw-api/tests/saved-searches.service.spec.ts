@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SavedSearch } from "@models/SavedSearch";
-import { testAppInitializer } from "src/app/test.helper";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,10 +9,11 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "./api-common.helper";
-import { BawApiService } from "./baw-api.service";
-import { MockBawApiService } from "./mock/baseApiMock.service";
-import { SavedSearchesService } from "./saved-searches.service";
+} from "src/app/test/helpers/api-common";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
+import { BawApiService } from "../baw-api.service";
+import { MockBawApiService } from "../mock/baseApiMock.service";
+import { SavedSearchesService } from "../saved-searches.service";
 
 describe("SavedSearchesService", function () {
   beforeEach(function () {

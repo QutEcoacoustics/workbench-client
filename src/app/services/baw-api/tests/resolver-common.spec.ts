@@ -1,6 +1,6 @@
 import { AbstractModel } from "@models/AbstractModel";
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { retrieveResolvers } from "./resolver-common";
+import { ApiErrorDetails } from "../api.interceptor.service";
+import { retrieveResolvers } from "../resolver-common";
 
 class MockModel extends AbstractModel {
   public get viewUrl(): string {

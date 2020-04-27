@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Site } from "@models/Site";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,10 +9,11 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "../../test/helpers/api-common";
-import { BawApiService } from "./baw-api.service";
-import { MockBawApiService } from "./mock/baseApiMock.service";
-import { ShallowSitesService } from "./sites.service";
+} from "src/app/test/helpers/api-common";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
+import { BawApiService } from "../baw-api.service";
+import { MockBawApiService } from "../mock/baseApiMock.service";
+import { ShallowSitesService } from "../sites.service";
 
 xdescribe("ShallowSitesService", function () {
   beforeEach(function () {

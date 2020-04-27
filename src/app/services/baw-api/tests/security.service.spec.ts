@@ -4,19 +4,22 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
+import {
+  ApiErrorDetails,
+  BawApiInterceptor,
+} from "@baw-api/api.interceptor.service";
 import { SessionUser, User } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
+import { MockShowApiService } from "../mock/showApiMock.service";
+import { LoginDetails, SecurityService } from "../security.service";
+import { UserService } from "../user.service";
 import {
   apiErrorDetails,
   shouldNotComplete,
   shouldNotFail,
   shouldNotSucceed,
 } from "./baw-api.service.spec";
-import { MockShowApiService } from "./mock/showApiMock.service";
-import { LoginDetails, SecurityService } from "./security.service";
-import { UserService } from "./user.service";
 
 describe("SecurityService", () => {
   let service: SecurityService;
