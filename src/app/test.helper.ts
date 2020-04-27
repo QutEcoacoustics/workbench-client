@@ -3,6 +3,7 @@ import { Params } from "@angular/router";
 import { AnalysisJobsService } from "@baw-api/analysis-jobs.service";
 import { AudioEventCommentsService } from "@baw-api/audio-event-comments.service";
 import { AudioEventsService } from "@baw-api/audio-events.service";
+import { BookmarksService } from "@baw-api/bookmarks.service";
 import { BehaviorSubject } from "rxjs";
 import {
   API_CONFIG,
@@ -80,6 +81,7 @@ export const testBawServices = [
   { provide: AnalysisJobsService, useClass: MockStandardApiService },
   { provide: AudioEventCommentsService, useClass: MockStandardApiService },
   { provide: AudioEventsService, useClass: MockStandardApiService },
+  { provide: BookmarksService, useClass: MockStandardApiService },
   { provide: ProjectsService, useClass: MockStandardApiService },
   { provide: ScriptsService, useClass: MockStandardApiService },
   { provide: SitesService, useClass: MockStandardApiService },

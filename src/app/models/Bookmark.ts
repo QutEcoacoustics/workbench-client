@@ -64,7 +64,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
 
   public get viewUrl(): string {
     return "/BROKEN_LINK";
-    //return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
+    // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
   }
 }
 

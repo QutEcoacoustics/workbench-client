@@ -1,7 +1,9 @@
 import { InjectionToken } from "@angular/core";
 import type { AccountService } from "./account.service";
 import type { AnalysisJobsService } from "./analysis-jobs.service";
+import type { AudioEventCommentsService } from "./audio-event-comments.service";
 import type { AudioEventsService } from "./audio-events.service";
+import type { BookmarksService } from "./bookmarks.service";
 import type { ProjectsService } from "./projects.service";
 import type { ScriptsService } from "./scripts.service";
 import type { SecurityService } from "./security.service";
@@ -9,7 +11,6 @@ import type { ShallowSitesService, SitesService } from "./sites.service";
 import type { TagGroupService } from "./tag-group.service";
 import type { TagsService } from "./tags.service";
 import type { UserService } from "./user.service";
-import { AudioEventCommentsService } from "./audio-event-comments.service";
 
 // Wrapper because of https://github.com/angular/angular/issues/36736
 export class ServiceToken<T> {
@@ -32,6 +33,7 @@ export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
 export const AUDIO_EVENT_COMMENT = new ServiceToken<AudioEventCommentsService>(
   "AUDIO_EVENT_COMMENTS_SERVICE"
 );
+export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
 export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
 export const SCRIPT = new ServiceToken<ScriptsService>("SCRIPTS_SERVICE");
 export const SECURITY = new ServiceToken<SecurityService>("SECURITY_SERVICE");
