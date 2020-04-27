@@ -10,7 +10,7 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { SessionUser } from "@models/User";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import { SecurityService } from "./security.service";

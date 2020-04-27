@@ -9,7 +9,10 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("ProjectDetailsComponent", () => {

@@ -11,7 +11,7 @@ import {
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { testBawServices } from "../test.helper";
+import { testBawServices } from "../test/helpers/testbed";
 import {
   AbstractModel,
   BawCollection,

@@ -6,7 +6,7 @@ import {
 import { fakeAsync, TestBed } from "@angular/core/testing";
 import { SessionUser, User } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   apiErrorDetails,

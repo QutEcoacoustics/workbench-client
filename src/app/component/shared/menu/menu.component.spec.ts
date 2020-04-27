@@ -8,13 +8,16 @@ import {
   AnyMenuItem,
   MenuAction,
   MenuLink,
-  MenuRoute
+  MenuRoute,
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertIcon, assertTooltip, getText } from "src/testHelpers";
+import { assertIcon, assertTooltip, getText } from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -29,7 +32,7 @@ describe("MenuComponent", () => {
   let componentElement: DebugElement;
   const sessionUser = new SessionUser({
     userName: "username",
-    authToken: "xxxxxxxxxxxxxxx"
+    authToken: "xxxxxxxxxxxxxxx",
   });
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -58,21 +61,21 @@ describe("MenuComponent", () => {
       imports: [
         SharedModule,
         HttpClientModule,
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([]),
       ],
       declarations: [
         MenuComponent,
         MenuButtonComponent,
         MenuExternalLinkComponent,
-        MenuInternalLinkComponent
+        MenuInternalLinkComponent,
       ],
       providers: [
         ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({}, data, { attribute: 10 })
-        }
-      ]
+          useClass: mockActivatedRoute({}, data, { attribute: 10 }),
+        },
+      ],
     }).compileComponents();
 
     router = TestBed.inject(ActivatedRoute);
@@ -153,20 +156,20 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home")
+          route: StrongRoute.Base.add("home"),
         }),
         MenuLink({
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/"
+          uri: () => "http://brokenlink/",
         }),
         MenuAction({
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          action: () => {}
-        })
+          action: () => {},
+        }),
       ]);
       fixture.detectChanges();
 
@@ -182,20 +185,20 @@ describe("MenuComponent", () => {
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home")
+          route: StrongRoute.Base.add("home"),
         }),
         MenuLink({
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/"
+          uri: () => "http://brokenlink/",
         }),
         MenuAction({
           label: "label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          action: () => {}
-        })
+          action: () => {},
+        }),
       ]);
       fixture.detectChanges();
 
@@ -230,7 +233,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home")
+        route: StrongRoute.Base.add("home"),
       });
     });
 
@@ -259,12 +262,12 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          label: "label 1"
+          label: "label 1",
         }),
         MenuRoute({
           ...defaultLink,
-          label: "label 2"
-        })
+          label: "label 2",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -278,8 +281,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          label: "Custom Label"
-        })
+          label: "Custom Label",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -292,8 +295,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          icon: ["fas", "exclamation-triangle"]
-        })
+          icon: ["fas", "exclamation-triangle"],
+        }),
       ]);
       fixture.detectChanges();
 
@@ -306,8 +309,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          tooltip: () => "Custom Tooltip"
-        })
+          tooltip: () => "Custom Tooltip",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -321,8 +324,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          tooltip: user => `${user.userName} tooltip`
-        })
+          tooltip: (user) => `${user.userName} tooltip`,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -335,8 +338,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          route: StrongRoute.Base.add("custom_route")
-        })
+          route: StrongRoute.Base.add("custom_route"),
+        }),
       ]);
       fixture.detectChanges();
 
@@ -349,8 +352,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          route: StrongRoute.Base.add("home").add(":attribute")
-        })
+          route: StrongRoute.Base.add("home").add(":attribute"),
+        }),
       ]);
       fixture.detectChanges();
 
@@ -364,8 +367,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuRoute({
           ...defaultLink,
-          route: StrongRoute.Base.add("home")
-        })
+          route: StrongRoute.Base.add("home"),
+        }),
       ]);
       fixture.detectChanges();
 
@@ -379,13 +382,13 @@ describe("MenuComponent", () => {
         MenuRoute({
           ...defaultLink,
           label: "label 1",
-          predicate: () => true
+          predicate: () => true,
         }),
         MenuRoute({
           ...defaultLink,
           label: "label 2",
-          predicate: () => false
-        })
+          predicate: () => false,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -420,7 +423,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        uri: () => "http://brokenlink/"
+        uri: () => "http://brokenlink/",
       });
     });
 
@@ -449,12 +452,12 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          label: "label 1"
+          label: "label 1",
         }),
         MenuLink({
           ...defaultLink,
-          label: "label 2"
-        })
+          label: "label 2",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -468,8 +471,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          label: "Custom Label"
-        })
+          label: "Custom Label",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -482,8 +485,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          icon: ["fas", "exclamation-triangle"]
-        })
+          icon: ["fas", "exclamation-triangle"],
+        }),
       ]);
       fixture.detectChanges();
 
@@ -496,8 +499,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          tooltip: () => "Custom Tooltip"
-        })
+          tooltip: () => "Custom Tooltip",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -511,8 +514,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          tooltip: user => `${user.userName} tooltip`
-        })
+          tooltip: (user) => `${user.userName} tooltip`,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -525,8 +528,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          uri: () => "http://brokenlink/"
-        })
+          uri: () => "http://brokenlink/",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -539,8 +542,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuLink({
           ...defaultLink,
-          uri: params => "http://brokenlink/" + params.attribute
-        })
+          uri: (params) => "http://brokenlink/" + params.attribute,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -564,13 +567,13 @@ describe("MenuComponent", () => {
         MenuLink({
           ...defaultLink,
           label: "label 1",
-          predicate: () => true
+          predicate: () => true,
         }),
         MenuLink({
           ...defaultLink,
           label: "label 2",
-          predicate: () => false
-        })
+          predicate: () => false,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -607,7 +610,7 @@ describe("MenuComponent", () => {
         label: "label",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
-        action: () => {}
+        action: () => {},
       });
     });
 
@@ -636,12 +639,12 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          label: "label 1"
+          label: "label 1",
         }),
         MenuAction({
           ...defaultLink,
-          label: "label 2"
-        })
+          label: "label 2",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -655,8 +658,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          label: "Custom Label"
-        })
+          label: "Custom Label",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -669,8 +672,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          icon: ["fas", "exclamation-triangle"]
-        })
+          icon: ["fas", "exclamation-triangle"],
+        }),
       ]);
       fixture.detectChanges();
 
@@ -683,8 +686,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          tooltip: () => "Custom Tooltip"
-        })
+          tooltip: () => "Custom Tooltip",
+        }),
       ]);
       fixture.detectChanges();
 
@@ -698,8 +701,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          tooltip: user => `${user.userName} tooltip`
-        })
+          tooltip: (user) => `${user.userName} tooltip`,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -712,8 +715,8 @@ describe("MenuComponent", () => {
       component.menuType = "action";
       component.links = List<AnyMenuItem>([
         MenuAction({
-          ...defaultLink
-        })
+          ...defaultLink,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -727,13 +730,13 @@ describe("MenuComponent", () => {
         MenuAction({
           ...defaultLink,
           label: "label 1",
-          predicate: () => true
+          predicate: () => true,
         }),
         MenuAction({
           ...defaultLink,
           label: "label 2",
-          predicate: () => false
-        })
+          predicate: () => false,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -757,8 +760,8 @@ describe("MenuComponent", () => {
       component.links = List<AnyMenuItem>([
         MenuAction({
           ...defaultLink,
-          action: spy
-        })
+          action: spy,
+        }),
       ]);
       fixture.detectChanges();
 
@@ -774,21 +777,21 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: a
+        order: a,
       });
       const link2 = MenuRoute({
         label: "label a",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: b
+        order: b,
       });
       const link3 = MenuRoute({
         label: "label z",
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
-        order: c
+        order: c,
       });
       const links = List<AnyMenuItem>([link1, link2, link3]);
       component.links = links;
@@ -814,7 +817,7 @@ describe("MenuComponent", () => {
         "label a",
         "tooltip",
         "label b",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -832,7 +835,7 @@ describe("MenuComponent", () => {
         "label b",
         "tooltip",
         "label a",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -850,7 +853,7 @@ describe("MenuComponent", () => {
         "label a",
         "tooltip",
         "label z",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -868,7 +871,7 @@ describe("MenuComponent", () => {
         "label a",
         "tooltip",
         "label z",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -886,7 +889,7 @@ describe("MenuComponent", () => {
         "label b",
         "tooltip",
         "label z",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -904,7 +907,7 @@ describe("MenuComponent", () => {
         "label b",
         "tooltip",
         "label z",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -922,7 +925,7 @@ describe("MenuComponent", () => {
         "label b",
         "tooltip",
         "label a",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -940,7 +943,7 @@ describe("MenuComponent", () => {
         "label b",
         "tooltip",
         "label a",
-        "tooltip"
+        "tooltip",
       ]);
     });
 
@@ -950,7 +953,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: 1
+        order: 1,
       });
       const link2 = MenuRoute({
         label: "label a",
@@ -958,7 +961,7 @@ describe("MenuComponent", () => {
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         parent,
-        order: 1
+        order: 1,
       });
       component.links = List<AnyMenuItem>([link2, parent]);
       component.menuType = "secondary";
@@ -978,7 +981,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        order: 1
+        order: 1,
       });
       const link1 = MenuRoute({
         label: "label b",
@@ -986,7 +989,7 @@ describe("MenuComponent", () => {
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
         parent,
-        order: 1
+        order: 1,
       });
       const link2 = MenuRoute({
         label: "label a",
@@ -994,7 +997,7 @@ describe("MenuComponent", () => {
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("house"),
         parent,
-        order: 1
+        order: 1,
       });
       component.links = List<AnyMenuItem>([link2, link1, parent]);
       component.menuType = "secondary";
@@ -1011,7 +1014,7 @@ describe("MenuComponent", () => {
         "label a",
         "tooltip",
         "label b",
-        "tooltip"
+        "tooltip",
       ]);
     });
   });
@@ -1024,7 +1027,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true
+        predicate: (user, data) => true,
       });
 
       spyOn(link, "predicate").and.callThrough();
@@ -1044,7 +1047,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true
+        predicate: (user, data) => true,
       });
 
       spyOn(link, "predicate").and.callThrough();
@@ -1054,7 +1057,7 @@ describe("MenuComponent", () => {
       fixture.detectChanges();
 
       expect(link.predicate).toHaveBeenCalledWith(sessionUser, {
-        resolvers: {}
+        resolvers: {},
       });
     });
 
@@ -1062,7 +1065,7 @@ describe("MenuComponent", () => {
       const pageData = {
         resolvers: {},
         value1: 1,
-        value2: 2
+        value2: 2,
       };
 
       configureTestingModule(pageData);
@@ -1071,7 +1074,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true
+        predicate: (user, data) => true,
       });
 
       spyOn(link, "predicate").and.callThrough();
@@ -1087,7 +1090,7 @@ describe("MenuComponent", () => {
       const pageData = {
         resolvers: {},
         value1: 1,
-        value2: 2
+        value2: 2,
       };
 
       configureTestingModule(pageData);
@@ -1097,7 +1100,7 @@ describe("MenuComponent", () => {
         icon: ["fas", "home"],
         tooltip: () => "tooltip",
         route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true
+        predicate: (user, data) => true,
       });
 
       spyOn(link, "predicate").and.callThrough();

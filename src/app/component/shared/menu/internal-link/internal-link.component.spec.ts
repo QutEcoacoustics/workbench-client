@@ -2,7 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { assertIcon, assertRoute, assertTooltip } from "src/testHelpers";
+import {
+  assertIcon,
+  assertRoute,
+  assertTooltip,
+} from "src/app/test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
 
@@ -13,7 +17,7 @@ describe("MenuInternalLinkComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
-      declarations: [MenuInternalLinkComponent]
+      declarations: [MenuInternalLinkComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuInternalLinkComponent);
@@ -26,7 +30,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -42,7 +46,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -58,7 +62,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "custom label",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -77,7 +81,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -94,7 +98,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -111,7 +115,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -133,7 +137,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/home";
@@ -155,7 +159,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("brokenlink"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/brokenlink";
@@ -172,7 +176,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/house";
@@ -189,7 +193,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("brokenlink"),
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/brokenlink";
@@ -206,7 +210,7 @@ describe("MenuInternalLinkComponent", () => {
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("context.html"), // This is the window.location.pathname of unit tests
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.route = "/context.html";
