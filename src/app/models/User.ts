@@ -44,6 +44,7 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
+  // ! Most fields are persisted because model is saved to, and read from, localstorage for the current user
   public readonly kind: "User" | "SessionUser" = "User";
   @BawPersistAttr
   public readonly id?: Id;
@@ -51,15 +52,12 @@ export class User extends AbstractModel implements IUser {
   public readonly email?: string;
   @BawPersistAttr
   public readonly userName?: UserName;
-  @BawPersistAttr
   public readonly signInCount?: number;
-  @BawPersistAttr
   public readonly failedAttempts?: number;
   @BawPersistAttr
   public readonly imageUrls?: ImageURL[];
   @BawPersistAttr
   public readonly preferences?: any;
-  @BawPersistAttr
   public readonly isConfirmed?: boolean;
   @BawPersistAttr
   public readonly rolesMask?: number;
@@ -67,23 +65,23 @@ export class User extends AbstractModel implements IUser {
   public readonly rolesMaskNames?: string[];
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly resetPasswordSentAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly rememberCreatedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly currentSignInAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lastSignInAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly confirmedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly confirmationSentAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lockedAt?: DateTimeTimezone;
   @BawDateTime({ persist: true })
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
   @BawDateTime({ persist: true })
   public readonly lastSeenAt?: DateTimeTimezone;
@@ -94,7 +92,7 @@ export class User extends AbstractModel implements IUser {
     this.userName = user.userName || "Deleted User";
     this.imageUrls = user.imageUrls
       ? user.imageUrls.map((imageUrl) => {
-          // TODO Add /assets by default from the API so this check doesn't need to occur
+          // TODO https://github.com/QutEcoacoustics/baw-server/issues/452
           // Default values from API need to have /assets prepended
           if (
             imageUrl.url.startsWith("/") &&
@@ -180,6 +178,7 @@ export interface ISessionUser extends IUser {
  * A user model for the website user
  */
 export class SessionUser extends User implements ISessionUser {
+  // ! All fields are persisted because model is saved to, and read from, localstorage
   public readonly kind: "User" | "SessionUser" = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
