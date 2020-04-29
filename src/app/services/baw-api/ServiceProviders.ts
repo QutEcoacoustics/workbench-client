@@ -5,14 +5,18 @@ import {
   AnalysisJobsService,
 } from "./analysis-jobs.service";
 import {
-  audioEventCommentResolvers,
-  AudioEventCommentsService,
-} from "./audio-event-comments.service";
-import {
   audioEventResolvers,
   AudioEventsService,
 } from "./audio-events.service";
 import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
+import {
+  datasetItemResolvers,
+  DatasetItemsService,
+} from "./dataset-items.service";
+import { datasetResolvers, DatasetsService } from "./datasets.service";
+import { MockImmutableApiService } from "./mock/immutableApiMock.service";
+import { MockShowApiService } from "./mock/showApiMock.service";
+import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
   progressEventResolvers,
   ProgressEventsService,
@@ -36,28 +40,7 @@ import {
 } from "./saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./scripts.service";
 import { SecurityService } from "./security.service";
-import {
-  ACCOUNT,
-  ANALYSIS_JOB,
-  AUDIO_EVENT,
-  AUDIO_EVENT_COMMENT,
-  BOOKMARK,
-  PROGRESS_EVENT,
-  PROJECT,
-  QUESTION,
-  RESPONSE,
-  SAVED_SEARCH,
-  SCRIPT,
-  SECURITY,
-  SHALLOW_QUESTION,
-  SHALLOW_RESPONSE,
-  SHALLOW_SITE,
-  SITE,
-  STUDY,
-  TAG,
-  TAG_GROUP,
-  USER,
-} from "./ServiceTokens";
+import * as Tokens from "./ServiceTokens";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
@@ -69,73 +52,139 @@ import { tagGroupResolvers, TagGroupService } from "./tag-group.service";
 import { tagResolvers, TagsService } from "./tags.service";
 import { userResolvers, UserService } from "./user.service";
 
-const services = [
-  AppConfigService,
-  AccountService,
-  AnalysisJobsService,
-  AudioEventCommentsService,
-  AudioEventsService,
-  BookmarksService,
-  ProgressEventsService,
-  ProjectsService,
-  QuestionsService,
-  ShallowQuestionsService,
-  ResponsesService,
-  ShallowResponsesService,
-  SavedSearchesService,
-  ScriptsService,
-  SecurityService,
-  ShallowSitesService,
-  SitesService,
-  StudiesService,
-  TagsService,
-  TagGroupService,
-  UserService,
-  { provide: ACCOUNT.token, useExisting: AccountService },
-  { provide: ANALYSIS_JOB.token, useExisting: AnalysisJobsService },
+const serviceList = [
   {
-    provide: AUDIO_EVENT_COMMENT.token,
-    useExisting: AudioEventCommentsService,
+    token: Tokens.ACCOUNT,
+    service: AccountService,
+    resolvers: accountResolvers,
+    mock: MockStandardApiService,
   },
-  { provide: AUDIO_EVENT.token, useExisting: AudioEventsService },
-  { provide: BOOKMARK.token, useExisting: BookmarksService },
-  { provide: PROGRESS_EVENT.token, useExisting: ProgressEventsService },
-  { provide: PROJECT.token, useExisting: ProjectsService },
-  { provide: QUESTION.token, useExisting: QuestionsService },
-  { provide: SHALLOW_QUESTION.token, useExisting: ShallowQuestionsService },
-  { provide: RESPONSE.token, useExisting: ResponsesService },
-  { provide: SHALLOW_RESPONSE.token, useExisting: ShallowResponsesService },
-  { provide: SAVED_SEARCH.token, useExisting: SavedSearchesService },
-  { provide: SCRIPT.token, useExisting: ScriptsService },
-  { provide: SECURITY.token, useExisting: SecurityService },
-  { provide: SHALLOW_SITE.token, useExisting: ShallowSitesService },
-  { provide: SITE.token, useExisting: SitesService },
-  { provide: STUDY.token, useExisting: StudiesService },
-  { provide: TAG.token, useExisting: TagsService },
-  { provide: TAG_GROUP.token, useExisting: TagGroupService },
-  { provide: USER.token, useExisting: UserService },
+  {
+    token: Tokens.ANALYSIS_JOB,
+    service: AnalysisJobsService,
+    resolvers: analysisJobResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.AUDIO_EVENT,
+    service: AudioEventsService,
+    resolvers: audioEventResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.BOOKMARK,
+    service: BookmarksService,
+    resolvers: bookmarkResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.DATASET,
+    service: DatasetsService,
+    resolvers: datasetResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.DATASET_ITEM,
+    service: DatasetItemsService,
+    resolvers: datasetItemResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.PROGRESS_EVENT,
+    service: ProgressEventsService,
+    resolvers: progressEventResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.PROJECT,
+    service: ProjectsService,
+    resolvers: projectResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.QUESTION,
+    service: QuestionsService,
+    resolvers: questionResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.SHALLOW_QUESTION,
+    service: ShallowQuestionsService,
+    resolvers: shallowQuestionResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.RESPONSE,
+    service: ResponsesService,
+    resolvers: responseResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.SHALLOW_RESPONSE,
+    service: ShallowResponsesService,
+    resolvers: shallowResponseResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.SAVED_SEARCH,
+    service: SavedSearchesService,
+    resolvers: savedSearchResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.SCRIPT,
+    service: ScriptsService,
+    resolvers: scriptResolvers,
+    mock: MockImmutableApiService,
+  },
+  {
+    token: Tokens.SITE,
+    service: SitesService,
+    resolvers: siteResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.SHALLOW_SITE,
+    service: ShallowSitesService,
+    resolvers: shallowSiteResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.STUDY,
+    service: StudiesService,
+    resolvers: studyResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.TAG,
+    service: TagsService,
+    resolvers: tagResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.TAG_GROUP,
+    service: TagGroupService,
+    resolvers: tagGroupResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    token: Tokens.USER,
+    service: UserService,
+    resolvers: userResolvers,
+    mock: MockShowApiService,
+  },
 ];
 
-const resolvers = [
-  ...accountResolvers.providers,
-  ...analysisJobResolvers.providers,
-  ...audioEventCommentResolvers.providers,
-  ...audioEventResolvers.providers,
-  ...bookmarkResolvers.providers,
-  ...progressEventResolvers.providers,
-  ...projectResolvers.providers,
-  ...questionResolvers.providers,
-  ...shallowQuestionResolvers.providers,
-  ...responseResolvers.providers,
-  ...shallowResponseResolvers.providers,
-  ...savedSearchResolvers.providers,
-  ...scriptResolvers.providers,
-  ...siteResolvers.providers,
-  ...shallowSiteResolvers.providers,
-  ...studyResolvers.providers,
-  ...tagResolvers.providers,
-  ...tagGroupResolvers.providers,
-  ...userResolvers.providers,
-];
+const serviceProviders: any[] = [AppConfigService, SecurityService];
 
-export const serviceProviders = [...services, ...resolvers];
+serviceList.forEach((service) => {
+  serviceProviders.push(
+    ...[
+      service.service,
+      { provide: service.token, useExisting: service.service },
+      ...service.resolvers.providers,
+    ]
+  );
+});
+
+export { serviceProviders, serviceList };

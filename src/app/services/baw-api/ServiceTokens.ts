@@ -1,9 +1,10 @@
 import { InjectionToken } from "@angular/core";
 import type { AccountService } from "./account.service";
 import type { AnalysisJobsService } from "./analysis-jobs.service";
-import type { AudioEventCommentsService } from "./audio-event-comments.service";
 import type { AudioEventsService } from "./audio-events.service";
 import type { BookmarksService } from "./bookmarks.service";
+import type { DatasetItemsService } from "./dataset-items.service";
+import type { DatasetsService } from "./datasets.service";
 import type { ProgressEventsService } from "./progress-events.service";
 import type { ProjectsService } from "./projects.service";
 import type {
@@ -16,7 +17,6 @@ import type {
 } from "./responses.service";
 import type { SavedSearchesService } from "./saved-searches.service";
 import type { ScriptsService } from "./scripts.service";
-import type { SecurityService } from "./security.service";
 import type { ShallowSitesService, SitesService } from "./sites.service";
 import type { StudiesService } from "./studies.service";
 import type { TagGroupService } from "./tag-group.service";
@@ -41,10 +41,11 @@ export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService>(
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
   "AUDIO_EVENTS_SERVICE"
 );
-export const AUDIO_EVENT_COMMENT = new ServiceToken<AudioEventCommentsService>(
-  "AUDIO_EVENT_COMMENTS_SERVICE"
-);
 export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
+export const DATASET = new ServiceToken<DatasetsService>("DATASETS_SERVICE");
+export const DATASET_ITEM = new ServiceToken<DatasetItemsService>(
+  "DATASET_ITEMS_SERVICE"
+);
 export const PROGRESS_EVENT = new ServiceToken<ProgressEventsService>(
   "PROGRESS_EVENTS_SERVICE"
 );
@@ -61,7 +62,6 @@ export const SAVED_SEARCH = new ServiceToken<SavedSearchesService>(
   "SAVED_SEARCHES_SERVICE"
 );
 export const SCRIPT = new ServiceToken<ScriptsService>("SCRIPTS_SERVICE");
-export const SECURITY = new ServiceToken<SecurityService>("SECURITY_SERVICE");
 export const SHALLOW_SITE = new ServiceToken<ShallowSitesService>(
   "SHALLOW_SITES_SERVICE"
 );

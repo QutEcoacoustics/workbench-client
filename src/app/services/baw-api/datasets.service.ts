@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ProgressEvent } from "@models/ProgressEvent";
+import { Dataset } from "@models/Dataset";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -16,40 +16,40 @@ import {
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
 
-const progressEventId: IdParamOptional<ProgressEvent> = id;
-const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
+const datasetId: IdParamOptional<Dataset> = id;
+const endpoint = stringTemplate`/datasets/${datasetId}${option}`;
 
 @Injectable()
-export class ProgressEventsService extends StandardApi<ProgressEvent> {
+export class DatasetsService extends StandardApi<Dataset> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
   ) {
-    super(http, apiRoot, ProgressEvent, injector);
+    super(http, apiRoot, Dataset, injector);
   }
 
-  list(): Observable<ProgressEvent[]> {
+  list(): Observable<Dataset[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<ProgressEvent[]> {
+  filter(filters: Filters): Observable<Dataset[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
+  show(model: IdOr<Dataset>): Observable<Dataset> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: ProgressEvent): Observable<ProgressEvent> {
+  create(model: Dataset): Observable<Dataset> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: ProgressEvent): Observable<ProgressEvent> {
+  update(model: Dataset): Observable<Dataset> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<ProgressEvent>): Observable<ProgressEvent | void> {
+  destroy(model: IdOr<Dataset>): Observable<Dataset | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }
 
-export const progressEventResolvers = new Resolvers<
-  ProgressEvent,
-  ProgressEventsService
->([ProgressEventsService], "progressEventId").create("ProgressEvent");
+export const datasetResolvers = new Resolvers<Dataset, DatasetsService>(
+  [DatasetsService],
+  "datasetId"
+).create("Dataset");
