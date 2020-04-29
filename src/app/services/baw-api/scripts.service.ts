@@ -1,20 +1,19 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Script } from "@models/Script";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { Script } from "src/app/models/Script";
 import {
   Empty,
+  Filter,
   id,
   IdOr,
   IdParamOptional,
+  ImmutableApi,
   option,
-  StandardApi
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock, listMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const scriptId: IdParamOptional<Script> = id;
@@ -25,30 +24,25 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  * Handles API routes pertaining to scripts.
  */
 @Injectable()
-export class ScriptsService extends StandardApi<Script, []> {
+export class ScriptsService extends ImmutableApi<Script, []> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Script);
   }
 
   list(): Observable<Script[]> {
-    return listMock<Script>(modelId => createScript(modelId));
-    // return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(Empty, Empty));
   }
-
   filter(filters: Filters): Observable<Script[]> {
-    return filterMock<Script>(filters, modelId => createScript(modelId));
-    // return this.apiList(endpoint(Empty, Filter));
+    return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-
   show(model: IdOr<Script>): Observable<Script> {
     return this.apiShow(endpoint(model, Empty));
   }
+  // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   create(model: Script): Observable<Script> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Script): Observable<Script> {
-    return this.apiUpdate(endpoint(model, Empty), model);
-  }
+  // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   destroy(model: IdOr<Script>): Observable<Script | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
@@ -58,21 +52,3 @@ export const scriptResolvers = new Resolvers<Script, ScriptsService>(
   [ScriptsService],
   "scriptId"
 ).create("Script");
-
-function createScript(modelId: Id) {
-  return new Script({
-    id: modelId,
-    name: "PLACEHOLDER SCRIPT",
-    description: "PLACEHOLDER DESCRIPTION",
-    analysisIdentifier: "audio2csv",
-    version: 0.1,
-    verified: modelId % 3 === 0,
-    groupId: modelId % 5,
-    creatorId: 1,
-    createdAt: "2020-03-10T10:51:04.576+10:00",
-    executableCommand: "placeholder",
-    executableSettings: "placeholder",
-    executableSettingsMediaType: "text/plain",
-    analysisActionParams: JSON.stringify({})
-  });
-}

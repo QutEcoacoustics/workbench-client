@@ -9,7 +9,7 @@ import { TestBed } from "@angular/core/testing";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
@@ -263,6 +263,12 @@ describe("BawApiService", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
       expect(service.getLocalUser()).toBe(null);
+    });
+
+    it("should handle corrupted user data", () => {
+      localStorage.setItem("baw.client.user", '{"');
+      expect(service.getLocalUser()).toBe(null);
+      expect(service.isLoggedIn()).toBe(false);
     });
   });
 

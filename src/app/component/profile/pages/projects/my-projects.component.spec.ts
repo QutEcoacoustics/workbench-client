@@ -8,8 +8,14 @@ import { IProject, Project } from "@models/Project";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling, assertRoute } from "src/testHelpers";
+import {
+  assertResolverErrorHandling,
+  assertRoute,
+} from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { MyProjectsComponent } from "./my-projects.component";
 
 describe("MyProjectsComponent", () => {

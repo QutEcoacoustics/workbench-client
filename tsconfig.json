@@ -22,7 +22,8 @@
       "@interfaces/*": ["./src/app/interfaces/*"],
       "@models/*": ["./src/app/models/*"],
       "@baw-api/*": ["./src/app/services/baw-api/*"],
-      "@services/*": ["./src/app/services/*"]
+      "@services/*": ["./src/app/services/*"],
+      "@testing/*": ["./src/app/testing/*"]
     },
     "pretty": true,
     "resolveJsonModule": true,

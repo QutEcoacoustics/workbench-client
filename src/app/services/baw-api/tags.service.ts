@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Tag, TagType } from "@models/Tag";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { Tag, TagType } from "src/app/models/Tag";
 import {
   Empty,
+  Filter,
   id,
   IdOr,
   IdParamOptional,
@@ -16,7 +16,6 @@ import {
   StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock, showMock } from "./mock/api-commonMock";
 import {
   BawProvider,
   BawResolver,
@@ -34,17 +33,18 @@ export class TagsService extends StandardApi<Tag, []> {
   }
 
   list(): Observable<Tag[]> {
-    return this.filter({});
+    return this.apiList(endpoint(Empty, Empty));
   }
   filter(filters: Filters): Observable<Tag[]> {
-    return filterMock<Tag>(filters, (index) => createTag(index));
+    return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<Tag>): Observable<Tag> {
-    return showMock(model, (modelId) => createTag(modelId));
+    return this.apiShow(endpoint(model, Empty));
   }
   create(model: Tag): Observable<Tag> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
+  // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   update(model: Tag): Observable<Tag> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
@@ -64,22 +64,6 @@ export class TagsService extends StandardApi<Tag, []> {
       "sounds_like",
     ]).pipe(map((types) => types.map((type) => new TagType({ name: type }))));
   }
-}
-
-function createTag(modelId: Id) {
-  return new Tag({
-    id: modelId,
-    text: "PLACEHOLDER TAG",
-    count: Math.floor(Math.random() * 10000),
-    isTaxanomic: modelId % 5 === 0,
-    typeOfTag: "general",
-    retired: modelId % 5 === 0,
-    notes: new Blob(["PLACEHOLDER NOTES"]),
-    creatorId: 1,
-    updaterId: 1,
-    createdAt: "2020-03-10T10:51:04.576+10:00",
-    updatedAt: "2020-03-10T10:51:04.576+10:00",
-  });
 }
 
 class TagResolvers {

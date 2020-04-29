@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, BawPersistAttr } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, flatMap, map } from "rxjs/operators";
@@ -105,18 +105,13 @@ export interface LoginDetailsInterface {
 export class LoginDetails extends AbstractModel
   implements LoginDetailsInterface {
   public readonly kind: "LoginDetails" = "LoginDetails";
+  @BawPersistAttr
   public readonly login: string;
+  @BawPersistAttr
   public readonly password: string;
 
   constructor(details: LoginDetailsInterface) {
     super(details);
-  }
-
-  public toJSON(): object {
-    return {
-      login: this.login,
-      password: this.password,
-    };
   }
 
   public get viewUrl(): string {

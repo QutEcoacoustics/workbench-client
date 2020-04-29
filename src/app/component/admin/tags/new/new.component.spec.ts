@@ -7,8 +7,11 @@ import { TagType } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { AdminTagsNewComponent } from "./new.component";
 
 describe("AdminTagsNewComponent", () => {

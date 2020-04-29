@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
 import {
   Empty,
   Filter,
@@ -13,10 +13,10 @@ import {
   IdParam,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock, listMock } from "./mock/api-commonMock";
+import { filterMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const projectId: IdParam<Project> = id;
@@ -71,12 +71,12 @@ export class ShallowSitesService extends StandardApi<Site, []> {
   filter(filters: Filters): Observable<Site[]> {
     return filterMock<Site>(
       filters,
-      index =>
+      (index) =>
         new Site({
           id: index,
           name: "PLACEHOLDER SITE",
           description: "PLACEHOLDER DESCRIPTION",
-          creatorId: 1
+          creatorId: 1,
         })
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);

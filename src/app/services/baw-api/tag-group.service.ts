@@ -1,20 +1,19 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { TagGroup } from "src/app/models/TagGroup";
 import {
   Empty,
+  Filter,
   id,
   IdOr,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
-import { filterMock, showMock } from "./mock/api-commonMock";
 import { Resolvers } from "./resolver-common";
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
@@ -31,15 +30,13 @@ export class TagGroupService extends StandardApi<TagGroup, []> {
   }
 
   list(): Observable<TagGroup[]> {
-    return this.filter({});
+    return this.apiList(endpoint(Empty, Empty));
   }
-
   filter(filters: Filters): Observable<TagGroup[]> {
-    return filterMock<TagGroup>(filters, modelId => createTagGroup(modelId));
+    return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-
   show(model: IdOr<TagGroup>): Observable<TagGroup> {
-    return showMock(model, modelId => createTagGroup(modelId));
+    return this.apiShow(endpoint(model, Empty));
   }
   create(model: TagGroup): Observable<TagGroup> {
     return this.apiCreate(endpoint(Empty, Empty), model);
@@ -50,16 +47,6 @@ export class TagGroupService extends StandardApi<TagGroup, []> {
   destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
-}
-
-function createTagGroup(modelId: Id) {
-  return new TagGroup({
-    id: modelId,
-    groupIdentifier: "PLACEHOLDER",
-    createdAt: "2020-03-10T10:51:04.576+10:00",
-    creatorId: 1,
-    tagId: modelId
-  });
 }
 
 export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupService>(

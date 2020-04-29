@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminTagsComponent } from "./list.component";
 
 describe("AdminTagsComponent", () => {

@@ -6,7 +6,10 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
