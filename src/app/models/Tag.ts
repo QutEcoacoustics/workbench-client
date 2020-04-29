@@ -38,6 +38,7 @@ export class Tag extends AbstractModel implements ITag {
   public readonly id?: Id;
   @BawPersistAttr
   public readonly text?: string;
+  // * Count attribute is unlikely to be an API output
   @BawPersistAttr
   public readonly count?: number;
   @BawPersistAttr

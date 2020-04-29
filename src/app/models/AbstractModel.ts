@@ -21,6 +21,13 @@ export abstract class AbstractModel {
   private static metaKey = Symbol("meta");
 
   /**
+   * Hidden attributes symbol.
+   * This stores the list of model attributes which are used to
+   * generate the toJSON() output.
+   */
+  public static attributeKey = Symbol("meta");
+
+  /**
    * Model ID
    */
   public readonly id?: Id;
@@ -29,11 +36,6 @@ export abstract class AbstractModel {
    * Model Identifier
    */
   public readonly kind: string;
-
-  /**
-   * Model attributes. This is used to generate the toJSON() output of the model.
-   */
-  private _attributes: string[];
 
   /**
    * Redirect path to view model on website. This is a string which can be
@@ -57,7 +59,7 @@ export abstract class AbstractModel {
    */
   public toJSON() {
     const output = {};
-    this._attributes.forEach((attribute) => {
+    this[AbstractModel.attributeKey].forEach((attribute) => {
       const value = this[attribute];
       if (value instanceof Set) {
         output[attribute] = Array.from(value);
@@ -243,11 +245,11 @@ function createModelDecorator<S>(
  * Add key to the models attributes
  */
 export function BawPersistAttr(model: AbstractModel, key: string) {
-  if (!model["_attributes"]) {
-    model["_attributes"] = [];
+  if (!model[AbstractModel.attributeKey]) {
+    model[AbstractModel.attributeKey] = [];
   }
 
-  model["_attributes"].push(key);
+  model[AbstractModel.attributeKey].push(key);
 }
 
 /**

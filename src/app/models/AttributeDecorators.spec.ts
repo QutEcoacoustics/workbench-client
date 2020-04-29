@@ -21,7 +21,7 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({});
-      expect(model["_attributes"]).toEqual(["name"]);
+      expect(model[AbstractModel.attributeKey]).toEqual(["name"]);
     });
 
     it("should append multiple keys to model attributes", () => {
@@ -37,7 +37,7 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({});
-      expect(model["_attributes"]).toEqual(["name", "value"]);
+      expect(model[AbstractModel.attributeKey]).toEqual(["name", "value"]);
     });
 
     it("should output keys in model toJSON", () => {
@@ -82,7 +82,7 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({ ids: [1, 2, 3] });
-      expect(model["_attributes"]).toEqual(["name"]);
+      expect(model[AbstractModel.attributeKey]).toEqual(["name"]);
     });
 
     it("should handle override key option", () => {
@@ -152,7 +152,7 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({ date: "2019-01-01T00:00:00" });
-      expect(model["_attributes"]).toEqual(["date"]);
+      expect(model[AbstractModel.attributeKey]).toEqual(["date"]);
     });
 
     it("should handle override key option", () => {
@@ -228,7 +228,7 @@ describe("Attribute Decorators", () => {
       const model = new MockModel({
         duration: defaultSeconds,
       });
-      expect(model["_attributes"]).toEqual(["duration"]);
+      expect(model[AbstractModel.attributeKey]).toEqual(["duration"]);
     });
 
     it("should handle override key option", () => {

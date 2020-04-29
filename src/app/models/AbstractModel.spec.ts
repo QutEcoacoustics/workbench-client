@@ -7,7 +7,7 @@ describe("AbstractModel", () => {
       class MockModel extends AbstractModel {
         constructor(modelData: any) {
           super(modelData);
-          this["_attributes"] = attributes;
+          this[AbstractModel.attributeKey] = attributes;
         }
 
         public get viewUrl(): string {
