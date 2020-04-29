@@ -9,6 +9,7 @@ import { InjectionToken } from "@angular/core";
 import type { AccountService } from "./account.service";
 import type { AnalysisJobsService } from "./analysis-jobs.service";
 import type { AudioEventsService } from "./audio-events.service";
+import { AudioRecordingsService } from "./audio-recordings.service";
 import type { BookmarksService } from "./bookmarks.service";
 import type { DatasetItemsService } from "./dataset-items.service";
 import type { DatasetsService } from "./datasets.service";
@@ -50,6 +51,9 @@ export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService>(
 );
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
   "AUDIO_EVENTS_SERVICE"
+);
+export const AUDIO_RECORDING = new ServiceToken<AudioRecordingsService>(
+  "AUDIO_RECORDINGS_SERVICE"
 );
 export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
 export const DATASET = new ServiceToken<DatasetsService>("DATASETS_SERVICE");

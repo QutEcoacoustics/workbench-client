@@ -34,34 +34,34 @@ describe("AudioEventsService", function () {
   });
 
   validateApiList<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/",
+    "/audio_recordings/5/audio_events/",
     undefined,
     5
   );
   validateApiFilter<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/filter",
+    "/audio_recordings/5/audio_events/filter",
     undefined,
     undefined,
     5
   );
   validateApiShow<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/10",
+    "/audio_recordings/5/audio_events/10",
     10,
     new AudioEvent({ id: 10 }),
     5
   );
   validateApiCreate<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/",
+    "/audio_recordings/5/audio_events/",
     new AudioEvent({ id: 10 }),
     5
   );
   validateApiUpdate<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/10",
+    "/audio_recordings/5/audio_events/10",
     new AudioEvent({ id: 10 }),
     5
   );
   validateApiDestroy<AudioEvent, AudioEventsService>(
-    "/analysis_jobs/5/audio_events/10",
+    "/audio_recordings/5/audio_events/10",
     10,
     new AudioEvent({ id: 10 }),
     5

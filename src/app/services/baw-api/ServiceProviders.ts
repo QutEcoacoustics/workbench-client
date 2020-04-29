@@ -8,6 +8,10 @@ import {
   audioEventResolvers,
   AudioEventsService,
 } from "./audio-events.service";
+import {
+  audioRecordingResolvers,
+  AudioRecordingsService,
+} from "./audio-recordings.service";
 import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
 import {
   datasetItemResolvers,
@@ -15,6 +19,7 @@ import {
 } from "./dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./datasets.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
+import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
 import { MockShowApiService } from "./mock/showApiMock.service";
 import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
@@ -70,6 +75,12 @@ const serviceList = [
     service: AudioEventsService,
     resolvers: audioEventResolvers,
     mock: MockStandardApiService,
+  },
+  {
+    serviceToken: Tokens.AUDIO_RECORDING,
+    service: AudioRecordingsService,
+    resolvers: audioRecordingResolvers,
+    mock: MockReadonlyApiService,
   },
   {
     serviceToken: Tokens.BOOKMARK,

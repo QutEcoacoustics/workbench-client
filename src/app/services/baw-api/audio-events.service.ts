@@ -20,7 +20,7 @@ import { Resolvers } from "./resolver-common";
 
 const analysisJobId: IdParam<AnalysisJob> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;
-const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}/audio_events/${audioEventId}${option}`;
+const endpoint = stringTemplate`/audio_recordings/${analysisJobId}/audio_events/${audioEventId}${option}`;
 
 @Injectable()
 export class AudioEventsService extends StandardApi<
