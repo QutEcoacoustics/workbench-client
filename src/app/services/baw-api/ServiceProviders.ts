@@ -56,6 +56,7 @@ import {
 } from "./sites.service";
 import { StudiesService, studyResolvers } from "./studies.service";
 import { tagGroupResolvers, TagGroupService } from "./tag-group.service";
+import { taggingResolvers, TaggingsService } from "./taggings.service";
 import { tagResolvers, TagsService } from "./tags.service";
 import { userResolvers, UserService } from "./user.service";
 
@@ -178,6 +179,12 @@ const serviceList = [
     serviceToken: Tokens.TAG_GROUP,
     service: TagGroupService,
     resolvers: tagGroupResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    serviceToken: Tokens.TAGGING,
+    service: TaggingsService,
+    resolvers: taggingResolvers,
     mock: MockStandardApiService,
   },
   {

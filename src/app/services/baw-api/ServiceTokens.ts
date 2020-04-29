@@ -82,5 +82,8 @@ export const SHALLOW_SITE = new ServiceToken<ShallowSitesService>(
 export const SITE = new ServiceToken<SitesService>("SITES_SERVICE");
 export const STUDY = new ServiceToken<StudiesService>("STUDIES_SERVICE");
 export const TAG = new ServiceToken<TagsService>("TAGS_SERVICE");
-export const TAG_GROUP = new ServiceToken<TagGroupService>("TAG_GROUP_SERVICE");
+export const TAG_GROUP = new ServiceToken<TagGroupService>(
+  "TAG_GROUPS_SERVICE"
+);
+export const TAGGING = new ServiceToken<TagGroupService>("TAGGINGS_SERVICE");
 export const USER = new ServiceToken<UserService>("USER_SERVICE");

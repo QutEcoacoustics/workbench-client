@@ -41,7 +41,7 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   // Associations
   @Creator<TagGroup>()
   public creator?: Observable<User>;
-  @HasOne(TAG, (m: TagGroup) => m.creatorId)
+  @HasOne(TAG, (m: TagGroup) => m.tagId)
   public tag?: Observable<Tag>;
 
   constructor(tagGroup: ITagGroup) {
