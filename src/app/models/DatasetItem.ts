@@ -1,10 +1,11 @@
-import { ACCOUNT, DATASET } from "@baw-api/ServiceTokens";
+import { DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
 } from "./AbstractModel";
 import type { Dataset } from "./Dataset";
@@ -41,10 +42,10 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
 
   // Associations
   // TODO Create AudioRecording association
+  @Creator<DatasetItem>()
+  public creator?: Observable<User>;
   @HasOne(DATASET, (m: DatasetItem) => m.datasetId)
   public dataset?: Observable<Dataset>;
-  @HasOne(ACCOUNT, (m: DatasetItem) => m.creatorId)
-  public creator?: Observable<User>;
 
   constructor(datasetItem: IDatasetItem) {
     super(datasetItem);

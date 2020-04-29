@@ -1,6 +1,6 @@
 import { Injector, Optional } from "@angular/core";
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
-import { ServiceToken } from "@baw-api/ServiceTokens";
+import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
@@ -88,6 +88,34 @@ export abstract class AbstractModel {
   public getMetadata(): Meta {
     return this[AbstractModel.metaKey];
   }
+}
+
+/**
+ * Creates an association between the ownerId and its user model
+ */
+export function Owner<M extends AbstractModel & { ownerId?: Id }>() {
+  return HasOne(ACCOUNT, (m: M) => m.ownerId);
+}
+
+/**
+ * Creates an association between the creatorId and its user model
+ */
+export function Creator<M extends AbstractModel & { creatorId?: Id }>() {
+  return HasOne(ACCOUNT, (m: M) => m.creatorId);
+}
+
+/**
+ * Creates an association between the updaterId and its user model
+ */
+export function Updater<M extends AbstractModel & { updaterId?: Id }>() {
+  return HasOne(ACCOUNT, (m: M) => m.updaterId);
+}
+
+/**
+ * Creates an association between the deleterId and its user model
+ */
+export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
+  return HasOne(ACCOUNT, (m: M) => m.deleterId);
 }
 
 /**

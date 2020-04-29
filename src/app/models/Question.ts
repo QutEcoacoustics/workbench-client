@@ -1,11 +1,11 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Updater,
 } from "./AbstractModel";
 import { User } from "./User";
 
@@ -35,9 +35,9 @@ export class Question extends AbstractModel implements IQuestion {
   updatedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: Question) => m.creatorId)
+  @Creator<Question>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Question) => m.updaterId)
+  @Updater<Question>()
   public updater?: Observable<User>;
 
   constructor(question: IQuestion) {

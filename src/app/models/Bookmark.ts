@@ -1,4 +1,3 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   Description,
@@ -10,7 +9,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Updater,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -53,9 +53,9 @@ export class Bookmark extends AbstractModel implements IBookmark {
 
   // Associations
   // TODO Create AudioRecording association
-  @HasOne(ACCOUNT, (m: Bookmark) => m.creatorId)
+  @Creator<Bookmark>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Bookmark) => m.updaterId)
+  @Updater<Bookmark>()
   public updater?: Observable<User>;
 
   constructor(bookmark: IBookmark) {

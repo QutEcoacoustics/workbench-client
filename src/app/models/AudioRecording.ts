@@ -6,7 +6,10 @@ import {
   AbstractModel,
   BawDateTime,
   BawDuration,
+  Creator,
+  Deleter,
   HasOne,
+  Updater,
 } from "./AbstractModel";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -73,16 +76,16 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly recordedUtcOffset?: string;
 
   // Associations
+  @Creator<AudioRecording>()
+  public creator?: Observable<User>;
+  @Updater<AudioRecording>()
+  public updater?: Observable<User>;
+  @Deleter<AudioRecording>()
+  public deleter?: Observable<User>;
   @HasOne(ACCOUNT, (m: AudioRecording) => m.uploaderId)
   public uploader?: Observable<User>;
   @HasOne(SHALLOW_SITE, (m: AudioRecording) => m.siteId)
   public site?: Observable<Site>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.creatorId)
-  public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.updaterId)
-  public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.deleterId)
-  public deleter?: Observable<User>;
 
   constructor(audioRecording: IAudioRecording) {
     super(audioRecording);

@@ -1,5 +1,4 @@
 import { Filters } from "@baw-api/baw-api.service";
-import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   Description,
@@ -11,7 +10,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Deleter,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -44,9 +44,9 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: SavedSearch) => m.creatorId)
+  @Creator<SavedSearch>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: SavedSearch) => m.deleterId)
+  @Deleter<SavedSearch>()
   public deleter?: Observable<User>;
 
   constructor(savedSearches: ISavedSearch) {

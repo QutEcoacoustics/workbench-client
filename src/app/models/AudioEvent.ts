@@ -1,11 +1,12 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Deleter,
+  Updater,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -53,11 +54,11 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
 
   // Associations
   // TODO Add AudioRecording association
-  @HasOne(ACCOUNT, (m: AudioEvent) => m.creatorId)
+  @Creator<AudioEvent>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioEvent) => m.updaterId)
+  @Updater<AudioEvent>()
   public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioEvent) => m.deleterId)
+  @Deleter<AudioEvent>()
   public deleter?: Observable<User>;
 
   constructor(audioEvent: IAudioEvent) {

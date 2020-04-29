@@ -1,10 +1,11 @@
-import { ACCOUNT, DATASET_ITEM } from "@baw-api/ServiceTokens";
+import { DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
 } from "./AbstractModel";
 import type { DatasetItem } from "./DatasetItem";
@@ -31,10 +32,10 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
+  @Creator<ProgressEvent>()
+  public creator?: Observable<User>;
   @HasOne(DATASET_ITEM, (m: ProgressEvent) => m.datasetItemId)
   public datasetItem?: Observable<DatasetItem>;
-  @HasOne(ACCOUNT, (m: ProgressEvent) => m.creatorId)
-  public creator?: Observable<User>;
 
   constructor(progressEvent: IProgressEvent) {
     super(progressEvent);

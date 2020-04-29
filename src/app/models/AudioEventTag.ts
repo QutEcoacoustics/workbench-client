@@ -1,15 +1,17 @@
-import { ACCOUNT, TAG, AUDIO_EVENT } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
+  Updater,
 } from "./AbstractModel";
+import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
-import type { AudioEvent } from "./AudioEvent";
 
 export interface IAudioEventTag {
   id?: Id;
@@ -37,12 +39,12 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
+  @Creator<AudioEventTag>()
+  public creator?: Observable<User>;
+  @Updater<AudioEventTag>()
+  public updater?: Observable<User>;
   @HasOne(TAG, (m: AudioEventTag) => m.tagId)
   public tag?: Observable<Tag>;
-  @HasOne(ACCOUNT, (m: AudioEventTag) => m.creatorId)
-  public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioEventTag) => m.updaterId)
-  public updater?: Observable<User>;
   @HasOne(AUDIO_EVENT, (m: AudioEventTag) => m.audioEventId)
   public audioEvent?: Observable<AudioEvent>;
 

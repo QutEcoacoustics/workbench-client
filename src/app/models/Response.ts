@@ -1,10 +1,11 @@
-import { ACCOUNT, DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
+import { DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
 } from "./AbstractModel";
 import type { DatasetItem } from "./DatasetItem";
@@ -39,14 +40,14 @@ export class Response extends AbstractModel implements IResponse {
   public readonly createdAt?: DateTimeTimezone | string;
 
   // Associations
+  @Creator<Response>()
+  public creator?: Observable<User>;
   @HasOne(DATASET_ITEM, (m: Response) => m.datasetItemId)
   public datasetItem?: Observable<DatasetItem>;
   @HasOne(QUESTION, (m: Response) => m.questionId)
   public question?: Observable<Question>;
   @HasOne(STUDY, (m: Response) => m.studyId)
   public study?: Observable<Study>;
-  @HasOne(ACCOUNT, (m: Response) => m.creatorId)
-  public creator?: Observable<User>;
 
   constructor(question: IResponse) {
     super(question);

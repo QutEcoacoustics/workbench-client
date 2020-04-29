@@ -1,3 +1,10 @@
+/**
+ * Purpose of this file is to create a disconnect between the services
+ * and being able to call them from the models. If the disconnect does not
+ * exist, when you attempt to add association loading to the model it
+ * will cause a circular dependency.
+ */
+
 import { InjectionToken } from "@angular/core";
 import type { AccountService } from "./account.service";
 import type { AnalysisJobsService } from "./analysis-jobs.service";
@@ -23,7 +30,10 @@ import type { TagGroupService } from "./tag-group.service";
 import type { TagsService } from "./tags.service";
 import type { UserService } from "./user.service";
 
-// Wrapper because of https://github.com/angular/angular/issues/36736
+/**
+ * Wrapper for InjectionToken class. This is required because of
+ * https://github.com/angular/angular/issues/36736.
+ */
 export class ServiceToken<T> {
   kind: T;
   token: InjectionToken<T>;

@@ -54,121 +54,121 @@ import { userResolvers, UserService } from "./user.service";
 
 const serviceList = [
   {
-    token: Tokens.ACCOUNT,
+    serviceToken: Tokens.ACCOUNT,
     service: AccountService,
     resolvers: accountResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.ANALYSIS_JOB,
+    serviceToken: Tokens.ANALYSIS_JOB,
     service: AnalysisJobsService,
     resolvers: analysisJobResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.AUDIO_EVENT,
+    serviceToken: Tokens.AUDIO_EVENT,
     service: AudioEventsService,
     resolvers: audioEventResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.BOOKMARK,
+    serviceToken: Tokens.BOOKMARK,
     service: BookmarksService,
     resolvers: bookmarkResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.DATASET,
+    serviceToken: Tokens.DATASET,
     service: DatasetsService,
     resolvers: datasetResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.DATASET_ITEM,
+    serviceToken: Tokens.DATASET_ITEM,
     service: DatasetItemsService,
     resolvers: datasetItemResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.PROGRESS_EVENT,
+    serviceToken: Tokens.PROGRESS_EVENT,
     service: ProgressEventsService,
     resolvers: progressEventResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.PROJECT,
+    serviceToken: Tokens.PROJECT,
     service: ProjectsService,
     resolvers: projectResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.QUESTION,
+    serviceToken: Tokens.QUESTION,
     service: QuestionsService,
     resolvers: questionResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.SHALLOW_QUESTION,
+    serviceToken: Tokens.SHALLOW_QUESTION,
     service: ShallowQuestionsService,
     resolvers: shallowQuestionResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.RESPONSE,
+    serviceToken: Tokens.RESPONSE,
     service: ResponsesService,
     resolvers: responseResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.SHALLOW_RESPONSE,
+    serviceToken: Tokens.SHALLOW_RESPONSE,
     service: ShallowResponsesService,
     resolvers: shallowResponseResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.SAVED_SEARCH,
+    serviceToken: Tokens.SAVED_SEARCH,
     service: SavedSearchesService,
     resolvers: savedSearchResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.SCRIPT,
+    serviceToken: Tokens.SCRIPT,
     service: ScriptsService,
     resolvers: scriptResolvers,
     mock: MockImmutableApiService,
   },
   {
-    token: Tokens.SITE,
+    serviceToken: Tokens.SITE,
     service: SitesService,
     resolvers: siteResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.SHALLOW_SITE,
+    serviceToken: Tokens.SHALLOW_SITE,
     service: ShallowSitesService,
     resolvers: shallowSiteResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.STUDY,
+    serviceToken: Tokens.STUDY,
     service: StudiesService,
     resolvers: studyResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.TAG,
+    serviceToken: Tokens.TAG,
     service: TagsService,
     resolvers: tagResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.TAG_GROUP,
+    serviceToken: Tokens.TAG_GROUP,
     service: TagGroupService,
     resolvers: tagGroupResolvers,
     mock: MockStandardApiService,
   },
   {
-    token: Tokens.USER,
+    serviceToken: Tokens.USER,
     service: UserService,
     resolvers: userResolvers,
     mock: MockShowApiService,
@@ -177,14 +177,14 @@ const serviceList = [
 
 const serviceProviders: any[] = [AppConfigService, SecurityService];
 
-serviceList.forEach((service) => {
+for (const service of serviceList) {
   serviceProviders.push(
     ...[
       service.service,
-      { provide: service.token, useExisting: service.service },
+      { provide: service.serviceToken.token, useExisting: service.service },
       ...service.resolvers.providers,
     ]
   );
-});
+}
 
 export { serviceProviders, serviceList };

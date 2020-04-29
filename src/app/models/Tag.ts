@@ -1,4 +1,3 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import { startCase } from "lodash";
 import { Observable } from "rxjs";
@@ -8,7 +7,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Updater,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -57,9 +57,9 @@ export class Tag extends AbstractModel implements ITag {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: Tag) => m.creatorId)
+  @Creator<Tag>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Tag) => m.updaterId)
+  @Updater<Tag>()
   public updater?: Observable<User>;
 
   constructor(tag: ITag) {

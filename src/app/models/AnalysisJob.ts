@@ -1,4 +1,4 @@
-import { ACCOUNT, SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
+import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
 import {
@@ -12,7 +12,10 @@ import {
   BawDateTime,
   BawDuration,
   BawPersistAttr,
+  Creator,
+  Deleter,
   HasOne,
+  Updater,
 } from "./AbstractModel";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
@@ -83,14 +86,14 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly overallDataLengthBytes?: number;
 
   // Associations
+  @Creator<AnalysisJob>()
+  public creator?: Observable<User>;
+  @Updater<AnalysisJob>()
+  public updater?: Observable<User>;
+  @Deleter<AnalysisJob>()
+  public deleter?: Observable<User>;
   @HasOne(SCRIPT, (m: AnalysisJob) => m.scriptId)
   public script?: Observable<Script>;
-  @HasOne(ACCOUNT, (m: AnalysisJob) => m.creatorId)
-  public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AnalysisJob) => m.updaterId)
-  public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AnalysisJob) => m.deleterId)
-  public deleter?: Observable<User>;
   @HasOne(SAVED_SEARCH, (m: AnalysisJob) => m.savedSearchId)
   public savedSearch?: Observable<SavedSearch>;
 

@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
@@ -15,8 +15,10 @@ import {
   BawCollection,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasMany,
-  HasOne,
+  Owner,
+  Updater,
 } from "./AbstractModel";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -62,11 +64,11 @@ export class Project extends AbstractModel implements IProject {
   // Associations
   @HasMany(SHALLOW_SITE, (m: Project) => m.siteIds)
   public sites?: Observable<Site[]>;
-  @HasOne(ACCOUNT, (m: Project) => m.creatorId)
+  @Creator<Project>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Project) => m.updaterId)
+  @Updater<Project>()
   public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Project) => m.ownerId)
+  @Owner<Project>()
   public owner?: Observable<User>;
 
   constructor(project: IProject, injector?: Injector) {
