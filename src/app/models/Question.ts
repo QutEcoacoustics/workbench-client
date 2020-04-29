@@ -45,6 +45,6 @@ export class Question extends AbstractModel implements IQuestion {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("Question viewUrl not implemented.");
   }
 }

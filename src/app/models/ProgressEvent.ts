@@ -31,7 +31,6 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add DatasetItem association\
   @HasOne(DATASET_ITEM, (m: ProgressEvent) => m.datasetItemId)
   public datasetItem?: Observable<DatasetItem>;
   @HasOne(ACCOUNT, (m: ProgressEvent) => m.creatorId)

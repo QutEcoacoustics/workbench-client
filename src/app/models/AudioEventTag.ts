@@ -37,7 +37,6 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add AudioEvent association
   @HasOne(TAG, (m: AudioEventTag) => m.tagId)
   public tag?: Observable<Tag>;
   @HasOne(ACCOUNT, (m: AudioEventTag) => m.creatorId)

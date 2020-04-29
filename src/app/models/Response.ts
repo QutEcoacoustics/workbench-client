@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -7,7 +7,10 @@ import {
   BawPersistAttr,
   HasOne,
 } from "./AbstractModel";
-import { User } from "./User";
+import type { DatasetItem } from "./DatasetItem";
+import type { Question } from "./Question";
+import type { Study } from "./Study";
+import type { User } from "./User";
 
 export interface IResponse {
   id?: Id;
@@ -36,7 +39,12 @@ export class Response extends AbstractModel implements IResponse {
   public readonly createdAt?: DateTimeTimezone | string;
 
   // Associations
-  // TODO Add DatasetItem, Question, and Study associations
+  @HasOne(DATASET_ITEM, (m: Response) => m.datasetItemId)
+  public datasetItem?: Observable<DatasetItem>;
+  @HasOne(QUESTION, (m: Response) => m.questionId)
+  public question?: Observable<Question>;
+  @HasOne(STUDY, (m: Response) => m.studyId)
+  public study?: Observable<Study>;
   @HasOne(ACCOUNT, (m: Response) => m.creatorId)
   public creator?: Observable<User>;
 
@@ -45,6 +53,6 @@ export class Response extends AbstractModel implements IResponse {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("Response viewUrl not implemented.");
   }
 }

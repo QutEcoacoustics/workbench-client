@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -7,6 +7,7 @@ import {
   BawPersistAttr,
   HasOne,
 } from "./AbstractModel";
+import type { Dataset } from "./Dataset";
 import type { User } from "./User";
 
 export interface IStudy {
@@ -35,7 +36,8 @@ export class Study extends AbstractModel implements IStudy {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add Dataset association
+  @HasOne(DATASET, (m: Study) => m.datasetId)
+  public dataset?: Observable<Dataset>;
   @HasOne(ACCOUNT, (m: Study) => m.creatorId)
   public creator?: Observable<User>;
   @HasOne(ACCOUNT, (m: Study) => m.updaterId)
