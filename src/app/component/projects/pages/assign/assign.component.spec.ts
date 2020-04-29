@@ -7,7 +7,10 @@ import { SitesService } from "@baw-api/sites.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { AssignComponent } from "./assign.component";
 
 describe("AssignComponent", () => {

@@ -8,8 +8,14 @@ import { IProject, Project } from "@models/Project";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling, assertRoute } from "src/testHelpers";
+import {
+  assertResolverErrorHandling,
+  assertRoute,
+} from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { MyProjectsComponent } from "./my-projects.component";
 
 describe("MyProjectsComponent", () => {
@@ -113,7 +119,7 @@ describe("MyProjectsComponent", () => {
 
     it("should display number of sites", () => {
       configureTestingModule(defaultUser);
-      setProject({ siteIds: new Set([1, 2, 3, 4, 5]) });
+      setProject({ siteIds: [1, 2, 3, 4, 5] });
       fixture.detectChanges();
 
       expect(getCells()[1].innerText).toBe("5");

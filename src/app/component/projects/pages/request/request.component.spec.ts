@@ -6,7 +6,10 @@ import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { RequestComponent } from "./request.component";
 
 describe("ProjectsRequestComponent", () => {

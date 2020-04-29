@@ -8,8 +8,14 @@ import { ISite, Site } from "@models/Site";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling, assertRoute } from "src/testHelpers";
+import {
+  assertResolverErrorHandling,
+  assertRoute,
+} from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { MySitesComponent } from "./my-sites.component";
 
 describe("MySitesComponent", () => {

@@ -1,11 +1,18 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { Observable } from "rxjs";
+import {
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 /**
  * A bookmark model.
@@ -25,32 +32,34 @@ export interface IBookmark {
 
 export class Bookmark extends AbstractModel implements IBookmark {
   public readonly kind: "Bookmark" = "Bookmark";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly audioRecordingId?: Id;
+  @BawPersistAttr
   public readonly offsetSeconds?: number;
+  @BawPersistAttr
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawPersistAttr
   public readonly description?: Description;
+  @BawPersistAttr
   public readonly category?: Category;
+
+  // Associations
+  // TODO Create AudioRecording association
+  @HasOne(ACCOUNT, (m: Bookmark) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Bookmark) => m.updaterId)
+  public updater?: Observable<User>;
 
   constructor(bookmark: IBookmark) {
     super(bookmark);
-
-    this.createdAt = dateTimeTimezone(bookmark.createdAt as string);
-    this.updatedAt = dateTimeTimezone(bookmark.updatedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      offsetSeconds: this.offsetSeconds,
-      name: this.name,
-      description: this.description,
-      category: this.category,
-    };
   }
 
   public get viewUrl(): string {
@@ -59,4 +68,5 @@ export class Bookmark extends AbstractModel implements IBookmark {
   }
 }
 
+// TODO
 type Category = "<<application>>" | "??? Anthony";

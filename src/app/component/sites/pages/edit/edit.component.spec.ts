@@ -13,8 +13,12 @@ import {
   siteResolvers,
   SitesService,
 } from "src/app/services/baw-api/sites.service";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling, testFormlyFields } from "src/testHelpers";
+import { testFormlyFields } from "src/app/test/helpers/formly";
+import { assertResolverErrorHandling } from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { fields } from "../../site.json";
 import { EditComponent } from "./edit.component";
 

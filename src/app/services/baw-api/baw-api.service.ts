@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser } from "src/app/models/User";
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -16,7 +16,7 @@ export const apiReturnCodes = {
   notFound: 404,
   unsupportedMediaType: 415,
   unprocessableEntity: 422,
-  internalServerFailure: 500
+  internalServerFailure: 500,
 };
 
 export let STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
@@ -63,18 +63,20 @@ export abstract class BawApiService<T extends AbstractModel> {
   constructor(
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
-    @Inject(STUB_MODEL_BUILDER) classBuilder: new (_: object) => T
+    @Inject(STUB_MODEL_BUILDER)
+    classBuilder: new (_: object, injector?: Injector) => T,
+    protected injector?: Injector
   ) {
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
       if (response.data instanceof Array) {
-        return response.data.map(data => {
-          const model = new classBuilder(data);
+        return response.data.map((data) => {
+          const model = new classBuilder(data, this.injector);
           model.addMetadata(response.meta);
           return model;
         });
       } else {
-        const model = new classBuilder(response.data);
+        const model = new classBuilder(response.data, this.injector);
         model.addMetadata(response.meta);
         return [model];
       }
@@ -87,7 +89,7 @@ export abstract class BawApiService<T extends AbstractModel> {
         );
       }
 
-      const model = new classBuilder(response.data);
+      const model = new classBuilder(response.data, this.injector);
       model.addMetadata(response.meta);
       return model;
     };

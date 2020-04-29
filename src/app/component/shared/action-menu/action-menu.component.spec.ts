@@ -11,11 +11,11 @@ import {
   MenuAction,
   MenuLink,
   MenuRoute,
-  NavigableMenuItem
+  NavigableMenuItem,
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { testBawServices } from "src/app/test.helper";
-import { assertIcon, assertTooltip } from "src/testHelpers";
+import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
@@ -28,12 +28,12 @@ describe("ActionMenuComponent", () => {
     icon: ["fas", "question-circle"],
     tooltip: () => "Self Tooltip",
     order: 999,
-    route: defaultRoute
+    route: defaultRoute,
   });
   const defaultCategory = {
     label: "Custom Category",
     icon: ["fas", "home"],
-    route: defaultRoute
+    route: defaultRoute,
   } as Category;
 
   function assertTitle(target: HTMLElement, header: string) {
@@ -57,7 +57,7 @@ describe("ActionMenuComponent", () => {
     class MockActivatedRoute {
       public data = new BehaviorSubject<PageInfoInterface>(data);
       public snapshot = {
-        params
+        params,
       };
     }
 
@@ -66,8 +66,8 @@ describe("ActionMenuComponent", () => {
       declarations: [ActionMenuComponent],
       providers: [
         ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }
-      ]
+        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(ActionMenuComponent);
     component = fixture.componentInstance;
@@ -82,17 +82,17 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         category: {
           label: "Custom Category",
           icon: ["fas", "home"],
-          route
+          route,
         },
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -108,17 +108,17 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         category: {
           label: "Custom Category",
           icon: ["fas", "circle"],
-          route
+          route,
         },
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -134,12 +134,12 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -155,12 +155,12 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -178,17 +178,17 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         category: {
           label: "Custom Category",
           icon: ["fas", "home"],
-          route
+          route,
         },
         menus: {
           actions: undefined,
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -206,17 +206,17 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         category: {
           label: "Custom Category",
           icon: ["fas", "home"],
-          route
+          route,
         },
         menus: {
           actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -234,12 +234,12 @@ describe("ActionMenuComponent", () => {
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
-          route
+          route,
         }),
         category: {
           label: "Custom Category",
           icon: ["fas", "home"],
-          route
+          route,
         },
         menus: {
           actions: List<AnyMenuItem>([
@@ -247,23 +247,23 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              route
+              route,
             }),
             MenuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/"
+              uri: () => "http://brokenlink/",
             }),
             MenuAction({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              action: () => console.log("action")
-            })
+              action: () => console.log("action"),
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -285,11 +285,11 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              route: defaultRoute
-            })
+              route: defaultRoute,
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -315,17 +315,17 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              route: defaultRoute
+              route: defaultRoute,
             }),
             MenuRoute({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              route: defaultRoute
-            })
+              route: defaultRoute,
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -357,11 +357,11 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/"
-            })
+              uri: () => "http://brokenlink/",
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -387,17 +387,17 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              uri: () => "http://brokenlink/1"
+              uri: () => "http://brokenlink/1",
             }),
             MenuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              uri: () => "http://brokenlink/2"
-            })
+              uri: () => "http://brokenlink/2",
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -429,11 +429,11 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
-              action: () => console.log("action")
-            })
+              action: () => console.log("action"),
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();
@@ -459,17 +459,17 @@ describe("ActionMenuComponent", () => {
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
-              action: () => console.log("action")
+              action: () => console.log("action"),
             }),
             MenuAction({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
-              action: () => console.log("action")
-            })
+              action: () => console.log("action"),
+            }),
           ]),
-          links: List<NavigableMenuItem>([])
-        }
+          links: List<NavigableMenuItem>([]),
+        },
       } as PageInfoInterface);
 
       fixture.detectChanges();

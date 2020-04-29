@@ -1,15 +1,24 @@
+import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
+import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Ids,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Project } from "./Project";
+import {
+  AbstractModel,
+  BawCollection,
+  BawDateTime,
+  BawPersistAttr,
+  HasMany,
+  HasOne,
+} from "./AbstractModel";
+import type { Project } from "./Project";
+import type { User } from "./User";
 
 /**
  * A site model.
@@ -24,7 +33,7 @@ export interface ISite {
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
-  projectIds?: Ids;
+  projectIds?: Ids | Id[];
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
@@ -35,37 +44,44 @@ export interface ISite {
  */
 export class Site extends AbstractModel implements ISite {
   public readonly kind: "Site" = "Site";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly imageUrl?: string;
+  @BawPersistAttr
   public readonly description?: Description;
+  @BawPersistAttr
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
+  @BawPersistAttr
   public readonly customLatitude?: number;
+  @BawPersistAttr
   public readonly customLongitude?: number;
+  @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
+
+  // Associations
+  @HasOne(ACCOUNT, (m: Site) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Site) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasMany(PROJECT, (m: Site) => m.projectIds)
+  public projects?: Observable<Project[]>;
 
   constructor(site: ISite) {
     super(site);
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
-    this.projectIds = new Set(site.projectIds || []);
-    this.createdAt = dateTimeTimezone(site.createdAt as string);
-    this.updatedAt = dateTimeTimezone(site.updatedAt as string);
-  }
-
-  public toJSON() {
-    // TODO Add image, latitude, longitude, timezone
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description,
-    };
   }
 
   public get viewUrl(): string {

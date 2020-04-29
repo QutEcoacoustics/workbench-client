@@ -53,6 +53,7 @@
     "no-output-on-prefix": true,
     "no-output-rename": true,
     "no-outputs-metadata-property": true,
+    "only-arrow-functions": false,
     "prefer-for-of": true,
     "rxjs-deep-operators": false,
     "rxjs-no-unsafe-takeuntil": true,

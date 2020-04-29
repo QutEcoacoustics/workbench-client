@@ -6,7 +6,10 @@ import { accountResolvers } from "@baw-api/account.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { TheirProfileComponent } from "./their-profile.component";
 
 describe("TheirProfileComponent", () => {

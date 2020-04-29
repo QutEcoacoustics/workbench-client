@@ -1,9 +1,13 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { Observable } from "rxjs";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 export interface IAudioEventComment {
   id?: Id;
@@ -24,37 +28,41 @@ export interface IAudioEventComment {
 export class AudioEventComment extends AbstractModel
   implements IAudioEventComment {
   public readonly kind: "AudioEventComment" = "AudioEventComment";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly audioEventId?: Id;
+  @BawPersistAttr
   public readonly comment?: Blob;
+  @BawPersistAttr
   public readonly flag?: Flag;
+  @BawPersistAttr
   public readonly flagExplain?: Blob;
   public readonly flaggerId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
+  @BawDateTime()
   public readonly flaggedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+
+  // Associations
+  @HasOne(ACCOUNT, (m: AudioEventComment) => m.flaggerId)
+  public flagger?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AudioEventComment) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AudioEventComment) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AudioEventComment) => m.deleterId)
+  public deleter?: Observable<User>;
 
   constructor(audioEventComment: IAudioEventComment) {
     super(audioEventComment);
-
-    this.flaggedAt = dateTimeTimezone(audioEventComment.flaggedAt as string);
-    this.createdAt = dateTimeTimezone(audioEventComment.createdAt as string);
-    this.updatedAt = dateTimeTimezone(audioEventComment.updatedAt as string);
-    this.deletedAt = dateTimeTimezone(audioEventComment.deletedAt as string);
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      audioEventId: this.audioEventId,
-      comment: this.comment,
-      flag: this.flag,
-      flagExplain: this.flagExplain,
-    };
   }
 
   public get viewUrl(): string {
@@ -62,4 +70,5 @@ export class AudioEventComment extends AbstractModel
   }
 }
 
+// TODO
 type Flag = "??? Anthony";

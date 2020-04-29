@@ -2,15 +2,15 @@ import {
   HttpClient,
   HttpClientModule,
   HttpParams,
-  HTTP_INTERCEPTORS
+  HTTP_INTERCEPTORS,
 } from "@angular/common/http";
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { SessionUser } from "src/app/models/User";
-import { testBawServices } from "src/app/test.helper";
+import { SessionUser } from "@models/User";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import { SecurityService } from "./security.service";
@@ -29,10 +29,10 @@ describe("BawApiInterceptor", () => {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
-          multi: true
+          multi: true,
         },
-        ...testBawServices
-      ]
+        ...testBawServices,
+      ],
     });
 
     api = TestBed.inject(SecurityService);
@@ -45,7 +45,7 @@ describe("BawApiInterceptor", () => {
     httpMock.verify();
   });
 
-  it("should handle api error response", done => {
+  it("should handle api error response", (done) => {
     const noop = () => {
       done();
     };
@@ -59,7 +59,7 @@ describe("BawApiInterceptor", () => {
         expect(err).toEqual({
           status: 401,
           message:
-            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked."
+            "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
         });
         done();
       },
@@ -78,18 +78,18 @@ describe("BawApiInterceptor", () => {
             links: {
               "Confirm account": "/my_account/confirmation/new",
               "Reset password": "/my_account/password/new",
-              "Unlock account": "/my_account/unlock/new"
+              "Unlock account": "/my_account/unlock/new",
             },
-            info: null
-          }
+            info: null,
+          },
         },
-        data: null
+        data: null,
       },
       { status: 401, statusText: "Unauthorized" }
     );
   });
 
-  it("should handle api error response with info", done => {
+  it("should handle api error response with info", (done) => {
     const noop = () => {
       done();
     };
@@ -109,8 +109,8 @@ describe("BawApiInterceptor", () => {
             image_file_name: [],
             image_file_size: [],
             image_content_type: [],
-            image_updated_at: []
-          }
+            image_updated_at: [],
+          },
         });
         done();
       },
@@ -131,30 +131,30 @@ describe("BawApiInterceptor", () => {
               image_file_name: [],
               image_file_size: [],
               image_content_type: [],
-              image_updated_at: []
-            }
-          }
+              image_updated_at: [],
+            },
+          },
         },
-        data: null
+        data: null,
       },
       { status: 422, statusText: "Unprocessable Entity" }
     );
   });
 
-  it("should handle http error response", done => {
+  it("should handle http error response", (done) => {
     const noop = () => {
       done();
     };
 
     http.get<any>(env.environment.apiRoot + "/brokenapiroute").subscribe(
-      data => {
+      (data) => {
         expect(false).toBeTruthy("HTTP Error Responses should not return data");
         done();
       },
       (err: ApiErrorDetails) => {
         expect(err).toEqual({
           status: 404,
-          message: `Http failure response for ${env.environment.apiRoot}/brokenapiroute: 404 Page Not Found`
+          message: `Http failure response for ${env.environment.apiRoot}/brokenapiroute: 404 Page Not Found`,
         });
         done();
       },
@@ -192,7 +192,7 @@ describe("BawApiInterceptor", () => {
     spyOn(api, "getLocalUser").and.callFake(() => {
       return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
-        userName: "username"
+        userName: "username",
       });
     });
 
@@ -231,7 +231,7 @@ describe("BawApiInterceptor", () => {
 
     http
       .post<any>("https://brokenlink/brokenapiroute", {
-        shouldNotConvert: true
+        shouldNotConvert: true,
       })
       .subscribe(noop, noop, noop);
 
@@ -240,13 +240,13 @@ describe("BawApiInterceptor", () => {
     expect(req.request.body).toEqual({ shouldNotConvert: true });
   });
 
-  it("should not convert incoming data from non baw api traffic into camel case for GET requests", done => {
+  it("should not convert incoming data from non baw api traffic into camel case for GET requests", (done) => {
     const noop = () => {
       done();
     };
 
     http.get<any>("https://brokenlink/brokenapiroute").subscribe(
-      response => {
+      (response) => {
         expect(response).toBeTruthy();
         expect(response).toEqual({ dummy_response: true });
         done();
@@ -259,11 +259,11 @@ describe("BawApiInterceptor", () => {
     req.flush({ dummy_response: true });
   });
 
-  it("should not convert incoming data from non baw api traffic into camel case for POST requests", done => {
+  it("should not convert incoming data from non baw api traffic into camel case for POST requests", (done) => {
     const noop = () => {};
 
     http.post<any>("https://brokenlink/brokenapiroute", {}).subscribe(
-      response => {
+      (response) => {
         expect(response).toBeTruthy();
         expect(response).toEqual({ dummy_response: true });
         done();
@@ -306,7 +306,7 @@ describe("BawApiInterceptor", () => {
 
     http
       .get<any>(env.environment.apiRoot + "/brokenapiroute", {
-        params
+        params,
       })
       .subscribe(noop, noop, noop);
 
@@ -322,7 +322,7 @@ describe("BawApiInterceptor", () => {
 
     http
       .post<any>(env.environment.apiRoot + "/brokenapiroute", {
-        shouldConvert: true
+        shouldConvert: true,
       })
       .subscribe(noop, noop, noop);
 
@@ -331,13 +331,13 @@ describe("BawApiInterceptor", () => {
     expect(req.request.body).toEqual({ should_convert: true });
   });
 
-  it("should convert incoming data from baw api into camel case for GET requests", done => {
+  it("should convert incoming data from baw api into camel case for GET requests", (done) => {
     const noop = () => {
       done();
     };
 
     http.get<any>(env.environment.apiRoot + "/brokenapiroute").subscribe(
-      response => {
+      (response) => {
         expect(response).toBeTruthy();
         expect(response).toEqual({ dummyResponse: true });
         done();
@@ -350,13 +350,13 @@ describe("BawApiInterceptor", () => {
     req.flush({ dummy_response: true });
   });
 
-  it("should convert incoming data from baw api into camel case for POST requests", done => {
+  it("should convert incoming data from baw api into camel case for POST requests", (done) => {
     const noop = () => {
       done();
     };
 
     http.post<any>(env.environment.apiRoot + "/brokenapiroute", {}).subscribe(
-      response => {
+      (response) => {
         expect(response).toBeTruthy();
         expect(response).toEqual({ dummyResponse: true });
         done();
@@ -389,7 +389,7 @@ describe("BawApiInterceptor", () => {
     spyOn(api, "getLocalUser").and.callFake(() => {
       return new SessionUser({
         authToken: "xxxxxxxxxxxxxxxxxxxx",
-        userName: "username"
+        userName: "username",
       });
     });
 

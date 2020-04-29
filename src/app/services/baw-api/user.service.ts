@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { User } from "@models/User";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { User } from "src/app/models/User";
 import { ApiShow, IdOr } from "./api-common";
 import { BawApiService } from "./baw-api.service";
 import { ShowResolver } from "./resolver-common";
 
-const endpoint = stringTemplate`/my_account`;
+const endpoint = stringTemplate`/my_account/`;
 
 /**
  * User Service.
@@ -27,5 +27,5 @@ export class UserService extends BawApiService<User>
 }
 
 export const userResolvers = new ShowResolver<User, UserService>([
-  UserService
+  UserService,
 ]).create("User");

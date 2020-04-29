@@ -1,14 +1,25 @@
+import { Injector } from "@angular/core";
+import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { Observable } from "rxjs";
 import { projectMenuItem } from "../component/projects/projects.menus";
 import { Card } from "../component/shared/cards/cards.component";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Ids,
   Param,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import {
+  AbstractModel,
+  BawCollection,
+  BawDateTime,
+  BawPersistAttr,
+  HasMany,
+  HasOne,
+} from "./AbstractModel";
+import type { Site } from "./Site";
+import type { User } from "./User";
 
 /**
  * A project model.
@@ -16,14 +27,14 @@ import { AbstractModel } from "./AbstractModel";
 export interface IProject {
   id?: Id;
   name?: Param;
+  description?: Description;
   imageUrl?: string;
   creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
   updatedAt?: DateTimeTimezone | string;
   ownerId?: Id;
-  description?: Description;
-  siteIds?: Ids;
+  siteIds?: Ids | Id[];
 }
 
 /**
@@ -31,34 +42,38 @@ export interface IProject {
  */
 export class Project extends AbstractModel implements IProject {
   public readonly kind: "Project" = "Project";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
+  public readonly description?: Description;
   public readonly imageUrl?: string;
-  public readonly siteIds?: Ids;
   public readonly creatorId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
   public readonly ownerId?: Id;
-  public readonly description?: Description;
+  @BawCollection({ persist: true })
+  public readonly siteIds?: Ids;
 
-  constructor(project: IProject) {
-    super(project);
+  // Associations
+  @HasMany(SHALLOW_SITE, (m: Project) => m.siteIds)
+  public sites?: Observable<Site[]>;
+  @HasOne(ACCOUNT, (m: Project) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Project) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Project) => m.ownerId)
+  public owner?: Observable<User>;
+
+  constructor(project: IProject, injector?: Injector) {
+    super(project, injector);
 
     this.imageUrl =
       project.imageUrl || "/assets/images/project/project_span4.png";
-    this.createdAt = dateTimeTimezone(project.createdAt as string);
-    this.updatedAt = dateTimeTimezone(project.updatedAt as string);
-    this.siteIds = new Set(project.siteIds || []);
-  }
-
-  public toJSON() {
-    // TODO Add image key
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description,
-    };
   }
 
   /**

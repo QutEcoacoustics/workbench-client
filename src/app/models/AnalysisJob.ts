@@ -1,12 +1,21 @@
+import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
+import { Observable } from "rxjs";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import {
+  AbstractModel,
+  BawDateTime,
+  BawDuration,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { Script } from "./Script";
+import type { User } from "./User";
 
 /**
  * An analysis job model.
@@ -37,57 +46,57 @@ export interface IAnalysisJob {
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly kind: "AnalysisJob" = "AnalysisJob";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly annotationName?: string;
+  @BawPersistAttr
   public readonly customSettings?: Blob;
+  @BawPersistAttr
+  public readonly description?: Description;
   public readonly scriptId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  public readonly description?: Description;
   public readonly savedSearchId?: Id;
+  @BawDateTime()
   public readonly startedAt?: DateTimeTimezone;
   public readonly overallStatus?: Status;
+  @BawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
   public readonly overallProgress?: Blob;
+  @BawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
+  @BawDuration({ key: "overallDurationSeconds" })
+  public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
 
-  public get overallDuration() {
-    return new Duration();
-    // return duration(this.overallDurationSeconds) // TODO Awaiting PR #177
-  }
+  // Associations
+  @HasOne(SCRIPT, (m: AnalysisJob) => m.scriptId)
+  public script?: Observable<Script>;
+  @HasOne(ACCOUNT, (m: AnalysisJob) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AnalysisJob) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasOne(ACCOUNT, (m: AnalysisJob) => m.deleterId)
+  public deleter?: Observable<User>;
+  // TODO Add SavedSearch Association
 
   constructor(analysisJob: IAnalysisJob) {
     super(analysisJob);
 
     this.customSettings = new Blob([analysisJob.customSettings]);
     this.overallProgress = new Blob([analysisJob.overallProgress]);
-    this.createdAt = dateTimeTimezone(analysisJob.createdAt as string);
-    this.updatedAt = dateTimeTimezone(analysisJob.updatedAt as string);
-    this.deletedAt = dateTimeTimezone(analysisJob.deletedAt as string);
-    this.startedAt = dateTimeTimezone(analysisJob.startedAt as string);
-    this.overallStatusModifiedAt = dateTimeTimezone(
-      analysisJob.overallStatusModifiedAt as string
-    );
-    this.overallProgressModifiedAt = dateTimeTimezone(
-      analysisJob.overallProgressModifiedAt as string
-    );
-  }
-
-  public toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      annotationName: this.annotationName,
-      description: this.description,
-    };
   }
 
   public get viewUrl(): string {
@@ -95,4 +104,5 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 }
 
+// TODO
 type Status = "??? Anthony";

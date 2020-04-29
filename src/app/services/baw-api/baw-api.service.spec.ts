@@ -4,11 +4,12 @@ import {
   HttpTestingController,
   TestRequest,
 } from "@angular/common/http/testing";
+import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser, User } from "src/app/models/User";
-import { testAppInitializer } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
@@ -74,26 +75,16 @@ describe("BawApiService", () => {
       testConvert?: string;
     };
 
-    constructor(data: MockModelInterface) {
-      super(data);
-    }
-
-    static fromJSON(obj: any) {
-      if (typeof obj === "string") {
-        obj = JSON.parse(obj);
-      }
-
-      return new MockModel(obj);
+    constructor(data: MockModelInterface, modelInjector: Injector) {
+      super(data, modelInjector);
     }
 
     public toJSON() {
-      const json = {};
-
-      this.addIfExists(json, "id", this.id);
-      this.addIfExists(json, "name", this.name);
-      this.addIfExists(json, "caseConversion", this.caseConversion);
-
-      return json;
+      return {
+        id: this.id,
+        name: this.name,
+        caseConversion: this.caseConversion,
+      };
     }
 
     public get viewUrl(): string {
@@ -272,6 +263,12 @@ describe("BawApiService", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
       expect(service.getLocalUser()).toBe(null);
+    });
+
+    it("should handle corrupted user data", () => {
+      localStorage.setItem("baw.client.user", '{"');
+      expect(service.getLocalUser()).toBe(null);
+      expect(service.isLoggedIn()).toBe(false);
     });
   });
 
@@ -452,6 +449,7 @@ describe("BawApiService", () => {
         return subject;
       });
     }
+
     function successRequest<T>(
       method: "httpGet" | "httpDelete" | "httpPost" | "httpPatch",
       response: ApiResponse<T>
@@ -500,7 +498,9 @@ describe("BawApiService", () => {
 
         service["apiList"]("/broken_link").subscribe((data) => {
           expect(data).toEqual(
-            multiResponse.map((model) => new MockModel(model))
+            multiResponse.map(
+              (model) => new MockModel(model, service["injector"])
+            )
           );
         }, shouldNotFail);
       });
@@ -580,7 +580,9 @@ describe("BawApiService", () => {
         successRequest("httpPost", response);
 
         service["apiFilter"]("/broken_link", {}).subscribe((data) => {
-          expect(data).toEqual([new MockModel(singleResponse)]);
+          expect(data).toEqual([
+            new MockModel(singleResponse, service["injector"]),
+          ]);
         }, shouldNotFail);
       });
 
@@ -644,7 +646,9 @@ describe("BawApiService", () => {
         successRequest("httpGet", response);
 
         service["apiShow"]("/broken_link").subscribe((data) => {
-          expect(data).toEqual(new MockModel(singleResponse));
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
         }, shouldNotFail);
       });
 
@@ -696,8 +700,15 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe();
-        expect(spy).toHaveBeenCalledWith("/broken_link", {});
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
+          name: undefined,
+          caseConversion: undefined,
+        });
       });
 
       it("should call httpPost with body", () => {
@@ -709,12 +720,17 @@ describe("BawApiService", () => {
 
         service["apiCreate"](
           "/broken_link",
-          new MockModel({
-            name: "Custom Name",
-          })
+          new MockModel(
+            {
+              name: "Custom Name",
+            },
+            service["injector"]
+          )
         ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
           name: "Custom Name",
+          caseConversion: undefined,
         });
       });
 
@@ -725,34 +741,36 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          (data) => {
-            expect(data).toEqual(new MockModel(singleResponse));
-          },
-          shouldNotFail
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe((data) => {
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
+        }, shouldNotFail);
       });
 
       it("should handle error response", () => {
         errorRequest("httpPost", apiErrorDetails);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorDetails);
-          }
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorDetails);
+        });
       });
 
       it("should handle error info response", () => {
         errorRequest("httpPost", apiErrorInfoDetails);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorInfoDetails);
-          }
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
       });
 
       it("should complete on success", (done) => {
@@ -762,7 +780,10 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(
           () => {},
           shouldNotFail,
           () => {
@@ -781,8 +802,15 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe();
-        expect(spy).toHaveBeenCalledWith("/broken_link", {});
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
+          name: undefined,
+          caseConversion: undefined,
+        });
       });
 
       it("should call httpPost with body", () => {
@@ -794,12 +822,17 @@ describe("BawApiService", () => {
 
         service["apiUpdate"](
           "/broken_link",
-          new MockModel({
-            name: "Custom Name",
-          })
+          new MockModel(
+            {
+              name: "Custom Name",
+            },
+            service["injector"]
+          )
         ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
           name: "Custom Name",
+          caseConversion: undefined,
         });
       });
 
@@ -810,34 +843,36 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          (data) => {
-            expect(data).toEqual(new MockModel(singleResponse));
-          },
-          shouldNotFail
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe((data) => {
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
+        }, shouldNotFail);
       });
 
       it("should handle error response", () => {
         errorRequest("httpPatch", apiErrorDetails);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorDetails);
-          }
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorDetails);
+        });
       });
 
       it("should handle error info response", () => {
         errorRequest("httpPatch", apiErrorInfoDetails);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorInfoDetails);
-          }
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
       });
 
       it("should complete on success", (done) => {
@@ -847,7 +882,10 @@ describe("BawApiService", () => {
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(
           () => {},
           shouldNotFail,
           () => {
