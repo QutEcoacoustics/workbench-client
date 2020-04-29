@@ -1,4 +1,4 @@
-import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
 import {
@@ -14,6 +14,7 @@ import {
   BawPersistAttr,
   HasOne,
 } from "./AbstractModel";
+import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
 
@@ -24,7 +25,7 @@ export interface IAnalysisJob {
   id?: Id;
   name?: Param;
   annotationName?: string;
-  customSettings?: Blob | any;
+  customSettings?: Blob;
   scriptId?: Id;
   creatorId?: Id;
   updaterId?: Id;
@@ -37,7 +38,7 @@ export interface IAnalysisJob {
   startedAt?: DateTimeTimezone | string;
   overallStatus?: Status;
   overallStatusModifiedAt?: DateTimeTimezone | string;
-  overallProgress?: Blob | any;
+  overallProgress?: object;
   overallProgressModifiedAt?: DateTimeTimezone | string;
   overallCount?: number;
   overallDurationSeconds?: number;
@@ -72,7 +73,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly overallStatus?: Status;
   @BawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
-  public readonly overallProgress?: Blob;
+  public readonly overallProgress?: object;
   @BawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
@@ -90,19 +91,22 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: Observable<User>;
   @HasOne(ACCOUNT, (m: AnalysisJob) => m.deleterId)
   public deleter?: Observable<User>;
-  // TODO Add SavedSearch Association
+  @HasOne(SAVED_SEARCH, (m: AnalysisJob) => m.savedSearchId)
+  public savedSearch?: Observable<SavedSearch>;
 
   constructor(analysisJob: IAnalysisJob) {
     super(analysisJob);
-
-    this.customSettings = new Blob([analysisJob.customSettings]);
-    this.overallProgress = new Blob([analysisJob.overallProgress]);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("AnalysisJob viewUrl not implemented.");
   }
 }
 
-// TODO
-type Status = "??? Anthony";
+type Status =
+  | "before_save"
+  | "new"
+  | "preparing"
+  | "processing"
+  | "suspended"
+  | "completed";
