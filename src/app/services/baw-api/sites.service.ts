@@ -59,7 +59,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
  * Handles API routes pertaining to sites.
  */
 @Injectable()
-export class ShallowSitesService extends StandardApi<Site, []> {
+export class ShallowSitesService extends StandardApi<Site> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Site);
   }

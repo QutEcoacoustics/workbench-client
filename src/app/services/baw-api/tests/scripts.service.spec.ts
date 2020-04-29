@@ -39,9 +39,4 @@ describe("ScriptsService", function () {
     new Script({ id: 5 })
   );
   validateApiCreate<Script, ScriptsService>("/scripts/", new Script({ id: 5 }));
-  validateApiDestroy<Script, ScriptsService>(
-    "/scripts/5",
-    5,
-    new Script({ id: 5 })
-  );
 });

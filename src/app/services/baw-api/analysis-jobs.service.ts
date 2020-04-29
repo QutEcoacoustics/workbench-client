@@ -11,7 +11,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  StandardApi,
+  ReadAndUpdateApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
  * Handles API routes pertaining to analysis job models.
  */
 @Injectable()
-export class AnalysisJobsService extends StandardApi<AnalysisJob, []> {
+export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, AnalysisJob);
   }
@@ -38,14 +38,8 @@ export class AnalysisJobsService extends StandardApi<AnalysisJob, []> {
   show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: AnalysisJob): Observable<AnalysisJob> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
-  }
   update(model: AnalysisJob): Observable<AnalysisJob> {
     return this.apiUpdate(endpoint(model, Empty), model);
-  }
-  destroy(model: IdOr<AnalysisJob>): Observable<AnalysisJob | void> {
-    return this.apiDestroy(endpoint(model, Empty));
   }
 }
 

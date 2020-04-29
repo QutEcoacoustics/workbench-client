@@ -12,8 +12,8 @@ import {
   IdOr,
   IdParam,
   IdParamOptional,
+  ImmutableApi,
   option,
-  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -23,7 +23,7 @@ const datasetItemId: IdParamOptional<DatasetItem> = id;
 const endpoint = stringTemplate`/datasets/${datasetId}/items/${datasetItemId}${option}`;
 
 @Injectable()
-export class DatasetItemsService extends StandardApi<
+export class DatasetItemsService extends ImmutableApi<
   DatasetItem,
   [IdOr<Dataset>]
 > {
@@ -45,9 +45,6 @@ export class DatasetItemsService extends StandardApi<
   }
   create(model: DatasetItem, dataset: IdOr<Dataset>): Observable<DatasetItem> {
     return this.apiCreate(endpoint(dataset, Empty, Empty), model);
-  }
-  update(model: DatasetItem, dataset: IdOr<Dataset>): Observable<DatasetItem> {
-    return this.apiUpdate(endpoint(dataset, model, Empty), model);
   }
   destroy(
     model: IdOr<DatasetItem>,

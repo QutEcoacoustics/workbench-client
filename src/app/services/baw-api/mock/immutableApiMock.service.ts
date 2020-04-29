@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 import { MockModel } from "./baseApiMock.service";
 
 @Injectable()
-export class MockImmutableApiService extends ImmutableApi<MockModel, []> {
+export class MockImmutableApiService extends ImmutableApi<MockModel> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, MockModel);
   }

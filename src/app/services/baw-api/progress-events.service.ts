@@ -11,7 +11,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  StandardApi,
+  ReadAndCreateApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -20,7 +20,7 @@ const progressEventId: IdParamOptional<ProgressEvent> = id;
 const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
 
 @Injectable()
-export class ProgressEventsService extends StandardApi<ProgressEvent> {
+export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -40,12 +40,6 @@ export class ProgressEventsService extends StandardApi<ProgressEvent> {
   }
   create(model: ProgressEvent): Observable<ProgressEvent> {
     return this.apiCreate(endpoint(Empty, Empty), model);
-  }
-  update(model: ProgressEvent): Observable<ProgressEvent> {
-    return this.apiUpdate(endpoint(model, Empty), model);
-  }
-  destroy(model: IdOr<ProgressEvent>): Observable<ProgressEvent | void> {
-    return this.apiDestroy(endpoint(model, Empty));
   }
 }
 

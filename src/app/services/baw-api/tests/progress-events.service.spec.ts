@@ -46,13 +46,4 @@ describe("ProgressEventsService", function () {
     "/progress_events/",
     new ProgressEvent({ id: 5 })
   );
-  validateApiUpdate<ProgressEvent, ProgressEventsService>(
-    "/progress_events/5",
-    new ProgressEvent({ id: 5 })
-  );
-  validateApiDestroy<ProgressEvent, ProgressEventsService>(
-    "/progress_events/5",
-    5,
-    new ProgressEvent({ id: 5 })
-  );
 });

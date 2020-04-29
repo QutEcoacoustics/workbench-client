@@ -19,6 +19,8 @@ import {
 } from "./dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./datasets.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
+import { MockReadAndCreateApiService } from "./mock/readAndCreatMock.service";
+import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
 import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
 import { MockShowApiService } from "./mock/showApiMock.service";
 import { MockStandardApiService } from "./mock/standardApiMock.service";
@@ -68,7 +70,7 @@ const serviceList = [
     serviceToken: Tokens.ANALYSIS_JOB,
     service: AnalysisJobsService,
     resolvers: analysisJobResolvers,
-    mock: MockStandardApiService,
+    mock: MockReadAndUpdateApiService,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT,
@@ -98,13 +100,13 @@ const serviceList = [
     serviceToken: Tokens.DATASET_ITEM,
     service: DatasetItemsService,
     resolvers: datasetItemResolvers,
-    mock: MockStandardApiService,
+    mock: MockImmutableApiService,
   },
   {
     serviceToken: Tokens.PROGRESS_EVENT,
     service: ProgressEventsService,
     resolvers: progressEventResolvers,
-    mock: MockStandardApiService,
+    mock: MockReadAndCreateApiService,
   },
   {
     serviceToken: Tokens.PROJECT,
@@ -140,13 +142,13 @@ const serviceList = [
     serviceToken: Tokens.SAVED_SEARCH,
     service: SavedSearchesService,
     resolvers: savedSearchResolvers,
-    mock: MockStandardApiService,
+    mock: MockImmutableApiService,
   },
   {
     serviceToken: Tokens.SCRIPT,
     service: ScriptsService,
     resolvers: scriptResolvers,
-    mock: MockImmutableApiService,
+    mock: MockReadAndCreateApiService,
   },
   {
     serviceToken: Tokens.SITE,

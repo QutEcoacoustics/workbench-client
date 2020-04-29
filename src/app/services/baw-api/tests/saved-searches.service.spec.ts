@@ -46,10 +46,6 @@ describe("SavedSearchesService", function () {
     "/saved_searches/",
     new SavedSearch({ id: 5 })
   );
-  validateApiUpdate<SavedSearch, SavedSearchesService>(
-    "/saved_searches/5",
-    new SavedSearch({ id: 5 })
-  );
   validateApiDestroy<SavedSearch, SavedSearchesService>(
     "/saved_searches/5",
     5,

@@ -20,7 +20,7 @@ const bookmarkId: IdParamOptional<Bookmark> = id;
 const endpoint = stringTemplate`/bookmarks/${bookmarkId}${option}`;
 
 @Injectable()
-export class BookmarksService extends StandardApi<Bookmark, []> {
+export class BookmarksService extends StandardApi<Bookmark> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,

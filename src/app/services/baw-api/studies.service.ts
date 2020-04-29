@@ -20,7 +20,7 @@ const studyId: IdParamOptional<Study> = id;
 const endpoint = stringTemplate`/studies/${studyId}${option}`;
 
 @Injectable()
-export class StudiesService extends StandardApi<Study, []> {
+export class StudiesService extends StandardApi<Study> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,

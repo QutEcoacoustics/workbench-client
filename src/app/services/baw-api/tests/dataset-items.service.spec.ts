@@ -55,11 +55,6 @@ describe("DatasetItemsService", function () {
     new DatasetItem({ id: 10 }),
     5
   );
-  validateApiUpdate<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/10",
-    new DatasetItem({ id: 10 }),
-    5
-  );
   validateApiDestroy<DatasetItem, DatasetItemsService>(
     "/datasets/5/items/10",
     10,

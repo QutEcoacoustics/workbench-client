@@ -179,3 +179,34 @@ export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
 }
+
+/**
+ * Api Class with only the ability to Read and Create models
+ */
+export abstract class ReadAndCreateApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract create(model: M, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * Api Class with only the ability to Read and Update models
+ */
+export abstract class ReadAndUpdateApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract update(
+    model: PartialWith<M, "id">,
+    ...urlParameters: P
+  ): Observable<M>;
+}

@@ -10,8 +10,8 @@ import {
   id,
   IdOr,
   IdParamOptional,
+  ImmutableApi,
   option,
-  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -20,7 +20,7 @@ const savedSearchId: IdParamOptional<SavedSearch> = id;
 const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;
 
 @Injectable()
-export class SavedSearchesService extends StandardApi<SavedSearch, []> {
+export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -40,9 +40,6 @@ export class SavedSearchesService extends StandardApi<SavedSearch, []> {
   }
   create(model: SavedSearch): Observable<SavedSearch> {
     return this.apiCreate(endpoint(Empty, Empty), model);
-  }
-  update(model: SavedSearch): Observable<SavedSearch> {
-    return this.apiUpdate(endpoint(model, Empty), model);
   }
   destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
     return this.apiDestroy(endpoint(model, Empty));

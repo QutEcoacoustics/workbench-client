@@ -27,7 +27,7 @@ const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 @Injectable()
-export class TagsService extends StandardApi<Tag, []> {
+export class TagsService extends StandardApi<Tag> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Tag);
   }

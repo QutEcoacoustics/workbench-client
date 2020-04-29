@@ -1,17 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { ServiceToken } from "@baw-api/ServiceTokens";
+import { ReadAndCreateApi } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Observable } from "rxjs";
-import { StandardApi } from "../api-common";
 import { MockModel } from "./baseApiMock.service";
 
-export const MOCK = new ServiceToken<MockStandardApiService>(
-  "STANDARD_API_SERVICE"
-);
-
 @Injectable()
-export class MockStandardApiService extends StandardApi<MockModel> {
+export class MockReadAndCreateApiService extends ReadAndCreateApi<MockModel> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, MockModel);
   }
@@ -30,13 +25,5 @@ export class MockStandardApiService extends StandardApi<MockModel> {
 
   public create(...args: any[]) {
     return new Observable<MockModel>();
-  }
-
-  public update(...args: any[]) {
-    return new Observable<MockModel>();
-  }
-
-  public destroy(...args: any[]) {
-    return new Observable<MockModel | void>();
   }
 }

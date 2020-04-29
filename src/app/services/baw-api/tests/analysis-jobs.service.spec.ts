@@ -40,17 +40,8 @@ describe("AnalysisJobsService", function () {
     5,
     new AnalysisJob({ id: 5 })
   );
-  validateApiCreate<AnalysisJob, AnalysisJobsService>(
-    "/analysis_jobs/",
-    new AnalysisJob({ id: 5 })
-  );
   validateApiUpdate<AnalysisJob, AnalysisJobsService>(
     "/analysis_jobs/5",
-    new AnalysisJob({ id: 5 })
-  );
-  validateApiDestroy<AnalysisJob, AnalysisJobsService>(
-    "/analysis_jobs/5",
-    5,
     new AnalysisJob({ id: 5 })
   );
 });
