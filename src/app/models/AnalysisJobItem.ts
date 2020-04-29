@@ -1,5 +1,8 @@
+import { ANALYSIS_JOB } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { AbstractModel, BawDateTime, BawPersistAttr } from "./AbstractModel";
+import { Observable } from "rxjs";
+import { AbstractModel, BawDateTime, HasOne } from "./AbstractModel";
+import type { AnalysisJob } from "./AnalysisJob";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -16,13 +19,9 @@ export interface IAnalysisJobItem {
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly kind: "AnalysisJobItem" = "AnalysisJobItem";
-  @BawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
   public readonly analysisJobId?: Id;
-  @BawPersistAttr
   public readonly audioRecordingId?: Id;
-  @BawPersistAttr
   public readonly queueId?: string;
   public readonly status?: Status;
   @BawDateTime()
@@ -37,16 +36,25 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add AnalysisJob, AudioRecording, Queue associations
+  @HasOne(ANALYSIS_JOB, (m: AnalysisJobItem) => m.analysisJobId)
+  public analysisJob?: Observable<AnalysisJob>;
+  // TODO Add AudioRecording, Queue associations
 
   constructor(analysisJobItem: IAnalysisJobItem) {
     super(analysisJobItem);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("AnalysisJobItem viewUrl not implemented.");
   }
 }
 
-// TODO
-export type Status = "new" | "??? Anthony";
+export type Status =
+  | "successful"
+  | "new"
+  | "queued"
+  | "working"
+  | "failed"
+  | "timed_out"
+  | "cancelling"
+  | "cancelled";
