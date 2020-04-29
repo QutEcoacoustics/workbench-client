@@ -162,8 +162,7 @@ describe("SecurityService", () => {
     it("store user", fakeAsync(() => {
       const userDetails = {
         id: 1,
-        userName: "username",
-        isConfirmed: false,
+        userName: "userName", // Purposely wrong to highlight session user overrides user
         lastSeenAt: "1970-01-01T00:00:00.000+10:00",
         rolesMask: 2,
         rolesMaskNames: ["user"],
