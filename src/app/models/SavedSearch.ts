@@ -1,3 +1,4 @@
+import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
@@ -18,7 +19,7 @@ export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
-  storedQuery?: Blob;
+  storedQuery?: Filters;
   creatorId?: Id;
   deleterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -34,7 +35,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly storedQuery?: Blob;
+  public readonly storedQuery?: Filters;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   @BawDateTime()
@@ -53,6 +54,6 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("SavedSearch viewUrl not implemented.");
   }
 }

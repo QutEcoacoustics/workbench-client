@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -7,6 +7,7 @@ import {
   BawPersistAttr,
   HasOne,
 } from "./AbstractModel";
+import type { Dataset } from "./Dataset";
 import type { User } from "./User";
 
 export interface IDatasetItem {
@@ -39,7 +40,9 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
   public readonly order?: number;
 
   // Associations
-  // TODO Create Dataset, AudioRecording association
+  // TODO Create AudioRecording association
+  @HasOne(DATASET, (m: DatasetItem) => m.datasetId)
+  public dataset?: Observable<Dataset>;
   @HasOne(ACCOUNT, (m: DatasetItem) => m.creatorId)
   public creator?: Observable<User>;
 
@@ -48,6 +51,6 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("DatasetItem viewUrl not implemented.");
   }
 }

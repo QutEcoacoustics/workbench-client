@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -7,6 +7,7 @@ import {
   BawPersistAttr,
   HasOne,
 } from "./AbstractModel";
+import type { DatasetItem } from "./DatasetItem";
 import type { User } from "./User";
 
 export interface IProgressEvent {
@@ -30,7 +31,9 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add DatasetItem association
+  // TODO Add DatasetItem association\
+  @HasOne(DATASET_ITEM, (m: ProgressEvent) => m.datasetItemId)
+  public datasetItem?: Observable<DatasetItem>;
   @HasOne(ACCOUNT, (m: ProgressEvent) => m.creatorId)
   public creator?: Observable<User>;
 
@@ -39,6 +42,6 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("ProgressEvent viewUrl not implemented.");
   }
 }

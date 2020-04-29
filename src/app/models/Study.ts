@@ -46,6 +46,6 @@ export class Study extends AbstractModel implements IStudy {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("Study viewUrl not implemented.");
   }
 }

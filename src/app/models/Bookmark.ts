@@ -27,7 +27,7 @@ export interface IBookmark {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   description?: Description;
-  category?: Category;
+  category?: string;
 }
 
 export class Bookmark extends AbstractModel implements IBookmark {
@@ -49,7 +49,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly category?: Category;
+  public readonly category?: string;
 
   // Associations
   // TODO Create AudioRecording association
@@ -62,11 +62,12 @@ export class Bookmark extends AbstractModel implements IBookmark {
     super(bookmark);
   }
 
+  public listenViewUrl(recordingId: Id, startOffset?: number): string {
+    throw new Error("Bookmark listenViewUrl not implemented.");
+  }
+
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
     // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
+    throw new Error("Bookmark viewUrl not implemented.");
   }
 }
-
-// TODO
-type Category = "<<application>>" | "??? Anthony";
