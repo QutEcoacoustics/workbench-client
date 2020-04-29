@@ -1,4 +1,4 @@
-import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
+import { ACCOUNT, TAG, AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -9,6 +9,7 @@ import {
 } from "./AbstractModel";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
+import type { AudioEvent } from "./AudioEvent";
 
 export interface IAudioEventTag {
   id?: Id;
@@ -43,12 +44,15 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   public creator?: Observable<User>;
   @HasOne(ACCOUNT, (m: AudioEventTag) => m.updaterId)
   public updater?: Observable<User>;
+  @HasOne(AUDIO_EVENT, (m: AudioEventTag) => m.audioEventId)
+  public audioEvent?: Observable<AudioEvent>;
 
   constructor(audioEventTag: IAudioEventTag) {
     super(audioEventTag);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    // AudioEventTag currently has no plans implementing its own view
+    throw new Error("AudioEventTag viewUrl not implemented.");
   }
 }

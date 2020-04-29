@@ -65,6 +65,6 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("AudioEvent viewUrl not implemented.");
   }
 }
