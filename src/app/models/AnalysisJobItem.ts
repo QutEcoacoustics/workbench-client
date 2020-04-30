@@ -14,7 +14,7 @@ export interface IAnalysisJobItem {
   queuedAt?: DateTimeTimezone | string;
   workStartedAt?: DateTimeTimezone | string;
   completedAt?: DateTimeTimezone | string;
-  cancelStartedAt?: DateTimeTimezone | String;
+  cancelStartedAt?: DateTimeTimezone | string;
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {

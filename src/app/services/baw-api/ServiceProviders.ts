@@ -1,6 +1,10 @@
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { accountResolvers, AccountService } from "./account.service";
 import {
+  analysisJobItemResolvers,
+  AnalysisJobItemsService,
+} from "./analysis-job-items.service";
+import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis-jobs.service";
@@ -74,6 +78,12 @@ const serviceList = [
     service: AnalysisJobsService,
     resolvers: analysisJobResolvers,
     mock: MockReadAndUpdateApiService,
+  },
+  {
+    serviceToken: Tokens.ANALYSIS_JOB_ITEM,
+    service: AnalysisJobItemsService,
+    resolvers: analysisJobItemResolvers,
+    mock: MockReadonlyApiService,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT,
