@@ -1,5 +1,19 @@
-<ng-container [ngSwitch]="status">
-  <div class="mx-auto" [ngStyle]="{ width: width }">
-    <fa-icon [ngStyle]="{ color: color }" [icon]="icon"></fa-icon>
+<div [ngSwitch]="status">
+  <!-- Success Status -->
+  <div *ngSwitchCase="Status.Success" class="mx-auto" style="width: 14px;">
+    <fa-icon style="color: limegreen;" [icon]="['fas', 'check']"></fa-icon>
   </div>
-</ng-container>
+
+  <!-- Error Status -->
+  <div *ngSwitchCase="Status.Error" class="mx-auto" style="width: 10px;">
+    <fa-icon style="color: red;" [icon]="['fas', 'times']"></fa-icon>
+  </div>
+
+  <!-- Warning/Default Status -->
+  <div *ngSwitchDefault class="mx-auto" style="width: 19px;">
+    <fa-icon
+      style="color: orange;"
+      [icon]="['fas', 'exclamation-triangle']"
+    ></fa-icon>
+  </div>
+</div>
