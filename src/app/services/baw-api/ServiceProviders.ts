@@ -4,6 +4,7 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis-jobs.service";
+import { AudioEventTagsService } from "./audio-event-tags.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -18,8 +19,9 @@ import {
   DatasetItemsService,
 } from "./dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./datasets.service";
+import { MockFilterApiService } from "./mock/filterMock.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
-import { MockReadAndCreateApiService } from "./mock/readAndCreatMock.service";
+import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
 import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
 import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
 import { MockShowApiService } from "./mock/showApiMock.service";
@@ -78,6 +80,12 @@ const serviceList = [
     service: AudioEventsService,
     resolvers: audioEventResolvers,
     mock: MockStandardApiService,
+  },
+  {
+    serviceToken: Tokens.AUDIO_EVENT_TAG,
+    service: AudioEventTagsService,
+    resolvers: null,
+    mock: MockFilterApiService,
   },
   {
     serviceToken: Tokens.AUDIO_RECORDING,
@@ -198,13 +206,13 @@ const serviceList = [
 const serviceProviders: any[] = [AppConfigService, SecurityService];
 
 for (const service of serviceList) {
-  serviceProviders.push(
-    ...[
-      service.service,
-      { provide: service.serviceToken.token, useExisting: service.service },
-      ...service.resolvers.providers,
-    ]
-  );
+  const providers = [
+    service.service,
+    { provide: service.serviceToken.token, useExisting: service.service },
+    ...(service.resolvers?.providers || []),
+  ];
+
+  serviceProviders.push(...providers);
 }
 
 export { serviceProviders, serviceList };

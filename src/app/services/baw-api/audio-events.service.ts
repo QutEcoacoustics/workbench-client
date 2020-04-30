@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AnalysisJob } from "@models/AnalysisJob";
 import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -18,55 +18,57 @@ import {
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
 
-const analysisJobId: IdParam<AnalysisJob> = id;
+const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;
-const endpoint = stringTemplate`/audio_recordings/${analysisJobId}/audio_events/${audioEventId}${option}`;
+const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}${option}`;
 
 @Injectable()
 export class AudioEventsService extends StandardApi<
   AudioEvent,
-  [IdOr<AnalysisJob>]
+  [IdOr<AudioRecording>]
 > {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, AudioEvent);
   }
 
-  list(analysis: IdOr<AnalysisJob>): Observable<AudioEvent[]> {
-    return this.apiList(endpoint(analysis, Empty, Empty));
+  list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
+    return this.apiList(endpoint(audioRecording, Empty, Empty));
   }
   filter(
     filters: Filters,
-    analysis: IdOr<AnalysisJob>
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
-    return this.apiFilter(endpoint(analysis, Empty, Filter), filters);
+    return this.apiFilter(endpoint(audioRecording, Empty, Filter), filters);
   }
   show(
     model: IdOr<AudioEvent>,
-    analysis: IdOr<AnalysisJob>
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiShow(endpoint(analysis, model, Empty));
+    return this.apiShow(endpoint(audioRecording, model, Empty));
   }
   create(
     model: AudioEvent,
-    analysis: IdOr<AnalysisJob>
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiCreate(endpoint(analysis, Empty, Empty), model);
+    return this.apiCreate(endpoint(audioRecording, Empty, Empty), model);
   }
   update(
     model: AudioEvent,
-    analysis: IdOr<AnalysisJob>
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiUpdate(endpoint(analysis, model, Empty), model);
+    return this.apiUpdate(endpoint(audioRecording, model, Empty), model);
   }
   destroy(
     model: IdOr<AudioEvent>,
-    analysis: IdOr<AnalysisJob>
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {
-    return this.apiDestroy(endpoint(analysis, model, Empty));
+    return this.apiDestroy(endpoint(audioRecording, model, Empty));
   }
 }
 
 export const audioEventResolvers = new Resolvers<
   AudioEvent,
   AudioEventsService
->([AudioEventsService], "audioEventId", ["analysisJobId"]).create("AudioEvent");
+>([AudioEventsService], "audioEventId", ["audioRecordingId"]).create(
+  "AudioEvent"
+);
