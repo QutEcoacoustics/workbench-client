@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import {
   DateTimeTimezone,
   Description,
@@ -45,8 +46,8 @@ export class Dataset extends AbstractModel implements IDataset {
   @Updater<Dataset>()
   public updater?: Observable<User>;
 
-  constructor(dataset: IDataset) {
-    super(dataset);
+  constructor(dataset: IDataset, injector?: Injector) {
+    super(dataset, injector);
   }
 
   public get viewUrl(): string {

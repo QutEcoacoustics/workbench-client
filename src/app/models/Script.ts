@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
@@ -60,8 +61,8 @@ export class Script extends AbstractModel implements IScript {
   @Creator<Script>()
   public creator?: Observable<User>;
 
-  constructor(script: IScript) {
-    super(script);
+  constructor(script: IScript, injector?: Injector) {
+    super(script, injector);
 
     this.executableSettingsMediaType = script.executableSettingsMediaType
       ? script.executableSettingsMediaType

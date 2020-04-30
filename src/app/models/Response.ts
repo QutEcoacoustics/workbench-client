@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
@@ -49,8 +50,8 @@ export class Response extends AbstractModel implements IResponse {
   @HasOne(STUDY, (m: Response) => m.studyId)
   public study?: Observable<Study>;
 
-  constructor(question: IResponse) {
-    super(question);
+  constructor(question: IResponse, injector?: Injector) {
+    super(question, injector);
   }
 
   public get viewUrl(): string {

@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
@@ -37,8 +38,8 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   @HasOne(DATASET_ITEM, (m: ProgressEvent) => m.datasetItemId)
   public datasetItem?: Observable<DatasetItem>;
 
-  constructor(progressEvent: IProgressEvent) {
-    super(progressEvent);
+  constructor(progressEvent: IProgressEvent, injector?: Injector) {
+    super(progressEvent, injector);
   }
 
   public get viewUrl(): string {

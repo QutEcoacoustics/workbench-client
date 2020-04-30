@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
@@ -97,8 +98,8 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @HasOne(SAVED_SEARCH, (m: AnalysisJob) => m.savedSearchId)
   public savedSearch?: Observable<SavedSearch>;
 
-  constructor(analysisJob: IAnalysisJob) {
-    super(analysisJob);
+  constructor(analysisJob: IAnalysisJob, injector?: Injector) {
+    super(analysisJob, injector);
   }
 
   public get viewUrl(): string {

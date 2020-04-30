@@ -1,3 +1,5 @@
+import { Injector } from "@angular/core";
+import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   Description,
@@ -10,8 +12,10 @@ import {
   BawDateTime,
   BawPersistAttr,
   Creator,
+  HasOne,
   Updater,
 } from "./AbstractModel";
+import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
 /**
@@ -52,14 +56,15 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public readonly category?: string;
 
   // Associations
-  // TODO Create AudioRecording association
   @Creator<Bookmark>()
   public creator?: Observable<User>;
   @Updater<Bookmark>()
   public updater?: Observable<User>;
+  @HasOne(AUDIO_RECORDING, (m: Bookmark) => m.audioRecordingId)
+  public audioRecording?: Observable<AudioRecording>;
 
-  constructor(bookmark: IBookmark) {
-    super(bookmark);
+  constructor(bookmark: IBookmark, injector?: Injector) {
+    super(bookmark, injector);
   }
 
   public listenViewUrl(recordingId: Id, startOffset?: number): string {

@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
@@ -48,8 +49,8 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   @HasOne(AUDIO_EVENT, (m: AudioEventTag) => m.audioEventId)
   public audioEvent?: Observable<AudioEvent>;
 
-  constructor(audioEventTag: IAudioEventTag) {
-    super(audioEventTag);
+  constructor(audioEventTag: IAudioEventTag, injector?: Injector) {
+    super(audioEventTag, injector);
   }
 
   public get viewUrl(): string {

@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
 import { Observable } from "rxjs";
@@ -44,8 +45,8 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   @HasOne(TAG, (m: TagGroup) => m.tagId)
   public tag?: Observable<Tag>;
 
-  constructor(tagGroup: ITagGroup) {
-    super(tagGroup);
+  constructor(tagGroup: ITagGroup, injector?: Injector) {
+    super(tagGroup, injector);
   }
 
   public get viewUrl(): string {

@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
@@ -49,8 +50,8 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @Deleter<SavedSearch>()
   public deleter?: Observable<User>;
 
-  constructor(savedSearches: ISavedSearch) {
-    super(savedSearches);
+  constructor(savedSearches: ISavedSearch, injector?: Injector) {
+    super(savedSearches, injector);
   }
 
   public get viewUrl(): string {

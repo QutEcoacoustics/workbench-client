@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
@@ -87,8 +88,8 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @HasOne(SHALLOW_SITE, (m: AudioRecording) => m.siteId)
   public site?: Observable<Site>;
 
-  constructor(audioRecording: IAudioRecording) {
-    super(audioRecording);
+  constructor(audioRecording: IAudioRecording, injector?: Injector) {
+    super(audioRecording, injector);
   }
 
   public get viewUrl(): string {

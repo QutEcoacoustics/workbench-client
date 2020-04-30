@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
@@ -78,8 +79,8 @@ export class Site extends AbstractModel implements ISite {
   @HasMany(PROJECT, (m: Site) => m.projectIds)
   public projects?: Observable<Project[]>;
 
-  constructor(site: ISite) {
-    super(site);
+  constructor(site: ISite, injector?: Injector) {
+    super(site, injector);
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;

@@ -1,8 +1,10 @@
-import { ANALYSIS_JOB } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import { AbstractModel, BawDateTime, HasOne } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
+import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -38,10 +40,11 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   // Associations
   @HasOne(ANALYSIS_JOB, (m: AnalysisJobItem) => m.analysisJobId)
   public analysisJob?: Observable<AnalysisJob>;
-  // TODO Add AudioRecording, Queue associations
+  @HasOne(AUDIO_RECORDING, (m: AnalysisJobItem) => m.audioRecordingId)
+  public audioRecording?: Observable<AudioRecording>;
 
-  constructor(analysisJobItem: IAnalysisJobItem) {
-    super(analysisJobItem);
+  constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
+    super(analysisJobItem, injector);
   }
 
   public get viewUrl(): string {

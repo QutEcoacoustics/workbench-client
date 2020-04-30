@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import { startCase } from "lodash";
 import { Observable } from "rxjs";
@@ -62,8 +63,8 @@ export class Tag extends AbstractModel implements ITag {
   @Updater<Tag>()
   public updater?: Observable<User>;
 
-  constructor(tag: ITag) {
-    super(tag);
+  constructor(tag: ITag, injector?: Injector) {
+    super(tag, injector);
   }
 
   public get viewUrl(): string {

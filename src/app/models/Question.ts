@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
@@ -7,7 +8,7 @@ import {
   Creator,
   Updater,
 } from "./AbstractModel";
-import { User } from "./User";
+import type { User } from "./User";
 
 export interface IQuestion {
   id?: Id;
@@ -40,8 +41,8 @@ export class Question extends AbstractModel implements IQuestion {
   @Updater<Question>()
   public updater?: Observable<User>;
 
-  constructor(question: IQuestion) {
-    super(question);
+  constructor(question: IQuestion, injector?: Injector) {
+    super(question, injector);
   }
 
   public get viewUrl(): string {
