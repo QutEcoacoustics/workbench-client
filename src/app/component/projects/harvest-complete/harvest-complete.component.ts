@@ -33,7 +33,7 @@ export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
       name: "name",
     };
 
-    this.getModels(this.project);
+    this.getPageData(this.project);
   }
 
   public detailsPath(site: Site) {
