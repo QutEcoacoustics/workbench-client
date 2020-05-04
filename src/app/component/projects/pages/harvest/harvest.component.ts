@@ -3,8 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import filesize from "filesize";
 import { List } from "immutable";
 import { MenuItem } from "primeng/api/menuitem";
-import { Observable, timer, Subscription } from "rxjs";
-import { map, startWith, takeWhile } from "rxjs/operators";
+import { Observable, timer, Subscription, range } from "rxjs";
+import { map, startWith, takeWhile, delay } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -48,19 +48,40 @@ export class HarvestComponent implements OnInit {
   public stages: {
     previous: { text?: string; disabled?: boolean };
     next: { text?: string; disabled?: boolean };
+    timer: { enable: boolean; callback?: () => void };
   }[] = [
-    { previous: {}, next: { text: "Start" } },
+    { previous: {}, next: { text: "Start" }, timer: { enable: false } },
     {
       previous: { text: "Cancel" },
       next: { text: "Finished Uploading" },
+      timer: { enable: true },
     },
-    { previous: {}, next: {} },
+    {
+      previous: {},
+      next: {},
+      timer: {
+        enable: true,
+        callback: () => {
+          this.nextStage();
+        },
+      },
+    },
     {
       previous: { text: "Re-submit Files" },
       next: { text: "Finish Review" },
+      timer: { enable: false },
     },
-    { previous: {}, next: {} },
-    { previous: {}, next: {} },
+    {
+      previous: {},
+      next: {},
+      timer: {
+        enable: true,
+        callback: () => {
+          this.nextStage();
+        },
+      },
+    },
+    { previous: {}, next: {}, timer: { enable: false } },
   ];
   public steps = {
     start: 0,
@@ -109,8 +130,7 @@ export class HarvestComponent implements OnInit {
 
   public nextStage() {
     this.stage++;
-    this.subscription?.unsubscribe;
-    this.subscription = this.mockTimer.subscribe();
+    this.harvestObs();
   }
 
   public previousStage() {
@@ -121,8 +141,19 @@ export class HarvestComponent implements OnInit {
       this.stage--;
     }
 
-    this.subscription?.unsubscribe;
-    this.subscription = this.mockTimer.subscribe();
+    this.harvestObs();
+  }
+
+  private harvestObs() {
+    const timer = this.stages[this.stage].timer;
+    if (timer.enable) {
+      this.subscription?.unsubscribe;
+      this.subscription = this.mockTimer.subscribe(
+        () => {},
+        () => {},
+        timer.callback ? timer.callback : () => {}
+      );
+    }
   }
 
   private mockTimer2(callback?: () => void) {
