@@ -1,19 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { tagGroupResolvers, TagGroupService } from "@baw-api/tag-group.service";
+import { TagGroup } from "@models/TagGroup";
+import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { TagGroup } from "src/app/models/TagGroup";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  tagGroupResolvers,
-  TagGroupService
-} from "src/app/services/baw-api/tag-group.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
-import { adminTagGroupsMenuItem } from "../../admin.menus";
+import { assertResolverErrorHandling } from "src/testHelpers";
+import { adminTagGroupsMenuItem } from "../tag-group.menus";
 import { AdminTagGroupsDeleteComponent } from "./delete.component";
 
 describe("AdminTagGroupsDeleteComponent", () => {
@@ -35,17 +32,17 @@ describe("AdminTagGroupsDeleteComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              tagGroup: tagGroupResolvers.show
+              tagGroup: tagGroupResolvers.show,
             },
             {
               tagGroup: {
                 model: tagGroup,
-                error
-              }
+                error,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsDeleteComponent);
@@ -65,11 +62,11 @@ describe("AdminTagGroupsDeleteComponent", () => {
     defaultTagGroup = new TagGroup({
       id: 1,
       groupIdentifier: "Group Identifier",
-      tagId: 1
+      tagId: 1,
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -88,7 +85,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
     it("should handle tag group error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

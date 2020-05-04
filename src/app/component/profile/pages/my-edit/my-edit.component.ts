@@ -1,22 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { List } from "immutable";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { userResolvers, UserService } from "@baw-api/user.service";
 import {
-  userResolvers,
-  UserService
-} from "src/app/services/baw-api/user.service";
-import {
-  editMyAccountMenuItem,
   myAccountCategory,
-  myAccountMenuItem
-} from "../../profile.menus";
-import { myProfileMenuItemActions } from "../profile/my-profile.component";
+  myAccountMenuItem,
+  myEditMenuItem,
+} from "@component/profile/profile.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { myAccountMenuItemActions } from "../profile/my-profile.component";
 import { fields } from "./my-edit.json";
 
 const userKey = "user";
@@ -26,14 +23,14 @@ const userKey = "user";
   menus: {
     actions: List<AnyMenuItem>([
       myAccountMenuItem,
-      ...myProfileMenuItemActions
+      ...myAccountMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
   resolvers: {
-    [userKey]: userResolvers.show
+    [userKey]: userResolvers.show,
   },
-  self: editMyAccountMenuItem
+  self: myEditMenuItem,
 })
 @Component({
   selector: "app-my-account-edit",
@@ -63,7 +60,7 @@ const userKey = "user";
         </app-form>
       </ng-container>
     </app-wip>
-  `
+  `,
 })
 export class MyEditComponent extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -1,25 +1,25 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { TagGroupService } from "@baw-api/tag-group.service";
+import { adminDashboardMenuItem } from "@component/admin/admin.menus";
+import { Page } from "@helpers/page/pageDecorator";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { Id } from "@interfaces/apiInterfaces";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemplate";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { TagGroup } from "src/app/models/TagGroup";
-import { TagGroupService } from "src/app/services/baw-api/tag-group.service";
 import {
-  adminDashboardMenuItem,
   adminDeleteTagGroupMenuItem,
   adminEditTagGroupMenuItem,
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem
-} from "../../admin.menus";
+  adminTagGroupsMenuItem,
+} from "../tag-group.menus";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
   adminNewTagGroupMenuItem,
   adminEditTagGroupMenuItem,
-  adminDeleteTagGroupMenuItem
+  adminDeleteTagGroupMenuItem,
 ];
 
 @Page({
@@ -27,38 +27,35 @@ export const adminTagGroupMenuItemActions = [
   menus: {
     actions: List<AnyMenuItem>([
       adminDashboardMenuItem,
-      ...adminTagGroupsMenuItemActions
+      ...adminTagGroupsMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
-  self: adminTagGroupsMenuItem
+  self: adminTagGroupsMenuItem,
 })
 @Component({
   selector: "app-admin-tag-groups-list",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"]
+  styleUrls: ["./list.component.scss"],
 })
-export class AdminTagGroupsComponent
-  extends PagedTableTemplate<TableRow, TagGroup>
-  implements OnInit {
+export class AdminTagGroupsComponent extends PagedTableTemplate<
+  TableRow,
+  TagGroup
+> {
+  public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
+  public sortKeys = {
+    tag: "tagId",
+    group: "groupIdentifier",
+  };
+
   constructor(api: TagGroupService) {
-    super(api, tagGroups =>
-      tagGroups.map(tagGroup => ({
+    super(api, (tagGroups) =>
+      tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,
         group: tagGroup.groupIdentifier,
-        model: tagGroup
+        model: tagGroup,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
-    this.sortKeys = {
-      tag: "tagId",
-      group: "groupIdentifier"
-    };
-
-    this.getModels();
   }
 
   editPath(tagGroup: TagGroup): string {

@@ -16,6 +16,8 @@ import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxComponent } from "./checkbox/checkbox.component";
 import { CmsComponent } from "./cms/cms.component";
+import { DetailViewComponent } from "./detail-view/detail-view.component";
+import { RenderFieldComponent } from "./detail-view/render-field/render-field.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
@@ -23,8 +25,6 @@ import { FormlyCheckboxInput } from "./formly/checkbox-input.component";
 import { FileValueAccessor } from "./formly/file-input.directive";
 import { FormlyHorizontalWrapper } from "./formly/horizontal-wrapper";
 import { FormlyImageInput } from "./formly/image-input.component";
-import { FormlyQuestionAnswerAction } from "./formly/question-answer-action.component";
-import { FormlyQuestionAnswer } from "./formly/question-answer.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { HeaderModule } from "./header/header.module";
 import { IndicatorComponent } from "./indicator/indicator.component";
@@ -39,14 +39,13 @@ export const sharedComponents = [
   ActionMenuComponent,
   CheckboxComponent,
   CmsComponent,
+  DetailViewComponent,
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
   FormlyCheckboxInput,
   FormlyHorizontalWrapper,
   FormlyImageInput,
-  FormlyQuestionAnswer,
-  FormlyQuestionAnswerAction,
   FormlyTimezoneInput,
   IndicatorComponent,
   LoadingComponent,
@@ -54,6 +53,8 @@ export const sharedComponents = [
   TimezoneFormPipe,
   WIPComponent,
 ];
+
+export const internalComponents = [...sharedComponents, RenderFieldComponent];
 
 export const sharedModules = [
   CommonModule,
@@ -77,4 +78,5 @@ export const sharedModules = [
   ItemsModule,
   MenuModule,
 ];
+
 export const formlyAccessors = [FileValueAccessor];

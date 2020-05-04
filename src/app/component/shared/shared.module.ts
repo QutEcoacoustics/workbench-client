@@ -3,6 +3,7 @@ import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import {
   formlyAccessors,
+  internalComponents,
   sharedComponents,
   sharedModules,
 } from "./shared.components";
@@ -11,7 +12,7 @@ import {
  * Shared Components Module
  */
 @NgModule({
-  declarations: [...sharedComponents, ...formlyAccessors],
+  declarations: [...internalComponents, ...formlyAccessors],
   imports: sharedModules,
   exports: [...sharedModules, ...sharedComponents],
 })

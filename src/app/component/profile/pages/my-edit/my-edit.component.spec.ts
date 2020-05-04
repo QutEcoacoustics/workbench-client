@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { userResolvers, UserService } from "@baw-api/user.service";
+import { User } from "@models/User";
+import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { User } from "src/app/models/User";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  userResolvers,
-  UserService
-} from "src/app/services/baw-api/user.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
 import { MyEditComponent } from "./my-edit.component";
 
@@ -29,17 +26,17 @@ describe("MyProfileEditComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              user: userResolvers.show
+              user: userResolvers.show,
             },
             {
               user: {
                 model: user,
-                error
-              }
+                error,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyEditComponent);
@@ -52,11 +49,11 @@ describe("MyProfileEditComponent", () => {
   beforeEach(() => {
     defaultUser = new User({
       id: 1,
-      userName: "Username"
+      userName: "Username",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 

@@ -1,8 +1,8 @@
-import { adminTagsMenuItem } from "../component/admin/admin.menus";
+import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import {
   DateTimeTimezone,
   dateTimeTimezone,
-  Id
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 
@@ -67,7 +67,7 @@ export class Tag extends AbstractModel implements TagInterface {
       creatorId: this.creatorId,
       updaterId: this.updaterId,
       createdAt: this.createdAt?.toISO(),
-      updatedAt: this.updatedAt?.toISO()
+      updatedAt: this.updatedAt?.toISO(),
     };
   }
 

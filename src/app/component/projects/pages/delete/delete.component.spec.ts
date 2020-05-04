@@ -1,19 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
+import { projectsMenuItem } from "@component/projects/projects.menus";
+import { Project } from "@models/Project";
+import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  projectResolvers,
-  ProjectsService
-} from "src/app/services/baw-api/projects.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
-import { projectsMenuItem } from "../../projects.menus";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { DeleteComponent } from "./delete.component";
 
 describe("ProjectsDeleteComponent", () => {
@@ -38,17 +35,17 @@ describe("ProjectsDeleteComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              project: projectResolvers.show
+              project: projectResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
-              }
+                error: projectError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteComponent);
@@ -67,11 +64,11 @@ describe("ProjectsDeleteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -90,7 +87,7 @@ describe("ProjectsDeleteComponent", () => {
 
     it("should handle project error", () => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

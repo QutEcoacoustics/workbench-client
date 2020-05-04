@@ -5,10 +5,12 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { AbstractData } from "src/app/models/AbstractData";
 import { AbstractModel } from "src/app/models/AbstractModel";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import {
+  ResolvedModelList,
+  retrieveResolvers,
+} from "src/app/services/baw-api/resolver-common";
 import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
@@ -30,13 +32,7 @@ export abstract class FormTemplate<M extends AbstractModel>
   /**
    * Extra models stored in data
    */
-  public models: {
-    [key: string]:
-      | AbstractModel
-      | AbstractModel[]
-      | AbstractData
-      | AbstractData[];
-  } = {};
+  public models: ResolvedModelList = {};
   /**
    * Formly fields
    */
@@ -60,7 +56,7 @@ export abstract class FormTemplate<M extends AbstractModel>
     protected route: ActivatedRoute,
     protected router: Router,
     private modelKey: string,
-    private successMsg: (model: M) => string = model =>
+    private successMsg: (model: M) => string = (model) =>
       defaultSuccessMsg("updated", model.id.toString()),
     private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
     private hasFormCheck = true
@@ -86,18 +82,13 @@ export abstract class FormTemplate<M extends AbstractModel>
       return;
     }
 
-    // Grab all models
-    for (const key of Object.keys(data.resolvers)) {
-      const resolvedModel: ResolvedModel = data[key];
-
-      // If error detected, return
-      if (!resolvedModel || resolvedModel.error) {
-        this.failure = true;
-        return;
-      }
-
-      this.models[key] = resolvedModel.model;
+    // Retrieve models
+    const resolvedModels = retrieveResolvers(data);
+    if (!resolvedModels) {
+      this.failure = true;
+      return;
     }
+    this.models = resolvedModels;
 
     // Find primary model
     this.model = this.models[this.modelKey] as M;

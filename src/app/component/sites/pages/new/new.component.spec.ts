@@ -11,7 +11,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { SitesService } from "src/app/services/baw-api/sites.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling, testFormlyFields } from "src/testHelpers";
+import { assertResolverErrorHandling, testFormlyFields } from "src/testHelpers";
 import { fields } from "../../site.json";
 import { NewComponent } from "./new.component";
 
@@ -37,18 +37,18 @@ describe("SitesNewComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
-              project: projectResolvers.show
+              project: projectResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
-              }
+                error: projectError,
+              },
             },
             { projectId: project?.id }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComponent);
@@ -67,11 +67,11 @@ describe("SitesNewComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -86,7 +86,7 @@ describe("SitesNewComponent", () => {
       required: true,
       label: "Site Name",
       type: "text",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Description Input",
@@ -97,7 +97,7 @@ describe("SitesNewComponent", () => {
       required: false,
       label: "Description",
       type: undefined,
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Latitude Input",
@@ -108,7 +108,7 @@ describe("SitesNewComponent", () => {
       required: false,
       label: "Latitude",
       type: "number",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Longitude Input",
@@ -119,7 +119,7 @@ describe("SitesNewComponent", () => {
       required: false,
       label: "Longitude",
       type: "number",
-      description: undefined
+      description: undefined,
     },
     {
       testGroup: "Site Image Input",
@@ -130,8 +130,8 @@ describe("SitesNewComponent", () => {
       required: false,
       label: "Image",
       type: undefined,
-      description: undefined
-    }
+      description: undefined,
+    },
   ];
 
   describe("form", () => {
@@ -149,7 +149,7 @@ describe("SitesNewComponent", () => {
 
     it("should handle project error", fakeAsync(() => {
       configureTestingModule(undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     }));
 
     it("should call api", () => {

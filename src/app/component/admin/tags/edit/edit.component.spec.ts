@@ -1,18 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
+import { Tag } from "@models/Tag";
+import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Tag } from "src/app/models/Tag";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  tagResolvers,
-  TagsService,
-  TagType
-} from "src/app/services/baw-api/tags.service";
 import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertFormErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/testHelpers";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {
@@ -41,21 +37,21 @@ describe("AdminTagsEditComponent", () => {
           useClass: mockActivatedRoute(
             {
               tag: tagResolvers.show,
-              typeOfTags: tagResolvers.typeOfTags
+              typeOfTags: tagResolvers.typeOfTags,
             },
             {
               tag: {
                 model: tag,
-                error: tagError
+                error: tagError,
               },
               tagTypes: {
                 model: tagTypes,
-                error: tagTypesError
-              }
+                error: tagTypesError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsEditComponent);
@@ -74,16 +70,16 @@ describe("AdminTagsEditComponent", () => {
   beforeEach(() => {
     defaultTag = new Tag({
       id: 1,
-      text: "Tag"
+      text: "Tag",
     });
     defaultTagTypes = [
       new TagType({
-        name: "common_name"
-      })
+        name: "common_name",
+      }),
     ];
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -102,12 +98,12 @@ describe("AdminTagsEditComponent", () => {
         defaultTagTypes,
         undefined
       );
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should handle tag types error", () => {
       configureTestingModule(defaultTag, undefined, undefined, defaultError);
-      assertFormErrorHandling(fixture);
+      assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {

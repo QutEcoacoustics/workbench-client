@@ -1,26 +1,22 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
 import {
   defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { Tag } from "src/app/models/Tag";
-import {
-  tagResolvers,
-  TagsService,
-  TagType
-} from "src/app/services/baw-api/tags.service";
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { Tag } from "@models/Tag";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { adminTagsMenuItemActions } from "../list/list.component";
+import { fields } from "../tag.json";
 import {
   adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
-  adminTagsMenuItem
-} from "../../admin.menus";
-import { adminTagsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag.json";
+  adminTagsMenuItem,
+} from "../tags.menus";
 
 const tagKey = "tag";
 const tagTypesKey = "tagTypes";
@@ -32,15 +28,15 @@ const tagTypesKey = "tagTypes";
       adminTagsMenuItem,
       ...adminTagsMenuItemActions,
       adminEditTagMenuItem,
-      adminDeleteTagMenuItem
+      adminDeleteTagMenuItem,
     ]),
-    links: List()
+    links: List(),
   },
   resolvers: {
     [tagKey]: tagResolvers.show,
-    [tagTypesKey]: tagResolvers.typeOfTags
+    [tagTypesKey]: tagResolvers.typeOfTags,
   },
-  self: adminEditTagMenuItem
+  self: adminEditTagMenuItem,
 })
 @Component({
   selector: "app-admin-tags-edit",
@@ -54,7 +50,7 @@ const tagTypesKey = "tagTypes";
       submitLabel="Submit"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class AdminTagsEditComponent extends FormTemplate<Tag>
   implements OnInit {
@@ -67,7 +63,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagKey, model =>
+    super(notifications, route, router, tagKey, (model) =>
       defaultSuccessMsg("updated", model.text)
     );
   }
@@ -79,9 +75,9 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     if (!this.failure) {
       this.title = `Edit ${this.model.text}`;
       this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
-        tagType => ({
+        (tagType) => ({
           label: tagType.toString(),
-          value: tagType.name
+          value: tagType.name,
         })
       );
     }

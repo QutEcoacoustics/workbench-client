@@ -1,23 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { tagGroupResolvers, TagGroupService } from "@baw-api/tag-group.service";
 import {
   defaultSuccessMsg,
-  FormTemplate
-} from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { TagGroup } from "src/app/models/TagGroup";
-import {
-  tagGroupResolvers,
-  TagGroupService
-} from "src/app/services/baw-api/tag-group.service";
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
+import { Page } from "@helpers/page/pageDecorator";
+import { TagGroup } from "@models/TagGroup";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminDeleteTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem
-} from "../../admin.menus";
-import { adminTagGroupMenuItemActions } from "../list/list.component";
+  adminTagGroupsMenuItem,
+} from "../tag-group.menus";
 
 const tagGroupKey = "tagGroup";
 
@@ -25,12 +22,12 @@ const tagGroupKey = "tagGroup";
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    links: List()
+    links: List(),
   },
   resolvers: {
-    [tagGroupKey]: tagGroupResolvers.show
+    [tagGroupKey]: tagGroupResolvers.show,
   },
-  self: adminDeleteTagGroupMenuItem
+  self: adminDeleteTagGroupMenuItem,
 })
 @Component({
   selector: "app-admin-tag-groups-delete",
@@ -45,7 +42,7 @@ const tagGroupKey = "tagGroup";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></app-form>
-  `
+  `,
 })
 export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
   implements OnInit {
@@ -57,7 +54,7 @@ export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagGroupKey, model =>
+    super(notifications, route, router, tagGroupKey, (model) =>
       defaultSuccessMsg("destroyed", model.groupIdentifier)
     );
   }

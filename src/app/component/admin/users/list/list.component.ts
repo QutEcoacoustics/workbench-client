@@ -1,65 +1,60 @@
 import { Component, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { User } from "src/app/models/User";
-import { AccountService } from "src/app/services/baw-api/account.service";
-import {
-  theirEditProfileMenuItem,
-  theirProfileMenuItem
-} from "../../../profile/profile.menus";
+import { AccountService } from "@baw-api/account.service";
 import {
   adminCategory,
   adminDashboardMenuItem,
-  adminUserListMenuItem
-} from "../../admin.menus";
-import { adminMenuItemActions } from "../../dashboard/dashboard.component";
+  adminUserListMenuItem,
+} from "@component/admin/admin.menus";
+import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
+import {
+  theirEditMenuItem,
+  theirProfileMenuItem,
+} from "@component/profile/profile.menus";
+import { Page } from "@helpers/page/pageDecorator";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { User } from "@models/User";
+import { List } from "immutable";
 
 @Page({
   category: adminCategory,
   menus: {
     actions: List<AnyMenuItem>([
       adminDashboardMenuItem,
-      ...adminMenuItemActions
+      ...adminMenuItemActions,
     ]),
-    links: List()
+    links: List(),
   },
-  self: adminUserListMenuItem
+  self: adminUserListMenuItem,
 })
 @Component({
   selector: "app-admin-users",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"]
+  styleUrls: ["./list.component.scss"],
 })
-export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
-  implements OnInit {
+export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
+  public columns = [
+    { name: "Account" },
+    { name: "User" },
+    { name: "Last Login" },
+    { name: "Confirmed" },
+  ];
+  public sortKeys = {
+    user: "userName",
+    lastLogin: "lastSeenAt",
+  };
+  public filterKey = "userName";
 
   constructor(api: AccountService) {
-    super(api, accounts =>
-      accounts.map(account => ({
+    super(api, (accounts) =>
+      accounts.map((account) => ({
         account,
         user: account.userName,
         lastLogin: account.lastSeenAt ? account.lastSeenAt.toRelative() : "?",
-        confirmed: account.isConfirmed
+        confirmed: account.isConfirmed,
       }))
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [
-      { name: "Account" },
-      { name: "User" },
-      { name: "Last Login" },
-      { name: "Confirmed" }
-    ];
-    this.sortKeys = {
-      user: "userName",
-      lastLogin: "lastSeenAt"
-    };
-    this.filterKey = "userName";
-    this.getModels();
   }
 
   /**
@@ -76,7 +71,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User>
    * @param user User Account
    */
   public editPath(user: User) {
-    return theirEditProfileMenuItem.route
+    return theirEditMenuItem.route
       .toString()
       .replace(":accountId", user.id.toString());
   }

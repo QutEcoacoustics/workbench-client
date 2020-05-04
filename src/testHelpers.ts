@@ -57,7 +57,7 @@ export function assertRoute(target: HTMLElement, route: string) {
 export function getText(target: DebugElement, selector: string) {
   return target
     .queryAll(By.css(selector))
-    .map(x => x.nativeElement.textContent.trim());
+    .map((x) => x.nativeElement.textContent.trim());
 }
 
 /**
@@ -108,7 +108,7 @@ export function assertValidationMessage(wrapper: any, message: string) {
  * Assert form component handles pre-loading model failure
  * @param fixture Component fixture
  */
-export function assertFormErrorHandling(fixture: ComponentFixture<any>) {
+export function assertResolverErrorHandling(fixture: ComponentFixture<any>) {
   const body = fixture.nativeElement;
   expect(body.childElementCount).toBe(0);
 }
@@ -198,7 +198,7 @@ export function testFormlyFields(
       required,
       label,
       type,
-      description
+      description,
     }) => {
       testFormlyField(
         testGroup,

@@ -1,9 +1,9 @@
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { GetRouteConfigForPage } from "src/app/helpers/page/pageRouting";
-import { MapModule } from "../shared/map/map.module";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { MapModule } from "@shared/map/map.module";
+import { SharedModule } from "@shared/shared.module";
 import { HarvestCompleteComponent } from "./harvest-complete/harvest-complete.component";
 import { HarvestReviewComponent } from "./harvest-review/harvest-review.component";
 import { AssignComponent } from "./pages/assign/assign.component";

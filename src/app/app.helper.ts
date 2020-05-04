@@ -6,40 +6,38 @@ import { ConfigOption } from "@ngx-formly/core";
 import { FormlyCheckboxInput } from "./component/shared/formly/checkbox-input.component";
 import { FormlyHorizontalWrapper } from "./component/shared/formly/horizontal-wrapper";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
-import { FormlyQuestionAnswerAction } from "./component/shared/formly/question-answer-action.component";
-import { FormlyQuestionAnswer } from "./component/shared/formly/question-answer.component";
 import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
 import { FormTouchedGuard } from "./guards/form/form.guard";
 import {
   API_CONFIG,
   API_ROOT,
   AppInitializer,
-  CMS_ROOT
+  CMS_ROOT,
 } from "./helpers/app-initializer/app-initializer";
 import { AppConfigService } from "./services/app-config/app-config.service";
 import {
   accountResolvers,
-  AccountService
+  AccountService,
 } from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
 import {
   projectResolvers,
-  ProjectsService
+  ProjectsService,
 } from "./services/baw-api/projects.service";
 import {
   scriptResolvers,
-  ScriptsService
+  ScriptsService,
 } from "./services/baw-api/scripts.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
   siteResolvers,
-  SitesService
+  SitesService,
 } from "./services/baw-api/sites.service";
 import {
   tagGroupResolvers,
-  TagGroupService
+  TagGroupService,
 } from "./services/baw-api/tag-group.service";
 import { tagResolvers, TagsService } from "./services/baw-api/tags.service";
 import { userResolvers, UserService } from "./services/baw-api/user.service";
@@ -86,7 +84,7 @@ export function maxValidationMessage(err, field) {
 export const toastrRoot = {
   closeButton: true,
   enableHtml: true,
-  positionClass: "toast-top-center"
+  positionClass: "toast-top-center",
 };
 
 /**
@@ -96,35 +94,27 @@ export const formlyRoot = {
   types: [
     {
       name: "checkbox",
-      component: FormlyCheckboxInput
+      component: FormlyCheckboxInput,
     },
     {
       name: "image",
-      component: FormlyImageInput
+      component: FormlyImageInput,
     },
     {
       name: "timezone",
-      component: FormlyTimezoneInput
+      component: FormlyTimezoneInput,
     },
-    {
-      name: "question-answer",
-      component: FormlyQuestionAnswer
-    },
-    {
-      name: "question-answer-action",
-      component: FormlyQuestionAnswerAction
-    }
   ],
   wrappers: [
-    { name: "form-field-horizontal", component: FormlyHorizontalWrapper }
+    { name: "form-field-horizontal", component: FormlyHorizontalWrapper },
   ],
   validationMessages: [
     { name: "required", message: "This field is required" },
     { name: "minlength", message: minLengthValidationMessage },
     { name: "maxlength", message: maxLengthValidationMessage },
     { name: "min", message: minValidationMessage },
-    { name: "max", message: maxValidationMessage }
-  ]
+    { name: "max", message: maxValidationMessage },
+  ],
 } as ConfigOption;
 
 /**
@@ -142,21 +132,21 @@ export const providers = [
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,
-    multi: true
+    multi: true,
   },
   {
     provide: APP_INITIALIZER,
     useFactory: AppInitializer.initializerFactory,
     multi: true,
-    deps: [API_CONFIG]
+    deps: [API_CONFIG],
   },
   {
     provide: API_ROOT,
-    useFactory: AppInitializer.apiRootFactory
+    useFactory: AppInitializer.apiRootFactory,
   },
   {
     provide: CMS_ROOT,
-    useFactory: AppInitializer.cmsRootFactory
+    useFactory: AppInitializer.cmsRootFactory,
   },
   FormTouchedGuard,
   AppConfigService,
@@ -176,5 +166,5 @@ export const providers = [
   ...shallowSiteResolvers.providers,
   ...tagResolvers.providers,
   ...tagGroupResolvers.providers,
-  ...userResolvers.providers
+  ...userResolvers.providers,
 ];

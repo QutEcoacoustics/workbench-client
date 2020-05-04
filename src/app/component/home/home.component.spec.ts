@@ -1,25 +1,25 @@
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import {
   ComponentFixture,
   fakeAsync,
   flush,
   TestBed,
-  tick
+  tick,
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { ProjectsService } from "@baw-api/projects.service";
+import { SecurityService } from "@baw-api/security.service";
+import { Project } from "@models/Project";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject, Subject } from "rxjs";
 import { delay } from "rxjs/operators";
-import { Project } from "src/app/models/Project";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { Filters } from "src/app/services/baw-api/baw-api.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test.helper";
-import { SharedModule } from "../shared/shared.module";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -35,7 +35,7 @@ describe("HomeComponent", () => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
       imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [...testBawServices]
+      providers: [...testBawServices],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
@@ -141,7 +141,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "filter").and.callFake(filter => {
+    spyOn(projectApi, "filter").and.callFake((filter) => {
       expect(filter).toBeTruthy();
       expect(filter).toEqual({ paging: { items: 3 } } as Filters);
 
@@ -200,8 +200,8 @@ describe("HomeComponent", () => {
             name: "Project",
             creatorId: 1,
             description: "Description",
-            siteIds: new Set([])
-          })
+            siteIds: new Set([]),
+          }),
         ]);
       }, 50);
 
@@ -239,22 +239,22 @@ describe("HomeComponent", () => {
             name: "Project 1",
             creatorId: 1,
             description: "Description 1",
-            siteIds: new Set([])
+            siteIds: new Set([]),
           }),
           new Project({
             id: 2,
             name: "Project 2",
             creatorId: 1,
             description: "Description 2",
-            siteIds: new Set([])
+            siteIds: new Set([]),
           }),
           new Project({
             id: 3,
             name: "Project 3",
             creatorId: 1,
             description: "Description 3",
-            siteIds: new Set([])
-          })
+            siteIds: new Set([]),
+          }),
         ]);
       }, 50);
 
@@ -323,7 +323,7 @@ describe("HomeComponent", () => {
     spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
       return new BehaviorSubject(null);
     });
-    spyOn(projectApi, "filter").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake((params) => {
       expect(params).toEqual({ paging: { items: 3 } } as Filters);
       const subject = new Subject<Project[]>();
 
@@ -352,7 +352,7 @@ describe("HomeComponent", () => {
 
       return subject;
     });
-    spyOn(projectApi, "filter").and.callFake(params => {
+    spyOn(projectApi, "filter").and.callFake((params) => {
       const subject = new Subject<Project[]>();
 
       setTimeout(() => {
@@ -366,22 +366,22 @@ describe("HomeComponent", () => {
               name: "Project 1",
               creatorId: 1,
               description: "Description 1",
-              siteIds: new Set([])
+              siteIds: new Set([]),
             }),
             new Project({
               id: 2,
               name: "Project 2",
               creatorId: 1,
               description: "Description 2",
-              siteIds: new Set([])
+              siteIds: new Set([]),
             }),
             new Project({
               id: 3,
               name: "Project 3",
               creatorId: 1,
               description: "Description 3",
-              siteIds: new Set([])
-            })
+              siteIds: new Set([]),
+            }),
           ]);
         }
       }, 50);

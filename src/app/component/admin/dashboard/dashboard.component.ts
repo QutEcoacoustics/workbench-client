@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Page } from "@helpers/page/pageDecorator";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import {
   adminAnalysisJobsMenuItem,
   adminAudioRecordingsMenuItem,
@@ -10,11 +10,11 @@ import {
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
   adminOrphanSitesMenuItem,
-  adminScriptsMenuItem,
-  adminTagGroupsMenuItem,
-  adminTagsMenuItem,
-  adminUserListMenuItem
+  adminUserListMenuItem,
 } from "../admin.menus";
+import { adminScriptsMenuItem } from "../scripts/scripts.menus";
+import { adminTagGroupsMenuItem } from "../tag-group/tag-group.menus";
+import { adminTagsMenuItem } from "../tags/tags.menus";
 
 export const adminMenuItemActions = [
   adminUserListMenuItem,
@@ -24,16 +24,16 @@ export const adminMenuItemActions = [
   adminTagGroupsMenuItem,
   adminAudioRecordingsMenuItem,
   adminAnalysisJobsMenuItem,
-  adminJobStatusMenuItem
+  adminJobStatusMenuItem,
 ];
 
 @Page({
   category: adminCategory,
   menus: {
     actions: List<AnyMenuItem>(adminMenuItemActions),
-    links: List()
+    links: List(),
   },
-  self: adminDashboardMenuItem
+  self: adminDashboardMenuItem,
 })
 @Component({
   selector: "app-dashboard",
@@ -41,6 +41,6 @@ export const adminMenuItemActions = [
     <h1>Admin Dashboard</h1>
     <p>Welcome to the super-secret-site-settings!</p>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent extends PageComponent {}

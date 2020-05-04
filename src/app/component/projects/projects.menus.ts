@@ -1,3 +1,5 @@
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
@@ -8,13 +10,10 @@ import {
   isLoggedInPredicate,
   isProjectOwnerPredicate,
 } from "src/app/app.menus";
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 /*
  Projects Category
 */
-
 export const projectsRoute = StrongRoute.Base.add("projects");
 export const projectsCategory: Category = {
   label: "Projects",

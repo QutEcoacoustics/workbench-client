@@ -1,13 +1,13 @@
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { defaultUserIcon, isGuestPredicate } from "src/app/app.menus";
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
 
 export const securityRoute = StrongRoute.Base.add("security");
 
 export const securityCategory: Category = {
   icon: defaultUserIcon,
   label: "Accounts",
-  route: securityRoute
+  route: securityRoute,
 };
 
 export const loginMenuItem = MenuRoute({
@@ -16,7 +16,7 @@ export const loginMenuItem = MenuRoute({
   tooltip: () => "Log into the website",
   route: securityRoute.add("login"),
   predicate: isGuestPredicate,
-  order: 2
+  order: 2,
 });
 
 export const registerMenuItem = MenuRoute({
@@ -25,7 +25,7 @@ export const registerMenuItem = MenuRoute({
   route: securityRoute.add("register"),
   tooltip: () => "Create an account",
   predicate: isGuestPredicate,
-  order: 3
+  order: 3,
 });
 
 export const confirmAccountMenuItem = MenuRoute({
@@ -33,7 +33,7 @@ export const confirmAccountMenuItem = MenuRoute({
   label: "Confirm account",
   route: securityRoute.add("confirmation"),
   tooltip: () => "Resend the email to confirm your account",
-  parent: loginMenuItem
+  parent: loginMenuItem,
 });
 
 export const resetPasswordMenuItem = MenuRoute({
@@ -41,7 +41,7 @@ export const resetPasswordMenuItem = MenuRoute({
   label: "Reset password",
   route: securityRoute.add("reset_password"),
   tooltip: () => "Send an email to reset your password",
-  parent: loginMenuItem
+  parent: loginMenuItem,
 });
 
 export const unlockAccountMenuItem = MenuRoute({
@@ -49,5 +49,5 @@ export const unlockAccountMenuItem = MenuRoute({
   label: "Unlock account",
   route: securityRoute.add("unlock_account"),
   tooltip: () => "Send an email to unlock your account",
-  parent: loginMenuItem
+  parent: loginMenuItem,
 });
