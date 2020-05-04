@@ -5,11 +5,11 @@
     Harvest
   </h1>
 
-  <p-steps [model]="stages" [activeIndex]="stage"></p-steps>
+  <p-steps [model]="harvestSteps" [activeIndex]="stage"></p-steps>
 
   <div [ngSwitch]="stage">
     <!-- Details about harvesting files -->
-    <div *ngSwitchCase="harvest.Start">
+    <div *ngSwitchCase="steps.start">
       <h3>Basic Details</h3>
 
       <p>
@@ -47,7 +47,7 @@
     </div>
 
     <!-- User credentials for accessing SFTP -->
-    <div *ngSwitchCase="harvest.Credentials">
+    <div *ngSwitchCase="steps.credentials">
       <h3>Credentials</h3>
 
       <p>
@@ -147,7 +147,7 @@
     </div>
 
     <!-- Checking uploaded files progress bar -->
-    <div *ngSwitchCase="harvest.Check">
+    <div *ngSwitchCase="steps.check">
       <h3>Checking Files</h3>
 
       <p>
@@ -176,7 +176,7 @@
     </div>
 
     <!-- Review file uploads -->
-    <div *ngSwitchCase="harvest.Review">
+    <div *ngSwitchCase="steps.review">
       <h3>Review</h3>
 
       <p>
@@ -194,7 +194,7 @@
     </div>
 
     <!-- Harvesting uploaded files progress bar -->
-    <div *ngSwitchCase="harvest.Harvest">
+    <div *ngSwitchCase="steps.harvest">
       <h3>Harvesting Files</h3>
 
       <p>
@@ -215,7 +215,7 @@
     </div>
 
     <!-- View summary report -->
-    <div *ngSwitchCase="harvest.Summary">
+    <div *ngSwitchCase="steps.summary">
       <h3>Summary</h3>
 
       <p>
@@ -236,20 +236,20 @@
     <!-- Navigation buttons -->
     <div class="clearfix">
       <button
-        *ngIf="buttons.previous?.text"
+        *ngIf="stages[stage].previous.text"
         class="btn btn-danger float-left"
-        [disabled]="buttons.previous?.disabled"
+        [disabled]="stages[stage].previous.disabled"
         (click)="previousStage()"
       >
-        {{ buttons.previous?.text }}
+        {{ stages[stage].previous.text }}
       </button>
       <button
-        *ngIf="buttons.next?.text"
+        *ngIf="stages[stage].next.text"
         class="btn btn-success float-right"
-        [disabled]="buttons.next?.disabled"
+        [disabled]="stages[stage].next.disabled"
         (click)="nextStage()"
       >
-        {{ buttons.next?.text }}
+        {{ stages[stage].next.text }}
       </button>
     </div>
   </div>

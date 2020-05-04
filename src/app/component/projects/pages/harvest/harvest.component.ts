@@ -3,6 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import filesize from "filesize";
 import { List } from "immutable";
 import { MenuItem } from "primeng/api/menuitem";
+import { Observable, timer, Subscription } from "rxjs";
+import { map, startWith, takeWhile } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -38,17 +40,37 @@ const projectKey = "project";
   encapsulation: ViewEncapsulation.None,
 })
 export class HarvestComponent implements OnInit {
-  public buttons: {
-    previous: { disabled?: boolean; text?: string };
-    next: { disabled?: boolean; text?: string };
-  };
   public failure: boolean;
   public filesize = filesize;
-  public harvest = Harvest;
   public progress: number;
   public project: Project;
-  public stage: Harvest;
-  public stages: MenuItem[] = [
+  public stage: number;
+  public stages: {
+    previous: { text?: string; disabled?: boolean };
+    next: { text?: string; disabled?: boolean };
+  }[] = [
+    { previous: {}, next: { text: "Start" } },
+    {
+      previous: { text: "Cancel" },
+      next: { text: "Finished Uploading" },
+    },
+    { previous: {}, next: {} },
+    {
+      previous: { text: "Re-submit Files" },
+      next: { text: "Finish Review" },
+    },
+    { previous: {}, next: {} },
+    { previous: {}, next: {} },
+  ];
+  public steps = {
+    start: 0,
+    credentials: 1,
+    check: 2,
+    review: 3,
+    harvest: 4,
+    summary: 5,
+  };
+  public harvestSteps: MenuItem[] = [
     { label: "Start" },
     { label: "Credentials" },
     { label: "Check" },
@@ -58,6 +80,16 @@ export class HarvestComponent implements OnInit {
   ];
   private interval: number;
   private intervalSpeed = 300;
+
+  private subscription: Subscription;
+  private mockTimer: Observable<number> = timer(0, this.intervalSpeed).pipe(
+    startWith(0),
+    map((v) => {
+      this.progress = v;
+      return this.progress;
+    }),
+    takeWhile(() => this.progress < 100)
+  );
 
   constructor(private route: ActivatedRoute) {}
 
@@ -72,29 +104,28 @@ export class HarvestComponent implements OnInit {
     }
 
     this.project = resolvedProject.model;
-    this.stage = Harvest.Start;
-    this.updateNavigation();
+    this.stage = 0;
   }
 
   public nextStage() {
     this.stage++;
-    clearInterval(this.interval);
-    this.updateNavigation();
+    this.subscription?.unsubscribe;
+    this.subscription = this.mockTimer.subscribe();
   }
 
   public previousStage() {
     // Review page should go to Credentials
-    if (this.stage === Harvest.Review) {
-      this.stage = Harvest.Credentials;
+    if (this.stage === this.steps.review) {
+      this.stage = this.steps.credentials;
     } else {
       this.stage--;
     }
 
-    clearInterval(this.interval);
-    this.updateNavigation();
+    this.subscription?.unsubscribe;
+    this.subscription = this.mockTimer.subscribe();
   }
 
-  private mockTimer(callback?: () => void) {
+  private mockTimer2(callback?: () => void) {
     this.progress = 0;
 
     // https://github.com/TypeStrong/atom-typescript/issues/1053
@@ -111,67 +142,4 @@ export class HarvestComponent implements OnInit {
       }
     }, this.intervalSpeed);
   }
-
-  private updateNavigation() {
-    const callback = () => {
-      this.nextStage();
-    };
-
-    switch (this.stage) {
-      case Harvest.Start: {
-        this.buttons = {
-          previous: {},
-          next: { text: "Start" },
-        };
-        break;
-      }
-      case Harvest.Credentials: {
-        this.buttons = {
-          previous: { text: "Cancel" },
-          next: { text: "Finished Uploading" },
-        };
-        this.mockTimer();
-        break;
-      }
-      case Harvest.Check: {
-        this.buttons = {
-          previous: {},
-          next: {},
-        };
-        this.mockTimer(callback);
-        break;
-      }
-      case Harvest.Review: {
-        this.buttons = {
-          previous: { text: "Re-submit Files" },
-          next: { text: "Finish Review" },
-        };
-        break;
-      }
-      case Harvest.Harvest: {
-        this.buttons = {
-          previous: {},
-          next: {},
-        };
-        this.mockTimer(callback);
-        break;
-      }
-      case Harvest.Summary: {
-        this.buttons = {
-          previous: {},
-          next: {},
-        };
-        break;
-      }
-    }
-  }
-}
-
-enum Harvest {
-  Start,
-  Credentials,
-  Check,
-  Review,
-  Harvest,
-  Summary,
 }
