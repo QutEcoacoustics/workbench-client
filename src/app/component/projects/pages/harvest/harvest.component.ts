@@ -3,8 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import filesize from "filesize";
 import { List } from "immutable";
 import { MenuItem } from "primeng/api/menuitem";
-import { Observable, timer, Subscription, range } from "rxjs";
-import { map, startWith, takeWhile, delay } from "rxjs/operators";
+import { Observable, Subscription, timer } from "rxjs";
+import { map, startWith, takeWhile } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -145,32 +145,14 @@ export class HarvestComponent implements OnInit {
   }
 
   private harvestObs() {
-    const timer = this.stages[this.stage].timer;
-    if (timer.enable) {
-      this.subscription?.unsubscribe;
+    const mockTimer = this.stages[this.stage].timer;
+    if (mockTimer.enable) {
+      this.subscription?.unsubscribe();
       this.subscription = this.mockTimer.subscribe(
         () => {},
         () => {},
-        timer.callback ? timer.callback : () => {}
+        mockTimer.callback ? mockTimer.callback : () => {}
       );
     }
-  }
-
-  private mockTimer2(callback?: () => void) {
-    this.progress = 0;
-
-    // https://github.com/TypeStrong/atom-typescript/issues/1053
-    this.interval = (setInterval as any)(() => {
-      this.progress++;
-
-      if (this.progress >= 100) {
-        this.progress = 100;
-        clearInterval(this.interval);
-
-        if (callback) {
-          callback();
-        }
-      }
-    }, this.intervalSpeed);
   }
 }
