@@ -18,7 +18,6 @@ import {
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
-  harvestProjectMenuItem,
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
@@ -31,7 +30,6 @@ export const projectMenuItemActions = [
   newSiteMenuItem,
   assignSiteMenuItem,
   deleteProjectMenuItem,
-  harvestProjectMenuItem,
 ];
 
 const projectKey = "project";
