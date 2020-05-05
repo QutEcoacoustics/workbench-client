@@ -1,4 +1,5 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   Description,
@@ -10,8 +11,11 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
+  Updater,
 } from "./AbstractModel";
+import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
 /**
@@ -27,7 +31,7 @@ export interface IBookmark {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   description?: Description;
-  category?: Category;
+  category?: string;
 }
 
 export class Bookmark extends AbstractModel implements IBookmark {
@@ -49,24 +53,26 @@ export class Bookmark extends AbstractModel implements IBookmark {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly category?: Category;
+  public readonly category?: string;
 
   // Associations
-  // TODO Create AudioRecording association
-  @HasOne(ACCOUNT, (m: Bookmark) => m.creatorId)
+  @Creator<Bookmark>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Bookmark) => m.updaterId)
+  @Updater<Bookmark>()
   public updater?: Observable<User>;
+  @HasOne(AUDIO_RECORDING, (m: Bookmark) => m.audioRecordingId)
+  public audioRecording?: Observable<AudioRecording>;
 
-  constructor(bookmark: IBookmark) {
-    super(bookmark);
+  constructor(bookmark: IBookmark, injector?: Injector) {
+    super(bookmark, injector);
+  }
+
+  public listenViewUrl(recordingId: Id, startOffset?: number): string {
+    throw new Error("Bookmark listenViewUrl not implemented.");
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
-    //return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
+    // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
+    throw new Error("Bookmark viewUrl not implemented.");
   }
 }
-
-// TODO
-type Category = "<<application>>" | "??? Anthony";

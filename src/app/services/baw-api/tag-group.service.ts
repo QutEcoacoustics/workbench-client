@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
  * Handles API routes pertaining to scripts.
  */
 @Injectable()
-export class TagGroupService extends StandardApi<TagGroup, []> {
+export class TagGroupService extends StandardApi<TagGroup> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, TagGroup);
   }

@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
  * Handles API routes pertaining to projects.
  */
 @Injectable()
-export class ProjectsService extends StandardApi<Project, []> {
+export class ProjectsService extends StandardApi<Project> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,

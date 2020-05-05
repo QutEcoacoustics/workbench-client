@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
 import {
   DateTimeTimezone,
   Description,
@@ -10,7 +10,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Updater,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -40,16 +41,16 @@ export class Dataset extends AbstractModel implements IDataset {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: Dataset) => m.creatorId)
+  @Creator<Dataset>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Dataset) => m.updaterId)
+  @Updater<Dataset>()
   public updater?: Observable<User>;
 
-  constructor(dataset: IDataset) {
-    super(dataset);
+  constructor(dataset: IDataset, injector?: Injector) {
+    super(dataset, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("Dataset viewUrl not implemented.");
   }
 }

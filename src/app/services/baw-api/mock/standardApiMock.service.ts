@@ -11,7 +11,7 @@ export const MOCK = new ServiceToken<MockStandardApiService>(
 );
 
 @Injectable()
-export class MockStandardApiService extends StandardApi<MockModel, []> {
+export class MockStandardApiService extends StandardApi<MockModel> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, MockModel);
   }

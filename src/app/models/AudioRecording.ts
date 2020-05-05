@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
@@ -6,8 +7,10 @@ import {
   AbstractModel,
   BawDateTime,
   BawDuration,
-  BawPersistAttr,
+  Creator,
+  Deleter,
   HasOne,
+  Updater,
 } from "./AbstractModel";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -45,28 +48,21 @@ export interface IAudioRecording {
  */
 export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly kind: "AudioRecording" = "AudioRecording";
-  @BawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
   public readonly recordedDate?: DateTimeTimezone;
-  @BawPersistAttr
   public readonly siteId?: Id;
   @BawDuration({ key: "durationSeconds" })
   public readonly duration: Duration;
-  @BawPersistAttr
   public readonly durationSeconds?: number;
-  @BawPersistAttr
   public readonly sampleRateHertz?: number;
-  @BawPersistAttr
   public readonly channels?: number;
   public readonly bitRateBps?: number;
   public readonly mediaType?: string;
   public readonly dataLengthBytes?: number;
   public readonly fileHash?: string;
   public readonly status?: Status;
-  @BawPersistAttr
   public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -81,24 +77,30 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly recordedUtcOffset?: string;
 
   // Associations
+  @Creator<AudioRecording>()
+  public creator?: Observable<User>;
+  @Updater<AudioRecording>()
+  public updater?: Observable<User>;
+  @Deleter<AudioRecording>()
+  public deleter?: Observable<User>;
   @HasOne(ACCOUNT, (m: AudioRecording) => m.uploaderId)
   public uploader?: Observable<User>;
   @HasOne(SHALLOW_SITE, (m: AudioRecording) => m.siteId)
   public site?: Observable<Site>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.creatorId)
-  public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.updaterId)
-  public updater?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.deleterId)
-  public deleter?: Observable<User>;
 
-  constructor(audioRecording: IAudioRecording) {
-    super(audioRecording);
+  constructor(audioRecording: IAudioRecording, injector?: Injector) {
+    super(audioRecording, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("AudioRecording viewUrl not implemented.");
   }
 }
 
-type Status = "ready" | "uploading" | "corrupt";
+type Status =
+  | "new"
+  | "uploading"
+  | "to_check"
+  | "ready"
+  | "corrupt"
+  | "aborted";

@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
 import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import { startCase } from "lodash";
 import { Observable } from "rxjs";
@@ -8,7 +8,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Updater,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -38,6 +39,7 @@ export class Tag extends AbstractModel implements ITag {
   public readonly id?: Id;
   @BawPersistAttr
   public readonly text?: string;
+  // * Count attribute is unlikely to be an API output
   @BawPersistAttr
   public readonly count?: number;
   @BawPersistAttr
@@ -56,13 +58,13 @@ export class Tag extends AbstractModel implements ITag {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: Tag) => m.creatorId)
+  @Creator<Tag>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Tag) => m.updaterId)
+  @Updater<Tag>()
   public updater?: Observable<User>;
 
-  constructor(tag: ITag) {
-    super(tag);
+  constructor(tag: ITag, injector?: Injector) {
+    super(tag, injector);
   }
 
   public get viewUrl(): string {

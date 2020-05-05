@@ -10,8 +10,8 @@ import {
   id,
   IdOr,
   IdParamOptional,
-  ImmutableApi,
   option,
+  ReadAndCreateApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  * Handles API routes pertaining to scripts.
  */
 @Injectable()
-export class ScriptsService extends ImmutableApi<Script, []> {
+export class ScriptsService extends ReadAndCreateApi<Script> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, Script);
   }
@@ -41,10 +41,6 @@ export class ScriptsService extends ImmutableApi<Script, []> {
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   create(model: Script): Observable<Script> {
     return this.apiCreate(endpoint(Empty, Empty), model);
-  }
-  // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
-  destroy(model: IdOr<Script>): Observable<Script | void> {
-    return this.apiDestroy(endpoint(model, Empty));
   }
 }
 

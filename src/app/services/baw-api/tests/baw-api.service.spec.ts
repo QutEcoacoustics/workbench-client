@@ -6,22 +6,25 @@ import {
 } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { AbstractModel } from "@models/AbstractModel";
-import { SessionUser } from "@models/User";
-import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { AppConfigService } from "../app-config/app-config.service";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
+import {
+  ApiErrorDetails,
+  BawApiInterceptor,
+} from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
   Meta,
   STUB_MODEL_BUILDER,
-} from "./baw-api.service";
-import { MockSecurityService } from "./mock/securityMock.service";
-import { MockShowApiService } from "./mock/showApiMock.service";
-import { SecurityService } from "./security.service";
-import { UserService } from "./user.service";
+} from "@baw-api/baw-api.service";
+import { MockSecurityService } from "@baw-api/mock/securityMock.service";
+import { MockShowApiService } from "@baw-api/mock/showApiMock.service";
+import { SecurityService } from "@baw-api/security.service";
+import { UserService } from "@baw-api/user.service";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { BehaviorSubject, Subject } from "rxjs";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");

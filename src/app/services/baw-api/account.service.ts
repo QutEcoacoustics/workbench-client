@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  * Handles API routes pertaining to user accounts.
  */
 @Injectable()
-export class AccountService extends StandardApi<User, []> {
+export class AccountService extends StandardApi<User> {
   constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
     super(http, apiRoot, User);
   }

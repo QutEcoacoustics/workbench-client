@@ -1,4 +1,5 @@
-import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { PROJECT } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
@@ -14,8 +15,9 @@ import {
   BawCollection,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasMany,
-  HasOne,
+  Updater,
 } from "./AbstractModel";
 import type { Project } from "./Project";
 import type { User } from "./User";
@@ -70,15 +72,15 @@ export class Site extends AbstractModel implements ISite {
   public readonly timezoneInformation?: TimezoneInformation;
 
   // Associations
-  @HasOne(ACCOUNT, (m: Site) => m.creatorId)
+  @Creator<Site>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Site) => m.updaterId)
+  @Updater<Site>()
   public updater?: Observable<User>;
   @HasMany(PROJECT, (m: Site) => m.projectIds)
   public projects?: Observable<Project[]>;
 
-  constructor(site: ISite) {
-    super(site);
+  constructor(site: ISite, injector?: Injector) {
+    super(site, injector);
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;

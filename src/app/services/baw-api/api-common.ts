@@ -56,7 +56,7 @@ export const Filter: Filter = "filter";
 /**
  * API List functionality
  */
-export interface ApiList<M, P extends any[]> {
+export interface ApiList<M, P extends any[] = []> {
   /**
    * Get list of models
    * @param args URL parameter values
@@ -67,7 +67,7 @@ export interface ApiList<M, P extends any[]> {
 /**
  * API Filter functionality
  */
-export interface ApiFilter<M extends AbstractModel, P extends any[]> {
+export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get list of models, but filtered using the filter API
    * @param args URL parameter values
@@ -80,8 +80,8 @@ export interface ApiFilter<M extends AbstractModel, P extends any[]> {
  */
 export interface ApiShow<
   M extends AbstractModel,
-  P extends any[],
-  I extends IdOr<M>
+  P extends any[] = [],
+  I extends IdOr<M> = IdOr<M>
 > {
   /**
    * Get individual model
@@ -93,7 +93,7 @@ export interface ApiShow<
 /**
  * API Create functionality
  */
-export interface ApiCreate<M extends AbstractModel, P extends any[]> {
+export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
    * @param args URL parameter values
@@ -104,7 +104,7 @@ export interface ApiCreate<M extends AbstractModel, P extends any[]> {
 /**
  * API Update functionality
  */
-export interface ApiUpdate<M extends AbstractModel, P extends any[]> {
+export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
    * @param args URL parameter values
@@ -116,8 +116,8 @@ export interface ApiUpdate<M extends AbstractModel, P extends any[]> {
  */
 export interface ApiDestroy<
   M extends AbstractModel,
-  P extends any[],
-  I extends IdOr<M>
+  P extends any[] = [],
+  I extends IdOr<M> = IdOr<M>
 > {
   /**
    * destroy  individual model
@@ -129,15 +129,15 @@ export interface ApiDestroy<
 /**
  * Api Class with all abilities enabled
  */
-export abstract class StandardApi<M extends AbstractModel, P extends any[]>
+export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
   extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,
-    ApiShow<M, P, IdOr<M>>,
+    ApiShow<M, P>,
     ApiCreate<M, P>,
     ApiUpdate<M, P>,
-    ApiDestroy<M, P, IdOr<M>> {
+    ApiDestroy<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
@@ -152,14 +152,16 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[]>
 /**
  * Api Class without the ability to update a model
  */
-export abstract class ImmutableApi<M extends AbstractModel, P extends any[]>
-  extends BawApiService<M>
+export abstract class ImmutableApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,
-    ApiShow<M, P, IdOr<M>>,
+    ApiShow<M, P>,
     ApiCreate<M, P>,
-    ApiDestroy<M, P, IdOr<M>> {
+    ApiDestroy<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
@@ -170,10 +172,41 @@ export abstract class ImmutableApi<M extends AbstractModel, P extends any[]>
 /**
  * Api Class with only readable abilities enabled
  */
-export abstract class ReadonlyApi<M extends AbstractModel, P extends any[]>
+export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
   extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P, IdOr<M>> {
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
   abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * Api Class with only the ability to Read and Create models
+ */
+export abstract class ReadAndCreateApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract create(model: M, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * Api Class with only the ability to Read and Update models
+ */
+export abstract class ReadAndUpdateApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract update(
+    model: PartialWith<M, "id">,
+    ...urlParameters: P
+  ): Observable<M>;
 }

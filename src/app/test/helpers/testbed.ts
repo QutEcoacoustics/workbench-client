@@ -1,41 +1,26 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
-import { MockImmutableApiService } from "@baw-api/mock/immutableApiMock.service";
-import { BehaviorSubject } from "rxjs";
+import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
+import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
+import {
+  MockBawApiService,
+  MockModel,
+} from "@baw-api/mock/baseApiMock.service";
+import { MockSecurityService } from "@baw-api/mock/securityMock.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { SecurityService } from "@baw-api/security.service";
+import { serviceList } from "@baw-api/ServiceProviders";
 import {
   API_CONFIG,
   API_ROOT,
   CMS_ROOT,
-} from "../../helpers/app-initializer/app-initializer";
-import { AppConfigService } from "../../services/app-config/app-config.service";
+} from "@helpers/app-initializer/app-initializer";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import {
   AppConfigMockService,
   testApiConfig,
-} from "../../services/app-config/appConfigMock.service";
-import { AccountService } from "../../services/baw-api/account.service";
-import { BawApiInterceptor } from "../../services/baw-api/api.interceptor.service";
-import {
-  BawApiService,
-  STUB_MODEL_BUILDER,
-} from "../../services/baw-api/baw-api.service";
-import {
-  MockBawApiService,
-  MockModel,
-} from "../../services/baw-api/mock/baseApiMock.service";
-import { MockSecurityService } from "../../services/baw-api/mock/securityMock.service";
-import { MockShowApiService } from "../../services/baw-api/mock/showApiMock.service";
-import { MockStandardApiService } from "../../services/baw-api/mock/standardApiMock.service";
-import { ProjectsService } from "../../services/baw-api/projects.service";
-import { ResolvedModel } from "../../services/baw-api/resolver-common";
-import { ScriptsService } from "../../services/baw-api/scripts.service";
-import { SecurityService } from "../../services/baw-api/security.service";
-import {
-  ShallowSitesService,
-  SitesService,
-} from "../../services/baw-api/sites.service";
-import { TagGroupService } from "../../services/baw-api/tag-group.service";
-import { TagsService } from "../../services/baw-api/tags.service";
-import { UserService } from "../../services/baw-api/user.service";
+} from "@services/app-config/appConfigMock.service";
+import { BehaviorSubject } from "rxjs";
 
 /**
  * Create mock initializer values
@@ -74,14 +59,10 @@ export const testBawServices = [
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
-  { provide: AccountService, useClass: MockStandardApiService },
-  { provide: ProjectsService, useClass: MockStandardApiService },
-  { provide: ScriptsService, useClass: MockImmutableApiService },
-  { provide: SitesService, useClass: MockStandardApiService },
-  { provide: ShallowSitesService, useClass: MockStandardApiService },
-  { provide: TagsService, useClass: MockStandardApiService },
-  { provide: TagGroupService, useClass: MockStandardApiService },
-  { provide: UserService, useClass: MockShowApiService },
+  ...serviceList.map((service) => ({
+    provide: service.service,
+    useClass: service.mock,
+  })),
 ];
 
 /**

@@ -11,9 +11,9 @@ import {
   validateApiUpdate,
 } from "src/app/test/helpers/api-common";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { BawApiService } from "./baw-api.service";
-import { MockBawApiService } from "./mock/baseApiMock.service";
-import { SitesService } from "./sites.service";
+import { BawApiService } from "../baw-api.service";
+import { MockBawApiService } from "../mock/baseApiMock.service";
+import { SitesService } from "../sites.service";
 
 describe("SitesService", function () {
   beforeEach(function () {
@@ -28,6 +28,7 @@ describe("SitesService", function () {
 
     this.service = TestBed.inject(SitesService);
   });
+
   it("should be created", function () {
     expect(this.service).toBeTruthy();
   });

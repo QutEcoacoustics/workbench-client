@@ -1,12 +1,16 @@
-import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
+  Updater,
 } from "./AbstractModel";
+import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 
@@ -36,19 +40,21 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add AudioEvent association
+  @Creator<AudioEventTag>()
+  public creator?: Observable<User>;
+  @Updater<AudioEventTag>()
+  public updater?: Observable<User>;
   @HasOne(TAG, (m: AudioEventTag) => m.tagId)
   public tag?: Observable<Tag>;
-  @HasOne(ACCOUNT, (m: AudioEventTag) => m.creatorId)
-  public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioEventTag) => m.updaterId)
-  public updater?: Observable<User>;
+  @HasOne(AUDIO_EVENT, (m: AudioEventTag) => m.audioEventId)
+  public audioEvent?: Observable<AudioEvent>;
 
-  constructor(audioEventTag: IAudioEventTag) {
-    super(audioEventTag);
+  constructor(audioEventTag: IAudioEventTag, injector?: Injector) {
+    super(audioEventTag, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    // AudioEventTag currently has no plans implementing its own view
+    throw new Error("AudioEventTag viewUrl not implemented.");
   }
 }

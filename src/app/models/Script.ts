@@ -1,4 +1,4 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
 import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
@@ -6,7 +6,7 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -58,11 +58,11 @@ export class Script extends AbstractModel implements IScript {
 
   // Associations
   // TODO Add Group associations
-  @HasOne(ACCOUNT, (m: Script) => m.creatorId)
+  @Creator<Script>()
   public creator?: Observable<User>;
 
-  constructor(script: IScript) {
-    super(script);
+  constructor(script: IScript, injector?: Injector) {
+    super(script, injector);
 
     this.executableSettingsMediaType = script.executableSettingsMediaType
       ? script.executableSettingsMediaType

@@ -1,12 +1,16 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
+  Creator,
   HasOne,
+  Updater,
 } from "./AbstractModel";
+import type { Dataset } from "./Dataset";
 import type { User } from "./User";
 
 export interface IStudy {
@@ -35,17 +39,18 @@ export class Study extends AbstractModel implements IStudy {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add Dataset association
-  @HasOne(ACCOUNT, (m: Study) => m.creatorId)
+  @Creator<Study>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: Study) => m.updaterId)
+  @Updater<Study>()
   public updater?: Observable<User>;
+  @HasOne(DATASET, (m: Study) => m.datasetId)
+  public dataset?: Observable<Dataset>;
 
-  constructor(study: IStudy) {
-    super(study);
+  constructor(study: IStudy, injector?: Injector) {
+    super(study, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("Study viewUrl not implemented.");
   }
 }

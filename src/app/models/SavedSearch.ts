@@ -1,4 +1,5 @@
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Injector } from "@angular/core";
+import { Filters } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
   Description,
@@ -10,7 +11,8 @@ import {
   AbstractModel,
   BawDateTime,
   BawPersistAttr,
-  HasOne,
+  Creator,
+  Deleter,
 } from "./AbstractModel";
 import type { User } from "./User";
 
@@ -18,7 +20,7 @@ export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
-  storedQuery?: Blob;
+  storedQuery?: Filters;
   creatorId?: Id;
   deleterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -34,7 +36,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly storedQuery?: Blob;
+  public readonly storedQuery?: Filters;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   @BawDateTime()
@@ -43,16 +45,16 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ACCOUNT, (m: SavedSearch) => m.creatorId)
+  @Creator<SavedSearch>()
   public creator?: Observable<User>;
-  @HasOne(ACCOUNT, (m: SavedSearch) => m.deleterId)
+  @Deleter<SavedSearch>()
   public deleter?: Observable<User>;
 
-  constructor(savedSearches: ISavedSearch) {
-    super(savedSearches);
+  constructor(savedSearches: ISavedSearch, injector?: Injector) {
+    super(savedSearches, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("SavedSearch viewUrl not implemented.");
   }
 }

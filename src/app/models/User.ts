@@ -26,7 +26,7 @@ export interface IUser {
   rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageURL[];
-  preferences?: Blob;
+  preferences?: any;
   isConfirmed?: boolean;
   resetPasswordSentAt?: DateTimeTimezone | string;
   rememberCreatedAt?: DateTimeTimezone | string;
@@ -44,127 +44,68 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
-  public readonly kind: "User" | "SessionUser" = "User";
+  public readonly kind: "User" = "User";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
   public readonly email?: string;
   @BawPersistAttr
   public readonly userName?: UserName;
-  @BawPersistAttr
   public readonly signInCount?: number;
-  @BawPersistAttr
   public readonly failedAttempts?: number;
   @BawPersistAttr
   public readonly imageUrls?: ImageURL[];
   @BawPersistAttr
   public readonly preferences?: any;
-  @BawPersistAttr
   public readonly isConfirmed?: boolean;
   @BawPersistAttr
   public readonly rolesMask?: number;
-  @BawPersistAttr
   public readonly rolesMaskNames?: string[];
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly resetPasswordSentAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly rememberCreatedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly currentSignInAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lastSignInAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly confirmedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly confirmationSentAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lockedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.imageUrls = user.imageUrls
-      ? user.imageUrls.map((imageUrl) => {
-          // TODO Add /assets by default from the API so this check doesn't need to occur
-          // Default values from API need to have /assets prepended
-          if (
-            imageUrl.url.startsWith("/") &&
-            !imageUrl.url.startsWith("/assets/")
-          ) {
-            imageUrl.url = "/assets" + imageUrl.url;
-          }
-          return imageUrl;
-        })
-      : [
-          {
-            size: "extralarge",
-            url: "/assets/images/user/user_span4.png",
-            width: 300,
-            height: 300,
-          },
-          {
-            size: "large",
-            url: "/assets/images/user/user_span3.png",
-            width: 220,
-            height: 220,
-          },
-          {
-            size: "medium",
-            url: "/assets/images/user/user_span2.png",
-            width: 140,
-            height: 140,
-          },
-          {
-            size: "small",
-            url: "/assets/images/user/user_span1.png",
-            width: 60,
-            height: 60,
-          },
-          {
-            size: "tiny",
-            url: "/assets/images/user/user_spanhalf.png",
-            width: 30,
-            height: 30,
-          },
-        ];
+    this.imageUrls = userImageUrls(user);
   }
 
-  /**
-   * Determines if user is admin. Role mask stores user roles
-   * as a power of 2 integer so that roles can be combined.
-   * The admin role is 1, therefore a role mask of 1 (0001) or
-   * 3 (0011) indicate an admin account.
-   */
   public get isAdmin(): boolean {
-    // tslint:disable-next-line: no-bitwise
-    return !!(this.rolesMask & 1);
+    return isModelAdmin(this);
   }
+
+  public get viewUrl(): string {
+    return theirProfileMenuItem.route.format({ accountId: this.id });
+  }
+
   /**
    * Get image from imageUrls which relates to the given size
    * @param size Size of image
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    for (const imageUrl of this.imageUrls) {
-      if (imageUrl.size === size) {
-        return imageUrl.url;
-      }
-    }
-
-    return "/assets/images/user/user_span4.png";
-  }
-
-  public get viewUrl(): string {
-    return theirProfileMenuItem.route.format({ accountId: this.id });
+    return getModelImage(this, size);
   }
 }
 
@@ -179,28 +120,119 @@ export interface ISessionUser extends IUser {
 /**
  * A user model for the website user
  */
-export class SessionUser extends User implements ISessionUser {
-  public readonly kind: "User" | "SessionUser" = "SessionUser";
+export class SessionUser extends AbstractModel implements ISessionUser {
+  // ! All fields are persisted because model is saved to, and read from, localstorage
+  public readonly kind: "SessionUser" = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
   public readonly authToken?: AuthToken;
   @BawPersistAttr
   public readonly userName?: UserName;
+  @BawPersistAttr
+  public readonly imageUrls?: ImageURL[];
+  @BawPersistAttr
+  public readonly preferences?: any;
+  @BawPersistAttr
+  public readonly rolesMask?: number;
+  @BawPersistAttr
+  public readonly timezoneInformation?: TimezoneInformation;
 
-  constructor(user: ISessionUser) {
+  constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
+
+    this.imageUrls = userImageUrls(user);
   }
 
-  public toJSON() {
-    return {
-      authToken: this.authToken,
-      userName: this.userName,
-      ...super.toJSON(),
-    };
+  public get isAdmin(): boolean {
+    return isModelAdmin(this);
   }
 
   public get viewUrl(): string {
     return myAccountMenuItem.route.toString();
   }
+
+  /**
+   * Get image from imageUrls which relates to the given size
+   * @param size Size of image
+   * @returns Image URL
+   */
+  public getImage(size: ImageSizes): string {
+    return getModelImage(this, size);
+  }
+}
+
+const defaultUserImages: ImageURL[] = [
+  {
+    size: "extralarge",
+    url: "/assets/images/user/user_span4.png",
+    width: 300,
+    height: 300,
+  },
+  {
+    size: "large",
+    url: "/assets/images/user/user_span3.png",
+    width: 220,
+    height: 220,
+  },
+  {
+    size: "medium",
+    url: "/assets/images/user/user_span2.png",
+    width: 140,
+    height: 140,
+  },
+  {
+    size: "small",
+    url: "/assets/images/user/user_span1.png",
+    width: 60,
+    height: 60,
+  },
+  {
+    size: "tiny",
+    url: "/assets/images/user/user_spanhalf.png",
+    width: 30,
+    height: 30,
+  },
+];
+
+function userImageUrls(model: IUser | ISessionUser) {
+  return model.imageUrls
+    ? model.imageUrls.map((imageUrl) => {
+        // TODO https://github.com/QutEcoacoustics/baw-server/issues/452
+        // Default values from API need to have /assets prepended
+        if (
+          imageUrl.url.startsWith("/") &&
+          !imageUrl.url.startsWith("/assets/")
+        ) {
+          imageUrl.url = "/assets" + imageUrl.url;
+        }
+        return imageUrl;
+      })
+    : defaultUserImages;
+}
+
+/**
+ * Determines if user is admin. Role mask stores user roles
+ * as a power of 2 integer so that roles can be combined.
+ * The admin role is 1, therefore a role mask of 1 (0001) or
+ * 3 (0011) indicate an admin account.
+ */
+function isModelAdmin(model: User | SessionUser): boolean {
+  // tslint:disable-next-line: no-bitwise
+  return !!(model.rolesMask & 1);
+}
+
+/**
+ * Get image from imageUrls which relates to the given size
+ * @param size Size of image
+ * @returns Image URL
+ */
+function getModelImage(model: User | SessionUser, size: ImageSizes): string {
+  for (const imageUrl of model.imageUrls) {
+    if (imageUrl.size === size) {
+      return imageUrl.url;
+    }
+  }
+
+  return "/assets/images/user/user_span4.png";
 }

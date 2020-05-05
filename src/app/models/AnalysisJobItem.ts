@@ -1,5 +1,10 @@
+import { Injector } from "@angular/core";
+import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { AbstractModel, BawDateTime, BawPersistAttr } from "./AbstractModel";
+import { Observable } from "rxjs";
+import { AbstractModel, BawDateTime, HasOne } from "./AbstractModel";
+import type { AnalysisJob } from "./AnalysisJob";
+import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -11,18 +16,14 @@ export interface IAnalysisJobItem {
   queuedAt?: DateTimeTimezone | string;
   workStartedAt?: DateTimeTimezone | string;
   completedAt?: DateTimeTimezone | string;
-  cancelStartedAt?: DateTimeTimezone | String;
+  cancelStartedAt?: DateTimeTimezone | string;
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly kind: "AnalysisJobItem" = "AnalysisJobItem";
-  @BawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
   public readonly analysisJobId?: Id;
-  @BawPersistAttr
   public readonly audioRecordingId?: Id;
-  @BawPersistAttr
   public readonly queueId?: string;
   public readonly status?: Status;
   @BawDateTime()
@@ -37,16 +38,26 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  // TODO Add AnalysisJob, AudioRecording, Queue associations
+  @HasOne(ANALYSIS_JOB, (m: AnalysisJobItem) => m.analysisJobId)
+  public analysisJob?: Observable<AnalysisJob>;
+  @HasOne(AUDIO_RECORDING, (m: AnalysisJobItem) => m.audioRecordingId)
+  public audioRecording?: Observable<AudioRecording>;
 
-  constructor(analysisJobItem: IAnalysisJobItem) {
-    super(analysisJobItem);
+  constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
+    super(analysisJobItem, injector);
   }
 
   public get viewUrl(): string {
-    return "/BROKEN_LINK";
+    throw new Error("AnalysisJobItem viewUrl not implemented.");
   }
 }
 
-// TODO
-export type Status = "new" | "??? Anthony";
+export type Status =
+  | "successful"
+  | "new"
+  | "queued"
+  | "working"
+  | "failed"
+  | "timed_out"
+  | "cancelling"
+  | "cancelled";
