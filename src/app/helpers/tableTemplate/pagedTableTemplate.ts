@@ -126,12 +126,12 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.getPageData();
   }
 
-  public getPageData() {
+  public getPageData(...args: AbstractModel[]) {
     this.loadingData = true;
     this.rows = [];
 
     this.api
-      .filter(this.filters)
+      .filter(this.filters, ...args)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
