@@ -1,6 +1,7 @@
 import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
+  defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
@@ -98,4 +99,13 @@ export const deleteProjectMenuItem = MenuRoute({
   predicate: isProjectOwnerPredicate,
   route: projectMenuItem.route.add("delete"),
   tooltip: () => "Delete this project",
+});
+
+export const harvestProjectMenuItem = MenuRoute({
+  icon: defaultAudioIcon,
+  label: "Harvest Data",
+  parent: projectMenuItem,
+  predicate: isProjectOwnerPredicate,
+  route: projectMenuItem.route.add("harvest"),
+  tooltip: () => "Upload new audio to this project",
 });

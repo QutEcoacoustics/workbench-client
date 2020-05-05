@@ -93,11 +93,7 @@ $ npm run test:all
 
 #### Code Coverage
 
-On the completion of the unit tests, the system will automatically generate a code coverage report. To open this, run the following command:
-
-```bash
-$ npm run code-coverage
-```
+On the completion of the unit tests, the system will automatically generate a code coverage report. You can view the report here: `./coverage/workbench-client/index.html`
 
 ## To build
 
@@ -108,6 +104,16 @@ $ npm run build
 ```
 
 Move the generated files from the `/dist` directory to the required location.
+
+## Build Statistics
+
+When adding a library to the repository, you may wish to view its cost on the system. You can view the build size using the following command:
+
+```typescript
+$ npm run stats
+```
+
+This will allow you to compare the bundle size impacts before and after the update by switching between checked out commits/branches.
 
 ## Common Problems
 

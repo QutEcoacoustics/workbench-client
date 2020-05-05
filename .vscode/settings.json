@@ -22,5 +22,6 @@
     ".vscode",
     ".tsling.json"
   ],
-  "explorer.compactFolders": false
+  "explorer.compactFolders": false,
+  "prettier.semi": false
 }

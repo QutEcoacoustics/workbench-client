@@ -1,7 +1,7 @@
 import {
   AgmCoreModule,
   LazyMapsAPILoaderConfigLiteral,
-  LAZY_MAPS_API_CONFIG
+  LAZY_MAPS_API_CONFIG,
 } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
@@ -23,7 +23,7 @@ import { ErrorModule } from "./component/error/error.module";
 import { HomeModule } from "./component/home/home.module";
 import {
   MyAccountModule,
-  ProfileModule
+  ProfileModule,
 } from "./component/profile/profile.module";
 import { ProjectsModule } from "./component/projects/projects.module";
 import { ReportProblemsModule } from "./component/report-problem/report-problem.module";
@@ -44,7 +44,7 @@ export const appLibraryImports = [
   AgmSnazzyInfoWindowModule,
   FormlyModule.forRoot(formlyRoot),
   FormlyBootstrapModule,
-  ToastrModule.forRoot(toastrRoot)
+  ToastrModule.forRoot(toastrRoot),
 ];
 
 export const appImports = [
@@ -62,7 +62,7 @@ export const appImports = [
   StatisticsModule,
   // these last two must be last!
   HomeModule,
-  ErrorModule
+  ErrorModule,
 ];
 
 /**
@@ -84,14 +84,14 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
     AppRoutingModule,
     HttpClientModule,
     ...appLibraryImports,
-    ...appImports
+    ...appImports,
   ],
   providers: [
     ...providers,
-    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig }
+    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig },
   ],
   bootstrap: [AppComponent],
   entryComponents: [PermissionsShieldComponent],
-  exports: []
+  exports: [],
 })
 export class AppModule {}
