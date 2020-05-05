@@ -14,6 +14,7 @@ import {
 } from "./AbstractModel";
 import type { Site } from "./Site";
 import type { User } from "./User";
+import { adminAudioRecordingMenuItem } from "@component/admin/audio-recordings/audio-recordings.menus";
 
 /**
  * An audio recording model
@@ -51,6 +52,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
+  @BawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
   @BawDuration({ key: "durationSeconds" })
@@ -93,7 +95,9 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    throw new Error("AudioRecording viewUrl not implemented.");
+    return adminAudioRecordingMenuItem.route.format({
+      audioRecordingId: this.id,
+    });
   }
 }
 

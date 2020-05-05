@@ -24,7 +24,7 @@ export const adminAudioRecordingsMenuItem = MenuRoute({
 export const adminAudioRecordingMenuItem = MenuRoute({
   icon: defaultAudioIcon,
   label: "Audio Recording",
-  route: adminAudioRecordingsMenuItem.route.add(":audioRecording"),
+  route: adminAudioRecordingsMenuItem.route.add(":audioRecordingId"),
   tooltip: () => "Manage audio recording",
   parent: adminAudioRecordingsMenuItem,
   predicate: isAdminPredicate,

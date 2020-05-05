@@ -4,10 +4,9 @@ import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id } from "@interfaces/apiInterfaces";
+import { Id, toRelative } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
-import humanizeDuration from "humanize-duration";
 import { List } from "immutable";
 import {
   adminAudioRecordingMenuItem,
@@ -39,8 +38,9 @@ export class AdminAudioRecordingsComponent
       audioRecordings.map((audioRecording) => ({
         id: audioRecording.id,
         site: audioRecording.siteId,
-        duration: humanizeDuration(audioRecording.durationSeconds, {
-          style: "short",
+        duration: toRelative(audioRecording.duration, {
+          largest: 2,
+          maxDecimalPoint: 0,
         }),
         recorded: audioRecording.recordedDate.toRelative(),
         // TODO Retrieve number of annotations
