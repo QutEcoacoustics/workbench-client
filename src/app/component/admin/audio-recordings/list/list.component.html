@@ -1,0 +1,55 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Audio Recordings</h1>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Site"
+      width="50"
+      maxWidth="50"
+      [sortable]="false"
+    >
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Duration"></ngx-datatable-column>
+    <ngx-datatable-column name="Recorded"></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Annotations"
+      width="100"
+      maxWidth="100"
+      [sortable]="false"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      width="130"
+      maxWidth="130"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a
+          class="btn btn-sm btn-default mr-2"
+          [routerLink]="viewRedirectPath(value)"
+        >
+          View
+        </a>
+        <a class="btn btn-sm btn-default" [routerLink]="value.redirectPath()">
+          Play
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-error-handler [error]="error"></app-error-handler>
