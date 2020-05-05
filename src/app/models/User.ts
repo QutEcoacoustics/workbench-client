@@ -44,7 +44,6 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
-  // ! Most fields are persisted because model is saved to, and read from, localstorage for the current user
   public readonly kind: "User" | "SessionUser" = "User";
   @BawPersistAttr
   public readonly id?: Id;
@@ -61,7 +60,6 @@ export class User extends AbstractModel implements IUser {
   public readonly isConfirmed?: boolean;
   @BawPersistAttr
   public readonly rolesMask?: number;
-  @BawPersistAttr
   public readonly rolesMaskNames?: string[];
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
@@ -79,11 +77,11 @@ export class User extends AbstractModel implements IUser {
   public readonly confirmationSentAt?: DateTimeTimezone;
   @BawDateTime()
   public readonly lockedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime({ persist: true })
+  @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
   constructor(user: IUser) {
@@ -179,24 +177,24 @@ export interface ISessionUser extends IUser {
  */
 export class SessionUser extends User implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
-  public readonly kind: "User" | "SessionUser" = "SessionUser";
+  public readonly kind: "SessionUser" = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
   public readonly authToken?: AuthToken;
   @BawPersistAttr
   public readonly userName?: UserName;
+  @BawPersistAttr
+  public readonly imageUrls?: ImageURL[];
+  @BawPersistAttr
+  public readonly preferences?: any;
+  @BawPersistAttr
+  public readonly rolesMask?: number;
+  @BawPersistAttr
+  public readonly timezoneInformation?: TimezoneInformation;
 
-  constructor(user: ISessionUser) {
+  constructor(user: IUser & ISessionUser) {
     super(user);
-  }
-
-  public toJSON() {
-    return {
-      authToken: this.authToken,
-      userName: this.userName,
-      ...super.toJSON(),
-    };
   }
 
   public get viewUrl(): string {

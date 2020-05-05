@@ -16,7 +16,7 @@ import type { User } from "./User";
 
 export interface IResponse {
   id?: Id;
-  data?: Blob;
+  data?: any;
   datasetItemId?: Id;
   questionId?: Id;
   studyId?: Id;
@@ -29,7 +29,7 @@ export class Response extends AbstractModel implements IResponse {
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
-  public readonly data?: Blob;
+  public readonly data?: any;
   @BawPersistAttr
   public readonly datasetItemId?: Id;
   @BawPersistAttr
