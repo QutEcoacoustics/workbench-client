@@ -38,6 +38,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
   filter(filters: Filters, project: IdOr<Project>): Observable<Site[]> {
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/437
     return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
   show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
