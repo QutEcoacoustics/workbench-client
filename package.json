@@ -8,7 +8,6 @@
   "version": "3.0.0",
   "scripts": {
     "build": "ng build --prod",
-    "code-coverage": "npm test -- --watch=false && http-server -c-1 -o -p 9875 ./coverage/workbench-client",
     "e2e": "ng e2e",
     "int:extract": "ng xi18n --output-path src/locale",
     "lint": "ng lint",
