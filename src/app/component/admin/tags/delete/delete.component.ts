@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { tagResolvers, TagsService } from "@baw-api/tags.service";
+import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import {
   defaultSuccessMsg,
   FormTemplate,

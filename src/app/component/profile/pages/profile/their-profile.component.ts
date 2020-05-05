@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { accountResolvers } from "@baw-api/account.service";
+import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import {
   theirAnnotationsMenuItem,

@@ -9,11 +9,11 @@ import {
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { SecurityService } from "@baw-api/security/security.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";

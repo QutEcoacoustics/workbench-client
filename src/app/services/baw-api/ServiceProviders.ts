@@ -1,28 +1,31 @@
 import { AppConfigService } from "@services/app-config/app-config.service";
-import { accountResolvers, AccountService } from "./account.service";
+import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResolvers,
   AnalysisJobItemsService,
-} from "./analysis-job-items.service";
+} from "./analysis/analysis-job-items.service";
 import {
   analysisJobResolvers,
   AnalysisJobsService,
-} from "./analysis-jobs.service";
-import { AudioEventTagsService } from "./audio-event-tags.service";
+} from "./analysis/analysis-jobs.service";
+import { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
 import {
   audioEventResolvers,
   AudioEventsService,
-} from "./audio-events.service";
+} from "./audio-event/audio-events.service";
 import {
   audioRecordingResolvers,
   AudioRecordingsService,
-} from "./audio-recordings.service";
-import { bookmarkResolvers, BookmarksService } from "./bookmarks.service";
+} from "./audio-recording/audio-recordings.service";
+import {
+  bookmarkResolvers,
+  BookmarksService,
+} from "./bookmark/bookmarks.service";
 import {
   datasetItemResolvers,
   DatasetItemsService,
-} from "./dataset-items.service";
-import { datasetResolvers, DatasetsService } from "./datasets.service";
+} from "./dataset/dataset-items.service";
+import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
 import { MockFilterApiService } from "./mock/filterMock.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
 import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
@@ -33,43 +36,43 @@ import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
   progressEventResolvers,
   ProgressEventsService,
-} from "./progress-events.service";
-import { projectResolvers, ProjectsService } from "./projects.service";
-import {
-  questionResolvers,
-  QuestionsService,
-  shallowQuestionResolvers,
-  ShallowQuestionsService,
-} from "./questions.service";
-import {
-  responseResolvers,
-  ResponsesService,
-  shallowResponseResolvers,
-  ShallowResponsesService,
-} from "./responses.service";
+} from "./progress-event/progress-events.service";
+import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
   SavedSearchesService,
   savedSearchResolvers,
-} from "./saved-searches.service";
-import { scriptResolvers, ScriptsService } from "./scripts.service";
-import { SecurityService } from "./security.service";
+} from "./saved-search/saved-searches.service";
+import { scriptResolvers, ScriptsService } from "./script/scripts.service";
+import { SecurityService } from "./security/security.service";
 import * as Tokens from "./ServiceTokens";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
   siteResolvers,
   SitesService,
-} from "./sites.service";
-import { StudiesService, studyResolvers } from "./studies.service";
-import { tagGroupResolvers, TagGroupService } from "./tag-group.service";
-import { taggingResolvers, TaggingsService } from "./taggings.service";
-import { tagResolvers, TagsService } from "./tags.service";
-import { userResolvers, UserService } from "./user.service";
+} from "./site/sites.service";
+import {
+  questionResolvers,
+  QuestionsService,
+  shallowQuestionResolvers,
+  ShallowQuestionsService,
+} from "./study/questions.service";
+import {
+  responseResolvers,
+  ResponsesService,
+  shallowResponseResolvers,
+  ShallowResponsesService,
+} from "./study/responses.service";
+import { StudiesService, studyResolvers } from "./study/studies.service";
+import { tagGroupResolvers, TagGroupService } from "./tag/tag-group.service";
+import { tagResolvers, TagsService } from "./tag/tags.service";
+import { taggingResolvers, TaggingsService } from "./tagging/taggings.service";
+import { userResolvers, UserService } from "./user/user.service";
 
 const serviceList = [
   {
     serviceToken: Tokens.ACCOUNT,
-    service: AccountService,
+    service: AccountsService,
     resolvers: accountResolvers,
     mock: MockStandardApiService,
   },

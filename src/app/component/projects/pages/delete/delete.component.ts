@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
 import {
   deleteProjectMenuItem,
   projectCategory,

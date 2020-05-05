@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { SecurityService } from "@baw-api/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import {
   registerMenuItem,
   securityCategory,

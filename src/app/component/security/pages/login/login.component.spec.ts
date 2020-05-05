@@ -3,7 +3,10 @@ import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { LoginDetails, SecurityService } from "@baw-api/security.service";
+import {
+  LoginDetails,
+  SecurityService,
+} from "@baw-api/security/security.service";
 import { HomeComponent } from "@component/home/home.component";
 import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { SharedModule } from "@shared/shared.module";

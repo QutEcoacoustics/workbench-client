@@ -88,7 +88,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 
   // Associations
   @Creator<AnalysisJob>()
-  public creator?: Observable<User>;
+  public creator: Observable<User>;
   @Updater<AnalysisJob>()
   public updater?: Observable<User>;
   @Deleter<AnalysisJob>()

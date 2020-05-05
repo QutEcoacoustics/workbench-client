@@ -4,9 +4,10 @@ import {
   ComponentFactoryResolver,
   Input,
   OnInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
+import { SecurityService } from "@baw-api/security/security.service";
 import { List } from "immutable";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
@@ -14,10 +15,9 @@ import {
   isButton,
   isExternalLink,
   isInternalRoute,
-  LabelAndIcon
+  LabelAndIcon,
 } from "src/app/interfaces/menusInterfaces";
 import { SessionUser } from "src/app/models/User";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
@@ -30,7 +30,7 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   selector: "app-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent extends WithUnsubscribe() implements OnInit {
   @Input() title?: LabelAndIcon;
@@ -67,7 +67,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     // Filter links
     this.filteredLinks = new Set(
       this?.links
-        ?.filter(link => {
+        ?.filter((link) => {
           if (!link.predicate || link.active) {
             // Clear any modifications to link by secondary menu
             link.active = false;

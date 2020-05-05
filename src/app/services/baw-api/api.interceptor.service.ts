@@ -16,7 +16,7 @@ import {
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { ApiResponse } from "./baw-api.service";
-import { SecurityService } from "./security.service";
+import { SecurityService } from "./security/security.service";
 
 /**
  * BAW API Interceptor.

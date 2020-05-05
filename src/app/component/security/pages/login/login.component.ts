@@ -1,7 +1,10 @@
 import { DOCUMENT, Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { LoginDetails, SecurityService } from "@baw-api/security.service";
+import {
+  LoginDetails,
+  SecurityService,
+} from "@baw-api/security/security.service";
 import { homeMenuItem } from "@component/home/home.menus";
 import {
   confirmAccountMenuItem,

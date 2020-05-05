@@ -4,8 +4,9 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit
+  OnInit,
 } from "@angular/core";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
@@ -13,7 +14,6 @@ import { DateTimeTimezone, Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
-import { AccountService } from "src/app/services/baw-api/account.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { Badge } from "./user-badge/user-badge.component";
 
@@ -46,7 +46,7 @@ import { Badge } from "./user-badge/user-badge.component";
     </div>
   `,
   styleUrls: ["./user-badges.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserBadgesComponent extends WithUnsubscribe()
   implements OnInit, OnChanges {
@@ -56,7 +56,7 @@ export class UserBadgesComponent extends WithUnsubscribe()
   updated: any;
   owned: any;
 
-  constructor(private api: AccountService, private ref: ChangeDetectorRef) {
+  constructor(private api: AccountsService, private ref: ChangeDetectorRef) {
     super();
   }
 

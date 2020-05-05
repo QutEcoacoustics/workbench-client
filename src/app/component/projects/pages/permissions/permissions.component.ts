@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { projectResolvers, ProjectsService } from "@baw-api/projects.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { theirProfileMenuItem } from "@component/profile/profile.menus";
 import {

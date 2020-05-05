@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import { List } from "immutable";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
@@ -12,16 +14,14 @@ import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
-import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   annotationsMenuItem,
   deleteSiteMenuItem,
   editSiteMenuItem,
   harvestMenuItem,
   siteMenuItem,
-  sitesCategory
+  sitesCategory,
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
@@ -29,7 +29,7 @@ export const siteMenuItemActions = [
   annotationsMenuItem,
   editSiteMenuItem,
   harvestMenuItem,
-  deleteSiteMenuItem
+  deleteSiteMenuItem,
 ];
 
 const projectKey = "project";
@@ -43,18 +43,18 @@ const siteKey = "site";
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List()
+    links: List(),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show
+    [siteKey]: siteResolvers.show,
   },
-  self: siteMenuItem
+  self: siteMenuItem,
 })
 @Component({
   selector: "app-sites-details",
   templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"]
+  styleUrls: ["./details.component.scss"],
 })
 export class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
@@ -107,7 +107,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     let startDate: DateTimeTimezone = null;
     let endDate: DateTimeTimezone = null;
 
-    recordings.map(recording => {
+    recordings.map((recording) => {
       if (!startDate || recording.recordedDate < startDate) {
         startDate = recording.recordedDate;
       }

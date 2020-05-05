@@ -41,7 +41,7 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
 
   // Associations
   @Creator<AudioEventTag>()
-  public creator?: Observable<User>;
+  public creator: Observable<User>;
   @Updater<AudioEventTag>()
   public updater?: Observable<User>;
   @HasOne(TAG, (m: AudioEventTag) => m.tagId)

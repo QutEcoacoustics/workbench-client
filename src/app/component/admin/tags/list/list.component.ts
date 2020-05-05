@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TagsService } from "@baw-api/tags.service";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";

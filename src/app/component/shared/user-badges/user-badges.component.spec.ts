@@ -1,19 +1,19 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { BehaviorSubject } from "rxjs";
 import { Id } from "src/app/interfaces/apiInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
-import { AccountService } from "src/app/services/baw-api/account.service";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { MenuModule } from "../menu/menu.module";
 import { UserBadgesComponent } from "./user-badges.component";
 
 describe("UserBadgesComponent", () => {
   const defaultId: Id = 1;
-  let api: AccountService;
+  let api: AccountsService;
   let component: UserBadgesComponent;
   let fixture: ComponentFixture<UserBadgesComponent>;
   let defaultProject: Project;
@@ -28,7 +28,7 @@ describe("UserBadgesComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserBadgesComponent);
-    api = TestBed.inject(AccountService);
+    api = TestBed.inject(AccountsService);
     component = fixture.componentInstance;
 
     defaultProject = new Project({

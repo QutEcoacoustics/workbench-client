@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/projects.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
