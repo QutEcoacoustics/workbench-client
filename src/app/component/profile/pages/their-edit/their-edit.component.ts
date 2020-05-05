@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { accountResolvers, AccountService } from "@baw-api/account.service";
+import {
+  accountResolvers,
+  AccountsService,
+} from "@baw-api/account/accounts.service";
 import {
   theirEditMenuItem,
   theirProfileCategory,
@@ -59,7 +62,7 @@ export class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public title: string;
 
   constructor(
-    private api: AccountService,
+    private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router

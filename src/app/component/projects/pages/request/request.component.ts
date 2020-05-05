@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/projects.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   projectsCategory,
   projectsMenuItem,

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { SitesService } from "@baw-api/site/sites.service";
 import { PagedTableTemplate } from "src/app/helpers/tableTemplate/pagedTableTemplate";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 
 @Component({
   selector: "app-project-harvest-complete",

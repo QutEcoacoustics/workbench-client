@@ -1,24 +1,24 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
+import { SecurityService } from "@baw-api/security/security.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { isAdminPredicate } from "src/app/app.menus";
 import {
   HeaderDropDownConvertedLink,
-  isHeaderLink
+  isHeaderLink,
 } from "src/app/helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
   MenuLink,
-  NavigableMenuItem
+  NavigableMenuItem,
 } from "src/app/interfaces/menusInterfaces";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -32,7 +32,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.scss"]
+  styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   public activeLink: string;
@@ -64,23 +64,23 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       home: homeMenuItem,
       login: loginMenuItem,
       profile: myAccountMenuItem,
-      register: registerMenuItem
+      register: registerMenuItem,
     };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
       ...this.retrieveHeaderLinks(),
-      contactUsMenuItem
+      contactUsMenuItem,
     ]);
 
     this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(
-      val => {
+      (val) => {
         if (val instanceof NavigationEnd) {
           this.toggleCollapse(true);
         }
       },
-      err => {
+      (err) => {
         console.error("HeaderComponent: ", err);
       }
     );
@@ -130,7 +130,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
         },
         complete: () => {
           this.router.navigate([homeMenuItem.route.toString()]);
-        }
+        },
       });
   }
 
@@ -138,11 +138,11 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return this.env.values.content.map(header => {
+    return this.env.values.content.map((header) => {
       if (!isHeaderLink(header)) {
         return {
           headerTitle: header.headerTitle,
-          items: header.items.map(item => this.generateLink(item))
+          items: header.items.map((item) => this.generateLink(item)),
         } as HeaderDropDownConvertedLink;
       } else {
         return this.generateLink(header);
@@ -173,7 +173,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       label: item.title,
       icon: ["fas", "home"],
       tooltip: () => "UPDATE ME",
-      uri: () => item.url
+      uri: () => item.url,
     });
   }
 }

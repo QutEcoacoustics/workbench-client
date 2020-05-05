@@ -3,6 +3,7 @@ import { DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { SecurityService } from "@baw-api/security/security.service";
 import { List } from "immutable";
 import {
   AnyMenuItem,
@@ -12,7 +13,6 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
-import { SecurityService } from "src/app/services/baw-api/security.service";
 import { assertIcon, assertTooltip, getText } from "src/app/test/helpers/html";
 import {
   mockActivatedRoute,

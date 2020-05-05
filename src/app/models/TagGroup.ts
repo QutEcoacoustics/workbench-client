@@ -1,8 +1,8 @@
 import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import {
   AbstractModel,
   BawDateTime,

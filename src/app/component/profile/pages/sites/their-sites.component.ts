@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { accountResolvers } from "@baw-api/account.service";
-import { ShallowSitesService } from "@baw-api/sites.service";
+import { accountResolvers } from "@baw-api/account/accounts.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
   theirProfileCategory,
   theirProfileMenuItem,

@@ -1,15 +1,15 @@
 import { Injector } from "@angular/core";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { Observable } from "rxjs";
-import { projectMenuItem } from "../component/projects/projects.menus";
-import { Card } from "../component/shared/cards/cards.component";
+import { projectMenuItem } from "@component/projects/projects.menus";
 import {
   DateTimeTimezone,
   Description,
   Id,
   Ids,
   Param,
-} from "../interfaces/apiInterfaces";
+} from "@interfaces/apiInterfaces";
+import { Card } from "@shared/cards/cards.component";
+import { Observable } from "rxjs";
 import {
   AbstractModel,
   BawCollection,

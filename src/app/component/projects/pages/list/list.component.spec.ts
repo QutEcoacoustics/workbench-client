@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers } from "@baw-api/projects.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import {

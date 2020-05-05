@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
@@ -17,11 +19,6 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import {
-  siteResolvers,
-  SitesService,
-} from "src/app/services/baw-api/sites.service";
 import { siteMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";

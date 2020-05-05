@@ -1,37 +1,37 @@
 /**
- * Purpose of this file is to create a disconnect between the services
+ * Purpose of this file is to create ./account/account.serviceeen the services
  * and being able to call them from the models. If the disconnect does not
  * exist, when you attempt to add association loading to the model it
  * will cause a circular dependency.
  */
 
 import { InjectionToken } from "@angular/core";
-import type { AccountService } from "./account.service";
-import type { AnalysisJobItemsService } from "./analysis-job-items.service";
-import type { AnalysisJobsService } from "./analysis-jobs.service";
-import type { AudioEventTagsService } from "./audio-event-tags.service";
-import type { AudioEventsService } from "./audio-events.service";
-import type { AudioRecordingsService } from "./audio-recordings.service";
-import type { BookmarksService } from "./bookmarks.service";
-import type { DatasetItemsService } from "./dataset-items.service";
-import type { DatasetsService } from "./datasets.service";
-import type { ProgressEventsService } from "./progress-events.service";
-import type { ProjectsService } from "./projects.service";
+import type { AccountsService } from "./account/accounts.service";
+import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
+import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
+import type { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
+import type { AudioEventsService } from "./audio-event/audio-events.service";
+import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
+import type { BookmarksService } from "./bookmark/bookmarks.service";
+import type { DatasetItemsService } from "./dataset/dataset-items.service";
+import type { DatasetsService } from "./dataset/datasets.service";
+import type { ProgressEventsService } from "./progress-event/progress-events.service";
+import type { ProjectsService } from "./project/projects.service";
+import type { SavedSearchesService } from "./saved-search/saved-searches.service";
+import type { ScriptsService } from "./script/scripts.service";
+import type { ShallowSitesService, SitesService } from "./site/sites.service";
 import type {
   QuestionsService,
   ShallowQuestionsService,
-} from "./questions.service";
+} from "./study/questions.service";
 import type {
   ResponsesService,
   ShallowResponsesService,
-} from "./responses.service";
-import type { SavedSearchesService } from "./saved-searches.service";
-import type { ScriptsService } from "./scripts.service";
-import type { ShallowSitesService, SitesService } from "./sites.service";
-import type { StudiesService } from "./studies.service";
-import type { TagGroupService } from "./tag-group.service";
-import type { TagsService } from "./tags.service";
-import type { UserService } from "./user.service";
+} from "./study/responses.service";
+import type { StudiesService } from "./study/studies.service";
+import type { TagGroupService } from "./tag/tag-group.service";
+import type { TagsService } from "./tag/tags.service";
+import type { UserService } from "./user/user.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -47,7 +47,7 @@ export class ServiceToken<T> {
   }
 }
 
-export const ACCOUNT = new ServiceToken<AccountService>("ACCOUNT_SERVICE");
+export const ACCOUNT = new ServiceToken<AccountsService>("ACCOUNTS_SERVICE");
 export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService>(
   "ANALYSIS_JOBS_SERVICE"
 );

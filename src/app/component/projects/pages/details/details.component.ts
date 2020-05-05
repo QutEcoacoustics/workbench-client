@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { projectResolvers } from "@baw-api/projects.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/sites.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,

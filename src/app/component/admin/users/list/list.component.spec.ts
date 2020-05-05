@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AccountService } from "@baw-api/account.service";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { User } from "@models/User";
@@ -14,7 +14,7 @@ import { AdminUserListComponent } from "./list.component";
 
 describe("AdminUserListComponent", () => {
   let fixture: ComponentFixture<AdminUserListComponent>;
-  let api: AccountService;
+  let api: AccountsService;
   let defaultUser: User;
   let defaultUsers: User[];
   let defaultPaging: {
@@ -76,7 +76,7 @@ describe("AdminUserListComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminUserListComponent);
-    api = TestBed.inject(AccountService);
+    api = TestBed.inject(AccountsService);
 
     defaultUser = new User({
       id: 1,

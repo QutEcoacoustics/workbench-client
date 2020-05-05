@@ -5,7 +5,7 @@ import {
   TestBed,
 } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { SecurityService } from "@baw-api/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";

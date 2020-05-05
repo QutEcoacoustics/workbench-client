@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { AccountService } from "@baw-api/account.service";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import {
   adminCategory,
   adminDashboardMenuItem,
@@ -46,7 +46,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   };
   public filterKey = "userName";
 
-  constructor(api: AccountService) {
+  constructor(api: AccountsService) {
     super(api, (accounts) =>
       accounts.map((account) => ({
         account,

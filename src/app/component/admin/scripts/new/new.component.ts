@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ScriptsService } from "@baw-api/scripts.service";
+import { ScriptsService } from "@baw-api/script/scripts.service";
 import {
   defaultSuccessMsg,
   FormTemplate,

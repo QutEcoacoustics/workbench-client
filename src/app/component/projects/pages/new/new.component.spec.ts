@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/projects.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";

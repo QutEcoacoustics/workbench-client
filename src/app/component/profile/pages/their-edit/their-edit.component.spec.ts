@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { accountResolvers } from "@baw-api/account.service";
+import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";

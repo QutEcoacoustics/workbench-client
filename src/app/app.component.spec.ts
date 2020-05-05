@@ -20,9 +20,9 @@ import { homeMenuItem } from "./component/home/home.menus";
 import { SharedModule } from "./component/shared/shared.module";
 import { Project } from "./models/Project";
 import { AppConfigService } from "./services/app-config/app-config.service";
-import { ProjectsService } from "./services/baw-api/projects.service";
-import { SecurityService } from "./services/baw-api/security.service";
-import { UserService } from "./services/baw-api/user.service";
+import { ProjectsService } from "./services/baw-api/project/projects.service";
+import { SecurityService } from "./services/baw-api/security/security.service";
+import { UserService } from "./services/baw-api/user/user.service";
 import { testBawServices } from "./test/helpers/testbed";
 
 describe("AppComponent", () => {

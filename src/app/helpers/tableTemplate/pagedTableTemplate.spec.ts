@@ -7,11 +7,11 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
-import { ProjectsService } from "@services/baw-api/projects.service";
 import { SharedModule } from "@shared/shared.module";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";

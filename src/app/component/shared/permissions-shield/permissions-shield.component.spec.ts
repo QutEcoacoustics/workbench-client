@@ -2,11 +2,11 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import { siteResolvers } from "src/app/services/baw-api/sites.service";
 import {
   mockActivatedRoute,
   testBawServices,

@@ -1,6 +1,8 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -8,8 +10,6 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { projectResolvers } from "src/app/services/baw-api/projects.service";
-import { SitesService } from "src/app/services/baw-api/sites.service";
 import { testFormlyFields } from "src/app/test/helpers/formly";
 import { assertResolverErrorHandling } from "src/app/test/helpers/html";
 import {

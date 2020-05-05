@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { accountResolvers } from "@baw-api/account.service";
-import { ProjectsService } from "@baw-api/projects.service";
+import { accountResolvers } from "@baw-api/account/accounts.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   theirProfileCategory,
   theirProfileMenuItem,

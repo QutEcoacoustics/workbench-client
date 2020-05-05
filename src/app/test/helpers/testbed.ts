@@ -8,7 +8,7 @@ import {
 } from "@baw-api/mock/baseApiMock.service";
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { SecurityService } from "@baw-api/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { serviceList } from "@baw-api/ServiceProviders";
 import {
   API_CONFIG,

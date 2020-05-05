@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/projects.service";
-import { SecurityService } from "@baw-api/security.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@component/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { userResolvers } from "@baw-api/user.service";
+import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,

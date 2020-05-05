@@ -42,7 +42,7 @@ export class Dataset extends AbstractModel implements IDataset {
 
   // Associations
   @Creator<Dataset>()
-  public creator?: Observable<User>;
+  public creator: Observable<User>;
   @Updater<Dataset>()
   public updater?: Observable<User>;
 

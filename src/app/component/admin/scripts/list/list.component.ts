@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ScriptsService } from "@baw-api/scripts.service";
+import { ScriptsService } from "@baw-api/script/scripts.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
