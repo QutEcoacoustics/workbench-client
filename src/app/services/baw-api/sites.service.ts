@@ -38,11 +38,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
   filter(filters: Filters, project: IdOr<Project>): Observable<Site[]> {
-    return filterMock(
-      filters,
-      (index) => new Site({ id: index, name: "PLACEHOLDER" })
-    );
-    // return this.apiFilter(endpoint(project, Empty, Filter), filters);
+    return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
   show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.apiShow(endpoint(project, model, Empty));
