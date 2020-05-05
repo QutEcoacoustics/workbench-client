@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Script } from "@models/Script";
@@ -25,8 +25,12 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  */
 @Injectable()
 export class ScriptsService extends ReadAndCreateApi<Script> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Script);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Script, injector);
   }
 
   list(): Observable<Script[]> {

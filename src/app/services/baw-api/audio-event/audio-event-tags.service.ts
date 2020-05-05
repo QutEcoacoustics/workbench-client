@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
@@ -17,8 +17,12 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_even
 export class AudioEventTagsService extends BawApiService<AudioEventTag>
   implements
     ApiFilter<AudioEventTag, [IdOr<AudioRecording>, IdOr<AudioEvent>]> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, AudioEventTag);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, AudioEventTag, injector);
   }
 
   filter(

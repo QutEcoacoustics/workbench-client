@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { TagGroup } from "@models/TagGroup";
@@ -25,8 +25,12 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
  */
 @Injectable()
 export class TagGroupService extends StandardApi<TagGroup> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, TagGroup);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, TagGroup, injector);
   }
 
   list(): Observable<TagGroup[]> {

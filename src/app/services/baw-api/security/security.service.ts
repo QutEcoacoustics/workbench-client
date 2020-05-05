@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AbstractModel, BawPersistAttr } from "@models/AbstractModel";
@@ -26,9 +26,10 @@ export class SecurityService extends BawApiService<SessionUser> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    private userService: UserService
+    private userService: UserService,
+    injector: Injector
   ) {
-    super(http, apiRoot, SessionUser);
+    super(http, apiRoot, SessionUser, injector);
 
     this.handleError = (err: ApiErrorDetails) => {
       this.clearSessionUser();

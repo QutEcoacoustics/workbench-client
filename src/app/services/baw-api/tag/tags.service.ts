@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Type } from "@angular/core";
+import { Inject, Injectable, Injector, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -28,8 +28,12 @@ const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 @Injectable()
 export class TagsService extends StandardApi<Tag> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Tag);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Tag, injector);
   }
 
   list(): Observable<Tag[]> {

@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -27,8 +27,12 @@ export class AnalysisJobItemsService extends ReadonlyApi<
   AnalysisJobItem,
   [IdOr<AnalysisJob>]
 > {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, AnalysisJobItem);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, AnalysisJobItem, injector);
   }
 
   list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {

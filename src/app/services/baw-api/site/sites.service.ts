@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
@@ -30,8 +30,12 @@ const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
  */
 @Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Site);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Site, injector);
   }
 
   list(project: IdOr<Project>): Observable<Site[]> {
@@ -61,8 +65,12 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
  */
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Site);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Site, injector);
   }
 
   list(): Observable<Site[]> {

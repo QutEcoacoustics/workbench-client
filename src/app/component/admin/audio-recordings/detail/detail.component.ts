@@ -1,19 +1,19 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
+import { fields } from "../audio-recording.json";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
   adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
-import { AudioRecording } from "@models/AudioRecording";
-import { fields } from "../audio-recording.json";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers } from "@baw-api/resolver-common";
 
 const audioRecordingKey = "audioRecording";
 

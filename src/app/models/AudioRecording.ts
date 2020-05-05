@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { adminAudioRecordingMenuItem } from "@component/admin/audio-recordings/audio-recordings.menus";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
@@ -14,7 +15,6 @@ import {
 } from "./AbstractModel";
 import type { Site } from "./Site";
 import type { User } from "./User";
-import { adminAudioRecordingMenuItem } from "@component/admin/audio-recordings/audio-recordings.menus";
 
 /**
  * An audio recording model

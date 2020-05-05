@@ -33,19 +33,19 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
 
   list(): Observable<AudioRecording[]> {
     return this.filter({});
-    //return this.apiList(endpoint(Empty, Empty));
+    // return this.apiList(endpoint(Empty, Empty));
   }
   filter(filters: Filters): Observable<AudioRecording[]> {
     return filterMock(filters, (modelId) =>
       createAudioRecording(modelId, this.injector)
     );
-    //return this.apiFilter(endpoint(Empty, Filter), filters);
+    // return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
     return showMock(model, (modelId) =>
       createAudioRecording(modelId, this.injector)
     );
-    //return this.apiShow(endpoint(model, Empty));
+    // return this.apiShow(endpoint(model, Empty));
   }
 }
 
