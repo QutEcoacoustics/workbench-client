@@ -8,7 +8,7 @@ import {
   ApiErrorDetails,
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
-import { SessionUser, User } from "@models/User";
+import { ISessionUser, IUser, SessionUser, User } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { MockShowApiService } from "../mock/showApiMock.service";
@@ -159,18 +159,20 @@ describe("SecurityService", () => {
       }, shouldNotFail);
     }));
 
-    it("store user", fakeAsync(() => {
+    it("should store user", fakeAsync(() => {
       const userDetails = {
         id: 1,
-        userName: "userName", // Purposely wrong to highlight session user overrides user
-        lastSeenAt: "1970-01-01T00:00:00.000+10:00",
-        rolesMask: 2,
-        rolesMaskNames: ["user"],
-      };
+        userName: "username",
+        preferences: {},
+        rolesMask: 1,
+        imageUrls: [
+          { size: "extralarge", url: "path.png", width: 300, height: 300 },
+        ],
+      } as IUser;
       const authDetails = {
         authToken: "xxxxxxxxxxxxxxxx",
         userName: "username",
-      };
+      } as ISessionUser;
 
       const user = new User(userDetails);
       const session = new SessionUser(authDetails);
@@ -179,11 +181,66 @@ describe("SecurityService", () => {
 
       expect(service.getLocalUser()).toEqual(
         new SessionUser({
-          ...authDetails,
-          ...userDetails,
+          id: 1,
+          authToken: "xxxxxxxxxxxxxxxx",
+          userName: "username",
+          preferences: {},
+          rolesMask: 1,
+          imageUrls: [
+            { size: "extralarge", url: "path.png", width: 300, height: 300 },
+          ],
         })
       );
     }));
+
+    it("should ignore excess user data", () => {
+      const userDetails = {
+        id: 1,
+        email: "test@example.com",
+        userName: "username",
+        signInCount: 1,
+        failedAttempts: 2,
+        preferences: {},
+        isConfirmed: true,
+        imageUrls: [
+          { size: "extralarge", url: "path.png", width: 300, height: 300 },
+        ],
+        rolesMask: 1,
+        rolesMaskNames: ["user"],
+        resetPasswordSentAt: "1970-01-01T00:00:00.000+10:00",
+        rememberCreatedAt: "1970-01-01T00:00:00.000+10:00",
+        currentSignInAt: "1970-01-01T00:00:00.000+10:00",
+        lastSignInAt: "1970-01-01T00:00:00.000+10:00",
+        confirmedAt: "1970-01-01T00:00:00.000+10:00",
+        confirmationSentAt: "1970-01-01T00:00:00.000+10:00",
+        lockedAt: "1970-01-01T00:00:00.000+10:00",
+        createdAt: "1970-01-01T00:00:00.000+10:00",
+        updatedAt: "1970-01-01T00:00:00.000+10:00",
+        lastSeenAt: "1970-01-01T00:00:00.000+10:00",
+      } as IUser;
+      const authDetails = {
+        authToken: "xxxxxxxxxxxxxxxx",
+        userName: "username",
+      } as ISessionUser;
+
+      const user = new User(userDetails);
+      const session = new SessionUser(authDetails);
+      createResponse("/security/", defaultLoginDetails, session, user);
+      service.signIn(defaultLoginDetails).subscribe(() => {}, shouldNotFail);
+
+      expect(service.getLocalUser()).toEqual(
+        new SessionUser({
+          id: 1,
+          userName: "username",
+          rolesMask: 1,
+          preferences: {},
+          authToken: "xxxxxxxxxxxxxxxx",
+          imageUrls: [
+            { size: "extralarge", url: "path.png", width: 300, height: 300 },
+          ],
+        })
+      );
+    });
 
     it("should trigger authTrigger", fakeAsync(() => {
       const spy = jasmine.createSpy();
