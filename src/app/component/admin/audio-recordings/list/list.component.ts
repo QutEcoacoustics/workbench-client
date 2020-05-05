@@ -28,7 +28,6 @@ import {
 @Component({
   selector: "app-admin-audio-recordings",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
 })
 export class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>

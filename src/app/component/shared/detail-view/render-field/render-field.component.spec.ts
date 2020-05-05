@@ -322,4 +322,7 @@ describe("RenderFieldComponent", () => {
       expect(value.innerText.trim()).toBe("(error)");
     });
   });
+
+  xdescribe("AbstractModel input", () => {});
+  xdescribe("Observable input", () => {});
 });

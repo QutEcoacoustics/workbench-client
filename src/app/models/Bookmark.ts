@@ -75,4 +75,8 @@ export class Bookmark extends AbstractModel implements IBookmark {
     // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
     throw new Error("Bookmark viewUrl not implemented.");
   }
+
+  public toString(): string {
+    return this.name;
+  }
 }

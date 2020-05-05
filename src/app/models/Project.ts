@@ -97,4 +97,8 @@ export class Project extends AbstractModel implements IProject {
   public get viewUrl(): string {
     return projectMenuItem.route.format({ projectId: this.id });
   }
+
+  public toString(): string {
+    return this.name;
+  }
 }

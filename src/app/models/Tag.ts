@@ -70,6 +70,10 @@ export class Tag extends AbstractModel implements ITag {
   public get viewUrl(): string {
     return adminTagsMenuItem.route.toString();
   }
+
+  public toString(): string {
+    return this.text;
+  }
 }
 
 export class TagType extends AbstractData {

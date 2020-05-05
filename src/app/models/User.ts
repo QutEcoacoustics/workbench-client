@@ -107,6 +107,10 @@ export class User extends AbstractModel implements IUser {
   public getImage(size: ImageSizes): string {
     return getModelImage(this, size);
   }
+
+  public toString(): string {
+    return this.userName;
+  }
 }
 
 /**

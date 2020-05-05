@@ -75,6 +75,13 @@ export abstract class AbstractModel {
   }
 
   /**
+   * Convert model to string
+   */
+  public toString(): string {
+    return this.id.toString();
+  }
+
+  /**
    * Add hidden metadata to model
    * @param meta Metadata
    */

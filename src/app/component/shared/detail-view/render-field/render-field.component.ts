@@ -1,23 +1,37 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
+import { Observable } from "rxjs";
 import { toRelative } from "src/app/interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-render-field",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
+      <!-- Display plain text -->
       <dl *ngIf="styling === FieldStyling.Plain">
         <p>{{ display }}</p>
       </dl>
+
+      <!-- Display code/objects -->
       <dl *ngIf="styling === FieldStyling.Code">
         <pre>{{ display }}</pre>
       </dl>
+
+      <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
           [checked]="display"
           [disabled]="true"
           [isCentered]="false"
         ></app-checkbox>
+      </dl>
+
+      <!-- Display AbstractModel -->
+      <dl *ngIf="styling === FieldStyling.Model">
+        <p>
+          <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
+        </p>
       </dl>
     </ng-container>
     <ng-template #hasChildren>
@@ -38,6 +52,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 export class RenderFieldComponent implements OnInit {
   @Input() view: ModelView;
   public display: string | number | boolean;
+  public model: AbstractModel;
   public children: ModelView[];
   public styling: FieldStyling = FieldStyling.Plain;
   public FieldStyling = FieldStyling;
@@ -45,13 +60,13 @@ export class RenderFieldComponent implements OnInit {
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
-  constructor() {}
+  constructor(private ref: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.humanize(this.view);
   }
 
-  private humanize(value: any) {
+  private humanize(value: ModelView) {
     if (value === null || value === undefined) {
       this.display = this.noValueText;
     } else if (value instanceof DateTime) {
@@ -62,6 +77,12 @@ export class RenderFieldComponent implements OnInit {
       this.humanizeArray(value);
     } else if (value instanceof Blob) {
       this.humanizeBlob(value);
+    } else if (value instanceof Observable) {
+      this.humanizeObservable(value);
+    } else if (value instanceof AbstractModel) {
+      this.styling = FieldStyling.Model;
+      this.display = "";
+      this.model = value;
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
       this.humanizeObject(value);
@@ -107,6 +128,26 @@ export class RenderFieldComponent implements OnInit {
     reader.readAsText(value);
   }
 
+  private humanizeObservable(
+    value: Observable<AbstractModel | AbstractModel[]>
+  ) {
+    this.display = this.loadingText;
+    value.subscribe(
+      (models) => {
+        if (!models) {
+          this.display = this.noValueText;
+        } else {
+          this.humanize(models);
+        }
+        this.ref.detectChanges();
+      },
+      () => {
+        this.display = this.errorText;
+        this.ref.detectChanges();
+      }
+    );
+  }
+
   /**
    * Convert array to human readable output
    * @param value Display output
@@ -135,6 +176,7 @@ type ModelView =
   | boolean
   | DateTime
   | Duration
+  | AbstractModel
   | Blob
   | object
   | ModelView[];
@@ -145,4 +187,5 @@ enum FieldStyling {
   Link,
   Plain,
   Route,
+  Model,
 }

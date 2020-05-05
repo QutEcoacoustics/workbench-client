@@ -33,10 +33,10 @@
       }
     },
     {
-      "key": "sites",
+      "key": "site",
       "type": "input",
       "templateOptions": {
-        "label": "Sites",
+        "label": "Site",
         "type": "text"
       }
     },
