@@ -6,7 +6,7 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   defaultSuccessMsg,
-  FormTemplate
+  FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
@@ -14,13 +14,13 @@ import { Site } from "src/app/models/Site";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import {
   siteResolvers,
-  SitesService
+  SitesService,
 } from "src/app/services/baw-api/sites.service";
 import { fields } from "../../site.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
-  sitesCategory
+  sitesCategory,
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 
@@ -35,13 +35,13 @@ const siteKey = "site";
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List()
+    links: List(),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show
+    [siteKey]: siteResolvers.show,
   },
-  self: editSiteMenuItem
+  self: editSiteMenuItem,
 })
 @Component({
   selector: "app-sites-edit",
@@ -57,7 +57,7 @@ const siteKey = "site";
         (onSubmit)="submit($event)"
       ></app-form>
     </app-wip>
-  `
+  `,
 })
 export class EditComponent extends FormTemplate<Site> implements OnInit {
   public fields = fields;
@@ -69,7 +69,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, siteKey, model =>
+    super(notifications, route, router, siteKey, (model) =>
       defaultSuccessMsg("updated", model.name)
     );
   }
@@ -87,7 +87,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
   }
 
   protected redirectionPath(model: Site) {
-    return model.redirectPath(this.project);
+    return model.getViewUrl(this.project);
   }
 
   protected apiAction(model: Partial<Site>) {

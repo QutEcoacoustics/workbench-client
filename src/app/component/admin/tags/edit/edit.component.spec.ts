@@ -2,13 +2,16 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { tagResolvers, TagsService, TagType } from "@baw-api/tags.service";
-import { Tag } from "@models/Tag";
+import { tagResolvers, TagsService } from "@baw-api/tags.service";
+import { Tag, TagType } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {
@@ -37,7 +40,7 @@ describe("AdminTagsEditComponent", () => {
           useClass: mockActivatedRoute(
             {
               tag: tagResolvers.show,
-              typeOfTags: tagResolvers.typeOfTags,
+              typeOfTags: tagResolvers.tagTypes,
             },
             {
               tag: {

@@ -14,7 +14,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SecurityService } from "src/app/services/baw-api/security.service";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";

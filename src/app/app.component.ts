@@ -13,11 +13,11 @@ import { AppConfigService } from "./services/app-config/app-config.service";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent extends WithUnsubscribe() implements OnInit {
-  menuLayout: boolean;
-  delayedProgress$: Observable<number>;
+  public menuLayout: boolean;
+  public delayedProgress$: Observable<number>;
 
   constructor(
     private env: AppConfigService,
@@ -39,12 +39,12 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
     this.delayedProgress$ = this.loader.progress$.pipe(
       delay(3000),
       withLatestFrom(this.loader.progress$),
-      map(v => v[1])
+      map((v) => v[1])
     );
 
     // Determine whether the currently shown component uses the menu layout or fullscreen
     this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(
-      event => {
+      (event) => {
         if (event instanceof NavigationEnd) {
           // Find the primary router component
           let displayComponent = this.route.snapshot.firstChild;
@@ -75,7 +75,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
           this.menuLayout = !!pageInfo && !pageInfo.fullscreen;
         }
       },
-      err => {}
+      (err) => {}
     );
   }
 }

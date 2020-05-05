@@ -13,8 +13,11 @@ import {
   siteResolvers,
   SitesService,
 } from "src/app/services/baw-api/sites.service";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling } from "src/testHelpers";
+import { assertResolverErrorHandling } from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {
@@ -124,12 +127,12 @@ describe("SitesDeleteComponent", () => {
     });
 
     it("should redirect to projects", () => {
-      spyOn(defaultProject, "redirectPath");
+      const spy = spyOnProperty(defaultProject, "viewUrl");
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
       spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
-      expect(defaultProject.redirectPath).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

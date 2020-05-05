@@ -24,7 +24,7 @@
   >
     <ngx-datatable-column name="Project">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="[value.route]">{{ value.label }}</a>
+        <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Sites"> </ngx-datatable-column>

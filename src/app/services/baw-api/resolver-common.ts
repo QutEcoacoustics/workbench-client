@@ -1,10 +1,10 @@
 import { Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { Id } from "@interfaces/apiInterfaces";
+import { AbstractData } from "@models/AbstractData";
+import { AbstractModel } from "@models/AbstractModel";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { AbstractData } from "src/app/models/AbstractData";
-import { AbstractModel } from "src/app/models/AbstractModel";
 import {
   ApiCreate,
   ApiDestroy,
@@ -19,6 +19,7 @@ import { BawApiService } from "./baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class
+ * This allows a service to define its own custom resolver
  */
 export abstract class BawResolver<
   // Output Model

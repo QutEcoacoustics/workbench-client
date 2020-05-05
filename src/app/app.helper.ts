@@ -1,8 +1,9 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
+import { serviceProviders } from "@baw-api/ServiceProviders";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { ConfigOption } from "@ngx-formly/core";
+import { ConfigOption, FormlyFieldConfig } from "@ngx-formly/core";
 import { FormlyCheckboxInput } from "./component/shared/formly/checkbox-input.component";
 import { FormlyHorizontalWrapper } from "./component/shared/formly/horizontal-wrapper";
 import { FormlyImageInput } from "./component/shared/formly/image-input.component";
@@ -14,40 +15,14 @@ import {
   AppInitializer,
   CMS_ROOT,
 } from "./helpers/app-initializer/app-initializer";
-import { AppConfigService } from "./services/app-config/app-config.service";
-import {
-  accountResolvers,
-  AccountService,
-} from "./services/baw-api/account.service";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "./services/baw-api/projects.service";
-import {
-  scriptResolvers,
-  ScriptsService,
-} from "./services/baw-api/scripts.service";
-import { SecurityService } from "./services/baw-api/security.service";
-import {
-  shallowSiteResolvers,
-  ShallowSitesService,
-  siteResolvers,
-  SitesService,
-} from "./services/baw-api/sites.service";
-import {
-  tagGroupResolvers,
-  TagGroupService,
-} from "./services/baw-api/tag-group.service";
-import { tagResolvers, TagsService } from "./services/baw-api/tags.service";
-import { userResolvers, UserService } from "./services/baw-api/user.service";
 
 /**
  * Input min length validation message
  * @param err Error message
  * @param field Formly field
  */
-export function minLengthValidationMessage(err, field) {
+export function minLengthValidationMessage(_, field: FormlyFieldConfig) {
   return `Input should have at least ${field.templateOptions.minLength} characters`;
 }
 
@@ -56,7 +31,7 @@ export function minLengthValidationMessage(err, field) {
  * @param err Error message
  * @param field Formly field
  */
-export function maxLengthValidationMessage(err, field) {
+export function maxLengthValidationMessage(_, field: FormlyFieldConfig) {
   return `This value should be less than ${field.templateOptions.maxLength} characters`;
 }
 
@@ -65,7 +40,7 @@ export function maxLengthValidationMessage(err, field) {
  * @param err Error message
  * @param field Formly field
  */
-export function minValidationMessage(err, field) {
+export function minValidationMessage(_, field: FormlyFieldConfig) {
   return `This value should be more than ${field.templateOptions.min}`;
 }
 
@@ -74,7 +49,7 @@ export function minValidationMessage(err, field) {
  * @param err Error message
  * @param field Formly field
  */
-export function maxValidationMessage(err, field) {
+export function maxValidationMessage(_, field: FormlyFieldConfig) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
@@ -149,22 +124,5 @@ export const providers = [
     useFactory: AppInitializer.cmsRootFactory,
   },
   FormTouchedGuard,
-  AppConfigService,
-  AccountService,
-  ProjectsService,
-  ScriptsService,
-  SecurityService,
-  ShallowSitesService,
-  SitesService,
-  TagsService,
-  TagGroupService,
-  UserService,
-  ...accountResolvers.providers,
-  ...projectResolvers.providers,
-  ...scriptResolvers.providers,
-  ...siteResolvers.providers,
-  ...shallowSiteResolvers.providers,
-  ...tagResolvers.providers,
-  ...tagGroupResolvers.providers,
-  ...userResolvers.providers,
+  ...serviceProviders,
 ];

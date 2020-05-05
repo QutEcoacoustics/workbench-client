@@ -9,7 +9,10 @@ import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { projectResolvers } from "src/app/services/baw-api/projects.service";
 import { siteResolvers } from "src/app/services/baw-api/sites.service";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {
@@ -35,21 +38,21 @@ describe("SitesDetailsComponent", () => {
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
-              site: siteResolvers.show
+              site: siteResolvers.show,
             },
             {
               project: {
                 model: project,
-                error: projectError
+                error: projectError,
               },
               site: {
                 model: site,
-                error: siteError
-              }
+                error: siteError,
+              },
             }
-          )
-        }
-      ]
+          ),
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsComponent);
@@ -59,15 +62,15 @@ describe("SitesDetailsComponent", () => {
   beforeEach(() => {
     defaultProject = new Project({
       id: 1,
-      name: "Project"
+      name: "Project",
     });
     defaultSite = new Site({
       id: 1,
-      name: "Site"
+      name: "Site",
     });
     defaultError = {
       status: 401,
-      message: "Unauthorized"
+      message: "Unauthorized",
     };
   });
 
@@ -104,7 +107,7 @@ describe("SitesDetailsComponent", () => {
     it("should display project name", () => {
       const project = new Project({
         id: 1,
-        name: "Custom Project"
+        name: "Custom Project",
       });
       configureTestingModule(project, undefined, defaultSite, undefined);
       fixture.detectChanges();
@@ -119,7 +122,7 @@ describe("SitesDetailsComponent", () => {
     it("should display site name", () => {
       const site = new Site({
         id: 1,
-        name: "Custom Site"
+        name: "Custom Site",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -132,7 +135,7 @@ describe("SitesDetailsComponent", () => {
     it("should display default site image", () => {
       const site = new Site({
         id: 1,
-        name: "Site"
+        name: "Site",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -149,7 +152,7 @@ describe("SitesDetailsComponent", () => {
       const site = new Site({
         id: 1,
         name: "Site",
-        imageUrl: "http://brokenlink/"
+        imageUrl: "http://brokenlink/",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -164,7 +167,7 @@ describe("SitesDetailsComponent", () => {
       const site = new Site({
         id: 1,
         name: "Site",
-        description: "Custom Description"
+        description: "Custom Description",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -181,7 +184,7 @@ describe("SitesDetailsComponent", () => {
     it("should display google maps placeholder box when no location found", () => {
       const site = new Site({
         id: 1,
-        name: "Site"
+        name: "Site",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -199,7 +202,7 @@ describe("SitesDetailsComponent", () => {
         name: "Site",
         locationObfuscated: true,
         customLatitude: 0,
-        customLongitude: 1
+        customLongitude: 1,
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();

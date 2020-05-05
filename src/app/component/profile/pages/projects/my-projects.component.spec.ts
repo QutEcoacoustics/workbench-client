@@ -4,12 +4,18 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/projects.service";
 import { userResolvers } from "@baw-api/user.service";
-import { Project, ProjectInterface } from "@models/Project";
+import { IProject, Project } from "@models/Project";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject } from "rxjs";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
-import { assertResolverErrorHandling, assertRoute } from "src/testHelpers";
+import {
+  assertResolverErrorHandling,
+  assertRoute,
+} from "src/app/test/helpers/html";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { MyProjectsComponent } from "./my-projects.component";
 
 describe("MyProjectsComponent", () => {
@@ -70,7 +76,7 @@ describe("MyProjectsComponent", () => {
   });
 
   describe("table", () => {
-    function setProject(data: ProjectInterface) {
+    function setProject(data: IProject): Project {
       const project = new Project({ id: 1, name: "project", ...data });
       project.addMetadata({
         status: 200,
@@ -108,12 +114,12 @@ describe("MyProjectsComponent", () => {
       fixture.detectChanges();
 
       const link = getCells()[0].querySelector("a");
-      assertRoute(link, project.redirectPath());
+      assertRoute(link, project.viewUrl);
     });
 
     it("should display number of sites", () => {
       configureTestingModule(defaultUser);
-      setProject({ siteIds: new Set([1, 2, 3, 4, 5]) });
+      setProject({ siteIds: [1, 2, 3, 4, 5] });
       fixture.detectChanges();
 
       expect(getCells()[1].innerText).toBe("5");

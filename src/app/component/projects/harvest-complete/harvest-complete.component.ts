@@ -36,7 +36,7 @@ export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
   }
 
   public detailsPath(site: Site) {
-    return site.redirectPath(this.project);
+    return site.getViewUrl(this.project);
   }
 
   public playPath(site: Site) {

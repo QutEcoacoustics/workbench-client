@@ -9,14 +9,14 @@ import { SecurityService } from "@baw-api/security.service";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { testBawServices } from "src/app/test.helper";
+import { testFormlyFields } from "src/app/test/helpers/formly";
 import {
   assertValidationMessage,
   getInputs,
   inputValue,
   submitForm,
-  testFormlyFields,
-} from "src/testHelpers";
+} from "src/app/test/helpers/html";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.json";
 

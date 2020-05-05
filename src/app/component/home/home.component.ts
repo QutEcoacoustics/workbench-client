@@ -45,9 +45,9 @@ export class HomeComponent extends PageComponent implements OnInit {
         flatMap(() => {
           return this.projectApi.filter({ paging: { items: 3 } });
         }),
-        map((data: Project[]) => {
-          return List(data.map((project) => project.getCard()));
-        }),
+        map((data: Project[]) =>
+          List(data.map((project) => project.getCard()))
+        ),
         takeUntil(this.unsubscribe)
       )
       .subscribe(

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { AccountService } from "@baw-api/account.service";
 import {
   adminCategory,
@@ -51,7 +51,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
       accounts.map((account) => ({
         account,
         user: account.userName,
-        lastLogin: account.lastSeenAt ? account.lastSeenAt.toRelative() : "?",
+        lastLogin: account.lastSeenAt?.toRelative() || "?",
         confirmed: account.isConfirmed,
       }))
     );
@@ -63,7 +63,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
    * @param user User account
    */
   public viewPath(user: User) {
-    return user.redirectPath();
+    return user.viewUrl;
   }
 
   /**

@@ -1,30 +1,39 @@
+import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
+import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
-  dateTimeTimezone,
   Description,
   Id,
   Ids,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Project } from "./Project";
+import {
+  AbstractModel,
+  BawCollection,
+  BawDateTime,
+  BawPersistAttr,
+  HasMany,
+  HasOne,
+} from "./AbstractModel";
+import type { Project } from "./Project";
+import type { User } from "./User";
 
 /**
  * A site model.
  */
-export interface SiteInterface {
+export interface ISite {
   id?: Id;
   name?: Param;
   imageUrl?: string;
   description?: Description;
   locationObfuscated?: boolean;
   creatorId?: Id;
-  createdAt?: DateTimeTimezone | string;
   updaterId?: Id;
+  createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
-  projectIds?: Ids;
+  projectIds?: Ids | Id[];
   customLatitude?: number;
   customLongitude?: number;
   timezoneInformation?: TimezoneInformation;
@@ -33,57 +42,63 @@ export interface SiteInterface {
 /**
  * A site model.
  */
-export class Site extends AbstractModel implements SiteInterface {
+export class Site extends AbstractModel implements ISite {
   public readonly kind: "Site" = "Site";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
   public readonly imageUrl?: string;
+  @BawPersistAttr
   public readonly description?: Description;
+  @BawPersistAttr
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
-  public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  @BawDateTime()
+  public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
+  @BawPersistAttr
   public readonly customLatitude?: number;
+  @BawPersistAttr
   public readonly customLongitude?: number;
+  @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
-  constructor(site: SiteInterface) {
+  // Associations
+  @HasOne(ACCOUNT, (m: Site) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Site) => m.updaterId)
+  public updater?: Observable<User>;
+  @HasMany(PROJECT, (m: Site) => m.projectIds)
+  public projects?: Observable<Project[]>;
+
+  constructor(site: ISite) {
     super(site);
 
     this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
-    this.projectIds = new Set(site.projectIds || []);
-    this.createdAt = dateTimeTimezone(site.createdAt as string);
-    this.updatedAt = dateTimeTimezone(site.updatedAt as string);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new Site(obj);
-  };
-
-  toJSON() {
-    // TODO Add image, latitude, longitude, timezone
-    return {
-      id: this.id,
-      name: this.name,
-      description: this.description,
-    };
-  }
-
-  redirectPath(project?: Project): string {
-    if (!project?.id && this.projectIds.size === 0) {
+  public get viewUrl(): string {
+    if (this.projectIds.size === 0) {
       console.error("Site model has no project id, cannot find url.");
       return "";
     }
 
     return siteMenuItem.route.format({
-      projectId: project?.id || this.projectIds[0],
+      projectId: this.projectIds[0],
+      siteId: this.id,
+    });
+  }
+
+  public getViewUrl(project: Project): string {
+    return siteMenuItem.route.format({
+      projectId: project.id,
       siteId: this.id,
     });
   }

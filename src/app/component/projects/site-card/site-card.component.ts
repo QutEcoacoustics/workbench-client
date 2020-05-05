@@ -13,13 +13,13 @@ import { Site } from "@models/Site";
     <li class="list-group-item">
       <div class="site">
         <div class="image">
-          <a id="imageLink" [routerLink]="site.redirectPath(project)">
+          <a id="imageLink" [routerLink]="site.getViewUrl(project)">
             <img id="image" [src]="site.imageUrl" [alt]="site.name + ' alt'" />
           </a>
         </div>
         <div class="body">
           <div class="heading">
-            <a id="nameLink" [routerLink]="site.redirectPath(project)">
+            <a id="nameLink" [routerLink]="site.getViewUrl(project)">
               <h5 id="name">
                 {{ site.name }}
               </h5>
@@ -31,7 +31,7 @@ import { Site } from "@models/Site";
               <a
                 id="details"
                 class="nav-link"
-                [routerLink]="site.redirectPath(project)"
+                [routerLink]="site.getViewUrl(project)"
               >
                 <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
                 Details

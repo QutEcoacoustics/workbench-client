@@ -2,20 +2,21 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController,
-  TestRequest
+  TestRequest,
 } from "@angular/common/http/testing";
+import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { SessionUser, User } from "src/app/models/User";
-import { testAppInitializer } from "src/app/test.helper";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { AppConfigService } from "../app-config/app-config.service";
 import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
   Meta,
-  STUB_MODEL_BUILDER
+  STUB_MODEL_BUILDER,
 } from "./baw-api.service";
 import { MockSecurityService } from "./mock/securityMock.service";
 import { MockShowApiService } from "./mock/showApiMock.service";
@@ -36,7 +37,7 @@ export const shouldNotComplete = () => {
 
 export const apiErrorDetails = {
   status: 401,
-  message: "Unauthorized"
+  message: "Unauthorized",
 } as ApiErrorDetails;
 
 export const apiErrorInfoDetails = {
@@ -48,8 +49,8 @@ export const apiErrorInfoDetails = {
     image_file_name: [],
     image_file_size: [],
     image_content_type: [],
-    image_updated_at: []
-  }
+    image_updated_at: [],
+  },
 } as ApiErrorDetails;
 
 describe("BawApiService", () => {
@@ -74,29 +75,19 @@ describe("BawApiService", () => {
       testConvert?: string;
     };
 
-    constructor(data: MockModelInterface) {
-      super(data);
-    }
-
-    static fromJSON(obj: any) {
-      if (typeof obj === "string") {
-        obj = JSON.parse(obj);
-      }
-
-      return new MockModel(obj);
+    constructor(data: MockModelInterface, modelInjector: Injector) {
+      super(data, modelInjector);
     }
 
     public toJSON() {
-      const json = {};
-
-      this.addIfExists(json, "id", this.id);
-      this.addIfExists(json, "name", this.name);
-      this.addIfExists(json, "caseConversion", this.caseConversion);
-
-      return json;
+      return {
+        id: this.id,
+        name: this.name,
+        caseConversion: this.caseConversion,
+      };
     }
 
-    public redirectPath(): string {
+    public get viewUrl(): string {
       return "";
     }
   }
@@ -111,14 +102,14 @@ describe("BawApiService", () => {
   // Single response metadata
   const singleMeta = {
     status: 200,
-    message: "OK"
+    message: "OK",
   } as Meta;
 
   // Api error metadata
   const errorMeta = {
     status: apiErrorDetails.status,
     message: "Unauthorized",
-    error: { details: apiErrorDetails.message }
+    error: { details: apiErrorDetails.message },
   } as Meta;
 
   // Api error metadata with info
@@ -133,9 +124,9 @@ describe("BawApiService", () => {
         image_file_name: [],
         image_file_size: [],
         image_content_type: [],
-        image_updated_at: []
-      }
-    }
+        image_updated_at: [],
+      },
+    },
   } as Meta;
 
   // Single model response
@@ -143,8 +134,8 @@ describe("BawApiService", () => {
     id: 1,
     name: "name",
     caseConversion: {
-      testConvert: "converted"
-    }
+      testConvert: "converted",
+    },
   };
 
   // Multi model response
@@ -162,14 +153,14 @@ describe("BawApiService", () => {
   function flushResponse<T>(req: TestRequest, response: ApiResponse<T>) {
     req.flush(response, {
       status: response.meta.status,
-      statusText: response.meta.message
+      statusText: response.meta.message,
     });
   }
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
       url: env.environment.apiRoot + route,
-      method
+      method,
     });
   }
 
@@ -203,10 +194,10 @@ describe("BawApiService", () => {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
-          multi: true
+          multi: true,
         },
-        { provide: STUB_MODEL_BUILDER, useValue: MockModel }
-      ]
+        { provide: STUB_MODEL_BUILDER, useValue: MockModel },
+      ],
     });
     service = TestBed.inject(BawApiService);
     env = TestBed.inject(AppConfigService);
@@ -217,7 +208,7 @@ describe("BawApiService", () => {
       message: "OK",
       sorting: {
         orderBy: "name",
-        direction: "asc"
+        direction: "asc",
       },
       paging: {
         page: 1,
@@ -228,8 +219,8 @@ describe("BawApiService", () => {
           env.environment.apiRoot +
           "/projects?direction=asc&items=25&order_by=name&page=1",
         previous: null,
-        next: null
-      }
+        next: null,
+      },
     };
   });
 
@@ -273,6 +264,12 @@ describe("BawApiService", () => {
       signOut();
       expect(service.getLocalUser()).toBe(null);
     });
+
+    it("should handle corrupted user data", () => {
+      localStorage.setItem("baw.client.user", '{"');
+      expect(service.getLocalUser()).toBe(null);
+      expect(service.isLoggedIn()).toBe(false);
+    });
   });
 
   describe("HTTP Request Methods", () => {
@@ -280,26 +277,26 @@ describe("BawApiService", () => {
       {
         functionName: "httpGet",
         method: "GET",
-        hasBody: false
+        hasBody: false,
       },
       {
         functionName: "httpPost",
         method: "POST",
-        hasBody: true
+        hasBody: true,
       },
       {
         functionName: "httpPatch",
         method: "PATCH",
-        hasBody: true
+        hasBody: true,
       },
       {
         functionName: "httpDelete",
         method: "DELETE",
-        hasBody: false
-      }
+        hasBody: false,
+      },
     ];
 
-    httpMethods.forEach(httpMethod => {
+    httpMethods.forEach((httpMethod) => {
       describe(httpMethod.functionName, () => {
         it(`should create ${httpMethod.method} request`, () => {
           service[httpMethod.functionName]("/broken_link").subscribe();
@@ -323,7 +320,7 @@ describe("BawApiService", () => {
         it("should return single response", () => {
           const response = {
             meta: singleMeta,
-            data: singleResponse
+            data: singleResponse,
           } as ApiResponse<MockModel>;
 
           service[httpMethod.functionName]("/broken_link", {}).subscribe(
@@ -338,7 +335,7 @@ describe("BawApiService", () => {
         it("should return multi response", () => {
           const response = {
             meta: singleMeta,
-            data: [singleResponse]
+            data: [singleResponse],
           } as ApiResponse<MockModel[]>;
 
           service[httpMethod.functionName]("/broken_link", {}).subscribe(
@@ -382,10 +379,10 @@ describe("BawApiService", () => {
           flushResponse<MockModel>(req, response);
         });
 
-        it("should complete on success", done => {
+        it("should complete on success", (done) => {
           const response = {
             meta: singleMeta,
-            data: singleResponse
+            data: singleResponse,
           } as ApiResponse<MockModel>;
 
           service[httpMethod.functionName]("/broken_link", {}).subscribe(
@@ -411,7 +408,7 @@ describe("BawApiService", () => {
 
           it("should accept body", () => {
             service[httpMethod.functionName]("/broken_link", {
-              key: "value"
+              key: "value",
             }).subscribe();
             const req = catchRequest("/broken_link", httpMethod.method);
             expect(req.request.body).toEqual({ key: "value" });
@@ -419,7 +416,7 @@ describe("BawApiService", () => {
 
           it("should convert body keys", () => {
             service[httpMethod.functionName]("/broken_link", {
-              caseConversion: "value"
+              caseConversion: "value",
             }).subscribe();
             const req = catchRequest("/broken_link", httpMethod.method);
             expect(req.request.body).toEqual({ case_conversion: "value" });
@@ -428,12 +425,12 @@ describe("BawApiService", () => {
           it("should convert nested body keys", () => {
             service[httpMethod.functionName]("/broken_link", {
               caseConversion: {
-                nestedConversion: 42
-              }
+                nestedConversion: 42,
+              },
             }).subscribe();
             const req = catchRequest("/broken_link", httpMethod.method);
             expect(req.request.body).toEqual({
-              case_conversion: { nested_conversion: 42 }
+              case_conversion: { nested_conversion: 42 },
             });
           });
         }
@@ -452,6 +449,7 @@ describe("BawApiService", () => {
         return subject;
       });
     }
+
     function successRequest<T>(
       method: "httpGet" | "httpDelete" | "httpPost" | "httpPatch",
       response: ApiResponse<T>
@@ -471,7 +469,7 @@ describe("BawApiService", () => {
       it("should call httpGet", () => {
         const response = {
           meta: multiMeta,
-          data: []
+          data: [],
         } as ApiResponse<MockModel[]>;
         const spy = successRequest("httpGet", response);
 
@@ -482,11 +480,11 @@ describe("BawApiService", () => {
       it("should handle empty response", () => {
         const response = {
           meta: multiMeta,
-          data: []
+          data: [],
         } as ApiResponse<MockModel[]>;
         successRequest("httpGet", response);
 
-        service["apiList"]("/broken_link").subscribe(data => {
+        service["apiList"]("/broken_link").subscribe((data) => {
           expect(data).toEqual([]);
         }, shouldNotFail);
       });
@@ -494,13 +492,15 @@ describe("BawApiService", () => {
       it("should handle response", () => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         successRequest("httpGet", response);
 
-        service["apiList"]("/broken_link").subscribe(data => {
+        service["apiList"]("/broken_link").subscribe((data) => {
           expect(data).toEqual(
-            multiResponse.map(model => new MockModel(model))
+            multiResponse.map(
+              (model) => new MockModel(model, service["injector"])
+            )
           );
         }, shouldNotFail);
       });
@@ -527,10 +527,10 @@ describe("BawApiService", () => {
         );
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         successRequest("httpGet", response);
 
@@ -549,7 +549,7 @@ describe("BawApiService", () => {
       it("should call httpPost", () => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         const spy = successRequest("httpPost", response);
 
@@ -560,27 +560,29 @@ describe("BawApiService", () => {
       it("should call httpPost with body", () => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         const spy = successRequest("httpPost", response);
 
         service["apiFilter"]("/broken_link", {
-          paging: { items: 3 }
+          paging: { items: 3 },
         }).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
-          paging: { items: 3 }
+          paging: { items: 3 },
         });
       });
 
       it("should handle response", () => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         successRequest("httpPost", response);
 
-        service["apiFilter"]("/broken_link", {}).subscribe(data => {
-          expect(data).toEqual([new MockModel(singleResponse)]);
+        service["apiFilter"]("/broken_link", {}).subscribe((data) => {
+          expect(data).toEqual([
+            new MockModel(singleResponse, service["injector"]),
+          ]);
         }, shouldNotFail);
       });
 
@@ -606,10 +608,10 @@ describe("BawApiService", () => {
         );
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: multiMeta,
-          data: multiResponse
+          data: multiResponse,
         } as ApiResponse<MockModel[]>;
         successRequest("httpPost", response);
 
@@ -628,7 +630,7 @@ describe("BawApiService", () => {
       it("should call httpGet", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpGet", response);
 
@@ -639,12 +641,14 @@ describe("BawApiService", () => {
       it("should handle response", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpGet", response);
 
-        service["apiShow"]("/broken_link").subscribe(data => {
-          expect(data).toEqual(new MockModel(singleResponse));
+        service["apiShow"]("/broken_link").subscribe((data) => {
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
         }, shouldNotFail);
       });
 
@@ -670,10 +674,10 @@ describe("BawApiService", () => {
         );
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpGet", response);
 
@@ -692,77 +696,94 @@ describe("BawApiService", () => {
       it("should call httpPost", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
-        } as ApiResponse<MockModel>;
-        const spy = successRequest("httpPost", response);
-
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe();
-        expect(spy).toHaveBeenCalledWith("/broken_link", {});
-      });
-
-      it("should call httpPost with body", () => {
-        const response = {
-          meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPost", response);
 
         service["apiCreate"](
           "/broken_link",
-          new MockModel({
-            name: "Custom Name"
-          })
+          new MockModel({}, service["injector"])
         ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
-          name: "Custom Name"
+          id: undefined,
+          name: undefined,
+          caseConversion: undefined,
+        });
+      });
+
+      it("should call httpPost with body", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse,
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPost", response);
+
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel(
+            {
+              name: "Custom Name",
+            },
+            service["injector"]
+          )
+        ).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
+          name: "Custom Name",
+          caseConversion: undefined,
         });
       });
 
       it("should handle response", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          data => {
-            expect(data).toEqual(new MockModel(singleResponse));
-          },
-          shouldNotFail
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe((data) => {
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
+        }, shouldNotFail);
       });
 
       it("should handle error response", () => {
         errorRequest("httpPost", apiErrorDetails);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorDetails);
-          }
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorDetails);
+        });
       });
 
       it("should handle error info response", () => {
         errorRequest("httpPost", apiErrorInfoDetails);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorInfoDetails);
-          }
-        );
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpPost", response);
 
-        service["apiCreate"]("/broken_link", new MockModel({})).subscribe(
+        service["apiCreate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(
           () => {},
           shouldNotFail,
           () => {
@@ -777,77 +798,94 @@ describe("BawApiService", () => {
       it("should call httpPatch", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
-        } as ApiResponse<MockModel>;
-        const spy = successRequest("httpPatch", response);
-
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe();
-        expect(spy).toHaveBeenCalledWith("/broken_link", {});
-      });
-
-      it("should call httpPost with body", () => {
-        const response = {
-          meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpPatch", response);
 
         service["apiUpdate"](
           "/broken_link",
-          new MockModel({
-            name: "Custom Name"
-          })
+          new MockModel({}, service["injector"])
         ).subscribe();
         expect(spy).toHaveBeenCalledWith("/broken_link", {
-          name: "Custom Name"
+          id: undefined,
+          name: undefined,
+          caseConversion: undefined,
+        });
+      });
+
+      it("should call httpPost with body", () => {
+        const response = {
+          meta: singleMeta,
+          data: singleResponse,
+        } as ApiResponse<MockModel>;
+        const spy = successRequest("httpPatch", response);
+
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel(
+            {
+              name: "Custom Name",
+            },
+            service["injector"]
+          )
+        ).subscribe();
+        expect(spy).toHaveBeenCalledWith("/broken_link", {
+          id: undefined,
+          name: "Custom Name",
+          caseConversion: undefined,
         });
       });
 
       it("should handle response", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          data => {
-            expect(data).toEqual(new MockModel(singleResponse));
-          },
-          shouldNotFail
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe((data) => {
+          expect(data).toEqual(
+            new MockModel(singleResponse, service["injector"])
+          );
+        }, shouldNotFail);
       });
 
       it("should handle error response", () => {
         errorRequest("httpPatch", apiErrorDetails);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorDetails);
-          }
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorDetails);
+        });
       });
 
       it("should handle error info response", () => {
         errorRequest("httpPatch", apiErrorInfoDetails);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
-          shouldNotSucceed,
-          (err: ApiErrorDetails) => {
-            expect(err).toEqual(apiErrorInfoDetails);
-          }
-        );
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+          expect(err).toEqual(apiErrorInfoDetails);
+        });
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpPatch", response);
 
-        service["apiUpdate"]("/broken_link", new MockModel({})).subscribe(
+        service["apiUpdate"](
+          "/broken_link",
+          new MockModel({}, service["injector"])
+        ).subscribe(
           () => {},
           shouldNotFail,
           () => {
@@ -862,7 +900,7 @@ describe("BawApiService", () => {
       it("should call httpDelete", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         const spy = successRequest("httpDelete", response);
 
@@ -873,11 +911,11 @@ describe("BawApiService", () => {
       it("should handle response", () => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpDelete", response);
 
-        service["apiDestroy"]("/broken_link").subscribe(data => {
+        service["apiDestroy"]("/broken_link").subscribe((data) => {
           expect(data).toBe(null);
         }, shouldNotFail);
       });
@@ -904,10 +942,10 @@ describe("BawApiService", () => {
         );
       });
 
-      it("should complete on success", done => {
+      it("should complete on success", (done) => {
         const response = {
           meta: singleMeta,
-          data: singleResponse
+          data: singleResponse,
         } as ApiResponse<MockModel>;
         successRequest("httpDelete", response);
 

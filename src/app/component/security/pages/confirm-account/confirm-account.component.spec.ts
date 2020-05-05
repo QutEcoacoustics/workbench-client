@@ -3,8 +3,8 @@ import { HomeComponent } from "@component/home/home.component";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { testAppInitializer } from "src/app/test.helper";
-import { testFormlyFields } from "src/testHelpers";
+import { testFormlyFields } from "src/app/test/helpers/formly";
+import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
 import { fields } from "./confirm-account.json";
 

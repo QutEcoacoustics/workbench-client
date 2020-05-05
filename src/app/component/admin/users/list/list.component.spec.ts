@@ -9,7 +9,7 @@ import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.compo
 import { SharedModule } from "@shared/shared.module";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { testBawServices } from "src/app/test.helper";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminUserListComponent } from "./list.component";
 
 describe("AdminUserListComponent", () => {

@@ -7,24 +7,24 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
+import { Project } from "@models/Project";
+import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
+import { ProjectsService } from "@services/baw-api/projects.service";
+import { SharedModule } from "@shared/shared.module";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { Project } from "src/app/models/Project";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ProjectsService } from "src/app/services/baw-api/projects.service";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
   testBawServices,
-} from "src/app/test.helper";
+} from "src/app/test/helpers/testbed";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
 class MockModel extends AbstractModel {
-  public redirectPath(...args: any): string {
+  public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
   public toJSON(): object {

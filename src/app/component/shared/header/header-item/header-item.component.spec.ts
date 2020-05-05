@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink, MenuRoute } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { assertRoute } from "src/testHelpers";
+import { assertRoute } from "src/app/test/helpers/html";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {
@@ -12,7 +12,7 @@ describe("HeaderItemComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderItemComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
   }));
 
@@ -31,7 +31,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home")
+      route: StrongRoute.Base.add("home"),
     });
     fixture.detectChanges();
 
@@ -45,7 +45,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home")
+      route: StrongRoute.Base.add("home"),
     });
     fixture.detectChanges();
 
@@ -58,7 +58,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home")
+      route: StrongRoute.Base.add("home"),
     });
     fixture.detectChanges();
 
@@ -76,7 +76,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      uri: () => "http://brokenlink/"
+      uri: () => "http://brokenlink/",
     });
     fixture.detectChanges();
 

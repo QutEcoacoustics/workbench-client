@@ -1,22 +1,28 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
+import { startCase } from "lodash";
+import { Observable } from "rxjs";
+import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
+import { AbstractData } from "./AbstractData";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { User } from "./User";
 
 /**
  * Tag model interface
  */
-export interface TagInterface {
+export interface ITag {
   id?: Id;
   text?: string;
   count?: number;
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
-  notes?: string;
+  notes?: Blob;
   creatorId?: Id;
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -26,52 +32,53 @@ export interface TagInterface {
 /**
  * Tag model
  */
-export class Tag extends AbstractModel implements TagInterface {
+export class Tag extends AbstractModel implements ITag {
   public readonly kind: "AbstractModel" = "AbstractModel";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly text?: string;
+  @BawPersistAttr
   public readonly count?: number;
+  @BawPersistAttr
   public readonly isTaxanomic?: boolean;
+  @BawPersistAttr
   public readonly typeOfTag?: string;
+  @BawPersistAttr
   public readonly retired?: boolean;
-  public readonly notes?: string;
+  @BawPersistAttr
+  public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
-  constructor(tag: TagInterface) {
+  // Associations
+  @HasOne(ACCOUNT, (m: Tag) => m.creatorId)
+  public creator?: Observable<User>;
+  @HasOne(ACCOUNT, (m: Tag) => m.updaterId)
+  public updater?: Observable<User>;
+
+  constructor(tag: ITag) {
     super(tag);
-
-    this.createdAt = dateTimeTimezone(tag.createdAt as string);
-    this.updatedAt = dateTimeTimezone(tag.updatedAt as string);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new Tag(obj);
-  };
-
-  toJSON() {
-    return {
-      id: this.id,
-      text: this.text,
-      count: this.count,
-      isTaxanomic: this.isTaxanomic,
-      typeOfTag: this.typeOfTag,
-      retired: this.retired,
-      notes: this.notes,
-      creatorId: this.creatorId,
-      updaterId: this.updaterId,
-      createdAt: this.createdAt?.toISO(),
-      updatedAt: this.updatedAt?.toISO(),
-    };
-  }
-
-  redirectPath(): string {
+  public get viewUrl(): string {
     return adminTagsMenuItem.route.toString();
+  }
+}
+
+export class TagType extends AbstractData {
+  public readonly kind: "TagType" = "TagType";
+  public readonly name: string;
+
+  constructor(data: { name: string }) {
+    super(data);
+  }
+
+  toString() {
+    return startCase(this.name);
   }
 }

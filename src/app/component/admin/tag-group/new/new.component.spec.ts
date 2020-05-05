@@ -5,7 +5,10 @@ import { TagGroupService } from "@baw-api/tag-group.service";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute, testBawServices } from "src/app/test.helper";
+import {
+  mockActivatedRoute,
+  testBawServices,
+} from "src/app/test/helpers/testbed";
 import { AdminTagGroupsNewComponent } from "./new.component";
 
 describe("AdminTagGroupsNewComponent", () => {

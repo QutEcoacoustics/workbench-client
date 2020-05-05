@@ -1,6 +1,6 @@
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import {
   async,
@@ -8,7 +8,7 @@ import {
   fakeAsync,
   flush,
   TestBed,
-  tick
+  tick,
 } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -23,7 +23,7 @@ import { AppConfigService } from "./services/app-config/app-config.service";
 import { ProjectsService } from "./services/baw-api/projects.service";
 import { SecurityService } from "./services/baw-api/security.service";
 import { UserService } from "./services/baw-api/user.service";
-import { testBawServices } from "./test.helper";
+import { testBawServices } from "./test/helpers/testbed";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -39,10 +39,10 @@ describe("AppComponent", () => {
         SharedModule,
         RouterTestingModule,
         HttpClientTestingModule,
-        LoadingBarHttpClientModule
+        LoadingBarHttpClientModule,
       ],
       declarations: [AppComponent],
-      providers: [...testBawServices]
+      providers: [...testBawServices],
     }).compileComponents();
   }));
 
@@ -75,8 +75,8 @@ describe("AppComponent", () => {
             name: "Project",
             creatorId: 1,
             description: "Description",
-            siteIds: new Set([])
-          })
+            siteIds: new Set([]),
+          }),
         ]);
         subject.complete();
       }, 50);

@@ -44,10 +44,7 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
       api,
       (sites) =>
         sites.map((site) => ({
-          site: {
-            label: site.name,
-            route: site.redirectPath(),
-          },
+          site,
           recentAudioUpload: "(none)",
           permission: "FIX ME",
           annotation: annotationsMenuItem.uri(undefined),
@@ -62,11 +59,7 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
 }
 
 interface TableRow {
-  // name: Site
-  site: {
-    label: string;
-    route: string;
-  };
+  site: Site;
   recentAudioUpload: string;
   permission: string;
   annotation: string;

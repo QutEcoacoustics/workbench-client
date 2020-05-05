@@ -1,58 +1,53 @@
+import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
+import { Observable } from "rxjs";
+import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import {
-  DateTimeTimezone,
-  dateTimeTimezone,
-  Id,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+  AbstractModel,
+  BawDateTime,
+  BawPersistAttr,
+  HasOne,
+} from "./AbstractModel";
+import type { Tag } from "./Tag";
+import type { User } from "./User";
 
 /**
  * A tag group model
  */
-export interface TagGroupInterface {
+export interface ITagGroup {
   id?: Id;
   groupIdentifier?: string;
-  createdAt?: DateTimeTimezone | string;
-  creatorId?: Id;
   tagId?: Id;
+  creatorId?: Id;
+  createdAt?: DateTimeTimezone | string;
 }
 
 /**
  * A tag group model
  */
-export class TagGroup extends AbstractModel implements TagGroupInterface {
+export class TagGroup extends AbstractModel implements ITagGroup {
   public readonly kind: "TagGroup" = "TagGroup";
+  @BawPersistAttr
   public readonly id?: Id;
+  @BawPersistAttr
   public readonly groupIdentifier?: string;
-  public readonly createdAt?: DateTimeTimezone;
-  public readonly creatorId?: Id;
+  @BawPersistAttr
   public readonly tagId?: Id;
+  public readonly creatorId?: Id;
+  @BawDateTime()
+  public readonly createdAt?: DateTimeTimezone;
 
-  constructor(tagGroup: TagGroupInterface) {
+  // Associations
+  @HasOne(TAG, (m: TagGroup) => m.creatorId)
+  public tag?: Observable<Tag>;
+  @HasOne(ACCOUNT, (m: TagGroup) => m.creatorId)
+  public creator?: Observable<User>;
+
+  constructor(tagGroup: ITagGroup) {
     super(tagGroup);
-
-    this.createdAt = dateTimeTimezone(tagGroup.createdAt as string);
   }
 
-  static fromJSON = (obj: any) => {
-    if (typeof obj === "string") {
-      obj = JSON.parse(obj);
-    }
-
-    return new TagGroup(obj);
-  };
-
-  public redirectPath(): string {
+  public get viewUrl(): string {
     return adminTagGroupsMenuItem.route.toString();
-  }
-
-  public toJSON(): object {
-    return {
-      id: this.id,
-      groupIdentifier: this.groupIdentifier,
-      createdAt: this.createdAt?.toISO(),
-      creatorId: this.creatorId,
-      tagId: this.tagId,
-    };
   }
 }

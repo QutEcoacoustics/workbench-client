@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { User } from "@models/User";
 import { Observable } from "rxjs";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { stringTemplate } from "src/app/helpers/stringTemplate/stringTemplate";
-import { User } from "src/app/models/User";
 import {
   Empty,
   Filter,
@@ -11,7 +11,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  StandardApi
+  StandardApi,
 } from "./api-common";
 import { Filters } from "./baw-api.service";
 import { Resolvers } from "./resolver-common";
@@ -39,7 +39,7 @@ export class AccountService extends StandardApi<User, []> {
     return this.apiShow(endpoint(model, Empty));
   }
   create(model: User): Observable<User> {
-    return this.apiCreate(endpoint(model, Empty), model);
+    return this.apiCreate(endpoint(Empty, Empty), model);
   }
   update(model: User): Observable<User> {
     return this.apiUpdate(endpoint(model, Empty), model);

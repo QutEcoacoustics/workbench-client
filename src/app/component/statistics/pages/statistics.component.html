@@ -25,7 +25,7 @@
     <tbody>
       <tr *ngFor="let tag of recentAnnotations">
         <td>{{ tag.site.name }}</td>
-        <td>{{ tag.user.redirectPath() }}</td>
+        <td>{{ tag.user.viewUrl }}</td>
         <td>{{ tag.tag || "(none)" }}</td>
         <td>{{ tag.updated }}</td>
       </tr>
