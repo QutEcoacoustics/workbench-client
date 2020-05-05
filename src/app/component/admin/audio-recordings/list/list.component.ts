@@ -43,8 +43,6 @@ export class AdminAudioRecordingsComponent
           maxDecimalPoint: 0,
         }),
         recorded: audioRecording.recordedDate.toRelative(),
-        // TODO Retrieve number of annotations
-        annotations: -1,
         model: audioRecording,
       }))
     );
@@ -56,7 +54,6 @@ export class AdminAudioRecordingsComponent
       { name: "Site" },
       { name: "Duration" },
       { name: "Recorded" },
-      { name: "Annotations" },
       { name: "Model" },
     ];
     this.sortKeys = {
@@ -80,6 +77,5 @@ interface TableRow {
   site: Id;
   duration: string;
   recorded: string;
-  annotations: number;
   model: AudioRecording;
 }

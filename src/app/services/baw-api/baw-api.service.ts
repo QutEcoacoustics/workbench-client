@@ -65,7 +65,7 @@ export abstract class BawApiService<T extends AbstractModel> {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: object, injector?: Injector) => T,
-    protected injector?: Injector
+    protected injector: Injector
   ) {
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
