@@ -9,6 +9,8 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { ToastrModule } from "ngx-toastr";
+import { StepsModule } from "primeng/steps";
+import { TreeTableModule } from "primeng/treetable";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
@@ -25,6 +27,7 @@ import { FormlyHorizontalWrapper } from "./formly/horizontal-wrapper";
 import { FormlyImageInput } from "./formly/image-input.component";
 import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { HeaderModule } from "./header/header.module";
+import { IndicatorComponent } from "./indicator/indicator.component";
 import { ItemsModule } from "./items/items.module";
 import { LoadingComponent } from "./loading/loading.component";
 import { MenuModule } from "./menu/menu.module";
@@ -43,6 +46,7 @@ export const sharedComponents = [
   FormlyHorizontalWrapper,
   FormlyImageInput,
   FormlyTimezoneInput,
+  IndicatorComponent,
   LoadingComponent,
   SecondaryMenuComponent,
   WIPComponent,
@@ -63,6 +67,8 @@ export const sharedModules = [
   FormlyBootstrapModule,
   NgxDatatableModule,
   ToastrModule,
+  TreeTableModule,
+  StepsModule,
 
   DirectivesModule,
   CardsModule,

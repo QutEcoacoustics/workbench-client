@@ -40,7 +40,8 @@
     },
     "peacock.color": "#2b7489",
     "angularKarmaTestExplorer.debugMode": true,
-    "explorer.compactFolders": false
+    "explorer.compactFolders": false,
+    "prettier.semi": false
   },
   "extensions": {
     "recommendations": [

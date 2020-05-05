@@ -1,0 +1,13 @@
+<span *ngFor="let pill of pills" class="badge badge-primary m-1">
+  {{ pill }}
+</span>
+
+<button
+  *ngIf="compress"
+  class="btn btn-primary badge badge-primary m-1"
+  (click)="toggleExpansion()"
+>
+  <fa-icon
+    [icon]="ellipsis ? ['fas', 'expand-alt'] : ['fas', 'compress-alt']"
+  ></fa-icon>
+</button>
