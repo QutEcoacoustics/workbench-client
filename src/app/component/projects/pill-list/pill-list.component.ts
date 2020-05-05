@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from "@angular/core";
 @Component({
   selector: "app-pill-list",
   templateUrl: "./pill-list.component.html",
-  styleUrls: ["./pill-list.component.scss"],
 })
 export class PillListComponent implements OnInit {
   @Input() text: string[];

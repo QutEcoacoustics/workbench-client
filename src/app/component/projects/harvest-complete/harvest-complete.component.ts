@@ -8,7 +8,6 @@ import { SitesService } from "src/app/services/baw-api/sites.service";
 @Component({
   selector: "app-project-harvest-complete",
   templateUrl: "./harvest-complete.component.html",
-  styleUrls: ["./harvest-complete.component.scss"],
 })
 export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {

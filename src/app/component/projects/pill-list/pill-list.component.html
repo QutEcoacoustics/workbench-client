@@ -3,17 +3,11 @@
 </span>
 
 <button
-  *ngIf="ellipsis"
+  *ngIf="compress"
   class="btn btn-primary badge badge-primary m-1"
   (click)="toggleExpansion()"
 >
-  <fa-icon [icon]="['fas', 'expand-alt']"></fa-icon>
-</button>
-
-<button
-  *ngIf="!ellipsis && compress"
-  class="btn btn-primary badge badge-primary m-1"
-  (click)="toggleExpansion()"
->
-  <fa-icon [icon]="['fas', 'compress-alt']"></fa-icon>
+  <fa-icon
+    [icon]="ellipsis ? ['fas', 'expand-alt'] : ['fas', 'compress-alt']"
+  ></fa-icon>
 </button>

@@ -8,7 +8,14 @@ import { Status } from "../../shared/indicator/indicator.component";
 @Component({
   selector: "app-project-harvest-review",
   templateUrl: "./harvest-review.component.html",
-  styleUrls: ["./harvest-review.component.scss"],
+  styles: [
+    `
+      .status {
+        width: 70px;
+        max-width: 70px;
+      }
+    `,
+  ],
 })
 export class HarvestReviewComponent implements OnInit {
   public files: TreeNode[] = [];
@@ -53,8 +60,6 @@ export class HarvestReviewComponent implements OnInit {
       sitePool,
       pointPool
     );
-
-    console.log(this.files);
   }
 
   public getText(models: Set<Project | Site>) {

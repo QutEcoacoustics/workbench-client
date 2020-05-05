@@ -99,7 +99,6 @@ export class HarvestComponent implements OnInit {
     { label: "Harvest" },
     { label: "Summary" },
   ];
-  private interval: number;
   private intervalSpeed = 300;
 
   private subscription: Subscription;
