@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TagGroupService } from "@baw-api/tag/tag-group.service";
+import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -48,7 +48,7 @@ export class AdminTagGroupsComponent extends PagedTableTemplate<
     group: "groupIdentifier",
   };
 
-  constructor(api: TagGroupService) {
+  constructor(api: TagGroupsService) {
     super(api, (tagGroups) =>
       tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,

@@ -23,7 +23,7 @@
       "@models/*": ["./src/app/models/*"],
       "@baw-api/*": ["./src/app/services/baw-api/*"],
       "@services/*": ["./src/app/services/*"],
-      "@testing/*": ["./src/app/testing/*"]
+      "@test/*": ["./src/app/test/*"]
     },
     "pretty": true,
     "resolveJsonModule": true,

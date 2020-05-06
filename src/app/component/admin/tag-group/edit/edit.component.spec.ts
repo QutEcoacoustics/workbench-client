@@ -4,7 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   tagGroupResolvers,
-  TagGroupService,
+  TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
@@ -18,7 +18,7 @@ import {
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
 describe("AdminTagGroupsEditComponent", () => {
-  let api: TagGroupService;
+  let api: TagGroupsService;
   let component: AdminTagGroupsEditComponent;
   let defaultError: ApiErrorDetails;
   let defaultTagGroup: TagGroup;
@@ -50,7 +50,7 @@ describe("AdminTagGroupsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsEditComponent);
-    api = TestBed.inject(TagGroupService);
+    api = TestBed.inject(TagGroupsService);
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;

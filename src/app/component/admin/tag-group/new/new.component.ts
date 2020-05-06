@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TagGroupService } from "@baw-api/tag/tag-group.service";
+import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import {
   defaultSuccessMsg,
   FormTemplate,
@@ -43,7 +43,7 @@ export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = fields;
 
   constructor(
-    private api: TagGroupService,
+    private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router

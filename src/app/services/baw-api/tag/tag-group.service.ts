@@ -22,9 +22,10 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
 /**
  * Scripts Service.
  * Handles API routes pertaining to scripts.
+ * TODO https://github.com/QutEcoacoustics/baw-server/issues/442
  */
 @Injectable()
-export class TagGroupService extends StandardApi<TagGroup> {
+export class TagGroupsService extends StandardApi<TagGroup> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -53,7 +54,7 @@ export class TagGroupService extends StandardApi<TagGroup> {
   }
 }
 
-export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupService>(
-  [TagGroupService],
+export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupsService>(
+  [TagGroupsService],
   "tagGroupId"
 ).create("TagGroup");

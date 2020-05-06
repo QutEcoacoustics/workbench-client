@@ -29,7 +29,7 @@ import type {
   ShallowResponsesService,
 } from "./study/responses.service";
 import type { StudiesService } from "./study/studies.service";
-import type { TagGroupService } from "./tag/tag-group.service";
+import type { TagGroupsService } from "./tag/tag-group.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 
@@ -90,8 +90,8 @@ export const SHALLOW_SITE = new ServiceToken<ShallowSitesService>(
 export const SITE = new ServiceToken<SitesService>("SITES_SERVICE");
 export const STUDY = new ServiceToken<StudiesService>("STUDIES_SERVICE");
 export const TAG = new ServiceToken<TagsService>("TAGS_SERVICE");
-export const TAG_GROUP = new ServiceToken<TagGroupService>(
+export const TAG_GROUP = new ServiceToken<TagGroupsService>(
   "TAG_GROUPS_SERVICE"
 );
-export const TAGGING = new ServiceToken<TagGroupService>("TAGGINGS_SERVICE");
+export const TAGGING = new ServiceToken<TagGroupsService>("TAGGINGS_SERVICE");
 export const USER = new ServiceToken<UserService>("USER_SERVICE");

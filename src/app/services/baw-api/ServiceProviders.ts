@@ -64,7 +64,7 @@ import {
   ShallowResponsesService,
 } from "./study/responses.service";
 import { StudiesService, studyResolvers } from "./study/studies.service";
-import { tagGroupResolvers, TagGroupService } from "./tag/tag-group.service";
+import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { taggingResolvers, TaggingsService } from "./tagging/taggings.service";
 import { userResolvers, UserService } from "./user/user.service";
@@ -198,7 +198,7 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.TAG_GROUP,
-    service: TagGroupService,
+    service: TagGroupsService,
     resolvers: tagGroupResolvers,
     mock: MockStandardApiService,
   },

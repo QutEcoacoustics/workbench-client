@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { TagGroupService } from "@baw-api/tag/tag-group.service";
+import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
@@ -12,7 +12,7 @@ import {
 import { AdminTagGroupsNewComponent } from "./new.component";
 
 describe("AdminTagGroupsNewComponent", () => {
-  let api: TagGroupService;
+  let api: TagGroupsService;
   let component: AdminTagGroupsNewComponent;
   let fixture: ComponentFixture<AdminTagGroupsNewComponent>;
   let notifications: ToastrService;
@@ -37,7 +37,7 @@ describe("AdminTagGroupsNewComponent", () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(AdminTagGroupsNewComponent);
-      api = TestBed.inject(TagGroupService);
+      api = TestBed.inject(TagGroupsService);
       router = TestBed.inject(Router);
       notifications = TestBed.inject(ToastrService);
       component = fixture.componentInstance;
