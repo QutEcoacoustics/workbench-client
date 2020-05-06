@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { toRelative } from "src/app/interfaces/apiInterfaces";
 
 @Component({
@@ -49,7 +51,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     `,
   ],
 })
-export class RenderFieldComponent implements OnInit {
+export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   @Input() view: ModelView;
   public display: string | number | boolean;
   public model: AbstractModel;
@@ -60,7 +62,9 @@ export class RenderFieldComponent implements OnInit {
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
-  constructor(private ref: ChangeDetectorRef) {}
+  constructor(private ref: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.humanize(this.view);
@@ -132,7 +136,7 @@ export class RenderFieldComponent implements OnInit {
     value: Observable<AbstractModel | AbstractModel[]>
   ) {
     this.display = this.loadingText;
-    value.subscribe(
+    value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
         if (!models) {
           this.display = this.noValueText;
