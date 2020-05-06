@@ -3,9 +3,9 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { assertPagination } from "src/app/test/helpers/pagedTableTemplate";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminTagGroupsComponent } from "./list.component";
 
 describe("AdminTagGroupsComponent", () => {

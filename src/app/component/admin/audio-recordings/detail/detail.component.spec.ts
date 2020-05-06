@@ -10,14 +10,11 @@ import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { SharedModule } from "@shared/shared.module";
+import { assertDetailView } from "@test/helpers/detail-view";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { assertDetailView } from "src/app/test/helpers/detail-view";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { AdminAudioRecordingComponent } from "./detail.component";
 
 describe("AdminAudioRecordingComponent", () => {

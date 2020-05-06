@@ -3,15 +3,15 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import { appLibraryImports } from "src/app/app.module";
-import { assertRoute } from "src/app/test/helpers/html";
+import { assertRoute } from "@test/helpers/html";
 import {
   assertPagination,
   datatableApiResponse,
   getDatatableCells,
   getDatatableRows,
-} from "src/app/test/helpers/pagedTableTemplate";
-import { testBawServices } from "src/app/test/helpers/testbed";
+} from "@test/helpers/pagedTableTemplate";
+import { testBawServices } from "@test/helpers/testbed";
+import { appLibraryImports } from "src/app/app.module";
 import { AdminUserListComponent } from "./list.component";
 
 describe("AdminUserListComponent", () => {

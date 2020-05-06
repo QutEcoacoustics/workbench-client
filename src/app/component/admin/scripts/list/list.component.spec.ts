@@ -3,9 +3,9 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
 import { SharedModule } from "@shared/shared.module";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { assertPagination } from "src/app/test/helpers/pagedTableTemplate";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminScriptsComponent } from "./list.component";
 
 describe("AdminScriptsComponent", () => {

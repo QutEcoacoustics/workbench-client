@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";

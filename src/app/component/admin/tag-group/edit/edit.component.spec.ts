@@ -8,13 +8,10 @@ import {
 } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
 describe("AdminTagGroupsEditComponent", () => {

@@ -3,12 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SharedModule } from "@shared/shared.module";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { AdminTagGroupsNewComponent } from "./new.component";
 
 describe("AdminTagGroupsNewComponent", () => {

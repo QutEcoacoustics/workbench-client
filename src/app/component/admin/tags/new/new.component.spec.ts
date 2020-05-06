@@ -5,13 +5,10 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { TagType } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { AdminTagsNewComponent } from "./new.component";
 
 describe("AdminTagsNewComponent", () => {
