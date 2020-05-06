@@ -323,6 +323,18 @@ describe("RenderFieldComponent", () => {
     });
   });
 
-  xdescribe("AbstractModel input", () => {});
-  xdescribe("Observable input", () => {});
+  describe("AbstractModel input", () => {
+    it("should display default model toString()", () => {});
+    it("should display custom model toString()", () => {});
+    it("should create model link", () => {});
+  });
+
+  xdescribe("Observable input", () => {
+    it("should display loading", () => {});
+    it("should hide loading when observable returns", () => {});
+    it("should hide loading when observable errors", () => {});
+    it("should handle single model value", () => {});
+    it("should handle multiple model values", () => {});
+    it("should display error output", () => {});
+  });
 });
