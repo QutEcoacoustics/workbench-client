@@ -243,6 +243,19 @@ export abstract class BawApiService<T extends AbstractModel> {
 }
 
 /**
+ * Filter paging metadata from api response
+ */
+export interface Paging {
+  page?: number;
+  items?: number;
+  total?: number;
+  maxPage?: number;
+  current?: string;
+  previous?: string;
+  next?: string;
+}
+
+/**
  * Filter metadata from api response
  */
 export interface Filters {
@@ -255,15 +268,7 @@ export interface Filters {
     orderBy: string;
     direction: "desc" | "asc";
   };
-  paging?: {
-    page?: number;
-    items?: number;
-    total?: number;
-    maxPage?: number;
-    current?: string;
-    previous?: string;
-    next?: string;
-  };
+  paging?: Paging;
 }
 
 /**

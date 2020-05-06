@@ -28,7 +28,7 @@ export function validateApiList<
 >(endpoint: string, models: M[] = [], ...parameters: any[]) {
   describe("Api List", function () {
     it("should handle list endpoint", function () {
-      const api: S = this.service as S;
+      const api: S = this.service;
       api["apiList"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
@@ -50,7 +50,7 @@ export function validateApiFilter<
 ) {
   describe("Api Filter", function () {
     it("should handle filter endpoint", function () {
-      const api: S = this.service as S;
+      const api: S = this.service;
       api["apiFilter"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
@@ -69,7 +69,7 @@ export function validateApiShow<
     let api: S;
 
     beforeEach(function () {
-      api = this.service as S;
+      api = this.service;
       api["apiShow"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
@@ -93,7 +93,7 @@ export function validateApiCreate<
 >(endpoint: string, model: M, ...parameters: any[]) {
   describe("Api Create", function () {
     it("should handle create endpoint", function () {
-      const api: S = this.service as S;
+      const api: S = this.service;
       api["apiCreate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
@@ -110,7 +110,7 @@ export function validateApiUpdate<
 >(endpoint: string, model: M, ...parameters: any[]) {
   describe("Api Update", function () {
     it("should handle update endpoint", function () {
-      const api: S = this.service as S;
+      const api: S = this.service;
       api["apiUpdate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
@@ -129,7 +129,7 @@ export function validateApiDestroy<
     let api: S;
 
     beforeEach(function () {
-      api = this.service as S;
+      api = this.service;
       api["apiDestroy"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(null));

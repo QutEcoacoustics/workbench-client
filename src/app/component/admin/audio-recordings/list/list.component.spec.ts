@@ -1,12 +1,17 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { AudioRecording } from "@models/AudioRecording";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
+import { assertPagination } from "src/app/test/helpers/pagedTableTemplate";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminAudioRecordingsComponent } from "./list.component";
 
 describe("AdminAudioRecordingsComponent", () => {
-  let component: AdminAudioRecordingsComponent;
+  let api: AudioRecordingsService;
+  let defaultAudioRecording: AudioRecording;
+  let defaultAudioRecordings: AudioRecording[];
   let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
 
   beforeEach(async(() => {
@@ -17,14 +22,36 @@ describe("AdminAudioRecordingsComponent", () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(function () {
     fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    api = TestBed.inject(AudioRecordingsService);
+
+    defaultAudioRecording = new AudioRecording({
+      id: 1,
+      siteId: 1,
+      durationSeconds: 3000,
+      recordedDate: "2020-03-09T22:00:50.072+10:00",
+    });
+    defaultAudioRecordings = [];
+    for (let i = 0; i < 25; i++) {
+      defaultAudioRecordings.push(
+        new AudioRecording({
+          id: i,
+          siteId: 1,
+          durationSeconds: 3000,
+          recordedDate: "2020-03-09T22:00:50.072+10:00",
+        })
+      );
+    }
+
+    this.defaultModels = defaultAudioRecordings;
+    this.fixture = fixture;
+    this.api = api;
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
   // TODO Write Tests
+  assertPagination<AudioRecording, AudioRecordingsService>();
+
+  xdescribe("rows", () => {});
+  xdescribe("actions", () => {});
 });
