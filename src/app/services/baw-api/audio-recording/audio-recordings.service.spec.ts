@@ -12,7 +12,7 @@ import {
 import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { AudioRecordingsService } from "./audio-recordings.service";
 
-describe("AudioRecordingsService", function () {
+xdescribe("AudioRecordingsService", function () {
   beforeEach(async(function () {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],

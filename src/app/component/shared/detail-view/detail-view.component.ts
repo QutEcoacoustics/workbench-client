@@ -20,6 +20,13 @@ import { AbstractModel } from "src/app/models/AbstractModel";
       ></baw-render-field>
     </div>
   `,
+  styles: [
+    `
+      dt {
+        margin-bottom: 1rem;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailViewComponent implements OnInit {

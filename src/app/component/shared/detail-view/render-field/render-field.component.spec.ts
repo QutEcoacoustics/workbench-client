@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AbstractModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
+import { BehaviorSubject, Subject } from "rxjs";
+import { assertRoute } from "src/app/test/helpers/html";
 import { CheckboxComponent } from "../../checkbox/checkbox.component";
 import { RenderFieldComponent } from "./render-field.component";
 
@@ -18,6 +21,10 @@ describe("RenderFieldComponent", () => {
 
   function getNormalValues(): NodeListOf<HTMLParagraphElement> {
     return (fixture.nativeElement as HTMLElement).querySelectorAll("dl p");
+  }
+
+  function getModelValues(): NodeListOf<HTMLAnchorElement> {
+    return (fixture.nativeElement as HTMLElement).querySelectorAll("dl a");
   }
 
   function getCheckboxValues(): NodeListOf<HTMLElement> {
@@ -324,17 +331,123 @@ describe("RenderFieldComponent", () => {
   });
 
   describe("AbstractModel input", () => {
-    it("should display default model toString()", () => {});
-    it("should display custom model toString()", () => {});
-    it("should create model link", () => {});
+    function createModel(
+      data: any,
+      link: string = "",
+      toString?: (model) => string
+    ) {
+      class MockModel extends AbstractModel {
+        public get viewUrl(): string {
+          return link;
+        }
+
+        public toString() {
+          return toString ? toString(this) : super.toString();
+        }
+      }
+
+      return new MockModel(data);
+    }
+
+    it("should handle abstract model", () => {
+      component.view = createModel({ id: 1 });
+      fixture.detectChanges();
+      expect(getValues().length).toBe(1);
+      expect(getModelValues().length).toBe(1);
+    });
+
+    it("should display default model toString()", () => {
+      component.view = createModel({ id: 1 });
+      fixture.detectChanges();
+      const value = getModelValues()[0];
+      expect(value.innerText.trim()).toBe("1");
+    });
+
+    it("should display custom model toString()", () => {
+      component.view = createModel(
+        { id: 1, name: "custom model" },
+        undefined,
+        (model) => model.name
+      );
+      fixture.detectChanges();
+      const value = getModelValues()[0];
+      expect(value.innerText.trim()).toBe("custom model");
+    });
+
+    it("should create model link", () => {
+      component.view = createModel({ id: 1 }, "/broken_link");
+      fixture.detectChanges();
+      const value = getModelValues()[0];
+      assertRoute(value, "/broken_link");
+    });
   });
 
-  xdescribe("Observable input", () => {
-    it("should display loading", () => {});
-    it("should hide loading when observable returns", () => {});
-    it("should hide loading when observable errors", () => {});
-    it("should handle single model value", () => {});
-    it("should handle multiple model values", () => {});
-    it("should display error output", () => {});
+  describe("Observable input", () => {
+    function createObservable(
+      shouldReturn: boolean,
+      output?: any,
+      error?: any
+    ) {
+      if (!shouldReturn) {
+        return new Subject();
+      } else if (output) {
+        return new BehaviorSubject(output);
+      } else {
+        const subject = new Subject();
+        subject.error(error);
+        return subject;
+      }
+    }
+
+    it("should display loading", () => {
+      component.view = createObservable(false);
+      fixture.detectChanges();
+      const value = getLoadingElements()[0];
+      expect(value.innerText.trim()).toBe("(loading)");
+    });
+
+    it("should hide loading when observable returns", () => {
+      component.view = createObservable(true, "value");
+      fixture.detectChanges();
+      const value = getLoadingElements()[0];
+      expect(value.innerText.trim()).not.toBe("(loading)");
+    });
+
+    it("should hide loading when observable errors", () => {
+      component.view = createObservable(true, undefined, { error: true });
+      fixture.detectChanges();
+      const value = getLoadingElements()[0];
+      expect(value.innerText.trim()).not.toBe("(loading)");
+    });
+
+    it("should handle single model value", () => {
+      component.view = createObservable(true, "value");
+      fixture.detectChanges();
+      const values = getNormalValues();
+      expect(values.length).toBe(1);
+      const value = values[0];
+      expect(value.innerText.trim()).toBe("value");
+    });
+
+    it("should handle multiple model values", () => {
+      component.view = createObservable(true, [
+        "test 1",
+        2,
+        { testing: "value" },
+      ]);
+      fixture.detectChanges();
+
+      const values = getValues();
+      expect(values[0].innerText.trim()).toBe("test 1");
+      expect(values[1].innerText.trim()).toBe("2");
+      expect(values[2].innerText.trim()).toBe('{"testing":"value"}');
+    });
+
+    it("should display error output", () => {
+      component.view = createObservable(true, undefined, { error: true });
+      fixture.detectChanges();
+      const value = getLoadingElements()[0];
+      expect(value.innerText.trim()).toBe("(error)");
+    });
   });
 });

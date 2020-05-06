@@ -12,17 +12,18 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     <ng-container *ngIf="!children; else hasChildren">
       <!-- Display plain text -->
       <dl *ngIf="styling === FieldStyling.Plain">
-        <p>{{ display }}</p>
+        <p class="m-0">{{ display }}</p>
       </dl>
 
       <!-- Display code/objects -->
       <dl *ngIf="styling === FieldStyling.Code">
-        <pre>{{ display }}</pre>
+        <pre class="m-0">{{ display }}</pre>
       </dl>
 
       <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
+          class="m-0"
           [checked]="display"
           [disabled]="true"
           [isCentered]="false"
@@ -31,9 +32,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 
       <!-- Display AbstractModel -->
       <dl *ngIf="styling === FieldStyling.Model">
-        <p>
-          <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
-        </p>
+        <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
       </dl>
     </ng-container>
     <ng-template #hasChildren>
@@ -43,13 +42,6 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
       ></baw-render-field>
     </ng-template>
   `,
-  styles: [
-    `
-      dl {
-        margin: 0px;
-      }
-    `,
-  ],
 })
 export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   @Input() view: ModelView;
