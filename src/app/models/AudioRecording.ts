@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { adminAudioRecordingMenuItem } from "@component/admin/audio-recordings/audio-recordings.menus";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
@@ -95,9 +94,8 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    return adminAudioRecordingMenuItem.route.format({
-      audioRecordingId: this.id,
-    });
+    console.warn("AudioRecording viewUrl not implement.");
+    return "/FIX_ME";
   }
 }
 

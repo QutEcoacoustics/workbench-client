@@ -216,7 +216,15 @@ const serviceList = [
   },
 ];
 
+/**
+ * Stores all of the service providers, their service tokens, and resolvers
+ */
 const serviceProviders: any[] = [AppConfigService, SecurityService];
+
+/**
+ * Stores all of the service providers, their service tokens, and resolvers using mock classes
+ */
+const serviceMockProviders: any[] = [];
 
 for (const service of serviceList) {
   const providers = [
@@ -225,7 +233,14 @@ for (const service of serviceList) {
     ...(service.resolvers?.providers || []),
   ];
 
+  const mockProviders = [
+    { provide: service.service, useClass: service.mock },
+    { provide: service.serviceToken.token, useClass: service.mock },
+    ...(service.resolvers?.providers || []),
+  ];
+
   serviceProviders.push(...providers);
+  serviceMockProviders.push(...mockProviders);
 }
 
-export { serviceProviders, serviceList };
+export { serviceProviders, serviceMockProviders };

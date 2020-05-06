@@ -145,6 +145,14 @@
       }
     },
     {
+      "key": "deletedAt",
+      "type": "input",
+      "templateOptions": {
+        "label": "Deleted At",
+        "type": "text"
+      }
+    },
+    {
       "key": "originalFileName",
       "type": "input",
       "templateOptions": {
@@ -157,22 +165,6 @@
       "type": "input",
       "templateOptions": {
         "label": "Recorded UTC Offset",
-        "type": "text"
-      }
-    },
-    {
-      "key": "projects",
-      "type": "input",
-      "templateOptions": {
-        "label": "Projects",
-        "type": "text"
-      }
-    },
-    {
-      "key": "annotations",
-      "type": "input",
-      "templateOptions": {
-        "label": "Annotations",
         "type": "text"
       }
     }

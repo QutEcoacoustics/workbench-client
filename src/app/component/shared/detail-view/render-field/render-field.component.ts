@@ -66,7 +66,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
     if (value === null || value === undefined) {
       this.display = this.noValueText;
     } else if (value instanceof DateTime) {
-      this.display = `${value.toISO()} (${value.toRelative()})`;
+      this.display = humanizeDateTime(value);
     } else if (value instanceof Duration) {
       this.display = `${value.toISO()} (${toRelative(value)})`;
     } else if (value instanceof Array) {
@@ -165,7 +165,15 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   }
 }
 
-type ModelView =
+/**
+ * Create a human readable datetime string
+ * @param value DateTime value
+ */
+export function humanizeDateTime(value: DateTime): string {
+  return `${value.toISO()} (${value.toRelative()})`;
+}
+
+export type ModelView =
   | undefined
   | string
   | number

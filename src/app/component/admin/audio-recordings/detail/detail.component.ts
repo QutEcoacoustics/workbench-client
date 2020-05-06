@@ -32,21 +32,17 @@ const audioRecordingKey = "audioRecording";
   selector: "app-admin-audio-recording",
   template: `
     <div *ngIf="!failure">
-      <div *ngIf="!error">
-        <h1>Audio Recording Details</h1>
-        <baw-detail-view
-          [fields]="fields"
-          [model]="audioRecording"
-        ></baw-detail-view>
-      </div>
-      <app-error-handler [error]="error"></app-error-handler>
+      <h1>Audio Recording Details</h1>
+      <baw-detail-view
+        [fields]="fields"
+        [model]="audioRecording"
+      ></baw-detail-view>
     </div>
   `,
 })
 export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public audioRecording: AudioRecording;
-  public error: ApiErrorDetails;
   public failure: boolean;
   public fields = fields;
 
@@ -57,6 +53,12 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   ngOnInit(): void {
     const data = this.route.snapshot.data;
     const models = retrieveResolvers(data);
-    this.audioRecording = models[audioRecordingKey];
+
+    if (!models) {
+      this.failure = true;
+      return;
+    }
+
+    this.audioRecording = models[audioRecordingKey] as AudioRecording;
   }
 }

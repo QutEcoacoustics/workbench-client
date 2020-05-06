@@ -9,7 +9,7 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
-import { serviceList } from "@baw-api/ServiceProviders";
+import { serviceMockProviders } from "@baw-api/ServiceProviders";
 import {
   API_CONFIG,
   API_ROOT,
@@ -59,10 +59,7 @@ export const testBawServices = [
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
-  ...serviceList.map((service) => ({
-    provide: service.service,
-    useClass: service.mock,
-  })),
+  ...serviceMockProviders,
 ];
 
 /**
