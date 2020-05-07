@@ -1,7 +1,6 @@
-import { sitesCategory } from "@component/sites/sites.menus";
 import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { defaultAudioIcon, isAdminPredicate } from "src/app/app.menus";
+import { isAdminPredicate } from "src/app/app.menus";
 
 export const adminRoute = StrongRoute.Base.add("admin");
 export const adminCategory: Category = {
@@ -23,15 +22,6 @@ export const adminUserListMenuItem = MenuRoute({
   label: "Users",
   route: adminRoute.add("user_accounts"),
   tooltip: () => "Manage user accounts",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate,
-});
-
-export const adminOrphanSitesMenuItem = MenuRoute({
-  icon: sitesCategory.icon,
-  label: "Orphan Sites",
-  route: adminRoute.add("sites"),
-  tooltip: () => "Manage orphaned sites",
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate,
 });
