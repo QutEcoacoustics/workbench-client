@@ -76,7 +76,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
       this.title = `Edit ${this.model.text}`;
       this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
         (tagType) => ({
-          label: tagType.toString(),
+          label: tagType.name,
           value: tagType.name,
         })
       );
@@ -84,7 +84,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
   }
 
   public get typeOfTags(): TagType[] {
-    return (this.models[tagTypesKey] as unknown) as TagType[];
+    return this.models[tagTypesKey] as TagType[];
   }
 
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449

@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
-import { startCase } from "lodash";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
@@ -39,9 +38,6 @@ export class Tag extends AbstractModel implements ITag {
   public readonly id?: Id;
   @BawPersistAttr
   public readonly text?: string;
-  // * Count attribute is unlikely to be an API output
-  @BawPersistAttr
-  public readonly count?: number;
   @BawPersistAttr
   public readonly isTaxanomic?: boolean;
   @BawPersistAttr

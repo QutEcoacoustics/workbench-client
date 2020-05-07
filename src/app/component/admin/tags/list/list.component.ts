@@ -35,7 +35,6 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [
     { name: "Text" },
-    { name: "Count" },
     { name: "Taxanomic" },
     { name: "Retired" },
     { name: "type" },
@@ -47,12 +46,12 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     retired: "retired",
     type: "typeOfTag",
   };
+  public filterKey = "text";
 
   constructor(api: TagsService) {
     super(api, (tags) =>
       tags.map((tag) => ({
         text: tag.text,
-        count: tag.count,
         taxanomic: tag.isTaxanomic ? "Taxanomic" : "Folksonomic",
         retired: tag.retired,
         type: tag.typeOfTag,
@@ -76,7 +75,6 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
 
 interface TableRow {
   text: string;
-  count: number;
   taxanomic: "Taxanomic" | "Folksonomic";
   retired: boolean;
   type: string;

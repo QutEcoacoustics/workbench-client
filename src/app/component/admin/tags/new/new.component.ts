@@ -65,7 +65,7 @@ export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     if (!this.failure) {
       this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
         (tagType) => ({
-          label: tagType.toString(),
+          label: tagType.name,
           value: tagType.name,
         })
       );
