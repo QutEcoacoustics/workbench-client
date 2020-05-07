@@ -53,8 +53,4 @@ export class Study extends AbstractModel implements IStudy {
   public get viewUrl(): string {
     throw new Error("Study viewUrl not implemented.");
   }
-
-  public toString(): string {
-    return this.name;
-  }
 }

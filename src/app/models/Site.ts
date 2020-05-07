@@ -105,8 +105,4 @@ export class Site extends AbstractModel implements ISite {
       siteId: this.id,
     });
   }
-
-  public toString(): string {
-    return this.name;
-  }
 }

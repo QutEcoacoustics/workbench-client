@@ -64,7 +64,11 @@ export class AdminAudioRecordingsComponent
     this.getPageData();
   }
 
-  viewRedirectPath(model: AudioRecording) {
+  /**
+   * Path to view audio recording details
+   * @param model Audio Recording
+   */
+  public detailsPath(model: AudioRecording) {
     return adminAudioRecordingMenuItem.route.format({
       audioRecordingId: model.id,
     });

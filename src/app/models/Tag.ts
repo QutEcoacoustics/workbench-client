@@ -83,8 +83,4 @@ export class TagType extends AbstractData {
   constructor(data: { name: string }) {
     super(data);
   }
-
-  toString() {
-    return startCase(this.name);
-  }
 }

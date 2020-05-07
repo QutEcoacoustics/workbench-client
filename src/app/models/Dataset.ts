@@ -53,8 +53,4 @@ export class Dataset extends AbstractModel implements IDataset {
   public get viewUrl(): string {
     throw new Error("Dataset viewUrl not implemented.");
   }
-
-  public toString(): string {
-    return this.name;
-  }
 }

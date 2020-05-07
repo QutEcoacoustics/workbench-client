@@ -78,7 +78,11 @@ export abstract class AbstractModel {
    * Convert model to string
    */
   public toString(): string {
-    return this.id.toString();
+    if (this["name"]) {
+      return `${this.kind}: ${this["name"]} (${this.id})`;
+    } else {
+      return `${this.kind}: ${this.id}`;
+    }
   }
 
   /**

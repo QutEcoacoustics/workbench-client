@@ -25,8 +25,8 @@
     <ngx-datatable-column name="Recorded"></ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      width="130"
-      maxWidth="130"
+      width="140"
+      maxWidth="140"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
@@ -34,12 +34,12 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-default mr-2"
-          [routerLink]="viewRedirectPath(value)"
+          [routerLink]="detailsPath(value)"
         >
-          View
+          Details
         </a>
         <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
-          Play
+          View
         </a>
       </ng-template>
     </ngx-datatable-column>

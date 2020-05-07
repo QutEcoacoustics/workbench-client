@@ -105,10 +105,6 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public get viewUrl(): string {
     throw new Error("AnalysisJob viewUrl not implemented.");
   }
-
-  public toString(): string {
-    return this.name;
-  }
 }
 
 type Status =
