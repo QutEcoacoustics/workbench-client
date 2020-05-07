@@ -65,7 +65,7 @@ export abstract class BawApiService<T extends AbstractModel> {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: object, injector?: Injector) => T,
-    protected injector?: Injector
+    protected injector: Injector
   ) {
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
@@ -243,6 +243,19 @@ export abstract class BawApiService<T extends AbstractModel> {
 }
 
 /**
+ * Filter paging metadata from api response
+ */
+export interface Paging {
+  page?: number;
+  items?: number;
+  total?: number;
+  maxPage?: number;
+  current?: string;
+  previous?: string;
+  next?: string;
+}
+
+/**
  * Filter metadata from api response
  */
 export interface Filters {
@@ -255,15 +268,7 @@ export interface Filters {
     orderBy: string;
     direction: "desc" | "asc";
   };
-  paging?: {
-    page?: number;
-    items?: number;
-    total?: number;
-    maxPage?: number;
-    current?: string;
-    previous?: string;
-    next?: string;
-  };
+  paging?: Paging;
 }
 
 /**

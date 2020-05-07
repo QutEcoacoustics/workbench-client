@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
@@ -93,14 +94,14 @@ export class Site extends AbstractModel implements ISite {
     }
 
     return siteMenuItem.route.format({
-      projectId: this.projectIds[0],
+      projectId: this.projectIds.values().next().value,
       siteId: this.id,
     });
   }
 
-  public getViewUrl(project: Project): string {
+  public getViewUrl(project: IdOr<Project>): string {
     return siteMenuItem.route.format({
-      projectId: project.id,
+      projectId: typeof project === "number" ? project : project.id,
       siteId: this.id,
     });
   }

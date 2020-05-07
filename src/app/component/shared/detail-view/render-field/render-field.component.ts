@@ -1,23 +1,38 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AbstractModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { toRelative } from "src/app/interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-render-field",
   template: `
     <ng-container *ngIf="!children; else hasChildren">
+      <!-- Display plain text -->
       <dl *ngIf="styling === FieldStyling.Plain">
-        <p>{{ display }}</p>
+        <p class="m-0">{{ display }}</p>
       </dl>
+
+      <!-- Display code/objects -->
       <dl *ngIf="styling === FieldStyling.Code">
-        <pre>{{ display }}</pre>
+        <pre class="m-0">{{ display }}</pre>
       </dl>
+
+      <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
+          class="m-0"
           [checked]="display"
           [disabled]="true"
           [isCentered]="false"
         ></app-checkbox>
+      </dl>
+
+      <!-- Display AbstractModel -->
+      <dl *ngIf="styling === FieldStyling.Model">
+        <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
       </dl>
     </ng-container>
     <ng-template #hasChildren>
@@ -27,17 +42,11 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
       ></baw-render-field>
     </ng-template>
   `,
-  styles: [
-    `
-      dl {
-        margin: 0px;
-      }
-    `,
-  ],
 })
-export class RenderFieldComponent implements OnInit {
+export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   @Input() view: ModelView;
   public display: string | number | boolean;
+  public model: AbstractModel;
   public children: ModelView[];
   public styling: FieldStyling = FieldStyling.Plain;
   public FieldStyling = FieldStyling;
@@ -45,23 +54,31 @@ export class RenderFieldComponent implements OnInit {
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
-  constructor() {}
+  constructor(private ref: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.humanize(this.view);
   }
 
-  private humanize(value: any) {
+  private humanize(value: ModelView) {
     if (value === null || value === undefined) {
       this.display = this.noValueText;
     } else if (value instanceof DateTime) {
-      this.display = `${value.toISO()} (${value.toRelative()})`;
+      this.display = humanizeDateTime(value);
     } else if (value instanceof Duration) {
       this.display = `${value.toISO()} (${toRelative(value)})`;
     } else if (value instanceof Array) {
       this.humanizeArray(value);
     } else if (value instanceof Blob) {
       this.humanizeBlob(value);
+    } else if (value instanceof Observable) {
+      this.humanizeObservable(value);
+    } else if (value instanceof AbstractModel) {
+      this.styling = FieldStyling.Model;
+      this.display = "";
+      this.model = value;
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
       this.humanizeObject(value);
@@ -107,6 +124,26 @@ export class RenderFieldComponent implements OnInit {
     reader.readAsText(value);
   }
 
+  private humanizeObservable(
+    value: Observable<AbstractModel | AbstractModel[]>
+  ) {
+    this.display = this.loadingText;
+    value.pipe(takeUntil(this.unsubscribe)).subscribe(
+      (models) => {
+        if (!models) {
+          this.display = this.noValueText;
+        } else {
+          this.humanize(models);
+        }
+        this.ref.detectChanges();
+      },
+      () => {
+        this.display = this.errorText;
+        this.ref.detectChanges();
+      }
+    );
+  }
+
   /**
    * Convert array to human readable output
    * @param value Display output
@@ -128,13 +165,22 @@ export class RenderFieldComponent implements OnInit {
   }
 }
 
-type ModelView =
+/**
+ * Create a human readable datetime string
+ * @param value DateTime value
+ */
+export function humanizeDateTime(value: DateTime): string {
+  return `${value.toISO()} (${value.toRelative()})`;
+}
+
+export type ModelView =
   | undefined
   | string
   | number
   | boolean
   | DateTime
   | Duration
+  | AbstractModel
   | Blob
   | object
   | ModelView[];
@@ -145,4 +191,5 @@ enum FieldStyling {
   Link,
   Plain,
   Route,
+  Model,
 }

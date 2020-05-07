@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -29,8 +29,12 @@ export class TaggingsService extends StandardApi<
   Tagging,
   [IdOr<AnalysisJob>, IdOr<AudioEvent>]
 > {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Tagging);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Tagging, injector);
   }
 
   list(

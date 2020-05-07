@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
@@ -25,8 +25,12 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  */
 @Injectable()
 export class AccountsService extends StandardApi<User> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, User);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, User, injector);
   }
 
   list(): Observable<User[]> {

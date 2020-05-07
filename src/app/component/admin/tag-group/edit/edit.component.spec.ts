@@ -4,21 +4,18 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   tagGroupResolvers,
-  TagGroupService,
+  TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
 describe("AdminTagGroupsEditComponent", () => {
-  let api: TagGroupService;
+  let api: TagGroupsService;
   let component: AdminTagGroupsEditComponent;
   let defaultError: ApiErrorDetails;
   let defaultTagGroup: TagGroup;
@@ -50,7 +47,7 @@ describe("AdminTagGroupsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsEditComponent);
-    api = TestBed.inject(TagGroupService);
+    api = TestBed.inject(TagGroupsService);
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;

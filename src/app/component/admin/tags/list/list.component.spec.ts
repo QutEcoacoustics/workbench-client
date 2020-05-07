@@ -1,12 +1,17 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Tag } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { AdminTagsComponent } from "./list.component";
 
 describe("AdminTagsComponent", () => {
-  let component: AdminTagsComponent;
+  let api: TagsService;
+  let defaultModel: Tag;
+  let defaultModels: Tag[];
   let fixture: ComponentFixture<AdminTagsComponent>;
 
   beforeEach(async(() => {
@@ -17,14 +22,40 @@ describe("AdminTagsComponent", () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(function () {
     fixture = TestBed.createComponent(AdminTagsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    api = TestBed.inject(TagsService);
+
+    defaultModel = new Tag({
+      id: 1,
+      text: "tag",
+      count: 1,
+      isTaxanomic: false,
+      retired: false,
+      typeOfTag: "common",
+    });
+    defaultModels = [];
+    for (let i = 0; i < 25; i++) {
+      defaultModels.push(
+        new Tag({
+          id: i,
+          text: "tag " + i,
+          count: 1,
+          isTaxanomic: false,
+          retired: false,
+          typeOfTag: "common",
+        })
+      );
+    }
+
+    this.defaultModels = defaultModels;
+    this.fixture = fixture;
+    this.api = api;
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
-  // TODO Write Tests
+  // TODO Write tests
+  assertPagination<Tag, TagsService>();
+
+  xdescribe("rows", () => {});
+  xdescribe("actions", () => {});
 });

@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { MockBawApiService } from "@baw-api/mock/baseApiMock.service";
-import { TagGroupService } from "@baw-api/tag/tag-group.service";
+import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import {
   validateApiCreate,
@@ -21,33 +21,33 @@ describe("TagGroupService", function () {
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         ...testAppInitializer,
-        TagGroupService,
+        TagGroupsService,
         { provide: BawApiService, useClass: MockBawApiService },
       ],
     });
-    this.service = TestBed.inject(TagGroupService);
+    this.service = TestBed.inject(TagGroupsService);
   });
 
   it("should be created", function () {
     expect(this.service).toBeTruthy();
   });
 
-  validateApiList<TagGroup, TagGroupService>("/tag_groups/");
-  validateApiFilter<TagGroup, TagGroupService>("/tag_groups/filter");
-  validateApiShow<TagGroup, TagGroupService>(
+  validateApiList<TagGroup, TagGroupsService>("/tag_groups/");
+  validateApiFilter<TagGroup, TagGroupsService>("/tag_groups/filter");
+  validateApiShow<TagGroup, TagGroupsService>(
     "/tag_groups/5",
     5,
     new TagGroup({ id: 5 })
   );
-  validateApiCreate<TagGroup, TagGroupService>(
+  validateApiCreate<TagGroup, TagGroupsService>(
     "/tag_groups/",
     new TagGroup({ id: 5 })
   );
-  validateApiUpdate<TagGroup, TagGroupService>(
+  validateApiUpdate<TagGroup, TagGroupsService>(
     "/tag_groups/5",
     new TagGroup({ id: 5 })
   );
-  validateApiDestroy<TagGroup, TagGroupService>(
+  validateApiDestroy<TagGroup, TagGroupsService>(
     "/tag_groups/5",
     5,
     new TagGroup({ id: 5 })

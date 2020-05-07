@@ -75,6 +75,18 @@ export abstract class AbstractModel {
   }
 
   /**
+   * Convert model to string.
+   * @param value Display custom value
+   */
+  public toString(value?: string): string {
+    if (!value && this["name"]) {
+      value = this["name"];
+    }
+    const identifier = value ? `${value} (${this.id})` : this.id.toString();
+    return `${this.kind}: ${identifier}`;
+  }
+
+  /**
    * Add hidden metadata to model
    * @param meta Metadata
    */

@@ -5,13 +5,13 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import {
   adminAnalysisJobsMenuItem,
-  adminAudioRecordingsMenuItem,
   adminCategory,
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
   adminOrphanSitesMenuItem,
   adminUserListMenuItem,
 } from "../admin.menus";
+import { adminAudioRecordingsMenuItem } from "../audio-recordings/audio-recordings.menus";
 import { adminScriptsMenuItem } from "../scripts/scripts.menus";
 import { adminTagGroupsMenuItem } from "../tag-group/tag-group.menus";
 import { adminTagsMenuItem } from "../tags/tags.menus";

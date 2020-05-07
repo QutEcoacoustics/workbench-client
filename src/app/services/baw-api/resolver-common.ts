@@ -236,7 +236,8 @@ function convertToId(id: string): Id {
 }
 
 /**
- * Verify all resolvers resolve without errors
+ * Verify all resolvers resolve without errors. Returns object containing all
+ * resolved models using the resolver key as the object key.
  * @param data Page Data
  */
 export function retrieveResolvers(data: any): ResolvedModelList | false {

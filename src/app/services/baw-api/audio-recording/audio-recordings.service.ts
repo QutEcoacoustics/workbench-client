@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
@@ -21,8 +21,12 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
 
 @Injectable()
 export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, AudioRecording);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, AudioRecording, injector);
   }
 
   list(): Observable<AudioRecording[]> {

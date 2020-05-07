@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { TagGroup } from "@models/TagGroup";
@@ -22,11 +22,16 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
 /**
  * Scripts Service.
  * Handles API routes pertaining to scripts.
+ * TODO https://github.com/QutEcoacoustics/baw-server/issues/442
  */
 @Injectable()
-export class TagGroupService extends StandardApi<TagGroup> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, TagGroup);
+export class TagGroupsService extends StandardApi<TagGroup> {
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, TagGroup, injector);
   }
 
   list(): Observable<TagGroup[]> {
@@ -49,7 +54,7 @@ export class TagGroupService extends StandardApi<TagGroup> {
   }
 }
 
-export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupService>(
-  [TagGroupService],
+export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupsService>(
+  [TagGroupsService],
   "tagGroupId"
 ).create("TagGroup");

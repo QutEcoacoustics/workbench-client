@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -25,8 +25,12 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
  */
 @Injectable()
 export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, AnalysisJob);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, AnalysisJob, injector);
   }
 
   list(): Observable<AnalysisJob[]> {

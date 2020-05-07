@@ -1,0 +1,172 @@
+{
+  "fields": [
+    {
+      "key": "id",
+      "type": "input",
+      "templateOptions": {
+        "label": "Id",
+        "type": "number"
+      }
+    },
+    {
+      "key": "uuid",
+      "type": "input",
+      "templateOptions": {
+        "label": "Uuid",
+        "type": "text"
+      }
+    },
+    {
+      "key": "uploader",
+      "type": "input",
+      "templateOptions": {
+        "label": "Uploader",
+        "type": "text"
+      }
+    },
+    {
+      "key": "recordedDate",
+      "type": "input",
+      "templateOptions": {
+        "label": "Recorded Date",
+        "type": "text"
+      }
+    },
+    {
+      "key": "site",
+      "type": "input",
+      "templateOptions": {
+        "label": "Site",
+        "type": "text"
+      }
+    },
+    {
+      "key": "duration",
+      "type": "input",
+      "templateOptions": {
+        "label": "Duration",
+        "type": "text"
+      }
+    },
+    {
+      "key": "sampleRateHertz",
+      "type": "input",
+      "templateOptions": {
+        "label": "Sample Rate Hertz",
+        "type": "number"
+      }
+    },
+    {
+      "key": "channels",
+      "type": "input",
+      "templateOptions": {
+        "label": "Channels",
+        "type": "number"
+      }
+    },
+    {
+      "key": "mediaType",
+      "type": "input",
+      "templateOptions": {
+        "label": "Media Type",
+        "type": "text"
+      }
+    },
+    {
+      "key": "dataLengthBytes",
+      "type": "input",
+      "templateOptions": {
+        "label": "Data Length Bytes",
+        "type": "number"
+      }
+    },
+    {
+      "key": "fileHash",
+      "type": "input",
+      "templateOptions": {
+        "label": "File Hash",
+        "type": "text"
+      }
+    },
+    {
+      "key": "status",
+      "type": "input",
+      "templateOptions": {
+        "label": "Status",
+        "type": "text"
+      }
+    },
+    {
+      "key": "notes",
+      "type": "input",
+      "templateOptions": {
+        "label": "Notes",
+        "type": "textarea"
+      }
+    },
+    {
+      "key": "creator",
+      "type": "input",
+      "templateOptions": {
+        "label": "Creator",
+        "type": "text"
+      }
+    },
+    {
+      "key": "updater",
+      "type": "input",
+      "templateOptions": {
+        "label": "Updater",
+        "type": "text"
+      }
+    },
+    {
+      "key": "deleter",
+      "type": "input",
+      "templateOptions": {
+        "label": "Deleter",
+        "type": "text"
+      }
+    },
+    {
+      "key": "createdAt",
+      "type": "input",
+      "templateOptions": {
+        "label": "Created At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "updatedAt",
+      "type": "input",
+      "templateOptions": {
+        "label": "Updated At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "deletedAt",
+      "type": "input",
+      "templateOptions": {
+        "label": "Deleted At",
+        "type": "text"
+      }
+    },
+    {
+      "key": "originalFileName",
+      "type": "input",
+      "templateOptions": {
+        "label": "Original File Name",
+        "type": "text"
+      }
+    },
+    {
+      "key": "recordedUtcOffset",
+      "type": "input",
+      "templateOptions": {
+        "label": "Recorded UTC Offset",
+        "type": "text"
+      }
+    }
+  ]
+}

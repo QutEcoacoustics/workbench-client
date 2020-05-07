@@ -36,15 +36,6 @@ export const adminOrphanSitesMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminAudioRecordingsMenuItem = MenuRoute({
-  icon: defaultAudioIcon,
-  label: "Audio Recordings",
-  route: adminRoute.add("audio_recordings"),
-  tooltip: () => "Manage audio recordings",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate,
-});
-
 export const adminAnalysisJobsMenuItem = MenuRoute({
   icon: ["fas", "server"],
   label: "Analysis Jobs",

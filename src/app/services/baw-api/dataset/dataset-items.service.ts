@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset } from "@models/Dataset";
@@ -27,8 +27,12 @@ export class DatasetItemsService extends ImmutableApi<
   DatasetItem,
   [IdOr<Dataset>]
 > {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, DatasetItem);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, DatasetItem, injector);
   }
 
   list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {

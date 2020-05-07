@@ -51,6 +51,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
+  @BawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
   @BawDuration({ key: "durationSeconds" })
@@ -93,7 +94,8 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    throw new Error("AudioRecording viewUrl not implemented.");
+    console.warn("AudioRecording viewUrl not implement.");
+    return "/FIX_ME";
   }
 }
 

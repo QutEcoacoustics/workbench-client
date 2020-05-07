@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { ImmutableApi } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Observable } from "rxjs";
@@ -7,8 +7,12 @@ import { MockModel } from "./baseApiMock.service";
 
 @Injectable()
 export class MockImmutableApiService extends ImmutableApi<MockModel> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, MockModel);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, MockModel, injector);
   }
 
   public list(...args: any[]) {

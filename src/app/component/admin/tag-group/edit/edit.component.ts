@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   tagGroupResolvers,
-  TagGroupService,
+  TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
 import {
   defaultSuccessMsg,
@@ -53,7 +53,7 @@ export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
   public title: string;
 
   constructor(
-    private api: TagGroupService,
+    private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router

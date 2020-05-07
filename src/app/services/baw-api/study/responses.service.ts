@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Response } from "@models/Response";
@@ -25,8 +25,12 @@ const endpointShallow = stringTemplate`/responses/${responseId}${option}`;
 
 @Injectable()
 export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Response);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Response, injector);
   }
 
   list(study: IdOr<Study>): Observable<Response[]> {
@@ -54,8 +58,12 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
 
 @Injectable()
 export class ShallowResponsesService extends StandardApi<Response> {
-  constructor(http: HttpClient, @Inject(API_ROOT) apiRoot: string) {
-    super(http, apiRoot, Response);
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, Response, injector);
   }
 
   list(): Observable<Response[]> {

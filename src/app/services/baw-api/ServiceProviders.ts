@@ -64,7 +64,7 @@ import {
   ShallowResponsesService,
 } from "./study/responses.service";
 import { StudiesService, studyResolvers } from "./study/studies.service";
-import { tagGroupResolvers, TagGroupService } from "./tag/tag-group.service";
+import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { taggingResolvers, TaggingsService } from "./tagging/taggings.service";
 import { userResolvers, UserService } from "./user/user.service";
@@ -198,7 +198,7 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.TAG_GROUP,
-    service: TagGroupService,
+    service: TagGroupsService,
     resolvers: tagGroupResolvers,
     mock: MockStandardApiService,
   },
@@ -216,7 +216,15 @@ const serviceList = [
   },
 ];
 
+/**
+ * Stores all of the service providers, their service tokens, and resolvers
+ */
 const serviceProviders: any[] = [AppConfigService, SecurityService];
+
+/**
+ * Stores all of the service providers, their service tokens, and resolvers using mock classes
+ */
+const serviceMockProviders: any[] = [];
 
 for (const service of serviceList) {
   const providers = [
@@ -225,7 +233,14 @@ for (const service of serviceList) {
     ...(service.resolvers?.providers || []),
   ];
 
+  const mockProviders = [
+    { provide: service.service, useClass: service.mock },
+    { provide: service.serviceToken.token, useClass: service.mock },
+    ...(service.resolvers?.providers || []),
+  ];
+
   serviceProviders.push(...providers);
+  serviceMockProviders.push(...mockProviders);
 }
 
-export { serviceProviders, serviceList };
+export { serviceProviders, serviceMockProviders };
