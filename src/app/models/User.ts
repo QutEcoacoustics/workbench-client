@@ -109,7 +109,7 @@ export class User extends AbstractModel implements IUser {
   }
 
   public toString(): string {
-    return `${this.kind}: ${this.userName} (${this.id})`;
+    return super.toString(this.userName);
   }
 }
 

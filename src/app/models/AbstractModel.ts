@@ -75,14 +75,15 @@ export abstract class AbstractModel {
   }
 
   /**
-   * Convert model to string
+   * Convert model to string.
+   * @param value Display custom value
    */
-  public toString(): string {
-    if (this["name"]) {
-      return `${this.kind}: ${this["name"]} (${this.id})`;
-    } else {
-      return `${this.kind}: ${this.id}`;
+  public toString(value?: string): string {
+    if (!value && this["name"]) {
+      value = this["name"];
     }
+    const identifier = value ? `${value} (${this.id})` : this.id.toString();
+    return `${this.kind}: ${identifier}`;
   }
 
   /**

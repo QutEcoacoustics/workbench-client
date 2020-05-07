@@ -337,10 +337,8 @@ describe("RenderFieldComponent", () => {
       toString?: (model) => string
     ) {
       class MockModel extends AbstractModel {
-        public get viewUrl(): string {
-          return link;
-        }
-
+        public kind = "MockModel";
+        public viewUrl = link;
         public toString() {
           return toString ? toString(this) : super.toString();
         }
@@ -360,7 +358,7 @@ describe("RenderFieldComponent", () => {
       component.view = createModel({ id: 1 });
       fixture.detectChanges();
       const value = getModelValues()[0];
-      expect(value.innerText.trim()).toBe("1");
+      expect(value.innerText.trim()).toBe("MockModel: 1");
     });
 
     it("should display custom model toString()", () => {

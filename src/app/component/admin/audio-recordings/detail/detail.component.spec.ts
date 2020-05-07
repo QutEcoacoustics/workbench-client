@@ -141,13 +141,13 @@ describe("AdminAudioRecordingComponent", () => {
 
     assertDetailView("Id", "id", "1");
     assertDetailView("Uuid", "uuid", "xxxxxxxxxxxxxxx");
-    assertDetailView("Uploader", "uploaderId", "custom username");
+    assertDetailView("Uploader", "uploaderId", "User: custom username (1)");
     assertDetailView(
       "Recorded Date",
       "recordedDate",
       humanizeDateTime(recordedDate)
     );
-    assertDetailView("Site", "siteId", "custom site");
+    assertDetailView("Site", "siteId", "Site: custom site (1)");
     assertDetailView(
       "Duration",
       "durationSeconds",
@@ -164,9 +164,9 @@ describe("AdminAudioRecordingComponent", () => {
     );
     assertDetailView("Status", "status", "ready");
     assertDetailView("Notes", "notes", JSON.stringify(notes));
-    assertDetailView("Creator", "creatorId", "custom username");
-    assertDetailView("Updater", "updaterId", "custom username");
-    assertDetailView("Deleter", "deleterId", "custom username");
+    assertDetailView("Creator", "creatorId", "User: custom username (1)");
+    assertDetailView("Updater", "updaterId", "User: custom username (1)");
+    assertDetailView("Deleter", "deleterId", "User: custom username (1)");
     assertDetailView("Created At", "createdAt", humanizeDateTime(createdAt));
     assertDetailView("Updated At", "updatedAt", humanizeDateTime(updatedAt));
     assertDetailView("Deleted At", "deletedAt", humanizeDateTime(deletedAt));
