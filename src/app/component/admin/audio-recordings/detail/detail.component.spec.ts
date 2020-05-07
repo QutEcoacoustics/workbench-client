@@ -85,10 +85,18 @@ describe("AdminAudioRecordingComponent", () => {
   });
 
   describe("details", () => {
-    const recordedDate = DateTime.fromISO("2010-01-01T21:00:00.000+10:00");
-    const createdAt = DateTime.fromISO("2010-02-01T21:00:00.000+10:00");
-    const updatedAt = DateTime.fromISO("2010-03-01T21:00:00.000+10:00");
-    const deletedAt = DateTime.fromISO("2010-04-01T21:00:00.000+10:00");
+    const recordedDate = DateTime.fromISO("2010-01-01T21:00:00.000+15:00", {
+      setZone: true,
+    });
+    const createdAt = DateTime.fromISO("2010-02-01T21:00:00.000+15:00", {
+      setZone: true,
+    });
+    const updatedAt = DateTime.fromISO("2010-03-01T21:00:00.000+15:00", {
+      setZone: true,
+    });
+    const deletedAt = DateTime.fromISO("2010-04-01T21:00:00.000+15:00", {
+      setZone: true,
+    });
     const notes = {
       relative_path: "ULI25_NEW/Data/ULI25_20190909_043707.wav",
       duration_adjustment_for_overlap: [
