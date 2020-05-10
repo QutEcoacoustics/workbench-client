@@ -1,1 +1,58 @@
-<p>list works!</p>
+<ng-container *ngIf="rows && !error">
+  <h1>Orphan Sites</h1>
+  <p>
+    There are {{ totalModels }} orphan sites. A site becomes orphaned when it
+    can no longer be access from any project.
+  </p>
+  <p>
+    To assign orphan sites to a project, go to the project's detail page and
+    click on '{{ assignSitesLabel }}' in the list of actions on the right.
+  </p>
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Filter</span>
+    </div>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter Sites"
+      (keyup)="onFilter($event)"
+    />
+  </div>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Site"> </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      width="100"
+      maxWidth="100"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a
+          class="btn btn-sm btn-default mr-2"
+          [routerLink]="detailsPath(value)"
+        >
+          Details
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<app-error-handler [error]="error"></app-error-handler>

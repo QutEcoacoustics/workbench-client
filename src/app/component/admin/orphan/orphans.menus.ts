@@ -22,7 +22,7 @@ export const adminOrphansMenuItem = MenuRoute({
 export const adminOrphanMenuItem = MenuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Orphan Site",
-  route: adminOrphansMenuItem.route,
+  route: adminOrphansMenuItem.route.add(":siteId"),
   tooltip: () => "Manage orphaned site",
   parent: adminOrphansMenuItem,
   predicate: isAdminPredicate,

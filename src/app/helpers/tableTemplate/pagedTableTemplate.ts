@@ -52,7 +52,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   protected filters: Filters;
 
   constructor(
-    private api: ApiFilter<any, any>,
+    protected api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => T[],
     private route?: ActivatedRoute
   ) {
@@ -130,8 +130,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.loadingData = true;
     this.rows = [];
 
-    this.api
-      .filter(this.filters, ...args)
+    this.apiAction(this.filters, args)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
@@ -151,6 +150,10 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
           this.loadingData = false;
         }
       );
+  }
+
+  protected apiAction(filters: Filters, args: AbstractModel[]) {
+    return this.api.filter(filters, ...args);
   }
 }
 

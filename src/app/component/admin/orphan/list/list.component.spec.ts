@@ -1,23 +1,53 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { ListComponent } from "./list.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { Site } from "@models/Site";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { testBawServices } from "@test/helpers/testbed";
+import { SharedModule } from "primeng/api/shared";
+import { appLibraryImports } from "src/app/app.module";
+import { AdminOrphansComponent } from "./list.component";
 
-describe("ListComponent", () => {
-  let component: ListComponent;
-  let fixture: ComponentFixture<ListComponent>;
+describe("AdminOrphansComponent", () => {
+  let api: ShallowSitesService;
+  let defaultModel: Site;
+  let defaultModels: Site[];
+  let fixture: ComponentFixture<AdminOrphansComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ListComponent],
+      declarations: [AdminOrphansComponent],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      providers: [...testBawServices],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    fixture = TestBed.createComponent(AdminOrphansComponent);
+    api = TestBed.inject(ShallowSitesService);
+
+    defaultModel = new Site({
+      id: 1,
+      name: "custom site",
+    });
+    defaultModels = [];
+    for (let i = 0; i < 25; i++) {
+      defaultModels.push(
+        new Site({
+          id: i,
+          name: "site " + i,
+        })
+      );
+    }
+
+    this.defaultModels = defaultModels;
+    this.fixture = fixture;
+    this.api = api;
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  // TODO Write Tests
+  assertPagination<Site, ShallowSitesService>();
+
+  xdescribe("rows", () => {});
+  xdescribe("actions", () => {});
 });

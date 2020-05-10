@@ -10,8 +10,8 @@ import { AdminAudioRecordingsComponent } from "./list.component";
 
 describe("AdminAudioRecordingsComponent", () => {
   let api: AudioRecordingsService;
-  let defaultAudioRecording: AudioRecording;
-  let defaultAudioRecordings: AudioRecording[];
+  let defaultModel: AudioRecording;
+  let defaultModels: AudioRecording[];
   let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
 
   beforeEach(async(() => {
@@ -26,15 +26,15 @@ describe("AdminAudioRecordingsComponent", () => {
     fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
     api = TestBed.inject(AudioRecordingsService);
 
-    defaultAudioRecording = new AudioRecording({
+    defaultModel = new AudioRecording({
       id: 1,
       siteId: 1,
       durationSeconds: 3000,
       recordedDate: "2020-03-09T22:00:50.072+10:00",
     });
-    defaultAudioRecordings = [];
+    defaultModels = [];
     for (let i = 0; i < 25; i++) {
-      defaultAudioRecordings.push(
+      defaultModels.push(
         new AudioRecording({
           id: i,
           siteId: 1,
@@ -44,7 +44,7 @@ describe("AdminAudioRecordingsComponent", () => {
       );
     }
 
-    this.defaultModels = defaultAudioRecordings;
+    this.defaultModels = defaultModels;
     this.fixture = fixture;
     this.api = api;
   });

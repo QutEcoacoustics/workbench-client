@@ -62,6 +62,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
 /**
  * Shallow Sites Service.
  * Handles API routes pertaining to sites.
+ * TODO https://github.com/QutEcoacoustics/baw-server/issues/431
  */
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site> {
@@ -101,6 +102,23 @@ export class ShallowSitesService extends StandardApi<Site> {
   }
   destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
+  }
+  /**
+   * Retrieve orphaned sites (sites which have no parent projects)
+   * @param filters Filters to apply
+   */
+  orphans(filters: Filters): Observable<Site[]> {
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/430
+    return filterMock<Site>(
+      filters,
+      (index) =>
+        new Site({
+          id: index,
+          name: "PLACEHOLDER SITE",
+          description: "PLACEHOLDER DESCRIPTION",
+          creatorId: 1,
+        })
+    );
   }
 }
 
