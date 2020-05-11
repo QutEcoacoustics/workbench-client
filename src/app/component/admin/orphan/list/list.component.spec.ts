@@ -46,7 +46,7 @@ describe("AdminOrphansComponent", () => {
   });
 
   // TODO Write Tests
-  assertPagination<Site, ShallowSitesService>();
+  assertPagination<Site, ShallowSitesService>("orphans");
 
   xdescribe("rows", () => {});
   xdescribe("actions", () => {});

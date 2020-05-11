@@ -76,25 +76,16 @@ describe("SitesEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: 1,
-      name: "Site",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project({ id: 1, name: "Project" });
+    defaultSite = new Site({ id: 1, name: "Site" });
+    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   const formInputs = [
     {
       testGroup: "Site Name Input",
       setup: undefined,
-      field: fields[0],
+      field: fields[1],
       key: "name",
       htmlType: "input",
       required: true,
@@ -105,7 +96,7 @@ describe("SitesEditComponent", () => {
     {
       testGroup: "Site Description Input",
       setup: undefined,
-      field: fields[1],
+      field: fields[2],
       key: "description",
       htmlType: "textarea",
       required: false,
@@ -116,7 +107,7 @@ describe("SitesEditComponent", () => {
     {
       testGroup: "Site Latitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[0],
+      field: fields[3].fieldGroup[0],
       key: "customLatitude",
       htmlType: "input",
       required: false,
@@ -127,7 +118,7 @@ describe("SitesEditComponent", () => {
     {
       testGroup: "Site Longitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[1],
+      field: fields[3].fieldGroup[1],
       key: "customLongitude",
       htmlType: "input",
       required: false,
@@ -138,8 +129,8 @@ describe("SitesEditComponent", () => {
     {
       testGroup: "Site Image Input",
       setup: undefined,
-      field: fields[3],
-      key: "image",
+      field: fields[4],
+      key: "imageUrl",
       htmlType: "image",
       required: false,
       label: "Image",

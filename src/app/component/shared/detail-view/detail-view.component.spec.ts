@@ -149,6 +149,11 @@ describe("DetailViewComponent", () => {
         expect(values[2].innerText.trim()).toBe('{"test":"value"}');
       });
     });
+
+    xdescribe("nested fields", () => {
+      it("should handle single nested fields", () => {});
+      it("should handle multiple nested fields", () => {});
+    });
   });
 
   describe("screen size", () => {

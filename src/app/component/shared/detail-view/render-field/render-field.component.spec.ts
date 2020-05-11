@@ -448,4 +448,9 @@ describe("RenderFieldComponent", () => {
       expect(value.innerText.trim()).toBe("(error)");
     });
   });
+
+  xdescribe("image input", () => {
+    it("should handle image URL", () => {});
+    it("should display image", () => {});
+  });
 });

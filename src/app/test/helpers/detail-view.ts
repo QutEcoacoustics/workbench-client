@@ -24,13 +24,10 @@ function findDetailIndex(nativeElement: HTMLElement, label: string) {
 export function assertDetailView(
   label: string,
   key: string,
-  response?: string | string[]
+  response?: string | string[] | boolean
 ) {
   describe(`${label} (${key})`, function () {
-    it("should display " + key, function () {
-      const index = findDetailIndex(this.fixture.nativeElement, label);
-      expect(index).toBeGreaterThanOrEqual(0);
-    });
+    assertLabel(key, label);
 
     it("should display " + key + " value", function () {
       const index = findDetailIndex(this.fixture.nativeElement, label);
@@ -41,10 +38,31 @@ export function assertDetailView(
         (response as string[]).forEach((output, i) => {
           expect(views[index + i].innerText.trim()).toBe(output);
         });
+      } else if (typeof response === "boolean") {
+        const view = views[index].querySelector("input");
+        if (response) {
+          expect(view.checked).toBeTruthy();
+        } else {
+          expect(view.checked).toBeFalsy();
+        }
       } else {
         const view = views[index];
         expect(view.innerText.trim()).toBe(response);
       }
     });
   });
+}
+
+export function assertDetailValueImage(
+  label: string,
+  key: string,
+  response: string | string[]
+) {}
+
+function assertLabel(key: string, label: string) {
+  it("should display " + key, function () {
+    const index = findDetailIndex(this.fixture.nativeElement, label);
+    expect(index).toBeGreaterThanOrEqual(0);
+  });
+  it("should display " + key + " value", function () {});
 }

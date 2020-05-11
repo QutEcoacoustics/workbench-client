@@ -26,13 +26,6 @@
       }
     },
     {
-      "key": "locationObfuscated",
-      "hide": true,
-      "templateOptions": {
-        "label": "Location Obfuscated"
-      }
-    },
-    {
       "key": "location",
       "validators": {
         "fieldMatch": {
@@ -68,41 +61,6 @@
       "templateOptions": {
         "label": "Image",
         "required": false
-      }
-    },
-    {
-      "key": "creator",
-      "hide": true,
-      "templateOptions": {
-        "label": "Creator"
-      }
-    },
-    {
-      "key": "updater",
-      "hide": true,
-      "templateOptions": {
-        "label": "Updater"
-      }
-    },
-    {
-      "key": "createdAt",
-      "hide": true,
-      "templateOptions": {
-        "label": "Created At"
-      }
-    },
-    {
-      "key": "updatedAt",
-      "hide": true,
-      "templateOptions": {
-        "label": "Updated At"
-      }
-    },
-    {
-      "key": "projects",
-      "hide": true,
-      "templateOptions": {
-        "label": "Projects"
       }
     },
     {

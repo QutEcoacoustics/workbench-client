@@ -42,7 +42,7 @@ export class DetailViewComponent implements OnInit {
   }
 
   private recursiveSanitization(fields: FormlyFieldConfig[]) {
-    fields.forEach((field) => {
+    fields?.forEach((field) => {
       if (field.fieldGroup) {
         this.recursiveSanitization(field.fieldGroup);
       } else {

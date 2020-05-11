@@ -69,14 +69,8 @@ describe("SitesNewComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project({ id: 1, name: "Project" });
+    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   // TODO Add timezone checks
@@ -84,7 +78,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Name Input",
       setup: undefined,
-      field: fields[0],
+      field: fields[1],
       key: "name",
       htmlType: "input",
       required: true,
@@ -95,7 +89,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Description Input",
       setup: undefined,
-      field: fields[1],
+      field: fields[2],
       key: "description",
       htmlType: "textarea",
       required: false,
@@ -106,7 +100,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Latitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[0],
+      field: fields[3].fieldGroup[0],
       key: "customLatitude",
       htmlType: "input",
       required: false,
@@ -117,7 +111,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Longitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[1],
+      field: fields[3].fieldGroup[1],
       key: "customLongitude",
       htmlType: "input",
       required: false,
@@ -128,8 +122,8 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Image Input",
       setup: undefined,
-      field: fields[3],
-      key: "image",
+      field: fields[4],
+      key: "imageUrl",
       htmlType: "image",
       required: false,
       label: "Image",
