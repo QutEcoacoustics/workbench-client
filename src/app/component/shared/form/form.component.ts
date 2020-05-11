@@ -4,13 +4,12 @@ import {
   Input,
   OnInit,
   Output,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ToastrService } from "ngx-toastr";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { AbstractModel } from "src/app/models/AbstractModel";
 
 /**
  * Formly Form Wrapper
@@ -20,13 +19,13 @@ import { AbstractModel } from "src/app/models/AbstractModel";
   templateUrl: "./form.component.html",
   styleUrls: ["./form.component.scss"],
   // tslint:disable-next-line: use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() btnColor: ButtonClassTypes = "btn-success";
   @Input() fields: FormlyFieldConfig[];
   @Input() fieldsUrl: string;
-  @Input() model: AbstractModel;
+  @Input() model: object = {};
   @Input() size: "small" | "default" = "default";
   @Input() submitLabel = "Submit";
   @Input() submitLoading: boolean;

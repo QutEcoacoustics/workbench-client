@@ -1,16 +1,10 @@
-import {
-  async,
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  flush,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AbstractModel } from "@models/AbstractModel";
+import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
+import { assertRoute } from "@test/helpers/html";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
-import { assertRoute } from "src/app/test/helpers/html";
-import { CheckboxComponent } from "../../checkbox/checkbox.component";
 import { RenderFieldComponent } from "./render-field.component";
 
 describe("RenderFieldComponent", () => {
