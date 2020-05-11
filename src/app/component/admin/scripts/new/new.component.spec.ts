@@ -1,23 +1,51 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ScriptsService } from "@baw-api/script/scripts.service";
+import { SharedModule } from "@shared/shared.module";
+import { testBawServices } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsNewComponent } from "./new.component";
 
-xdescribe("AdminScriptsNewComponent", () => {
+describe("AdminScriptsNewComponent", () => {
+  let api: ScriptsService;
   let component: AdminScriptsNewComponent;
   let fixture: ComponentFixture<AdminScriptsNewComponent>;
+  let notifications: ToastrService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminScriptsNewComponent]
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      declarations: [AdminScriptsNewComponent],
+      providers: [...testBawServices],
     }).compileComponents();
+
+    fixture = TestBed.createComponent(AdminScriptsNewComponent);
+    api = TestBed.inject(ScriptsService);
+    router = TestBed.inject(Router);
+    notifications = TestBed.inject(ToastrService);
+    component = fixture.componentInstance;
+
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
+
+    fixture.detectChanges();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AdminScriptsNewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  xdescribe("form", () => {});
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
+  describe("component", () => {
+    it("should create", () => {
+      expect(component).toBeTruthy();
+    });
+
+    it("should call api", () => {
+      spyOn(api, "create").and.callThrough();
+      component.submit({});
+      expect(api.create).toHaveBeenCalled();
+    });
   });
 });

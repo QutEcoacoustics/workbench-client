@@ -58,6 +58,7 @@ describe("AdminTagsNewComponent", () => {
 
     fixture.detectChanges();
   }
+
   beforeEach(() => {
     defaultTagTypes = [
       new TagType({

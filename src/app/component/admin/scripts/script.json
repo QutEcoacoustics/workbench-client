@@ -44,7 +44,7 @@
       }
     },
     {
-      "key": "executeCommand",
+      "key": "executableCommand",
       "type": "textarea",
       "templateOptions": {
         "label": "Executable Command",
@@ -53,7 +53,7 @@
       }
     },
     {
-      "key": "executeSettings",
+      "key": "executableSettings",
       "type": "textarea",
       "templateOptions": {
         "label": "Executable Settings",
