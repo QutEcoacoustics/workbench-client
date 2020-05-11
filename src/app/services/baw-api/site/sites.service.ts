@@ -16,7 +16,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
-import { filterMock } from "../mock/api-commonMock";
+import { filterMock, showMock } from "../mock/api-commonMock";
 import { Resolvers } from "../resolver-common";
 
 const projectId: IdParam<Project> = id;
@@ -92,6 +92,25 @@ export class ShallowSitesService extends StandardApi<Site> {
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Site>): Observable<Site> {
+    return showMock(
+      model,
+      (index) =>
+        new Site(
+          {
+            id: index,
+            name: "custom site",
+            description: "custom description",
+            customLatitude: 100,
+            customLongitude: 101,
+            creatorId: 7,
+            updaterId: 2,
+            createdAt: "2020-01-01T10:00:00",
+            updatedAt: "2020-01-01T11:00:00",
+            projectIds: [1, 2, 3],
+          },
+          this.injector
+        )
+    );
     return this.apiShow(endpointShallow(model, Empty));
   }
   create(model: Site): Observable<Site> {

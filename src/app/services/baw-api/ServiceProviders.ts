@@ -31,6 +31,7 @@ import { MockImmutableApiService } from "./mock/immutableApiMock.service";
 import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
 import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
 import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
+import { MockShallowSitesService } from "./mock/shallowSitesMock.service";
 import { MockShowApiService } from "./mock/showApiMock.service";
 import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
@@ -182,7 +183,7 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_SITE,
     service: ShallowSitesService,
     resolvers: shallowSiteResolvers,
-    mock: MockStandardApiService,
+    mock: MockShallowSitesService,
   },
   {
     serviceToken: Tokens.STUDY,

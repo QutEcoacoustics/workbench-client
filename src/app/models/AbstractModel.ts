@@ -230,13 +230,17 @@ function createModelDecorator<S>(
     // Get Angular Injector Service
     const injector = target["injector"];
     if (!injector) {
-      throw new Error("Model does not have injector service.");
+      throw new Error(
+        target.toString() +
+          " does not have injector service. Tried to access " +
+          associationKey
+      );
     }
 
     // Get model identifying ID/s
     const identifier = modelIdentifier(target);
     if (identifier === undefined || identifier === null) {
-      console.warn("Model is missing identifier: ", {
+      console.warn(target.toString() + " is missing identifier: ", {
         target,
         associationKey,
         identifier,
@@ -248,7 +252,7 @@ function createModelDecorator<S>(
     const parameters = modelParameters.map((param) => {
       const paramValue = param(target);
       if (paramValue === undefined || paramValue === null) {
-        console.warn("Model is missing parameter: ", {
+        console.warn(target.toString() + " is missing parameter: ", {
           target,
           associationKey,
           param,

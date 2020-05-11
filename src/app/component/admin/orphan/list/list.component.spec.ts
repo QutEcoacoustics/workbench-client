@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
+import { SharedModule } from "@shared/shared.module";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { testBawServices } from "@test/helpers/testbed";
-import { SharedModule } from "primeng/api/shared";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminOrphansComponent } from "./list.component";
 
@@ -22,7 +22,7 @@ describe("AdminOrphansComponent", () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(function () {
     fixture = TestBed.createComponent(AdminOrphansComponent);
     api = TestBed.inject(ShallowSitesService);
 
