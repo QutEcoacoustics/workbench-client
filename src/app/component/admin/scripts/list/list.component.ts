@@ -30,7 +30,6 @@ export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 @Component({
   selector: "app-admin-scripts",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
 })
 export class AdminScriptsComponent extends PagedTableTemplate<
   TableRow,

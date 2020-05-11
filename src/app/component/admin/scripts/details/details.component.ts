@@ -7,7 +7,7 @@ import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { fields } from "../scripts.json";
+import { fields as baseFields } from "../script.json";
 import {
   adminEditScriptMenuItem,
   adminNewScriptsMenuItem,
@@ -15,6 +15,7 @@ import {
   adminScriptsCategory,
   adminScriptsMenuItem,
 } from "../scripts.menus";
+import { fields as extendedFields } from "./extended.json";
 
 export const adminScriptActions = [
   adminNewScriptsMenuItem,
@@ -46,7 +47,7 @@ export class AdminScriptComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public site: Script;
   public failure: boolean;
-  public fields = fields;
+  public fields = [...baseFields, ...extendedFields];
 
   constructor(private route: ActivatedRoute) {
     super();

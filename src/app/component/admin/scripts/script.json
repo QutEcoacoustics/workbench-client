@@ -1,6 +1,13 @@
 {
   "fields": [
     {
+      "key": "id",
+      "hide": true,
+      "templateOptions": {
+        "label": "Script Id"
+      }
+    },
+    {
       "key": "name",
       "type": "input",
       "templateOptions": {
@@ -70,6 +77,20 @@
         "label": "Analysis Action Parameters",
         "required": false,
         "rows": 8
+      }
+    },
+    {
+      "key": "verified",
+      "hide": true,
+      "templateOptions": {
+        "label": "Verified"
+      }
+    },
+    {
+      "key": "groupId",
+      "hide": true,
+      "templateOptions": {
+        "label": "Group Id"
       }
     }
   ]

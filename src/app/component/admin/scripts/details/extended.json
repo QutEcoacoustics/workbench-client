@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "key": "creator",
+      "hide": true,
+      "templateOptions": {
+        "label": "Creator"
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At"
+      }
+    }
+  ]
+}
