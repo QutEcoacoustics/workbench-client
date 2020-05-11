@@ -1,5 +1,10 @@
 import { Category, MenuRoute } from "@interfaces/menusInterfaces";
-import { defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
+import {
+  defaultDeleteIcon,
+  defaultEditIcon,
+  defaultNewIcon,
+  isAdminPredicate,
+} from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
 export const adminScriptsRoute = adminRoute.addFeatureModule("scripts");
@@ -25,5 +30,34 @@ export const adminNewScriptsMenuItem = MenuRoute({
   route: adminScriptsMenuItem.route.add("new"),
   tooltip: () => "Create a new script",
   parent: adminScriptsMenuItem,
+  predicate: isAdminPredicate,
+});
+
+const adminScriptRoute = adminScriptsRoute.add(":scriptId");
+
+export const adminScriptMenuItem = MenuRoute({
+  icon: ["fas", "scroll"],
+  label: "Script",
+  route: adminScriptRoute,
+  tooltip: () => "Manage script",
+  parent: adminScriptsMenuItem,
+  predicate: isAdminPredicate,
+});
+
+export const adminEditScriptMenuItem = MenuRoute({
+  icon: defaultEditIcon,
+  label: "Edit Script",
+  route: adminScriptRoute.add("edit"),
+  tooltip: () => "Edit an existing script",
+  parent: adminScriptMenuItem,
+  predicate: isAdminPredicate,
+});
+
+export const adminDeleteScriptMenuItem = MenuRoute({
+  icon: defaultDeleteIcon,
+  label: "Script Tag",
+  route: adminScriptRoute.add("delete"),
+  tooltip: () => "Delete an existing script",
+  parent: adminScriptMenuItem,
   predicate: isAdminPredicate,
 });
