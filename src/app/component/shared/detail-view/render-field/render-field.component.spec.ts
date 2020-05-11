@@ -1,4 +1,10 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  async,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flush,
+} from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AbstractModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
@@ -25,6 +31,10 @@ describe("RenderFieldComponent", () => {
 
   function getModelValues(): NodeListOf<HTMLAnchorElement> {
     return (fixture.nativeElement as HTMLElement).querySelectorAll("dl a");
+  }
+
+  function getImageValues(): NodeListOf<HTMLImageElement> {
+    return (fixture.nativeElement as HTMLElement).querySelectorAll("dl img");
   }
 
   function getCheckboxValues(): NodeListOf<HTMLElement> {
@@ -70,6 +80,14 @@ describe("RenderFieldComponent", () => {
   });
 
   describe("string input", () => {
+    beforeEach(() => {
+      component["isImage"] = jasmine
+        .createSpy()
+        .and.callFake((_: string, __: () => void, onerror: () => void) => {
+          onerror();
+        });
+    });
+
     it("should handle string value", () => {
       component.view = "testing";
       fixture.detectChanges();
@@ -449,8 +467,51 @@ describe("RenderFieldComponent", () => {
     });
   });
 
-  xdescribe("image input", () => {
-    it("should handle image URL", () => {});
-    it("should display image", () => {});
+  describe("image input", () => {
+    it("should handle localhost image URL", () => {
+      component["isImage"] = jasmine
+        .createSpy()
+        .and.callFake((src: string, onload: () => void, __: () => void) => {
+          expect(src).toBe("/assets/test/test.png");
+          onload();
+        });
+
+      component.view = "/assets/test/test.png";
+      fixture.detectChanges();
+
+      expect(getValues().length).toBe(1);
+      expect(getImageValues().length).toBe(1);
+    });
+
+    it("should handle external image URL", () => {
+      component["isImage"] = jasmine
+        .createSpy()
+        .and.callFake((src: string, onload: () => void, __: () => void) => {
+          expect(src).toBe("https://staging.ecosounds.org/test.png");
+          onload();
+        });
+
+      component.view = "https://staging.ecosounds.org/test.png";
+      fixture.detectChanges();
+
+      expect(getValues().length).toBe(1);
+      expect(getImageValues().length).toBe(1);
+    });
+
+    it("should display image", () => {
+      component["isImage"] = jasmine
+        .createSpy()
+        .and.callFake((_: string, onload: () => void, __: () => void) => {
+          onload();
+        });
+
+      component.view = "/assets/test/test.png";
+      fixture.detectChanges();
+
+      const value = getImageValues()[0];
+      expect(value.src).toBe(
+        `http://${window.location.host}/assets/test/test.png`
+      );
+    });
   });
 });

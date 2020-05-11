@@ -2,7 +2,7 @@ import { AgmCoreModule } from "@agm/core";
 import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
 } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
@@ -21,7 +21,7 @@ import { FormComponent } from "./form.component";
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
 export const ButtonClickEvents = {
   left: { button: 0 },
-  right: { button: 2 }
+  right: { button: 2 },
 };
 
 /** Simulate element click. Defaults to mouse left-button click event. */
@@ -36,20 +36,13 @@ export function click(
   }
 }
 
-/*describe("FormComponent", () => {
+describe("FormComponent", () => {
   let component: FormComponent;
-  let defaultSchema: any;
+  let defaultFields: FormlyFieldConfig[];
   let errorSpy: jasmine.Spy;
   let fixture: ComponentFixture<FormComponent>;
   let httpMock: HttpTestingController;
   let notifications: ToastrService;
-
-  function createSchema(field: FormlyFieldConfig[]) {
-    return {
-      model: {},
-      fields: field
-    };
-  }
 
   function findInput(
     selector: string = "input",
@@ -83,9 +76,9 @@ export function click(
         FormlyModule.forRoot(formlyRoot),
         FormlyBootstrapModule,
         ToastrModule.forRoot(toastrRoot),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
-      declarations: [FormComponent, LoadingComponent]
+      declarations: [FormComponent, LoadingComponent],
     }).compileComponents();
   }));
 
@@ -97,25 +90,20 @@ export function click(
 
     errorSpy = spyOn(notifications, "error").and.stub();
 
-    defaultSchema = {
-      model: {
-        input: ""
+    defaultFields = [
+      {
+        key: "input",
+        type: "input",
+        templateOptions: {
+          label: "input element",
+          required: false,
+        },
       },
-      fields: [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: false
-          }
-        }
-      ]
-    };
+    ];
   });
 
   it("should create", () => {
-    component.schema = defaultSchema;
+    component.fields = defaultFields;
     component.submitLabel = "Label";
     component.submitLoading = false;
     fixture.detectChanges();
@@ -125,7 +113,7 @@ export function click(
 
   describe("Form Layout", () => {
     it("should create form", () => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       component.submitLabel = "Label";
       component.submitLoading = false;
       fixture.detectChanges();
@@ -135,7 +123,7 @@ export function click(
     });
 
     it("should create form with title", () => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       component.submitLabel = "Label";
       component.submitLoading = false;
       component.title = "Title";
@@ -147,7 +135,7 @@ export function click(
     });
 
     it("should create form with subtitle", () => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       component.submitLabel = "Label";
       component.submitLoading = false;
       component.subTitle = "Sub Title";
@@ -159,7 +147,7 @@ export function click(
     });
 
     it("should create form with submit button label", () => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       component.submitLabel = "Label";
       component.submitLoading = false;
       fixture.detectChanges();
@@ -172,7 +160,7 @@ export function click(
 
   describe("Submit Button Type", () => {
     beforeEach(() => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       component.submitLabel = "Label";
       component.submitLoading = false;
     });
@@ -234,16 +222,16 @@ export function click(
     });
 
     it("should create input form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: false
-          }
-        }
-      ]);
+            required: false,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const input = findInput();
@@ -251,17 +239,17 @@ export function click(
     });
 
     it("should create password form", () => {
-      component.schema = component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             type: "password",
             label: "input element",
-            required: false
-          }
-        }
-      ]);
+            required: false,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const input = findInput();
@@ -269,17 +257,17 @@ export function click(
     });
 
     it("should create email form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             type: "email",
             label: "input element",
-            required: false
-          }
-        }
-      ]);
+            required: false,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const input = findInput();
@@ -287,17 +275,17 @@ export function click(
     });
 
     it("should create textarea form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "message",
           type: "textarea",
           templateOptions: {
             label: "Message",
             rows: 8,
-            required: false
-          }
-        }
-      ]);
+            required: false,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const input = findInput("textarea");
@@ -305,14 +293,14 @@ export function click(
     });
 
     it("should create multi form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: false
-          }
+            required: false,
+          },
         },
         {
           key: "password",
@@ -320,8 +308,8 @@ export function click(
           templateOptions: {
             type: "password",
             label: "password element",
-            required: false
-          }
+            required: false,
+          },
         },
         {
           key: "email",
@@ -329,10 +317,10 @@ export function click(
           templateOptions: {
             type: "email",
             label: "email element",
-            required: false
-          }
-        }
-      ]);
+            required: false,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const textInput = findInput(undefined, 0);
@@ -344,16 +332,16 @@ export function click(
     });
 
     it("should create required input form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const input = findInput();
@@ -361,14 +349,14 @@ export function click(
     });
 
     it("should create required multi input form", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
+            required: true,
+          },
         },
         {
           key: "password",
@@ -376,8 +364,8 @@ export function click(
           templateOptions: {
             type: "password",
             label: "password element",
-            required: true
-          }
+            required: true,
+          },
         },
         {
           key: "email",
@@ -385,10 +373,10 @@ export function click(
           templateOptions: {
             type: "email",
             label: "email element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       fixture.detectChanges();
 
       const textInput = findInput(undefined, 0);
@@ -411,14 +399,14 @@ export function click(
     function submit() {
       buttonPressed = false;
       // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(data => {
+      component.submitFunction.subscribe((data) => {
         buttonPressed = true;
       });
       fixture.detectChanges();
     }
 
     it("should call submit function OnClick", () => {
-      component.schema = defaultSchema;
+      component.fields = defaultFields;
       submit();
 
       const button = fixture.nativeElement.querySelector("button");
@@ -428,10 +416,10 @@ export function click(
       expect(buttonPressed).toBeTruthy();
     });
 
-    it("should call submit function OnClick with user input", done => {
-      component.schema = defaultSchema;
+    it("should call submit function OnClick with user input", (done) => {
+      component.fields = defaultFields;
       // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(data => {
+      component.submitFunction.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });
         done();
@@ -449,16 +437,16 @@ export function click(
     });
 
     it("should not call submit function OnClick when required field is empty", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       submit();
 
       const button = fixture.nativeElement.querySelector("button");
@@ -468,19 +456,19 @@ export function click(
       expect(buttonPressed).toBeFalsy();
     });
 
-    it("should call submit function OnClick with filled required user input", done => {
-      component.schema = createSchema([
+    it("should call submit function OnClick with filled required user input", (done) => {
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(data => {
+      component.submitFunction.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });
         done();
@@ -498,16 +486,16 @@ export function click(
     });
 
     it("should show error message when required field is empty OnSubmit", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       submit();
 
       const button = fixture.nativeElement.querySelector("button");
@@ -518,16 +506,16 @@ export function click(
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       submit();
 
       const button = fixture.nativeElement.querySelector("button");
@@ -545,32 +533,32 @@ export function click(
     });
 
     it("should highlight multiple missing fields when required fields are empty OnSubmit", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "input",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
+            required: true,
+          },
         },
         {
           key: "input2",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: false
-          }
+            required: false,
+          },
         },
         {
           key: "input3",
           type: "input",
           templateOptions: {
             label: "input element",
-            required: true
-          }
-        }
-      ]);
+            required: true,
+          },
+        },
+      ];
       submit();
 
       const button = fixture.nativeElement.querySelector("button");
@@ -591,7 +579,7 @@ export function click(
     });
 
     it("should handle custom expression", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "register",
           validators: {
@@ -600,8 +588,8 @@ export function click(
                 "return (control.value.passwordConfirm === control.value.password" +
                 " || (!control.value.passwordConfirm || !control.value.password))",
               message: "Passwords do not match",
-              errorPath: "passwordConfirm"
-            }
+              errorPath: "passwordConfirm",
+            },
           },
           fieldGroup: [
             {
@@ -610,8 +598,8 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password",
-                required: true
-              }
+                required: true,
+              },
             },
             {
               key: "passwordConfirm",
@@ -619,15 +607,15 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password Confirmation",
-                required: true
+                required: true,
               },
               expressionProperties: {
-                "templateOptions.disabled": "!model.password"
-              }
-            }
-          ]
-        }
-      ]);
+                "templateOptions.disabled": "!model.password",
+              },
+            },
+          ],
+        },
+      ];
       fixture.detectChanges();
 
       const passwordInput = findInput(undefined, 0);
@@ -637,8 +625,8 @@ export function click(
       assertInput(passwordConfInput, "password", true);
     });
 
-    it("should submit with correct custom expression", done => {
-      component.schema = createSchema([
+    it("should submit with correct custom expression", (done) => {
+      component.fields = [
         {
           key: "register",
           validators: {
@@ -647,8 +635,8 @@ export function click(
                 "return (control.value.passwordConfirm === control.value.password" +
                 " || (!control.value.passwordConfirm || !control.value.password))",
               message: "Passwords do not match",
-              errorPath: "passwordConfirm"
-            }
+              errorPath: "passwordConfirm",
+            },
           },
           fieldGroup: [
             {
@@ -657,8 +645,8 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password",
-                required: true
-              }
+                required: true,
+              },
             },
             {
               key: "passwordConfirm",
@@ -666,21 +654,21 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password Confirmation",
-                required: true
+                required: true,
               },
               expressionProperties: {
-                "templateOptions.disabled": "!model.password"
-              }
-            }
-          ]
-        }
-      ]);
+                "templateOptions.disabled": "!model.password",
+              },
+            },
+          ],
+        },
+      ];
       // tslint:disable-next-line: rxjs-no-ignored-error
-      component.submitFunction.subscribe(data => {
+      component.submitFunction.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({
           password: "user input",
-          passwordConfirm: "user input"
+          passwordConfirm: "user input",
         });
         done();
       });
@@ -701,7 +689,7 @@ export function click(
 
     // TODO Fix this test or the form component
     xit("should not submit with bad response custom expression", () => {
-      component.schema = createSchema([
+      component.fields = [
         {
           key: "register",
           validators: {
@@ -710,8 +698,8 @@ export function click(
                 "return (control.value.passwordConfirm === control.value.password" +
                 " || (!control.value.passwordConfirm || !control.value.password))",
               message: "Passwords do not match",
-              errorPath: "passwordConfirm"
-            }
+              errorPath: "passwordConfirm",
+            },
           },
           fieldGroup: [
             {
@@ -720,8 +708,8 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password",
-                required: true
-              }
+                required: true,
+              },
             },
             {
               key: "passwordConfirm",
@@ -729,15 +717,15 @@ export function click(
               templateOptions: {
                 type: "password",
                 label: "Password Confirmation",
-                required: true
+                required: true,
               },
               expressionProperties: {
-                "templateOptions.disabled": "!model.password"
-              }
-            }
-          ]
-        }
-      ]);
+                "templateOptions.disabled": "!model.password",
+              },
+            },
+          ],
+        },
+      ];
       submit();
 
       const form = fixture.nativeElement.querySelector("form");
@@ -799,9 +787,9 @@ export function click(
           meta: {
             status: 404,
             message: "Resource not found",
-            error: { details: "Form not found" }
+            error: { details: "Form not found" },
           },
-          data: null
+          data: null,
         },
         { status: 404, statusText: "Resource not found" }
       );
@@ -820,16 +808,16 @@ export function click(
       catchRequest(url, {
         meta: {
           status: 200,
-          message: "OK"
+          message: "OK",
         },
-        data: createSchema([
+        data: [
           {
             key: "name",
             type: "input",
             templateOptions: {
               label: "Your name",
-              required: false
-            }
+              required: false,
+            },
           },
           {
             key: "email",
@@ -837,8 +825,8 @@ export function click(
             templateOptions: {
               type: "email",
               label: "Contact Email",
-              required: false
-            }
+              required: false,
+            },
           },
           {
             key: "message",
@@ -846,10 +834,10 @@ export function click(
             templateOptions: {
               label: "Message",
               rows: 8,
-              required: false
-            }
-          }
-        ])
+              required: false,
+            },
+          },
+        ],
       });
       fixture.detectChanges();
 
@@ -865,16 +853,16 @@ export function click(
       catchRequest(url, {
         meta: {
           status: 200,
-          message: "OK"
+          message: "OK",
         },
-        data: createSchema([
+        data: [
           {
             key: "name",
             type: "input",
             templateOptions: {
               label: "Your name",
-              required: false
-            }
+              required: false,
+            },
           },
           {
             key: "email",
@@ -882,8 +870,8 @@ export function click(
             templateOptions: {
               type: "email",
               label: "Contact Email",
-              required: false
-            }
+              required: false,
+            },
           },
           {
             key: "message",
@@ -891,10 +879,10 @@ export function click(
             templateOptions: {
               label: "Message",
               rows: 8,
-              required: false
-            }
-          }
-        ])
+              required: false,
+            },
+          },
+        ],
       });
       fixture.detectChanges();
 
@@ -939,12 +927,12 @@ export function click(
       const model = {
         group: {
           group1: "value1",
-          group2: "value2"
-        }
+          group2: "value2",
+        },
       };
       const flattened = {
         group1: "value1",
-        group2: "value2"
+        group2: "value2",
       };
       const output = component.flattenFields(model);
 
@@ -955,12 +943,12 @@ export function click(
       const model = {
         group: {
           group1: 2,
-          group2: 3
-        }
+          group2: 3,
+        },
       };
       const flattened = {
         group1: 2,
-        group2: 3
+        group2: 3,
       };
       const output = component.flattenFields(model);
 
@@ -969,7 +957,7 @@ export function click(
 
     it("should remove empty field group object", () => {
       const model = {
-        group: {}
+        group: {},
       };
       const flattened = {};
       const output = component.flattenFields(model);
@@ -982,13 +970,13 @@ export function click(
         key: "value1",
         group: {
           group1: "value2",
-          group2: 42
-        }
+          group2: 42,
+        },
       };
       const flattened = {
         key: "value1",
         group1: "value2",
-        group2: 42
+        group2: 42,
       };
       const output = component.flattenFields(model);
 
@@ -1000,14 +988,14 @@ export function click(
         key1: "value1",
         group: {
           group1: "value2",
-          group2: 42
+          group2: 42,
         },
         key2: 42,
         section: {
           section1: 42,
-          section2: "value3"
+          section2: "value3",
         },
-        empty: {}
+        empty: {},
       };
       const flattened = {
         key1: "value1",
@@ -1015,7 +1003,7 @@ export function click(
         group2: 42,
         key2: 42,
         section1: 42,
-        section2: "value3"
+        section2: "value3",
       };
       const output = component.flattenFields(model);
 
@@ -1023,4 +1011,3 @@ export function click(
     });
   });
 });
-*/

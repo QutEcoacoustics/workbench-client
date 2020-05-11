@@ -27,7 +27,10 @@ export function assertDetailView(
   response?: string | string[] | boolean
 ) {
   describe(`${label} (${key})`, function () {
-    assertLabel(key, label);
+    it("should display " + key, function () {
+      const index = findDetailIndex(this.fixture.nativeElement, label);
+      expect(index).toBeGreaterThanOrEqual(0);
+    });
 
     it("should display " + key + " value", function () {
       const index = findDetailIndex(this.fixture.nativeElement, label);
@@ -35,6 +38,7 @@ export function assertDetailView(
         .nativeElement as HTMLElement).querySelectorAll("dl");
 
       if (response instanceof Array) {
+        expect(views.length).toBe(response.length);
         (response as string[]).forEach((output, i) => {
           expect(views[index + i].innerText.trim()).toBe(output);
         });
@@ -51,18 +55,4 @@ export function assertDetailView(
       }
     });
   });
-}
-
-export function assertDetailValueImage(
-  label: string,
-  key: string,
-  response: string | string[]
-) {}
-
-function assertLabel(key: string, label: string) {
-  it("should display " + key, function () {
-    const index = findDetailIndex(this.fixture.nativeElement, label);
-    expect(index).toBeGreaterThanOrEqual(0);
-  });
-  it("should display " + key + " value", function () {});
 }

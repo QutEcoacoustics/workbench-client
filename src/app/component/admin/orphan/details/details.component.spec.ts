@@ -123,8 +123,7 @@ describe("AdminOrphanComponent", () => {
     assertDetailView("Location Obfuscated", "locationObfuscated", true);
     assertDetailView("Latitude", "customLatitude", "100");
     assertDetailView("Longitude", "customLongitude", "101");
-    // TODO
-    // assertDetailView("Image", "imageUrl", "/customImage.png");
+    assertDetailView("Image", "imageUrl", "/customImage.png");
     assertDetailView("Creator", "creatorId", "User: custom username (1)");
     assertDetailView("Updater", "updaterId", "User: custom username (1)");
     assertDetailView("Created At", "createdAt", humanizeDateTime(createdAt));

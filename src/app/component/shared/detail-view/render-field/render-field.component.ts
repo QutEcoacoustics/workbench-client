@@ -193,6 +193,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Determine if image is valid
+   * ! This function is untested, edit carefully
    * @param src Source URL
    * @param validCallback Valid image callback
    * @param invalidCallback Invalid image callback
