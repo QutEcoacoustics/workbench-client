@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { adminScriptsMenuItem } from "@component/admin/scripts/scripts.menus";
+import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import {
@@ -70,6 +70,6 @@ export class Script extends AbstractModel implements IScript {
   }
 
   public get viewUrl(): string {
-    return adminScriptsMenuItem.route.toString();
+    return adminScriptMenuItem.route.format({ scriptId: this.id });
   }
 }

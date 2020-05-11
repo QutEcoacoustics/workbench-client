@@ -28,6 +28,7 @@ import {
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
 import { MockFilterApiService } from "./mock/filterMock.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
+import { MockNonDestructibleApiService } from "./mock/nonDestructibleApiMock.service";
 import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
 import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
 import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
@@ -171,7 +172,7 @@ const serviceList = [
     serviceToken: Tokens.SCRIPT,
     service: ScriptsService,
     resolvers: scriptResolvers,
-    mock: MockReadAndCreateApiService,
+    mock: MockNonDestructibleApiService,
   },
   {
     serviceToken: Tokens.SITE,

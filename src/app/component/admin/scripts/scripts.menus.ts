@@ -1,6 +1,5 @@
 import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import {
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate,
@@ -46,18 +45,9 @@ export const adminScriptMenuItem = MenuRoute({
 
 export const adminEditScriptMenuItem = MenuRoute({
   icon: defaultEditIcon,
-  label: "Edit Script",
+  label: "New Version",
   route: adminScriptRoute.add("edit"),
-  tooltip: () => "Edit an existing script",
-  parent: adminScriptMenuItem,
-  predicate: isAdminPredicate,
-});
-
-export const adminDeleteScriptMenuItem = MenuRoute({
-  icon: defaultDeleteIcon,
-  label: "Script Tag",
-  route: adminScriptRoute.add("delete"),
-  tooltip: () => "Delete an existing script",
+  tooltip: () => "Create new version of this script",
   parent: adminScriptMenuItem,
   predicate: isAdminPredicate,
 });
