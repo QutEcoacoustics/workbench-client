@@ -38,14 +38,14 @@ const scriptKey = "script";
   selector: "app-admin-script",
   template: `
     <div *ngIf="!failure">
-      <h1>Orphan Site Details</h1>
-      <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
+      <h1>Script Details</h1>
+      <baw-detail-view [fields]="fields" [model]="script"></baw-detail-view>
     </div>
   `,
 })
 export class AdminScriptComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
-  public site: Script;
+  public script: Script;
   public failure: boolean;
   public fields = [...baseFields, ...extendedFields];
 
@@ -62,6 +62,6 @@ export class AdminScriptComponent extends WithUnsubscribe(PageComponent)
       return;
     }
 
-    this.site = models[scriptKey] as Script;
+    this.script = models[scriptKey] as Script;
   }
 }
