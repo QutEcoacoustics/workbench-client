@@ -19,7 +19,7 @@ import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
 
-export const theirProfileMenuItemActions = [
+export const theirProfileActions = [
   theirEditMenuItem,
   theirProjectsMenuItem,
   theirSitesMenuItem,
@@ -32,7 +32,7 @@ const accountKey = "account";
 @Page({
   category: theirProfileCategory,
   menus: {
-    actions: List<AnyMenuItem>(theirProfileMenuItemActions),
+    actions: List<AnyMenuItem>(theirProfileActions),
     links: List(),
   },
   resolvers: {

@@ -14,17 +14,14 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { theirProfileMenuItemActions } from "../profile/their-profile.component";
+import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
 @Page({
   category: theirProfileCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      theirProfileMenuItem,
-      ...theirProfileMenuItemActions,
-    ]),
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
     links: List(),
   },
   resolvers: {
@@ -38,6 +35,13 @@ const accountKey = "account";
   styleUrls: ["./sites.component.scss"],
 })
 export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
+  public columns = [
+    { name: "Site" },
+    { name: "Recent Audio Upload" },
+    { name: "Permission" },
+    { name: "Annotation" },
+  ];
+
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details https://github.com/QutEcoacoustics/baw-server/issues/406
     super(

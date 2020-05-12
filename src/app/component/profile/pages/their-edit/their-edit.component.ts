@@ -19,17 +19,14 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "../../profile.schema.json";
-import { theirProfileMenuItemActions } from "../profile/their-profile.component";
+import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
 @Page({
   category: theirProfileCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      theirProfileMenuItem,
-      ...theirProfileMenuItemActions,
-    ]),
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
     links: List(),
   },
   resolvers: {

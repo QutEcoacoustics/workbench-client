@@ -1,21 +1,21 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
-  myProjectsMenuItem,
+  myBookmarksMenuItem,
 } from "@component/profile/profile.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
 
-const userKey = "account";
+const userKey = "user";
 
 @Page({
   category: myAccountCategory,
@@ -26,28 +26,25 @@ const userKey = "account";
   resolvers: {
     [userKey]: userResolvers.show,
   },
-  self: myProjectsMenuItem,
+  self: myBookmarksMenuItem,
 })
 @Component({
-  selector: "app-my-account-projects",
-  templateUrl: "./projects.component.html",
-  styleUrls: ["./projects.component.scss"],
+  selector: "app-my-account-bookmarks",
+  templateUrl: "./bookmarks.component.html",
+  styleUrls: ["./bookmarks.component.scss"],
 })
-export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
-  public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
-  ];
-
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+export class MyBookmarksComponent extends PagedTableTemplate<
+  TableRow,
+  Bookmark
+> {
+  constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
-      (projects) =>
-        projects.map((project) => ({
-          project,
-          sites: project.siteIds.size,
-          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
+      (bookmarks) =>
+        bookmarks.map((bookmark) => ({
+          bookmark,
+          category: bookmark.category,
+          description: bookmark.description,
         })),
       route
     );
@@ -59,7 +56,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 }
 
 interface TableRow {
-  project: Project;
-  sites: number;
-  permission: string;
+  bookmark: Bookmark;
+  category: string;
+  description: string;
 }

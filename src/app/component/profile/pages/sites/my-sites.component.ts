@@ -14,21 +14,18 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { myAccountMenuItemActions } from "../profile/my-profile.component";
+import { myAccountActions } from "../profile/my-profile.component";
 
-const accountKey = "account";
+const userKey = "account";
 
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      myAccountMenuItem,
-      ...myAccountMenuItemActions,
-    ]),
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
     links: List(),
   },
   resolvers: {
-    [accountKey]: userResolvers.show,
+    [userKey]: userResolvers.show,
   },
   self: mySitesMenuItem,
 })
@@ -38,6 +35,13 @@ const accountKey = "account";
   styleUrls: ["./sites.component.scss"],
 })
 export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
+  public columns = [
+    { name: "Site" },
+    { name: "Recent Audio Upload" },
+    { name: "Permission" },
+    { name: "Annotation" },
+  ];
+
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details
     // https://github.com/QutEcoacoustics/baw-server/issues/438
@@ -56,7 +60,7 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 
   public get account(): User {
-    return this.models[accountKey] as User;
+    return this.models[userKey] as User;
   }
 }
 
