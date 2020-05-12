@@ -1,22 +1,19 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { SharedModule } from "@shared/shared.module";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
-import { fields } from "../../site.json";
+import { fields } from "../../site.base.json";
 import { NewComponent } from "./new.component";
 
 describe("SitesNewComponent", () => {
@@ -69,14 +66,8 @@ describe("SitesNewComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project({ id: 1, name: "Project" });
+    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   // TODO Add timezone checks
@@ -84,7 +75,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Name Input",
       setup: undefined,
-      field: fields[0],
+      field: fields[1],
       key: "name",
       htmlType: "input",
       required: true,
@@ -95,7 +86,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Description Input",
       setup: undefined,
-      field: fields[1],
+      field: fields[2],
       key: "description",
       htmlType: "textarea",
       required: false,
@@ -106,7 +97,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Latitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[0],
+      field: fields[3].fieldGroup[0],
       key: "customLatitude",
       htmlType: "input",
       required: false,
@@ -117,7 +108,7 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Longitude Input",
       setup: undefined,
-      field: fields[2].fieldGroup[1],
+      field: fields[3].fieldGroup[1],
       key: "customLongitude",
       htmlType: "input",
       required: false,
@@ -128,8 +119,8 @@ describe("SitesNewComponent", () => {
     {
       testGroup: "Site Image Input",
       setup: undefined,
-      field: fields[3],
-      key: "image",
+      field: fields[4],
+      key: "imageUrl",
       htmlType: "image",
       required: false,
       label: "Image",

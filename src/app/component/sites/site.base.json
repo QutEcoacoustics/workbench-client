@@ -1,6 +1,13 @@
 {
   "fields": [
     {
+      "key": "id",
+      "hide": true,
+      "templateOptions": {
+        "label": "Site Id"
+      }
+    },
+    {
       "key": "name",
       "type": "input",
       "templateOptions": {
@@ -49,7 +56,7 @@
       ]
     },
     {
-      "key": "image",
+      "key": "imageUrl",
       "type": "image",
       "templateOptions": {
         "label": "Image",

@@ -10,7 +10,7 @@ import { AbstractModel } from "src/app/models/AbstractModel";
 @Component({
   selector: "baw-detail-view",
   template: `
-    <div *ngFor="let field of fields" class="row">
+    <div *ngFor="let field of sanitizedFields" class="row">
       <dt class="col-sm-3 text-left text-sm-right font-weight-bold">
         {{ field.templateOptions.label }}
       </dt>
@@ -32,8 +32,22 @@ import { AbstractModel } from "src/app/models/AbstractModel";
 export class DetailViewComponent implements OnInit {
   @Input() fields: FormlyFieldConfig[];
   @Input() model: AbstractModel;
+  public sanitizedFields: FormlyFieldConfig[];
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.sanitizedFields = [];
+    this.recursiveSanitization(this.fields);
+  }
+
+  private recursiveSanitization(fields: FormlyFieldConfig[]) {
+    fields?.forEach((field) => {
+      if (field.fieldGroup) {
+        this.recursiveSanitization(field.fieldGroup);
+      } else {
+        this.sanitizedFields.push(field);
+      }
+    });
+  }
 }

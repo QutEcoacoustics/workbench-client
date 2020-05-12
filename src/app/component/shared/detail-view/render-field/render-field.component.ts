@@ -34,6 +34,11 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
       <dl *ngIf="styling === FieldStyling.Model">
         <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
       </dl>
+
+      <!-- Display Image -->
+      <dl *ngIf="styling === FieldStyling.Image">
+        <img style="max-width: 400px; max-height: 400px" [src]="display" />
+      </dl>
     </ng-container>
     <ng-template #hasChildren>
       <baw-render-field
@@ -85,9 +90,31 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
     } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;
       this.display = value;
+    } else if (typeof value === "string") {
+      this.humanizeString(value);
     } else {
       this.display = value.toString();
     }
+  }
+
+  /**
+   * Convert string to human readable output. Currently this only checks if the
+   * string is an image url.
+   * @param value Display output
+   */
+  private humanizeString(value: string) {
+    this.display = value;
+
+    this.isImage(
+      value,
+      () => {
+        // String is image URL, display image
+        this.styling = FieldStyling.Image;
+        this.display = value;
+        this.ref.detectChanges();
+      },
+      () => {}
+    );
   }
 
   /**
@@ -163,6 +190,24 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
     this.styling = FieldStyling.Plain;
     this.display = this.loadingText;
   }
+
+  /**
+   * Determine if image is valid
+   * ! This function is untested, edit carefully
+   * @param src Source URL
+   * @param validCallback Valid image callback
+   * @param invalidCallback Invalid image callback
+   */
+  private isImage(
+    src: string,
+    validCallback: () => void,
+    invalidCallback: () => void
+  ) {
+    const img = new Image();
+    img.onload = validCallback;
+    img.onerror = invalidCallback;
+    img.src = src;
+  }
 }
 
 /**
@@ -192,4 +237,5 @@ enum FieldStyling {
   Plain,
   Route,
   Model,
+  Image,
 }

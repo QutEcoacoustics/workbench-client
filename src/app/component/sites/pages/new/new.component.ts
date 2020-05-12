@@ -17,7 +17,7 @@ import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { fields } from "../../site.json";
+import { fields } from "../../site.base.json";
 import { newSiteMenuItem } from "../../sites.menus";
 
 const projectKey = "project";

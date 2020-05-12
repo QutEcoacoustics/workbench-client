@@ -1,45 +1,41 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { AudioRecording } from "@models/AudioRecording";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { AdminAudioRecordingsComponent } from "./list.component";
+import { AdminOrphansComponent } from "./list.component";
 
-describe("AdminAudioRecordingsComponent", () => {
-  let api: AudioRecordingsService;
-  let defaultModel: AudioRecording;
-  let defaultModels: AudioRecording[];
-  let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
+describe("AdminOrphansComponent", () => {
+  let api: ShallowSitesService;
+  let defaultModel: Site;
+  let defaultModels: Site[];
+  let fixture: ComponentFixture<AdminOrphansComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [AdminOrphansComponent],
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [AdminAudioRecordingsComponent],
       providers: [...testBawServices],
     }).compileComponents();
   }));
 
   beforeEach(function () {
-    fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
-    api = TestBed.inject(AudioRecordingsService);
+    fixture = TestBed.createComponent(AdminOrphansComponent);
+    api = TestBed.inject(ShallowSitesService);
 
-    defaultModel = new AudioRecording({
+    defaultModel = new Site({
       id: 1,
-      siteId: 1,
-      durationSeconds: 3000,
-      recordedDate: "2020-03-09T22:00:50.072+10:00",
+      name: "custom site",
     });
     defaultModels = [];
     for (let i = 0; i < 25; i++) {
       defaultModels.push(
-        new AudioRecording({
+        new Site({
           id: i,
-          siteId: 1,
-          durationSeconds: 3000,
-          recordedDate: "2020-03-09T22:00:50.072+10:00",
+          name: "site " + i,
         })
       );
     }
@@ -50,7 +46,7 @@ describe("AdminAudioRecordingsComponent", () => {
   });
 
   // TODO Write Tests
-  assertPagination<AudioRecording, AudioRecordingsService>();
+  assertPagination<Site, ShallowSitesService>("orphans");
 
   xdescribe("rows", () => {});
   xdescribe("actions", () => {});

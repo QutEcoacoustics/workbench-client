@@ -41,7 +41,8 @@ function assignModelMetadata(models: AbstractModel[], paging: Paging) {
 export function datatableApiResponse<M extends AbstractModel>(
   api: ApiFilter<M, any[]>,
   models: M[],
-  paging?: Paging
+  paging?: Paging,
+  apiAction: string = "filter"
 ) {
   paging = {
     page: 1,
@@ -52,7 +53,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   };
 
   assignModelMetadata(models, paging);
-  spyOn(api as any, "filter").and.callFake(
+  spyOn(api as any, apiAction).and.callFake(
     () => new BehaviorSubject<M[]>(models)
   );
 }
@@ -66,7 +67,7 @@ export function datatableApiResponse<M extends AbstractModel>(
 export function assertPagination<
   M extends AbstractModel,
   S extends ApiFilter<M, any[]>
->() {
+>(apiAction: string = "filter") {
   describe("pagination", function () {
     let api: S;
     let defaultModels: M[];
@@ -82,7 +83,7 @@ export function assertPagination<
       const paging = { page: 1, items: 25, total: 100, maxPage: 4 };
 
       assignModelMetadata(models, paging);
-      spyOn(api as any, "filter").and.callFake((filter: Filters) => {
+      spyOn(api as any, apiAction).and.callFake((filter: Filters) => {
         if (secondRequest) {
           expect(filter).toEqual(expectation);
           done();
@@ -94,7 +95,7 @@ export function assertPagination<
     }
 
     function apiErrorResponse(error: ApiErrorDetails) {
-      spyOn(api as any, "filter").and.callFake(() => {
+      spyOn(api as any, apiAction).and.callFake(() => {
         const subject = new Subject<M[]>();
         subject.error(error);
         return subject;
@@ -133,10 +134,10 @@ export function assertPagination<
       };
     });
 
-    it("should send filter request", () => {
-      datatableApiResponse(api, []);
+    it("should send " + apiAction + " request", () => {
+      datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
-      expect(api.filter).toHaveBeenCalledWith({});
+      expect(api[apiAction]).toHaveBeenCalledWith({});
     });
 
     it("should request the second page from api", (done) => {
@@ -187,7 +188,7 @@ export function assertPagination<
     });
 
     it("should handle no rows", () => {
-      datatableApiResponse(api, []);
+      datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
 
       const rows = getDatatableRows(fixture);
@@ -196,7 +197,7 @@ export function assertPagination<
     });
 
     it("should handle single row", () => {
-      datatableApiResponse(api, [defaultModels[0]], defaultPaging);
+      datatableApiResponse(api, [defaultModels[0]], defaultPaging, apiAction);
       fixture.detectChanges();
 
       const rows = getDatatableRows(fixture);
@@ -205,7 +206,7 @@ export function assertPagination<
     });
 
     it("should handle 25 rows", () => {
-      datatableApiResponse(api, defaultModels, { total: 25 });
+      datatableApiResponse(api, defaultModels, { total: 25 }, apiAction);
       fixture.detectChanges();
 
       const rows = getDatatableRows(fixture);
@@ -214,7 +215,12 @@ export function assertPagination<
     });
 
     it("should handle 4 pages", () => {
-      datatableApiResponse(api, [defaultModels[0]], { total: 100, maxPage: 4 });
+      datatableApiResponse(
+        api,
+        [defaultModels[0]],
+        { total: 100, maxPage: 4 },
+        apiAction
+      );
       fixture.detectChanges();
 
       const pager = getPagerButtons();

@@ -5,6 +5,7 @@ import { SharedModule } from "@shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AudioRecordingsModule } from "./audio-recordings/audio-recordings.module";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
+import { OrphanSitesModule } from "./orphan/orphans.module";
 import { ScriptsModule } from "./scripts/scripts.module";
 import { TagGroupsModule } from "./tag-group/tag-groups.module";
 import { TagsModule } from "./tags/tags.module";
@@ -12,6 +13,7 @@ import { AdminUserListComponent } from "./users/list/list.component";
 
 const modules = [
   AudioRecordingsModule,
+  OrphanSitesModule,
   ScriptsModule,
   TagGroupsModule,
   TagsModule,

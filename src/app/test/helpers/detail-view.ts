@@ -24,7 +24,7 @@ function findDetailIndex(nativeElement: HTMLElement, label: string) {
 export function assertDetailView(
   label: string,
   key: string,
-  response?: string | string[]
+  response?: string | string[] | boolean
 ) {
   describe(`${label} (${key})`, function () {
     it("should display " + key, function () {
@@ -38,9 +38,17 @@ export function assertDetailView(
         .nativeElement as HTMLElement).querySelectorAll("dl");
 
       if (response instanceof Array) {
+        expect(views.length).toBe(response.length);
         (response as string[]).forEach((output, i) => {
           expect(views[index + i].innerText.trim()).toBe(output);
         });
+      } else if (typeof response === "boolean") {
+        const view = views[index].querySelector("input");
+        if (response) {
+          expect(view.checked).toBeTruthy();
+        } else {
+          expect(view.checked).toBeFalsy();
+        }
       } else {
         const view = views[index];
         expect(view.innerText.trim()).toBe(response);

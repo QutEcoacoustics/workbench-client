@@ -48,6 +48,10 @@ describe("Association Decorators", () => {
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
         }
+
+        public toString(): string {
+          return "MockModel ";
+        }
       }
 
       return new MockModel(data, modelInjector);
@@ -230,6 +234,10 @@ describe("Association Decorators", () => {
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
+        }
+
+        public toString(): string {
+          return "MockModel ";
         }
       }
 

@@ -16,7 +16,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
-import { filterMock } from "../mock/api-commonMock";
+import { filterMock, showMock } from "../mock/api-commonMock";
 import { Resolvers } from "../resolver-common";
 
 const projectId: IdParam<Project> = id;
@@ -62,6 +62,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
 /**
  * Shallow Sites Service.
  * Handles API routes pertaining to sites.
+ * TODO https://github.com/QutEcoacoustics/baw-server/issues/431
  */
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site> {
@@ -91,6 +92,25 @@ export class ShallowSitesService extends StandardApi<Site> {
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Site>): Observable<Site> {
+    return showMock(
+      model,
+      (index) =>
+        new Site(
+          {
+            id: index,
+            name: "custom site",
+            description: "custom description",
+            customLatitude: 100,
+            customLongitude: 101,
+            creatorId: 7,
+            updaterId: 2,
+            createdAt: "2020-01-01T10:00:00",
+            updatedAt: "2020-01-01T11:00:00",
+            projectIds: [1, 2, 3],
+          },
+          this.injector
+        )
+    );
     return this.apiShow(endpointShallow(model, Empty));
   }
   create(model: Site): Observable<Site> {
@@ -101,6 +121,23 @@ export class ShallowSitesService extends StandardApi<Site> {
   }
   destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
+  }
+  /**
+   * Retrieve orphaned sites (sites which have no parent projects)
+   * @param filters Filters to apply
+   */
+  orphans(filters: Filters): Observable<Site[]> {
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/430
+    return filterMock<Site>(
+      filters,
+      (index) =>
+        new Site({
+          id: index,
+          name: "PLACEHOLDER SITE",
+          description: "PLACEHOLDER DESCRIPTION",
+          creatorId: 1,
+        })
+    );
   }
 }
 
