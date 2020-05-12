@@ -1,22 +1,23 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import {
+  theirAnnotationsMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
-  theirSitesMenuItem,
 } from "@component/profile/profile.menus";
-import { siteAnnotationsMenuItem } from "@component/sites/sites.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
 
-const accountKey = "account";
+const accountKey = "user";
 
 @Page({
   category: theirProfileCategory,
@@ -27,31 +28,23 @@ const accountKey = "account";
   resolvers: {
     [accountKey]: accountResolvers.show,
   },
-  self: theirSitesMenuItem,
+  self: theirAnnotationsMenuItem,
 })
 @Component({
-  selector: "app-their-sites",
-  templateUrl: "./sites.component.html",
+  selector: "app-their-annotations",
+  templateUrl: "./annotations.component.html",
 })
-export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
-  public columns = [
-    { name: "Site" },
-    { name: "Recent Audio Upload" },
-    { name: "Permission" },
-    { name: "Annotation" },
-  ];
-
-  constructor(api: ShallowSitesService, route: ActivatedRoute) {
-    // TODO Add missing details https://github.com/QutEcoacoustics/baw-server/issues/406
+export class TheirAnnotationsComponent extends PagedTableTemplate<
+  TableRow,
+  AudioEvent
+> {
+  constructor(api: AudioEventsService, route: ActivatedRoute) {
     super(
       api,
-      (sites) =>
-        sites.map((site) => ({
-          site,
-          recentAudioUpload: "(none)",
-          permission: "FIX ME",
-          annotation: siteAnnotationsMenuItem.uri(undefined),
-        })),
+      (audioEvents) => {
+        // TODO Implement
+        return [];
+      },
       route
     );
   }
@@ -63,7 +56,6 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
 
 interface TableRow {
   site: Site;
-  recentAudioUpload: string;
-  permission: string;
-  annotation: string;
+  uploaded: string;
+  tags: Tag[];
 }

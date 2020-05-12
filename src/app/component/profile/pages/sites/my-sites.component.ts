@@ -7,7 +7,7 @@ import {
   myAccountMenuItem,
   mySitesMenuItem,
 } from "@component/profile/profile.menus";
-import { annotationsMenuItem } from "@component/sites/sites.menus";
+import { siteAnnotationsMenuItem } from "@component/sites/sites.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
@@ -30,9 +30,8 @@ const userKey = "account";
   self: mySitesMenuItem,
 })
 @Component({
-  selector: "app-my-account-sites",
+  selector: "app-my-sites",
   templateUrl: "./sites.component.html",
-  styleUrls: ["./sites.component.scss"],
 })
 export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [
@@ -53,7 +52,7 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
           site,
           recentAudioUpload: "(none)",
           permission: "UNKNOWN",
-          annotation: annotationsMenuItem.uri(undefined),
+          annotation: siteAnnotationsMenuItem.uri(undefined),
         })),
       route
     );

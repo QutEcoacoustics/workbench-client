@@ -38,7 +38,7 @@ export const siteMenuItem = MenuRoute({
   tooltip: () => "The current site",
 });
 
-export const annotationsMenuItem = MenuLink({
+export const siteAnnotationsMenuItem = MenuLink({
   icon: ["fas", "border-all"],
   label: "Download annotations",
   predicate: isLoggedInPredicate,

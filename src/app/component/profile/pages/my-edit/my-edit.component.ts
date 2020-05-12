@@ -30,7 +30,7 @@ const userKey = "user";
   self: myEditMenuItem,
 })
 @Component({
-  selector: "app-my-account-edit",
+  selector: "app-my-edit",
   template: `
     <app-wip>
       <ng-container *ngIf="model">

@@ -1,20 +1,21 @@
-import { List } from "immutable";
-import { dataRequestMenuItem } from "src/app/component/data-request/data-request.menus";
-import { homeCategory, homeMenuItem } from "src/app/component/home/home.menus";
-import {
-  myAccountMenuItem,
-  myAnnotationsMenuItem
-} from "src/app/component/profile/profile.menus";
-import { projectsMenuItem } from "src/app/component/projects/projects.menus";
-import { reportProblemMenuItem } from "src/app/component/report-problem/report-problem.menus";
+import { dataRequestMenuItem } from "@component/data-request/data-request.menus";
+import { homeCategory, homeMenuItem } from "@component/home/home.menus";
+import { myAccountMenuItem } from "@component/profile/profile.menus";
+import { projectsMenuItem } from "@component/projects/projects.menus";
+import { reportProblemMenuItem } from "@component/report-problem/report-problem.menus";
 import {
   loginMenuItem,
-  registerMenuItem
-} from "src/app/component/security/security.menus";
-import { sendAudioMenuItem } from "src/app/component/send-audio/send-audio.menus";
-import { statisticsMenuItem } from "src/app/component/statistics/statistics.menus";
-import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
-import { audioAnalysisMenuItem, libraryMenuItem } from "./externalMenus";
+  registerMenuItem,
+} from "@component/security/security.menus";
+import { sendAudioMenuItem } from "@component/send-audio/send-audio.menus";
+import { statisticsMenuItem } from "@component/statistics/statistics.menus";
+import { NavigableMenuItem } from "@interfaces/menusInterfaces";
+import { List } from "immutable";
+import {
+  annotationsMenuItem,
+  audioAnalysisMenuItem,
+  libraryMenuItem,
+} from "./externalMenus";
 
 /**
  * Default secondary menu items
@@ -25,14 +26,14 @@ export const DefaultMenu = {
     loginMenuItem,
     registerMenuItem,
     myAccountMenuItem,
-    myAnnotationsMenuItem,
+    annotationsMenuItem,
     projectsMenuItem,
     audioAnalysisMenuItem,
     libraryMenuItem,
     dataRequestMenuItem,
     sendAudioMenuItem,
     reportProblemMenuItem,
-    statisticsMenuItem
+    statisticsMenuItem,
   ]),
-  defaultCategory: homeCategory
+  defaultCategory: homeCategory,
 };

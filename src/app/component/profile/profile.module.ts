@@ -2,6 +2,8 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
+import { MyAnnotationsComponent } from "./pages/annotations/my-annotations.component";
+import { TheirAnnotationsComponent } from "./pages/annotations/their-annotations.component";
 import { MyBookmarksComponent } from "./pages/bookmarks/my-bookmarks.component";
 import { TheirBookmarksComponent } from "./pages/bookmarks/their-bookmarks.component";
 import { MyEditComponent } from "./pages/my-edit/my-edit.component";
@@ -20,6 +22,7 @@ const MyAccountComponents = [
   MyProjectsComponent,
   MySitesComponent,
   MyBookmarksComponent,
+  MyAnnotationsComponent,
 ];
 const TheirProfileComponents = [
   TheirProfileComponent,
@@ -27,6 +30,7 @@ const TheirProfileComponents = [
   TheirProjectsComponent,
   TheirSitesComponent,
   TheirBookmarksComponent,
+  TheirAnnotationsComponent,
 ];
 
 const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);

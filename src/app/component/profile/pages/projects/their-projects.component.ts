@@ -29,9 +29,8 @@ const accountKey = "account";
   self: theirProjectsMenuItem,
 })
 @Component({
-  selector: "app-their-account-projects",
+  selector: "app-their-projects",
   templateUrl: "./projects.component.html",
-  styleUrls: ["./projects.component.scss"],
 })
 export class TheirProjectsComponent extends PagedTableTemplate<
   TableRow,

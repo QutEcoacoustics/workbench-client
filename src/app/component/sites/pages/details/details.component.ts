@@ -16,17 +16,17 @@ import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
-  annotationsMenuItem,
   deleteSiteMenuItem,
   editSiteMenuItem,
   harvestMenuItem,
+  siteAnnotationsMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
   exploreAudioMenuItem,
-  annotationsMenuItem,
+  siteAnnotationsMenuItem,
   editSiteMenuItem,
   harvestMenuItem,
   deleteSiteMenuItem,

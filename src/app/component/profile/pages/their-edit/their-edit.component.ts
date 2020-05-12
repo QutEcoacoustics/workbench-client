@@ -35,7 +35,7 @@ const accountKey = "account";
   self: theirEditMenuItem,
 })
 @Component({
-  selector: "app-their-profile-edit",
+  selector: "app-their-edit",
   template: `
     <app-wip *ngIf="!failure">
       <app-form

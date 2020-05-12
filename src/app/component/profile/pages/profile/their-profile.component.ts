@@ -74,7 +74,6 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
       { icon: ["fas", "bookmark"], name: "Bookmarks", value: "Unknown" },
       { icon: ["fas", "map-marker-alt"], name: "Sites", value: "Unknown" },
       { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
-      { icon: ["fas", "comments"], name: "Comments", value: "Unknown" },
     ];
 
     this.tags = [

@@ -41,7 +41,7 @@ const userKey = "user";
   self: myAccountMenuItem,
 })
 @Component({
-  selector: "app-my-account-profile",
+  selector: "app-my-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })
@@ -72,7 +72,6 @@ export class MyProfileComponent extends PageComponent implements OnInit {
       { icon: ["fas", "bookmark"], name: "Bookmarks", value: "Unknown" },
       { icon: ["fas", "map-marker-alt"], name: "Sites", value: "Unknown" },
       { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
-      { icon: ["fas", "comments"], name: "Comments", value: "Unknown" },
     ];
 
     this.tags = [

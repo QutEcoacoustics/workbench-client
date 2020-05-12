@@ -29,9 +29,8 @@ const userKey = "user";
   self: myBookmarksMenuItem,
 })
 @Component({
-  selector: "app-my-account-bookmarks",
+  selector: "app-my-bookmarks",
   templateUrl: "./bookmarks.component.html",
-  styleUrls: ["./bookmarks.component.scss"],
 })
 export class MyBookmarksComponent extends PagedTableTemplate<
   TableRow,

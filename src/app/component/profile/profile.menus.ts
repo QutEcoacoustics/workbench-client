@@ -63,13 +63,13 @@ export const myBookmarksMenuItem = MenuRoute({
   tooltip: (user) => `Bookmarks created by ${user.userName}`,
 });
 
-export const myAnnotationsMenuItem = MenuLink({
+export const myAnnotationsMenuItem = MenuRoute({
   icon: ["fas", "border-all"],
   label: "My Annotations",
-  order: 3,
-  predicate: (user) => !!user,
+  parent: myAccountMenuItem,
+  predicate: isLoggedInPredicate,
+  route: myAccountMenuItem.route.add("annotations"),
   tooltip: (user) => `Annotations created by ${user.userName}`,
-  uri: () => "REPLACE_ME",
 });
 
 /**
@@ -130,10 +130,11 @@ export const theirBookmarksMenuItem = MenuRoute({
   tooltip: () => "Bookmarks created by them",
 });
 
-export const theirAnnotationsMenuItem = MenuLink({
+export const theirAnnotationsMenuItem = MenuRoute({
   icon: ["fas", "bullseye"],
   label: "Their Annotations",
-  predicate: (user) => !!user,
+  parent: theirProfileMenuItem,
+  predicate: isAdminPredicate,
+  route: theirProfileMenuItem.route.add("annotations"),
   tooltip: () => "Annotations created by them",
-  uri: () => "BROKEN LINK",
 });
