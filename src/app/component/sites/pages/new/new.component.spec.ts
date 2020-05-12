@@ -1,22 +1,19 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { SharedModule } from "@shared/shared.module";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
-import { fields } from "../../site.json";
+import { fields } from "../../site.base.json";
 import { NewComponent } from "./new.component";
 
 describe("SitesNewComponent", () => {

@@ -2,13 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
-import { fields as baseFields } from "@component/sites/site.json";
+import { fields as baseFields } from "@component/sites/site.base.json";
+import { fields as extendedFields } from "@component/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { fields as extendedFields } from "../orphan.json";
 import {
   adminOrphanMenuItem,
   adminOrphansCategory,
