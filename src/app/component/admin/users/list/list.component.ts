@@ -44,7 +44,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     user: "userName",
     lastLogin: "lastSeenAt",
   };
-  public filterKey = "userName";
+  public filterKey: "userName" = "userName";
 
   constructor(api: AccountsService) {
     super(api, (accounts) =>

@@ -34,8 +34,8 @@ describe("MySitesComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            { account: accountResolvers.show },
-            { account: { model, error } }
+            { user: accountResolvers.show },
+            { user: { model, error } }
           ),
         },
       ],

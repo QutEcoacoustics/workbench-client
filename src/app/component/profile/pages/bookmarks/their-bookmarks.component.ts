@@ -36,6 +36,8 @@ export class TheirBookmarksComponent extends PagedTableTemplate<
   TableRow,
   Bookmark
 > {
+  public sortKeys = { category: "category" };
+
   constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
@@ -45,7 +47,8 @@ export class TheirBookmarksComponent extends PagedTableTemplate<
           category: bookmark.category,
           description: bookmark.description,
         })),
-      route
+      route,
+      (component: TheirBookmarksComponent) => [component.account]
     );
   }
 

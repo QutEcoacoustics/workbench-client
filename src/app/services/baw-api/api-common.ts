@@ -2,7 +2,7 @@ import { PartialWith } from "@helpers/advancedTypes";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { BawApiService, Filters } from "./baw-api.service";
+import { BawApiService, Filters, InnerFilter } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel
@@ -46,6 +46,30 @@ export function option(x?: New | Filter | Empty) {
   return x ? x : Empty;
 }
 
+/**
+ * Allow filters while accepting a model id to refine search
+ * @param filters Base Filters
+ * @param key Key to match model id against
+ * @param model Additional filter by model id
+ */
+export function filterById<T extends AbstractModel>(
+  filters: Filters<T>,
+  key: keyof T,
+  model: IdOr<AbstractModel>
+): Filters<T> {
+  const { filter, ...meta } = filters;
+
+  return {
+    ...meta,
+    filter: {
+      ...filter,
+      [key]: {
+        eq: model instanceof AbstractModel ? model.id : model,
+      },
+    },
+  };
+}
+
 export type Empty = "";
 export type New = "new";
 export type Filter = "filter";
@@ -72,7 +96,7 @@ export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
    * Get list of models, but filtered using the filter API
    * @param args URL parameter values
    */
-  filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
 }
 
 /**
@@ -139,7 +163,7 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
     ApiUpdate<M, P>,
     ApiDestroy<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract create(model: M, ...urlParameters: P): Observable<M>;
   abstract update(
@@ -163,7 +187,7 @@ export abstract class ImmutableApi<
     ApiCreate<M, P>,
     ApiDestroy<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract create(model: M, ...urlParameters: P): Observable<M>;
   abstract destroy(model: IdOr<M>, ...urlParameters: P): Observable<M | void>;
@@ -176,7 +200,7 @@ export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
   extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
 }
 
@@ -189,7 +213,7 @@ export abstract class ReadAndCreateApi<
 > extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract create(model: M, ...urlParameters: P): Observable<M>;
 }
@@ -203,7 +227,7 @@ export abstract class ReadAndUpdateApi<
 > extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract update(
     model: PartialWith<M, "id">,
@@ -225,7 +249,7 @@ export abstract class NonDestructibleApi<
     ApiCreate<M, P>,
     ApiUpdate<M, P> {
   abstract list(...urlParameters: P): Observable<M[]>;
-  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
   abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   abstract create(model: M, ...urlParameters: P): Observable<M>;
   abstract update(

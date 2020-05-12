@@ -34,7 +34,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   public rows: T[];
   public selected: T[] = [];
   public sortKeys: { [key: string]: string };
-  public filterKey: string;
+  public filterKey: keyof M;
   public totalModels: number;
 
   /**
@@ -49,16 +49,18 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   public models: ResolvedModelList = {};
   public pageNumber: number;
   public filterEvent$ = new Subject<string>();
-  protected filters: Filters;
+  private filters: Filters<M>;
 
   constructor(
     protected api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => T[],
-    private route?: ActivatedRoute
+    private route?: ActivatedRoute,
+    private getUrlParameters: (component: any) => AbstractModel[] = () => []
   ) {
     super();
     this.pageNumber = 0;
     this.filters = {};
+
     this.filterEvent$
       .pipe(
         debounceTime(500),
@@ -104,7 +106,8 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       this.filters.filter = undefined;
     } else {
       this.filters.filter = {
-        [this.filterKey]: {
+        // TODO Figure out how to get this typing working
+        [this.filterKey as any]: {
           contains: filterText,
         },
       };
@@ -126,11 +129,11 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.getPageData();
   }
 
-  public getPageData(...args: AbstractModel[]) {
+  public getPageData() {
     this.loadingData = true;
     this.rows = [];
 
-    this.apiAction(this.filters, args)
+    this.apiAction(this.filters, this.getUrlParameters(this))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {

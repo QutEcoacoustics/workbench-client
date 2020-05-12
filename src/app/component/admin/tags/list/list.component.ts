@@ -46,7 +46,7 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     retired: "retired",
     type: "typeOfTag",
   };
-  public filterKey = "text";
+  public filterKey: "text" = "text";
 
   constructor(api: TagsService) {
     super(api, (tags) =>

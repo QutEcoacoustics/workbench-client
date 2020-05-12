@@ -48,7 +48,7 @@ export class AdminScriptsComponent extends PagedTableTemplate<
     id: "id",
     command: "executableCommand",
   };
-  public filterKey = "name";
+  public filterKey: "name" = "name";
 
   constructor(api: ScriptsService) {
     super(api, (scripts) =>

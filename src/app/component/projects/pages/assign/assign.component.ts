@@ -49,7 +49,7 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site> {
     name: "name",
     description: "description",
   };
-  public filterKey = "name";
+  public filterKey: "name" = "name";
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     super(

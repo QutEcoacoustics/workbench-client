@@ -33,7 +33,7 @@ import {
 })
 export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
-  public filterKey = "name";
+  public filterKey: "name" = "name";
   public assignSitesLabel = assignSiteMenuItem.label;
 
   constructor(api: ShallowSitesService) {

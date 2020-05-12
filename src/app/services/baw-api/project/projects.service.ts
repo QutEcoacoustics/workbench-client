@@ -3,10 +3,12 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
+import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
+  filterById,
   id,
   IdOr,
   IdParamOptional,
@@ -36,8 +38,11 @@ export class ProjectsService extends StandardApi<Project> {
   list(): Observable<Project[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Project[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+  filter(filters: Filters, user?: IdOr<User>): Observable<Project[]> {
+    return this.apiFilter(
+      endpoint(Empty, Filter),
+      user ? filterById<Project>(filters, "creatorId", user) : filters
+    );
   }
   show(model: IdOr<Project>): Observable<Project> {
     return this.apiShow(endpoint(model, Empty));

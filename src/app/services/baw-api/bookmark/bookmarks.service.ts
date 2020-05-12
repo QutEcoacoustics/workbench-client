@@ -3,10 +3,12 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Bookmark } from "@models/Bookmark";
+import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
+  filterById,
   id,
   IdOr,
   IdParamOptional,
@@ -32,8 +34,14 @@ export class BookmarksService extends StandardApi<Bookmark> {
   list(): Observable<Bookmark[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Bookmark[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+  filter(
+    filters: Filters<Bookmark>,
+    user?: IdOr<User>
+  ): Observable<Bookmark[]> {
+    return this.apiFilter(
+      endpoint(Empty, Filter),
+      user ? filterById<Bookmark>(filters, "creatorId", user) : filters
+    );
   }
   show(model: IdOr<Bookmark>): Observable<Bookmark> {
     return this.apiShow(endpoint(model, Empty));

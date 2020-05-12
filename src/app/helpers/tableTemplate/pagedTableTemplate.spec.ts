@@ -367,7 +367,7 @@ describe("PagedTableTemplate", () => {
       value: string,
       mockInput: HTMLInputElement
     ) {
-      component.filterKey = filterKey;
+      component.filterKey = filterKey as any;
       mockInput.value = value;
 
       component.onFilter({ target: mockInput } as any);

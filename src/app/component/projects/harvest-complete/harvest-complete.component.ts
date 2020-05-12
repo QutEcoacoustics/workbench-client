@@ -14,25 +14,21 @@ export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
   @Input() project: Project;
   public sites: Site[];
   public error: ApiErrorDetails;
+  public columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];
+  public sortKeys = { id: "id", name: "name" };
 
   constructor(api: SitesService) {
-    super(api, (sites) =>
-      sites.map((site) => ({
-        id: site.id,
-        name: site.name,
-        actions: site,
-      }))
+    super(
+      api,
+      (sites) =>
+        sites.map((site) => ({
+          id: site.id,
+          name: site.name,
+          actions: site,
+        })),
+      undefined,
+      (component: HarvestCompleteComponent) => [component.project]
     );
-  }
-
-  ngOnInit(): void {
-    this.columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];
-    this.sortKeys = {
-      id: "id",
-      name: "name",
-    };
-
-    this.getPageData(this.project);
   }
 
   public detailsPath(site: Site) {

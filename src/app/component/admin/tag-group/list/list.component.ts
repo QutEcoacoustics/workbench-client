@@ -47,7 +47,7 @@ export class AdminTagGroupsComponent extends PagedTableTemplate<
     tag: "tagId",
     group: "groupIdentifier",
   };
-  public filterKey = "group";
+  public filterKey: "groupIdentifier" = "groupIdentifier";
 
   constructor(api: TagGroupsService) {
     super(api, (tagGroups) =>
