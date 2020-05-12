@@ -10,7 +10,7 @@ import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag.json";
+import { fields } from "../tag.schema.json";
 import {
   adminNewTagMenuItem,
   adminTagsCategory,

@@ -17,7 +17,7 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../project.json";
+import { fields } from "../../project.schema.json";
 import { projectsMenuItemActions } from "../list/list.component";
 
 @Page({

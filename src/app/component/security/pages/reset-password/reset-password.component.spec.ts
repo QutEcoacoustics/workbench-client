@@ -6,7 +6,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { testFormlyFields } from "src/app/test/helpers/formly";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { ResetPasswordComponent } from "./reset-password.component";
-import { fields } from "./reset-password.json";
+import { fields } from "./reset-password.schema.json";
 
 describe("ResetPasswordComponent", () => {
   let component: ResetPasswordComponent;

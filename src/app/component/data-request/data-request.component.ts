@@ -4,9 +4,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { List } from "immutable";
-import { fields as requestFields } from "./data-request.json";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
-import { fields as annotationFields } from "./download-annotations.json";
+import { fields as requestFields } from "./data-request.schema.json";
+import { fields as annotationFields } from "./download-annotations.schema.json";
 
 @Page({
   category: dataRequestCategory,

@@ -14,7 +14,7 @@ import { Project } from "@models/Project";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { projectsMenuItemActions } from "../list/list.component";
-import { fields } from "./request.json";
+import { fields } from "./request.schema.json";
 
 @Page({
   category: projectsCategory,

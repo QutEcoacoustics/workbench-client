@@ -10,16 +10,13 @@ import {
 import { HomeComponent } from "@component/home/home.component";
 import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { SharedModule } from "@shared/shared.module";
+import { testFormlyFields } from "@test/helpers/formly";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
 import { LoginComponent } from "./login.component";
-import { fields } from "./login.json";
+import { fields } from "./login.schema.json";
 
 describe("LoginComponent", () => {
   let api: SecurityService;

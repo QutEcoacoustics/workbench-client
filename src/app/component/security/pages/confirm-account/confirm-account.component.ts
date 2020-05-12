@@ -11,7 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
-import { fields } from "./confirm-account.json";
+import { fields } from "./confirm-account.schema.json";
 
 @Page({
   category: securityCategory,

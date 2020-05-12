@@ -18,7 +18,7 @@ import {
 } from "src/app/test/helpers/html";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
-import { fields } from "./register.json";
+import { fields } from "./register.schema.json";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;

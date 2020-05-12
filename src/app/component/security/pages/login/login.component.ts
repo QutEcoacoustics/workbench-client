@@ -23,7 +23,7 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import url from "url";
-import { fields } from "./login.json";
+import { fields } from "./login.schema.json";
 
 @Page({
   category: securityCategory,

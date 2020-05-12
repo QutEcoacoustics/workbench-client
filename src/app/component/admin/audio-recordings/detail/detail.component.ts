@@ -7,7 +7,7 @@ import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
-import { fields } from "../audio-recording.json";
+import { fields } from "../audio-recording.schema.json";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,

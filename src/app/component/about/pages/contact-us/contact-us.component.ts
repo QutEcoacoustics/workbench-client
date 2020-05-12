@@ -4,7 +4,7 @@ import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { List } from "immutable";
-import { fields } from "./contact-us.json";
+import { fields } from "./contact-us.schema.json";
 
 @Page({
   category: aboutCategory,

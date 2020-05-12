@@ -13,12 +13,12 @@ import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
-import { fields } from "../tag-group.json";
 import {
   adminEditTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
+import { fields } from "../tag-group.schema.json";
 
 const tagGroupKey = "tagGroup";
 

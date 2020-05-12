@@ -6,7 +6,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { testFormlyFields } from "src/app/test/helpers/formly";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { UnlockAccountComponent } from "./unlock-account.component";
-import { fields } from "./unlock-account.json";
+import { fields } from "./unlock-account.schema.json";
 
 describe("UnlockAccountComponent", () => {
   let component: UnlockAccountComponent;

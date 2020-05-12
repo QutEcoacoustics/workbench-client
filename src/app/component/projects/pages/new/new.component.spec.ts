@@ -5,15 +5,12 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
+import { testFormlyFields } from "@test/helpers/formly";
+import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
-import { fields } from "../../project.json";
+import { fields } from "../../project.schema.json";
 import { NewComponent } from "./new.component";
 
 describe("ProjectsNewComponent", () => {

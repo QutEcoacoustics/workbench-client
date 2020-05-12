@@ -14,7 +14,7 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountMenuItemActions } from "../profile/my-profile.component";
-import { fields } from "./my-edit.json";
+import { fields } from "./my-edit.schema.json";
 
 const userKey = "user";
 

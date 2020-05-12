@@ -7,7 +7,7 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "./register.json";
+import { fields } from "./register.schema.json";
 
 @Page({
   category: securityCategory,

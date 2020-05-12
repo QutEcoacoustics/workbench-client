@@ -11,7 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
-import { fields } from "./reset-password.json";
+import { fields } from "./reset-password.schema.json";
 
 @Page({
   category: securityCategory,

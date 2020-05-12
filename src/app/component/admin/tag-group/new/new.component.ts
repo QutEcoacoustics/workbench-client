@@ -10,12 +10,12 @@ import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag-group.json";
 import {
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
+import { fields } from "../tag-group.schema.json";
 
 @Page({
   category: adminTagGroupsCategory,
