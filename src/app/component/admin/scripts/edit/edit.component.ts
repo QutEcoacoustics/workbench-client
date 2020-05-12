@@ -13,7 +13,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminScriptActions } from "../details/details.component";
-import { fields } from "../script.json";
+import { fields } from "../script.base.schema.json";
 import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,

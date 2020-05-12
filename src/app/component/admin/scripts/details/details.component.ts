@@ -7,7 +7,8 @@ import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { fields as baseFields } from "../script.json";
+import { fields as baseFields } from "../script.base.schema.json";
+import { fields as extendedFields } from "../script.extended.schema.json";
 import {
   adminEditScriptMenuItem,
   adminNewScriptsMenuItem,
@@ -15,7 +16,6 @@ import {
   adminScriptsCategory,
   adminScriptsMenuItem,
 } from "../scripts.menus";
-import { fields as extendedFields } from "./extended.json";
 
 export const adminScriptActions = [
   adminNewScriptsMenuItem,

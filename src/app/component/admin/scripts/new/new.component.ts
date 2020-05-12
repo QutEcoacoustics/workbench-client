@@ -11,7 +11,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminScriptsMenuItemActions } from "../list/list.component";
-import { fields } from "../script.json";
+import { fields } from "../script.base.schema.json";
 import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
