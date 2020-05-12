@@ -24,11 +24,29 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Id" [minWidth]="75" [maxWidth]="75">
+    <ngx-datatable-column name="Id" minWidth="75" maxWidth="75">
     </ngx-datatable-column>
-    <ngx-datatable-column name="Name"> </ngx-datatable-column>
-    <ngx-datatable-column name="Version"> </ngx-datatable-column>
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
+    <ngx-datatable-column name="Version" width="75" maxWidth="75">
+    </ngx-datatable-column>
     <ngx-datatable-column name="Command"> </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      width="155"
+      maxWidth="155"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-default mr-1" [routerLink]="updatePath(value)">
+          Update
+        </a>
+        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
+          Details
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
   </ngx-datatable>
 </ng-container>
 

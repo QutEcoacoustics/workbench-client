@@ -8,6 +8,7 @@ import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import {
+  adminEditScriptMenuItem,
   adminNewScriptsMenuItem,
   adminScriptsCategory,
   adminScriptsMenuItem,
@@ -29,7 +30,6 @@ export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 @Component({
   selector: "app-admin-scripts",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
 })
 export class AdminScriptsComponent extends PagedTableTemplate<
   TableRow,
@@ -40,6 +40,7 @@ export class AdminScriptsComponent extends PagedTableTemplate<
     { name: "Version" },
     { name: "Id" },
     { name: "Command" },
+    { name: "Model" },
   ];
   public sortKeys = {
     name: "name",
@@ -56,8 +57,13 @@ export class AdminScriptsComponent extends PagedTableTemplate<
         version: script.version,
         id: script.id,
         command: script.executableCommand,
+        model: script,
       }))
     );
+  }
+
+  public updatePath(model: Script): string {
+    return adminEditScriptMenuItem.route.format({ scriptId: model.id });
   }
 }
 
@@ -66,4 +72,5 @@ interface TableRow {
   version: number;
   id: Id;
   command: string;
+  model: Script;
 }

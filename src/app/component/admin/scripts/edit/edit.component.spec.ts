@@ -2,52 +2,45 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
-import { TagType } from "@models/Tag";
+import {
+  scriptResolvers,
+  ScriptsService,
+} from "@baw-api/script/scripts.service";
+import { Script } from "@models/Script";
 import { SharedModule } from "@shared/shared.module";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
-import { AdminTagsNewComponent } from "./new.component";
+import { AdminScriptsEditComponent } from "./edit.component";
 
-describe("AdminTagsNewComponent", () => {
-  let api: TagsService;
-  let component: AdminTagsNewComponent;
+describe("AdminScriptsEditComponent", () => {
+  let api: ScriptsService;
+  let component: AdminScriptsEditComponent;
   let defaultError: ApiErrorDetails;
-  let defaultTagTypes: TagType[];
-  let fixture: ComponentFixture<AdminTagsNewComponent>;
+  let defaultModel: Script;
+  let fixture: ComponentFixture<AdminScriptsEditComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    tagTypes: TagType[],
-    tagTypesError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Script, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [AdminTagsNewComponent],
+      declarations: [AdminScriptsEditComponent],
       providers: [
         ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              typeOfTags: tagResolvers.tagTypes,
-            },
-            {
-              tagTypes: {
-                model: tagTypes,
-                error: tagTypesError,
-              },
-            }
+            { script: scriptResolvers.show },
+            { script: { model, error } }
           ),
         },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminTagsNewComponent);
-    api = TestBed.inject(TagsService);
+    fixture = TestBed.createComponent(AdminScriptsEditComponent);
+    api = TestBed.inject(ScriptsService);
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -60,11 +53,10 @@ describe("AdminTagsNewComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTagTypes = [
-      new TagType({
-        name: "common_name",
-      }),
-    ];
+    defaultModel = new Script({
+      id: 1,
+      name: "Script",
+    });
     defaultError = {
       status: 401,
       message: "Unauthorized",
@@ -75,20 +67,20 @@ describe("AdminTagsNewComponent", () => {
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTagTypes, undefined);
+      configureTestingModule(defaultModel, undefined);
       expect(component).toBeTruthy();
     });
 
-    it("should handle tag types error", () => {
+    it("should handle script error", () => {
       configureTestingModule(undefined, defaultError);
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTagTypes, undefined);
-      spyOn(api, "create").and.callThrough();
+      configureTestingModule(defaultModel, undefined);
+      spyOn(api, "update").and.callThrough();
       component.submit({});
-      expect(api.create).toHaveBeenCalled();
+      expect(api.update).toHaveBeenCalled();
     });
   });
 });

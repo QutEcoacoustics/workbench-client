@@ -210,3 +210,26 @@ export abstract class ReadAndUpdateApi<
     ...urlParameters: P
   ): Observable<M>;
 }
+
+/**
+ * Api Class without the ability to destroy a model
+ */
+export abstract class NonDestructibleApi<
+  M extends AbstractModel,
+  P extends any[] = []
+> extends BawApiService<M>
+  implements
+    ApiList<M, P>,
+    ApiFilter<M, P>,
+    ApiShow<M, P>,
+    ApiCreate<M, P>,
+    ApiUpdate<M, P> {
+  abstract list(...urlParameters: P): Observable<M[]>;
+  abstract filter(filters: Filters, ...urlParameters: P): Observable<M[]>;
+  abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
+  abstract create(model: M, ...urlParameters: P): Observable<M>;
+  abstract update(
+    model: PartialWith<M, "id">,
+    ...urlParameters: P
+  ): Observable<M>;
+}
