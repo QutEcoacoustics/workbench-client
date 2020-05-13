@@ -47,7 +47,6 @@ export class AdminTagGroupsComponent extends PagedTableTemplate<
     tag: "tagId",
     group: "groupIdentifier",
   };
-  public filterKey: "groupIdentifier" = "groupIdentifier";
 
   constructor(api: TagGroupsService) {
     super(api, (tagGroups) =>
@@ -57,6 +56,8 @@ export class AdminTagGroupsComponent extends PagedTableTemplate<
         model: tagGroup,
       }))
     );
+
+    this.filterKey = "groupIdentifier";
   }
 
   editPath(tagGroup: TagGroup): string {

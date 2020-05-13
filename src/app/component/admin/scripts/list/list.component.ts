@@ -48,7 +48,6 @@ export class AdminScriptsComponent extends PagedTableTemplate<
     id: "id",
     command: "executableCommand",
   };
-  public filterKey: "name" = "name";
 
   constructor(api: ScriptsService) {
     super(api, (scripts) =>
@@ -60,6 +59,8 @@ export class AdminScriptsComponent extends PagedTableTemplate<
         model: script,
       }))
     );
+
+    this.filterKey = "name";
   }
 
   public updatePath(model: Script): string {

@@ -33,7 +33,6 @@ import {
 })
 export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
-  public filterKey: "name" = "name";
   public assignSitesLabel = assignSiteMenuItem.label;
 
   constructor(api: ShallowSitesService) {
@@ -44,6 +43,8 @@ export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
         model: site,
       }))
     );
+
+    this.filterKey = "name";
   }
 
   ngOnInit(): void {
