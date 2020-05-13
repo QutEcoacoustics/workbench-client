@@ -36,6 +36,12 @@ export class MyBookmarksComponent extends PagedTableTemplate<
   TableRow,
   Bookmark
 > {
+  public columns = [
+    { name: "Bookmark" },
+    { name: "Category" },
+    { name: "Description" },
+  ];
+
   constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,

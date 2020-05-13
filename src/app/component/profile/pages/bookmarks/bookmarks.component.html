@@ -24,7 +24,11 @@
         <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Category"> </ngx-datatable-column>
+    <ngx-datatable-column name="Category">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <span [innerText]="value"></span>
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column name="Description"> </ngx-datatable-column>
   </ngx-datatable>
 </div>
