@@ -12,7 +12,7 @@
           <div class="caption">
             <p>
               <fa-icon [icon]="['fas', 'clock']"></fa-icon>
-              Unknown time since last logged in
+              {{ lastSeenAt }}
             </p>
             <p>
               <fa-icon [icon]="['fas', 'user']"></fa-icon>
@@ -55,15 +55,12 @@
 
               <!-- Tags -->
               <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <app-items-item
-                    [icon]="tag.icon"
-                    [name]="tag.name"
-                    [value]="tag.value"
-                    [uri]="tag.uri"
-                    *ngFor="let tag of tags"
-                  >
-                  </app-items-item>
+                <li *ngFor="let tag of tags" class="list-group-item">
+                  <!-- Item icon -->
+                  <fa-icon id="icon" [icon]="['fas', 'tag']"></fa-icon>
+                  <a [routerLink]="tag.viewUrl">
+                    {{ tag.text }}
+                  </a>
                 </li>
               </ul>
             </div>

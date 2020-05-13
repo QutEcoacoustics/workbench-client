@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
 import {
   theirAnnotationsMenuItem,
   theirBookmarksMenuItem,
@@ -11,10 +15,14 @@ import {
   theirProjectsMenuItem,
   theirSitesMenuItem,
 } from "@component/profile/profile.menus";
+import { projectsMenuItem } from "@component/projects/projects.menus";
+import { siteMenuItem } from "@component/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
@@ -47,12 +55,26 @@ const accountKey = "account";
 })
 export class TheirProfileComponent extends PageComponent implements OnInit {
   public imageUrl: string;
-  public tags: ItemInterface[];
+  public lastSeenAt: string;
+  public tags: Tag[];
   public thirdPerson = true;
   public user: User;
-  public userStatistics: ItemInterface[];
+  public userStatistics: ItemInterface[] = [
+    { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
+    { icon: ["fas", "tags"], name: "Tags", value: "..." },
+    { icon: ["fas", "bookmark"], name: "Bookmarks", value: "..." },
+    { icon: siteMenuItem.icon, name: "Sites", value: "..." },
+    // TODO Implement
+    { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
+  ];
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private projectsApi: ProjectsService,
+    private sitesApi: ShallowSitesService,
+    private tagsApi: TagsService,
+    private bookmarksApi: BookmarksService
+  ) {
     super();
   }
 
@@ -66,29 +88,44 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
     }
 
     this.user = accountModel.model;
+    this.lastSeenAt = this.user.lastSeenAt
+      ? this.user.lastSeenAt.toRelative()
+      : "Unknown time since last logged in";
     this.imageUrl = this.user.getImage(ImageSizes.large);
 
-    this.userStatistics = [
-      { icon: ["fas", "globe-asia"], name: "Projects", value: "Unknown" },
-      { icon: ["fas", "tags"], name: "Tags", value: "Unknown" },
-      { icon: ["fas", "bookmark"], name: "Bookmarks", value: "Unknown" },
-      { icon: ["fas", "map-marker-alt"], name: "Sites", value: "Unknown" },
-      { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
-    ];
+    this.projectsApi.filterByAccessLevel({}, this.user).subscribe(
+      (models) => this.extractTotal(0, models),
+      () => this.handleError(0)
+    );
 
-    this.tags = [
-      {
-        icon: ["fas", "tag"],
-        name: "Test 1",
-        value: 0,
-        uri: () => "BROKEN LINK",
+    this.tagsApi.filterByCreator({}, this.user).subscribe(
+      (models) => {
+        this.extractTotal(1, models);
+        // TODO Extract tags by order of popularity
+        this.tags = models;
       },
-      {
-        icon: ["fas", "tag"],
-        name: "Test 2",
-        value: 0,
-        uri: () => "BROKEN LINK",
-      },
-    ];
+      () => this.handleError(0)
+    );
+
+    this.bookmarksApi.filterByCreator({}, this.user).subscribe(
+      (models) => this.extractTotal(2, models),
+      () => this.handleError(0)
+    );
+
+    this.sitesApi.filterByAccessLevel({}, this.user).subscribe(
+      (models) => this.extractTotal(3, models),
+      () => this.handleError(3)
+    );
+  }
+
+  private extractTotal(index: number, models: AbstractModel[]) {
+    const total = models.length > 0 ? models[0].getMetadata().paging.total : 0;
+    this.userStatistics = this.userStatistics.slice();
+    this.userStatistics[index].value = total;
+  }
+
+  private handleError(index: number) {
+    this.userStatistics = this.userStatistics.slice();
+    this.userStatistics[index].value = "Unknown";
   }
 }

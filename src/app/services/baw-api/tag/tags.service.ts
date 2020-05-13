@@ -4,11 +4,13 @@ import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Tag, TagType } from "@models/Tag";
+import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import {
   Empty,
   Filter,
+  filterById,
   id,
   IdOr,
   IdParamOptional,
@@ -41,6 +43,12 @@ export class TagsService extends StandardApi<Tag> {
   }
   filter(filters: Filters): Observable<Tag[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
+  }
+  filterByCreator(filters: Filters, user?: IdOr<User>): Observable<Tag[]> {
+    return this.apiFilter(
+      endpoint(Empty, Filter),
+      user ? filterById<Tag>(filters, "creatorId", user) : filters
+    );
   }
   show(model: IdOr<Tag>): Observable<Tag> {
     return this.apiShow(endpoint(model, Empty));

@@ -34,7 +34,10 @@ export class BookmarksService extends StandardApi<Bookmark> {
   list(): Observable<Bookmark[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(
+  filter(filters: Filters<Bookmark>): Observable<Bookmark[]> {
+    return this.apiFilter(endpoint(Empty, Filter), filters);
+  }
+  filterByCreator(
     filters: Filters<Bookmark>,
     user?: IdOr<User>
   ): Observable<Bookmark[]> {

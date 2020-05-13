@@ -1,5 +1,4 @@
 import { Injector } from "@angular/core";
-import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
@@ -64,7 +63,8 @@ export class Tag extends AbstractModel implements ITag {
   }
 
   public get viewUrl(): string {
-    return adminTagsMenuItem.route.toString();
+    console.warn("Tag viewUrl method not implemented");
+    return "/broken_link";
   }
 
   public toString(): string {

@@ -2,7 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnChanges,
+  OnInit,
 } from "@angular/core";
 import { ItemInterface } from "../item/item.component";
 
@@ -38,9 +39,9 @@ import { ItemInterface } from "../item/item.component";
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ItemsComponent implements OnInit {
+export class ItemsComponent implements OnInit, OnChanges {
   @Input() items: ItemInterface[];
 
   groupOne: ItemInterface[];
@@ -49,6 +50,10 @@ export class ItemsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.ngOnChanges();
+  }
+
+  ngOnChanges() {
     if (!this.items) {
       return;
     }
