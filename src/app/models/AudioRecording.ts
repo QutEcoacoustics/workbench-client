@@ -5,13 +5,12 @@ import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
 import {
   AbstractModel,
-  BawDateTime,
-  BawDuration,
   Creator,
   Deleter,
   HasOne,
   Updater,
 } from "./AbstractModel";
+import { BawDateTime, BawDuration } from "./AttributeDecorators";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -54,7 +53,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @BawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
-  @BawDuration({ key: "durationSeconds" })
+  @BawDuration<AudioRecording>({ key: "durationSeconds" })
   public readonly duration: Duration;
   public readonly durationSeconds?: number;
   public readonly sampleRateHertz?: number;

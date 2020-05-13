@@ -4,13 +4,12 @@ import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
   Creator,
   Deleter,
   HasOne,
   Updater,
 } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 

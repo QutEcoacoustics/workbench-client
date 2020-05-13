@@ -2,8 +2,9 @@ import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, BawDateTime, HasOne } from "./AbstractModel";
+import { AbstractModel, HasOne } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
+import { BawDateTime } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {

@@ -7,13 +7,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  Deleter,
-} from "./AbstractModel";
+import { AbstractModel, Creator, Deleter } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 export interface ISavedSearch {

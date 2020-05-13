@@ -2,13 +2,8 @@ import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-} from "./AbstractModel";
+import { AbstractModel, Creator, HasOne } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { Dataset } from "./Dataset";
 import type { User } from "./User";

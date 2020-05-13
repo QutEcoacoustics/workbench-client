@@ -6,13 +6,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel, Creator, Updater } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 export interface IDataset {

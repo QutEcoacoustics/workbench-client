@@ -7,16 +7,10 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel, Creator, HasOne, Updater } from "./AbstractModel";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
+import { BawPersistAttr, BawDateTime } from "./AttributeDecorators";
 
 /**
  * A bookmark model.

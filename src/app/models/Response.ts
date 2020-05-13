@@ -2,13 +2,8 @@ import { Injector } from "@angular/core";
 import { DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-} from "./AbstractModel";
+import { AbstractModel, Creator, HasOne } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { DatasetItem } from "./DatasetItem";
 import type { Question } from "./Question";
 import type { Study } from "./Study";

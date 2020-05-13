@@ -2,13 +2,8 @@ import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel, Creator, HasOne, Updater } from "./AbstractModel";
+import { BawPersistAttr } from "./AttributeDecorators";
 import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";

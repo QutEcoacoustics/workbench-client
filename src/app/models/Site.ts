@@ -11,15 +11,12 @@ import {
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
+import { AbstractModel, Creator, HasMany, Updater } from "./AbstractModel";
 import {
-  AbstractModel,
   BawCollection,
   BawDateTime,
   BawPersistAttr,
-  Creator,
-  HasMany,
-  Updater,
-} from "./AbstractModel";
+} from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { User } from "./User";
 

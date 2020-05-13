@@ -3,13 +3,8 @@ import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-} from "./AbstractModel";
+import { AbstractModel, Creator, HasOne } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 

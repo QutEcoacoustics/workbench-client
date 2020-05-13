@@ -10,14 +10,16 @@ import {
 } from "../interfaces/apiInterfaces";
 import {
   AbstractModel,
-  BawDateTime,
-  BawDuration,
-  BawPersistAttr,
   Creator,
   Deleter,
   HasOne,
   Updater,
 } from "./AbstractModel";
+import {
+  BawDateTime,
+  BawDuration,
+  BawPersistAttr,
+} from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
@@ -81,7 +83,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @BawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
-  @BawDuration({ key: "overallDurationSeconds" })
+  @BawDuration<AnalysisJob>({ key: "overallDurationSeconds" })
   public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;

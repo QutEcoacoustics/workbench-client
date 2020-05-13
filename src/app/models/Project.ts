@@ -12,14 +12,16 @@ import { Card } from "@shared/cards/cards.component";
 import { Observable } from "rxjs";
 import {
   AbstractModel,
-  BawCollection,
-  BawDateTime,
-  BawPersistAttr,
   Creator,
   HasMany,
   Owner,
   Updater,
 } from "./AbstractModel";
+import {
+  BawCollection,
+  BawDateTime,
+  BawPersistAttr,
+} from "./AttributeDecorators";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
