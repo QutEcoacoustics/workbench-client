@@ -15,7 +15,7 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
 
-const accountKey = "user";
+const accountKey = "account";
 
 @Page({
   category: theirProfileCategory,

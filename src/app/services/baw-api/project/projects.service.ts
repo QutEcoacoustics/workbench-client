@@ -38,7 +38,14 @@ export class ProjectsService extends StandardApi<Project> {
   list(): Observable<Project[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters, user?: IdOr<User>): Observable<Project[]> {
+  filter(filters: Filters): Observable<Project[]> {
+    return this.apiFilter(endpoint(Empty, Filter), filters);
+  }
+  filterByAccessLevel(
+    filters: Filters,
+    user?: IdOr<User>
+  ): Observable<Project[]> {
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/425
     return this.apiFilter(
       endpoint(Empty, Filter),
       user ? filterById<Project>(filters, "creatorId", user) : filters

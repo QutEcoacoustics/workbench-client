@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   theirProfileCategory,
@@ -42,7 +43,6 @@ export class TheirProjectsComponent extends PagedTableTemplate<
     { name: "Permission" },
   ];
 
-  // TODO Utilize https://github.com/QutEcoacoustics/baw-server/issues/438 service
   constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
@@ -58,6 +58,13 @@ export class TheirProjectsComponent extends PagedTableTemplate<
 
   public get account(): User {
     return this.models[accountKey] as User;
+  }
+
+  protected apiAction(filters: Filters) {
+    return (this.api as ProjectsService).filterByAccessLevel(
+      filters,
+      this.account
+    );
   }
 }
 

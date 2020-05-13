@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
   theirProfileCategory,
@@ -48,7 +49,7 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
       (sites) =>
         sites.map((site) => ({
           site,
-          recentAudioUpload: "(none)",
+          recentAudioUpload: "(fix_me)",
           permission: "FIX ME",
           annotation: siteAnnotationsMenuItem.uri(undefined),
         })),
@@ -58,6 +59,13 @@ export class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
 
   public get account(): User {
     return this.models[accountKey] as User;
+  }
+
+  protected apiAction(filters: Filters) {
+    return (this.api as ShallowSitesService).filterByAccessLevel(
+      filters,
+      this.account
+    );
   }
 }
 

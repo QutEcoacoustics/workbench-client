@@ -4,10 +4,12 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
+  filterById,
   id,
   IdOr,
   IdParam,
@@ -90,6 +92,14 @@ export class ShallowSitesService extends StandardApi<Site> {
         })
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
+  }
+  filterByAccessLevel(filters: Filters, user?: IdOr<User>): Observable<Site[]> {
+    return this.filter(filters);
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/453
+    return this.apiFilter(
+      endpointShallow(Empty, Filter),
+      user ? filterById<Site>(filters, "creatorId", user) : filters
+    );
   }
   show(model: IdOr<Site>): Observable<Site> {
     return showMock(
