@@ -2,7 +2,8 @@ import { Injector } from "@angular/core";
 import { DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, Creator, HasOne, Updater } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { Dataset } from "./Dataset";
 import type { User } from "./User";
@@ -37,7 +38,7 @@ export class Study extends AbstractModel implements IStudy {
   public creator?: Observable<User>;
   @Updater<Study>()
   public updater?: Observable<User>;
-  @HasOne(DATASET, (m: Study) => m.datasetId)
+  @HasOne<Study>(DATASET, "datasetId")
   public dataset?: Observable<Dataset>;
 
   constructor(study: IStudy, injector?: Injector) {

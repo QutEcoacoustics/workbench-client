@@ -10,13 +10,8 @@ import {
 } from "@interfaces/apiInterfaces";
 import { Card } from "@shared/cards/cards.component";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  Creator,
-  HasMany,
-  Owner,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
   BawDateTime,
@@ -64,7 +59,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly siteIds?: Ids;
 
   // Associations
-  @HasMany(SHALLOW_SITE, (m: Project) => m.siteIds)
+  @HasMany<Project>(SHALLOW_SITE, "siteIds")
   public sites?: Observable<Site[]>;
   @Creator<Project>()
   public creator?: Observable<User>;

@@ -89,7 +89,7 @@ function createDecorator<T extends AbstractModel>(
   return function (model: AbstractModel, key: string) {
     // Store decorated keys value
     const decoratedKey = Symbol("_" + key);
-    let keySetter = undefined;
+    let keySetter: (args: any) => void;
 
     // If override key provided, intercept its getter to update the decorated key
     if (opts?.key) {

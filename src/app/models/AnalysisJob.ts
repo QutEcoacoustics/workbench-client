@@ -8,13 +8,8 @@ import {
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
-import {
-  AbstractModel,
-  Creator,
-  Deleter,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import {
   BawDateTime,
   BawDuration,
@@ -95,9 +90,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: Observable<User>;
   @Deleter<AnalysisJob>()
   public deleter?: Observable<User>;
-  @HasOne(SCRIPT, (m: AnalysisJob) => m.scriptId)
+  @HasOne<AnalysisJob>(SCRIPT, "scriptId")
   public script?: Observable<Script>;
-  @HasOne(SAVED_SEARCH, (m: AnalysisJob) => m.savedSearchId)
+  @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: Observable<SavedSearch>;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {

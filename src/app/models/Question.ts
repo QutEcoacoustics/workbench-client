@@ -1,7 +1,8 @@
 import { Injector } from "@angular/core";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, Creator, Updater } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 

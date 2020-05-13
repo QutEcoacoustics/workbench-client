@@ -2,7 +2,8 @@ import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, Creator, HasOne, Updater } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
@@ -38,9 +39,9 @@ export class AudioEventTag extends AbstractModel implements IAudioEventTag {
   public creator: Observable<User>;
   @Updater<AudioEventTag>()
   public updater?: Observable<User>;
-  @HasOne(TAG, (m: AudioEventTag) => m.tagId)
+  @HasOne<AudioEventTag>(TAG, "tagId")
   public tag?: Observable<Tag>;
-  @HasOne(AUDIO_EVENT, (m: AudioEventTag) => m.audioEventId)
+  @HasOne<AudioEventTag>(AUDIO_EVENT, "audioEventId")
   public audioEvent?: Observable<AudioEvent>;
 
   constructor(audioEventTag: IAudioEventTag, injector?: Injector) {

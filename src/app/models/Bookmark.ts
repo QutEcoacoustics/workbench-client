@@ -7,10 +7,11 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, Creator, HasOne, Updater } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
-import { BawPersistAttr, BawDateTime } from "./AttributeDecorators";
 
 /**
  * A bookmark model.
@@ -54,7 +55,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public creator?: Observable<User>;
   @Updater<Bookmark>()
   public updater?: Observable<User>;
-  @HasOne(AUDIO_RECORDING, (m: Bookmark) => m.audioRecordingId)
+  @HasOne<Bookmark>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: Observable<AudioRecording>;
 
   constructor(bookmark: IBookmark, injector?: Injector) {

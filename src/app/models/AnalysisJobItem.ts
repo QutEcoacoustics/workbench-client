@@ -2,8 +2,9 @@ import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, HasOne } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
+import { HasOne } from "./AssociationDecorators";
 import { BawDateTime } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 
@@ -39,9 +40,9 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne(ANALYSIS_JOB, (m: AnalysisJobItem) => m.analysisJobId)
+  @HasOne<AnalysisJobItem>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: Observable<AnalysisJob>;
-  @HasOne(AUDIO_RECORDING, (m: AnalysisJobItem) => m.audioRecordingId)
+  @HasOne<AnalysisJobItem>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: Observable<AudioRecording>;
 
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {

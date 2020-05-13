@@ -3,9 +3,10 @@ import { adminTagsMenuItem } from "@component/admin/tags/tags.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
-import { AbstractModel, Creator, Updater } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
-import { BawPersistAttr, BawDateTime } from "./AttributeDecorators";
 
 /**
  * Tag model interface

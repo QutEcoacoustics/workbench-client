@@ -2,7 +2,8 @@ import { Injector } from "@angular/core";
 import { DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import { AbstractModel, Creator, HasOne } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { DatasetItem } from "./DatasetItem";
 import type { Question } from "./Question";
@@ -38,11 +39,11 @@ export class Response extends AbstractModel implements IResponse {
   // Associations
   @Creator<Response>()
   public creator?: Observable<User>;
-  @HasOne(DATASET_ITEM, (m: Response) => m.datasetItemId)
+  @HasOne<Response>(DATASET_ITEM, "datasetItemId")
   public datasetItem?: Observable<DatasetItem>;
-  @HasOne(QUESTION, (m: Response) => m.questionId)
+  @HasOne<Response>(QUESTION, "questionId")
   public question?: Observable<Question>;
-  @HasOne(STUDY, (m: Response) => m.studyId)
+  @HasOne<Response>(STUDY, "studyId")
   public study?: Observable<Study>;
 
   constructor(question: IResponse, injector?: Injector) {
