@@ -47,12 +47,12 @@ export function option(x?: New | Filter | Empty) {
 }
 
 /**
- * Allow filters while accepting a model id to refine search
+ * Modify a base filter to add a foreign key condition
  * @param filters Base Filters
- * @param key Key to match model id against
- * @param model Additional filter by model id
+ * @param key Foreign key
+ * @param model Foreign key value
  */
-export function filterById<T extends AbstractModel>(
+export function filterByForeignKey<T extends AbstractModel>(
   filters: Filters<T>,
   key: keyof T,
   model: IdOr<AbstractModel>

@@ -288,6 +288,7 @@ type Range =
   | string[]
   | number[]
   // Nevers required otherwise object types are merged
+  // TODO Update interval typings with https://github.com/Microsoft/TypeScript/issues/6579
   | { interval?: string; from?: never; to?: never }
   | { from?: number; to?: number; interval?: never };
 

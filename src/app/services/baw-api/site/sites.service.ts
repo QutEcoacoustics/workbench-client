@@ -9,7 +9,7 @@ import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
-  filterById,
+  filterByForeignKey,
   id,
   IdOr,
   IdParam,
@@ -98,7 +98,7 @@ export class ShallowSitesService extends StandardApi<Site> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/453
     return this.apiFilter(
       endpointShallow(Empty, Filter),
-      user ? filterById<Site>(filters, "creatorId", user) : filters
+      user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
     );
   }
   show(model: IdOr<Site>): Observable<Site> {

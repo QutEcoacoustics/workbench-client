@@ -10,7 +10,7 @@ import { map } from "rxjs/operators";
 import {
   Empty,
   Filter,
-  filterById,
+  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -47,7 +47,7 @@ export class TagsService extends StandardApi<Tag> {
   filterByCreator(filters: Filters, user?: IdOr<User>): Observable<Tag[]> {
     return this.apiFilter(
       endpoint(Empty, Filter),
-      user ? filterById<Tag>(filters, "creatorId", user) : filters
+      user ? filterByForeignKey<Tag>(filters, "creatorId", user) : filters
     );
   }
   show(model: IdOr<Tag>): Observable<Tag> {

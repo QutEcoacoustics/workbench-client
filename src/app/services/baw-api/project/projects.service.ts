@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
-  filterById,
+  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -48,7 +48,7 @@ export class ProjectsService extends StandardApi<Project> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/425
     return this.apiFilter(
       endpoint(Empty, Filter),
-      user ? filterById<Project>(filters, "creatorId", user) : filters
+      user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters
     );
   }
   show(model: IdOr<Project>): Observable<Project> {
