@@ -2,7 +2,7 @@ import { PartialWith } from "@helpers/advancedTypes";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { BawApiService, Filters, InnerFilter } from "./baw-api.service";
+import { BawApiService, Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel

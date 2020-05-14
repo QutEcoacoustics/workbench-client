@@ -287,11 +287,9 @@ interface Comparisons {
 type Range =
   | string[]
   | number[]
-  | {
-      interval?: string;
-      from?: number;
-      to?: number;
-    };
+  // Nevers required otherwise object types are merged
+  | { interval?: string; from?: never; to?: never }
+  | { from?: number; to?: number; interval?: never };
 
 interface Subsets {
   range?: Range;
@@ -325,17 +323,15 @@ interface Subsets {
 /**
  * Api response inner filter
  */
-export type InnerFilter<T = undefined> =
-  | (Combinations &
-      Comparisons &
-      Subsets &
-      { [P in keyof T]?: Combinations & Comparisons & Subsets })
-  | {};
+export type InnerFilter<T = {}> = Combinations &
+  Comparisons &
+  Subsets &
+  { [P in keyof T]?: Combinations & Comparisons & Subsets };
 
 /**
  * Filter metadata from api response
  */
-export interface Filters<T = undefined> {
+export interface Filters<T = {}> {
   filter?: InnerFilter<T>;
   projection?: {
     include: string[];

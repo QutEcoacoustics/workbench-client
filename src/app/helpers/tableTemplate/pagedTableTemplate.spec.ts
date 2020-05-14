@@ -388,7 +388,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { custom: { contains: "a" } },
+        filter: { ['custom' as any]: { contains: "a" } },
       });
     }));
 
@@ -398,7 +398,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "a" } },
+        filter: { ['testing' as any]: { contains: "a" } },
       });
     }));
 
@@ -408,7 +408,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "testing" } },
+        filter: { ['testing' as any]: { contains: "testing" } },
       });
     }));
 
@@ -436,7 +436,7 @@ describe("PagedTableTemplate", () => {
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { testing: { contains: "testing" } },
+        filter: { ['testing' as any]: { contains: "testing" } },
       });
     }));
   });
