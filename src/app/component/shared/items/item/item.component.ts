@@ -47,6 +47,7 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
       </span>
     </div>
   `,
+  // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemComponent implements OnInit {

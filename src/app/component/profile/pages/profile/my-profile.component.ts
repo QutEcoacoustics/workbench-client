@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -61,14 +61,14 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
   public tags: Tag[];
   public thirdPerson = false;
   public user: User;
-  public userStatistics: ItemInterface[] = [
+  public userStatistics: List<ItemInterface> = List([
     { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
     { icon: ["fas", "tags"], name: "Tags", value: "..." },
     { icon: ["fas", "bookmark"], name: "Bookmarks", value: "..." },
     { icon: siteMenuItem.icon, name: "Sites", value: "..." },
     // TODO Implement
     { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
-  ];
+  ]);
 
   constructor(
     private route: ActivatedRoute,
@@ -120,12 +120,16 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
 
   private extractTotal(index: number, models: AbstractModel[]) {
     const total = models.length > 0 ? models[0].getMetadata().paging.total : 0;
-    this.userStatistics = this.userStatistics.slice();
-    this.userStatistics[index].value = total;
+    this.userStatistics = this.userStatistics.update(index, (statistic) => ({
+      ...statistic,
+      value: total,
+    }));
   }
 
   private handleError(index: number) {
-    this.userStatistics = this.userStatistics.slice();
-    this.userStatistics[index].value = "Unknown";
+    this.userStatistics = this.userStatistics.update(index, (statistic) => ({
+      ...statistic,
+      value: "Unknown",
+    }));
   }
 }

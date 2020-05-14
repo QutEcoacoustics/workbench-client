@@ -1,36 +1,51 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { List } from "immutable";
 import { SharedModule } from "../../shared.module";
-import { ItemComponent, ItemInterface } from "../item/item.component";
+import { ItemComponent } from "../item/item.component";
 import { ItemsComponent } from "./items.component";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 describe("ItemsComponent", () => {
   let component: ItemsComponent;
   let fixture: ComponentFixture<ItemsComponent>;
+  let defaultIcon: IconProp;
 
-  function createItem(details: ItemInterface) {
-    const itemFixture = TestBed.createComponent(ItemComponent);
-    const itemComponent = itemFixture.componentInstance;
+  function getItems(): NodeListOf<HTMLElement> {
+    return (fixture.nativeElement as HTMLElement).querySelectorAll(
+      "app-items-item"
+    );
+  }
 
-    itemComponent.icon = details.icon;
-    itemComponent.name = details.name;
-    itemComponent.value = details.value;
+  function getLeftColumn() {
+    return (fixture.nativeElement as HTMLElement)
+      .querySelectorAll("ul.list-group")[0]
+      .querySelectorAll("app-items-item");
+  }
 
-    itemFixture.detectChanges();
+  function getRightColumn() {
+    return (fixture.nativeElement as HTMLElement)
+      .querySelectorAll("ul.list-group")[1]
+      .querySelectorAll("app-items-item");
+  }
 
-    return itemFixture.nativeElement.innerHTML;
+  function assertItem(item: HTMLElement, name: string) {
+    const label: HTMLElement = item.querySelector("span#name");
+    expect(label.innerText.trim()).toBe(name);
   }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
-      declarations: [ItemsComponent, ItemComponent]
+      declarations: [ItemsComponent, ItemComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemsComponent);
     component = fixture.componentInstance;
+
+    defaultIcon = ["fas", "home"];
   });
 
   it("should create", () => {
@@ -38,171 +53,54 @@ describe("ItemsComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should create single number item", () => {
-    component.items = [{ icon: ["fas", "home"], name: "test", value: 0 }];
-
+  it("should create single item", () => {
+    component.items = List([{ icon: defaultIcon, name: "test", value: 0 }]);
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
+    const items = getItems();
     expect(items.length).toBe(1);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test", value: 0 })
-    );
+    assertItem(items[0], "test");
   });
 
-  it("should create single text item", () => {
-    component.items = [{ icon: ["fas", "home"], name: "test", value: "value" }];
-
+  it("should create two items", () => {
+    component.items = List([
+      { icon: defaultIcon, name: "test 1", value: 0 },
+      { icon: defaultIcon, name: "test 2", value: 42 },
+    ]);
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(1);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test", value: "value" })
-    );
-  });
-
-  it("should create two number items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: 0 },
-      { icon: ["fas", "user"], name: "test 2", value: 42 }
-    ];
-
-    fixture.detectChanges();
-
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
+    const items = getItems();
     expect(items.length).toBe(2);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: 0 })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: 42 })
-    );
+    assertItem(items[0], "test 1");
+    assertItem(items[1], "test 2");
   });
 
-  it("should create two string items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: "value 1" },
-      { icon: ["fas", "user"], name: "test 2", value: "value 2" }
-    ];
-
+  it("should create even multiple of items", () => {
+    component.items = List([
+      { icon: defaultIcon, name: "test 1", value: 0 },
+      { icon: defaultIcon, name: "test 2", value: 42 },
+      { icon: defaultIcon, name: "test 3", value: 256 },
+      { icon: defaultIcon, name: "test 4", value: 1024 },
+    ]);
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(2);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: "value 1" })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: "value 2" })
-    );
+    expect(getItems().length).toBe(4);
+    expect(getLeftColumn().length).toBe(2);
+    expect(getRightColumn().length).toBe(2);
   });
 
-  it("should create multiple even number items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: 0 },
-      { icon: ["fas", "user"], name: "test 2", value: 42 },
-      { icon: ["fas", "users"], name: "test 3", value: 256 },
-      { icon: ["fas", "question"], name: "test 4", value: 1024 }
-    ];
-
+  it("should create odd multiple of items", () => {
+    component.items = List([
+      { icon: defaultIcon, name: "test 1", value: 0 },
+      { icon: defaultIcon, name: "test 2", value: 42 },
+      { icon: defaultIcon, name: "test 3", value: 256 },
+    ]);
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(4);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: 0 })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: 42 })
-    );
-    expect(items[2].innerHTML).toEqual(
-      createItem({ icon: ["fas", "users"], name: "test 3", value: 256 })
-    );
-    expect(items[3].innerHTML).toEqual(
-      createItem({ icon: ["fas", "question"], name: "test 4", value: 1024 })
-    );
+    expect(getItems().length).toBe(3);
+    expect(getLeftColumn().length).toBe(2);
+    expect(getRightColumn().length).toBe(1);
   });
 
-  it("should create multiple even string items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: "value 1" },
-      { icon: ["fas", "user"], name: "test 2", value: "value 2" },
-      { icon: ["fas", "users"], name: "test 3", value: "value 3" },
-      { icon: ["fas", "question"], name: "test 4", value: "value 4" }
-    ];
-
-    fixture.detectChanges();
-
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(4);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: "value 1" })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: "value 2" })
-    );
-    expect(items[2].innerHTML).toEqual(
-      createItem({ icon: ["fas", "users"], name: "test 3", value: "value 3" })
-    );
-    expect(items[3].innerHTML).toEqual(
-      createItem({
-        icon: ["fas", "question"],
-        name: "test 4",
-        value: "value 4"
-      })
-    );
-  });
-
-  it("should create multiple odd number items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: 0 },
-      { icon: ["fas", "user"], name: "test 2", value: 42 },
-      { icon: ["fas", "users"], name: "test 3", value: 256 }
-    ];
-
-    fixture.detectChanges();
-
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(3);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: 0 })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: 42 })
-    );
-    expect(items[2].innerHTML).toEqual(
-      createItem({ icon: ["fas", "users"], name: "test 3", value: 256 })
-    );
-  });
-
-  it("should create multiple odd string items", () => {
-    component.items = [
-      { icon: ["fas", "home"], name: "test 1", value: "value 1" },
-      { icon: ["fas", "user"], name: "test 2", value: "value 2" },
-      { icon: ["fas", "users"], name: "test 3", value: "value 3" }
-    ];
-
-    fixture.detectChanges();
-
-    const items = fixture.nativeElement.querySelectorAll("app-items-item");
-    expect(items).toBeTruthy();
-    expect(items.length).toBe(3);
-    expect(items[0].innerHTML).toEqual(
-      createItem({ icon: ["fas", "home"], name: "test 1", value: "value 1" })
-    );
-    expect(items[1].innerHTML).toEqual(
-      createItem({ icon: ["fas", "user"], name: "test 2", value: "value 2" })
-    );
-    expect(items[2].innerHTML).toEqual(
-      createItem({ icon: ["fas", "users"], name: "test 3", value: "value 3" })
-    );
-  });
+  // TODO Add check that columns inline on small devices
 });
