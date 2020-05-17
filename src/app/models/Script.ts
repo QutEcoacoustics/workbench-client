@@ -2,12 +2,9 @@ import { Injector } from "@angular/core";
 import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 /**

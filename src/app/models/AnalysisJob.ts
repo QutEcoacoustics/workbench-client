@@ -8,16 +8,13 @@ import {
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import {
-  AbstractModel,
   BawDateTime,
   BawDuration,
   BawPersistAttr,
-  Creator,
-  Deleter,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+} from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
@@ -81,7 +78,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @BawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
-  @BawDuration({ key: "overallDurationSeconds" })
+  @BawDuration<AnalysisJob>({ key: "overallDurationSeconds" })
   public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
@@ -93,9 +90,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: Observable<User>;
   @Deleter<AnalysisJob>()
   public deleter?: Observable<User>;
-  @HasOne(SCRIPT, (m: AnalysisJob) => m.scriptId)
+  @HasOne<AnalysisJob>(SCRIPT, "scriptId")
   public script?: Observable<Script>;
-  @HasOne(SAVED_SEARCH, (m: AnalysisJob) => m.savedSearchId)
+  @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: Observable<SavedSearch>;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {

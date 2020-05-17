@@ -3,13 +3,9 @@ import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 
@@ -42,7 +38,7 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   // Associations
   @Creator<TagGroup>()
   public creator?: Observable<User>;
-  @HasOne(TAG, (m: TagGroup) => m.tagId)
+  @HasOne<TagGroup>(TAG, "tagId")
   public tag?: Observable<Tag>;
 
   constructor(tagGroup: ITagGroup, injector?: Injector) {
