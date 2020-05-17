@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Tag, TagType, ITag } from "@models/Tag";
+import { ITag, Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";

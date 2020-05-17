@@ -14,10 +14,7 @@ import { Filters } from "../../services/baw-api/baw-api.service";
 
 export const defaultFilters: Filters = {
   filter: {},
-  projection: {
-    include: [],
-    exclude: [],
-  },
+  projection: {},
   sorting: { orderBy: "id", direction: "asc" },
   paging: {},
 };

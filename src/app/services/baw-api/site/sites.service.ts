@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
-import { Site, ISite } from "@models/Site";
+import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {

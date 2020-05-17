@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { SharedModule } from "../../shared.module";
 import { ItemComponent } from "../item/item.component";
 import { ItemsComponent } from "./items.component";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 describe("ItemsComponent", () => {
   let component: ItemsComponent;

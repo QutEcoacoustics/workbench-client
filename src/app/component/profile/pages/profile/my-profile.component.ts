@@ -101,7 +101,7 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
     this.tagsApi.list().subscribe(
       (models) => {
         this.extractTotal(1, models);
-        // TODO Extract tags by order of popularity
+        // TODO Extract tags by order of popularity https://github.com/QutEcoacoustics/baw-server/issues/449
         this.tags = models;
       },
       () => this.handleError(0)

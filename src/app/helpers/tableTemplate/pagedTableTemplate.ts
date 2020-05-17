@@ -155,7 +155,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       );
   }
 
-  protected apiAction(filters: Filters, args: AbstractModel[]) {
+  protected apiAction(filters: Filters<M>, args: AbstractModel[]) {
     return this.api.filter(filters, ...args);
   }
 }
