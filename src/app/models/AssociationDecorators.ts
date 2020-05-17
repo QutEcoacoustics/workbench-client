@@ -40,7 +40,7 @@ export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
  * @param modelPrimaryKey Key to match ids against
  */
 export function HasMany<M extends AbstractModel>(
-  serviceToken: ServiceToken<ApiFilter<AbstractModel, any[]>>,
+  serviceToken: ServiceToken<ApiFilter<any, any[]>>,
   modelIdentifier: keyof M,
   modelPrimaryKey: keyof M = "id",
   ...modelParameters: ReadonlyArray<keyof M>
@@ -65,9 +65,7 @@ export function HasMany<M extends AbstractModel>(
  * @param ids Additional IDs
  */
 export function HasOne<M extends AbstractModel>(
-  serviceToken: ServiceToken<
-    ApiShow<AbstractModel, any[], IdOr<AbstractModel>>
-  >,
+  serviceToken: ServiceToken<ApiShow<any, any[], IdOr<AbstractModel>>>,
   modelIdentifier: keyof M,
   ...modelParameters: ReadonlyArray<keyof M>
 ) {
