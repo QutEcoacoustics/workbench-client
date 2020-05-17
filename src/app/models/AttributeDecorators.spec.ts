@@ -1,12 +1,12 @@
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
+import { AbstractModel } from "./AbstractModel";
 import {
-  AbstractModel,
   BawCollection,
   BawDateTime,
   BawDuration,
   BawPersistAttr,
-} from "./AbstractModel";
+} from "./AttributeDecorators";
 
 describe("Attribute Decorators", () => {
   describe("BawPersistAttr", () => {
@@ -87,7 +87,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle override key option", () => {
       class MockModel extends AbstractModel {
-        @BawCollection({ key: "siteIds" })
+        @BawCollection<MockModel>({ key: "siteIds" })
         public readonly sites: Ids;
         public readonly siteIds: Id[];
 
@@ -157,7 +157,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle override key option", () => {
       class MockModel extends AbstractModel {
-        @BawDateTime({ key: "timestamp" })
+        @BawDateTime<MockModel>({ key: "timestamp" })
         public readonly dateTime: DateTime;
         public readonly timestamp: string;
 
@@ -233,7 +233,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle override key option", () => {
       class MockModel extends AbstractModel {
-        @BawDuration({ key: "seconds" })
+        @BawDuration<MockModel>({ key: "seconds" })
         public readonly duration: Duration;
         public readonly seconds: number;
 

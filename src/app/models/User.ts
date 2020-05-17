@@ -11,7 +11,8 @@ import {
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel, BawDateTime, BawPersistAttr } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 
 /**
  * A user model.

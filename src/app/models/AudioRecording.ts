@@ -3,15 +3,9 @@ import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
 import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
-import {
-  AbstractModel,
-  BawDateTime,
-  BawDuration,
-  Creator,
-  Deleter,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawDuration } from "./AttributeDecorators";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -54,7 +48,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @BawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
-  @BawDuration({ key: "durationSeconds" })
+  @BawDuration<AudioRecording>({ key: "durationSeconds" })
   public readonly duration: Duration;
   public readonly durationSeconds?: number;
   public readonly sampleRateHertz?: number;
@@ -84,9 +78,9 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public updater?: Observable<User>;
   @Deleter<AudioRecording>()
   public deleter?: Observable<User>;
-  @HasOne(ACCOUNT, (m: AudioRecording) => m.uploaderId)
+  @HasOne<AudioRecording>(ACCOUNT, "uploaderId")
   public uploader?: Observable<User>;
-  @HasOne(SHALLOW_SITE, (m: AudioRecording) => m.siteId)
+  @HasOne<AudioRecording>(SHALLOW_SITE, "siteId")
   public site?: Observable<Site>;
 
   constructor(audioRecording: IAudioRecording, injector?: Injector) {

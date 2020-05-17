@@ -11,7 +11,8 @@ import {
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { testBawServices } from "../test/helpers/testbed";
-import { AbstractModel, HasMany, HasOne } from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { HasMany, HasOne } from "./AssociationDecorators";
 
 describe("Association Decorators", () => {
   let injector: Injector;
@@ -36,13 +37,18 @@ describe("Association Decorators", () => {
       data: object,
       modelInjector: Injector,
       key?: string,
-      ...modelParameters: ((target) => Id)[]
+      ...modelParameters: string[]
     ) {
       class MockModel extends AbstractModel {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasMany(MOCK, (m: MockModel) => m.ids, key, ...modelParameters)
+        @HasMany<MockModel>(
+          MOCK,
+          "ids",
+          key as any,
+          ...(modelParameters as any)
+        )
         public readonly childModels: Observable<ChildModel[]>;
 
         public get viewUrl(): string {
@@ -127,7 +133,7 @@ describe("Association Decorators", () => {
             { ids: idsType.multiple, param1: 5 },
             injector,
             undefined,
-            (target) => target.param1
+            "param1"
           );
           model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
@@ -144,8 +150,8 @@ describe("Association Decorators", () => {
             { ids: idsType.multiple, param1: 5, param2: 10 },
             injector,
             undefined,
-            (target) => target.param1,
-            (target) => target.param2
+            "param1",
+            "param2"
           );
           model.childModels.subscribe();
           expect(api.filter).toHaveBeenCalledWith(
@@ -223,13 +229,13 @@ describe("Association Decorators", () => {
     function createModel(
       data: object,
       modelInjector: Injector,
-      ...modelParameters: ((target) => Id)[]
+      ...modelParameters: string[]
     ) {
       class MockModel extends AbstractModel {
         public readonly id: Id;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasOne(MOCK, (m: MockModel) => m.id, ...modelParameters)
+        @HasOne<MockModel>(MOCK, "id", ...(modelParameters as any))
         public readonly childModel: Observable<ChildModel>;
 
         public get viewUrl(): string {
@@ -275,11 +281,7 @@ describe("Association Decorators", () => {
 
     it("should handle single parameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
-      const model = createModel(
-        { id: 1, param1: 5 },
-        injector,
-        (target) => target.param1
-      );
+      const model = createModel({ id: 1, param1: 5 }, injector, "param1");
       model.childModel.subscribe();
       expect(api.show).toHaveBeenCalledWith(1, [5]);
     });
@@ -289,8 +291,8 @@ describe("Association Decorators", () => {
       const model = createModel(
         { id: 1, param1: 5, param2: 10 },
         injector,
-        (target) => target.param1,
-        (target) => target.param2
+        "param1",
+        "param2"
       );
       model.childModel.subscribe();
       expect(api.show).toHaveBeenCalledWith(1, [5, 10]);
@@ -301,8 +303,8 @@ describe("Association Decorators", () => {
       const model = createModel(
         { id: 1, param1: 5 },
         injector,
-        (target) => target.param1,
-        (target) => target.param2
+        "param1",
+        "param2"
       );
       model.childModel.subscribe();
       expect(api.show).toHaveBeenCalledWith(1, [5, undefined]);

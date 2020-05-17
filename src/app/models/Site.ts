@@ -11,15 +11,13 @@ import {
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasMany, Updater } from "./AssociationDecorators";
 import {
-  AbstractModel,
   BawCollection,
   BawDateTime,
   BawPersistAttr,
-  Creator,
-  HasMany,
-  Updater,
-} from "./AbstractModel";
+} from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { User } from "./User";
 
@@ -77,7 +75,7 @@ export class Site extends AbstractModel implements ISite {
   public creator?: Observable<User>;
   @Updater<Site>()
   public updater?: Observable<User>;
-  @HasMany(PROJECT, (m: Site) => m.projectIds)
+  @HasMany<Site>(PROJECT, "projectIds")
   public projects?: Observable<Project[]>;
 
   constructor(site: ISite, injector?: Injector) {

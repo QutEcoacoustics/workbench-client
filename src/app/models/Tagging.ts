@@ -2,13 +2,9 @@ import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { Observable } from "rxjs";
-import {
-  AbstractModel,
-  BawPersistAttr,
-  Creator,
-  HasOne,
-  Updater,
-} from "./AbstractModel";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
+import { BawPersistAttr } from "./AttributeDecorators";
 import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
@@ -41,9 +37,9 @@ export class Tagging extends AbstractModel implements ITagging {
   public creator?: Observable<User>;
   @Updater<Tagging>()
   public updater?: Observable<User>;
-  @HasOne(AUDIO_EVENT, (m: Tagging) => m.audioEventId)
+  @HasOne<Tagging>(AUDIO_EVENT, "audioEventId")
   public audioEvent?: Observable<AudioEvent>;
-  @HasOne(TAG, (m: Tagging) => m.tagId)
+  @HasOne<Tagging>(TAG, "tagId")
   public tag?: Observable<Tag>;
 
   constructor(tagging: ITagging, injector?: Injector) {
