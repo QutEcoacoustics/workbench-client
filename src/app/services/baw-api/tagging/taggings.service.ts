@@ -4,7 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AudioEvent } from "@models/AudioEvent";
-import { Tagging } from "@models/Tagging";
+import { ITagging, Tagging } from "@models/Tagging";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -44,7 +44,7 @@ export class TaggingsService extends StandardApi<
     return this.apiList(endpoint(analysisJob, audioEvent, Empty, Empty));
   }
   filter(
-    filters: Filters,
+    filters: Filters<ITagging>,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {

@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { AnalysisJobItem } from "@models/AnalysisJobItem";
+import { AnalysisJobItem, IAnalysisJobItem } from "@models/AnalysisJobItem";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -39,7 +39,7 @@ export class AnalysisJobItemsService extends ReadonlyApi<
     return this.apiList(endpoint(analysisJob, Empty, Empty));
   }
   filter(
-    filters: Filters,
+    filters: Filters<IAnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem[]> {
     return this.apiFilter(endpoint(analysisJob, Empty, Filter), filters);

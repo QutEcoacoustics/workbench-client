@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Site, ISite } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
@@ -43,7 +43,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   list(project: IdOr<Project>): Observable<Site[]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
-  filter(filters: Filters, project: IdOr<Project>): Observable<Site[]> {
+  filter(filters: Filters<ISite>, project: IdOr<Project>): Observable<Site[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/437
     return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
@@ -80,7 +80,7 @@ export class ShallowSitesService extends StandardApi<Site> {
     return this.filter({});
     // return this.apiList(endpointShallow(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Site[]> {
+  filter(filters: Filters<ISite>): Observable<Site[]> {
     return filterMock<Site>(
       filters,
       (index) =>
@@ -93,7 +93,10 @@ export class ShallowSitesService extends StandardApi<Site> {
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
-  filterByAccessLevel(filters: Filters, user?: IdOr<User>): Observable<Site[]> {
+  filterByAccessLevel(
+    filters: Filters<ISite>,
+    user?: IdOr<User>
+  ): Observable<Site[]> {
     return this.filter(filters);
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/453
     return this.apiFilter(
@@ -136,7 +139,7 @@ export class ShallowSitesService extends StandardApi<Site> {
    * Retrieve orphaned sites (sites which have no parent projects)
    * @param filters Filters to apply
    */
-  orphans(filters: Filters): Observable<Site[]> {
+  orphans(filters: Filters<Site>): Observable<Site[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/430
     return filterMock<Site>(
       filters,

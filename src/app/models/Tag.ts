@@ -17,7 +17,6 @@ import type { User } from "./User";
 export interface ITag {
   id?: Id;
   text?: string;
-  count?: number;
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;

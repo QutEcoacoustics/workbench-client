@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Project } from "@models/Project";
+import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
@@ -38,11 +38,11 @@ export class ProjectsService extends StandardApi<Project> {
   list(): Observable<Project[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Project[]> {
+  filter(filters: Filters<IProject>): Observable<Project[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   filterByAccessLevel(
-    filters: Filters,
+    filters: Filters<IProject>,
     user?: IdOr<User>
   ): Observable<Project[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/425

@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AnalysisJob } from "@models/AnalysisJob";
+import { AnalysisJob, IAnalysisJob } from "@models/AnalysisJob";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -36,7 +36,7 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
   list(): Observable<AnalysisJob[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<AnalysisJob[]> {
+  filter(filters: Filters<IAnalysisJob>): Observable<AnalysisJob[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {

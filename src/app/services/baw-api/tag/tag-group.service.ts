@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { TagGroup } from "@models/TagGroup";
+import { ITagGroup, TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -37,7 +37,7 @@ export class TagGroupsService extends StandardApi<TagGroup> {
   list(): Observable<TagGroup[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<TagGroup[]> {
+  filter(filters: Filters<ITagGroup>): Observable<TagGroup[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<TagGroup>): Observable<TagGroup> {

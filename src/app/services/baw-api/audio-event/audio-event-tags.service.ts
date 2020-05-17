@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
-import { AudioEventTag } from "@models/AudioEventTag";
+import { AudioEventTag, IAudioEventTag } from "@models/AudioEventTag";
 import { AudioRecording } from "@models/AudioRecording";
 import { Observable } from "rxjs";
 import { ApiFilter, Filter, id, IdOr, IdParam, option } from "../api-common";
@@ -26,7 +26,7 @@ export class AudioEventTagsService extends BawApiService<AudioEventTag>
   }
 
   filter(
-    filters: Filters,
+    filters: Filters<IAudioEventTag>,
     audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<AudioEventTag[]> {

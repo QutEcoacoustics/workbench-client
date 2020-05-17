@@ -19,7 +19,7 @@ export function listMock<M extends AbstractModel>(
 }
 
 export function filterMock<M extends AbstractModel>(
-  filters: Filters,
+  filters: Filters<M>,
   classBuilder: (index: number) => M
 ): Observable<M[]> {
   const models: M[] = [];
@@ -31,14 +31,14 @@ export function filterMock<M extends AbstractModel>(
       ? filters.sorting
       : {
           orderBy: "name",
-          direction: "asc"
+          direction: "asc",
         },
     paging: {
       page: filters?.paging?.page ? filters.paging.page : 1,
       items: filters?.paging?.items ? filters?.paging?.items : 25,
       total: filters?.paging?.total ? filters?.paging?.total : 100,
-      maxPage: 4
-    }
+      maxPage: 4,
+    },
   };
 
   const startIndex = (meta.paging.page - 1) * 25;

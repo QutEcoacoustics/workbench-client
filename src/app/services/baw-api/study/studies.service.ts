@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Study } from "@models/Study";
+import { IStudy, Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -32,7 +32,7 @@ export class StudiesService extends StandardApi<Study> {
   list(): Observable<Study[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Study[]> {
+  filter(filters: Filters<IStudy>): Observable<Study[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<Study>): Observable<Study> {
