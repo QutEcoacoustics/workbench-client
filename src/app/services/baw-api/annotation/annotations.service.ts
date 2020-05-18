@@ -45,9 +45,9 @@ export class AnnotationsService extends ReadonlyApi<Annotation> {
       .filter({
         paging: filters.paging,
         sorting: filters.sorting,
-        projection: audioEventFilters.projection,
+        projection: audioEventFilters?.projection,
         filter: {
-          ...audioEventFilters.filter,
+          ...audioEventFilters?.filter,
           ...filters,
         },
       })
