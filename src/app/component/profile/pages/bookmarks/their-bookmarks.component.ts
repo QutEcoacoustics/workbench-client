@@ -1,17 +1,16 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
-import { Filters } from "@baw-api/baw-api.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import {
+  theirBookmarksMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
-  theirProjectsMenuItem,
 } from "@component/profile/profile.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
@@ -27,49 +26,39 @@ const accountKey = "account";
   resolvers: {
     [accountKey]: accountResolvers.show,
   },
-  self: theirProjectsMenuItem,
+  self: theirBookmarksMenuItem,
 })
 @Component({
-  selector: "app-their-projects",
-  templateUrl: "./projects.component.html",
+  selector: "app-their-bookmarks",
+  templateUrl: "./bookmarks.component.html",
 })
-export class TheirProjectsComponent extends PagedTableTemplate<
+export class TheirBookmarksComponent extends PagedTableTemplate<
   TableRow,
-  Project
+  Bookmark
 > {
-  public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
-  ];
+  public sortKeys = { category: "category" };
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
-      (projects) =>
-        projects.map((project) => ({
-          project,
-          sites: project.siteIds.size,
-          permission: "FIX ME",
+      (bookmarks) =>
+        bookmarks.map((bookmark) => ({
+          bookmark,
+          category: bookmark.category,
+          description: bookmark.description,
         })),
-      route
+      route,
+      (component: TheirBookmarksComponent) => [component.account]
     );
   }
 
   public get account(): User {
     return this.models[accountKey] as User;
   }
-
-  protected apiAction(filters: Filters) {
-    return (this.api as ProjectsService).filterByAccessLevel(
-      filters,
-      this.account
-    );
-  }
 }
 
 interface TableRow {
-  project: Project;
-  sites: number;
-  permission: string;
+  bookmark: Bookmark;
+  category: string;
+  description: string;
 }

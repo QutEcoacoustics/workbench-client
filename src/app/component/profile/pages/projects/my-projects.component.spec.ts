@@ -34,8 +34,8 @@ describe("MyProjectsComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            { account: userResolvers.show },
-            { account: { model, error } }
+            { user: userResolvers.show },
+            { user: { model, error } }
           ),
         },
       ],

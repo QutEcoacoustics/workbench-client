@@ -68,6 +68,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
 
   public get viewUrl(): string {
     // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
-    throw new Error("Bookmark viewUrl not implemented.");
+    console.warn("Bookmark viewUrl not implemented.");
+    return "/broken_link";
   }
 }

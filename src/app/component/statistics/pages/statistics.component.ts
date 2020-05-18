@@ -15,18 +15,18 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
   category: statisticsCategory,
   menus: {
     actions: List(),
-    links: List()
+    links: List(),
   },
-  self: statisticsMenuItem
+  self: statisticsMenuItem,
 })
 @Component({
   selector: "app-data-request",
   templateUrl: "./statistics.component.html",
-  styleUrls: ["./statistics.component.scss"]
+  styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent extends PageComponent implements OnInit {
-  groupOne: { icon: IconProp; name: string; value: string | number }[];
-  groupTwo: { icon: IconProp; name: string; value: string | number }[];
+  groupOne: List<{ icon: IconProp; name: string; value: string | number }>;
+  groupTwo: List<{ icon: IconProp; name: string; value: string | number }>;
   recentAnnotations: Annotation[] | AnnotationExpanded[];
   recentRecordings: Recording[] | RecordingExpanded[];
 
@@ -35,81 +35,81 @@ export class StatisticsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupOne = [
+    this.groupOne = List([
       {
         icon: ["fas", "home"],
         name: "Projects",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "bullseye"],
         name: "Annotations",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "tags"],
         name: "Available tags",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "map-marker-alt"],
         name: "Sites",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
         name: "Audio recordings",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: defaultUserIcon,
         name: "Users",
-        value: "Unknown"
-      }
-    ];
+        value: "Unknown",
+      },
+    ]);
 
-    this.groupTwo = [
+    this.groupTwo = List([
       {
         icon: ["fas", "tags"],
         name: "Unique tags attached to annotations",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "tags"],
         name: "Tags attached to annotations",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "bullseye"],
         name: "New annotations in the last month",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "clock"],
         name: "Overall annotation duration",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: defaultUserIcon,
         name: "Users Online",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
         name: "Overall audio recording file size",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
         name: "New audio recordings in last month",
-        value: "Unknown"
+        value: "Unknown",
       },
       {
         icon: ["fas", "clock"],
         name: "Overall audio duration",
-        value: "Unknown"
-      }
-    ];
+        value: "Unknown",
+      },
+    ]);
 
     this.recentAnnotations = [{ updated: "Unknown" }];
 

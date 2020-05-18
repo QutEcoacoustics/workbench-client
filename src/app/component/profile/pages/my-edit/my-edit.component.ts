@@ -13,7 +13,7 @@ import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { myAccountMenuItemActions } from "../profile/my-profile.component";
+import { myAccountActions } from "../profile/my-profile.component";
 import { fields } from "./my-edit.schema.json";
 
 const userKey = "user";
@@ -21,10 +21,7 @@ const userKey = "user";
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      myAccountMenuItem,
-      ...myAccountMenuItemActions,
-    ]),
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
     links: List(),
   },
   resolvers: {
@@ -33,7 +30,7 @@ const userKey = "user";
   self: myEditMenuItem,
 })
 @Component({
-  selector: "app-my-account-edit",
+  selector: "app-my-edit",
   template: `
     <app-wip>
       <ng-container *ngIf="model">

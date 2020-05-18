@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Script } from "@models/Script";
+import { IScript, Script } from "@models/Script";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -36,7 +36,7 @@ export class ScriptsService extends NonDestructibleApi<Script> {
   list(): Observable<Script[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Script[]> {
+  filter(filters: Filters<IScript>): Observable<Script[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<Script>): Observable<Script> {

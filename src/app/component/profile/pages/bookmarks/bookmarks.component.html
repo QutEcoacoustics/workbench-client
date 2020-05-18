@@ -1,0 +1,36 @@
+<div *ngIf="rows && !error && !failure">
+  <h1>
+    Bookmarks
+    <small class="text-muted">accessible by {{ account.userName }}</small>
+  </h1>
+
+  <p>
+    Displaying <strong>all {{ totalModels }}</strong> bookmarks.
+  </p>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Bookmark">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Category">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <span [innerText]="value"></span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Description"> </ngx-datatable-column>
+  </ngx-datatable>
+</div>
+
+<app-error-handler *ngIf="!failure" [error]="error"></app-error-handler>

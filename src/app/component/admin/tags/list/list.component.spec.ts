@@ -29,7 +29,6 @@ describe("AdminTagsComponent", () => {
     defaultModel = new Tag({
       id: 1,
       text: "tag",
-      count: 1,
       isTaxanomic: false,
       retired: false,
       typeOfTag: "common",
@@ -40,7 +39,6 @@ describe("AdminTagsComponent", () => {
         new Tag({
           id: i,
           text: "tag " + i,
-          count: 1,
           isTaxanomic: false,
           retired: false,
           typeOfTag: "common",

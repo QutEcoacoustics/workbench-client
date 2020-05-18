@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Response } from "@models/Response";
+import { IResponse, Response } from "@models/Response";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
@@ -36,7 +36,10 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
   list(study: IdOr<Study>): Observable<Response[]> {
     return this.apiList(endpoint(study, Empty, Empty));
   }
-  filter(filters: Filters, study: IdOr<Study>): Observable<Response[]> {
+  filter(
+    filters: Filters<IResponse>,
+    study: IdOr<Study>
+  ): Observable<Response[]> {
     return this.apiFilter(endpoint(study, Empty, Filter), filters);
   }
   show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
@@ -69,7 +72,7 @@ export class ShallowResponsesService extends StandardApi<Response> {
   list(): Observable<Response[]> {
     return this.apiList(endpointShallow(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Response[]> {
+  filter(filters: Filters<IResponse>): Observable<Response[]> {
     return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
   show(model: IdOr<Response>): Observable<Response> {

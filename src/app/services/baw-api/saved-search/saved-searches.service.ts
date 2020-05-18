@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { SavedSearch } from "@models/SavedSearch";
+import { ISavedSearch, SavedSearch } from "@models/SavedSearch";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -32,7 +32,7 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   list(): Observable<SavedSearch[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<SavedSearch[]> {
+  filter(filters: Filters<ISavedSearch>): Observable<SavedSearch[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<SavedSearch>): Observable<SavedSearch> {

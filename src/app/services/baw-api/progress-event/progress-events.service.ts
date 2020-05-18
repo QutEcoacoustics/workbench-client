@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ProgressEvent } from "@models/ProgressEvent";
+import { IProgressEvent, ProgressEvent } from "@models/ProgressEvent";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -32,7 +32,7 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
   list(): Observable<ProgressEvent[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<ProgressEvent[]> {
+  filter(filters: Filters<IProgressEvent>): Observable<ProgressEvent[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {

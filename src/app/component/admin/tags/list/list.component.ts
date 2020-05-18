@@ -46,7 +46,6 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     retired: "retired",
     type: "typeOfTag",
   };
-  public filterKey = "text";
 
   constructor(api: TagsService) {
     super(api, (tags) =>
@@ -58,6 +57,8 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
         tag,
       }))
     );
+
+    this.filterKey = "text";
   }
 
   editPath(tag: Tag): string {

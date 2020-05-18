@@ -1,16 +1,18 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
-  myProjectsMenuItem,
+  myAnnotationsMenuItem,
 } from "@component/profile/profile.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { AudioEvent } from "@models/AudioEvent";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
@@ -26,28 +28,23 @@ const userKey = "user";
   resolvers: {
     [userKey]: userResolvers.show,
   },
-  self: myProjectsMenuItem,
+  self: myAnnotationsMenuItem,
 })
 @Component({
-  selector: "app-my-projects",
-  templateUrl: "./projects.component.html",
+  selector: "app-my-annotations",
+  templateUrl: "./annotations.component.html",
 })
-export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
-  public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
-  ];
-
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+export class MyAnnotationsComponent extends PagedTableTemplate<
+  TableRow,
+  AudioEvent
+> {
+  constructor(api: AudioEventsService, route: ActivatedRoute) {
     super(
       api,
-      (projects) =>
-        projects.map((project) => ({
-          project,
-          sites: project.siteIds.size,
-          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
-        })),
+      (audioEvents) => {
+        // TODO Implement
+        return [];
+      },
       route
     );
   }
@@ -58,7 +55,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 }
 
 interface TableRow {
-  project: Project;
-  sites: number;
-  permission: string;
+  site: Site;
+  uploaded: string;
+  tags: Tag[];
 }

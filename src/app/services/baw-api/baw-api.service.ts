@@ -151,7 +151,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param filters API filters
    */
-  protected apiFilter(path: string, filters: Filters): Observable<T[]> {
+  protected apiFilter(path: string, filters: Filters<T>): Observable<T[]> {
     return this.httpPost(path, filters).pipe(
       map(this.handleCollectionResponse)
     );
@@ -255,14 +255,104 @@ export interface Paging {
   next?: string;
 }
 
+interface Combinations<T> {
+  and?: InnerFilter<T>;
+  or?: InnerFilter<T>;
+  not?: InnerFilter<T>;
+}
+
+interface Comparisons {
+  eq?: string | number;
+  equal?: string | number;
+  notEq?: string | number;
+  notEqual?: string | number;
+  lt?: number;
+  lessThan?: number;
+  notLt?: number;
+  notLessThan?: number;
+  gt?: number;
+  greaterThan?: number;
+  notGt?: number;
+  notGreaterThan?: number;
+  lteq?: number;
+  lessThanOrEqual?: number;
+  notLteq?: number;
+  notLessThanOrEqual?: number;
+  gteq?: number;
+  greaterThanOrEqual?: number;
+  notGteq?: number;
+  notGreaterThanOrEqual?: number;
+}
+
+/**
+ * Runtime type checking of range intervals. This follows the pattern
+ * set here: https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
+ */
+export class RangeInterval {
+  constructor(public interval: string) {
+    const regex: RegExp = /(\[|\()(.*),(.*)(\)|\])/;
+    if (!regex.test(this.interval)) {
+      throw Error("Range Interval: Invalid pattern provided");
+    }
+  }
+
+  toJSON() {
+    return { interval: this.interval };
+  }
+}
+
+type Range =
+  | string[]
+  | number[]
+  | RangeInterval
+  | { from: number; to: number; interval?: never };
+
+interface Subsets {
+  range?: Range;
+  inRange?: Range;
+  notRange?: Range;
+  notInRange?: Range;
+  in?: string[] | number[];
+  notIn?: string[] | number[];
+  contains?: string;
+  contain?: string;
+  notContains?: string;
+  doesNotContain?: string;
+  startsWith?: string;
+  startWith?: string;
+  notStartsWith?: string;
+  notStartWith?: string;
+  doesNotStartWith?: string;
+  endsWith?: string;
+  endWith?: string;
+  notEndsWith?: string;
+  notEndWith?: string;
+  regex?: RegExp;
+  regexMatch?: RegExp;
+  matches?: RegExp;
+  notRegex?: RegExp;
+  notRegexMatch?: RegExp;
+  doesNotMatch?: RegExp;
+  notMatch?: RegExp;
+}
+
+/**
+ * Api response inner filter
+ */
+export type InnerFilter<T = {}> = Combinations<T> &
+  Comparisons &
+  Subsets &
+  { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
+
 /**
  * Filter metadata from api response
+ * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters {
-  filter?: any;
+export interface Filters<T = {}, K extends keyof T = keyof T> {
+  filter?: InnerFilter<T>;
   projection?: {
-    include: string[];
-    exclude: string[];
+    include?: K[];
+    exclude?: K[];
   };
   sorting?: {
     orderBy: string;

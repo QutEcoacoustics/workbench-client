@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
-  myProjectsMenuItem,
+  myBookmarksMenuItem,
 } from "@component/profile/profile.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
@@ -26,27 +26,30 @@ const userKey = "user";
   resolvers: {
     [userKey]: userResolvers.show,
   },
-  self: myProjectsMenuItem,
+  self: myBookmarksMenuItem,
 })
 @Component({
-  selector: "app-my-projects",
-  templateUrl: "./projects.component.html",
+  selector: "app-my-bookmarks",
+  templateUrl: "./bookmarks.component.html",
 })
-export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
+export class MyBookmarksComponent extends PagedTableTemplate<
+  TableRow,
+  Bookmark
+> {
   public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
+    { name: "Bookmark" },
+    { name: "Category" },
+    { name: "Description" },
   ];
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
-      (projects) =>
-        projects.map((project) => ({
-          project,
-          sites: project.siteIds.size,
-          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
+      (bookmarks) =>
+        bookmarks.map((bookmark) => ({
+          bookmark,
+          category: bookmark.category,
+          description: bookmark.description,
         })),
       route
     );
@@ -58,7 +61,7 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 }
 
 interface TableRow {
-  project: Project;
-  sites: number;
-  permission: string;
+  bookmark: Bookmark;
+  category: string;
+  description: string;
 }

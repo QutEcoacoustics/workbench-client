@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Dataset } from "@models/Dataset";
+import { Dataset, IDataset } from "@models/Dataset";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -32,7 +32,7 @@ export class DatasetsService extends StandardApi<Dataset> {
   list(): Observable<Dataset[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Dataset[]> {
+  filter(filters: Filters<IDataset>): Observable<Dataset[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   show(model: IdOr<Dataset>): Observable<Dataset> {

@@ -2,11 +2,13 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Project } from "@models/Project";
+import { IProject, Project } from "@models/Project";
+import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
+  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -36,8 +38,18 @@ export class ProjectsService extends StandardApi<Project> {
   list(): Observable<Project[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters): Observable<Project[]> {
+  filter(filters: Filters<IProject>): Observable<Project[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
+  }
+  filterByAccessLevel(
+    filters: Filters<IProject>,
+    user?: IdOr<User>
+  ): Observable<Project[]> {
+    // TODO https://github.com/QutEcoacoustics/baw-server/issues/425
+    return this.apiFilter(
+      endpoint(Empty, Filter),
+      user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters
+    );
   }
   show(model: IdOr<Project>): Observable<Project> {
     return this.apiShow(endpoint(model, Empty));

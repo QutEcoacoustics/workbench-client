@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnChanges,
+  OnInit,
 } from "@angular/core";
+import { List } from "immutable";
 import { ItemInterface } from "../item/item.component";
 
 /**
@@ -38,23 +40,30 @@ import { ItemInterface } from "../item/item.component";
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // Pure Component
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ItemsComponent implements OnInit {
-  @Input() items: ItemInterface[];
+export class ItemsComponent implements OnInit, OnChanges {
+  @Input() items: List<ItemInterface>;
 
-  groupOne: ItemInterface[];
-  groupTwo: ItemInterface[];
+  groupOne: List<ItemInterface>;
+  groupTwo: List<ItemInterface>;
 
   constructor() {}
 
   ngOnInit() {
+    this.ngOnChanges();
+  }
+
+  ngOnChanges() {
     if (!this.items) {
+      this.groupOne = List([]);
+      this.groupTwo = List([]);
       return;
     }
 
-    const midIndex = Math.ceil(this.items.length / 2);
+    const midIndex = Math.ceil(this.items.count() / 2);
     this.groupOne = this.items.slice(0, midIndex);
-    this.groupTwo = this.items.slice(midIndex, this.items.length);
+    this.groupTwo = this.items.slice(midIndex, this.items.count());
   }
 }

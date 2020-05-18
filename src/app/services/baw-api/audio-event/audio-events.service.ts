@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AudioEvent } from "@models/AudioEvent";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Observable } from "rxjs";
 import {
@@ -39,7 +39,7 @@ export class AudioEventsService extends StandardApi<
     return this.apiList(endpoint(audioRecording, Empty, Empty));
   }
   filter(
-    filters: Filters,
+    filters: Filters<IAudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
     return this.apiFilter(endpoint(audioRecording, Empty, Filter), filters);

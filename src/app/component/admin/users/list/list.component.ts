@@ -44,7 +44,6 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     user: "userName",
     lastLogin: "lastSeenAt",
   };
-  public filterKey = "userName";
 
   constructor(api: AccountsService) {
     super(api, (accounts) =>
@@ -55,6 +54,8 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
         confirmed: account.isConfirmed,
       }))
     );
+
+    this.filterKey = "userName";
   }
 
   /**

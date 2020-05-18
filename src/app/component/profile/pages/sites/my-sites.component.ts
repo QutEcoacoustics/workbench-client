@@ -7,37 +7,40 @@ import {
   myAccountMenuItem,
   mySitesMenuItem,
 } from "@component/profile/profile.menus";
-import { annotationsMenuItem } from "@component/sites/sites.menus";
+import { siteAnnotationsMenuItem } from "@component/sites/sites.menus";
 import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { myAccountMenuItemActions } from "../profile/my-profile.component";
+import { myAccountActions } from "../profile/my-profile.component";
 
-const accountKey = "account";
+const userKey = "user";
 
 @Page({
   category: myAccountCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      myAccountMenuItem,
-      ...myAccountMenuItemActions,
-    ]),
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
     links: List(),
   },
   resolvers: {
-    [accountKey]: userResolvers.show,
+    [userKey]: userResolvers.show,
   },
   self: mySitesMenuItem,
 })
 @Component({
-  selector: "app-my-account-sites",
+  selector: "app-my-sites",
   templateUrl: "./sites.component.html",
-  styleUrls: ["./sites.component.scss"],
 })
 export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
+  public columns = [
+    { name: "Site" },
+    { name: "Recent Audio Upload" },
+    { name: "Permission" },
+    { name: "Annotation" },
+  ];
+
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details
     // https://github.com/QutEcoacoustics/baw-server/issues/438
@@ -49,14 +52,14 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
           site,
           recentAudioUpload: "(none)",
           permission: "UNKNOWN",
-          annotation: annotationsMenuItem.uri(undefined),
+          annotation: siteAnnotationsMenuItem.uri(undefined),
         })),
       route
     );
   }
 
   public get account(): User {
-    return this.models[accountKey] as User;
+    return this.models[userKey] as User;
   }
 }
 

@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset } from "@models/Dataset";
-import { DatasetItem } from "@models/DatasetItem";
+import { DatasetItem, IDatasetItem } from "@models/DatasetItem";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -38,7 +38,10 @@ export class DatasetItemsService extends ImmutableApi<
   list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
     return this.apiList(endpoint(dataset, Empty, Empty));
   }
-  filter(filters: Filters, dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
+  filter(
+    filters: Filters<IDatasetItem>,
+    dataset: IdOr<Dataset>
+  ): Observable<DatasetItem[]> {
     return this.apiFilter(endpoint(dataset, Empty, Filter), filters);
   }
   show(

@@ -8,27 +8,27 @@ const routes: Routes = [
       { path: "about", redirectTo: "https://research.ecosounds.org/" },
       {
         path: "articles",
-        redirectTo: "https://research.ecosounds.org/articles.html"
+        redirectTo: "https://research.ecosounds.org/articles.html",
       },
       {
         path: "resources",
-        redirectTo: "https://research.ecosounds.org/resources.html"
+        redirectTo: "https://research.ecosounds.org/resources.html",
       },
       {
         path: "people",
-        redirectTo: "https://research.ecosounds.org/people/people.html"
+        redirectTo: "https://research.ecosounds.org/people/people.html",
       },
       {
         path: "publications",
         redirectTo:
-          "https://research.ecosounds.org/publications/publications.html"
-      }
-    ]
-  }
+          "https://research.ecosounds.org/publications/publications.html",
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
