@@ -8,10 +8,16 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
+import {
+  annotationResolvers,
+  AnnotationsService,
+} from "./annotation/annotations.service";
 import { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
 import {
   audioEventResolvers,
   AudioEventsService,
+  shallowAudioEventResolvers,
+  ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import {
   audioRecordingResolvers,
@@ -91,9 +97,21 @@ const serviceList = [
     mock: MockReadonlyApiService,
   },
   {
+    serviceToken: Tokens.ANNOTATION,
+    service: AnnotationsService,
+    resolvers: annotationResolvers,
+    mock: MockReadonlyApiService,
+  },
+  {
     serviceToken: Tokens.AUDIO_EVENT,
     service: AudioEventsService,
     resolvers: audioEventResolvers,
+    mock: MockStandardApiService,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_AUDIO_EVENT,
+    service: ShallowAudioEventsService,
+    resolvers: shallowAudioEventResolvers,
     mock: MockStandardApiService,
   },
   {

@@ -116,7 +116,7 @@ export class Resolvers<
   A extends ApiList<M, any[]> & ApiShow<M, any[], IdOr<M>>
 > {
   constructor(
-    private deps: Type<A>[],
+    private deps: Type<any>[],
     private id?: string,
     private ids?: string[]
   ) {}

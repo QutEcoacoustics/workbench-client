@@ -1,5 +1,5 @@
 /**
- * Purpose of this file is to create ./account/account.serviceeen the services
+ * Purpose of this file is to create a disconnect between the services
  * and being able to call them from the models. If the disconnect does not
  * exist, when you attempt to add association loading to the model it
  * will cause a circular dependency.
@@ -9,8 +9,12 @@ import { InjectionToken } from "@angular/core";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
+import type { AnnotationsService } from "./annotation/annotations.service";
 import type { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
-import type { AudioEventsService } from "./audio-event/audio-events.service";
+import type {
+  AudioEventsService,
+  ShallowAudioEventsService,
+} from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
@@ -54,8 +58,14 @@ export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService>(
 export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService>(
   "ANALYSIS_JOB_ITEMS_SERVICE"
 );
+export const ANNOTATION = new ServiceToken<AnnotationsService>(
+  "ANNOTATIONS_SERVICE"
+);
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
   "AUDIO_EVENTS_SERVICE"
+);
+export const SHALLOW_AUDIO_EVENT = new ServiceToken<ShallowAudioEventsService>(
+  "SHALLOW_AUDIO_EVENTS_SERVICE"
 );
 export const AUDIO_EVENT_TAG = new ServiceToken<AudioEventTagsService>(
   "AUDIO_EVENT_TAGS_SERVICE"

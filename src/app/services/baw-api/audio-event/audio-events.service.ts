@@ -21,6 +21,7 @@ import { Resolvers } from "../resolver-common";
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}${option}`;
+const endpointShallow = stringTemplate`/audio_events/${audioEventId}${option}`;
 
 @Injectable()
 export class AudioEventsService extends StandardApi<
@@ -70,9 +71,45 @@ export class AudioEventsService extends StandardApi<
   }
 }
 
+// TODO https://github.com/QutEcoacoustics/baw-server/issues/454
+@Injectable()
+export class ShallowAudioEventsService extends StandardApi<AudioEvent> {
+  constructor(
+    http: HttpClient,
+    @Inject(API_ROOT) apiRoot: string,
+    injector: Injector
+  ) {
+    super(http, apiRoot, AudioEvent, injector);
+  }
+
+  list(): Observable<AudioEvent[]> {
+    return this.apiList(endpointShallow(Empty, Empty));
+  }
+  filter(filters: Filters<IAudioEvent>): Observable<AudioEvent[]> {
+    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+  }
+  show(model: IdOr<AudioEvent>): Observable<AudioEvent> {
+    return this.apiShow(endpointShallow(model, Empty));
+  }
+  create(model: AudioEvent): Observable<AudioEvent> {
+    return this.apiCreate(endpointShallow(Empty, Empty), model);
+  }
+  update(model: AudioEvent): Observable<AudioEvent> {
+    return this.apiUpdate(endpointShallow(model, Empty), model);
+  }
+  destroy(model: IdOr<AudioEvent>): Observable<AudioEvent | void> {
+    return this.apiDestroy(endpointShallow(model, Empty));
+  }
+}
+
 export const audioEventResolvers = new Resolvers<
   AudioEvent,
   AudioEventsService
 >([AudioEventsService], "audioEventId", ["audioRecordingId"]).create(
   "AudioEvent"
 );
+
+export const shallowAudioEventResolvers = new Resolvers<
+  AudioEvent,
+  ShallowAudioEventsService
+>([ShallowAudioEventsService], "audioEventId").create("ShallowAudioEvent");

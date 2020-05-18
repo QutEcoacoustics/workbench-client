@@ -1,17 +1,13 @@
 import { Injector, Optional } from "@angular/core";
-import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
-import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { DateTime, Duration } from "luxon";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { Id, Ids } from "../interfaces/apiInterfaces";
+import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
 
 /**
  * BAW Server Abstract Model
  */
 export abstract class AbstractModel {
-  constructor(raw: object, @Optional() private injector?: Injector) {
+  constructor(raw: object, @Optional() protected injector?: Injector) {
     return Object.assign(this, raw);
   }
 
