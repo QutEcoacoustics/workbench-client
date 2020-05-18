@@ -6,7 +6,7 @@ import {
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { Id, Ids } from "@interfaces/apiInterfaces";
+import { Id } from "@interfaces/apiInterfaces";
 import { BehaviorSubject, Observable } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
 import { AbstractModel } from "./AbstractModel";
@@ -17,34 +17,25 @@ import type { Site } from "./Site";
 import type { Tag } from "./Tag";
 
 export interface IAnnotation {
-  id: number;
-  // Filter by audioEventTag.audioEventId
-  audioEventTagIds?: Ids;
-  tagIds?: Ids;
-  // Show using audioEvent.audioRecordingId
-  audioRecordingId?: Id;
-  // Show using audioRecording.siteId
-  siteId?: Id;
+  id: Id;
+  audioEvent: Observable<AudioEvent>;
+  audioEventTags: Observable<AudioEventTag[]>;
+  tags: Observable<Tag[]>;
+  audioRecording: Observable<AudioRecording>;
+  site: Observable<Site>;
 }
 
 export class Annotation extends AbstractModel implements IAnnotation {
   public readonly kind: "Annotation" = "Annotation";
-  public id: number;
-  public audioEventTagIds?: Ids;
-  public tagIds?: Ids;
-  public audioRecordingId?: Id;
-  public siteId?: Id;
+  public id: Id;
   private _audioEvent?: Observable<AudioEvent>;
   private _audioEventTags?: Observable<AudioEventTag[]>;
   private _tags?: Observable<Tag[]>;
   private _audioRecording?: Observable<AudioRecording>;
   private _site?: Observable<Site>;
 
-  constructor(annotation: IAnnotation, injector: Injector) {
-    super(annotation, injector);
-  }
-
-  public setAudioEvent(audioEvent: AudioEvent) {
+  constructor(audioEvent: AudioEvent, injector: Injector) {
+    super({ id: audioEvent.id }, injector);
     this._audioEvent = new BehaviorSubject<AudioEvent>(audioEvent);
   }
 
