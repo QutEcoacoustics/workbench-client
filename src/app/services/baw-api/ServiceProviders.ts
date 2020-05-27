@@ -25,7 +25,6 @@ import {
   DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
-import { MockFilterApiService } from "./mock/filterMock.service";
 import { MockImmutableApiService } from "./mock/immutableApiMock.service";
 import { MockNonDestructibleApiService } from "./mock/nonDestructibleApiMock.service";
 import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
@@ -66,8 +65,8 @@ import {
 } from "./study/responses.service";
 import { StudiesService, studyResolvers } from "./study/studies.service";
 import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
+import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
-import { taggingResolvers, TaggingsService } from "./tagging/taggings.service";
 import { userResolvers, UserService } from "./user/user.service";
 
 const serviceList = [
