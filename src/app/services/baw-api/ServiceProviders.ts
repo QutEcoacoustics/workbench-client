@@ -8,7 +8,6 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
-import { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -95,12 +94,6 @@ const serviceList = [
     service: AudioEventsService,
     resolvers: audioEventResolvers,
     mock: MockStandardApiService,
-  },
-  {
-    serviceToken: Tokens.AUDIO_EVENT_TAG,
-    service: AudioEventTagsService,
-    resolvers: null,
-    mock: MockFilterApiService,
   },
   {
     serviceToken: Tokens.AUDIO_RECORDING,
