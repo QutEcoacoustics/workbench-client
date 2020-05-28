@@ -72,11 +72,11 @@ export class Site extends AbstractModel implements ISite {
 
   // Associations
   @Creator<Site>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Site>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @HasMany<Site>(PROJECT, "projectIds")
-  public projects?: Observable<Project[]>;
+  public projects?: Project[];
 
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);

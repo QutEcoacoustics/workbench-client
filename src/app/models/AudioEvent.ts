@@ -52,13 +52,13 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
 
   // Associations
   @Creator<AudioEvent>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<AudioEvent>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Deleter<AudioEvent>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
   @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);

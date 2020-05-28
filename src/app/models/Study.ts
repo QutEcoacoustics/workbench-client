@@ -35,11 +35,11 @@ export class Study extends AbstractModel implements IStudy {
 
   // Associations
   @Creator<Study>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Study>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @HasOne<Study>(DATASET, "datasetId")
-  public dataset?: Observable<Dataset>;
+  public dataset?: Dataset;
 
   constructor(study: IStudy, injector?: Injector) {
     super(study, injector);

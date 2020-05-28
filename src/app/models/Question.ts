@@ -33,9 +33,9 @@ export class Question extends AbstractModel implements IQuestion {
 
   // Associations
   @Creator<Question>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Question>()
-  public updater?: Observable<User>;
+  public updater?: User;
 
   constructor(question: IQuestion, injector?: Injector) {
     super(question, injector);

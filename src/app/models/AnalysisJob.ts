@@ -85,15 +85,15 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 
   // Associations
   @Creator<AnalysisJob>()
-  public creator: Observable<User>;
+  public creator: User;
   @Updater<AnalysisJob>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Deleter<AnalysisJob>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
   @HasOne<AnalysisJob>(SCRIPT, "scriptId")
-  public script?: Observable<Script>;
+  public script?: Script;
   @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
-  public savedSearch?: Observable<SavedSearch>;
+  public savedSearch?: SavedSearch;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {
     super(analysisJob, injector);

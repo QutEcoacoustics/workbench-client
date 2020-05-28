@@ -60,13 +60,13 @@ export class Project extends AbstractModel implements IProject {
 
   // Associations
   @HasMany<Project>(SHALLOW_SITE, "siteIds")
-  public sites?: Observable<Site[]>;
+  public sites?: Site[];
   @Creator<Project>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Project>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Owner<Project>()
-  public owner?: Observable<User>;
+  public owner?: User;
 
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);

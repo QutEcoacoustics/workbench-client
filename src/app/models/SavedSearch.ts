@@ -42,9 +42,9 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
 
   // Associations
   @Creator<SavedSearch>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Deleter<SavedSearch>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
 
   constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);

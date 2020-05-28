@@ -1,9 +1,8 @@
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { AbstractModel } from "./AbstractModel";
+import { Observable, Subscription } from "rxjs";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 
 /**
  * Creates an association between the ownerId and its user model
@@ -76,7 +75,8 @@ export function HasOne<M extends AbstractModel>(
     serviceToken,
     modelIdentifier,
     modelParameters,
-    (service, id: Id, ...params: any[]) => service.show(id, ...params)
+    (service, id: Id, ...params: any[]) => service.show(id, ...params),
+    new UnresolvedModel()
   );
 }
 
@@ -95,6 +95,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     id: Id | Ids,
     ...params: any[]
   ) => Observable<AbstractModel | AbstractModel[]>,
+  unresolvedValue: any,
   failureValue: any = null
 ) {
   /**
@@ -106,12 +107,20 @@ function createModelDecorator<M extends AbstractModel, S>(
   function updateCache(
     target: M,
     key: string,
-    value: Observable<AbstractModel | AbstractModel[]>
+    value: AbstractModel | AbstractModel[] | Subscription
   ) {
-    Object.defineProperty(target, key, {
-      value,
-      configurable: false,
-    });
+    if (value instanceof Array && target[key] instanceof Array) {
+      target[key].push(...value);
+    } else if (value instanceof Object && target[key] instanceof Object) {
+      for (const property of Object.keys(value)) {
+        target[key][property] = value[property];
+      }
+    } else {
+      Object.defineProperty(target, key, {
+        value,
+        configurable: false,
+      });
+    }
   }
 
   /**
@@ -122,7 +131,7 @@ function createModelDecorator<M extends AbstractModel, S>(
   function getAssociatedModel(
     target: M,
     associationKey: string
-  ): Observable<null | AbstractModel | AbstractModel[]> {
+  ): null | AbstractModel | AbstractModel[] {
     // Check for any cached models
     const cachedModelKey = "_" + associationKey;
     if (target.hasOwnProperty(cachedModelKey)) {
@@ -147,7 +156,7 @@ function createModelDecorator<M extends AbstractModel, S>(
         associationKey,
         identifier,
       });
-      return of(failureValue);
+      return failureValue;
     }
 
     // Get model parameters
@@ -165,17 +174,17 @@ function createModelDecorator<M extends AbstractModel, S>(
 
     // Create service and request from API
     const service = injector.get(serviceToken.token);
-    const request = createRequest(service, identifier, parameters).pipe(
-      map((response) => {
-        // Change cached value to BehaviorSubject so that it will instantly return
-        updateCache(target, cachedModelKey, new BehaviorSubject(response));
-        return response;
-      })
+    createRequest(service, identifier, parameters).subscribe(
+      (model) => {
+        console.log({ service, model });
+        updateCache(target, cachedModelKey, model);
+      },
+      () => updateCache(target, cachedModelKey, failureValue)
     );
 
     // Save request to cache so other requests are ignored
-    updateCache(target, cachedModelKey, request);
-    return request;
+    updateCache(target, cachedModelKey, unresolvedValue);
+    return unresolvedValue;
   }
 
   return (target: M, associationKey: string) => {

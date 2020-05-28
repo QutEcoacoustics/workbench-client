@@ -38,13 +38,13 @@ export class Response extends AbstractModel implements IResponse {
 
   // Associations
   @Creator<Response>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @HasOne<Response>(DATASET_ITEM, "datasetItemId")
-  public datasetItem?: Observable<DatasetItem>;
+  public datasetItem?: DatasetItem;
   @HasOne<Response>(QUESTION, "questionId")
-  public question?: Observable<Question>;
+  public question?: Question;
   @HasOne<Response>(STUDY, "studyId")
-  public study?: Observable<Study>;
+  public study?: Study;
 
   constructor(question: IResponse, injector?: Injector) {
     super(question, injector);

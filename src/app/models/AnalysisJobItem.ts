@@ -41,9 +41,9 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
 
   // Associations
   @HasOne<AnalysisJobItem>(ANALYSIS_JOB, "analysisJobId")
-  public analysisJob?: Observable<AnalysisJob>;
+  public analysisJob?: AnalysisJob;
   @HasOne<AnalysisJobItem>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
     super(analysisJobItem, injector);

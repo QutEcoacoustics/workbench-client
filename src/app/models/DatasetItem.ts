@@ -40,11 +40,11 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
 
   // Associations
   @Creator<DatasetItem>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @HasOne<DatasetItem>(DATASET, "datasetId")
-  public dataset?: Observable<Dataset>;
+  public dataset?: Dataset;
   @HasOne<DatasetItem>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(datasetItem: IDatasetItem, injector?: Injector) {
     super(datasetItem, injector);

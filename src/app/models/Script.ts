@@ -56,7 +56,7 @@ export class Script extends AbstractModel implements IScript {
   // Associations
   // TODO Add Group associations
   @Creator<Script>()
-  public creator?: Observable<User>;
+  public creator?: User;
 
   constructor(script: IScript, injector?: Injector) {
     super(script, injector);

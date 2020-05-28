@@ -49,9 +49,9 @@ export class Tag extends AbstractModel implements ITag {
 
   // Associations
   @Creator<Tag>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Tag>()
-  public updater?: Observable<User>;
+  public updater?: User;
 
   constructor(tag: ITag, injector?: Injector) {
     super(tag, injector);
