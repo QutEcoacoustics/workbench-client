@@ -21,7 +21,7 @@ describe("MenuButtonComponent", () => {
   it("should create", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
@@ -36,7 +36,7 @@ describe("MenuButtonComponent", () => {
   it("should have icon", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action:() => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
@@ -57,7 +57,7 @@ describe("MenuButtonComponent", () => {
   it("should have label", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "custom label",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
@@ -75,7 +75,7 @@ describe("MenuButtonComponent", () => {
   it("should have tooltip", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
@@ -98,7 +98,7 @@ describe("MenuButtonComponent", () => {
   it("should not use link tooltip", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
@@ -121,7 +121,7 @@ describe("MenuButtonComponent", () => {
   it("should have id for disabled access tooltip", () => {
     component.id = "id1000";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
@@ -138,7 +138,7 @@ describe("MenuButtonComponent", () => {
   it("should have disabled access tooltip", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "tooltip"
@@ -156,7 +156,7 @@ describe("MenuButtonComponent", () => {
   it("should handle left placement of tooltip", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"
@@ -177,7 +177,7 @@ describe("MenuButtonComponent", () => {
   it("should handle right placement of tooltip", () => {
     component.id = "id";
     component.link = MenuAction({
-      action: () => console.log("action"),
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"

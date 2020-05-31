@@ -68,9 +68,5 @@ export class DetailsComponent extends PageComponent implements OnInit {
     }
     this.project = resolvedModels.project as Project;
     this.sites = resolvedModels.sites as Site[];
-
-    console.log({ project: this.project });
-    console.log({ sites: this.project.sites });
-    console.log({ creator: this.project.creator });
   }
 }

@@ -89,7 +89,7 @@ export class ShallowSitesService extends StandardApi<Site> {
           name: "PLACEHOLDER SITE",
           description: "PLACEHOLDER DESCRIPTION",
           creatorId: 1,
-        })
+        }, this.injector)
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
@@ -149,7 +149,8 @@ export class ShallowSitesService extends StandardApi<Site> {
           name: "PLACEHOLDER SITE",
           description: "PLACEHOLDER DESCRIPTION",
           creatorId: 1,
-        })
+        },
+        this.injector)
     );
   }
 }

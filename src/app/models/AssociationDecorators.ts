@@ -176,7 +176,6 @@ function createModelDecorator<M extends AbstractModel, S>(
     const service = injector.get(serviceToken.token);
     createRequest(service, identifier, parameters).subscribe(
       (model) => {
-        console.log({ service, model });
         updateCache(target, cachedModelKey, model);
       },
       () => updateCache(target, cachedModelKey, failureValue)
