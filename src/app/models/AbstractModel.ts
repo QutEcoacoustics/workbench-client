@@ -13,6 +13,7 @@ export abstract class AbstractModel {
 
   /**
    * Hidden meta symbol
+   * This stores the metadata associated with the model
    */
   private static metaKey = Symbol("meta");
 
@@ -111,8 +112,25 @@ export class UnresolvedModel extends AbstractModel {
     super({});
   }
 
+  public toString(): string {
+    return "UnresolvedModel";
+  }
+
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
+  }
+}
+
+export class SingletonUnresolvedModel {
+  private static readonly model = Object.freeze(new UnresolvedModel());
+  private static readonly models = [];
+
+  static get one(): UnresolvedModel {
+    return this.model;
+  }
+
+  static get many(): AbstractModel[] {
+    return this.models;
   }
 }
 

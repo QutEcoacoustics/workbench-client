@@ -2,7 +2,7 @@ import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
-import { AbstractModel, UnresolvedModel } from "./AbstractModel";
+import { AbstractModel, SingletonUnresolvedModel } from "./AbstractModel";
 
 /**
  * Creates an association between the ownerId and its user model
@@ -33,22 +33,6 @@ export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
 }
 
 /**
- * Associate models using child model service to filter by parent ID
- * @param serviceToken Injection token for API Service
- * @param modelIdentifier Property to read parent ID from
- * @param modelForeignKey Foreign key of child model
- * @param modelParameters Keys to match additional ids against
- */
-export function HasChildren<A extends AbstractModel, B extends AbstractModel>(
-  serviceToken: ServiceToken<ApiFilter<B, B[]>>,
-  modelIdentifier: keyof A = "id",
-  modelForeignKey: keyof B,
-  ...modelParameters: ReadonlyArray<keyof A>
-) {
-
-}
-
-/**
  * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read IDs from
@@ -69,7 +53,7 @@ export function HasMany<M extends AbstractModel>(
         { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
         ...params
       ),
-    []
+    SingletonUnresolvedModel.many
   );
 }
 
@@ -92,7 +76,7 @@ export function HasOne<M extends AbstractModel>(
     modelIdentifier,
     modelParameters,
     (service, id: Id, ...params: any[]) => service.show(id, ...params),
-    new UnresolvedModel()
+    SingletonUnresolvedModel.one
   );
 }
 
@@ -125,18 +109,10 @@ function createModelDecorator<M extends AbstractModel, S>(
     key: string,
     value: AbstractModel | AbstractModel[] | Subscription
   ) {
-    if (value instanceof Array && target[key] instanceof Array) {
-      target[key].push(...value);
-    } else if (value instanceof Object && target[key] instanceof Object) {
-      for (const property of Object.keys(value)) {
-        target[key][property] = value[property];
-      }
-    } else {
-      Object.defineProperty(target, key, {
-        value,
-        configurable: false,
-      });
-    }
+    Object.defineProperty(target, key, {
+      value,
+      configurable: false,
+    });
   }
 
   /**
@@ -191,9 +167,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     // Create service and request from API
     const service = injector.get(serviceToken.token);
     createRequest(service, identifier, parameters).subscribe(
-      (model) => {
-        updateCache(target, cachedModelKey, model);
-      },
+      (model) => updateCache(target, cachedModelKey, model),
       () => updateCache(target, cachedModelKey, failureValue)
     );
 
