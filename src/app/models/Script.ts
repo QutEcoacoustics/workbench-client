@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator } from "./AssociationDecorators";

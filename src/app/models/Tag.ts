@@ -1,5 +1,4 @@
 import { Injector } from "@angular/core";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";

@@ -15,7 +15,7 @@ import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { AdminAudioRecordingComponent } from "./detail.component";
+import { AdminAudioRecordingComponent } from "./details.component";
 
 describe("AdminAudioRecordingComponent", () => {
   let component: AdminAudioRecordingComponent;
@@ -47,6 +47,7 @@ describe("AdminAudioRecordingComponent", () => {
     const sitesApi = TestBed.inject(SHALLOW_SITE.token);
     component = fixture.componentInstance;
 
+    // Catch associated models
     spyOn(accountsApi, "show").and.callFake(() => {
       return new BehaviorSubject<User>(
         new User({ id: 1, userName: "custom username" })

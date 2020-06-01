@@ -9,7 +9,6 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Card } from "@shared/cards/cards.component";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
 import {

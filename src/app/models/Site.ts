@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
-import { Observable } from "rxjs";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,

@@ -33,10 +33,26 @@ export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
 }
 
 /**
+ * Associate models using child model service to filter by parent ID
+ * @param serviceToken Injection token for API Service
+ * @param modelIdentifier Property to read parent ID from
+ * @param modelForeignKey Foreign key of child model
+ * @param modelParameters Keys to match additional ids against
+ */
+export function HasChildren<A extends AbstractModel, B extends AbstractModel>(
+  serviceToken: ServiceToken<ApiFilter<B, B[]>>,
+  modelIdentifier: keyof A = "id",
+  modelForeignKey: keyof B,
+  ...modelParameters: ReadonlyArray<keyof A>
+) {
+
+}
+
+/**
  * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read IDs from
- * @param modelPrimaryKey Key to match ids against
+ * @param modelPrimaryKey Keys to match additional ids against
  */
 export function HasMany<M extends AbstractModel>(
   serviceToken: ServiceToken<ApiFilter<any, any[]>>,
@@ -61,7 +77,7 @@ export function HasMany<M extends AbstractModel>(
  * Associate model with ID
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read ID from
- * @param ids Additional IDs
+ * @param modelParameters Keys to match additional ids against
  */
 export function HasOne<M extends AbstractModel>(
   serviceToken: ServiceToken<ApiShow<any, any[], IdOr<AbstractModel>>>,

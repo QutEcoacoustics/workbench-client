@@ -5,7 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
-import { AdminAudioRecordingComponent } from "@component/admin/audio-recordings/detail/detail.component";
+import { AdminAudioRecordingComponent } from "@component/admin/audio-recordings/details/details.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";

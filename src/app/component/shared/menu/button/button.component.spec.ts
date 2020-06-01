@@ -36,7 +36,7 @@ describe("MenuButtonComponent", () => {
   it("should have icon", () => {
     component.id = "id";
     component.link = MenuAction({
-      action:() => {},
+      action: () => {},
       label: "home",
       icon: ["fas", "home"],
       tooltip: () => "custom tooltip"

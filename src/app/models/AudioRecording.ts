@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";

@@ -1,20 +1,10 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { Observable } from "rxjs";
-import {
-  DateTimeTimezone,
-  Description,
-  Id,
-  Param,
-} from "../interfaces/apiInterfaces";
+import { DateTimeTimezone, Description, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
-import {
-  BawDateTime,
-  BawDuration,
-  BawPersistAttr,
-} from "./AttributeDecorators";
+import { BawDateTime, BawDuration, BawPersistAttr } from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";

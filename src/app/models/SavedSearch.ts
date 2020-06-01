@@ -6,7 +6,6 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";

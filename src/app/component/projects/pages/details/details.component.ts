@@ -66,7 +66,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     if (!resolvedModels) {
       return;
     }
-    this.project = resolvedModels.project as Project;
-    this.sites = resolvedModels.sites as Site[];
+    this.project = resolvedModels[projectKey] as Project;
+    this.sites = resolvedModels[sitesKey] as Site[];
   }
 }
