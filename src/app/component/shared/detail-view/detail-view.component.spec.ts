@@ -52,7 +52,7 @@ describe("DetailViewComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  describe("details", () => {
+  describe("fields", () => {
     it("should handle missing fields", () => {
       fixture.detectChanges();
       expect(getFields().length).toBe(0);
@@ -150,9 +150,36 @@ describe("DetailViewComponent", () => {
       });
     });
 
-    xdescribe("nested fields", () => {
-      it("should handle single nested fields", () => {});
-      it("should handle multiple nested fields", () => {});
+    describe("nested fields", () => {
+      it("should handle single nested fields", () => {
+        expect(true).toBeFalsy();
+      });
+
+      it("should handle multiple nested fields", () => {
+        expect(true).toBeFalsy();
+      });
+    });
+
+    describe("abstract models", () => {
+      it("should handle abstract model", () => {
+        expect(true).toBeFalsy();
+      });
+
+      it("should handle hasOne associated model", () => {
+        expect(true).toBeFalsy();
+      });
+
+      it("should handle hasMany associated model", () => {
+        expect(true).toBeFalsy();
+      });
+
+      it("should handle hasOne unresolved associated model", () => {
+        expect(true).toBeFalsy();
+      });
+
+      it("should handle hasMany unresolved associated model", () => {
+        expect(true).toBeFalsy();
+      });
     });
   });
 

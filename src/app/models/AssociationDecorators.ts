@@ -134,16 +134,14 @@ function createModelDecorator<M extends AbstractModel, S>(
     const injector = target["injector"];
     if (!injector) {
       throw new Error(
-        target.toString() +
-          " does not have injector service. Tried to access " +
-          associationKey
+        `${target} does not have injector service. Tried to access ${associationKey}`
       );
     }
 
     // Get model identifying ID/s
     const identifier: Id | Ids = target[modelIdentifier] as any;
     if (identifier === undefined || identifier === null) {
-      console.warn(target.toString() + " is missing identifier: ", {
+      console.warn(`${target} is missing identifier: `, {
         target,
         associationKey,
         identifier,
@@ -155,7 +153,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     const parameters = modelParameters.map((param) => {
       const paramValue = target[param];
       if (paramValue === undefined || paramValue === null) {
-        console.warn(target.toString() + " is missing parameter: ", {
+        console.warn(`${target} is missing parameter: `, {
           target,
           associationKey,
           param,
@@ -168,7 +166,15 @@ function createModelDecorator<M extends AbstractModel, S>(
     const service = injector.get(serviceToken.token);
     createRequest(service, identifier, parameters).subscribe(
       (model) => updateCache(target, cachedModelKey, model),
-      () => updateCache(target, cachedModelKey, failureValue)
+      (error) => {
+        console.error(`${target} failed to load ${associationKey}.`, {
+          target,
+          associationKey,
+          identifier,
+          error,
+        });
+        updateCache(target, cachedModelKey, failureValue);
+      }
     );
 
     // Save request to cache so other requests are ignored
