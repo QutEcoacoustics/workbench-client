@@ -25,14 +25,16 @@ import {
   DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
-import { MockImmutableApiService } from "./mock/immutableApiMock.service";
-import { MockNonDestructibleApiService } from "./mock/nonDestructibleApiMock.service";
-import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
-import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
-import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
+import {
+  MockImmutableApiService,
+  MockNonDestructibleApiService,
+  MockReadAndCreateApiService,
+  MockReadAndUpdateApiService,
+  MockReadonlyApiService,
+  MockShowApiService,
+  MockStandardApiService,
+} from "./mock/apiMocks.service";
 import { MockShallowSitesService } from "./mock/shallowSitesMock.service";
-import { MockShowApiService } from "./mock/showApiMock.service";
-import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
   progressEventResolvers,
   ProgressEventsService,

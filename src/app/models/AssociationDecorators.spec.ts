@@ -2,11 +2,8 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { async, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
-import {
-  MOCK,
-  MockStandardApiService,
-} from "@baw-api/mock/standardApiMock.service";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { Subject } from "rxjs";
 import { testBawServices } from "../test/helpers/testbed";

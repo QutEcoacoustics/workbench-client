@@ -17,7 +17,6 @@ import {
   STUB_MODEL_BUILDER,
 } from "@baw-api/baw-api.service";
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
-import { MockShowApiService } from "@baw-api/mock/showApiMock.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import { AbstractModel } from "@models/AbstractModel";
@@ -25,6 +24,7 @@ import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
+import { MockShowApiService } from "./mock/apiMocks.service";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");

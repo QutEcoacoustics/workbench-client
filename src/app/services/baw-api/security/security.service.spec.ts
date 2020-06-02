@@ -8,6 +8,7 @@ import {
   ApiErrorDetails,
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
+import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
 import { BehaviorSubject, Subject } from "rxjs";
 import { testAppInitializer } from "src/app/test/helpers/testbed";
@@ -17,7 +18,6 @@ import {
   shouldNotFail,
   shouldNotSucceed,
 } from "../baw-api.service.spec";
-import { MockShowApiService } from "../mock/showApiMock.service";
 import { UserService } from "../user/user.service";
 import { LoginDetails, SecurityService } from "./security.service";
 
