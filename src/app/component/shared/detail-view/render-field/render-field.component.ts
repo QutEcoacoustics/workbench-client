@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AbstractModel, isResolvedModel } from "@models/AbstractModel";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -43,14 +43,14 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     <ng-template #hasChildren>
       <baw-render-field
         *ngFor="let child of children"
-        [field]="child"
+        [value]="child"
       ></baw-render-field>
     </ng-template>
   `,
 })
 export class RenderFieldComponent extends WithUnsubscribe()
   implements OnChanges {
-  @Input() field: ModelView;
+  @Input() value: ModelView;
   public display: string | number | boolean;
   public model: AbstractModel;
   public children: ModelView[];
@@ -65,65 +65,65 @@ export class RenderFieldComponent extends WithUnsubscribe()
   }
 
   ngOnChanges(): void {
-    this.humanize(this.field);
+    this.humanize(this.value);
   }
 
-  private humanize(field: ModelView) {
-    if (field === null || field === undefined) {
+  private humanize(value: ModelView) {
+    if (value === null || value === undefined) {
       this.display = this.noValueText;
-    } else if (field instanceof DateTime) {
-      this.display = humanizeDateTime(field);
-    } else if (field instanceof Duration) {
-      this.display = `${field.toISO()} (${toRelative(field)})`;
-    } else if (field instanceof Array) {
-      this.humanizeArray(field);
-    } else if (field instanceof Blob) {
-      this.humanizeBlob(field);
-    } else if (field instanceof Observable) {
-      this.humanizeObservable(field);
-    } else if (field instanceof AbstractModel) {
-      this.humanizeAbstractModel(field);
-    } else if (typeof field === "object") {
+    } else if (value instanceof DateTime) {
+      this.display = humanizeDateTime(value);
+    } else if (value instanceof Duration) {
+      this.display = `${value.toISO()} (${toRelative(value)})`;
+    } else if (value instanceof Array) {
+      this.humanizeArray(value);
+    } else if (value instanceof Blob) {
+      this.humanizeBlob(value);
+    } else if (value instanceof Observable) {
+      this.humanizeObservable(value);
+    } else if (value instanceof AbstractModel) {
+      this.humanizeAbstractModel(value);
+    } else if (typeof value === "object") {
       // TODO Implement optional treeview
-      this.humanizeObject(field);
-    } else if (typeof field === "boolean") {
+      this.humanizeObject(value);
+    } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;
-      this.display = field;
-    } else if (typeof field === "string") {
-      this.humanizeString(field);
+      this.display = value;
+    } else if (typeof value === "string") {
+      this.humanizeString(value);
     } else {
-      this.display = field.toString();
+      this.display = value.toString();
     }
   }
 
   /**
    * Convert abstract model to human readable output
-   * @param field Display input
+   * @param value Display input
    */
-  private humanizeAbstractModel(field: AbstractModel) {
-    if (isResolvedModel(field)) {
+  private humanizeAbstractModel(value: AbstractModel) {
+    if (value instanceof UnresolvedModel) {
+      this.setLoading();
+    } else {
       this.styling = FieldStyling.Model;
       this.display = "";
-      this.model = field;
-    } else {
-      this.setLoading();
+      this.model = value;
     }
   }
 
   /**
    * Convert string to human readable output. Currently this only checks if the
    * string is an image url.
-   * @param field Display input
+   * @param value Display input
    */
-  private humanizeString(field: string) {
-    this.display = field;
+  private humanizeString(value: string) {
+    this.display = value;
 
     this.isImage(
-      field,
+      value,
       () => {
         // String is image URL, display image
         this.styling = FieldStyling.Image;
-        this.display = field;
+        this.display = value;
         this.ref.detectChanges();
       },
       () => {}
@@ -132,14 +132,14 @@ export class RenderFieldComponent extends WithUnsubscribe()
 
   /**
    * Convert object to human readable output
-   * @param field Display input
+   * @param value Display input
    */
-  private humanizeObject(field: object) {
+  private humanizeObject(value: object) {
     this.setLoading();
 
     try {
       this.styling = FieldStyling.Code;
-      this.display = JSON.stringify(field);
+      this.display = JSON.stringify(value);
     } catch (err) {
       this.display = this.errorText;
     }
@@ -147,9 +147,9 @@ export class RenderFieldComponent extends WithUnsubscribe()
 
   /**
    * Convert blob to human readable output
-   * @param field Display input
+   * @param value Display input
    */
-  private humanizeBlob(field: Blob) {
+  private humanizeBlob(value: Blob) {
     this.setLoading();
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
@@ -161,18 +161,18 @@ export class RenderFieldComponent extends WithUnsubscribe()
       this.display = this.errorText;
       reader.abort();
     };
-    reader.readAsText(field);
+    reader.readAsText(value);
   }
 
   /**
    * Convert observable to human readable output
-   * @param field Display input
+   * @param value Display input
    */
   private humanizeObservable(
-    field: Observable<AbstractModel | AbstractModel[]>
+    value: Observable<AbstractModel | AbstractModel[]>
   ) {
     this.setLoading();
-    field.pipe(takeUntil(this.unsubscribe)).subscribe(
+    value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
         if (!models) {
           this.display = this.noValueText;
@@ -190,11 +190,11 @@ export class RenderFieldComponent extends WithUnsubscribe()
 
   /**
    * Convert array to human readable output
-   * @param field Display input
+   * @param value Display input
    */
-  private humanizeArray(field: ModelView[]) {
-    if (field.length > 0) {
-      this.children = field;
+  private humanizeArray(value: ModelView[]) {
+    if (value.length > 0) {
+      this.children = value;
     } else {
       this.display = this.noValueText;
     }

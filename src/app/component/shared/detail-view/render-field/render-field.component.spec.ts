@@ -57,7 +57,7 @@ describe("RenderFieldComponent", () => {
 
   describe("undefined input", () => {
     it("should handle undefined value", () => {
-      component.field = undefined;
+      component.value = undefined;
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -65,7 +65,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display undefined value", () => {
-      component.field = undefined;
+      component.value = undefined;
       fixture.detectChanges();
 
       const value = getNormalValues()[0];
@@ -83,7 +83,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle string value", () => {
-      component.field = "testing";
+      component.value = "testing";
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -91,7 +91,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display string value", () => {
-      component.field = "testing";
+      component.value = "testing";
       fixture.detectChanges();
 
       const value = getNormalValues()[0];
@@ -101,7 +101,7 @@ describe("RenderFieldComponent", () => {
 
   describe("number input", () => {
     it("should handle number value", () => {
-      component.field = 1;
+      component.value = 1;
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -109,7 +109,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display zero number value", () => {
-      component.field = 0;
+      component.value = 0;
       fixture.detectChanges();
 
       const value = getNormalValues()[0];
@@ -117,7 +117,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display number value", () => {
-      component.field = 1;
+      component.value = 1;
       fixture.detectChanges();
 
       const value = getNormalValues()[0];
@@ -127,7 +127,7 @@ describe("RenderFieldComponent", () => {
 
   describe("checkbox input", () => {
     it("should handle true input", () => {
-      component.field = true;
+      component.value = true;
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -135,7 +135,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display true input", () => {
-      component.field = true;
+      component.value = true;
       fixture.detectChanges();
 
       const value = getCheckboxValues()[0].querySelector("input");
@@ -144,7 +144,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle false input", () => {
-      component.field = false;
+      component.value = false;
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -152,7 +152,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display false input", () => {
-      component.field = false;
+      component.value = false;
       fixture.detectChanges();
 
       const value = getCheckboxValues()[0].querySelector("input");
@@ -163,7 +163,7 @@ describe("RenderFieldComponent", () => {
 
   describe("object input", () => {
     it("should handle object value", () => {
-      component.field = { testing: 42 };
+      component.value = { testing: 42 };
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -171,7 +171,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display empty object value", () => {
-      component.field = {};
+      component.value = {};
       fixture.detectChanges();
 
       const value = getCodeValues()[0];
@@ -179,7 +179,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display object value", () => {
-      component.field = { value1: 42, value2: "test" };
+      component.value = { value1: 42, value2: "test" };
       fixture.detectChanges();
 
       const value = getCodeValues()[0];
@@ -191,7 +191,7 @@ describe("RenderFieldComponent", () => {
       const cyclicObject = { a: [] };
       cyclicObject.a.push(cyclicObject);
 
-      component.field = cyclicObject;
+      component.value = cyclicObject;
       fixture.detectChanges();
 
       const value = getCodeValues()[0];
@@ -207,7 +207,7 @@ describe("RenderFieldComponent", () => {
       spyOn(dateTime, "toRelative").and.callFake(() => "toRelative");
       spyOn(dateTime, "toISO").and.callFake(() => "toISO");
 
-      component.field = dateTime;
+      component.value = dateTime;
       fixture.detectChanges();
     });
 
@@ -235,7 +235,7 @@ describe("RenderFieldComponent", () => {
 
     beforeEach(() => {
       duration = Duration.fromObject({ hours: 1, minutes: 10, seconds: 50 });
-      component.field = duration;
+      component.value = duration;
       fixture.detectChanges();
     });
 
@@ -254,7 +254,7 @@ describe("RenderFieldComponent", () => {
 
   describe("array input", () => {
     it("should handle array values", () => {
-      component.field = ["test 1", 2, { testing: "value" }];
+      component.value = ["test 1", 2, { testing: "value" }];
       fixture.detectChanges();
 
       expect(getValues().length).toBe(3);
@@ -263,7 +263,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle empty array", () => {
-      component.field = [];
+      component.value = [];
       fixture.detectChanges();
 
       const values = getValues();
@@ -272,7 +272,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display array values", () => {
-      component.field = ["test 1", 2, { testing: "value" }];
+      component.value = ["test 1", 2, { testing: "value" }];
       fixture.detectChanges();
 
       const values = getValues();
@@ -304,7 +304,7 @@ describe("RenderFieldComponent", () => {
 
       spyOn(window as any, "FileReader").and.returnValue(spy);
       const blob = new Blob([text], { type: "text/plain" });
-      component.field = blob;
+      component.value = blob;
       fixture.detectChanges();
     }
 
@@ -360,21 +360,21 @@ describe("RenderFieldComponent", () => {
     }
 
     it("should handle abstract model", () => {
-      component.field = createModel({ id: 1 });
+      component.value = createModel({ id: 1 });
       fixture.detectChanges();
       expect(getValues().length).toBe(1);
       expect(getModelValues().length).toBe(1);
     });
 
     it("should display default model toString()", () => {
-      component.field = createModel({ id: 1 });
+      component.value = createModel({ id: 1 });
       fixture.detectChanges();
       const value = getModelValues()[0];
       expect(value.innerText.trim()).toBe("MockModel: 1");
     });
 
     it("should display custom model toString()", () => {
-      component.field = createModel(
+      component.value = createModel(
         { id: 1, name: "custom model" },
         undefined,
         (model) => model.name
@@ -385,7 +385,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should create model link", () => {
-      component.field = createModel({ id: 1 }, "/broken_link");
+      component.value = createModel({ id: 1 }, "/broken_link");
       fixture.detectChanges();
       const value = getModelValues()[0];
       assertRoute(value, "/broken_link");
@@ -414,28 +414,28 @@ describe("RenderFieldComponent", () => {
     }
 
     it("should display loading", () => {
-      component.field = createObservable(false);
+      component.value = createObservable(false);
       fixture.detectChanges();
       const value = getLoadingElements()[0];
       expect(value.innerText.trim()).toBe("(loading)");
     });
 
     it("should hide loading when observable returns", () => {
-      component.field = createObservable(true, "value");
+      component.value = createObservable(true, "value");
       fixture.detectChanges();
       const value = getLoadingElements()[0];
       expect(value.innerText.trim()).not.toBe("(loading)");
     });
 
     it("should hide loading when observable errors", () => {
-      component.field = createObservable(true, undefined, { error: true });
+      component.value = createObservable(true, undefined, { error: true });
       fixture.detectChanges();
       const value = getLoadingElements()[0];
       expect(value.innerText.trim()).not.toBe("(loading)");
     });
 
     it("should handle single model value", () => {
-      component.field = createObservable(true, "value");
+      component.value = createObservable(true, "value");
       fixture.detectChanges();
       const values = getNormalValues();
       expect(values.length).toBe(1);
@@ -444,7 +444,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle multiple model values", () => {
-      component.field = createObservable(true, [
+      component.value = createObservable(true, [
         "test 1",
         2,
         { testing: "value" },
@@ -458,7 +458,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display error output", () => {
-      component.field = createObservable(true, undefined, { error: true });
+      component.value = createObservable(true, undefined, { error: true });
       fixture.detectChanges();
       const value = getLoadingElements()[0];
       expect(value.innerText.trim()).toBe("(error)");
@@ -474,7 +474,7 @@ describe("RenderFieldComponent", () => {
           onload();
         });
 
-      component.field = "/assets/test/test.png";
+      component.value = "/assets/test/test.png";
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -489,7 +489,7 @@ describe("RenderFieldComponent", () => {
           onload();
         });
 
-      component.field = "https://staging.ecosounds.org/test.png";
+      component.value = "https://staging.ecosounds.org/test.png";
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -503,7 +503,7 @@ describe("RenderFieldComponent", () => {
           onload();
         });
 
-      component.field = "/assets/test/test.png";
+      component.value = "/assets/test/test.png";
       fixture.detectChanges();
 
       const value = getImageValues()[0];

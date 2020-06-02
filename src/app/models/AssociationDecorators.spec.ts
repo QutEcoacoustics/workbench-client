@@ -10,7 +10,7 @@ import {
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { testBawServices } from "../test/helpers/testbed";
-import { AbstractModel, SingletonUnresolvedModel } from "./AbstractModel";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { HasMany, HasOne } from "./AssociationDecorators";
 
 describe("Association Decorators", () => {
@@ -93,7 +93,7 @@ describe("Association Decorators", () => {
 
     it("should handle unresolved", () => {
       const model = createModel({ ids: [1] }, injector);
-      assertModel(model, "childModels", SingletonUnresolvedModel.many);
+      assertModel(model, "childModels", UnresolvedModel.many);
     });
 
     [
@@ -110,6 +110,10 @@ describe("Association Decorators", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.empty }, injector);
           assertModel(model, "childModels", []);
+        });
+
+        it("should handle multiple responses", () => {
+          expect(true).toBeFalse();
         });
 
         it("should handle single modelIdentifier", () => {
@@ -266,7 +270,7 @@ describe("Association Decorators", () => {
 
     it("should handle unresolved", () => {
       const model = createModel({ id: 1 }, injector);
-      assertModel(model, "childModel", SingletonUnresolvedModel.one);
+      assertModel(model, "childModel", UnresolvedModel.one);
     });
 
     it("should handle response", () => {

@@ -2,7 +2,7 @@ import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
-import { AbstractModel, SingletonUnresolvedModel } from "./AbstractModel";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 
 /**
  * Creates an association between the ownerId and its user model
@@ -53,7 +53,7 @@ export function HasMany<M extends AbstractModel>(
         { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
         ...params
       ),
-    SingletonUnresolvedModel.many
+    UnresolvedModel.many
   );
 }
 
@@ -76,7 +76,7 @@ export function HasOne<M extends AbstractModel>(
     modelIdentifier,
     modelParameters,
     (service, id: Id, ...params: any[]) => service.show(id, ...params),
-    SingletonUnresolvedModel.one
+    UnresolvedModel.one
   );
 }
 
@@ -99,17 +99,21 @@ function createModelDecorator<M extends AbstractModel, S>(
   failureValue: any = null
 ) {
   /**
-   * Update cached model
+   * Update backing model
    * @param target Target Model
-   * @param key Cache Key
+   * @param backingFieldKey Backing Field Key
    * @param value Model
    */
-  function updateCache(
+  function updateBackingField(
     target: M,
-    key: string,
+    backingFieldKey: string,
     value: AbstractModel | AbstractModel[] | Subscription
   ) {
-    Object.defineProperty(target, key, {
+    if (target[backingFieldKey] instanceof Array && value instanceof Array) {
+      value = target[backingFieldKey].concat(value);
+    }
+
+    Object.defineProperty(target, backingFieldKey, {
       value,
       configurable: false,
     });
@@ -124,10 +128,10 @@ function createModelDecorator<M extends AbstractModel, S>(
     target: M,
     associationKey: string
   ): null | AbstractModel | AbstractModel[] {
-    // Check for any cached models
-    const cachedModelKey = "_" + associationKey;
-    if (target.hasOwnProperty(cachedModelKey)) {
-      return target[cachedModelKey];
+    // Check for any backing models
+    const backingFieldKey = "_" + associationKey;
+    if (target.hasOwnProperty(backingFieldKey)) {
+      return target[backingFieldKey];
     }
 
     // Get Angular Injector Service
@@ -165,7 +169,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     // Create service and request from API
     const service = injector.get(serviceToken.token);
     createRequest(service, identifier, parameters).subscribe(
-      (model) => updateCache(target, cachedModelKey, model),
+      (model) => updateBackingField(target, backingFieldKey, model),
       (error) => {
         console.error(`${target} failed to load ${associationKey}.`, {
           target,
@@ -173,12 +177,12 @@ function createModelDecorator<M extends AbstractModel, S>(
           identifier,
           error,
         });
-        updateCache(target, cachedModelKey, failureValue);
+        updateBackingField(target, backingFieldKey, failureValue);
       }
     );
 
     // Save request to cache so other requests are ignored
-    updateCache(target, cachedModelKey, unresolvedValue);
+    updateBackingField(target, backingFieldKey, unresolvedValue);
     return unresolvedValue;
   }
 

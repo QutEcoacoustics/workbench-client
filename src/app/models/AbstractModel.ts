@@ -35,11 +35,6 @@ export abstract class AbstractModel {
   public readonly kind: string;
 
   /**
-   * Is model resolved
-   */
-  public readonly resolved: boolean = true;
-
-  /**
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.
@@ -105,8 +100,17 @@ export abstract class AbstractModel {
 }
 
 export class UnresolvedModel extends AbstractModel {
-  public readonly resolved = false;
   public readonly kind = "UnresolvedModel";
+  private static readonly model = Object.freeze(new UnresolvedModel());
+  private static readonly models = [];
+
+  static get one(): UnresolvedModel {
+    return this.model;
+  }
+
+  static get many(): UnresolvedModel[] {
+    return this.models;
+  }
 
   constructor() {
     super({});
@@ -119,23 +123,4 @@ export class UnresolvedModel extends AbstractModel {
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-}
-
-export class SingletonUnresolvedModel {
-  private static readonly model = Object.freeze(new UnresolvedModel());
-  private static readonly models = [];
-
-  static get one(): UnresolvedModel {
-    return this.model;
-  }
-
-  static get many(): AbstractModel[] {
-    return this.models;
-  }
-}
-
-export function isResolvedModel(
-  model: AbstractModel | UnresolvedModel
-): model is UnresolvedModel {
-  return model.resolved;
 }

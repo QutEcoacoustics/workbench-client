@@ -11,7 +11,7 @@ import { AbstractModel } from "src/app/models/AbstractModel";
       </dt>
       <baw-render-field
         class="col-sm-9"
-        [field]="model[field.key]"
+        [value]="model[field.key]"
       ></baw-render-field>
     </div>
   `,
