@@ -100,9 +100,9 @@ export abstract class AbstractModel {
 }
 
 export class UnresolvedModel extends AbstractModel {
-  public readonly kind = "UnresolvedModel";
   private static readonly model = Object.freeze(new UnresolvedModel());
   private static readonly models = [];
+  public readonly kind = "UnresolvedModel";
 
   static get one(): UnresolvedModel {
     return this.model;

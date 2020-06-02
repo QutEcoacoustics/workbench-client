@@ -8,7 +8,7 @@ import {
   MockStandardApiService,
 } from "@baw-api/mock/standardApiMock.service";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import { testBawServices } from "../test/helpers/testbed";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { HasMany, HasOne } from "./AssociationDecorators";
@@ -17,12 +17,18 @@ describe("Association Decorators", () => {
   let injector: Injector;
   let api: MockStandardApiService;
 
+  /**
+   * ! Uses fakeAsync functionality.
+   * Assert model matches output. Assumes observable will take 50 milliseconds to return
+   */
   function assertModel(
     model: any,
     key: string,
     output: AbstractModel | AbstractModel[]
   ) {
+    // tslint:disable-next-line no-unused-expression
     model[key];
+    tick(100);
     expect(model[key]).toEqual(output);
   }
 
@@ -76,25 +82,27 @@ describe("Association Decorators", () => {
       error?: ApiErrorDetails
     ) {
       spyOn(api, "filter").and.callFake(() => {
-        if (!error) {
-          return new BehaviorSubject<ChildModel[]>(models);
-        } else {
-          const subject = new Subject<ChildModel[]>();
-          subject.error(error);
-          return subject;
-        }
+        const subject = new Subject<ChildModel[]>();
+        setTimeout(() => {
+          if (error) {
+            subject.error(error);
+          } else {
+            subject.next(models);
+          }
+        }, 50);
+        return subject;
       });
     }
 
-    it("should handle undefined modelIdentifier", () => {
+    it("should handle undefined modelIdentifier", fakeAsync(() => {
       const model = createModel({ ids: undefined }, injector);
       assertModel(model, "childModels", []);
-    });
+    }));
 
-    it("should handle unresolved", () => {
+    it("should handle unresolved", fakeAsync(() => {
       const model = createModel({ ids: [1] }, injector);
       assertModel(model, "childModels", UnresolvedModel.many);
-    });
+    }));
 
     [
       {
@@ -106,23 +114,36 @@ describe("Association Decorators", () => {
       { type: "Array", empty: [], single: [1], multiple: [1, 2] },
     ].forEach((idsType) => {
       describe(idsType.type, () => {
-        it("should handle empty", () => {
+        it("should handle empty", fakeAsync(() => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.empty }, injector);
           assertModel(model, "childModels", []);
-        });
+        }));
 
-        it("should handle multiple responses", () => {
-          expect(true).toBeFalse();
-        });
+        it("should handle multiple responses", fakeAsync(() => {
+          const response = [
+            new ChildModel({ id: 1 }),
+            new ChildModel({ id: 2 }),
+          ];
+          spyOn(api, "filter").and.callFake(() => {
+            const subject = new Subject<ChildModel[]>();
+            setTimeout(() => {
+              subject.next([response[0]]);
+              subject.next([response[1]]);
+            }, 50);
+            return subject;
+          });
+          const model = createModel({ ids: idsType.multiple }, injector);
+          assertModel(model, "childModels", response);
+        }));
 
-        it("should handle single modelIdentifier", () => {
+        it("should handle single modelIdentifier", fakeAsync(() => {
           interceptApiRequest([new ChildModel({ id: 1 })]);
           const model = createModel({ ids: idsType.single }, injector);
           assertModel(model, "childModels", [new ChildModel({ id: 1 })]);
-        });
+        }));
 
-        it("should handle multiple modelIdentifiers", () => {
+        it("should handle multiple modelIdentifiers", fakeAsync(() => {
           const response = [
             new ChildModel({ id: 1 }),
             new ChildModel({ id: 2 }),
@@ -130,7 +151,7 @@ describe("Association Decorators", () => {
           interceptApiRequest(response);
           const model = createModel({ ids: idsType.multiple }, injector);
           assertModel(model, "childModels", response);
-        });
+        }));
 
         it("should handle single parameter", () => {
           interceptApiRequest([]);
@@ -140,6 +161,7 @@ describe("Association Decorators", () => {
             undefined,
             "param1"
           );
+          // tslint:disable-next-line no-unused-expression
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             {
@@ -158,6 +180,7 @@ describe("Association Decorators", () => {
             "param1",
             "param2"
           );
+          // tslint:disable-next-line no-unused-expression
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             {
@@ -167,19 +190,19 @@ describe("Association Decorators", () => {
           );
         });
 
-        it("should handle error", () => {
+        it("should handle error", fakeAsync(() => {
           interceptApiRequest(undefined, {
             status: 401,
             message: "Unauthorized",
           });
           const model = createModel({ ids: idsType.empty }, injector);
-          model.childModels;
-          assertModel(model, "childModels", null);
-        });
+          assertModel(model, "childModels", []);
+        }));
 
         it("should handle default primary key", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.multiple }, injector);
+          // tslint:disable-next-line no-unused-expression
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             {
@@ -196,6 +219,7 @@ describe("Association Decorators", () => {
             injector,
             "customKey"
           );
+          // tslint:disable-next-line no-unused-expression
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             {
@@ -210,16 +234,17 @@ describe("Association Decorators", () => {
             const subject = new Subject<ChildModel[]>();
             setTimeout(() => {
               subject.next([new ChildModel({ id: 1 })]);
-            }, 100);
+            }, 50);
             return subject;
           });
 
           const model = createModel({ ids: idsType.single }, injector);
           for (let i = 0; i < 5; i++) {
-            assertModel(model, "childModels", [new ChildModel({ id: 1 })]);
+            // tslint:disable-next-line no-unused-expression
+            model.childModels;
           }
 
-          tick(100);
+          assertModel(model, "childModels", [new ChildModel({ id: 1 })]);
           expect(api.filter).toHaveBeenCalledTimes(1);
         }));
       });
@@ -237,7 +262,7 @@ describe("Association Decorators", () => {
         public readonly param1: Id;
         public readonly param2: Id;
         @HasOne<MockModel>(MOCK, "id", ...(modelParameters as any))
-        public readonly childModel: Observable<ChildModel>;
+        public readonly childModel: ChildModel;
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
@@ -253,35 +278,38 @@ describe("Association Decorators", () => {
 
     function interceptApiRequest(model?: ChildModel, error?: ApiErrorDetails) {
       spyOn(api, "show").and.callFake(() => {
-        if (!error) {
-          return new BehaviorSubject<ChildModel>(model);
-        } else {
-          const subject = new Subject<ChildModel>();
-          subject.error(error);
-          return subject;
-        }
+        const subject = new Subject<ChildModel>();
+        setTimeout(() => {
+          if (error) {
+            subject.error(error);
+          } else {
+            subject.next(model);
+          }
+        }, 50);
+        return subject;
       });
     }
 
-    it("should handle undefined modelIdentifier", () => {
+    it("should handle undefined modelIdentifier", fakeAsync(() => {
       const model = createModel({ id: undefined }, injector);
       assertModel(model, "childModel", null);
-    });
+    }));
 
     it("should handle unresolved", () => {
       const model = createModel({ id: 1 }, injector);
-      assertModel(model, "childModel", UnresolvedModel.one);
+      expect(model.childModel as AbstractModel).toEqual(UnresolvedModel.one);
     });
 
-    it("should handle response", () => {
+    it("should handle response", fakeAsync(() => {
       interceptApiRequest(new ChildModel({ id: 1 }));
       const model = createModel({ id: 1 }, injector);
       assertModel(model, "childModel", new ChildModel({ id: 1 }));
-    });
+    }));
 
     it("should handle single parameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
       const model = createModel({ id: 1, param1: 5 }, injector, "param1");
+      // tslint:disable-next-line no-unused-expression
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, [5]);
     });
@@ -294,6 +322,7 @@ describe("Association Decorators", () => {
         "param1",
         "param2"
       );
+      // tslint:disable-next-line no-unused-expression
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, [5, 10]);
     });
@@ -306,35 +335,38 @@ describe("Association Decorators", () => {
         "param1",
         "param2"
       );
+      // tslint:disable-next-line no-unused-expression
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, [5, undefined]);
     });
 
-    it("should handle error", () => {
+    it("should handle error", fakeAsync(() => {
       interceptApiRequest(undefined, {
         status: 401,
         message: "Unauthorized",
       });
       const model = createModel({ id: 1 }, injector);
+      // tslint:disable-next-line no-unused-expression
       model.childModel;
       assertModel(model, "childModel", null);
-    });
+    }));
 
     it("should load cached data", fakeAsync(() => {
       spyOn(api, "show").and.callFake(() => {
         const subject = new Subject<ChildModel>();
         setTimeout(() => {
           subject.next(new ChildModel({ id: 1 }));
-        }, 100);
+        }, 50);
         return subject;
       });
 
       const model = createModel({ id: 1 }, injector);
       for (let i = 0; i < 5; i++) {
-        assertModel(model, "childModel", new ChildModel({ id: 1 }));
+        // tslint:disable-next-line no-unused-expression
+        model.childModel;
       }
 
-      tick(100);
+      assertModel(model, "childModel", new ChildModel({ id: 1 }));
       expect(api.show).toHaveBeenCalledTimes(1);
     }));
   });

@@ -53,7 +53,8 @@ export function HasMany<M extends AbstractModel>(
         { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
         ...params
       ),
-    UnresolvedModel.many
+    UnresolvedModel.many,
+    []
   );
 }
 
@@ -76,7 +77,8 @@ export function HasOne<M extends AbstractModel>(
     modelIdentifier,
     modelParameters,
     (service, id: Id, ...params: any[]) => service.show(id, ...params),
-    UnresolvedModel.one
+    UnresolvedModel.one,
+    null
   );
 }
 
@@ -84,7 +86,10 @@ export function HasOne<M extends AbstractModel>(
  * Insert a getter function into the model
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to extract IDs from
+ * @param modelParameters Additional IDs/parameters for filter request
  * @param createRequest Create API Request
+ * @param unresolvedValue Value to return whilst output is unresolved
+ * @param failureValue Value to represent a failure to retrieve the model/s
  */
 function createModelDecorator<M extends AbstractModel, S>(
   serviceToken: ServiceToken<S>,
@@ -96,7 +101,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     ...params: any[]
   ) => Observable<AbstractModel | AbstractModel[]>,
   unresolvedValue: any,
-  failureValue: any = null
+  failureValue: any
 ) {
   /**
    * Update backing model
@@ -153,7 +158,7 @@ function createModelDecorator<M extends AbstractModel, S>(
       return failureValue;
     }
 
-    // Get model parameters
+    // Map through model parameters and extract values
     const parameters = modelParameters.map((param) => {
       const paramValue = target[param];
       if (paramValue === undefined || paramValue === null) {
