@@ -1,5 +1,10 @@
 import { Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
@@ -12,11 +17,11 @@ import { SharedModule } from "@shared/shared.module";
 import { assertDetailView } from "@test/helpers/detail-view";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
-import { BehaviorSubject } from "rxjs";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptComponent } from "./details.component";
 
-describe("AdminScriptComponent", () => {
+describe("ScriptComponent", () => {
   let component: AdminScriptComponent;
   let fixture: ComponentFixture<AdminScriptComponent>;
   let injector: Injector;
@@ -43,17 +48,17 @@ describe("AdminScriptComponent", () => {
     component = fixture.componentInstance;
 
     spyOn(accountsApi, "show").and.callFake(() => {
-      return new BehaviorSubject<User>(
-        new User({ id: 1, userName: "custom username" })
-      );
+      const subject = new Subject<User>();
+      setTimeout(() => {
+        subject.next(new User({ id: 1, userName: "custom username" }));
+      }, 50);
+      return subject;
     });
 
     // Update model to contain injector
     if (model) {
       model["injector"] = injector;
     }
-
-    fixture.detectChanges();
   }
 
   it("should create", () => {
@@ -62,6 +67,7 @@ describe("AdminScriptComponent", () => {
         id: 1,
       })
     );
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
@@ -70,6 +76,7 @@ describe("AdminScriptComponent", () => {
       status: 401,
       message: "Unauthorized",
     } as ApiErrorDetails);
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
@@ -78,7 +85,7 @@ describe("AdminScriptComponent", () => {
       setZone: true,
     });
 
-    beforeEach(function () {
+    beforeEach(fakeAsync(function () {
       const model = new Script({
         id: 1,
         name: "custom script",
@@ -96,8 +103,11 @@ describe("AdminScriptComponent", () => {
       });
 
       configureTestingModule(model);
+      fixture.detectChanges();
+      tick(100);
+      fixture.detectChanges();
       this.fixture = fixture;
-    });
+    }));
 
     assertDetailView("Script Id", "id", "1");
     assertDetailView("Name", "name", "custom script");
