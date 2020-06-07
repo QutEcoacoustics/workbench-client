@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+} from "@angular/core";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
@@ -12,17 +18,18 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     <ng-container *ngIf="!children; else hasChildren">
       <!-- Display plain text -->
       <dl *ngIf="styling === FieldStyling.Plain">
-        <p class="m-0">{{ display }}</p>
+        <p id="plain" class="m-0">{{ display }}</p>
       </dl>
 
       <!-- Display code/objects -->
       <dl *ngIf="styling === FieldStyling.Code">
-        <pre class="m-0">{{ display }}</pre>
+        <pre id="code" class="m-0">{{ display }}</pre>
       </dl>
 
       <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
+          id="checkbox"
           class="m-0"
           [checked]="display"
           [disabled]="true"
@@ -32,16 +39,21 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 
       <!-- Display AbstractModel -->
       <dl *ngIf="styling === FieldStyling.Model">
-        <a [routerLink]="model.viewUrl">{{ model }}</a>
+        <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
       </dl>
 
       <!-- Display Image -->
       <dl *ngIf="styling === FieldStyling.Image">
-        <img style="max-width: 400px; max-height: 400px" [src]="display" />
+        <img
+          id="image"
+          style="max-width: 400px; max-height: 400px"
+          [src]="display"
+        />
       </dl>
     </ng-container>
     <ng-template #hasChildren>
       <baw-render-field
+        id="children"
         *ngFor="let child of children"
         [value]="child"
       ></baw-render-field>
@@ -49,19 +61,23 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
   `,
 })
 export class RenderFieldComponent extends WithUnsubscribe()
-  implements OnChanges {
+  implements OnInit, OnChanges {
   @Input() value: ModelView;
-  public display: string | number | boolean;
-  public model: AbstractModel;
   public children: ModelView[];
-  public styling: FieldStyling = FieldStyling.Plain;
+  public display: string | number | boolean;
   public FieldStyling = FieldStyling;
+  public model: AbstractModel;
+  public styling: FieldStyling = FieldStyling.Plain;
   private errorText = "(error)";
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
   constructor(private ref: ChangeDetectorRef) {
     super();
+  }
+
+  ngOnInit(): void {
+    this.ngOnChanges();
   }
 
   ngOnChanges(): void {

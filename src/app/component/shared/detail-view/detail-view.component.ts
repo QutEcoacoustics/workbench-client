@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { AbstractModel } from "src/app/models/AbstractModel";
 
@@ -23,12 +23,16 @@ import { AbstractModel } from "src/app/models/AbstractModel";
     `,
   ],
 })
-export class DetailViewComponent implements OnChanges {
+export class DetailViewComponent implements OnInit, OnChanges {
   @Input() fields: FormlyFieldConfig[];
   @Input() model: AbstractModel;
   public sanitizedFields: FormlyFieldConfig[];
 
   constructor() {}
+
+  ngOnInit(): void {
+    this.ngOnChanges();
+  }
 
   ngOnChanges(): void {
     this.sanitizedFields = [];

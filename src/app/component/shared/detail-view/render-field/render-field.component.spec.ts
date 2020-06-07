@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { assertRoute } from "@test/helpers/html";
 import { DateTime, Duration } from "luxon";
@@ -359,6 +359,22 @@ describe("RenderFieldComponent", () => {
       return new MockModel(data);
     }
 
+    it("should handle unresolved model", () => {
+      component.value = UnresolvedModel.one;
+      fixture.detectChanges();
+
+      expect(getValues().length).toBe(1);
+      expect(getNormalValues().length).toBe(1);
+    });
+
+    it("should display unresolved model", () => {
+      component.value = UnresolvedModel.one;
+      fixture.detectChanges();
+
+      const value = getNormalValues()[0];
+      expect(value.innerText.trim()).toBe("(loading)");
+    });
+
     it("should handle abstract model", () => {
       component.value = createModel({ id: 1 });
       fixture.detectChanges();
@@ -389,10 +405,6 @@ describe("RenderFieldComponent", () => {
       fixture.detectChanges();
       const value = getModelValues()[0];
       assertRoute(value, "/broken_link");
-    });
-
-    it("should handle unresolved model", () => {
-      expect(false).toBeTruthy();
     });
   });
 

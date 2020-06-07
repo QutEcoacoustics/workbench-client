@@ -1,11 +1,31 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Injector } from "@angular/core";
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
+import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
+import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
+import { HasMany, HasOne } from "@models/AssociationDecorators";
+import { testBawServices } from "@test/helpers/testbed";
+import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 class MockModel extends AbstractModel {
-  constructor(opts: any) {
-    super(opts);
+  public id: Id;
+  @HasOne<MockModel>(MOCK, "id")
+  public readonly childModel: AssociatedModel;
+  @HasMany<MockModel>(MOCK, "id")
+  public readonly childModels: AssociatedModel[];
+
+  constructor(opts: any, injector?: Injector) {
+    super(opts, injector);
   }
 
   public get viewUrl(): string {
@@ -17,8 +37,10 @@ class MockModel extends AbstractModel {
 }
 
 describe("DetailViewComponent", () => {
+  let api: MockStandardApiService;
   let component: DetailViewComponent;
   let fixture: ComponentFixture<DetailViewComponent>;
+  let injector: Injector;
 
   function getWrapper() {
     return (fixture.nativeElement as HTMLElement).querySelector("div");
@@ -35,11 +57,19 @@ describe("DetailViewComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DetailViewComponent, RenderFieldComponent],
+      imports: [HttpClientTestingModule],
+      providers: [
+        ...testBawServices,
+        MockStandardApiService,
+        { provide: MOCK.token, useExisting: MockStandardApiService },
+      ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DetailViewComponent);
+    api = TestBed.inject(MockStandardApiService);
+    injector = TestBed.inject(Injector);
     component = fixture.componentInstance;
   });
 
@@ -150,36 +180,116 @@ describe("DetailViewComponent", () => {
       });
     });
 
-    describe("nested fields", () => {
-      it("should handle single nested fields", () => {
-        expect(true).toBeFalsy();
-      });
-
-      it("should handle multiple nested fields", () => {
-        expect(true).toBeFalsy();
-      });
-    });
-
     describe("abstract models", () => {
-      it("should handle abstract model", () => {
-        expect(true).toBeFalsy();
+      function updateComponent(key: string) {
+        component.fields = [
+          {
+            key,
+            templateOptions: { label: "custom label" },
+          },
+        ];
+        component.model = new MockModel({ id: 0 }, injector);
+      }
+
+      it("should handle hasOne unresolved model", () => {
+        updateComponent("childModel");
+        fixture.detectChanges();
+        expect(getFields().length).toBe(1);
+        expect(getValues().length).toBe(1);
       });
 
-      it("should handle hasOne associated model", () => {
-        expect(true).toBeFalsy();
+      it("should display hasOne unresolved model", () => {
+        updateComponent("childModel");
+        fixture.detectChanges();
+        const value = getValues()[0];
+        expect(value.innerText.trim()).toBe("(loading)");
       });
 
-      it("should handle hasMany associated model", () => {
-        expect(true).toBeFalsy();
+      it("should handle hasOne associated model", fakeAsync(() => {
+        spyOn(api, "show").and.callFake(() => {
+          const subject = new Subject<AssociatedModel>();
+          setTimeout(() => {
+            subject.next(new AssociatedModel({ id: 1 }));
+          }, 50);
+          return subject;
+        });
+
+        updateComponent("childModel");
+        fixture.detectChanges();
+        tick(100);
+        fixture.detectChanges();
+
+        const value = getValues()[0];
+        expect(value.innerText.trim()).toBe("MockModel: 1");
+      }));
+
+      it("should handle hasMany unresolved model", () => {
+        updateComponent("childModels");
+        fixture.detectChanges();
+        expect(getFields().length).toBe(1);
+        expect(getValues().length).toBe(1);
       });
 
-      it("should handle hasOne unresolved associated model", () => {
-        expect(true).toBeFalsy();
+      it("should display hasMany unresolved model", () => {
+        updateComponent("childModels");
+        fixture.detectChanges();
+        const value = getValues()[0];
+        expect(value.innerText.trim()).toBe("(no value)");
       });
 
-      it("should handle hasMany unresolved associated model", () => {
-        expect(true).toBeFalsy();
-      });
+      it("should handle hasMany associated model", fakeAsync(() => {
+        spyOn(api, "filter").and.callFake(() => {
+          const subject = new Subject<AssociatedModel[]>();
+          setTimeout(() => {
+            subject.next([
+              new AssociatedModel({ id: 1 }),
+              new AssociatedModel({ id: 2 }),
+            ]);
+          }, 50);
+          return subject;
+        });
+
+        updateComponent("childModels");
+        fixture.detectChanges();
+        tick(100);
+        fixture.detectChanges();
+
+        const values = getValues();
+        expect(values.length).toBe(2);
+        expect(values[0].innerText.trim()).toBe("MockModel: 1");
+        expect(values[1].innerText.trim()).toBe("MockModel: 2");
+      }));
+
+      it("should handle hasMany associated model second update", fakeAsync(() => {
+        spyOn(api, "filter").and.callFake(() => {
+          const subject = new Subject<AssociatedModel[]>();
+          setTimeout(() => {
+            subject.next([
+              new AssociatedModel({ id: 1 }),
+              new AssociatedModel({ id: 2 }),
+            ]);
+          }, 50);
+          setTimeout(() => {
+            subject.next([new AssociatedModel({ id: 3 })]);
+            subject.next([new AssociatedModel({ id: 4 })]);
+          }, 150);
+          return subject;
+        });
+
+        updateComponent("childModels");
+        fixture.detectChanges();
+        tick(100);
+        fixture.detectChanges();
+        tick(100);
+        fixture.detectChanges();
+
+        const values = getValues();
+        expect(values.length).toBe(4);
+        expect(values[0].innerText.trim()).toBe("MockModel: 1");
+        expect(values[1].innerText.trim()).toBe("MockModel: 2");
+        expect(values[2].innerText.trim()).toBe("MockModel: 3");
+        expect(values[3].innerText.trim()).toBe("MockModel: 4");
+      }));
     });
   });
 
