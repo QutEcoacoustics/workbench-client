@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
@@ -73,15 +72,15 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
 
   // Associations
   @Creator<AudioRecording>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<AudioRecording>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Deleter<AudioRecording>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
   @HasOne<AudioRecording>(ACCOUNT, "uploaderId")
-  public uploader?: Observable<User>;
+  public uploader?: User;
   @HasOne<AudioRecording>(SHALLOW_SITE, "siteId")
-  public site?: Observable<Site>;
+  public site?: Site;
 
   constructor(audioRecording: IAudioRecording, injector?: Injector) {
     super(audioRecording, injector);

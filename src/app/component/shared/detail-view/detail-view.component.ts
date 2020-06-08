@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { AbstractModel } from "src/app/models/AbstractModel";
 
@@ -16,7 +11,7 @@ import { AbstractModel } from "src/app/models/AbstractModel";
       </dt>
       <baw-render-field
         class="col-sm-9"
-        [view]="model[field.key]"
+        [value]="model[field.key]"
       ></baw-render-field>
     </div>
   `,
@@ -27,9 +22,8 @@ import { AbstractModel } from "src/app/models/AbstractModel";
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailViewComponent implements OnInit {
+export class DetailViewComponent implements OnInit, OnChanges {
   @Input() fields: FormlyFieldConfig[];
   @Input() model: AbstractModel;
   public sanitizedFields: FormlyFieldConfig[];
@@ -37,6 +31,10 @@ export class DetailViewComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.ngOnChanges();
+  }
+
+  ngOnChanges(): void {
     this.sanitizedFields = [];
     this.recursiveSanitization(this.fields);
   }

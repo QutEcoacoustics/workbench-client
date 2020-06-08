@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
@@ -62,18 +62,11 @@ export class DetailsComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
-    const siteModels: ResolvedModel<Site[]> = this.route.snapshot.data[
-      sitesKey
-    ];
-
-    if (projectModel.error || siteModels.error) {
+    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
+    if (!resolvedModels) {
       return;
     }
-
-    this.project = projectModel.model;
-    this.sites = siteModels.model;
+    this.project = resolvedModels[projectKey] as Project;
+    this.sites = resolvedModels[sitesKey] as Site[];
   }
 }

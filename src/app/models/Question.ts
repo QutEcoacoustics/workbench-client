@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -33,9 +32,9 @@ export class Question extends AbstractModel implements IQuestion {
 
   // Associations
   @Creator<Question>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Question>()
-  public updater?: Observable<User>;
+  public updater?: User;
 
   constructor(question: IQuestion, injector?: Injector) {
     super(question, injector);

@@ -5,7 +5,6 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -38,9 +37,9 @@ export class Dataset extends AbstractModel implements IDataset {
 
   // Associations
   @Creator<Dataset>()
-  public creator: Observable<User>;
+  public creator: User;
   @Updater<Dataset>()
-  public updater?: Observable<User>;
+  public updater?: User;
 
   constructor(dataset: IDataset, injector?: Injector) {
     super(dataset, injector);

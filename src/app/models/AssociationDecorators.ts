@@ -1,9 +1,8 @@
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { AbstractModel } from "./AbstractModel";
+import { Observable, Subscription } from "rxjs";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 
 /**
  * Creates an association between the ownerId and its user model
@@ -37,7 +36,7 @@ export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
  * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read IDs from
- * @param modelPrimaryKey Key to match ids against
+ * @param modelPrimaryKey Keys to match additional ids against
  */
 export function HasMany<M extends AbstractModel>(
   serviceToken: ServiceToken<ApiFilter<any, any[]>>,
@@ -54,6 +53,7 @@ export function HasMany<M extends AbstractModel>(
         { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
         ...params
       ),
+    UnresolvedModel.many,
     []
   );
 }
@@ -62,7 +62,7 @@ export function HasMany<M extends AbstractModel>(
  * Associate model with ID
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read ID from
- * @param ids Additional IDs
+ * @param modelParameters Keys to match additional ids against
  */
 export function HasOne<M extends AbstractModel>(
   serviceToken: ServiceToken<ApiShow<any, any[], IdOr<AbstractModel>>>,
@@ -76,7 +76,9 @@ export function HasOne<M extends AbstractModel>(
     serviceToken,
     modelIdentifier,
     modelParameters,
-    (service, id: Id, ...params: any[]) => service.show(id, ...params)
+    (service, id: Id, ...params: any[]) => service.show(id, ...params),
+    UnresolvedModel.one,
+    null
   );
 }
 
@@ -84,7 +86,10 @@ export function HasOne<M extends AbstractModel>(
  * Insert a getter function into the model
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to extract IDs from
+ * @param modelParameters Additional IDs/parameters for filter request
  * @param createRequest Create API Request
+ * @param unresolvedValue Value to return whilst output is unresolved
+ * @param failureValue Value to represent a failure to retrieve the model/s
  */
 function createModelDecorator<M extends AbstractModel, S>(
   serviceToken: ServiceToken<S>,
@@ -95,20 +100,25 @@ function createModelDecorator<M extends AbstractModel, S>(
     id: Id | Ids,
     ...params: any[]
   ) => Observable<AbstractModel | AbstractModel[]>,
-  failureValue: any = null
+  unresolvedValue: any,
+  failureValue: any
 ) {
   /**
-   * Update cached model
+   * Update backing model
    * @param target Target Model
-   * @param key Cache Key
+   * @param backingFieldKey Backing Field Key
    * @param value Model
    */
-  function updateCache(
+  function updateBackingField(
     target: M,
-    key: string,
-    value: Observable<AbstractModel | AbstractModel[]>
+    backingFieldKey: string,
+    value: AbstractModel | AbstractModel[] | Subscription
   ) {
-    Object.defineProperty(target, key, {
+    if (target[backingFieldKey] instanceof Array && value instanceof Array) {
+      value = target[backingFieldKey].concat(value);
+    }
+
+    Object.defineProperty(target, backingFieldKey, {
       value,
       configurable: false,
     });
@@ -122,39 +132,37 @@ function createModelDecorator<M extends AbstractModel, S>(
   function getAssociatedModel(
     target: M,
     associationKey: string
-  ): Observable<null | AbstractModel | AbstractModel[]> {
-    // Check for any cached models
-    const cachedModelKey = "_" + associationKey;
-    if (target.hasOwnProperty(cachedModelKey)) {
-      return target[cachedModelKey];
+  ): null | AbstractModel | AbstractModel[] {
+    // Check for any backing models
+    const backingFieldKey = "_" + associationKey;
+    if (target.hasOwnProperty(backingFieldKey)) {
+      return target[backingFieldKey];
     }
 
     // Get Angular Injector Service
     const injector = target["injector"];
     if (!injector) {
       throw new Error(
-        target.toString() +
-          " does not have injector service. Tried to access " +
-          associationKey
+        `${target} does not have injector service. Tried to access ${associationKey}`
       );
     }
 
     // Get model identifying ID/s
     const identifier: Id | Ids = target[modelIdentifier] as any;
     if (identifier === undefined || identifier === null) {
-      console.warn(target.toString() + " is missing identifier: ", {
+      console.warn(`${target} is missing identifier: `, {
         target,
         associationKey,
         identifier,
       });
-      return of(failureValue);
+      return failureValue;
     }
 
-    // Get model parameters
+    // Map through model parameters and extract values
     const parameters = modelParameters.map((param) => {
       const paramValue = target[param];
       if (paramValue === undefined || paramValue === null) {
-        console.warn(target.toString() + " is missing parameter: ", {
+        console.warn(`${target} is missing parameter: `, {
           target,
           associationKey,
           param,
@@ -165,17 +173,22 @@ function createModelDecorator<M extends AbstractModel, S>(
 
     // Create service and request from API
     const service = injector.get(serviceToken.token);
-    const request = createRequest(service, identifier, parameters).pipe(
-      map((response) => {
-        // Change cached value to BehaviorSubject so that it will instantly return
-        updateCache(target, cachedModelKey, new BehaviorSubject(response));
-        return response;
-      })
+    createRequest(service, identifier, parameters).subscribe(
+      (model) => updateBackingField(target, backingFieldKey, model),
+      (error) => {
+        console.error(`${target} failed to load ${associationKey}.`, {
+          target,
+          associationKey,
+          identifier,
+          error,
+        });
+        updateBackingField(target, backingFieldKey, failureValue);
+      }
     );
 
     // Save request to cache so other requests are ignored
-    updateCache(target, cachedModelKey, request);
-    return request;
+    updateBackingField(target, backingFieldKey, unresolvedValue);
+    return unresolvedValue;
   }
 
   return (target: M, associationKey: string) => {

@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -30,9 +29,9 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
 
   // Associations
   @Creator<ProgressEvent>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @HasOne<ProgressEvent>(DATASET_ITEM, "datasetItemId")
-  public datasetItem?: Observable<DatasetItem>;
+  public datasetItem?: DatasetItem;
 
   constructor(progressEvent: IProgressEvent, injector?: Injector) {
     super(progressEvent, injector);

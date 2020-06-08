@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator } from "./AssociationDecorators";
@@ -56,7 +55,7 @@ export class Script extends AbstractModel implements IScript {
   // Associations
   // TODO Add Group associations
   @Creator<Script>()
-  public creator?: Observable<User>;
+  public creator?: User;
 
   constructor(script: IScript, injector?: Injector) {
     super(script, injector);

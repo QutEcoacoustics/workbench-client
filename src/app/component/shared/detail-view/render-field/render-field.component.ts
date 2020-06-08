@@ -1,6 +1,12 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+} from "@angular/core";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -12,17 +18,18 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
     <ng-container *ngIf="!children; else hasChildren">
       <!-- Display plain text -->
       <dl *ngIf="styling === FieldStyling.Plain">
-        <p class="m-0">{{ display }}</p>
+        <p id="plain" class="m-0">{{ display }}</p>
       </dl>
 
       <!-- Display code/objects -->
       <dl *ngIf="styling === FieldStyling.Code">
-        <pre class="m-0">{{ display }}</pre>
+        <pre id="code" class="m-0">{{ display }}</pre>
       </dl>
 
       <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
         <app-checkbox
+          id="checkbox"
           class="m-0"
           [checked]="display"
           [disabled]="true"
@@ -32,29 +39,35 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 
       <!-- Display AbstractModel -->
       <dl *ngIf="styling === FieldStyling.Model">
-        <a [routerLink]="[model.viewUrl]">{{ model.toString() }}</a>
+        <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
       </dl>
 
       <!-- Display Image -->
       <dl *ngIf="styling === FieldStyling.Image">
-        <img style="max-width: 400px; max-height: 400px" [src]="display" />
+        <img
+          id="image"
+          style="max-width: 400px; max-height: 400px"
+          [src]="display"
+        />
       </dl>
     </ng-container>
     <ng-template #hasChildren>
       <baw-render-field
+        id="children"
         *ngFor="let child of children"
-        [view]="child"
+        [value]="child"
       ></baw-render-field>
     </ng-template>
   `,
 })
-export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
-  @Input() view: ModelView;
-  public display: string | number | boolean;
-  public model: AbstractModel;
+export class RenderFieldComponent extends WithUnsubscribe()
+  implements OnInit, OnChanges {
+  @Input() value: ModelView;
   public children: ModelView[];
-  public styling: FieldStyling = FieldStyling.Plain;
+  public display: string | number | boolean;
   public FieldStyling = FieldStyling;
+  public model: AbstractModel;
+  public styling: FieldStyling = FieldStyling.Plain;
   private errorText = "(error)";
   private loadingText = "(loading)";
   private noValueText = "(no value)";
@@ -64,7 +77,11 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   }
 
   ngOnInit(): void {
-    this.humanize(this.view);
+    this.ngOnChanges();
+  }
+
+  ngOnChanges(): void {
+    this.humanize(this.value);
   }
 
   private humanize(value: ModelView) {
@@ -81,9 +98,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
     } else if (value instanceof Observable) {
       this.humanizeObservable(value);
     } else if (value instanceof AbstractModel) {
-      this.styling = FieldStyling.Model;
-      this.display = "";
-      this.model = value;
+      this.humanizeAbstractModel(value);
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
       this.humanizeObject(value);
@@ -98,9 +113,23 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
   }
 
   /**
+   * Convert abstract model to human readable output
+   * @param value Display input
+   */
+  private humanizeAbstractModel(value: AbstractModel) {
+    if (value instanceof UnresolvedModel) {
+      this.setLoading();
+    } else {
+      this.styling = FieldStyling.Model;
+      this.display = "";
+      this.model = value;
+    }
+  }
+
+  /**
    * Convert string to human readable output. Currently this only checks if the
    * string is an image url.
-   * @param value Display output
+   * @param value Display input
    */
   private humanizeString(value: string) {
     this.display = value;
@@ -119,7 +148,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Convert object to human readable output
-   * @param value Display output
+   * @param value Display input
    */
   private humanizeObject(value: object) {
     this.setLoading();
@@ -134,7 +163,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Convert blob to human readable output
-   * @param value Display output
+   * @param value Display input
    */
   private humanizeBlob(value: Blob) {
     this.setLoading();
@@ -151,10 +180,14 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
     reader.readAsText(value);
   }
 
+  /**
+   * Convert observable to human readable output
+   * @param value Display input
+   */
   private humanizeObservable(
     value: Observable<AbstractModel | AbstractModel[]>
   ) {
-    this.display = this.loadingText;
+    this.setLoading();
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
         if (!models) {
@@ -173,7 +206,7 @@ export class RenderFieldComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Convert array to human readable output
-   * @param value Display output
+   * @param value Display input
    */
   private humanizeArray(value: ModelView[]) {
     if (value.length > 0) {

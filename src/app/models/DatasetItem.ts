@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -40,11 +39,11 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
 
   // Associations
   @Creator<DatasetItem>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @HasOne<DatasetItem>(DATASET, "datasetId")
-  public dataset?: Observable<Dataset>;
+  public dataset?: Dataset;
   @HasOne<DatasetItem>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(datasetItem: IDatasetItem, injector?: Injector) {
     super(datasetItem, injector);

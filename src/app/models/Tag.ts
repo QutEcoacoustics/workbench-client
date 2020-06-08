@@ -1,5 +1,4 @@
 import { Injector } from "@angular/core";
-import { Observable } from "rxjs";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
@@ -49,9 +48,9 @@ export class Tag extends AbstractModel implements ITag {
 
   // Associations
   @Creator<Tag>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Tag>()
-  public updater?: Observable<User>;
+  public updater?: User;
 
   constructor(tag: ITag, injector?: Injector) {
     super(tag, injector);

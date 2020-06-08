@@ -8,7 +8,6 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
-import { AudioEventTagsService } from "./audio-event/audio-event-tags.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -26,15 +25,16 @@ import {
   DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
-import { MockFilterApiService } from "./mock/filterMock.service";
-import { MockImmutableApiService } from "./mock/immutableApiMock.service";
-import { MockNonDestructibleApiService } from "./mock/nonDestructibleApiMock.service";
-import { MockReadAndCreateApiService } from "./mock/readAndCreateMock.service";
-import { MockReadAndUpdateApiService } from "./mock/readAndUpdateMock.service";
-import { MockReadonlyApiService } from "./mock/readonlyApiMock.service";
+import {
+  MockImmutableApiService,
+  MockNonDestructibleApiService,
+  MockReadAndCreateApiService,
+  MockReadAndUpdateApiService,
+  MockReadonlyApiService,
+  MockShowApiService,
+  MockStandardApiService,
+} from "./mock/apiMocks.service";
 import { MockShallowSitesService } from "./mock/shallowSitesMock.service";
-import { MockShowApiService } from "./mock/showApiMock.service";
-import { MockStandardApiService } from "./mock/standardApiMock.service";
 import {
   progressEventResolvers,
   ProgressEventsService,
@@ -67,8 +67,8 @@ import {
 } from "./study/responses.service";
 import { StudiesService, studyResolvers } from "./study/studies.service";
 import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
+import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
-import { taggingResolvers, TaggingsService } from "./tagging/taggings.service";
 import { userResolvers, UserService } from "./user/user.service";
 
 const serviceList = [
@@ -95,12 +95,6 @@ const serviceList = [
     service: AudioEventsService,
     resolvers: audioEventResolvers,
     mock: MockStandardApiService,
-  },
-  {
-    serviceToken: Tokens.AUDIO_EVENT_TAG,
-    service: AudioEventTagsService,
-    resolvers: null,
-    mock: MockFilterApiService,
   },
   {
     serviceToken: Tokens.AUDIO_RECORDING,

@@ -1,5 +1,10 @@
 import { Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
@@ -13,9 +18,9 @@ import { SharedModule } from "@shared/shared.module";
 import { assertDetailView } from "@test/helpers/detail-view";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
-import { BehaviorSubject } from "rxjs";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { AdminAudioRecordingComponent } from "./detail.component";
+import { AdminAudioRecordingComponent } from "./details.component";
 
 describe("AdminAudioRecordingComponent", () => {
   let component: AdminAudioRecordingComponent;
@@ -47,24 +52,27 @@ describe("AdminAudioRecordingComponent", () => {
     const sitesApi = TestBed.inject(SHALLOW_SITE.token);
     component = fixture.componentInstance;
 
+    // Catch associated models
     spyOn(accountsApi, "show").and.callFake(() => {
-      return new BehaviorSubject<User>(
-        new User({ id: 1, userName: "custom username" })
-      );
+      const subject = new Subject<User>();
+      setTimeout(() => {
+        subject.next(new User({ id: 1, userName: "custom username" }));
+      }, 0);
+      return subject;
     });
 
     spyOn(sitesApi, "show").and.callFake(() => {
-      return new BehaviorSubject<Site>(
-        new Site({ id: 1, projectIds: [1], name: "custom site" })
-      );
+      const subject = new Subject<Site>();
+      setTimeout(() => {
+        subject.next(new Site({ id: 1, projectIds: [1], name: "custom site" }));
+      }, 0);
+      return subject;
     });
 
     // Update model to contain injector
     if (model) {
       model["injector"] = injector;
     }
-
-    fixture.detectChanges();
   }
 
   it("should create", () => {
@@ -73,6 +81,7 @@ describe("AdminAudioRecordingComponent", () => {
         id: 1,
       })
     );
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
@@ -81,6 +90,7 @@ describe("AdminAudioRecordingComponent", () => {
       status: 401,
       message: "Unauthorized",
     } as ApiErrorDetails);
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
@@ -110,7 +120,7 @@ describe("AdminAudioRecordingComponent", () => {
       ],
     };
 
-    beforeEach(function () {
+    beforeEach(fakeAsync(function () {
       const model = new AudioRecording({
         id: 1,
         uuid: "xxxxxxxxxxxxxxx",
@@ -136,8 +146,11 @@ describe("AdminAudioRecordingComponent", () => {
       });
 
       configureTestingModule(model);
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
       this.fixture = fixture;
-    });
+    }));
 
     assertDetailView("Id", "id", "1");
     assertDetailView("Uuid", "uuid", "xxxxxxxxxxxxxxx");

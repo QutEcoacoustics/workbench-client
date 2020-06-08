@@ -84,12 +84,15 @@ export class ShallowSitesService extends StandardApi<Site> {
     return filterMock<Site>(
       filters,
       (index) =>
-        new Site({
-          id: index,
-          name: "PLACEHOLDER SITE",
-          description: "PLACEHOLDER DESCRIPTION",
-          creatorId: 1,
-        })
+        new Site(
+          {
+            id: index,
+            name: "PLACEHOLDER SITE",
+            description: "PLACEHOLDER DESCRIPTION",
+            creatorId: 1,
+          },
+          this.injector
+        )
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
@@ -144,12 +147,15 @@ export class ShallowSitesService extends StandardApi<Site> {
     return filterMock<Site>(
       filters,
       (index) =>
-        new Site({
-          id: index,
-          name: "PLACEHOLDER SITE",
-          description: "PLACEHOLDER DESCRIPTION",
-          creatorId: 1,
-        })
+        new Site(
+          {
+            id: index,
+            name: "PLACEHOLDER SITE",
+            description: "PLACEHOLDER DESCRIPTION",
+            creatorId: 1,
+          },
+          this.injector
+        )
     );
   }
 }

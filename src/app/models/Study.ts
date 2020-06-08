@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -35,11 +34,11 @@ export class Study extends AbstractModel implements IStudy {
 
   // Associations
   @Creator<Study>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Study>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @HasOne<Study>(DATASET, "datasetId")
-  public dataset?: Observable<Dataset>;
+  public dataset?: Dataset;
 
   constructor(study: IStudy, injector?: Injector) {
     super(study, injector);

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { MockStandardApiService } from "./apiMocks.service";
 import { MockModel } from "./baseApiMock.service";
-import { MockStandardApiService } from "./standardApiMock.service";
 
 @Injectable()
 export class MockShallowSitesService extends MockStandardApiService {

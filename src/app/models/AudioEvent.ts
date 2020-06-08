@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -52,13 +51,13 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
 
   // Associations
   @Creator<AudioEvent>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<AudioEvent>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Deleter<AudioEvent>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
   @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);

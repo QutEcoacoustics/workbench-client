@@ -3,6 +3,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 
 export class MockModel extends AbstractModel {
+  public kind = "MockModel";
   public readonly id: Id;
 
   public toJSON() {

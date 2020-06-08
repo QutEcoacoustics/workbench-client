@@ -6,7 +6,6 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -52,11 +51,11 @@ export class Bookmark extends AbstractModel implements IBookmark {
 
   // Associations
   @Creator<Bookmark>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Updater<Bookmark>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @HasOne<Bookmark>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(bookmark: IBookmark, injector?: Injector) {
     super(bookmark, injector);

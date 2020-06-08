@@ -1,20 +1,10 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { Observable } from "rxjs";
-import {
-  DateTimeTimezone,
-  Description,
-  Id,
-  Param,
-} from "../interfaces/apiInterfaces";
+import { DateTimeTimezone, Description, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
-import {
-  BawDateTime,
-  BawDuration,
-  BawPersistAttr,
-} from "./AttributeDecorators";
+import { BawDateTime, BawDuration, BawPersistAttr } from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
@@ -85,15 +75,15 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 
   // Associations
   @Creator<AnalysisJob>()
-  public creator: Observable<User>;
+  public creator: User;
   @Updater<AnalysisJob>()
-  public updater?: Observable<User>;
+  public updater?: User;
   @Deleter<AnalysisJob>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
   @HasOne<AnalysisJob>(SCRIPT, "scriptId")
-  public script?: Observable<Script>;
+  public script?: Script;
   @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
-  public savedSearch?: Observable<SavedSearch>;
+  public savedSearch?: SavedSearch;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {
     super(analysisJob, injector);

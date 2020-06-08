@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
 import { HasOne } from "./AssociationDecorators";
@@ -41,9 +40,9 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
 
   // Associations
   @HasOne<AnalysisJobItem>(ANALYSIS_JOB, "analysisJobId")
-  public analysisJob?: Observable<AnalysisJob>;
+  public analysisJob?: AnalysisJob;
   @HasOne<AnalysisJobItem>(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording?: Observable<AudioRecording>;
+  public audioRecording?: AudioRecording;
 
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
     super(analysisJobItem, injector);

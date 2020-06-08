@@ -6,7 +6,6 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { Observable } from "rxjs";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -42,9 +41,9 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
 
   // Associations
   @Creator<SavedSearch>()
-  public creator?: Observable<User>;
+  public creator?: User;
   @Deleter<SavedSearch>()
-  public deleter?: Observable<User>;
+  public deleter?: User;
 
   constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);
