@@ -57,7 +57,7 @@ describe("AdminAudioRecordingComponent", () => {
       const subject = new Subject<User>();
       setTimeout(() => {
         subject.next(new User({ id: 1, userName: "custom username" }));
-      }, 50);
+      }, 0);
       return subject;
     });
 
@@ -65,7 +65,7 @@ describe("AdminAudioRecordingComponent", () => {
       const subject = new Subject<Site>();
       setTimeout(() => {
         subject.next(new Site({ id: 1, projectIds: [1], name: "custom site" }));
-      }, 50);
+      }, 0);
       return subject;
     });
 
@@ -147,7 +147,7 @@ describe("AdminAudioRecordingComponent", () => {
 
       configureTestingModule(model);
       fixture.detectChanges();
-      tick(100);
+      tick();
       fixture.detectChanges();
       this.fixture = fixture;
     }));

@@ -210,13 +210,13 @@ describe("DetailViewComponent", () => {
           const subject = new Subject<AssociatedModel>();
           setTimeout(() => {
             subject.next(new AssociatedModel({ id: 1 }));
-          }, 50);
+          }, 0);
           return subject;
         });
 
         updateComponent("childModel");
         fixture.detectChanges();
-        tick(100);
+        tick();
         fixture.detectChanges();
 
         const value = getValues()[0];
@@ -245,13 +245,13 @@ describe("DetailViewComponent", () => {
               new AssociatedModel({ id: 1 }),
               new AssociatedModel({ id: 2 }),
             ]);
-          }, 50);
+          }, 0);
           return subject;
         });
 
         updateComponent("childModels");
         fixture.detectChanges();
-        tick(100);
+        tick();
         fixture.detectChanges();
 
         const values = getValues();

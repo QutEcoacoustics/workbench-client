@@ -16,7 +16,7 @@ describe("Association Decorators", () => {
 
   /**
    * ! Uses fakeAsync functionality.
-   * Assert model matches output. Assumes observable will take 50 milliseconds to return
+   * Assert model matches output. Assumes observable will take 0 milliseconds to return
    */
   function assertModel(
     model: any,
@@ -25,7 +25,7 @@ describe("Association Decorators", () => {
   ) {
     // tslint:disable-next-line no-unused-expression
     model[key];
-    tick(100);
+    tick();
     expect(model[key]).toEqual(output);
   }
 
@@ -86,7 +86,7 @@ describe("Association Decorators", () => {
           } else {
             subject.next(models);
           }
-        }, 50);
+        }, 0);
         return subject;
       });
     }
@@ -127,7 +127,7 @@ describe("Association Decorators", () => {
             setTimeout(() => {
               subject.next([response[0]]);
               subject.next([response[1]]);
-            }, 50);
+            }, 0);
             return subject;
           });
           const model = createModel({ ids: idsType.multiple }, injector);
@@ -231,7 +231,7 @@ describe("Association Decorators", () => {
             const subject = new Subject<ChildModel[]>();
             setTimeout(() => {
               subject.next([new ChildModel({ id: 1 })]);
-            }, 50);
+            }, 0);
             return subject;
           });
 
@@ -282,7 +282,7 @@ describe("Association Decorators", () => {
           } else {
             subject.next(model);
           }
-        }, 50);
+        }, 0);
         return subject;
       });
     }
@@ -353,7 +353,7 @@ describe("Association Decorators", () => {
         const subject = new Subject<ChildModel>();
         setTimeout(() => {
           subject.next(new ChildModel({ id: 1 }));
-        }, 50);
+        }, 0);
         return subject;
       });
 
