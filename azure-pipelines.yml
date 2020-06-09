@@ -45,6 +45,12 @@ steps:
       customCommand: run test:pipeline
     displayName: "Run test suite"
 
+  - task: Npm@1
+    inputs:
+      command: custom
+      customCommand run e2e -- --capabilities.chromeOptions.args="--headless"
+    displayName: "Run e2e test suite"
+
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
