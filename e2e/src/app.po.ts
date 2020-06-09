@@ -5,8 +5,8 @@ export class AppPage {
     return browser.get(browser.baseUrl) as Promise<any>;
   }
 
-  getTitleText() {
-    return element(by.css("app-root h1.display-4")).getText() as Promise<
+  getLogo() {
+    return element(by.css("app-root nav .navbar-brand")).getText() as Promise<
       string
     >;
   }
