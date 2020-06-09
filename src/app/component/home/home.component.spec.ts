@@ -2,13 +2,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -17,8 +11,9 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
+import { nStepObservable } from "@test/helpers/general";
+import { assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
-import { delay } from "rxjs/operators";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { HomeComponent } from "./home.component";
 
@@ -52,55 +47,23 @@ describe("HomeComponent", () => {
     httpMock.verify();
   });
 
-  function handleCms(waitTime?: number) {
+  function interceptCmsRequest() {
     const req = httpMock.expectOne(cmsUrl);
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
-    if (waitTime) {
-      tick(waitTime);
-    } else {
-      flush();
-    }
-    fixture.detectChanges();
   }
 
-  it("should create", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
+  it("should load cms", async () => {
+    const subject = new Subject<Project[]>();
+    const promise = nStepObservable(subject, []);
+    spyOn(projectApi, "filter").and.callFake(() => subject);
+    spyOn(securityApi, "getAuthTrigger").and.callFake(
+      () => new BehaviorSubject(null)
+    );
 
-      subject.pipe(delay(50));
-      subject.next([]);
-
-      return subject;
-    });
-
-    tick(100);
+    await promise;
     fixture.detectChanges();
-
-    handleCms();
-
-    expect(component).toBeTruthy();
-  }));
-
-  it("should load cms", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-
-      subject.pipe(delay(50));
-      subject.next([]);
-
-      return subject;
-    });
-
-    tick(100);
+    interceptCmsRequest();
     fixture.detectChanges();
-
-    handleCms();
 
     const header = fixture.nativeElement.querySelector("h1");
     const body = fixture.nativeElement.querySelector("p");
@@ -109,302 +72,167 @@ describe("HomeComponent", () => {
     expect(header.innerText.trim()).toBe("Test Header");
     expect(body).toBeTruthy();
     expect(body.innerText.trim()).toBe("Test Description");
-  }));
+  });
 
-  it("should handle filter error", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
+  describe("page", () => {
+    async function setupComponent(
+      projects: Project[],
+      error?: ApiErrorDetails
+    ) {
       const subject = new Subject<Project[]>();
+      const promise = nStepObservable(
+        subject,
+        projects ? projects : error,
+        !projects
+      );
+      spyOn(projectApi, "filter").and.callFake(() => subject);
+      spyOn(securityApi, "getAuthTrigger").and.callFake(
+        () => new BehaviorSubject(null)
+      );
 
-      setTimeout(() => {
-        subject.error({ status: 404, message: "Not Found" } as ApiErrorDetails);
-      }, 50);
+      fixture.detectChanges();
+      await promise;
+      interceptCmsRequest();
+      fixture.detectChanges();
+    }
 
-      return subject;
+    function getCardImages() {
+      return fixture.nativeElement.querySelectorAll("app-card-image");
+    }
+
+    function getCardTitle(card: HTMLElement): HTMLElement {
+      return card.querySelector(".card-title");
+    }
+
+    function getCardText(card: HTMLElement): HTMLElement {
+      return card.querySelector(".card-text");
+    }
+
+    function getButton() {
+      return fixture.nativeElement.querySelector("button");
+    }
+
+    it("should create", async () => {
+      await setupComponent([]);
+      expect(component).toBeTruthy();
     });
 
-    tick(100);
-    fixture.detectChanges();
-
-    handleCms();
-
-    const cards = fixture.nativeElement.querySelectorAll("app-card-image");
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(cards.length).toBe(0);
-    expect(button).toBeTruthy();
-  }));
-
-  it("should filter projects to have 3 items", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake((filter) => {
-      expect(filter).toBeTruthy();
-      expect(filter).toEqual({ paging: { items: 3 } } as Filters);
-
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
+    it("should request 3 projects", async () => {
+      await setupComponent([]);
+      expect(projectApi.filter).toHaveBeenCalledWith({
+        paging: { items: 3 },
+      } as Filters);
     });
 
-    tick(100);
-    fixture.detectChanges();
-
-    handleCms();
-  }));
-
-  it("should display empty project in filter", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
+    it("should handle filter error", async () => {
+      await setupComponent(undefined, { status: 404, message: "Not Found" });
+      expect(getCardImages().length).toBe(0);
+      expect(getButton()).toBeTruthy();
     });
 
-    tick(100);
-    fixture.detectChanges();
-
-    handleCms();
-
-    const cards = fixture.nativeElement.querySelectorAll("app-card-image");
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(cards.length).toBe(0);
-    expect(button).toBeTruthy();
-  }));
-
-  it("should display single project in filter", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([
-          new Project({
-            id: 1,
-            name: "Project",
-            creatorId: 1,
-            description: "Description",
-            siteIds: new Set([]),
-          }),
-        ]);
-      }, 50);
-
-      return subject;
+    it("should display no projects", async () => {
+      await setupComponent([]);
+      expect(getCardImages().length).toBe(0);
+      expect(getButton()).toBeTruthy();
     });
 
-    fixture.detectChanges();
+    it("should display single project", async () => {
+      await setupComponent([
+        new Project({
+          id: 1,
+          name: "Project",
+          creatorId: 1,
+          description: "Description",
+          siteIds: new Set([]),
+        }),
+      ]);
 
-    handleCms();
-
-    const cards = fixture.nativeElement.querySelectorAll("app-card-image");
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(cards.length).toBe(1);
-    expect(cards[0].querySelector(".card-title").innerText.trim()).toBe(
-      "Project"
-    );
-    expect(cards[0].querySelector(".card-text").innerText.trim()).toBe(
-      "Description"
-    );
-    expect(button).toBeTruthy();
-  }));
-
-  it("should display three projects in filter", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([
-          new Project({
-            id: 1,
-            name: "Project 1",
-            creatorId: 1,
-            description: "Description 1",
-            siteIds: new Set([]),
-          }),
-          new Project({
-            id: 2,
-            name: "Project 2",
-            creatorId: 1,
-            description: "Description 2",
-            siteIds: new Set([]),
-          }),
-          new Project({
-            id: 3,
-            name: "Project 3",
-            creatorId: 1,
-            description: "Description 3",
-            siteIds: new Set([]),
-          }),
-        ]);
-      }, 50);
-
-      return subject;
+      const cards = getCardImages();
+      expect(cards.length).toBe(1);
+      expect(getButton()).toBeTruthy();
     });
 
-    fixture.detectChanges();
+    it("should display project name", async () => {
+      await setupComponent([
+        new Project({
+          id: 1,
+          name: "Project",
+          creatorId: 1,
+          description: "Description",
+          siteIds: new Set([]),
+        }),
+      ]);
 
-    handleCms();
-
-    const cards = fixture.nativeElement.querySelectorAll("app-card-image");
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(cards.length).toBe(3);
-    expect(cards[0].querySelector(".card-title").innerText.trim()).toBe(
-      "Project 1"
-    );
-    expect(cards[0].querySelector(".card-text").innerText.trim()).toBe(
-      "Description 1"
-    );
-    expect(cards[1].querySelector(".card-title").innerText.trim()).toBe(
-      "Project 2"
-    );
-    expect(cards[1].querySelector(".card-text").innerText.trim()).toBe(
-      "Description 2"
-    );
-    expect(cards[2].querySelector(".card-title").innerText.trim()).toBe(
-      "Project 3"
-    );
-    expect(cards[2].querySelector(".card-text").innerText.trim()).toBe(
-      "Description 3"
-    );
-    expect(button).toBeTruthy();
-  }));
-
-  it("should link to project details page", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
+      const cards = getCardImages();
+      expect(getCardTitle(cards[0]).innerText.trim()).toBe("Project");
     });
 
-    fixture.detectChanges();
+    it("should display description", async () => {
+      await setupComponent([
+        new Project({
+          id: 1,
+          name: "Project",
+          creatorId: 1,
+          description: "Description",
+          siteIds: new Set([]),
+        }),
+      ]);
 
-    handleCms();
-
-    const button = fixture.nativeElement.querySelector("button");
-    expect(button).toBeTruthy();
-    expect(button.innerText.trim()).toBe("More Projects");
-    expect(
-      button.attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(button.attributes.getNamedItem("ng-reflect-router-link").value).toBe(
-      "/projects"
-    );
-  }));
-
-  it("should request 3 projects", fakeAsync(() => {
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      return new BehaviorSubject(null);
-    });
-    spyOn(projectApi, "filter").and.callFake((params) => {
-      expect(params).toEqual({ paging: { items: 3 } } as Filters);
-      const subject = new Subject<Project[]>();
-
-      setTimeout(() => {
-        subject.next([]);
-      }, 50);
-
-      return subject;
+      const cards = getCardImages();
+      expect(getCardText(cards[0]).innerText.trim()).toBe("Description");
     });
 
-    tick(100);
-    fixture.detectChanges();
+    it("should display missing description", async () => {
+      await setupComponent([
+        new Project({
+          id: 1,
+          name: "Project",
+          creatorId: 1,
+          siteIds: new Set([]),
+        }),
+      ]);
 
-    handleCms();
-  }));
-
-  it("should update on logout", fakeAsync(() => {
-    let count = 0;
-
-    spyOn(securityApi, "getAuthTrigger").and.callFake(() => {
-      const subject = new BehaviorSubject(null);
-
-      setTimeout(() => {
-        subject.next(null);
-      }, 500);
-
-      return subject;
+      const cards = getCardImages();
+      expect(getCardText(cards[0]).innerText.trim()).toBe(
+        "No description given"
+      );
     });
-    spyOn(projectApi, "filter").and.callFake((params) => {
-      const subject = new Subject<Project[]>();
 
-      setTimeout(() => {
-        if (count === 0) {
-          count++;
-          subject.next([]);
-        } else {
-          subject.next([
+    it("should display multiple projects", async () => {
+      const ids = [1, 2, 3];
+      const names = ids.map((id) => `Project ${id}`);
+      const descriptions = ids.map((id) => `Description ${id}`);
+      await setupComponent(
+        ids.map(
+          (id, index) =>
             new Project({
-              id: 1,
-              name: "Project 1",
+              id: index,
+              name: names[index],
               creatorId: 1,
-              description: "Description 1",
+              description: descriptions[index],
               siteIds: new Set([]),
-            }),
-            new Project({
-              id: 2,
-              name: "Project 2",
-              creatorId: 1,
-              description: "Description 2",
-              siteIds: new Set([]),
-            }),
-            new Project({
-              id: 3,
-              name: "Project 3",
-              creatorId: 1,
-              description: "Description 3",
-              siteIds: new Set([]),
-            }),
-          ]);
-        }
-      }, 50);
+            })
+        )
+      );
 
-      return subject;
+      const cards = getCardImages();
+      expect(cards.length).toBe(ids.length);
+      expect(getButton()).toBeTruthy();
+      ids.forEach((_, index) => {
+        expect(getCardTitle(cards[index]).innerText.trim()).toBe(names[index]);
+        expect(getCardText(cards[index]).innerText.trim()).toBe(
+          descriptions[index]
+        );
+      });
     });
 
-    tick(100);
-    fixture.detectChanges();
+    it("should link to project details page", async () => {
+      await setupComponent([]);
 
-    handleCms(100);
-
-    // Should initially have zero cards
-    let cards = fixture.nativeElement.querySelectorAll("app-card-image");
-
-    expect(cards.length).toBe(0);
-
-    flush();
-    fixture.detectChanges();
-
-    // After login status changes, should have 3
-    cards = fixture.nativeElement.querySelectorAll("app-card-image");
-
-    expect(cards.length).toBe(3);
-  }));
+      const button = getButton();
+      expect(button).toBeTruthy();
+      expect(button.innerText.trim()).toBe("More Projects");
+      assertRoute(button, "/projects");
+    });
+  });
 });

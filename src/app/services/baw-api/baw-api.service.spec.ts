@@ -459,11 +459,7 @@ describe("BawApiService", () => {
     ): jasmine.Spy {
       return spyOn(service as any, method).and.callFake(() => {
         const subject = new BehaviorSubject<ApiResponse<T>>(response);
-
-        setTimeout(() => {
-          subject.complete();
-        }, 10);
-
+        setTimeout(() => subject.complete(), 0);
         return subject;
       });
     }

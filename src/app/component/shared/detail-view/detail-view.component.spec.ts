@@ -1,17 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { HasMany, HasOne } from "@models/AssociationDecorators";
+import { nStepObservable } from "@test/helpers/general";
 import { testBawServices } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
@@ -181,7 +176,7 @@ describe("DetailViewComponent", () => {
     });
 
     describe("abstract models", () => {
-      function updateComponent(key: string) {
+      function setupComponent(key: string) {
         component.fields = [
           {
             key,
@@ -189,98 +184,87 @@ describe("DetailViewComponent", () => {
           },
         ];
         component.model = new MockModel({ id: 0 }, injector);
+        fixture.detectChanges();
       }
 
       it("should handle hasOne unresolved model", () => {
-        updateComponent("childModel");
-        fixture.detectChanges();
+        setupComponent("childModel");
         expect(getFields().length).toBe(1);
         expect(getValues().length).toBe(1);
       });
 
       it("should display hasOne unresolved model", () => {
-        updateComponent("childModel");
-        fixture.detectChanges();
+        setupComponent("childModel");
         const value = getValues()[0];
         expect(value.innerText.trim()).toBe("(loading)");
       });
 
-      it("should handle hasOne associated model", fakeAsync(() => {
-        spyOn(api, "show").and.callFake(() => {
-          const subject = new Subject<AssociatedModel>();
-          setTimeout(() => {
-            subject.next(new AssociatedModel({ id: 1 }));
-          }, 0);
-          return subject;
-        });
+      it("should handle hasOne associated model", async () => {
+        const subject = new Subject<AssociatedModel>();
+        const promise = nStepObservable(
+          subject,
+          new AssociatedModel({ id: 1 })
+        );
+        spyOn(api, "show").and.callFake(() => subject);
 
-        updateComponent("childModel");
-        fixture.detectChanges();
-        tick();
+        setupComponent("childModel");
+        await promise;
         fixture.detectChanges();
 
         const value = getValues()[0];
         expect(value.innerText.trim()).toBe("MockModel: 1");
-      }));
+      });
 
       it("should handle hasMany unresolved model", () => {
-        updateComponent("childModels");
-        fixture.detectChanges();
+        setupComponent("childModels");
         expect(getFields().length).toBe(1);
         expect(getValues().length).toBe(1);
       });
 
       it("should display hasMany unresolved model", () => {
-        updateComponent("childModels");
-        fixture.detectChanges();
+        setupComponent("childModels");
         const value = getValues()[0];
         expect(value.innerText.trim()).toBe("(no value)");
       });
 
-      it("should handle hasMany associated model", fakeAsync(() => {
-        spyOn(api, "filter").and.callFake(() => {
-          const subject = new Subject<AssociatedModel[]>();
-          setTimeout(() => {
-            subject.next([
-              new AssociatedModel({ id: 1 }),
-              new AssociatedModel({ id: 2 }),
-            ]);
-          }, 0);
-          return subject;
-        });
+      it("should handle hasMany associated model", async () => {
+        const subject = new Subject<AssociatedModel[]>();
+        const promise = nStepObservable(subject, [
+          new AssociatedModel({ id: 1 }),
+          new AssociatedModel({ id: 2 }),
+        ]);
+        spyOn(api, "filter").and.callFake(() => subject);
 
-        updateComponent("childModels");
-        fixture.detectChanges();
-        tick();
+        setupComponent("childModels");
+        await promise;
         fixture.detectChanges();
 
         const values = getValues();
         expect(values.length).toBe(2);
         expect(values[0].innerText.trim()).toBe("MockModel: 1");
         expect(values[1].innerText.trim()).toBe("MockModel: 2");
-      }));
+      });
 
-      it("should handle hasMany associated model second update", fakeAsync(() => {
-        spyOn(api, "filter").and.callFake(() => {
-          const subject = new Subject<AssociatedModel[]>();
-          setTimeout(() => {
-            subject.next([
-              new AssociatedModel({ id: 1 }),
-              new AssociatedModel({ id: 2 }),
-            ]);
-          }, 50);
-          setTimeout(() => {
-            subject.next([new AssociatedModel({ id: 3 })]);
-            subject.next([new AssociatedModel({ id: 4 })]);
-          }, 150);
-          return subject;
-        });
+      it("should handle hasMany associated model second update", async () => {
+        const subject = new Subject<AssociatedModel[]>();
+        const promise = Promise.all([
+          nStepObservable(
+            subject,
+            [new AssociatedModel({ id: 1 }), new AssociatedModel({ id: 2 })],
+            false,
+            0
+          ),
+          nStepObservable(
+            subject,
+            [new AssociatedModel({ id: 3 }), new AssociatedModel({ id: 4 })],
+            false,
+            1
+          ),
+        ]);
+        spyOn(api, "filter").and.callFake(() => subject);
 
-        updateComponent("childModels");
-        fixture.detectChanges();
-        tick(100);
-        fixture.detectChanges();
-        tick(100);
+        setupComponent("childModels");
+        await promise;
         fixture.detectChanges();
 
         const values = getValues();
@@ -289,7 +273,7 @@ describe("DetailViewComponent", () => {
         expect(values[1].innerText.trim()).toBe("MockModel: 2");
         expect(values[2].innerText.trim()).toBe("MockModel: 3");
         expect(values[3].innerText.trim()).toBe("MockModel: 4");
-      }));
+      });
     });
   });
 

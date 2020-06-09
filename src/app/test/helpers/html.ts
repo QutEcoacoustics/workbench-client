@@ -17,6 +17,22 @@ export function assertIcon(target: HTMLElement, prop: string) {
 }
 
 /**
+ * Assert image
+ * @param target Target element
+ * @param src Image src
+ * @param alt Image alt
+ */
+export function assertImage(
+  target: HTMLImageElement,
+  src: string,
+  alt: string
+) {
+  expect(target).toBeTruthy();
+  expect(target.src).toBe(src);
+  expect(target.alt).toBe(alt);
+}
+
+/**
  * Assert html element tooltip
  * @param target Target element
  * @param tooltip Tooltip text
