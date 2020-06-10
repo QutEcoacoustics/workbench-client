@@ -13,9 +13,6 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: Update system
-        run: sudo apt update && sudo apt upgrade -y
-
       - name: NPM install
         run: npm install
 
@@ -23,7 +20,7 @@ jobs:
         run: npm run test:pipeline
 
       - name: Run e2e test suite
-        run: npm run e2e"
+        run: npm run e2e
 
       - name: Lint project
         run: npm run lint

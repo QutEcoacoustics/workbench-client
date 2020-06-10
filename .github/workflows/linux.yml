@@ -13,9 +13,6 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: Update system
-        run: apt-get install libxss1 libappindicator1 libindicator7 && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install ./google-chrome*.deb -y
-
       - name: NPM install
         run: npm install
 
@@ -23,7 +20,7 @@ jobs:
         run: npm run test:pipeline
 
       - name: Run e2e test suite
-        run: npm run e2e"
+        run: ./node_modules/protractor/bin/webdriver-manager update && npm run e2e
 
       - name: Build the workbench client
         run: npm run build

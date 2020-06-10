@@ -20,7 +20,7 @@ jobs:
         run: npm run test:pipeline
 
       - name: Run e2e test suite
-        run: npm run e2e"
+        run: npm run e2e
 
       - name: Lint project
         run: npm run lint
