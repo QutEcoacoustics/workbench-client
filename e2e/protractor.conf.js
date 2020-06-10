@@ -14,7 +14,12 @@ exports.config = {
   capabilities: {
     browserName: "chrome",
     chromeOptions: {
-      args: ["--window-size=1200,900"], //Window size is bootstrap extra-large
+      args: [
+        "--headless",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--window-size=1200,900", //Window size is bootstrap extra-large
+      ],
     },
   },
   directConnect: true,
