@@ -3,9 +3,16 @@ name: "Build, Test, and Publish"
 on: [push, pull_request]
 
 jobs:
-  linux:
-    name: Linux
-    runs-on: ubuntu-latest
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -19,6 +26,7 @@ jobs:
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
           sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
           sudo apt-get update && sudo apt-get install google-chrome-stable
+        if: matrix.os == 'ubuntu-latest'
 
       - name: NPM install
         run: npm install
@@ -31,62 +39,21 @@ jobs:
 
       - name: Build the workbench client
         run: npm run build
+        if: matrix.os == 'ubuntu-latest'
 
       - #: 'Note: This is a third party action: https://github.com/marketplace/actions/create-zip-file'
         name: Zip workbench files
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./workbench-client.zip ./dist/workbench-client/
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
           path: ./workbench-client.zip
           name: workbench-client
-
-      - name: Lint project
-        run: npm run lint
-  macos:
-    name: MacOS
-    runs-on: macOS-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - name: NPM install
-        run: npm install
-
-      - name: Run test suite
-        run: npm run test:pipeline
-
-      - name: Run e2e test suite
-        run: npm run e2e
-
-      - name: Lint project
-        run: npm run lint
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - name: NPM install
-        run: npm install
-
-      - name: Run test suite
-        run: npm run test:pipeline
-
-      - name: Run e2e test suite
-        run: npm run e2e
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Lint project
         run: npm run lint
