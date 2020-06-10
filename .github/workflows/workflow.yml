@@ -1,4 +1,4 @@
-name: "Linux"
+name: "Build, Test, and Publish"
 
 on: "push"
 
@@ -39,6 +39,52 @@ jobs:
         with:
           path: ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip
           name: workbench-client
+
+      - name: Lint project
+        run: npm run lint
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
+      - name: Run test suite
+        run: npm run test:pipeline
+
+      - name: Run e2e test suite
+        run: npm run e2e
+
+      - name: Lint project
+        run: npm run lint
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
+      - name: Run test suite
+        run: npm run test:pipeline
+
+      - name: Run e2e test suite
+        run: npm run e2e
 
       - name: Lint project
         run: npm run lint
