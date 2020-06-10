@@ -55,10 +55,19 @@ steps:
     condition: succeededOrFailed()
     inputs:
       testResultsFormat: "JUnit"
-      testResultsFiles: "$(Build.SourcesDirectory)/*.xml"
+      testResultsFiles: "**/TESTS-*.xml"
       mergeTestResults: true
       publishRunAttachments: true
-    displayName: "Publish test results"
+    displayName: "Publish unit test results"
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/junitresults.xml"
+      mergeTestResults: true
+      publishRunAttachments: true
+    displayName: "Publish e2e test results"
 
   - task: PublishCodeCoverageResults@1
     inputs:
