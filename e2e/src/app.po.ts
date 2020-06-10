@@ -5,14 +5,19 @@ export class AppPage {
     return browser.get(browser.baseUrl) as Promise<any>;
   }
 
-  getLogo() {
-    return element(by.css("app-root nav .navbar-brand")).getText() as Promise<
-      string
-    >;
+  getNavbar() {
+    return element(by.css("nav"));
   }
 
-  // TODO Logout should direct to home component
-  // TODO Add test to verify fullscreen and menu layout pages render
-  // TODO Add test to verify ngx-loading-bar is rendered after 3 seconds
-  // TODO Home component should update projects when logout occurs
+  getLogo() {
+    return element(by.css("nav .navbar-brand")).getText();
+  }
+
+  login() {
+    return element(by.id("login-header-link")).click();
+  }
+
+  logout() {
+    return element(by.id("logout-header-link")).click();
+  }
 }

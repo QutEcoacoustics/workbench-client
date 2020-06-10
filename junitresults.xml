@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites disabled="0" errors="0" failures="0" tests="7" time="4.733">
+ <testsuite name="workbench-client" timestamp="2020-06-10T13:05:37" hostname="localhost" time="4.733" errors="0" tests="7" skipped="6" disabled="0" failures="0">
+  <testcase classname="workbench-client" name="should display ecosounds title" time="4.73" />
+  <testcase classname="workbench-client" name="should update navbar on login" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+  <testcase classname="workbench-client" name="should update navbar on logout" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+  <testcase classname="workbench-client" name="should handle fullscreen pages" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+  <testcase classname="workbench-client" name="should handle menu pages" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+  <testcase classname="workbench-client" name="should update home component on logout" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+  <testcase classname="workbench-client" name="should display loading bar for long API requests" time="0">
+   <skipped message="Temporarily disabled with xit" />
+  </testcase>
+ </testsuite>
+</testsuites>

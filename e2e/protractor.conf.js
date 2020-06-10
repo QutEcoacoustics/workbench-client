@@ -3,6 +3,7 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter, StacktraceOption } = require("jasmine-spec-reporter");
+const reporters = require("jasmine-reporters");
 
 /**
  * @type { import("protractor").Config }
@@ -13,8 +14,7 @@ exports.config = {
   capabilities: {
     browserName: "chrome",
     chromeOptions: {
-      // Remove the following line to debug tests
-      args: ["--headless"],
+      args: ["--window-size=1200,900"], //Window size is bootstrap extra-large
     },
   },
   directConnect: true,
@@ -29,10 +29,14 @@ exports.config = {
     require("ts-node").register({
       project: require("path").join(__dirname, "../tsconfig.e2e.json"),
     });
-    jasmine.getEnv().addReporter(
-      new SpecReporter({
-        spec: { displayStacktrace: StacktraceOption.PRETTY },
-      })
-    );
+    const jUnitReporter = new reporters.JUnitXmlReporter({
+      savePath: "./",
+      consolidateAll: true,
+    });
+    const specReporter = new SpecReporter({
+      spec: { displayStacktrace: StacktraceOption.PRETTY },
+    });
+    jasmine.getEnv().addReporter(jUnitReporter);
+    jasmine.getEnv().addReporter(specReporter);
   },
 };

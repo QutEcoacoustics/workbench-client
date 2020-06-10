@@ -55,7 +55,7 @@ steps:
     condition: succeededOrFailed()
     inputs:
       testResultsFormat: "JUnit"
-      testResultsFiles: "**/TESTS-*.xml"
+      testResultsFiles: "$(Build.SourcesDirectory)/*.xml"
       mergeTestResults: true
       publishRunAttachments: true
     displayName: "Publish test results"
