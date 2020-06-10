@@ -2,9 +2,6 @@ name: "Build, Test, and Publish"
 
 on: "push"
 
-env:
-  npm_config_cache: ${{ env.Pipeline.Workspace }}/.npm
-
 jobs:
   build:
     runs-on: ${{ matrix.imageName }}
