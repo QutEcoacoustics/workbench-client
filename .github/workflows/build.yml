@@ -1,4 +1,4 @@
-name: "Application Build and Publish"
+name: "Build Status"
 
 on: "push"
 
@@ -18,7 +18,6 @@ jobs:
 
       - name: Build the workbench client
         run: npm run build
-        if: and(success(),eq(variables['Agent.OS'], 'linux'))
 
       - #: 'Note: This is a third party action: https://github.com/marketplace/actions/create-zip-file'
         name: Zip workbench files

@@ -1,4 +1,4 @@
-name: "Application Testing"
+name: "Testing Status"
 
 on: "push"
 
