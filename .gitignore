@@ -68,6 +68,7 @@ website tree
 
 # Test output
 TESTS-*.xml
+junitresults.xml
 
 # Documentation
 documentation
