@@ -1,17 +1,10 @@
-name: "Testing Status"
+name: "MacOS"
 
 on: "push"
 
 jobs:
   build:
-    runs-on: ${{ matrix.imageName }}
-
-    strategy:
-      matrix:
-        imageName:
-          - macOS-latest
-          - windows-latest
-          - ubuntu-latest
+    runs-on: macOS-latest
 
     steps:
       - uses: actions/checkout@v2

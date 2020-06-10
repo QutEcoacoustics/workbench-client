@@ -1,4 +1,4 @@
-name: "Build Status"
+name: "Linux"
 
 on: "push"
 
@@ -13,8 +13,17 @@ jobs:
         with:
           node-version: 12.x
 
+      - name: Update system
+        run: sudo apt update && sudo apt upgrade -y
+
       - name: NPM install
         run: npm install
+
+      - name: Run test suite
+        run: npm run test:pipeline
+
+      - name: Run e2e test suite
+        run: npm run e2e"
 
       - name: Build the workbench client
         run: npm run build
@@ -30,3 +39,6 @@ jobs:
         with:
           path: ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip
           name: workbench-client
+
+      - name: Lint project
+        run: npm run lint
