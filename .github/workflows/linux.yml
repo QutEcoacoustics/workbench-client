@@ -13,6 +13,9 @@ jobs:
         with:
           node-version: 12.x
 
+      - name: Chrome install
+        run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && sudo apt-get update && sudo apt-get install google-chrome-stable
+
       - name: NPM install
         run: npm install
 
@@ -20,7 +23,7 @@ jobs:
         run: npm run test:pipeline
 
       - name: Run e2e test suite
-        run: ./node_modules/protractor/bin/webdriver-manager update && npm run e2e
+        run: npm run e2e
 
       - name: Build the workbench client
         run: npm run build
