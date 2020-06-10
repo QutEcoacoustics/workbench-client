@@ -3,7 +3,8 @@ name: "Build, Test, and Publish"
 on: "push"
 
 jobs:
-  build:
+  linux:
+    name: Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -42,9 +43,8 @@ jobs:
 
       - name: Lint project
         run: npm run lint
-
-jobs:
-  build:
+  macos:
+    name: MacOS
     runs-on: macOS-latest
 
     steps:
@@ -65,9 +65,8 @@ jobs:
 
       - name: Lint project
         run: npm run lint
-
-jobs:
-  build:
+  windows:
+    name: Windows
     runs-on: windows-latest
 
     steps:
