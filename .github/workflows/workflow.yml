@@ -1,6 +1,6 @@
 name: "Build, Test, and Publish"
 
-on: "push"
+on: [push, pull_request]
 
 jobs:
   linux:
@@ -15,7 +15,10 @@ jobs:
           node-version: 12.x
 
       - name: Chrome install
-        run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && sudo apt-get update && sudo apt-get install google-chrome-stable
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+          sudo apt-get update && sudo apt-get install google-chrome-stable
 
       - name: NPM install
         run: npm install
@@ -33,12 +36,12 @@ jobs:
         name: Zip workbench files
         uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -qq -r ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip ${{ env.Build.SourcesDirectory }}/dist/workbench-client/
+          args: zip -qq -r ./workbench-client.zip ./dist/workbench-client/
 
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
-          path: ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip
+          path: ./workbench-client.zip
           name: workbench-client
 
       - name: Lint project
