@@ -1,0 +1,33 @@
+name: "Application Testing"
+
+on: "push"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.imageName }}
+
+    strategy:
+      matrix:
+        imageName:
+          - macOS-latest
+          - windows-latest
+          - ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
+      - name: Run test suite
+        run: npm run test:pipeline
+
+      - name: Run e2e test suite
+        run: npm run e2e"
+
+      - name: Lint project
+        run: npm run lint

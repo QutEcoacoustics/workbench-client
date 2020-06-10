@@ -1,17 +1,10 @@
-name: "Build, Test, and Publish"
+name: "Application Build and Publish"
 
 on: "push"
 
 jobs:
   build:
-    runs-on: ${{ matrix.imageName }}
-
-    strategy:
-      matrix:
-        imageName:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -23,12 +16,6 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Run test suite
-        run: npm run test:pipeline
-
-      - name: Run e2e test suite
-        run: npm run e2e"
-
       - name: Build the workbench client
         run: npm run build
         if: and(success(),eq(variables['Agent.OS'], 'linux'))
@@ -38,14 +25,9 @@ jobs:
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip ${{ env.Build.SourcesDirectory }}/dist/workbench-client/
-        if: and(success(),eq(variables['Agent.OS'], 'linux'))
 
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
           path: ${{ env.Build.ArtifactStagingDirectory }}/workbench-client.zip
           name: workbench-client
-        if: and(success(),eq(variables['Agent.OS'], 'linux'))
-
-      - name: Lint project
-        run: npm run lint
