@@ -82,7 +82,7 @@ describe("Association Decorators", () => {
       const subject = new Subject<ChildModel[]>();
       const promise = nStepObservable(
         subject,
-        models ? models : error,
+        () => (models ? models : error),
         !models
       );
       spyOn(api, "filter").and.callFake(() => subject);
@@ -122,8 +122,8 @@ describe("Association Decorators", () => {
           ];
           const subject = new Subject<ChildModel[]>();
           const promise = Promise.all([
-            nStepObservable(subject, [response[0]]),
-            nStepObservable(subject, [response[1]]),
+            nStepObservable(subject, () => [response[0]]),
+            nStepObservable(subject, () => [response[1]]),
           ]);
 
           spyOn(api, "filter").and.callFake(() => subject);
@@ -219,7 +219,7 @@ describe("Association Decorators", () => {
         it("should load cached data", async () => {
           const childModels = [new ChildModel({ id: 1 })];
           const subject = new Subject<ChildModel[]>();
-          const promise = nStepObservable(subject, childModels);
+          const promise = nStepObservable(subject, () => childModels);
 
           spyOn(api, "filter").and.callFake(() => subject);
 
@@ -263,7 +263,11 @@ describe("Association Decorators", () => {
 
     function interceptApiRequest(model?: ChildModel, error?: ApiErrorDetails) {
       const subject = new Subject<ChildModel>();
-      const promise = nStepObservable(subject, model ? model : error, !model);
+      const promise = nStepObservable(
+        subject,
+        () => (model ? model : error),
+        !model
+      );
       spyOn(api, "show").and.callFake(() => {
         return subject;
       });
@@ -337,7 +341,7 @@ describe("Association Decorators", () => {
     it("should load cached data", async () => {
       const childModel = new ChildModel({ id: 1 });
       const subject = new Subject<ChildModel>();
-      const promise = nStepObservable(subject, childModel);
+      const promise = nStepObservable(subject, () => childModel);
 
       spyOn(api, "show").and.callFake(() => subject);
 

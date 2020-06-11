@@ -83,7 +83,11 @@ describe("Association Decorators Loading In Components", () => {
     error?: ApiErrorDetails
   ): Promise<void> {
     const subject = new Subject<AssociatedModel>();
-    const promise = nStepObservable(subject, model ? model : error, !model);
+    const promise = nStepObservable(
+      subject,
+      () => (model ? model : error),
+      !model
+    );
     spyOn(api, "show").and.callFake(() => subject);
     return promise;
   }
@@ -95,7 +99,7 @@ describe("Association Decorators Loading In Components", () => {
     const subject = new Subject<AssociatedModel[]>();
     const promise = Promise.all(
       models.map((model) =>
-        nStepObservable(subject, model ? model : error, !model)
+        nStepObservable(subject, () => (model ? model : error), !model)
       )
     );
     spyOn(api, "filter").and.callFake(() => subject);

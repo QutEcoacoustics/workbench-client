@@ -51,9 +51,9 @@ describe("AdminOrphanComponent", () => {
     const promise = Promise.all([
       nStepObservable(
         accountsSubject,
-        new User({ id: 1, userName: "custom username" })
+        () => new User({ id: 1, userName: "custom username" })
       ),
-      nStepObservable(projectsSubject, [
+      nStepObservable(projectsSubject, () => [
         new Project({ id: 1, siteIds: [1], name: "custom project" }),
       ]),
     ]);

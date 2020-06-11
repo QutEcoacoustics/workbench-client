@@ -46,7 +46,7 @@ describe("ScriptComponent", () => {
     const subject = new Subject<User>();
     const promise = nStepObservable(
       subject,
-      new User({ id: 1, userName: "custom username" })
+      () => new User({ id: 1, userName: "custom username" })
     );
     spyOn(accountsApi, "show").and.callFake(() => subject);
 

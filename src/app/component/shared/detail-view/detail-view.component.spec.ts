@@ -203,7 +203,7 @@ describe("DetailViewComponent", () => {
         const subject = new Subject<AssociatedModel>();
         const promise = nStepObservable(
           subject,
-          new AssociatedModel({ id: 1 })
+          () => new AssociatedModel({ id: 1 })
         );
         spyOn(api, "show").and.callFake(() => subject);
 
@@ -229,7 +229,7 @@ describe("DetailViewComponent", () => {
 
       it("should handle hasMany associated model", async () => {
         const subject = new Subject<AssociatedModel[]>();
-        const promise = nStepObservable(subject, [
+        const promise = nStepObservable(subject, () => [
           new AssociatedModel({ id: 1 }),
           new AssociatedModel({ id: 2 }),
         ]);
@@ -250,13 +250,19 @@ describe("DetailViewComponent", () => {
         const promise = Promise.all([
           nStepObservable(
             subject,
-            [new AssociatedModel({ id: 1 }), new AssociatedModel({ id: 2 })],
+            () => [
+              new AssociatedModel({ id: 1 }),
+              new AssociatedModel({ id: 2 }),
+            ],
             false,
             0
           ),
           nStepObservable(
             subject,
-            [new AssociatedModel({ id: 3 }), new AssociatedModel({ id: 4 })],
+            () => [
+              new AssociatedModel({ id: 3 }),
+              new AssociatedModel({ id: 4 }),
+            ],
             false,
             1
           ),

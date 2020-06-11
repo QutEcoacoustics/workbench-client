@@ -54,7 +54,7 @@ describe("HomeComponent", () => {
 
   it("should load cms", async () => {
     const subject = new Subject<Project[]>();
-    const promise = nStepObservable(subject, []);
+    const promise = nStepObservable(subject, () => []);
     spyOn(projectApi, "filter").and.callFake(() => subject);
     spyOn(securityApi, "getAuthTrigger").and.callFake(
       () => new BehaviorSubject(null)
@@ -82,7 +82,7 @@ describe("HomeComponent", () => {
       const subject = new Subject<Project[]>();
       const promise = nStepObservable(
         subject,
-        projects ? projects : error,
+        () => (projects ? projects : error),
         !projects
       );
       spyOn(projectApi, "filter").and.callFake(() => subject);

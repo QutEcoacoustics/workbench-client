@@ -53,11 +53,11 @@ describe("AdminAudioRecordingComponent", () => {
     const promise = Promise.all([
       nStepObservable(
         accountsSubject,
-        new User({ id: 1, userName: "custom username" })
+        () => new User({ id: 1, userName: "custom username" })
       ),
       nStepObservable(
         siteSubject,
-        new Site({ id: 1, projectIds: [1], name: "custom site" })
+        () => new Site({ id: 1, projectIds: [1], name: "custom site" })
       ),
     ]);
 
