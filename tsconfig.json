@@ -9,7 +9,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "lib": ["ES2019", "dom"],
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "./dist/out-tsc",
     "paths": {

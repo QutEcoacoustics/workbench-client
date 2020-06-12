@@ -119,7 +119,7 @@ export function assertPagination<
       setTimeout(() => {
         button.click();
         fixture.detectChanges();
-      }, 1);
+      }, 0);
     }
 
     beforeEach(function () {

@@ -5,12 +5,7 @@
   "projects": {
     "workbench-client": {
       "i18n": {
-        "locales": {
-          "fr": {
-            "translation": "src/locale/messages.fr.xlf",
-            "baseHref": ""
-          }
-        }
+        "locales": {}
       },
       "projectType": "application",
       "schematics": {
@@ -43,37 +38,6 @@
             "sourceMap": true
           },
           "configurations": {
-            "fr": {
-              "outputPath": "dist/workbench-client-fr/",
-              "i18nFile": "src/locale/messages.fr.xlf",
-              "i18nLocale": "fr",
-              "i18nMissingTranslation": "error",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ]
-            },
             "production": {
               "fileReplacements": [
                 {
@@ -111,9 +75,6 @@
           "configurations": {
             "production": {
               "browserTarget": "workbench-client:build:production"
-            },
-            "fr": {
-              "browserTarget": "workbench-client:build:fr"
             }
           }
         },
@@ -148,7 +109,7 @@
             "tsConfig": [
               "tsconfig.app.json",
               "tsconfig.spec.json",
-              "e2e/tsconfig.json"
+              "tsconfig.e2e.json"
             ],
             "exclude": ["**/node_modules/**"]
           }

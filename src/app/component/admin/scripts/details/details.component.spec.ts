@@ -1,10 +1,5 @@
 import { Injector } from "@angular/core";
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
@@ -15,6 +10,7 @@ import { User } from "@models/User";
 import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { SharedModule } from "@shared/shared.module";
 import { assertDetailView } from "@test/helpers/detail-view";
+import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
 import { Subject } from "rxjs";
@@ -47,18 +43,19 @@ describe("ScriptComponent", () => {
     const accountsApi = TestBed.inject(ACCOUNT.token);
     component = fixture.componentInstance;
 
-    spyOn(accountsApi, "show").and.callFake(() => {
-      const subject = new Subject<User>();
-      setTimeout(() => {
-        subject.next(new User({ id: 1, userName: "custom username" }));
-      }, 50);
-      return subject;
-    });
+    const subject = new Subject<User>();
+    const promise = nStepObservable(
+      subject,
+      () => new User({ id: 1, userName: "custom username" })
+    );
+    spyOn(accountsApi, "show").and.callFake(() => subject);
 
     // Update model to contain injector
     if (model) {
       model["injector"] = injector;
     }
+
+    return promise;
   }
 
   it("should create", () => {
@@ -85,7 +82,7 @@ describe("ScriptComponent", () => {
       setZone: true,
     });
 
-    beforeEach(fakeAsync(function () {
+    beforeEach(async function () {
       const model = new Script({
         id: 1,
         name: "custom script",
@@ -102,12 +99,12 @@ describe("ScriptComponent", () => {
         analysisActionParams: "custom parameters",
       });
 
-      configureTestingModule(model);
+      const promise = configureTestingModule(model);
       fixture.detectChanges();
-      tick(100);
+      await promise;
       fixture.detectChanges();
       this.fixture = fixture;
-    }));
+    });
 
     assertDetailView("Script Id", "id", "1");
     assertDetailView("Name", "name", "custom script");

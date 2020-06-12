@@ -1,10 +1,5 @@
 import { Injector } from "@angular/core";
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
@@ -17,6 +12,7 @@ import { User } from "@models/User";
 import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { SharedModule } from "@shared/shared.module";
 import { assertDetailView } from "@test/helpers/detail-view";
+import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { DateTime } from "luxon";
 import { Subject } from "rxjs";
@@ -50,36 +46,32 @@ describe("AdminOrphanComponent", () => {
     const projectsApi = TestBed.inject(PROJECT.token);
     component = fixture.componentInstance;
 
-    spyOn(accountsApi, "show").and.callFake(() => {
-      const subject = new Subject<User>();
-      setTimeout(() => {
-        subject.next(new User({ id: 1, userName: "custom username" }));
-      }, 50);
-      return subject;
-    });
+    const accountsSubject = new Subject<User>();
+    const projectsSubject = new Subject<Project[]>();
+    const promise = Promise.all([
+      nStepObservable(
+        accountsSubject,
+        () => new User({ id: 1, userName: "custom username" })
+      ),
+      nStepObservable(projectsSubject, () => [
+        new Project({ id: 1, siteIds: [1], name: "custom project" }),
+      ]),
+    ]);
 
-    spyOn(projectsApi, "filter").and.callFake(() => {
-      const subject = new Subject<Project[]>();
-      setTimeout(() => {
-        subject.next([
-          new Project({ id: 1, siteIds: [1], name: "custom project" }),
-        ]);
-      }, 50);
-      return subject;
-    });
+    // Catch associated models
+    spyOn(accountsApi, "show").and.callFake(() => accountsSubject);
+    spyOn(projectsApi, "filter").and.callFake(() => projectsSubject);
 
     // Update model to contain injector
     if (model) {
       model["injector"] = injector;
     }
+
+    return promise;
   }
 
   it("should create", () => {
-    configureTestingModule(
-      new Site({
-        id: 1,
-      })
-    );
+    configureTestingModule(new Site({ id: 1 }));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -101,7 +93,7 @@ describe("AdminOrphanComponent", () => {
       setZone: true,
     });
 
-    beforeEach(fakeAsync(function () {
+    beforeEach(async function () {
       const model = new Site({
         id: 1,
         name: "custom site",
@@ -124,12 +116,12 @@ describe("AdminOrphanComponent", () => {
         },
       });
 
-      configureTestingModule(model);
+      const promise = configureTestingModule(model);
       fixture.detectChanges();
-      tick(100);
+      await promise;
       fixture.detectChanges();
       this.fixture = fixture;
-    }));
+    });
 
     assertDetailView("Site Id", "id", "1");
     assertDetailView("Site Name", "name", "custom site");

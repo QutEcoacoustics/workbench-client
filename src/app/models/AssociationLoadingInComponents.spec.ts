@@ -1,16 +1,11 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Component, Injector, Input, OnInit } from "@angular/core";
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from "@angular/core/testing";
+import { Component, Injector, Input } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
+import { nStepObservable } from "@test/helpers/general";
 import { testBawServices } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
@@ -86,29 +81,29 @@ describe("Association Decorators Loading In Components", () => {
   function interceptSingleModel(
     model: AssociatedModel,
     error?: ApiErrorDetails
-  ) {
-    spyOn(api, "show").and.callFake(() => {
-      const subject = new Subject<AssociatedModel>();
-      setTimeout(() => {
-        model ? subject.next(model) : subject.error(error);
-      }, 0);
-      return subject;
-    });
+  ): Promise<void> {
+    const subject = new Subject<AssociatedModel>();
+    const promise = nStepObservable(
+      subject,
+      () => (model ? model : error),
+      !model
+    );
+    spyOn(api, "show").and.callFake(() => subject);
+    return promise;
   }
 
   function interceptMultipleModels(
     error: ApiErrorDetails,
     ...models: Array<Array<AssociatedModel>>
-  ) {
-    spyOn(api, "filter").and.callFake(() => {
-      const subject = new Subject<AssociatedModel[]>();
-      models.forEach((model) => {
-        setTimeout(() => {
-          model ? subject.next(model) : subject.error(error);
-        }, 0);
-      });
-      return subject;
-    });
+  ): Promise<any> {
+    const subject = new Subject<AssociatedModel[]>();
+    const promise = Promise.all(
+      models.map((model) =>
+        nStepObservable(subject, () => (model ? model : error), !model)
+      )
+    );
+    spyOn(api, "filter").and.callFake(() => subject);
+    return promise;
   }
 
   function assertOutput(model?: AbstractModel | AbstractModel[]) {
@@ -140,24 +135,27 @@ describe("Association Decorators Loading In Components", () => {
     assertOutput(UnresolvedModel.one);
   });
 
-  it("should display hasOne resolved model", fakeAsync(() => {
+  it("should display hasOne resolved model", async () => {
     const associatedModel = new AssociatedModel({ id: 1 });
-    interceptSingleModel(associatedModel);
+    const promise = interceptSingleModel(associatedModel);
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput(associatedModel);
-  }));
+  });
 
-  it("should display hasOne error", fakeAsync(() => {
-    interceptSingleModel(undefined, { status: 404, message: "Not Found" });
+  it("should display hasOne error", async () => {
+    const promise = interceptSingleModel(undefined, {
+      status: 404,
+      message: "Not Found",
+    });
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays error
     assertOutput(); // hasOne error returns null
-  }));
+  });
 
   it("should display hasMany unresolved model", () => {
     component.model = new MockModel({ id: 0 }, injector);
@@ -167,69 +165,72 @@ describe("Association Decorators Loading In Components", () => {
     assertOutput(UnresolvedModel.many);
   });
 
-  it("should display empty hasMany resolved model", fakeAsync(() => {
+  it("should display empty hasMany resolved model", async () => {
     const associatedModels = [];
-    interceptMultipleModels(undefined, associatedModels);
+    const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput(associatedModels);
-  }));
+  });
 
-  it("should display single hasMany resolved model", fakeAsync(() => {
+  it("should display single hasMany resolved model", async () => {
     const associatedModels = [new AssociatedModel({ id: 1 })];
-    interceptMultipleModels(undefined, associatedModels);
+    const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput(associatedModels);
-  }));
+  });
 
-  it("should display many hasMany resolved model", fakeAsync(() => {
+  it("should display many hasMany resolved model", async () => {
     const associatedModels = [
       new AssociatedModel({ id: 1 }),
       new AssociatedModel({ id: 2 }),
       new AssociatedModel({ id: 3 }),
     ];
-    interceptMultipleModels(undefined, associatedModels);
+    const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput(associatedModels);
-  }));
+  });
 
-  it("should display hasMany multiple responses", fakeAsync(() => {
+  it("should display hasMany multiple responses", async () => {
     const associatedModels = [
       [new AssociatedModel({ id: 1 })],
       [new AssociatedModel({ id: 2 })],
       [new AssociatedModel({ id: 3 })],
     ];
-    interceptMultipleModels(undefined, ...associatedModels);
+    const promise = interceptMultipleModels(undefined, ...associatedModels);
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput([
       new AssociatedModel({ id: 1 }),
       new AssociatedModel({ id: 2 }),
       new AssociatedModel({ id: 3 }),
     ]);
-  }));
+  });
 
-  it("should display hasMany error", fakeAsync(() => {
-    interceptMultipleModels({ status: 404, message: "Not Found" });
+  it("should display hasMany error", async () => {
+    const promise = interceptMultipleModels({
+      status: 404,
+      message: "Not Found",
+    });
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
-    tick();
+    await promise;
     fixture.detectChanges(); // Displays error
     assertOutput([]); // hasMany error returns an array
-  }));
+  });
 });
