@@ -52,6 +52,10 @@ describe("HomeComponent", () => {
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
   }
 
+  it("intentionally broken", () => {
+    expect(true).toBeFalse();
+  });
+
   it("should load cms", async () => {
     const subject = new Subject<Project[]>();
     const promise = nStepObservable(subject, () => []);
