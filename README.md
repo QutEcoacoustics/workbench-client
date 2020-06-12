@@ -2,16 +2,19 @@
 
 The Angular 9 client for an acoustic workbench application.
 
-[![Build Status](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_apis/build/status/QutEcoacoustics.workbench-client?branchName=master)](https://dev.azure.com/QutEcoacoustics/acoustic-workbench/_build/latest?definitionId=4&branchName=master)
+![Build, Test, and Publish](https://github.com/QutEcoacoustics/workbench-client/workflows/Build,%20Test,%20and%20Publish/badge.svg)
 
 ## Install instructions
 
 ### Requirements
 
-- Node v12.8.0 or greater
-- NPM v6.10.0 or greater
-- Google Chrome
-- Mozilla Firefox
+- Node LTS
+- NPM LTS
+- Chrome LTS
+- Firefox LTS
+- [OPTIONAL] Edge LTS
+- [OPTIONAL] Opera LTS
+- [OPTIONAL] Safari LTS
 
 ### Installation
 
@@ -79,7 +82,7 @@ Edge Browser Testing:
 $ npm run test:edge
 ```
 
-Opera Browser Testing:
+[BROKEN] Opera Browser Testing:
 
 ```bash
 $ npm run test:opera

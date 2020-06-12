@@ -2,7 +2,8 @@
 // Protractor configuration file, see link for more information
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
-const { SpecReporter } = require("jasmine-spec-reporter")
+const { SpecReporter, StacktraceOption } = require("jasmine-spec-reporter");
+const reporters = require("jasmine-reporters");
 
 /**
  * @type { import("protractor").Config }
@@ -11,7 +12,15 @@ exports.config = {
   allScriptsTimeout: 11000,
   specs: ["./src/**/*.e2e-spec.ts"],
   capabilities: {
-    browserName: "chrome"
+    browserName: "chrome",
+    chromeOptions: {
+      args: [
+        "--headless",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--window-size=1200,900", //Window size is bootstrap extra-large
+      ],
+    },
   },
   directConnect: true,
   baseUrl: "http://localhost:4200/",
@@ -19,12 +28,20 @@ exports.config = {
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 30000,
-    print: function() {}
+    print: function () {},
   },
   onPrepare() {
     require("ts-node").register({
-      project: require("path").join(__dirname, "./tsconfig.json")
-    })
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }))
-  }
-}
+      project: require("path").join(__dirname, "../tsconfig.e2e.json"),
+    });
+    const jUnitReporter = new reporters.JUnitXmlReporter({
+      savePath: "./",
+      consolidateAll: true,
+    });
+    const specReporter = new SpecReporter({
+      spec: { displayStacktrace: StacktraceOption.PRETTY },
+    });
+    jasmine.getEnv().addReporter(jUnitReporter);
+    jasmine.getEnv().addReporter(specReporter);
+  },
+};
