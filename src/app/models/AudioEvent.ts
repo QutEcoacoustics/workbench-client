@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -24,7 +25,7 @@ export interface IAudioEvent {
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
-  public readonly kind: "AudioEvent" = "AudioEvent";
+  public readonly kind = "AudioEvent";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -58,6 +59,26 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public deleter?: User;
   @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+
+  public static generate(id?: Id): IAudioEvent {
+    const hertzRange = [22050, 8000, 44100, 48000];
+
+    return {
+      id: modelData.id(id),
+      audioRecordingId: modelData.id(),
+      startTimeSeconds: modelData.seconds(),
+      endTimeSeconds: modelData.seconds(),
+      lowFrequencyHertz: modelData.random.arrayElement(hertzRange),
+      highFrequencyHertz: modelData.random.arrayElement(hertzRange),
+      isReference: modelData.boolean(),
+      creatorId: modelData.id(),
+      updaterId: modelData.id(),
+      deleterId: modelData.id(),
+      createdAt: modelData.timestamp(),
+      updatedAt: modelData.timestamp(),
+      deletedAt: modelData.timestamp(),
+    };
+  }
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);

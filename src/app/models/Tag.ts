@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { modelData } from "@test/helpers/faker";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
@@ -15,7 +16,7 @@ export interface ITag {
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
-  notes?: Blob;
+  notes?: Blob | object;
   creatorId?: Id;
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -26,7 +27,7 @@ export interface ITag {
  * Tag model
  */
 export class Tag extends AbstractModel implements ITag {
-  public readonly kind: "AbstractModel" = "AbstractModel";
+  public readonly kind = "Tag";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -52,6 +53,27 @@ export class Tag extends AbstractModel implements ITag {
   @Updater<Tag>()
   public updater?: User;
 
+  public static generate(id?: Id): ITag {
+    return {
+      id: modelData.id(id),
+      text: modelData.param(),
+      isTaxanomic: modelData.boolean(),
+      typeOfTag: modelData.random.arrayElement([
+        "general",
+        "common_name",
+        "species_name",
+        "looks_like",
+        "sounds_like",
+      ]),
+      retired: modelData.boolean(),
+      notes: modelData.notes(),
+      creatorId: modelData.id(),
+      updaterId: modelData.id(),
+      createdAt: modelData.timestamp(),
+      updatedAt: modelData.timestamp(),
+    };
+  }
+
   constructor(tag: ITag, injector?: Injector) {
     super(tag, injector);
   }
@@ -67,7 +89,7 @@ export class Tag extends AbstractModel implements ITag {
 }
 
 export class TagType extends AbstractData {
-  public readonly kind: "TagType" = "TagType";
+  public readonly kind = "TagType";
   public readonly name: string;
 
   constructor(data: { name: string }) {

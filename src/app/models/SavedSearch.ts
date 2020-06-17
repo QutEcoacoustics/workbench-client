@@ -1,21 +1,23 @@
 import { Injector } from "@angular/core";
-import { Filters } from "@baw-api/baw-api.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
   Description,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
 export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
-  storedQuery?: Filters;
+  storedQuery?: InnerFilter<AudioRecording>;
   creatorId?: Id;
   deleterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -23,7 +25,7 @@ export interface ISavedSearch {
 }
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
-  public readonly kind: "SavedSearches" = "SavedSearches";
+  public readonly kind = "SavedSearches";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -31,7 +33,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly storedQuery?: Filters;
+  public readonly storedQuery?: InnerFilter<AudioRecording>;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   @BawDateTime()
@@ -44,6 +46,19 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public creator?: User;
   @Deleter<SavedSearch>()
   public deleter?: User;
+
+  public static generate(id?: Id): ISavedSearch {
+    return {
+      id: modelData.id(id),
+      name: modelData.param(),
+      description: modelData.description(),
+      storedQuery: { uuid: { eq: "blah blah" } }, // TODO Implement with random values
+      creatorId: modelData.id(),
+      deleterId: modelData.id(),
+      createdAt: modelData.timestamp(),
+      deletedAt: modelData.timestamp(),
+    };
+  }
 
   constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);

@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
+import { modelData } from "@test/helpers/faker";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator } from "./AssociationDecorators";
@@ -22,11 +23,11 @@ export interface IScript {
   executableCommand?: string;
   executableSettings?: string;
   executableSettingsMediaType?: string;
-  analysisActionParams?: string;
+  analysisActionParams?: object;
 }
 
 export class Script extends AbstractModel implements IScript {
-  public readonly kind: "Script" = "Script";
+  public readonly kind = "Script";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -50,12 +51,35 @@ export class Script extends AbstractModel implements IScript {
   @BawPersistAttr
   public readonly executableSettingsMediaType?: string;
   @BawPersistAttr
-  public readonly analysisActionParams?: string;
+  public readonly analysisActionParams?: object;
 
   // Associations
   // TODO Add Group associations
   @Creator<Script>()
   public creator?: User;
+
+  public static generate(id?: Id): IScript {
+    return {
+      id: modelData.id(id),
+      name: modelData.param(),
+      description: modelData.description(),
+      analysisIdentifier: "script machine identifier", // TODO Implement with random values
+      version: modelData.random.number(50) / 10,
+      verified: modelData.boolean(),
+      groupId: modelData.id(),
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
+      executableCommand: "executive command", // TODO Implement with random values
+      executableSettings: "executive settings", // TODO Implement with random values
+      executableSettingsMediaType: "text/plain", // TODO Implement with random values
+      analysisActionParams: {
+        fileExecutable: "./AnalysisPrograms/AnalysisPrograms.exe",
+        copyPaths: ["./programs/AnalysisPrograms/Logs/log.txt"],
+        subFolders: [],
+        customSettings: {},
+      }, // TODO Implement with random values
+    };
+  }
 
   constructor(script: IScript, injector?: Injector) {
     super(script, injector);

@@ -6,6 +6,7 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -29,7 +30,7 @@ export interface IBookmark {
 }
 
 export class Bookmark extends AbstractModel implements IBookmark {
-  public readonly kind: "Bookmark" = "Bookmark";
+  public readonly kind = "Bookmark";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -56,6 +57,21 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public updater?: User;
   @HasOne<Bookmark>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+
+  public static generate(id?: Id): IBookmark {
+    return {
+      id: modelData.id(id),
+      audioRecordingId: modelData.id(),
+      offsetSeconds: modelData.seconds(),
+      name: modelData.param(),
+      creatorId: modelData.id(),
+      updaterId: modelData.id(),
+      createdAt: modelData.timestamp(),
+      updatedAt: modelData.timestamp(),
+      description: modelData.description(),
+      category: "<< application >>", // TODO Replace with list of possibilities
+    };
+  }
 
   constructor(bookmark: IBookmark, injector?: Injector) {
     super(bookmark, injector);

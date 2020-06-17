@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { DATASET_ITEM, QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -11,7 +12,7 @@ import type { User } from "./User";
 
 export interface IResponse {
   id?: Id;
-  data?: any;
+  data?: Blob | any;
   datasetItemId?: Id;
   questionId?: Id;
   studyId?: Id;
@@ -20,11 +21,11 @@ export interface IResponse {
 }
 
 export class Response extends AbstractModel implements IResponse {
-  public readonly kind: "Answer" = "Answer";
+  public readonly kind = "Answer";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
-  public readonly data?: any;
+  public readonly data?: Blob;
   @BawPersistAttr
   public readonly datasetItemId?: Id;
   @BawPersistAttr
@@ -33,7 +34,7 @@ export class Response extends AbstractModel implements IResponse {
   public readonly studyId?: Id;
   public readonly creatorId?: Id;
   @BawDateTime()
-  public readonly createdAt?: DateTimeTimezone | string;
+  public readonly createdAt?: DateTimeTimezone;
 
   // Associations
   @Creator<Response>()
@@ -44,6 +45,18 @@ export class Response extends AbstractModel implements IResponse {
   public question?: Question;
   @HasOne<Response>(STUDY, "studyId")
   public study?: Study;
+
+  public generate(id?: Id): IResponse {
+    return {
+      id: modelData.id(id),
+      data: modelData.notes(),
+      datasetItemId: modelData.id(),
+      questionId: modelData.id(),
+      studyId: modelData.id(),
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
+    };
+  }
 
   constructor(question: IResponse, injector?: Injector) {
     super(question, injector);

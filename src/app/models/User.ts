@@ -1,3 +1,4 @@
+import { modelData } from "@test/helpers/faker";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
@@ -45,7 +46,7 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
-  public readonly kind: "User" = "User";
+  public readonly kind = "User";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -84,6 +85,32 @@ export class User extends AbstractModel implements IUser {
   public readonly updatedAt?: DateTimeTimezone;
   @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
+
+  public static generate(id?: Id): IUser {
+    return {
+      id: modelData.id(id),
+      email: modelData.internet.email(),
+      userName: modelData.internet.userName(),
+      signInCount: modelData.random.number(100),
+      failedAttempts: modelData.random.number(100),
+      imageUrls: undefined, // TODO
+      preferences: modelData.randomObject(0, 5), // TODO
+      isConfirmed: modelData.boolean(),
+      rolesMask: modelData.random.arrayElement([]), // TODO
+      rolesMaskNames: undefined, // TODO Depend on above
+      timezoneInformation: undefined, // TODO
+      resetPasswordSentAt: modelData.timestamp(),
+      rememberCreatedAt: modelData.timestamp(),
+      currentSignInAt: modelData.timestamp(),
+      lastSignInAt: modelData.timestamp(),
+      confirmedAt: modelData.timestamp(),
+      confirmationSentAt: modelData.timestamp(),
+      lockedAt: modelData.timestamp(),
+      createdAt: modelData.timestamp(),
+      updatedAt: modelData.timestamp(),
+      lastSeenAt: modelData.timestamp(),
+    };
+  }
 
   constructor(user: IUser) {
     super(user);
@@ -127,7 +154,7 @@ export interface ISessionUser extends IUser {
  */
 export class SessionUser extends AbstractModel implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
-  public readonly kind: "SessionUser" = "SessionUser";
+  public readonly kind = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -142,6 +169,13 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public readonly rolesMask?: number;
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
+
+  public static generate(): ISessionUser {
+    return {
+      authToken: modelData.random.alphaNumeric(20),
+      userName: modelData.internet.userName(),
+    };
+  }
 
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);

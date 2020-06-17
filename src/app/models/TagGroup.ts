@@ -2,6 +2,7 @@ import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -23,7 +24,7 @@ export interface ITagGroup {
  * A tag group model
  */
 export class TagGroup extends AbstractModel implements ITagGroup {
-  public readonly kind: "TagGroup" = "TagGroup";
+  public readonly kind = "TagGroup";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -39,6 +40,16 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   public creator?: User;
   @HasOne<TagGroup>(TAG, "tagId")
   public tag?: Tag;
+
+  public static generate(id?: Id): ITagGroup {
+    return {
+      id: modelData.id(id),
+      groupIdentifier: modelData.random.uuid(), // TODO Check
+      tagId: modelData.id(),
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
+    };
+  }
 
   constructor(tagGroup: ITagGroup, injector?: Injector) {
     super(tagGroup, injector);

@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -16,7 +17,7 @@ export interface IProgressEvent {
 }
 
 export class ProgressEvent extends AbstractModel implements IProgressEvent {
-  public readonly kind: "ProgressEvent" = "ProgressEvent";
+  public readonly kind = "ProgressEvent";
   @BawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
@@ -32,6 +33,16 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public creator?: User;
   @HasOne<ProgressEvent>(DATASET_ITEM, "datasetItemId")
   public datasetItem?: DatasetItem;
+
+  public static generate(id?: Id): IProgressEvent {
+    return {
+      id: modelData.id(id),
+      creatorId: modelData.id(),
+      datasetItemId: modelData.id(),
+      activity: "viewed", // TODO Replace with list of possibilities
+      createdAt: modelData.timestamp(),
+    };
+  }
 
   constructor(progressEvent: IProgressEvent, injector?: Injector) {
     super(progressEvent, injector);
