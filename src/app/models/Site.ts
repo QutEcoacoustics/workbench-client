@@ -92,7 +92,7 @@ export class Site extends AbstractModel implements ISite {
       projectIds: modelData.ids(),
       customLatitude: modelData.latitude(),
       customLongitude: modelData.longitude(),
-      // timezoneInformation: {} // TODO Implement with random values
+      timezoneInformation: modelData.timezone(),
     };
   }
 

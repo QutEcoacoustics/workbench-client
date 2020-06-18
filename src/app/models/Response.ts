@@ -46,7 +46,7 @@ export class Response extends AbstractModel implements IResponse {
   @HasOne<Response>(STUDY, "studyId")
   public study?: Study;
 
-  public generate(id?: Id): IResponse {
+  public static generate(id?: Id): IResponse {
     return {
       id: modelData.id(id),
       data: modelData.notes(),

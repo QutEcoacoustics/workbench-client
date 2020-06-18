@@ -4,7 +4,7 @@ import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
-import { BawPersistAttr } from "./AttributeDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
@@ -29,7 +29,9 @@ export class Tagging extends AbstractModel implements ITagging {
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations

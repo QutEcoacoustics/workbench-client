@@ -93,12 +93,10 @@ export class User extends AbstractModel implements IUser {
       userName: modelData.internet.userName(),
       signInCount: modelData.random.number(100),
       failedAttempts: modelData.random.number(100),
-      imageUrls: undefined, // TODO
-      preferences: modelData.randomObject(0, 5), // TODO
+      imageUrls: modelData.imageUrls(),
+      preferences: modelData.randomObject(0, 5),
       isConfirmed: modelData.boolean(),
-      rolesMask: modelData.random.arrayElement([]), // TODO
-      rolesMaskNames: undefined, // TODO Depend on above
-      timezoneInformation: undefined, // TODO
+      timezoneInformation: modelData.timezone(),
       resetPasswordSentAt: modelData.timestamp(),
       rememberCreatedAt: modelData.timestamp(),
       currentSignInAt: modelData.timestamp(),
@@ -109,6 +107,10 @@ export class User extends AbstractModel implements IUser {
       createdAt: modelData.timestamp(),
       updatedAt: modelData.timestamp(),
       lastSeenAt: modelData.timestamp(),
+      ...modelData.random.arrayElement([
+        { rolesMask: 1, rolesMaskNames: ["Admin"] },
+        { rolesMask: 2, rolesMaskNames: ["User"] },
+      ]),
     };
   }
 

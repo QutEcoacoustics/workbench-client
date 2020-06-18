@@ -112,7 +112,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
       updatedAt: modelData.timestamp(),
       deletedAt: modelData.timestamp(),
       originalFileName: modelData.system.fileName(".mpg", "audio"),
-      recordedUtcOffset: "+0700", // TODO Replace with list of possibilities
+      recordedUtcOffset: modelData.offset(),
     };
   }
 
