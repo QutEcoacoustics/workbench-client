@@ -43,7 +43,7 @@ export interface ISite {
  * A site model.
  */
 export class Site extends AbstractModel implements ISite {
-  public readonly kind: "Site" = "Site";
+  public readonly kind = "Site";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

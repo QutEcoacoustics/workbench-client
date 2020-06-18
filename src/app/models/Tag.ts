@@ -15,7 +15,7 @@ export interface ITag {
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
-  notes?: Blob;
+  notes?: Blob | object;
   creatorId?: Id;
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -26,7 +26,7 @@ export interface ITag {
  * Tag model
  */
 export class Tag extends AbstractModel implements ITag {
-  public readonly kind: "AbstractModel" = "AbstractModel";
+  public readonly kind = "Tag";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -67,7 +67,7 @@ export class Tag extends AbstractModel implements ITag {
 }
 
 export class TagType extends AbstractData {
-  public readonly kind: "TagType" = "TagType";
+  public readonly kind = "TagType";
   public readonly name: string;
 
   constructor(data: { name: string }) {

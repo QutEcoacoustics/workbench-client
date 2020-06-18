@@ -18,7 +18,7 @@ export interface IStudy {
 }
 
 export class Study extends AbstractModel implements IStudy {
-  public readonly kind: "Studies" = "Studies";
+  public readonly kind = "Studies";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

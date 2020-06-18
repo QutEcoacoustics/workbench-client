@@ -12,7 +12,7 @@ export interface IAnalysisJobItem {
   analysisJobId?: Id;
   audioRecordingId?: Id;
   queueId?: string;
-  status?: Status;
+  status?: AnalysisJobItemStatus;
   createdAt?: DateTimeTimezone | string;
   queuedAt?: DateTimeTimezone | string;
   workStartedAt?: DateTimeTimezone | string;
@@ -21,12 +21,12 @@ export interface IAnalysisJobItem {
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
-  public readonly kind: "AnalysisJobItem" = "AnalysisJobItem";
+  public readonly kind = "AnalysisJobItem";
   public readonly id?: Id;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly queueId?: string;
-  public readonly status?: Status;
+  public readonly status?: AnalysisJobItemStatus;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()
@@ -53,7 +53,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   }
 }
 
-export type Status =
+export type AnalysisJobItemStatus =
   | "successful"
   | "new"
   | "queued"

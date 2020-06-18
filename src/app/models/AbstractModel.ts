@@ -12,6 +12,13 @@ export abstract class AbstractModel {
   }
 
   /**
+   * Redirect path to view model on website. This is a string which can be
+   * used by `Router.navigateByUrl()` without any processing. For example,
+   * for the project abstract model, this path should direct to the project page.
+   */
+  public abstract get viewUrl(): string;
+
+  /**
    * Hidden meta symbol
    * This stores the metadata associated with the model
    */
@@ -22,7 +29,7 @@ export abstract class AbstractModel {
    * This stores the list of model attributes which are used to
    * generate the toJSON() output.
    */
-  public static attributeKey = Symbol("meta");
+  public static attributeKey = Symbol("attributes");
 
   /**
    * Model ID
@@ -33,13 +40,6 @@ export abstract class AbstractModel {
    * Model Identifier
    */
   public readonly kind: string;
-
-  /**
-   * Redirect path to view model on website. This is a string which can be
-   * used by `Router.navigateByUrl()` without any processing. For example,
-   * for the project abstract model, this path should direct to the project page.
-   */
-  public abstract get viewUrl(): string;
 
   /**
    * Redirect path to view model on website. This is a string which can be
@@ -87,7 +87,7 @@ export abstract class AbstractModel {
    * Add hidden metadata to model
    * @param meta Metadata
    */
-  public addMetadata(meta: Meta) {
+  public addMetadata(meta: Meta): void {
     this[AbstractModel.metaKey] = meta;
   }
 

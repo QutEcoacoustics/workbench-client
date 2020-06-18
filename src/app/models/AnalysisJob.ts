@@ -1,10 +1,19 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { DateTimeTimezone, Description, Id, Param } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  Description,
+  Id,
+  Param,
+} from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawDuration, BawPersistAttr } from "./AttributeDecorators";
+import {
+  BawDateTime,
+  BawDuration,
+  BawPersistAttr,
+} from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
@@ -16,7 +25,7 @@ export interface IAnalysisJob {
   id?: Id;
   name?: Param;
   annotationName?: string;
-  customSettings?: Blob;
+  customSettings?: Blob | object;
   scriptId?: Id;
   creatorId?: Id;
   updaterId?: Id;
@@ -27,7 +36,7 @@ export interface IAnalysisJob {
   description?: Description;
   savedSearchId?: Id;
   startedAt?: DateTimeTimezone | string;
-  overallStatus?: Status;
+  overallStatus?: AnalysisJobStatus;
   overallStatusModifiedAt?: DateTimeTimezone | string;
   overallProgress?: object;
   overallProgressModifiedAt?: DateTimeTimezone | string;
@@ -37,7 +46,7 @@ export interface IAnalysisJob {
 }
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
-  public readonly kind: "AnalysisJob" = "AnalysisJob";
+  public readonly kind = "AnalysisJob";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -61,7 +70,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly savedSearchId?: Id;
   @BawDateTime()
   public readonly startedAt?: DateTimeTimezone;
-  public readonly overallStatus?: Status;
+  public readonly overallStatus?: AnalysisJobStatus;
   @BawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
   public readonly overallProgress?: object;
@@ -94,7 +103,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 }
 
-type Status =
+export type AnalysisJobStatus =
   | "before_save"
   | "new"
   | "preparing"

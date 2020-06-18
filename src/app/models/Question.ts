@@ -7,8 +7,8 @@ import type { User } from "./User";
 
 export interface IQuestion {
   id?: Id;
-  text?: Blob;
-  data?: Blob;
+  text?: string;
+  data?: Blob | any;
   creatorId?: Id;
   updaterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -16,11 +16,11 @@ export interface IQuestion {
 }
 
 export class Question extends AbstractModel implements IQuestion {
-  public readonly kind: "Question" = "Question";
+  public readonly kind = "Question";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
-  public readonly text?: Blob;
+  public readonly text?: string;
   @BawPersistAttr
   public readonly data?: Blob;
   creatorId?: Id;

@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { Filters } from "@baw-api/baw-api.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
   Description,
@@ -9,13 +9,14 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
 export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
-  storedQuery?: Filters;
+  storedQuery?: InnerFilter<AudioRecording>;
   creatorId?: Id;
   deleterId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -23,7 +24,7 @@ export interface ISavedSearch {
 }
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
-  public readonly kind: "SavedSearches" = "SavedSearches";
+  public readonly kind = "SavedSearches";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -31,7 +32,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
-  public readonly storedQuery?: Filters;
+  public readonly storedQuery?: InnerFilter<AudioRecording>;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   @BawDateTime()

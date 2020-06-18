@@ -39,7 +39,7 @@ export interface IProject {
  * A project model.
  */
 export class Project extends AbstractModel implements IProject {
-  public readonly kind: "Project" = "Project";
+  public readonly kind = "Project";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

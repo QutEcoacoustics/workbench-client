@@ -22,11 +22,11 @@ export interface IScript {
   executableCommand?: string;
   executableSettings?: string;
   executableSettingsMediaType?: string;
-  analysisActionParams?: string;
+  analysisActionParams?: object;
 }
 
 export class Script extends AbstractModel implements IScript {
-  public readonly kind: "Script" = "Script";
+  public readonly kind = "Script";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -50,7 +50,7 @@ export class Script extends AbstractModel implements IScript {
   @BawPersistAttr
   public readonly executableSettingsMediaType?: string;
   @BawPersistAttr
-  public readonly analysisActionParams?: string;
+  public readonly analysisActionParams?: object;
 
   // Associations
   // TODO Add Group associations

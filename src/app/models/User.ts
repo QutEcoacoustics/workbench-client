@@ -45,7 +45,7 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
-  public readonly kind: "User" = "User";
+  public readonly kind = "User";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -127,7 +127,7 @@ export interface ISessionUser extends IUser {
  */
 export class SessionUser extends AbstractModel implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
-  public readonly kind: "SessionUser" = "SessionUser";
+  public readonly kind = "SessionUser";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

@@ -29,7 +29,7 @@ export interface IBookmark {
 }
 
 export class Bookmark extends AbstractModel implements IBookmark {
-  public readonly kind: "Bookmark" = "Bookmark";
+  public readonly kind = "Bookmark";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

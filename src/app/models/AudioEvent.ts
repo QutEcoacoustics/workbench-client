@@ -24,7 +24,7 @@ export interface IAudioEvent {
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
-  public readonly kind: "AudioEvent" = "AudioEvent";
+  public readonly kind = "AudioEvent";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

@@ -96,7 +96,9 @@ describe("ScriptComponent", () => {
         executableCommand: "executable command",
         executableSettings: "executable settings",
         executableSettingsMediaType: "text/json",
-        analysisActionParams: "custom parameters",
+        analysisActionParams: {
+          test: "value",
+        },
       });
 
       const promise = configureTestingModule(model);
@@ -129,7 +131,7 @@ describe("ScriptComponent", () => {
     assertDetailView(
       "Analysis Action Parameters",
       "analysisActionParams",
-      "custom parameters"
+      '{"test":"value"}'
     );
     assertDetailView("Verified", "verified", true);
     assertDetailView("Group Id", "groupId", "1");

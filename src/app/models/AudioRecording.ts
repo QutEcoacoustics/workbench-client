@@ -24,7 +24,7 @@ export interface IAudioRecording {
   mediaType?: string;
   dataLengthBytes?: number;
   fileHash?: string;
-  status?: Status;
+  status?: AudioRecordingStatus;
   notes?: Blob | any;
   creatorId?: Id;
   updaterId?: Id;
@@ -40,7 +40,7 @@ export interface IAudioRecording {
  * An audio recording model
  */
 export class AudioRecording extends AbstractModel implements IAudioRecording {
-  public readonly kind: "AudioRecording" = "AudioRecording";
+  public readonly kind = "AudioRecording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
@@ -56,7 +56,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly mediaType?: string;
   public readonly dataLengthBytes?: number;
   public readonly fileHash?: string;
-  public readonly status?: Status;
+  public readonly status?: AudioRecordingStatus;
   public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -92,7 +92,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 }
 
-type Status =
+export type AudioRecordingStatus =
   | "new"
   | "uploading"
   | "to_check"

@@ -1,4 +1,3 @@
-import { AbstractModel } from "@models/AbstractModel";
 import humanizeDuration from "humanize-duration";
 import { DateTime, Duration } from "luxon";
 

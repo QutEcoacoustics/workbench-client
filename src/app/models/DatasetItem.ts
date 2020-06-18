@@ -20,7 +20,7 @@ export interface IDatasetItem {
 }
 
 export class DatasetItem extends AbstractModel implements IDatasetItem {
-  public readonly kind: "DatasetItem" = "DatasetItem";
+  public readonly kind = "DatasetItem";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

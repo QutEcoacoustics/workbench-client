@@ -23,7 +23,7 @@ export interface ITagGroup {
  * A tag group model
  */
 export class TagGroup extends AbstractModel implements ITagGroup {
-  public readonly kind: "TagGroup" = "TagGroup";
+  public readonly kind = "TagGroup";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr

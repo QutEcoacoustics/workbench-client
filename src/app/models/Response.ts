@@ -11,7 +11,7 @@ import type { User } from "./User";
 
 export interface IResponse {
   id?: Id;
-  data?: any;
+  data?: Blob | any;
   datasetItemId?: Id;
   questionId?: Id;
   studyId?: Id;
@@ -20,11 +20,11 @@ export interface IResponse {
 }
 
 export class Response extends AbstractModel implements IResponse {
-  public readonly kind: "Answer" = "Answer";
+  public readonly kind = "Answer";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
-  public readonly data?: any;
+  public readonly data?: Blob;
   @BawPersistAttr
   public readonly datasetItemId?: Id;
   @BawPersistAttr
@@ -33,7 +33,7 @@ export class Response extends AbstractModel implements IResponse {
   public readonly studyId?: Id;
   public readonly creatorId?: Id;
   @BawDateTime()
-  public readonly createdAt?: DateTimeTimezone | string;
+  public readonly createdAt?: DateTimeTimezone;
 
   // Associations
   @Creator<Response>()

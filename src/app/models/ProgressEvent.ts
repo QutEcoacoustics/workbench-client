@@ -16,7 +16,7 @@ export interface IProgressEvent {
 }
 
 export class ProgressEvent extends AbstractModel implements IProgressEvent {
-  public readonly kind: "ProgressEvent" = "ProgressEvent";
+  public readonly kind = "ProgressEvent";
   @BawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
