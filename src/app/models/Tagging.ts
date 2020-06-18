@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -43,18 +42,6 @@ export class Tagging extends AbstractModel implements ITagging {
   public audioEvent?: AudioEvent;
   @HasOne<Tagging>(TAG, "tagId")
   public tag?: Tag;
-
-  public static generate(id?: Id): ITagging {
-    return {
-      id: modelData.id(id),
-      audioEventId: modelData.id(),
-      tagId: modelData.id(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-    };
-  }
 
   constructor(tagging: ITagging, injector?: Injector) {
     super(tagging, injector);

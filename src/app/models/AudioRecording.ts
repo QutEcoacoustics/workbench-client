@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { modelData } from "@test/helpers/faker";
 import { Duration } from "luxon";
 import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
@@ -25,7 +24,7 @@ export interface IAudioRecording {
   mediaType?: string;
   dataLengthBytes?: number;
   fileHash?: string;
-  status?: Status;
+  status?: AudioRecordingStatus;
   notes?: Blob | any;
   creatorId?: Id;
   updaterId?: Id;
@@ -57,7 +56,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly mediaType?: string;
   public readonly dataLengthBytes?: number;
   public readonly fileHash?: string;
-  public readonly status?: Status;
+  public readonly status?: AudioRecordingStatus;
   public readonly notes?: Blob;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -83,39 +82,6 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @HasOne<AudioRecording>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
-  public static generate(id?: Id): IAudioRecording {
-    return {
-      id: modelData.id(id),
-      uuid: modelData.uuid(),
-      uploaderId: modelData.id(),
-      recordedDate: modelData.timestamp(),
-      siteId: modelData.id(),
-      durationSeconds: modelData.id(),
-      sampleRateHertz: modelData.id(),
-      bitRateBps: 22050, // TODO Replace with list of possibilities
-      mediaType: "audio/mpeg", // TODO Replace with list of possibilities
-      dataLengthBytes: 3800, // TODO Replace with list of possibilities
-      fileHash: "SHA: 2346ad27d7568ba9896f1b7da6b5991251debdf2",
-      status: modelData.random.arrayElement<Status>([
-        "new",
-        "uploading",
-        "to_check",
-        "ready",
-        "corrupt",
-        "aborted",
-      ]),
-      notes: modelData.notes(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      deleterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-      deletedAt: modelData.timestamp(),
-      originalFileName: modelData.system.fileName(".mpg", "audio"),
-      recordedUtcOffset: modelData.offset(),
-    };
-  }
-
   constructor(audioRecording: IAudioRecording, injector?: Injector) {
     super(audioRecording, injector);
   }
@@ -126,7 +92,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 }
 
-type Status =
+export type AudioRecordingStatus =
   | "new"
   | "uploading"
   | "to_check"

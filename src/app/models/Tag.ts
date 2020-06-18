@@ -1,5 +1,4 @@
 import { Injector } from "@angular/core";
-import { modelData } from "@test/helpers/faker";
 import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
@@ -52,27 +51,6 @@ export class Tag extends AbstractModel implements ITag {
   public creator?: User;
   @Updater<Tag>()
   public updater?: User;
-
-  public static generate(id?: Id): ITag {
-    return {
-      id: modelData.id(id),
-      text: modelData.param(),
-      isTaxanomic: modelData.boolean(),
-      typeOfTag: modelData.random.arrayElement([
-        "general",
-        "common_name",
-        "species_name",
-        "looks_like",
-        "sounds_like",
-      ]),
-      retired: modelData.boolean(),
-      notes: modelData.notes(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-    };
-  }
 
   constructor(tag: ITag, injector?: Injector) {
     super(tag, injector);

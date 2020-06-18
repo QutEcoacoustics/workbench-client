@@ -1,4 +1,3 @@
-import { modelData } from "@test/helpers/faker";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
@@ -86,34 +85,6 @@ export class User extends AbstractModel implements IUser {
   @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
-  public static generate(id?: Id): IUser {
-    return {
-      id: modelData.id(id),
-      email: modelData.internet.email(),
-      userName: modelData.internet.userName(),
-      signInCount: modelData.random.number(100),
-      failedAttempts: modelData.random.number(100),
-      imageUrls: modelData.imageUrls(),
-      preferences: modelData.randomObject(0, 5),
-      isConfirmed: modelData.boolean(),
-      timezoneInformation: modelData.timezone(),
-      resetPasswordSentAt: modelData.timestamp(),
-      rememberCreatedAt: modelData.timestamp(),
-      currentSignInAt: modelData.timestamp(),
-      lastSignInAt: modelData.timestamp(),
-      confirmedAt: modelData.timestamp(),
-      confirmationSentAt: modelData.timestamp(),
-      lockedAt: modelData.timestamp(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-      lastSeenAt: modelData.timestamp(),
-      ...modelData.random.arrayElement([
-        { rolesMask: 1, rolesMaskNames: ["Admin"] },
-        { rolesMask: 2, rolesMaskNames: ["User"] },
-      ]),
-    };
-  }
-
   constructor(user: IUser) {
     super(user);
 
@@ -171,13 +142,6 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public readonly rolesMask?: number;
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
-
-  public static generate(): ISessionUser {
-    return {
-      authToken: modelData.random.alphaNumeric(20),
-      userName: modelData.internet.userName(),
-    };
-  }
 
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);

@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
-import { modelData } from "@test/helpers/faker";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -37,7 +36,7 @@ export interface IAnalysisJob {
   description?: Description;
   savedSearchId?: Id;
   startedAt?: DateTimeTimezone | string;
-  overallStatus?: Status;
+  overallStatus?: AnalysisJobStatus;
   overallStatusModifiedAt?: DateTimeTimezone | string;
   overallProgress?: object;
   overallProgressModifiedAt?: DateTimeTimezone | string;
@@ -71,7 +70,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly savedSearchId?: Id;
   @BawDateTime()
   public readonly startedAt?: DateTimeTimezone;
-  public readonly overallStatus?: Status;
+  public readonly overallStatus?: AnalysisJobStatus;
   @BawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
   public readonly overallProgress?: object;
@@ -95,45 +94,6 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
-  public static generate(id?: Id): IAnalysisJob {
-    return {
-      id: modelData.id(id),
-      name: modelData.param(),
-      annotationName: modelData.param(),
-      description: modelData.description(),
-      scriptId: modelData.id(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      deleterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-      deletedAt: modelData.timestamp(),
-      savedSearchId: modelData.id(),
-      startedAt: modelData.timestamp(),
-      overallStatus: modelData.random.arrayElement([
-        "before_save",
-        "new",
-        "preparing",
-        "processing",
-        "suspended",
-        "completed",
-      ]),
-      overallStatusModifiedAt: modelData.timestamp(),
-      overallProgress: {
-        queued: 1,
-        working: 0,
-        success: 0,
-        failed: 0,
-        total: 1,
-      },
-      overallProgressModifiedAt: modelData.timestamp(),
-      overallCount: modelData.random.number(100),
-      overallDurationSeconds: modelData.random.arrayElement([15, 30, 60]),
-      overallDataLengthBytes: modelData.random.arrayElement([256, 512, 1024]),
-      customSettings: modelData.randomObject(0, 5),
-    };
-  }
-
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {
     super(analysisJob, injector);
   }
@@ -143,7 +103,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 }
 
-type Status =
+export type AnalysisJobStatus =
   | "before_save"
   | "new"
   | "preparing"

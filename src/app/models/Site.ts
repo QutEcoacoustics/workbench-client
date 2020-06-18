@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
-import { modelData } from "@test/helpers/faker";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
@@ -77,24 +76,6 @@ export class Site extends AbstractModel implements ISite {
   public updater?: User;
   @HasMany<Site>(PROJECT, "projectIds")
   public projects?: Project[];
-
-  public static generate(id?: Id): ISite {
-    return {
-      id: modelData.id(id),
-      name: modelData.param(),
-      imageUrl: modelData.imageUrl(),
-      description: modelData.description(),
-      locationObfuscated: modelData.boolean(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-      projectIds: modelData.ids(),
-      customLatitude: modelData.latitude(),
-      customLongitude: modelData.longitude(),
-      timezoneInformation: modelData.timezone(),
-    };
-  }
 
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);

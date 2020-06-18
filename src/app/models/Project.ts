@@ -9,8 +9,6 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { Card } from "@shared/cards/cards.component";
-import { modelData, randomArray } from "@test/helpers/faker";
-import faker from "faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
 import {
@@ -68,21 +66,6 @@ export class Project extends AbstractModel implements IProject {
   public updater?: User;
   @Owner<Project>()
   public owner?: User;
-
-  public static generate(id?: Id): IProject {
-    return {
-      id: modelData.id(id),
-      name: modelData.param(),
-      description: modelData.description(),
-      imageUrl: modelData.imageUrl(),
-      creatorId: modelData.id(),
-      updaterId: modelData.id(),
-      ownerId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      updatedAt: modelData.timestamp(),
-      siteIds: modelData.ids(),
-    };
-  }
 
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);

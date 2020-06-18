@@ -6,7 +6,6 @@ import {
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
-import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -46,19 +45,6 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public creator?: User;
   @Deleter<SavedSearch>()
   public deleter?: User;
-
-  public static generate(id?: Id): ISavedSearch {
-    return {
-      id: modelData.id(id),
-      name: modelData.param(),
-      description: modelData.description(),
-      storedQuery: { uuid: { eq: "blah blah" } }, // TODO Implement with random values
-      creatorId: modelData.id(),
-      deleterId: modelData.id(),
-      createdAt: modelData.timestamp(),
-      deletedAt: modelData.timestamp(),
-    };
-  }
 
   constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);

@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { modelData } from "@test/helpers/faker";
 import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
 import { HasOne } from "./AssociationDecorators";
@@ -13,7 +12,7 @@ export interface IAnalysisJobItem {
   analysisJobId?: Id;
   audioRecordingId?: Id;
   queueId?: string;
-  status?: Status;
+  status?: AnalysisJobItemStatus;
   createdAt?: DateTimeTimezone | string;
   queuedAt?: DateTimeTimezone | string;
   workStartedAt?: DateTimeTimezone | string;
@@ -27,7 +26,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly queueId?: string;
-  public readonly status?: Status;
+  public readonly status?: AnalysisJobItemStatus;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()
@@ -45,30 +44,6 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   @HasOne<AnalysisJobItem>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  public static generate(id?: Id): IAnalysisJobItem {
-    return {
-      id: modelData.id(id),
-      analysisJobId: modelData.id(),
-      audioRecordingId: modelData.id(),
-      queueId: modelData.random.uuid(),
-      status: modelData.random.arrayElement([
-        "successful",
-        "new",
-        "queued",
-        "working",
-        "failed",
-        "timed_out",
-        "cancelling",
-        "cancelled",
-      ]),
-      createdAt: modelData.timestamp(),
-      queuedAt: modelData.timestamp(),
-      workStartedAt: modelData.timestamp(),
-      completedAt: modelData.timestamp(),
-      cancelStartedAt: modelData.timestamp(),
-    };
-  }
-
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
     super(analysisJobItem, injector);
   }
@@ -78,7 +53,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   }
 }
 
-export type Status =
+export type AnalysisJobItemStatus =
   | "successful"
   | "new"
   | "queued"
