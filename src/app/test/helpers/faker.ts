@@ -142,12 +142,6 @@ function hexaDecimal(count: number = 1): string {
       "d",
       "e",
       "f",
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
     ]);
   }
 
