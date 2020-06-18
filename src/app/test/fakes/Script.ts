@@ -8,7 +8,7 @@ export function generateScript(id?: Id): IScript {
     name: modelData.param(),
     description: modelData.description(),
     analysisIdentifier: "script machine identifier", // TODO Implement with random values
-    version: modelData.random.number(50) / 10,
+    version: parseFloat(modelData.system.semver()),
     verified: modelData.boolean(),
     groupId: modelData.id(),
     creatorId: modelData.id(),

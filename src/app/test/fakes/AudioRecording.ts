@@ -4,26 +4,42 @@ import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAudioRecording(id?: Id): IAudioRecording {
+  const bitRateBps = modelData.random.arrayElement(
+    modelData.defaults.bitRateBps
+  );
+  const durationSeconds = modelData.random.arrayElement([
+    30,
+    60,
+    1800,
+    3600,
+    7200,
+    21600,
+  ]);
+  const mediaTypes = ["audio/mpeg", "audio/flac", "audio/wave"];
+  const statuses: AudioRecordingStatus[] = [
+    "new",
+    "uploading",
+    "to_check",
+    "ready",
+    "corrupt",
+    "aborted",
+  ];
+
   return {
     id: modelData.id(id),
     uuid: modelData.uuid(),
     uploaderId: modelData.id(),
     recordedDate: modelData.timestamp(),
     siteId: modelData.id(),
-    durationSeconds: modelData.id(),
-    sampleRateHertz: modelData.id(),
-    bitRateBps: 22050, // TODO Replace with list of possibilities
-    mediaType: "audio/mpeg", // TODO Replace with list of possibilities
-    dataLengthBytes: 3800, // TODO Replace with list of possibilities
-    fileHash: "SHA: 2346ad27d7568ba9896f1b7da6b5991251debdf2",
-    status: modelData.random.arrayElement<AudioRecordingStatus>([
-      "new",
-      "uploading",
-      "to_check",
-      "ready",
-      "corrupt",
-      "aborted",
-    ]),
+    durationSeconds,
+    sampleRateHertz: modelData.random.arrayElement(
+      modelData.defaults.sampleRateHertz
+    ),
+    bitRateBps,
+    mediaType: modelData.random.arrayElement(mediaTypes),
+    dataLengthBytes: durationSeconds * bitRateBps,
+    fileHash: modelData.hash(),
+    status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),

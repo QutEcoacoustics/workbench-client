@@ -7,7 +7,7 @@ export function generateProgressEvent(id?: Id): IProgressEvent {
     id: modelData.id(id),
     creatorId: modelData.id(),
     datasetItemId: modelData.id(),
-    activity: "viewed", // TODO Replace with list of possibilities
+    activity: modelData.random.arrayElement(["viewed", "played", "annotated"]),
     createdAt: modelData.timestamp(),
   };
 }

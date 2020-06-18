@@ -7,7 +7,7 @@ import type { User } from "./User";
 
 export interface IQuestion {
   id?: Id;
-  text?: Blob | any;
+  text?: string;
   data?: Blob | any;
   creatorId?: Id;
   updaterId?: Id;
@@ -20,7 +20,7 @@ export class Question extends AbstractModel implements IQuestion {
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
-  public readonly text?: Blob;
+  public readonly text?: string;
   @BawPersistAttr
   public readonly data?: Blob;
   creatorId?: Id;
