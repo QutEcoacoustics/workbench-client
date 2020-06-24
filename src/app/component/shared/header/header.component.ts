@@ -30,7 +30,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
  * Header Component
  */
 @Component({
-  selector: "app-header",
+  selector: "baw-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
 })
@@ -39,10 +39,16 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   public collapsed: boolean;
   public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
   public isAdmin: boolean;
-  public routes: any;
   public title: string;
   public user: SessionUser;
   public userImage: string;
+  public routes = {
+    admin: adminDashboardMenuItem,
+    home: homeMenuItem,
+    login: loginMenuItem,
+    profile: myAccountMenuItem,
+    register: registerMenuItem,
+  };
 
   isNavigableMenuItem = isNavigableMenuItem;
 
@@ -59,13 +65,6 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     this.collapsed = true;
     this.activeLink = "projects";
     this.title = this.env.values.brand.name;
-    this.routes = {
-      admin: adminDashboardMenuItem,
-      home: homeMenuItem,
-      login: loginMenuItem,
-      profile: myAccountMenuItem,
-      register: registerMenuItem,
-    };
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
