@@ -1,4 +1,4 @@
-name: Compressed Size
+name: Build Size Diff
 
 on: [pull_request]
 
@@ -11,4 +11,4 @@ jobs:
       - uses: preactjs/compressed-size-action@v2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          # strip-hash: "\\b\\w{20}\\."
+          strip-hash: "\\b\\w{20}\\.js"
