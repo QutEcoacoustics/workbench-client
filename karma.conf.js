@@ -10,7 +10,6 @@ module.exports = function (config) {
       require("karma-viewport"),
       require("karma-chrome-launcher"),
       require("karma-firefox-launcher"),
-      require("karma-opera-launcher"),
       require("@chiragrupani/karma-chromium-edge-launcher"),
       require("karma-jasmine-html-reporter"),
       require("karma-coverage-istanbul-reporter"),
