@@ -5,7 +5,7 @@ import { Directive, ViewContainerRef } from "@angular/core";
  * Follows this guide: https://angular.io/guide/dynamic-component-loader
  */
 @Directive({
-  selector: "[appMenuWidget]"
+  selector: "[bawMenuWidget]",
 })
 export class WidgetDirective {
   constructor(public viewContainerRef: ViewContainerRef) {}

@@ -39,7 +39,7 @@ const projectsKey = "projects";
     <!-- Display project cards -->
     <ng-container *ngIf="cardList">
       <ng-container *ngIf="cardList.size > 0; else noProjects">
-        <app-cards [cards]="cardList"></app-cards>
+        <baw-cards [cards]="cardList"></baw-cards>
       </ng-container>
       <ng-template #noProjects>
         <h4 class="text-center">Your list of projects is empty</h4>

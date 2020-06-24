@@ -62,12 +62,12 @@ describe("AppComponent", () => {
   });
 
   it("should create header", () => {
-    const header = fixture.nativeElement.querySelector("app-header");
+    const header = fixture.nativeElement.querySelector("baw-header");
     expect(header).toBeTruthy();
   });
 
   it("should create footer", () => {
-    const footer = fixture.nativeElement.querySelector("app-footer");
+    const footer = fixture.nativeElement.querySelector("baw-footer");
     expect(footer).toBeTruthy();
   });
 

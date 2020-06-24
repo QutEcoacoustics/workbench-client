@@ -177,7 +177,7 @@ export function assertPagination<
       fixture.detectChanges();
 
       const errorHandler: ErrorHandlerComponent = fixture.debugElement.query(
-        By.css("app-error-handler")
+        By.css("baw-error-handler")
       ).componentInstance;
       expect(errorHandler).toBeTruthy();
 

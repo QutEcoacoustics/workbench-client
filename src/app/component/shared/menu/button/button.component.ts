@@ -5,7 +5,7 @@ import { MenuAction } from "src/app/interfaces/menusInterfaces";
  * Menu Button Component
  */
 @Component({
-  selector: "app-menu-button",
+  selector: "baw-menu-button",
   template: `
     <button
       class="btn text-left"
@@ -21,7 +21,7 @@ import { MenuAction } from "src/app/interfaces/menusInterfaces";
     </button>
   `,
   styleUrls: ["./button.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuButtonComponent {
   @Input() id: string;

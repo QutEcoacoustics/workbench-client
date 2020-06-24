@@ -43,7 +43,7 @@ const siteKey = "site";
 @Component({
   selector: "app-projects-delete",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -52,7 +52,7 @@ const siteKey = "site";
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class DeleteComponent extends FormTemplate<Site> implements OnInit {

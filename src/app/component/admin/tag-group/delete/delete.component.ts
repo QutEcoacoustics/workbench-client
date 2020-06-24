@@ -35,7 +35,7 @@ const tagGroupKey = "tagGroup";
 @Component({
   selector: "app-admin-tag-groups-delete",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -44,7 +44,7 @@ const tagGroupKey = "tagGroup";
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>

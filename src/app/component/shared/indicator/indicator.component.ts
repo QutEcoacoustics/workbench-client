@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 @Component({
-  selector: "app-indicator",
+  selector: "baw-indicator",
   templateUrl: "./indicator.component.html",
   styleUrls: ["./indicator.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

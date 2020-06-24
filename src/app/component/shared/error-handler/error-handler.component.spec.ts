@@ -7,7 +7,7 @@ import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
-  template: "<app-error-handler [error]='error'></app-error-handler>",
+  template: "<baw-error-handler [error]='error'></baw-error-handler>",
 })
 class MockComponent implements OnInit {
   error: ApiErrorDetails;

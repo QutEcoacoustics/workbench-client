@@ -49,7 +49,7 @@ describe("MenuComponent", () => {
   function findLinks(
     selector: "internal-link" | "external-link" | "button"
   ): HTMLElement[] {
-    return fixture.nativeElement.querySelectorAll("app-menu-" + selector);
+    return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
   }
 
   function setLoggedInState() {
@@ -808,7 +808,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -826,7 +826,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -844,7 +844,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -862,7 +862,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -880,7 +880,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -898,7 +898,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -916,7 +916,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -934,7 +934,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([
@@ -969,7 +969,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual(["parent", "tooltip", "label a", "tooltip"]);
@@ -1005,7 +1005,7 @@ describe("MenuComponent", () => {
 
       const linksText = getText(
         componentElement,
-        "app-menu-internal-link span"
+        "baw-menu-internal-link span"
       );
 
       expect(linksText).toEqual([

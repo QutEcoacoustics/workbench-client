@@ -19,10 +19,10 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
 @Component({
   selector: "app-data-request",
   template: `
-    <app-wip>
+    <baw-wip>
       <h1>Data Request</h1>
-      <app-cms [page]="page"></app-cms>
-      <app-form
+      <baw-cms [page]="page"></baw-cms>
+      <baw-form
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
         [model]="annotationModel"
@@ -30,8 +30,8 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
         [submitLabel]="'Download Annotations'"
         [submitLoading]="annotationLoading"
         (onSubmit)="submitDownloadAnnotation($event)"
-      ></app-form>
-      <app-form
+      ></baw-form>
+      <baw-form
         title="Custom Data Request"
         subTitle="Use this form to request a customized annotations list or other data related to the audio recordings on this website. You <strong>do not need</strong> to use this form if you need the standard <strong>annotations CSV</strong> download. "
         [model]="requestModel"
@@ -39,8 +39,8 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
         [submitLabel]="'Submit'"
         [submitLoading]="requestLoading"
         (onSubmit)="submitDataRequest($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class DataRequestComponent extends WithFormCheck(PageComponent)

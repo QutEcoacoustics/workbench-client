@@ -43,17 +43,17 @@ const siteKey = "site";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <!-- Move ngIf to app-form when app-wip removed -->
-    <app-wip *ngIf="!failure">
-      <app-form
+    <!-- Move ngIf to baw-form when baw-wip removed -->
+    <baw-wip *ngIf="!failure">
+      <baw-form
         [title]="title"
         [model]="model"
         [fields]="fields"
         [submitLoading]="loading"
         submitLabel="Submit"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class EditComponent extends FormTemplate<Site> implements OnInit {

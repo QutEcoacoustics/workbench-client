@@ -5,15 +5,15 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
  * This creates a list of items for a user to choose from.
  */
 @Component({
-  selector: "app-selectable-items",
+  selector: "baw-selectable-items",
   templateUrl: "./selectable-items.component.html",
   styles: [
     `
       button[disabled] {
         cursor: not-allowed;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class SelectableItemsComponent implements OnInit {
   @Input() title: string;

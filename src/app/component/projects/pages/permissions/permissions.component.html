@@ -1,4 +1,4 @@
-<app-wip>
+<baw-wip>
   <div *ngIf="project">
     <h2 class="text-center">{{ project.name }} Permissions</h2>
 
@@ -40,20 +40,20 @@
     <!-- Global Permissions -->
     <div class="row">
       <div class="col-md-6">
-        <app-selectable-items
+        <baw-selectable-items
           title="Visitors"
           description="Visitors are public (anonymous) users that are either not logged in or have not registered."
           [options]="visitorOptions"
           [selected]="1"
-        ></app-selectable-items>
+        ></baw-selectable-items>
       </div>
       <div class="col-md-6">
-        <app-selectable-items
+        <baw-selectable-items
           title="Users"
           description="Users are people that have registered and have logged into the website. "
           [options]="userOptions"
           [selected]="1"
-        ></app-selectable-items>
+        ></baw-selectable-items>
       </div>
     </div>
 
@@ -108,11 +108,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <app-selectable-items
+          <baw-selectable-items
             [options]="individualOptions"
             [selected]="1"
             [inline]="true"
-          ></app-selectable-items>
+          ></baw-selectable-items>
         </ng-template>
       </ngx-datatable-column>
 
@@ -150,4 +150,4 @@
       </ngx-datatable-column>
     </ngx-datatable>
   </div>
-</app-wip>
+</baw-wip>

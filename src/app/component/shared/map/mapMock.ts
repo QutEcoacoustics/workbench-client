@@ -3,7 +3,7 @@ import { Site } from "src/app/models/Site";
 import { createMap } from "./map.component";
 
 @Component({
-  selector: "app-map",
+  selector: "baw-map",
   template: `
     <ng-container *ngIf="locationPins; else placeholderMap">
       <div class="map-container">
@@ -16,7 +16,7 @@ import { createMap } from "./map.component";
       <div class="map-placeholder"><span>No locations specified</span></div>
     </ng-template>
   `,
-  styleUrls: ["./map.component.scss"]
+  styleUrls: ["./map.component.scss"],
 })
 export class MockMapComponent implements OnInit {
   @Input() sites: Site[];

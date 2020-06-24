@@ -16,9 +16,9 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 @Component({
   selector: "app-send-audio",
   template: `
-    <app-wip>
-      <app-cms [page]="page"></app-cms>
-    </app-wip>
+    <baw-wip>
+      <baw-cms [page]="page"></baw-cms>
+    </baw-wip>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

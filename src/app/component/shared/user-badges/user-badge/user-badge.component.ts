@@ -14,7 +14,7 @@ import { User } from "src/app/models/User";
  * A single menu widget displaying a user account and its relationship to the model
  */
 @Component({
-  selector: "app-user-badge",
+  selector: "baw-user-badge",
   template: `
     <h4 id="label">{{ label }}</h4>
     <ng-container *ngIf="userNotFound; else userFound">

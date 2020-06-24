@@ -98,7 +98,7 @@ describe("PermissionsShieldComponent", () => {
 
     configureTestingModule(project, undefined, undefined, undefined);
 
-    const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
+    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
     expect(badges).toBeTruthy();
     expect(badges.length).toBe(3);
   }));
@@ -115,7 +115,7 @@ describe("PermissionsShieldComponent", () => {
 
     configureTestingModule(undefined, undefined, site, undefined);
 
-    const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
+    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
     expect(badges).toBeTruthy();
     expect(badges.length).toBe(2);
   }));

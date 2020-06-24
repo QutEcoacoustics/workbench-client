@@ -8,7 +8,7 @@ import { ResolverList } from "@interfaces/menusInterfaces";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
-  template: ` <app-error-handler [error]="error"></app-error-handler> `,
+  template: ` <baw-error-handler [error]="error"></baw-error-handler> `,
 })
 export class ResolverHandlerComponent extends WithUnsubscribe()
   implements OnInit {

@@ -6,7 +6,7 @@ import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
  * Error Handler Wrapper
  */
 @Component({
-  selector: "app-error-handler",
+  selector: "baw-error-handler",
   template: `
     <ng-container *ngIf="error">
       <div [ngSwitch]="error.status">
@@ -23,7 +23,7 @@ import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
 
       <p>{{ error.message }}</p>
     </ng-container>
-  `
+  `,
 })
 export class ErrorHandlerComponent {
   @Input() error: ApiErrorDetails;

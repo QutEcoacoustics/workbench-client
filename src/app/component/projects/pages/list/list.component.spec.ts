@@ -43,7 +43,7 @@ describe("ProjectsListComponent", () => {
   }
 
   function getCards() {
-    return fixture.nativeElement.querySelectorAll("app-card-image");
+    return fixture.nativeElement.querySelectorAll("baw-card-image");
   }
 
   function assertCardTitle(card: any, title: string) {

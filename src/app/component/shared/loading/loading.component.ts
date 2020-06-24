@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
  * Loading Animation
  */
 @Component({
-  selector: "app-loading",
+  selector: "baw-loading",
   template: `
     <ng-container *ngIf="isLoading">
       <h4 id="app-loading" class="text-center">Loading</h4>
@@ -15,7 +15,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
       </div>
     </ng-container>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
   @Input() isLoading: boolean;

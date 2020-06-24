@@ -31,7 +31,7 @@ import { projectsMenuItemActions } from "../list/list.component";
 @Component({
   selector: "app-projects-new",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="New Project"
       [model]="model"
@@ -39,7 +39,7 @@ import { projectsMenuItemActions } from "../list/list.component";
       submitLabel="Submit"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class NewComponent extends FormTemplate<Project> {

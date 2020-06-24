@@ -6,7 +6,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import {
   FormCheckingComponent,
   FormTouchedGuard,
-  WithFormCheck
+  WithFormCheck,
 } from "./form.guard";
 
 describe("FormTouchedGuard", () => {
@@ -22,14 +22,14 @@ describe("FormTouchedGuard", () => {
       isFormTouched() {
         return touched;
       },
-      resetForms() {}
+      resetForms() {},
     };
   }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
-      providers: [FormTouchedGuard]
+      providers: [FormTouchedGuard],
     }).compileComponents();
   }));
 
@@ -74,13 +74,13 @@ describe("WithFormCheck", () => {
     selector: "app-testing",
     template: `
       <div>
-        <app-form
+        <baw-form
           *ngFor="let schema of schemas"
           [model]="schema.model"
           [fields]="schema.fields"
-        ></app-form>
+        ></baw-form>
       </div>
-    `
+    `,
   })
   class MockComponent extends WithFormCheck() implements OnInit {
     public schemas = [];
@@ -96,10 +96,10 @@ describe("WithFormCheck", () => {
               type: "input",
               templateOptions: {
                 label: "input element",
-                required: false
-              }
-            }
-          ]
+                required: false,
+              },
+            },
+          ],
         });
       }
     }
@@ -118,7 +118,7 @@ describe("WithFormCheck", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
-      declarations: [MockComponent]
+      declarations: [MockComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);

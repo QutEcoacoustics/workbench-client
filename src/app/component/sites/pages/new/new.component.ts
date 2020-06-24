@@ -39,7 +39,7 @@ const projectKey = "project";
 @Component({
   selector: "app-sites-new",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="New Site"
       [model]="model"
@@ -47,7 +47,7 @@ const projectKey = "project";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class NewComponent extends FormTemplate<Site> {

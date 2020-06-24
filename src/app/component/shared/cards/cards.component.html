@@ -1,17 +1,17 @@
 <div class="row justify-content-center">
   <ng-container *ngIf="imageCards; else defaultCards">
-    <app-card-image
+    <baw-card-image
       *ngFor="let item of cards"
       [card]="item"
       class="col-lg-4 col-sm-6 portfolio-item mb-4"
-    ></app-card-image>
+    ></baw-card-image>
   </ng-container>
   <ng-template #defaultCards>
-    <app-card
+    <baw-card
       *ngFor="let item of cards"
       [card]="item"
       class="col-lg-4 col-sm-6 mb-4"
-    ></app-card>
+    ></baw-card>
   </ng-template>
   <div
     *ngIf="content"

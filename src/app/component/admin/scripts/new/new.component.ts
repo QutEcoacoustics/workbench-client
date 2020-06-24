@@ -35,7 +35,7 @@ import {
 @Component({
   selector: "app-admin-scripts-new",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="New Script"
       submitLabel="New Script"
@@ -44,7 +44,7 @@ import {
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     >
-    </app-form>
+    </baw-form>
   `,
 })
 export class AdminScriptsNewComponent extends FormTemplate<Script> {

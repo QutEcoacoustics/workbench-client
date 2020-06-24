@@ -4,7 +4,7 @@ import {
   contactUsMenuItem,
   creditsMenuItem,
   disclaimersMenuItem,
-  ethicsMenuItem
+  ethicsMenuItem,
 } from "../../about/about.menus";
 import { statisticsMenuItem } from "../../statistics/statistics.menus";
 
@@ -12,10 +12,10 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
  * Footer Component
  */
 @Component({
-  selector: "app-footer",
+  selector: "baw-footer",
   templateUrl: "./footer.component.html",
   styleUrls: ["./footer.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent implements OnInit {
   version: string;
@@ -26,7 +26,7 @@ export class FooterComponent implements OnInit {
     ethics: ethicsMenuItem,
     credits: creditsMenuItem,
     disclaimers: disclaimersMenuItem,
-    statistics: statisticsMenuItem
+    statistics: statisticsMenuItem,
   };
 
   constructor(private env: AppConfigService) {}

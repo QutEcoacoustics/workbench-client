@@ -6,7 +6,7 @@ import {
 } from "@angular/core";
 
 @Component({
-  selector: "app-checkbox",
+  selector: "baw-checkbox",
   template: `
     <div [ngClass]="{ 'mx-auto': isCentered }" style="width: 24px;">
       <div class="custom-control custom-checkbox">

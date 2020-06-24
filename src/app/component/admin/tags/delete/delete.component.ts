@@ -38,7 +38,7 @@ const tagKey = "tag";
 @Component({
   selector: "app-delete",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -47,7 +47,7 @@ const tagKey = "tag";
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagsDeleteComponent extends FormTemplate<Tag>

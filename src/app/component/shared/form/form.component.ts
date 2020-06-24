@@ -15,7 +15,7 @@ import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
  * Formly Form Wrapper
  */
 @Component({
-  selector: "app-form",
+  selector: "baw-form",
   templateUrl: "./form.component.html",
   styleUrls: ["./form.component.scss"],
   // tslint:disable-next-line: use-component-view-encapsulation

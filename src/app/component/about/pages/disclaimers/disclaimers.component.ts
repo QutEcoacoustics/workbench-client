@@ -18,7 +18,7 @@ import { List } from "immutable";
 })
 @Component({
   selector: "app-about-disclaimers",
-  template: ` <app-cms [page]="page"></app-cms> `,
+  template: ` <baw-cms [page]="page"></baw-cms> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisclaimersComponent extends PageComponent implements OnInit {

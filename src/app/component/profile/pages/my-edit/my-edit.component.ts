@@ -32,9 +32,9 @@ const userKey = "user";
 @Component({
   selector: "app-my-edit",
   template: `
-    <app-wip>
+    <baw-wip>
       <ng-container *ngIf="model">
-        <app-form
+        <baw-form
           title="Profile Settings"
           [model]="model"
           [fields]="fields"
@@ -42,9 +42,9 @@ const userKey = "user";
           submitLabel="Update"
           [submitLoading]="loading"
           (onSubmit)="submitEdit($event)"
-        ></app-form>
+        ></baw-form>
 
-        <app-form
+        <baw-form
           title="Cancel my account"
           subTitle="Unhappy? You can permanently cancel your account."
           [model]="model"
@@ -54,9 +54,9 @@ const userKey = "user";
           [submitLoading]="loading"
           (onSubmit)="submitDelete($event)"
         >
-        </app-form>
+        </baw-form>
       </ng-container>
-    </app-wip>
+    </baw-wip>
   `,
 })
 export class MyEditComponent extends WithFormCheck(PageComponent)

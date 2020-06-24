@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { Card } from "../cards.component";
 
@@ -10,10 +10,10 @@ import { Card } from "../cards.component";
  * Card Component
  */
 @Component({
-  selector: "app-card",
+  selector: "baw-card",
   templateUrl: "./card.component.html",
   styleUrls: ["./card.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent implements OnInit {
   @Input() card: Card;

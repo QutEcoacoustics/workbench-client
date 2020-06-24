@@ -15,16 +15,16 @@ import { WidgetMenuItem } from "../widget/widgetItem";
  * to the user.
  */
 @Component({
-  selector: "app-action-menu",
+  selector: "baw-action-menu",
   template: `
-    <app-menu
+    <baw-menu
       [title]="actionTitle"
       [links]="actionLinks"
       [widget]="actionWidget"
       [menuType]="'action'"
     >
-    </app-menu>
-  `
+    </baw-menu>
+  `,
 })
 export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
   actionTitle: LabelAndIcon;

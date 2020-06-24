@@ -5,7 +5,7 @@ import { Site } from "src/app/models/Site";
  * Google Maps Wrapper Component
  */
 @Component({
-  selector: "app-map",
+  selector: "baw-map",
   template: `
     <ng-container *ngIf="locationPins; else placeholderMap">
       <div class="map-container">
@@ -33,7 +33,7 @@ import { Site } from "src/app/models/Site";
       <div class="map-placeholder"><span>No locations specified</span></div>
     </ng-template>
   `,
-  styleUrls: ["./map.component.scss"]
+  styleUrls: ["./map.component.scss"],
 })
 export class MapComponent implements OnInit, OnChanges {
   @Input() sites: Site[];

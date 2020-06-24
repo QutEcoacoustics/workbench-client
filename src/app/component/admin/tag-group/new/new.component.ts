@@ -28,7 +28,7 @@ import { fields } from "../tag-group.schema.json";
 @Component({
   selector: "app-admin-tag-groups-new",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="New Tag Group"
       [model]="model"
@@ -36,7 +36,7 @@ import { fields } from "../tag-group.schema.json";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {

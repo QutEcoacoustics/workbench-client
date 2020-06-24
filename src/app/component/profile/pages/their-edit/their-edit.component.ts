@@ -37,8 +37,8 @@ const accountKey = "account";
 @Component({
   selector: "app-their-edit",
   template: `
-    <app-wip *ngIf="!failure">
-      <app-form
+    <baw-wip *ngIf="!failure">
+      <baw-form
         [title]="title"
         btnColor="btn-warning"
         [model]="model"
@@ -46,12 +46,12 @@ const accountKey = "account";
         submitLabel="Update User"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
+      ></baw-form>
 
       <hr />
 
       <baw-detail-view [model]="model" [fields]="fields"></baw-detail-view>
-    </app-wip>
+    </baw-wip>
   `,
 })
 export class TheirEditComponent extends FormTemplate<User> implements OnInit {
