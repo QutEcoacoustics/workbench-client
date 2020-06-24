@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
   FaIconLibrary,
-  FontAwesomeModule
+  FontAwesomeModule,
 } from "@fortawesome/angular-fontawesome";
 import { fontAwesomeLibraries } from "src/app/app.helper";
 import { ItemComponent } from "./item/item.component";
@@ -16,7 +16,7 @@ import { SelectableItemsComponent } from "./selectable-items/selectable-items.co
 @NgModule({
   declarations: [ItemsComponent, ItemComponent, SelectableItemsComponent],
   imports: [CommonModule, RouterModule, FontAwesomeModule],
-  exports: [ItemsComponent, ItemComponent, SelectableItemsComponent]
+  exports: [ItemsComponent, ItemComponent, SelectableItemsComponent],
 })
 export class ItemsModule {
   constructor(library: FaIconLibrary) {

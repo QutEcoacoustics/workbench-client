@@ -20,7 +20,7 @@ import { FieldWrapper } from "@ngx-formly/core";
         <formly-validation-message [field]="field"></formly-validation-message>
       </div>
     </div>
-  `
+  `,
 })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyHorizontalWrapper extends FieldWrapper {}

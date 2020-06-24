@@ -20,32 +20,32 @@
         [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
       >
         <ng-container *ngIf="isAction(link)">
-          <app-menu-button
+          <baw-menu-button
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
-          ></app-menu-button>
+          ></baw-menu-button>
         </ng-container>
         <ng-container *ngIf="isInternalLink(link)">
-          <app-menu-internal-link
+          <baw-menu-internal-link
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
             [route]="link.route.format(params)"
           >
-          </app-menu-internal-link>
+          </baw-menu-internal-link>
         </ng-container>
         <ng-container *ngIf="isExternalLink(link)">
-          <app-menu-external-link
+          <baw-menu-external-link
             [id]="menuType + '-tooltip-' + i"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
             [uri]="link.uri(params)"
           >
-          </app-menu-external-link>
+          </baw-menu-external-link>
         </ng-container>
       </li>
 
@@ -53,7 +53,7 @@
     </ng-container>
 
     <div class="widget">
-      <ng-template appMenuWidget></ng-template>
+      <ng-template bawMenuWidget></ng-template>
     </div>
   </ul>
 </nav>

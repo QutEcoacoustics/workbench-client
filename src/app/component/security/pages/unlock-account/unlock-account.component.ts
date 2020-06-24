@@ -29,16 +29,16 @@ import { fields } from "./unlock-account.schema.json";
 @Component({
   selector: "app-confirm-account",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Resend unlock instructions"
         [model]="model"
         [fields]="fields"
         submitLabel="Resend unlock instructions"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class UnlockAccountComponent extends WithFormCheck(PageComponent)

@@ -31,26 +31,26 @@ export function GetRouteConfigForPage(
         path: "",
         pathMatch: "full",
         component: page.component,
-        canDeactivate: [FormTouchedGuard]
+        canDeactivate: [FormTouchedGuard],
       },
       {
         path: "",
         pathMatch: "full",
         outlet: "secondary",
-        component: SecondaryMenuComponent
+        component: SecondaryMenuComponent,
       },
       {
         path: "",
         pathMatch: "full",
         outlet: "action",
-        component: ActionMenuComponent
+        component: ActionMenuComponent,
       },
       {
         path: "",
         pathMatch: "full",
         outlet: "error",
-        component: ResolverHandlerComponent
-      }
-    ]
+        component: ResolverHandlerComponent,
+      },
+    ],
   } as Route;
 }

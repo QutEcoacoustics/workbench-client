@@ -3,5 +3,5 @@ import { version } from "../../package.json";
 
 export const environment: Configuration = {
   production: true,
-  version
+  version,
 } as any;

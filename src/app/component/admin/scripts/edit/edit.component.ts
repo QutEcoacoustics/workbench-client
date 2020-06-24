@@ -36,7 +36,7 @@ const scriptKey = "script";
 @Component({
   selector: "app-admin-scripts-edit",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -44,7 +44,7 @@ const scriptKey = "script";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminScriptsEditComponent extends FormTemplate<Script>

@@ -20,8 +20,8 @@ import { fields } from "./report-problem.schema.json";
 @Component({
   selector: "app-report-problem",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Report Problem"
         [subTitle]="subTitle"
         [model]="model"
@@ -29,8 +29,8 @@ import { fields } from "./report-problem.schema.json";
         submitLabel="Submit"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class ReportProblemComponent extends WithFormCheck(PageComponent)

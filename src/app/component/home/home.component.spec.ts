@@ -97,7 +97,7 @@ describe("HomeComponent", () => {
     }
 
     function getCardImages() {
-      return fixture.nativeElement.querySelectorAll("app-card-image");
+      return fixture.nativeElement.querySelectorAll("baw-card-image");
     }
 
     function getCardTitle(card: HTMLElement): HTMLElement {

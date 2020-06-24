@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
   FaIconLibrary,
-  FontAwesomeModule
+  FontAwesomeModule,
 } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { fontAwesomeLibraries } from "src/app/app.helper";
@@ -28,15 +28,15 @@ import { MenuComponent } from "./menu.component";
     PermissionsShieldComponent,
     UserBadgesComponent,
     UserBadgeComponent,
-    WidgetDirective
+    WidgetDirective,
   ],
   imports: [CommonModule, RouterModule, NgbModule, FontAwesomeModule],
   exports: [
     MenuComponent,
     PermissionsShieldComponent,
     UserBadgesComponent,
-    WidgetDirective
-  ]
+    WidgetDirective,
+  ],
 })
 export class MenuModule {
   constructor(library: FaIconLibrary) {

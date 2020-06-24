@@ -10,7 +10,7 @@ import { AppConfigService } from "src/app/services/app-config/app-config.service
  * Work In Progress Component
  */
 @Component({
-  selector: "app-wip",
+  selector: "baw-wip",
   template: `
     <p class="h1 text-warning text-center">Work In Progress</p>
     <div class="wrapper" [ngbTooltip]="tooltip">

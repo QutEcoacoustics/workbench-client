@@ -17,8 +17,8 @@ import { fields } from "./register.schema.json";
 @Component({
   selector: "app-authentication-register",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Register"
         size="small"
         [model]="model"
@@ -26,8 +26,8 @@ import { fields } from "./register.schema.json";
         submitLabel="Register"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class RegisterComponent extends PageComponent implements OnInit {

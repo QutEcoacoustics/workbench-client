@@ -41,7 +41,7 @@ const tagTypesKey = "tagTypes";
 @Component({
   selector: "app-admin-tags-edit",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -49,7 +49,7 @@ const tagTypesKey = "tagTypes";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagsEditComponent extends FormTemplate<Tag>

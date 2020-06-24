@@ -189,7 +189,7 @@ describe("SitesDetailsComponent", () => {
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
 
-      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      const googleMaps = fixture.nativeElement.querySelector("baw-map");
       expect(googleMaps).toBeTruthy();
       expect(googleMaps.querySelector("span").innerText).toContain(
         "No locations specified"
@@ -207,7 +207,7 @@ describe("SitesDetailsComponent", () => {
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
 
-      const googleMaps = fixture.nativeElement.querySelector("app-map");
+      const googleMaps = fixture.nativeElement.querySelector("baw-map");
       expect(googleMaps).toBeTruthy();
       expect(googleMaps.querySelector("p").innerText).toContain(
         "Lat: 0 Long: 1"

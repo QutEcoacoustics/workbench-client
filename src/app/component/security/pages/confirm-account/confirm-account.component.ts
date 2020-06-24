@@ -29,16 +29,16 @@ import { fields } from "./confirm-account.schema.json";
 @Component({
   selector: "app-confirm-account",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Resend confirmation instructions?"
         [model]="model"
         [fields]="fields"
         submitLabel="Resend confirmation instructions"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class ConfirmPasswordComponent extends WithFormCheck(PageComponent)

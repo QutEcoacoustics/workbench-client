@@ -33,7 +33,7 @@ const typeOfTagsKey = "typeOfTags";
 @Component({
   selector: "app-admin-tags-new",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="New Tag"
       [model]="model"
@@ -41,7 +41,7 @@ const typeOfTagsKey = "typeOfTags";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {

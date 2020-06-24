@@ -40,7 +40,7 @@ import { fields } from "./login.schema.json";
 @Component({
   selector: "app-authentication-login",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       title="Log in"
       size="small"
@@ -49,7 +49,7 @@ import { fields } from "./login.schema.json";
       submitLabel="Log in"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class LoginComponent extends FormTemplate<LoginDetails>

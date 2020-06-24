@@ -13,17 +13,17 @@ import { siteMenuItemActions } from "../details/details.component";
   category: sitesCategory,
   menus: {
     actions: List(siteMenuItemActions),
-    links: List()
+    links: List(),
   },
-  self: harvestMenuItem
+  self: harvestMenuItem,
 })
 @Component({
   selector: "app-sites-harvest",
   template: `
-    <app-wip>
-      <app-cms [page]="page"></app-cms>
-    </app-wip>
-  `
+    <baw-wip>
+      <baw-cms [page]="page"></baw-cms>
+    </baw-wip>
+  `,
 })
 export class HarvestComponent extends PageComponent implements OnInit {
   public page: string;

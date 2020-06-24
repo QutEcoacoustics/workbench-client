@@ -52,7 +52,7 @@ describe("UserBadgesComponent", () => {
   }
 
   function getUserBadges() {
-    return fixture.nativeElement.querySelectorAll("app-user-badge");
+    return fixture.nativeElement.querySelectorAll("baw-user-badge");
   }
 
   function assertBadgeLabel(badge: HTMLElement, label: string) {
@@ -153,7 +153,7 @@ describe("UserBadgesComponent", () => {
     });
     fixture.detectChanges();
 
-    const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
+    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
     expect(badges).toBeTruthy();
     expect(badges.length).toBe(3);
   }));
@@ -170,7 +170,7 @@ describe("UserBadgesComponent", () => {
 
     fixture.detectChanges();
 
-    const badges = fixture.nativeElement.querySelectorAll("app-user-badge");
+    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
     expect(badges).toBeTruthy();
     expect(badges.length).toBe(2);
   }));

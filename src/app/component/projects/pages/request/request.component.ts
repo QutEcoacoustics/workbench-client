@@ -27,8 +27,8 @@ import { fields } from "./request.schema.json";
 @Component({
   selector: "app-projects-request",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         *ngIf="projects"
         title="Request project access"
         [model]="model"
@@ -36,9 +36,9 @@ import { fields } from "./request.schema.json";
         submitLabel="Submit request"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-      <app-error-handler [error]="error"></app-error-handler>
-    </app-wip>
+      ></baw-form>
+      <baw-error-handler [error]="error"></baw-error-handler>
+    </baw-wip>
   `,
 })
 export class RequestComponent extends WithFormCheck(PageComponent)

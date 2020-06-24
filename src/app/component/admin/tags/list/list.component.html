@@ -29,11 +29,11 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Retired" width="90" maxWidth="90">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <app-checkbox
+        <baw-checkbox
           [id]="row.text"
           [checked]="value"
           [disabled]="true"
-        ></app-checkbox>
+        ></baw-checkbox>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Type"> </ngx-datatable-column>
@@ -57,4 +57,4 @@
   </ngx-datatable>
 </ng-container>
 
-<app-error-handler [error]="error"></app-error-handler>
+<baw-error-handler [error]="error"></baw-error-handler>

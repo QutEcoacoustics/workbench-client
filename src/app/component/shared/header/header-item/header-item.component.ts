@@ -2,14 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import {
   getRoute,
   isExternalLink,
   isInternalRoute,
-  NavigableMenuItem
+  NavigableMenuItem,
 } from "src/app/interfaces/menusInterfaces";
 
 /**
@@ -17,7 +17,7 @@ import {
  * Displays a header link.
  */
 @Component({
-  selector: "app-header-item",
+  selector: "baw-header-item",
   template: `
     <li class="nav-item" *ngIf="link">
       <ng-container *ngIf="isInternalRoute(link)">
@@ -36,7 +36,7 @@ import {
       </ng-container>
     </li>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderItemComponent implements OnInit {
   @Input() link: NavigableMenuItem;

@@ -53,7 +53,7 @@ describe("SecondaryMenuComponent", () => {
   function findLinks(
     selector: "internal-link" | "external-link" | "button"
   ): HTMLElement[] {
-    return fixture.nativeElement.querySelectorAll("app-menu-" + selector);
+    return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
   }
 
   function createTestBed(params: any, data: PageInfoInterface) {

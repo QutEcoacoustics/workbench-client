@@ -186,7 +186,7 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const dropdown = fixture.nativeElement.querySelector(
-            "app-header-dropdown"
+            "baw-header-dropdown"
           );
           expect(dropdown).toBeTruthy();
           expect(

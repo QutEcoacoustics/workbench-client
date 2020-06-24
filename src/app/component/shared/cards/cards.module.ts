@@ -11,6 +11,6 @@ import { CardsComponent } from "./cards.component";
 @NgModule({
   declarations: [CardsComponent, CardComponent, CardImageComponent],
   imports: [CommonModule, RouterModule],
-  exports: [CardsComponent]
+  exports: [CardsComponent],
 })
 export class CardsModule {}

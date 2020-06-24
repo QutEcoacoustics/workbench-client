@@ -1,4 +1,4 @@
-<app-wip>
+<baw-wip>
   <ng-container *ngIf="rows && !failure && !error">
     <h1>{{ project.name }}</h1>
 
@@ -56,6 +56,6 @@
       <ngx-datatable-column name="Description"></ngx-datatable-column>
     </ngx-datatable>
 
-    <app-error-handler [error]="error"></app-error-handler>
+    <baw-error-handler [error]="error"></baw-error-handler>
   </ng-container>
-</app-wip>
+</baw-wip>

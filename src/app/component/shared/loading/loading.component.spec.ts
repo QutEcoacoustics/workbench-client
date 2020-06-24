@@ -9,7 +9,7 @@ describe("LoadingComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LoadingComponent],
-      imports: [NgbModule]
+      imports: [NgbModule],
     }).compileComponents();
   }));
 

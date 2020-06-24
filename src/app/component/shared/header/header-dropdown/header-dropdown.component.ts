@@ -2,14 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { HeaderDropDownConvertedLink } from "src/app/helpers/app-initializer/app-initializer";
 import {
   getRoute,
   isExternalLink,
-  isInternalRoute
+  isInternalRoute,
 } from "src/app/interfaces/menusInterfaces";
 
 /**
@@ -17,7 +17,7 @@ import {
  * Displays a dropdown list of items for the user to choose from.
  */
 @Component({
-  selector: "app-header-dropdown",
+  selector: "baw-header-dropdown",
   template: `
     <li class="nav-item dropdown" ngbDropdown>
       <button
@@ -48,7 +48,7 @@ import {
       </div>
     </li>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderDropdownComponent implements OnInit {
   @Input() active: boolean;

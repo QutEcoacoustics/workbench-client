@@ -1,3 +1,4 @@
+import { environment } from "src/environments/environment";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
@@ -89,7 +90,7 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.imageUrls = userImageUrls(user);
+    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -146,7 +147,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
 
-    this.imageUrls = userImageUrls(user);
+    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -200,20 +201,24 @@ const defaultUserImages: ImageURL[] = [
   },
 ];
 
-function userImageUrls(model: IUser | ISessionUser) {
-  return model.imageUrls
-    ? model.imageUrls.map((imageUrl) => {
-        // TODO https://github.com/QutEcoacoustics/baw-server/issues/452
-        // Default values from API need to have /assets prepended
-        if (
-          imageUrl.url.startsWith("/") &&
-          !imageUrl.url.startsWith("/assets/")
-        ) {
-          imageUrl.url = "/assets" + imageUrl.url;
-        }
-        return imageUrl;
-      })
-    : defaultUserImages;
+function userImageUrls(imageUrls: ImageURL[]) {
+  // Do not change production urls
+  if (environment.production) {
+    return imageUrls;
+  }
+
+  return (
+    imageUrls?.map((imageUrl) => {
+      // Default values from API need to have /assets prepended
+      if (
+        imageUrl.url.startsWith("/") &&
+        !imageUrl.url.startsWith("/assets/")
+      ) {
+        imageUrl.url = "/assets" + imageUrl.url;
+      }
+      return imageUrl;
+    }) || defaultUserImages
+  );
 }
 
 /**

@@ -9,7 +9,7 @@ describe("CardImageComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CardImageComponent]
+      declarations: [CardImageComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardImageComponent);
@@ -20,7 +20,7 @@ describe("CardImageComponent", () => {
   it("should create", () => {
     component.card = {
       title: "title",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -29,7 +29,7 @@ describe("CardImageComponent", () => {
   it("should have title", () => {
     component.card = {
       title: "title",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     fixture.detectChanges();
 
@@ -40,7 +40,7 @@ describe("CardImageComponent", () => {
   it("should have image alt", () => {
     component.card = {
       title: "title",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     fixture.detectChanges();
 
@@ -51,7 +51,7 @@ describe("CardImageComponent", () => {
   it("should handle local image", () => {
     component.card = {
       title: "title",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     fixture.detectChanges();
 
@@ -65,8 +65,8 @@ describe("CardImageComponent", () => {
       image: {
         url:
           "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
-        alt: "alt"
-      }
+        alt: "alt",
+      },
     };
     fixture.detectChanges();
 
@@ -80,7 +80,7 @@ describe("CardImageComponent", () => {
     component.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      description: "description"
+      description: "description",
     };
     fixture.detectChanges();
 
@@ -92,7 +92,7 @@ describe("CardImageComponent", () => {
     component.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      link: "https://link/"
+      link: "https://link/",
     };
     fixture.detectChanges();
 
@@ -104,7 +104,7 @@ describe("CardImageComponent", () => {
     component.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      link: "https://link/"
+      link: "https://link/",
     };
     fixture.detectChanges();
 
@@ -118,7 +118,7 @@ describe("CardImageComponent", () => {
     component.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      link: "https://link/"
+      link: "https://link/",
     };
     fixture.detectChanges();
 

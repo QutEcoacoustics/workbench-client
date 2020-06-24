@@ -13,7 +13,7 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
  * Item Component
  */
 @Component({
-  selector: "app-items-item",
+  selector: "baw-items-item",
   template: `
     <div class="clearfix" style="font-size: 0.925rem;">
       <!-- Item icon -->

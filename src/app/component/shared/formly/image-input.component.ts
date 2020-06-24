@@ -30,7 +30,7 @@ import { FieldType } from "@ngx-formly/core";
         />
       </div>
     </div>
-  `
+  `,
 })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyImageInput extends FieldType {

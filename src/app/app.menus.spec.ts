@@ -2,7 +2,7 @@ import {
   isAdminPredicate,
   isGuestPredicate,
   isLoggedInPredicate,
-  isProjectOwnerPredicate
+  isProjectOwnerPredicate,
 } from "./app.menus";
 import { Project } from "./models/Project";
 import { SessionUser } from "./models/User";
@@ -20,14 +20,14 @@ describe("Predicates", () => {
       userName: "username",
       authToken: "xxxxxxxxxxxxxxx",
       rolesMask: 2,
-      rolesMaskNames: ["user"]
+      rolesMaskNames: ["user"],
     });
     adminUser = new SessionUser({
       id: 1,
       userName: "username",
       authToken: "xxxxxxxxxxxxxxx",
       rolesMask: 3,
-      rolesMaskNames: ["admin"]
+      rolesMaskNames: ["admin"],
     });
     guestUser = undefined;
   });
@@ -61,9 +61,9 @@ describe("Predicates", () => {
           model: new Project({
             id: 1,
             name: "Project",
-            ownerId: 5
-          })
-        }
+            ownerId: 5,
+          }),
+        },
       };
     });
 
@@ -74,7 +74,7 @@ describe("Predicates", () => {
     it("should be true when logged in as owner", () => {
       const user = new SessionUser({
         ...defaultUser,
-        id: 5
+        id: 5,
       });
 
       expect(isProjectOwnerPredicate(user, data)).toBeTrue();
@@ -99,7 +99,7 @@ describe("Predicates", () => {
     it("should handle error project", () => {
       expect(
         isProjectOwnerPredicate(defaultUser, {
-          project: { status: 401, message: "Unauthorized" } as ApiErrorDetails
+          project: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
         })
       ).toBeFalse();
     });

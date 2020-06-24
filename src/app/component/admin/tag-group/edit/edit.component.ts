@@ -36,7 +36,7 @@ const tagGroupKey = "tagGroup";
 @Component({
   selector: "app-admin-tag-groups-edit",
   template: `
-    <app-form
+    <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
@@ -44,7 +44,7 @@ const tagGroupKey = "tagGroup";
       [submitLoading]="loading"
       submitLabel="Submit"
       (onSubmit)="submit($event)"
-    ></app-form>
+    ></baw-form>
   `,
 })
 export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>

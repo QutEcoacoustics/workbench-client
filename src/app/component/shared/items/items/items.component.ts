@@ -13,28 +13,28 @@ import { ItemInterface } from "../item/item.component";
  * This creates a list of items split into two columns.
  */
 @Component({
-  selector: "app-items",
+  selector: "baw-items",
   template: `
     <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let stat of groupOne">
-            <app-items-item
+            <baw-items-item
               [icon]="stat.icon"
               [name]="stat.name"
               [value]="stat.value"
-            ></app-items-item>
+            ></baw-items-item>
           </li>
         </ul>
       </div>
       <div class="col-sm-6">
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let stat of groupTwo">
-            <app-items-item
+            <baw-items-item
               [icon]="stat.icon"
               [name]="stat.name"
               [value]="stat.value"
-            ></app-items-item>
+            ></baw-items-item>
           </li>
         </ul>
       </div>

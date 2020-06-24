@@ -32,10 +32,10 @@ export function Page(
     // }
 
     Object.defineProperty(componentConstructor, "pageInfo", {
-      value: staticInfo
+      value: staticInfo,
     });
     Object.defineProperty(componentConstructor.prototype, "pageInfo", {
-      value: staticInfo
+      value: staticInfo,
     });
 
     // we know this conversion is correct

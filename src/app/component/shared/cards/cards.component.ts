@@ -3,7 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { List } from "immutable";
 
@@ -11,10 +11,10 @@ import { List } from "immutable";
  * Cards Component
  */
 @Component({
-  selector: "app-cards",
+  selector: "baw-cards",
   templateUrl: "./cards.component.html",
   styleUrls: ["./cards.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardsComponent implements OnInit, OnChanges {
   @Input() cards: List<Card>;
@@ -33,7 +33,7 @@ export class CardsComponent implements OnInit, OnChanges {
     }
 
     this.imageCards = false;
-    this.cards.forEach(card => {
+    this.cards.forEach((card) => {
       if (card.image) {
         this.imageCards = true;
       } else if (this.imageCards) {

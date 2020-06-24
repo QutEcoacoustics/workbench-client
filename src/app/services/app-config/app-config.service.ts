@@ -4,7 +4,7 @@ import {
   Configuration,
   Environment,
   isConfiguration,
-  Values
+  Values,
 } from "src/app/helpers/app-initializer/app-initializer";
 import { environment } from "src/environments/environment";
 
@@ -26,7 +26,7 @@ export class AppConfigService {
           closeButton: false,
           disableTimeOut: true,
           tapToDismiss: false,
-          positionClass: "toast-center-center"
+          positionClass: "toast-center-center",
         }
       );
       return;

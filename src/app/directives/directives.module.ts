@@ -8,6 +8,6 @@ const directives = [DatatableDirective];
  */
 @NgModule({
   declarations: directives,
-  exports: directives
+  exports: directives,
 })
 export class DirectivesModule {}

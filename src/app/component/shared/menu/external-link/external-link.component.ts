@@ -3,7 +3,7 @@ import {
   Component,
   Inject,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
 import { MenuLink } from "src/app/interfaces/menusInterfaces";
@@ -12,7 +12,7 @@ import { MenuLink } from "src/app/interfaces/menusInterfaces";
  * External Menu Link Component
  */
 @Component({
-  selector: "app-menu-external-link",
+  selector: "baw-menu-external-link",
   template: `
     <a
       class="nav-link"
@@ -28,7 +28,7 @@ import { MenuLink } from "src/app/interfaces/menusInterfaces";
     </a>
   `,
   styleUrls: ["./external-link.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuExternalLinkComponent implements OnInit {
   @Input() id: string;

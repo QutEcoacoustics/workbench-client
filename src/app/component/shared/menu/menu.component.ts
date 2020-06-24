@@ -27,7 +27,7 @@ import { WidgetMenuItem } from "../widget/widgetItem";
  * Used to display menu links, routes, and actions.
  */
 @Component({
-  selector: "app-menu",
+  selector: "baw-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

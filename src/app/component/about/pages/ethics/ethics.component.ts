@@ -15,7 +15,7 @@ import { List } from "immutable";
 })
 @Component({
   selector: "app-about-ethics",
-  template: ` <app-cms [page]="page"></app-cms> `,
+  template: ` <baw-cms [page]="page"></baw-cms> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EthicsComponent extends PageComponent implements OnInit {

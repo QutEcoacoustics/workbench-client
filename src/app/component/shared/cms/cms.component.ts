@@ -4,7 +4,7 @@ import {
   Component,
   Inject,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { takeUntil } from "rxjs/operators";
@@ -16,14 +16,14 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
  * CMS Wrapper
  */
 @Component({
-  selector: "app-cms",
+  selector: "baw-cms",
   template: `
     <ng-container *ngIf="blob">
       <div [innerHtml]="blob"></div>
     </ng-container>
-    <app-loading [isLoading]="loading"></app-loading>
-    <app-error-handler [error]="error"></app-error-handler>
-  `
+    <baw-loading [isLoading]="loading"></baw-loading>
+    <baw-error-handler [error]="error"></baw-error-handler>
+  `,
 })
 export class CmsComponent extends WithUnsubscribe() implements OnInit {
   @Input() page: string;
@@ -47,7 +47,7 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
       .get(this.cmsRoot + this.page, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        data => {
+        (data) => {
           // This is a bit dangerous, however CMS should only load from trusted sources.
           // May need to revise this in future.
           this.blob = this.sanitizer.bypassSecurityTrustHtml(data);

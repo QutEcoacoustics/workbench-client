@@ -22,27 +22,27 @@ import { Badge } from "./user-badge/user-badge.component";
  * A group of user badge permissions for a model.
  */
 @Component({
-  selector: "app-user-badges",
+  selector: "baw-user-badges",
   template: `
     <div>
-      <app-user-badge
+      <baw-user-badge
         *ngIf="created"
         [label]="created.label"
         [users]="created.users"
         [lengthOfTime]="created.lengthOfTime"
-      ></app-user-badge>
-      <app-user-badge
+      ></baw-user-badge>
+      <baw-user-badge
         *ngIf="updated"
         [label]="updated.label"
         [users]="updated.users"
         [lengthOfTime]="updated.lengthOfTime"
-      ></app-user-badge>
-      <app-user-badge
+      ></baw-user-badge>
+      <baw-user-badge
         *ngIf="owned"
         [label]="owned.label"
         [users]="owned.users"
         [lengthOfTime]="owned.lengthOfTime"
-      ></app-user-badge>
+      ></baw-user-badge>
     </div>
   `,
   styleUrls: ["./user-badges.component.scss"],

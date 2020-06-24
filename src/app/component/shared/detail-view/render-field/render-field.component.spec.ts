@@ -33,7 +33,7 @@ describe("RenderFieldComponent", () => {
 
   function getCheckboxValues(): NodeListOf<HTMLElement> {
     return (fixture.nativeElement as HTMLElement).querySelectorAll(
-      "dl app-checkbox"
+      "dl baw-checkbox"
     );
   }
 

@@ -6,7 +6,7 @@ import { Component, OnInit } from "@angular/core";
     <div>
       Not Found! TODO: make me better!
     </div>
-  `
+  `,
 })
 export class PageNotFoundComponent implements OnInit {
   constructor() {}

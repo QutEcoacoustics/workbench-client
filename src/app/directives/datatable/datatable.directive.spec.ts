@@ -21,7 +21,7 @@ describe("DatatableDirective", () => {
         ${
           overrideDefaults
             ? Object.keys(overrideDefaults)
-                .map(key => {
+                .map((key) => {
                   return "[" + key + "]='" + overrideDefaults[key] + "'";
                 })
                 .toString()
@@ -33,7 +33,7 @@ describe("DatatableDirective", () => {
     `;
 
     @Component({
-      template
+      template,
     })
     class MockComponent {
       rows = [{ id: 1 }];
@@ -44,7 +44,7 @@ describe("DatatableDirective", () => {
 
     TestBed.configureTestingModule({
       declarations: [MockComponent, DatatableDirective],
-      imports: [SharedModule]
+      imports: [SharedModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);

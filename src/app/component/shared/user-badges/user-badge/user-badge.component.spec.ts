@@ -8,11 +8,11 @@ import { UserBadgeComponent } from "./user-badge.component";
 
 @Component({
   template: `
-    <app-user-badge
+    <baw-user-badge
       [label]="label"
       [users]="users"
       [lengthOfTime]="lengthOfTime"
-    ></app-user-badge>
+    ></baw-user-badge>
   `,
 })
 class TestUserBadgeComponent {

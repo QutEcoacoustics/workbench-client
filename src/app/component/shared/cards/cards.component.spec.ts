@@ -12,7 +12,7 @@ describe("CardsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CardComponent, CardImageComponent, CardsComponent]
+      declarations: [CardComponent, CardImageComponent, CardsComponent],
     }).compileComponents();
   }));
 
@@ -31,7 +31,7 @@ describe("CardsComponent", () => {
   it("should handle no cards", () => {
     fixture.detectChanges();
 
-    const cards = compiled.nativeElement.querySelectorAll("app-card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card");
     expect(cards.length).toBe(0);
   });
 
@@ -39,7 +39,7 @@ describe("CardsComponent", () => {
     component.cards = List([{ title: "title" }]);
     fixture.detectChanges();
 
-    const cards = compiled.nativeElement.querySelectorAll("app-card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card");
     expect(cards.length).toBe(1);
   });
 
@@ -47,7 +47,7 @@ describe("CardsComponent", () => {
     component.cards = List([{ title: "title" }, { title: "title" }]);
     fixture.detectChanges();
 
-    const cards = compiled.nativeElement.querySelectorAll("app-card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card");
     expect(cards.length).toBe(2);
   });
 
@@ -59,12 +59,12 @@ describe("CardsComponent", () => {
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
-      title: "title"
+      title: "title",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
-    const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
+    const card = compiled.nativeElement.querySelectorAll("baw-card .card")[0];
     expect(card).toEqual(testCard);
   });
 
@@ -77,12 +77,12 @@ describe("CardsComponent", () => {
     const cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title",
-      description: "description"
+      description: "description",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
-    const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
+    const card = compiled.nativeElement.querySelectorAll("baw-card .card")[0];
     expect(card).toEqual(testCard);
   });
 
@@ -95,25 +95,25 @@ describe("CardsComponent", () => {
     const cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title",
-      link: "https://link/"
+      link: "https://link/",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
-    const card = compiled.nativeElement.querySelectorAll("app-card .card")[0];
+    const card = compiled.nativeElement.querySelectorAll("baw-card .card")[0];
     expect(card).toEqual(testCard);
   });
 
   it("should create multiple cards in correct order", () => {
     component.cards = List([{ title: "title1" }, { title: "title2" }]);
     fixture.detectChanges();
-    const cards = compiled.nativeElement.querySelectorAll("app-card .card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card .card");
 
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
     let cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
-      title: "title1"
+      title: "title1",
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -124,7 +124,7 @@ describe("CardsComponent", () => {
     cardFixture = TestBed.createComponent(CardComponent);
     cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
-      title: "title2"
+      title: "title2",
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -135,13 +135,13 @@ describe("CardsComponent", () => {
   it("should create multiple cards with same titles", () => {
     component.cards = List([{ title: "title" }, { title: "title" }]);
     fixture.detectChanges();
-    const cards = compiled.nativeElement.querySelectorAll("app-card .card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card .card");
 
     // Create first card
     const cardFixture = TestBed.createComponent(CardComponent);
     const cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
-      title: "title"
+      title: "title",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -153,76 +153,10 @@ describe("CardsComponent", () => {
   it("should create multiple cards with different descriptions", () => {
     component.cards = List([
       { title: "title1", description: "desc1" },
-      { title: "title2", description: "desc2" }
+      { title: "title2", description: "desc2" },
     ]);
     fixture.detectChanges();
-    const cards = compiled.nativeElement.querySelectorAll("app-card .card");
-
-    // Create first card
-    let cardFixture = TestBed.createComponent(CardComponent);
-    let cardComponent = cardFixture.componentInstance;
-    cardComponent.card = {
-      title: "title1",
-      description: "desc1"
-    };
-    cardFixture.detectChanges();
-    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
-
-    expect(cards[0]).toEqual(testCard);
-
-    // Create second card
-    cardFixture = TestBed.createComponent(CardComponent);
-    cardComponent = cardFixture.componentInstance;
-    cardComponent.card = {
-      title: "title2",
-      description: "desc2"
-    };
-    cardFixture.detectChanges();
-    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
-
-    expect(cards[1]).toEqual(testCard);
-  });
-
-  it("should create multiple cards with different links", () => {
-    component.cards = List([
-      { title: "title1", link: "https://link1/" },
-      { title: "title2", link: "https://link2/" }
-    ]);
-    fixture.detectChanges();
-    const cards = compiled.nativeElement.querySelectorAll("app-card .card");
-
-    // Create first card
-    let cardFixture = TestBed.createComponent(CardComponent);
-    let cardComponent = cardFixture.componentInstance;
-    cardComponent.card = {
-      title: "title1",
-      link: "https://link1/"
-    };
-    cardFixture.detectChanges();
-    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
-
-    expect(cards[0]).toEqual(testCard);
-
-    // Create second card
-    cardFixture = TestBed.createComponent(CardComponent);
-    cardComponent = cardFixture.componentInstance;
-    cardComponent.card = {
-      title: "title2",
-      link: "https://link2/"
-    };
-    cardFixture.detectChanges();
-    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
-
-    expect(cards[1]).toEqual(testCard);
-  });
-
-  it("should create multiple cards with multiple params", () => {
-    component.cards = List([
-      { title: "title1", description: "desc1", link: "https://link1/" },
-      { title: "title2", description: "desc2", link: "https://link2/" }
-    ]);
-    fixture.detectChanges();
-    const cards = compiled.nativeElement.querySelectorAll("app-card .card");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card .card");
 
     // Create first card
     let cardFixture = TestBed.createComponent(CardComponent);
@@ -230,7 +164,6 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title1",
       description: "desc1",
-      link: "https://link1/"
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -243,7 +176,74 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title2",
       description: "desc2",
-      link: "https://link2/"
+    };
+    cardFixture.detectChanges();
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
+
+    expect(cards[1]).toEqual(testCard);
+  });
+
+  it("should create multiple cards with different links", () => {
+    component.cards = List([
+      { title: "title1", link: "https://link1/" },
+      { title: "title2", link: "https://link2/" },
+    ]);
+    fixture.detectChanges();
+    const cards = compiled.nativeElement.querySelectorAll("baw-card .card");
+
+    // Create first card
+    let cardFixture = TestBed.createComponent(CardComponent);
+    let cardComponent = cardFixture.componentInstance;
+    cardComponent.card = {
+      title: "title1",
+      link: "https://link1/",
+    };
+    cardFixture.detectChanges();
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
+
+    expect(cards[0]).toEqual(testCard);
+
+    // Create second card
+    cardFixture = TestBed.createComponent(CardComponent);
+    cardComponent = cardFixture.componentInstance;
+    cardComponent.card = {
+      title: "title2",
+      link: "https://link2/",
+    };
+    cardFixture.detectChanges();
+    testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
+
+    expect(cards[1]).toEqual(testCard);
+  });
+
+  it("should create multiple cards with multiple params", () => {
+    component.cards = List([
+      { title: "title1", description: "desc1", link: "https://link1/" },
+      { title: "title2", description: "desc2", link: "https://link2/" },
+    ]);
+    fixture.detectChanges();
+    const cards = compiled.nativeElement.querySelectorAll("baw-card .card");
+
+    // Create first card
+    let cardFixture = TestBed.createComponent(CardComponent);
+    let cardComponent = cardFixture.componentInstance;
+    cardComponent.card = {
+      title: "title1",
+      description: "desc1",
+      link: "https://link1/",
+    };
+    cardFixture.detectChanges();
+    let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
+
+    expect(cards[0]).toEqual(testCard);
+
+    // Create second card
+    cardFixture = TestBed.createComponent(CardComponent);
+    cardComponent = cardFixture.componentInstance;
+    cardComponent.card = {
+      title: "title2",
+      description: "desc2",
+      link: "https://link2/",
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -253,29 +253,29 @@ describe("CardsComponent", () => {
 
   it("should create single image card", () => {
     component.cards = List([
-      { title: "title", image: { url: "image", alt: "alt" } }
+      { title: "title", image: { url: "image", alt: "alt" } },
     ]);
     fixture.detectChanges();
 
-    const card = compiled.nativeElement.querySelectorAll("app-card-image");
+    const card = compiled.nativeElement.querySelectorAll("baw-card-image");
     expect(card.length).toBe(1);
   });
 
   it("should create multiple image cards", () => {
     component.cards = List([
       { title: "title", image: { url: "image", alt: "alt" } },
-      { title: "title", image: { url: "image", alt: "alt" } }
+      { title: "title", image: { url: "image", alt: "alt" } },
     ]);
     fixture.detectChanges();
 
-    const cards = compiled.nativeElement.querySelectorAll("app-card-image");
+    const cards = compiled.nativeElement.querySelectorAll("baw-card-image");
     expect(cards.length).toBe(2);
   });
 
   it("should not create with some cards containing images and others not", () => {
     component.cards = List([
       { title: "title", image: { url: "image", alt: "alt" } },
-      { title: "title" }
+      { title: "title" },
     ]);
 
     expect(() => fixture.detectChanges()).toThrow();
@@ -283,7 +283,7 @@ describe("CardsComponent", () => {
 
   it("should create image card with title and image", () => {
     component.cards = List([
-      { title: "title", image: { url: "image", alt: "alt" } }
+      { title: "title", image: { url: "image", alt: "alt" } },
     ]);
     fixture.detectChanges();
 
@@ -292,13 +292,13 @@ describe("CardsComponent", () => {
     const cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     )[0];
     expect(card).toEqual(testCard);
   });
@@ -308,8 +308,8 @@ describe("CardsComponent", () => {
       {
         title: "title",
         image: { url: "image", alt: "alt" },
-        description: "description"
-      }
+        description: "description",
+      },
     ]);
     fixture.detectChanges();
 
@@ -319,13 +319,13 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      description: "description"
+      description: "description",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     )[0];
     expect(card).toEqual(testCard);
   });
@@ -335,8 +335,8 @@ describe("CardsComponent", () => {
       {
         title: "title",
         image: { url: "image", alt: "alt" },
-        link: "https://link/"
-      }
+        link: "https://link/",
+      },
     ]);
     fixture.detectChanges();
 
@@ -346,13 +346,13 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title",
       image: { url: "image", alt: "alt" },
-      link: "https://link/"
+      link: "https://link/",
     };
     cardFixture.detectChanges();
     const testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     const card = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     )[0];
     expect(card).toEqual(testCard);
   });
@@ -360,11 +360,11 @@ describe("CardsComponent", () => {
   it("should create multiple image cards in correct order", () => {
     component.cards = List([
       { title: "title1", image: { url: "image1", alt: "alt1" } },
-      { title: "title2", image: { url: "image2", alt: "alt2" } }
+      { title: "title2", image: { url: "image2", alt: "alt2" } },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -372,7 +372,7 @@ describe("CardsComponent", () => {
     let cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title1",
-      image: { url: "image1", alt: "alt1" }
+      image: { url: "image1", alt: "alt1" },
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -384,7 +384,7 @@ describe("CardsComponent", () => {
     cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title2",
-      image: { url: "image2", alt: "alt2" }
+      image: { url: "image2", alt: "alt2" },
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -395,11 +395,11 @@ describe("CardsComponent", () => {
   it("should create multiple image cards with same titles", () => {
     component.cards = List([
       { title: "title", image: { url: "image1", alt: "alt1" } },
-      { title: "title", image: { url: "image2", alt: "alt2" } }
+      { title: "title", image: { url: "image2", alt: "alt2" } },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -407,7 +407,7 @@ describe("CardsComponent", () => {
     let cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title",
-      image: { url: "image1", alt: "alt1" }
+      image: { url: "image1", alt: "alt1" },
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -419,7 +419,7 @@ describe("CardsComponent", () => {
     cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title",
-      image: { url: "image2", alt: "alt2" }
+      image: { url: "image2", alt: "alt2" },
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -430,11 +430,11 @@ describe("CardsComponent", () => {
   it("should create multiple image cards with same images", () => {
     component.cards = List([
       { title: "title1", image: { url: "image", alt: "alt" } },
-      { title: "title2", image: { url: "image", alt: "alt" } }
+      { title: "title2", image: { url: "image", alt: "alt" } },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -442,7 +442,7 @@ describe("CardsComponent", () => {
     let cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title1",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -454,7 +454,7 @@ describe("CardsComponent", () => {
     cardComponent = cardFixture.componentInstance;
     cardComponent.card = {
       title: "title2",
-      image: { url: "image", alt: "alt" }
+      image: { url: "image", alt: "alt" },
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -467,17 +467,17 @@ describe("CardsComponent", () => {
       {
         title: "title1",
         image: { url: "image1", alt: "alt1" },
-        description: "desc1"
+        description: "desc1",
       },
       {
         title: "title2",
         image: { url: "image2", alt: "alt2" },
-        description: "desc2"
-      }
+        description: "desc2",
+      },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -486,7 +486,7 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title1",
       image: { url: "image1", alt: "alt1" },
-      description: "desc1"
+      description: "desc1",
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -499,7 +499,7 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title2",
       image: { url: "image2", alt: "alt2" },
-      description: "desc2"
+      description: "desc2",
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -512,17 +512,17 @@ describe("CardsComponent", () => {
       {
         title: "title1",
         image: { url: "image1", alt: "alt1" },
-        link: "https://link1/"
+        link: "https://link1/",
       },
       {
         title: "title2",
         image: { url: "image2", alt: "alt2" },
-        link: "https://link2/"
-      }
+        link: "https://link2/",
+      },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -531,7 +531,7 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title1",
       image: { url: "image1", alt: "alt1" },
-      link: "https://link1/"
+      link: "https://link1/",
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -544,7 +544,7 @@ describe("CardsComponent", () => {
     cardComponent.card = {
       title: "title2",
       image: { url: "image2", alt: "alt2" },
-      link: "https://link2/"
+      link: "https://link2/",
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -558,18 +558,18 @@ describe("CardsComponent", () => {
         title: "title1",
         image: { url: "image1", alt: "alt1" },
         description: "desc1",
-        link: "https://link1/"
+        link: "https://link1/",
       },
       {
         title: "title2",
         image: { url: "image2", alt: "alt2" },
         description: "desc2",
-        link: "https://link2/"
-      }
+        link: "https://link2/",
+      },
     ]);
     fixture.detectChanges();
     const cards = compiled.nativeElement.querySelectorAll(
-      "app-card-image .card"
+      "baw-card-image .card"
     );
 
     // Create first card
@@ -579,7 +579,7 @@ describe("CardsComponent", () => {
       title: "title1",
       image: { url: "image1", alt: "alt1" },
       description: "desc1",
-      link: "https://link1/"
+      link: "https://link1/",
     };
     cardFixture.detectChanges();
     let testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
@@ -593,7 +593,7 @@ describe("CardsComponent", () => {
       title: "title2",
       image: { url: "image2", alt: "alt2" },
       description: "desc2",
-      link: "https://link2/"
+      link: "https://link2/",
     };
     cardFixture.detectChanges();
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];

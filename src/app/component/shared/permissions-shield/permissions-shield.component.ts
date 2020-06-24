@@ -10,15 +10,15 @@ import { WidgetComponent } from "../widget/widget.component";
  * Displays the user badges and access levels for the model.
  */
 @Component({
-  selector: "app-permissions-shield",
+  selector: "baw-permissions-shield",
   template: `
     <div *ngIf="model">
-      <app-user-badges [model]="model"></app-user-badges>
+      <baw-user-badges [model]="model"></baw-user-badges>
       <h4>Your access level</h4>
       <p>Not Implemented</p>
     </div>
   `,
-  styleUrls: ["./permissions-shield.component.scss"]
+  styleUrls: ["./permissions-shield.component.scss"],
 })
 export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   public model: Site | Project;

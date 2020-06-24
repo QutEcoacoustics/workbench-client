@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { MenuRoute } from "src/app/interfaces/menusInterfaces";
 
@@ -10,7 +10,7 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
  * Internal Menu Link Component
  */
 @Component({
-  selector: "app-menu-internal-link",
+  selector: "baw-menu-internal-link",
   template: `
     <a
       class="nav-link"
@@ -27,7 +27,7 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
     </a>
   `,
   styleUrls: ["./internal-link.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuInternalLinkComponent implements OnInit {
   @Input() id: string;

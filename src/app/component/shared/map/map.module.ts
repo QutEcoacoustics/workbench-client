@@ -11,8 +11,8 @@ import { MapComponent } from "./map.component";
     CommonModule,
     RouterModule,
     AgmCoreModule,
-    AgmSnazzyInfoWindowModule
+    AgmSnazzyInfoWindowModule,
   ],
-  exports: [MapComponent]
+  exports: [MapComponent],
 })
 export class MapModule {}

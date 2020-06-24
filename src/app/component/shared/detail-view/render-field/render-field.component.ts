@@ -28,13 +28,13 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 
       <!-- Display checkbox -->
       <dl *ngIf="styling === FieldStyling.Checkbox">
-        <app-checkbox
+        <baw-checkbox
           id="checkbox"
           class="m-0"
           [checked]="display"
           [disabled]="true"
           [isCentered]="false"
-        ></app-checkbox>
+        ></baw-checkbox>
       </dl>
 
       <!-- Display AbstractModel -->

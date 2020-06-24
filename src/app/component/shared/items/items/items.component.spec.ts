@@ -13,20 +13,20 @@ describe("ItemsComponent", () => {
 
   function getItems(): NodeListOf<HTMLElement> {
     return (fixture.nativeElement as HTMLElement).querySelectorAll(
-      "app-items-item"
+      "baw-items-item"
     );
   }
 
   function getLeftColumn() {
     return (fixture.nativeElement as HTMLElement)
       .querySelectorAll("ul.list-group")[0]
-      .querySelectorAll("app-items-item");
+      .querySelectorAll("baw-items-item");
   }
 
   function getRightColumn() {
     return (fixture.nativeElement as HTMLElement)
       .querySelectorAll("ul.list-group")[1]
-      .querySelectorAll("app-items-item");
+      .querySelectorAll("baw-items-item");
   }
 
   function assertItem(item: HTMLElement, name: string) {

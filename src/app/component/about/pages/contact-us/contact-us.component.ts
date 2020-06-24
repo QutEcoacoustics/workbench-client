@@ -17,16 +17,16 @@ import { fields } from "./contact-us.schema.json";
 @Component({
   selector: "app-about-contact-us",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Contact Us"
         [model]="model"
         [fields]="fields"
         submitLabel="Submit"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class ContactUsComponent extends WithFormCheck(PageComponent)

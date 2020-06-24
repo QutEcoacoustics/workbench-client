@@ -29,16 +29,16 @@ import { fields } from "./reset-password.schema.json";
 @Component({
   selector: "app-reset-password",
   template: `
-    <app-wip>
-      <app-form
+    <baw-wip>
+      <baw-form
         title="Forgot your password?"
         [model]="model"
         [fields]="fields"
         submitLabel="Send me reset password instructions"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
-      ></app-form>
-    </app-wip>
+      ></baw-form>
+    </baw-wip>
   `,
 })
 export class ResetPasswordComponent extends WithFormCheck(PageComponent)

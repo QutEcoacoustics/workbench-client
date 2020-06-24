@@ -7,7 +7,7 @@ import { PageInfo } from "src/app/helpers/page/pageInfo";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
   MenuRoute,
-  NavigableMenuItem
+  NavigableMenuItem,
 } from "src/app/interfaces/menusInterfaces";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
@@ -18,16 +18,16 @@ import { WidgetMenuItem } from "../widget/widgetItem";
  * user the path they've taken.
  */
 @Component({
-  selector: "app-secondary-menu",
+  selector: "baw-secondary-menu",
   template: `
-    <app-menu
+    <baw-menu
       [links]="contextLinks"
       [widget]="linksWidget"
       [menuType]="'secondary'"
     >
-    </app-menu>
+    </baw-menu>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryMenuComponent extends WithUnsubscribe()
   implements OnInit {
@@ -76,7 +76,7 @@ export class SecondaryMenuComponent extends WithUnsubscribe()
         this.contextLinks = allLinks;
         this.linksWidget = linksWidget;
       },
-      err => {}
+      (err) => {}
     );
   }
 }
