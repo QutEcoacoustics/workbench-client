@@ -32,7 +32,16 @@ jobs:
         run: npm install
 
       - name: Run test suite
-        run: npm run test:pipeline
+        run: npm run test:pipeline:linux
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Run test suite
+        run: npm run test:pipeline:windows
+        if: matrix.os == 'windows-latest'
+
+      - name: Run test suite
+        run: npm run test:pipeline:mac
+        if: matrix.os == 'macOS-latest'
 
       - name: Run e2e test suite
         run: npm run e2e
