@@ -12,9 +12,7 @@ The Angular 9 client for an acoustic workbench application.
 - NPM LTS
 - Chrome LTS
 - Firefox LTS
-- [OPTIONAL] Edge LTS
-- [OPTIONAL] Opera LTS
-- [OPTIONAL] Safari LTS
+- Edge (Chromium) LTS
 
 ### Installation
 
@@ -30,7 +28,7 @@ $ npm install
 $ npm start
 ```
 
-Then open a web browser to `localhost:4200`.
+Then open a web browser to `http://localhost:4200`.
 
 ### Access the ng tool
 
@@ -40,9 +38,13 @@ $ npx ng
 
 or
 
+```bash
+$ npm run ng
 ```
-npm run ng
-```
+
+### Extensions
+
+The workspace comes with a list of extensions which may help you when it comes to working on the application. Currently the Angular Language Service extension does not officially support the version of typescript that this project is running, and you will need to upgrade it to a beta release: https://github.com/angular/vscode-ng-language-service/issues/797 https://github.com/angular/vscode-ng-language-service/releases/tag/v0.1000.0-rc.1
 
 ### Testing
 
@@ -56,7 +58,7 @@ $ npm run e2e
 
 #### Unit tests
 
-This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge, Opera, Safari.
+This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge.
 
 Development Testing:
 
@@ -76,16 +78,10 @@ Firefox Browser Testing:
 $ npm run test:firefox
 ```
 
-Edge Browser Testing:
+Edge (Chromium Based) Browser Testing:
 
 ```bash
 $ npm run test:edge
-```
-
-[BROKEN] Opera Browser Testing:
-
-```bash
-$ npm run test:opera
 ```
 
 All Supported Browsers Testing:
@@ -112,7 +108,7 @@ Move the generated files from the `/dist` directory to the required location.
 
 When adding a library to the repository, you may wish to view its cost on the system. You can view the build size using the following command:
 
-```typescript
+```bash
 $ npm run stats
 ```
 
