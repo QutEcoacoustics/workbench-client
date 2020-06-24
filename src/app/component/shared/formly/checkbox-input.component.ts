@@ -19,7 +19,7 @@ import { FieldType } from "@ngx-formly/core";
       />
       <label class="custom-control-label" [for]="id + '-checkbox'"></label>
     </div>
-  `
+  `,
 })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyCheckboxInput extends FieldType {

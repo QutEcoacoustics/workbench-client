@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import {
   FaIconLibrary,
-  FontAwesomeModule
+  FontAwesomeModule,
 } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { fontAwesomeLibraries } from "src/app/app.helper";
@@ -17,7 +17,7 @@ import { HeaderComponent } from "./header.component";
 @NgModule({
   declarations: [HeaderComponent, HeaderItemComponent, HeaderDropdownComponent],
   imports: [CommonModule, RouterModule, NgbModule, FontAwesomeModule],
-  exports: [HeaderComponent]
+  exports: [HeaderComponent],
 })
 export class HeaderModule {
   constructor(library: FaIconLibrary) {

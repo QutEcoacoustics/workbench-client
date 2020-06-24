@@ -25,7 +25,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
      */
     public isFormTouched(): boolean {
       return this.appForms
-        ? this.appForms.some(appForm => appForm.form.dirty)
+        ? this.appForms.some((appForm) => appForm.form.dirty)
         : false;
     }
 
@@ -37,7 +37,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
         return;
       }
 
-      this.appForms.map(appForm => appForm.form.markAsPristine());
+      this.appForms.map((appForm) => appForm.form.markAsPristine());
     }
   }
 

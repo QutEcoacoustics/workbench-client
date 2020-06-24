@@ -13,7 +13,7 @@ export function fetchRetry(
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const fetchAttempt = (attempt: number) => {
-      fetch(input, init).then(response => {
+      fetch(input, init).then((response) => {
         // Check if response is OK
         if (response.status !== 200) {
           return retry(attempt);

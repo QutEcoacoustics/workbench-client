@@ -11,7 +11,7 @@ describe("MenuButtonComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, NgbModule],
-      declarations: [MenuButtonComponent]
+      declarations: [MenuButtonComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuButtonComponent);
@@ -24,7 +24,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -39,7 +39,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -60,7 +60,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "custom label",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -78,7 +78,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -101,7 +101,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -124,7 +124,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -141,7 +141,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "tooltip"
+      tooltip: () => "tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -159,7 +159,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "left";
@@ -180,7 +180,7 @@ describe("MenuButtonComponent", () => {
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "right";
@@ -201,7 +201,7 @@ describe("MenuButtonComponent", () => {
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "right";
@@ -218,7 +218,7 @@ describe("MenuButtonComponent", () => {
       action: jasmine.createSpy(),
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip"
+      tooltip: () => "custom tooltip",
     });
     component.tooltip = "custom tooltip";
     component.placement = "right";

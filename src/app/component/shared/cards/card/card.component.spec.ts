@@ -12,7 +12,7 @@ describe("CardComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CardComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CardComponent);
@@ -22,7 +22,7 @@ describe("CardComponent", () => {
 
   it("should create", () => {
     component.card = {
-      title: "title"
+      title: "title",
     } as Card;
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -30,7 +30,7 @@ describe("CardComponent", () => {
 
   it("should have title", () => {
     component.card = {
-      title: "title"
+      title: "title",
     } as Card;
     fixture.detectChanges();
 
@@ -41,7 +41,7 @@ describe("CardComponent", () => {
 
   it("should have default description when non provided", () => {
     component.card = {
-      title: "title"
+      title: "title",
     } as Card;
     fixture.detectChanges();
 
@@ -53,7 +53,7 @@ describe("CardComponent", () => {
   it("should have description when provided", () => {
     component.card = {
       title: "title",
-      description: "description"
+      description: "description",
     } as Card;
     fixture.detectChanges();
 
@@ -64,7 +64,7 @@ describe("CardComponent", () => {
 
   it("should not have link if no link or route provided", () => {
     component.card = {
-      title: "title"
+      title: "title",
     } as Card;
     fixture.detectChanges();
 
@@ -75,7 +75,7 @@ describe("CardComponent", () => {
   it("should have href if link provided", () => {
     component.card = {
       title: "title",
-      link: "https://brokenlink/"
+      link: "https://brokenlink/",
     } as Card;
     fixture.detectChanges();
 
@@ -91,7 +91,7 @@ describe("CardComponent", () => {
   it("should have routerLink if route provided", () => {
     component.card = {
       title: "title",
-      route: "/brokenlink"
+      route: "/brokenlink",
     } as Card;
     fixture.detectChanges();
 

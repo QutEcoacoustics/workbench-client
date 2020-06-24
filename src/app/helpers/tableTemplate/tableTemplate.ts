@@ -4,7 +4,7 @@ import {
   DatatableComponent,
   SelectionType,
   SortType,
-  TableColumn
+  TableColumn,
 } from "@swimlane/ngx-datatable";
 import { PageComponent } from "../page/pageComponent";
 
@@ -41,7 +41,7 @@ export abstract class TableTemplate<T> extends PageComponent {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.filterTempRows.filter(row => {
+    const temp = this.filterTempRows.filter((row) => {
       return !val || this.filterMatch(val, row);
     });
 

@@ -6,7 +6,7 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
  * Assigns defaults to ngx-datatable element.
  */
 @Directive({
-  selector: "[bawDatatableDefaults]"
+  selector: "[bawDatatableDefaults]",
 })
 export class DatatableDirective implements OnInit {
   @Input() externalPaging = true;

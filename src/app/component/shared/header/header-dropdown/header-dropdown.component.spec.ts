@@ -11,7 +11,7 @@ describe("HeaderDropdownComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderDropdownComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
   }));
 
@@ -28,9 +28,9 @@ describe("HeaderDropdownComponent", () => {
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
-          tooltip: () => "tooltip"
-        })
-      ]
+          tooltip: () => "tooltip",
+        }),
+      ],
     };
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -44,9 +44,9 @@ describe("HeaderDropdownComponent", () => {
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
-          tooltip: () => "tooltip"
-        })
-      ]
+          tooltip: () => "tooltip",
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -63,9 +63,9 @@ describe("HeaderDropdownComponent", () => {
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
-          tooltip: () => "tooltip"
-        })
-      ]
+          tooltip: () => "tooltip",
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -85,9 +85,9 @@ describe("HeaderDropdownComponent", () => {
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
-          tooltip: () => "tooltip"
-        })
-      ]
+          tooltip: () => "tooltip",
+        }),
+      ],
     };
     component.active = true;
     fixture.detectChanges();
@@ -112,9 +112,9 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home")
-        })
-      ]
+          route: StrongRoute.Base.add("home"),
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -137,15 +137,15 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home")
+          route: StrongRoute.Base.add("home"),
         }),
         MenuRoute({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("house")
-        })
-      ]
+          route: StrongRoute.Base.add("house"),
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -175,9 +175,9 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/"
-        })
-      ]
+          uri: () => "http://brokenlink/",
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -195,15 +195,15 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/1"
+          uri: () => "http://brokenlink/1",
         }),
         MenuLink({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/2"
-        })
-      ]
+          uri: () => "http://brokenlink/2",
+        }),
+      ],
     };
     fixture.detectChanges();
 
@@ -223,15 +223,15 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/1"
+          uri: () => "http://brokenlink/1",
         }),
         MenuRoute({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("house")
-        })
-      ]
+          route: StrongRoute.Base.add("house"),
+        }),
+      ],
     };
     fixture.detectChanges();
 

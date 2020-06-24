@@ -7,7 +7,7 @@ import {
   API_CONFIG,
   API_ROOT,
   CMS_ROOT,
-  Configuration
+  Configuration,
 } from "src/app/helpers/app-initializer/app-initializer";
 import { environment } from "src/environments/environment";
 import { AppConfigService } from "./app-config.service";
@@ -54,21 +54,21 @@ describe("AppConfigService", () => {
       providers: [
         {
           provide: API_ROOT,
-          useValue: apiRoot
+          useValue: apiRoot,
         },
         {
           provide: CMS_ROOT,
-          useValue: cmsRoot
+          useValue: cmsRoot,
         },
         {
           provide: API_CONFIG,
-          useValue: new Promise(resolve => {
+          useValue: new Promise((resolve) => {
             Object.assign(environment, apiConfig);
             resolve(apiConfig);
-          })
+          }),
         },
-        AppConfigService
-      ]
+        AppConfigService,
+      ],
     });
 
     toastr = TestBed.inject(ToastrService);
@@ -107,7 +107,7 @@ describe("AppConfigService", () => {
         closeButton: false,
         disableTimeOut: true,
         tapToDismiss: false,
-        positionClass: "toast-center-center"
+        positionClass: "toast-center-center",
       }
     );
   });

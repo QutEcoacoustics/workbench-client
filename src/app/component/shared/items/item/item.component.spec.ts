@@ -12,7 +12,7 @@ describe("ItemComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
-      declarations: [ItemComponent]
+      declarations: [ItemComponent],
     }).compileComponents();
   }));
 

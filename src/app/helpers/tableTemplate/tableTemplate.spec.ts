@@ -8,7 +8,7 @@ import { TableTemplate } from "./tableTemplate";
   selector: "app-test-component",
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
-  `
+  `,
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   // TODO Check if this bug has been fixed
@@ -52,7 +52,7 @@ describe("TableTemplate", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [SharedModule]
+      imports: [SharedModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
@@ -89,7 +89,7 @@ describe("TableTemplate", () => {
       expect(component["rows"]).toEqual([
         { id: "a" },
         { id: "b" },
-        { id: "c" }
+        { id: "c" },
       ]);
     });
   });
@@ -121,7 +121,7 @@ describe("TableTemplate", () => {
       expect(component["rows"]).toEqual([
         { id: "a" },
         { id: "b" },
-        { id: "c" }
+        { id: "c" },
       ]);
     });
 
@@ -193,7 +193,7 @@ describe("TableTemplate", () => {
       expect(component["rows"]).toEqual([
         { id: "aa" },
         { id: "ac" },
-        { id: "ad" }
+        { id: "ad" },
       ]);
     });
   });

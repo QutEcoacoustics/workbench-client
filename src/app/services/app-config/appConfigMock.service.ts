@@ -3,7 +3,7 @@ import { version } from "package.json";
 import {
   Configuration,
   Environment,
-  Values
+  Values,
 } from "src/app/helpers/app-initializer/app-initializer";
 
 @Injectable()
@@ -31,35 +31,35 @@ export const testApiConfig = new Configuration({
     siteDir: "<< siteDir >>",
     cmsRoot: "https://www.testing.com/cms",
     ga: {
-      trackingId: "<< googleAnalytics >>"
-    }
+      trackingId: "<< googleAnalytics >>",
+    },
   },
   values: {
     keys: {
-      googleMaps: "<< googleMaps >>"
+      googleMaps: "<< googleMaps >>",
     },
     brand: {
       name: "<< brandName >>",
-      title: "<< brandTitle >>"
+      title: "<< brandTitle >>",
     },
     content: [
       {
         title: "<< content1 >>",
-        url: "<< contentUrl1 >>"
+        url: "<< contentUrl1 >>",
       },
       {
         headerTitle: "<< content2 >>",
         items: [
           {
             title: "<< content3 >>",
-            url: "<< contentUrl3 >>"
+            url: "<< contentUrl3 >>",
           },
           {
             title: "<< content4 >>",
-            url: "<< contentUrl4 >>"
-          }
-        ]
-      }
+            url: "<< contentUrl4 >>",
+          },
+        ],
+      },
     ],
     cms: {
       credits: "/credits.html",
@@ -68,7 +68,7 @@ export const testApiConfig = new Configuration({
       ethics: "/ethics.html",
       harvest: "/harvest.html",
       home: "/home.html",
-      sendAudio: "/sendAudio.html"
-    }
-  }
+      sendAudio: "/sendAudio.html",
+    },
+  },
 });

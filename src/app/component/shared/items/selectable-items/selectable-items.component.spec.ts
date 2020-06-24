@@ -7,7 +7,7 @@ describe("SelectableItemsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SelectableItemsComponent]
+      declarations: [SelectableItemsComponent],
     }).compileComponents();
   }));
 
