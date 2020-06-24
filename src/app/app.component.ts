@@ -36,9 +36,9 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
     /**
      * Delay showing loading bar
      */
-    this.delayedProgress$ = this.loader.progress$.pipe(
+    this.delayedProgress$ = this.loader.value$.pipe(
       delay(3000),
-      withLatestFrom(this.loader.progress$),
+      withLatestFrom(this.loader.value$),
       map((v) => v[1])
     );
 
