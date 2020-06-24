@@ -22,7 +22,7 @@
     "test:all": "ng test -- --code-coverage --browsers Firefox,Chrome,Edge",
     "test:pipeline:windows": "ng test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless,EdgeHeadless",
     "test:pipeline:linux": "ng test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless",
-    "test:pipeline:mac": "ng test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless"
+    "test:pipeline:mac": "ng test -- --watch=false --code-coverage --browsers FirefoxHeadless,ChromeHeadless,Safari"
   },
   "private": true,
   "dependencies": {
@@ -88,6 +88,7 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-opera-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
     "karma-viewport": "^1.0.6",
     "protractor": "~7.0.0",
     "rxjs-tslint-rules": "^4.33.1",
