@@ -1,4 +1,4 @@
-import { OnInit, ViewChild, Directive } from "@angular/core";
+import { Directive, Injectable, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import {
@@ -22,6 +22,7 @@ import { PageComponent } from "../page/pageComponent";
  * which requires the use of external sorting and paging.
  */
 @Directive()
+// tslint:disable-next-line: directive-class-suffix
 export abstract class PagedTableTemplate<T, M extends AbstractModel>
   extends PageComponent
   implements OnInit {

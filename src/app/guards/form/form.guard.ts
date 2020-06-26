@@ -16,6 +16,7 @@ export interface FormCheckingComponent {
  * @param Base Class to extend
  */
 export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
+  @Injectable()
   class FormCheckingPageComponent extends Base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
