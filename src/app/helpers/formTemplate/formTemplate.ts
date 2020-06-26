@@ -1,4 +1,4 @@
-import { OnInit } from "@angular/core";
+import { OnInit, Directive } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ToastrService } from "ngx-toastr";
@@ -14,6 +14,7 @@ import {
 import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
+@Directive()
 export abstract class FormTemplate<M extends AbstractModel>
   extends WithFormCheck(PageComponent)
   implements OnInit {

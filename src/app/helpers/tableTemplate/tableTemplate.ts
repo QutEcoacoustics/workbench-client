@@ -1,4 +1,4 @@
-import { ViewChild } from "@angular/core";
+import { ViewChild, Directive } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,
@@ -12,6 +12,7 @@ import { PageComponent } from "../page/pageComponent";
  * Table Template Class.
  * Handles creating all the generic logic required for a simple datatable containing component.
  */
+@Directive()
 export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
