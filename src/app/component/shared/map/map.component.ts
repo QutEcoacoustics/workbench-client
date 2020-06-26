@@ -86,7 +86,10 @@ export function createMarkers(sites: Site[]): any[] {
 
   const markers = [];
   for (const site of sites) {
-    if (!!site.customLatitude && !!site.customLongitude) {
+    if (
+      typeof site.customLatitude === "number" &&
+      typeof site.customLongitude === "number"
+    ) {
       markers.push({
         position: {
           lat: site.customLatitude,

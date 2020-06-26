@@ -120,7 +120,7 @@ function createModelDecorator<M extends AbstractModel, S>(
 
     Object.defineProperty(target, backingFieldKey, {
       value,
-      configurable: false,
+      configurable: true,
     });
   }
 
@@ -196,6 +196,7 @@ function createModelDecorator<M extends AbstractModel, S>(
       get(this: M) {
         return getAssociatedModel(this, associationKey);
       },
+      configurable: true,
     });
   };
 }

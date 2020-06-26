@@ -1,4 +1,4 @@
-import { Injectable, QueryList, Type, ViewChildren, Directive } from "@angular/core";
+import { Injectable, QueryList, Type, ViewChildren } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
 import { FormComponent } from "src/app/component/shared/form/form.component";
 
@@ -16,8 +16,7 @@ export interface FormCheckingComponent {
  * @param Base Class to extend
  */
 export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
-  @Directive()
-class FormCheckingPageComponent extends Base
+  class FormCheckingPageComponent extends Base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
 

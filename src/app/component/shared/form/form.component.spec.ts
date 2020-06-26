@@ -1,5 +1,3 @@
-import { AgmCoreModule } from "@agm/core";
-import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -71,8 +69,6 @@ describe("FormComponent", () => {
         BrowserAnimationsModule,
         NgbModule,
         ReactiveFormsModule,
-        AgmCoreModule.forRoot(),
-        AgmSnazzyInfoWindowModule,
         FormlyModule.forRoot(formlyRoot),
         FormlyBootstrapModule,
         ToastrModule.forRoot(toastrRoot),
