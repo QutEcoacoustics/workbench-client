@@ -9,7 +9,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "lib": ["ES2019", "dom"],
-    "module": "ESNext",
+    "module": "ES2020",
     "moduleResolution": "node",
     "outDir": "./dist/out-tsc",
     "paths": {
@@ -28,7 +28,7 @@
     "pretty": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "target": "ES5",
+    "target": "ES2015",
     "typeRoots": ["node_modules/@types"],
     "types": ["karma-viewport", "jasmine"]
   },

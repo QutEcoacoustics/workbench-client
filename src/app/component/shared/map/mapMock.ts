@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Site } from "src/app/models/Site";
-import { createMap } from "./map.component";
+import { createMarkers } from "./map.component";
 
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="locationPins; else placeholderMap">
+    <ng-container *ngIf="hasMarkers; else placeholderMap">
       <div class="map-container">
         <ng-container *ngFor="let site of sites">
           <p>Lat: {{ site.customLatitude }} Long: {{ site.customLongitude }}</p>
@@ -20,11 +20,12 @@ import { createMap } from "./map.component";
 })
 export class MockMapComponent implements OnInit {
   @Input() sites: Site[];
-  locationPins = false;
+  public hasMarkers = false;
 
   constructor() {}
 
   ngOnInit() {
-    this.locationPins = createMap(this.sites);
+    const markers = createMarkers(this.sites);
+    this.hasMarkers = markers.length > 0;
   }
 }

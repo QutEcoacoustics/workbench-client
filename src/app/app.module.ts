@@ -1,11 +1,5 @@
-import {
-  AgmCoreModule,
-  LazyMapsAPILoaderConfigLiteral,
-  LAZY_MAPS_API_CONFIG,
-} from "@agm/core";
-import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { HttpClientModule } from "@angular/common/http";
-import { forwardRef, Injectable, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -33,15 +27,12 @@ import { PermissionsShieldComponent } from "./component/shared/permissions-shiel
 import { SharedModule } from "./component/shared/shared.module";
 import { SitesModule } from "./component/sites/sites.module";
 import { StatisticsModule } from "./component/statistics/statistics.module";
-import { AppConfigService } from "./services/app-config/app-config.service";
 
 export const appLibraryImports = [
   BrowserModule,
   BrowserAnimationsModule,
   NgbModule,
   ReactiveFormsModule,
-  AgmCoreModule.forRoot(),
-  AgmSnazzyInfoWindowModule,
   FormlyModule.forRoot(formlyRoot),
   FormlyBootstrapModule,
   ToastrModule.forRoot(toastrRoot),
@@ -65,19 +56,6 @@ export const appImports = [
   ErrorModule,
 ];
 
-/**
- * Lazy load google maps api key
- */
-// tslint:disable-next-line: no-use-before-declare
-@Injectable({ providedIn: forwardRef(() => AppModule) })
-export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
-  apiKey?: string;
-
-  constructor(env: AppConfigService) {
-    this.apiKey = env.values.keys.googleMaps;
-  }
-}
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -86,10 +64,7 @@ export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
     ...appLibraryImports,
     ...appImports,
   ],
-  providers: [
-    ...providers,
-    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig },
-  ],
+  providers: [...providers],
   bootstrap: [AppComponent],
   entryComponents: [PermissionsShieldComponent],
   exports: [],
