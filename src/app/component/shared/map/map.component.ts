@@ -1,5 +1,12 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
-// import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { Site } from "src/app/models/Site";
 
 /**
@@ -8,55 +15,63 @@ import { Site } from "src/app/models/Site";
 @Component({
   selector: "baw-map",
   template: `
-    <!-- <ng-container *ngIf="hasMarkers; else placeholderMap">
-      <div class="map-container">
-        <google-map height="100%" width="100%" [options]="options">
-          <map-marker
-            #markerElem
-            *ngFor="let marker of markers"
-            [position]="marker.position"
-            [label]="marker.label"
-            (mapClick)="openInfo(markerElem, marker.info)"
-          >
-          </map-marker>
-
-          <map-info-window>{{ infoContent }}</map-info-window>
-        </google-map>
-      </div>
+    <ng-container *ngIf="hasMarkers; else placeholderMap">
+      <google-map height="400px" width="100%">
+        <map-marker
+          #marker
+          *ngFor="let marker of markers"
+          [options]="markerOptions"
+          [position]="marker.position"
+          [label]="marker.label"
+          (mapClick)="openInfo(marker, marker.info)"
+        ></map-marker>
+        <map-info-window>{{ infoContent }}</map-info-window>
+      </google-map>
     </ng-container>
-    <ng-template #placeholderMap> -->
-    <div class="map-placeholder"><span>No locations specified</span></div>
-    <!-- </ng-template> -->
+    <ng-template #placeholderMap>
+      <div class="map-placeholder"><span>No locations specified</span></div>
+    </ng-template>
   `,
   styleUrls: ["./map.component.scss"],
 })
 export class MapComponent implements OnInit, OnChanges {
-  // @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-  // @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
 
   @Input() sites: Site[];
-  public markers: any[];
-  public options: any = {
-    mapTypeId: "satellite",
-  };
+  public markers = [];
   public hasMarkers = false;
   public infoContent = "";
+  public mapOptions = { mapTypeId: "satellite" };
+  public markerOptions = { draggable: false };
 
-  constructor() {}
+  constructor(private ref: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.ngOnChanges();
   }
 
   ngOnChanges() {
-    // this.markers = createMarkers(this.sites);
-    // this.hasMarkers = this.markers.length > 0;
+    this.markers = createMarkers(this.sites);
+    this.hasMarkers = this.markers.length > 0;
+
+    if (this.hasMarkers) {
+      this.ref.detectChanges();
+      const bounds = new google.maps.LatLngBounds();
+      this.markers.forEach((marker) => {
+        bounds.extend(
+          new google.maps.LatLng(marker.position.lat, marker.position.lng)
+        );
+      });
+      this.map.fitBounds(bounds);
+      this.map.panToBounds(bounds);
+    }
   }
 
-  // public openInfo(marker: MapMarker, content: string) {
-  //   this.infoContent = content;
-  //   this.info.open(marker);
-  // }
+  public openInfo(marker: MapMarker, content: string) {
+    this.infoContent = content;
+    this.info.open(marker);
+  }
 }
 
 /**
