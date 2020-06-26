@@ -2,18 +2,18 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { AbstractModel } from "@models/AbstractModel";
+import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "@services/baw-api/resolver-common";
+import { SharedModule } from "@shared/shared.module";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-} from "src/app/test/helpers/testbed";
+} from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
 import {
   defaultErrorMsg,
   defaultSuccessMsg,
@@ -34,7 +34,11 @@ class MockModel extends AbstractModel {
 
 @Component({
   selector: "app-test-component",
-  template: ` <div></div> `,
+  template: `
+    <div>
+      <baw-form></baw-form>
+    </div>
+  `,
 })
 class MockComponent extends FormTemplate<MockModel> {
   constructor(
@@ -240,7 +244,8 @@ describe("formTemplate", () => {
 
     it("should have isFormTouched when hasFormCheck is true", () => {
       component["hasFormCheck"] = true;
-      component.appForms = [{ form: { dirty: true } }] as any;
+      fixture.detectChanges();
+      component.appForms.first.form.markAsDirty();
       fixture.detectChanges();
 
       expect(component.isFormTouched()).toBeTruthy();
@@ -248,16 +253,17 @@ describe("formTemplate", () => {
 
     it("should disable isFormTouched when hasFormCheck is false", () => {
       component["hasFormCheck"] = false;
-      component.appForms = [{ form: { dirty: true } }] as any;
+      fixture.detectChanges();
+      component.appForms.first.form.markAsDirty();
       fixture.detectChanges();
 
       expect(component.isFormTouched()).toBeFalsy();
     });
 
     it("should have resetForms when hasFormCheck is true", () => {
-      const spy = jasmine.createSpy();
       component["hasFormCheck"] = true;
-      component.appForms = [{ form: { markAsPristine: spy } }] as any;
+      fixture.detectChanges();
+      const spy = spyOn(component.appForms.first.form, "markAsPristine");
       fixture.detectChanges();
 
       component.resetForms();
@@ -265,9 +271,9 @@ describe("formTemplate", () => {
     });
 
     it("should disable resetForms when hasFormCheck is false", () => {
-      const spy = jasmine.createSpy();
       component["hasFormCheck"] = false;
-      component.appForms = [{ form: { markAsPristine: spy } }] as any;
+      fixture.detectChanges();
+      const spy = spyOn(component.appForms.first.form, "markAsPristine");
       fixture.detectChanges();
 
       component.resetForms();
