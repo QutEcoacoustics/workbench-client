@@ -1,19 +1,18 @@
-import { OnInit } from "@angular/core";
+import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { WithFormCheck } from "src/app/guards/form/form.guard";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  ResolvedModelList,
-  retrieveResolvers,
-} from "src/app/services/baw-api/resolver-common";
 import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export abstract class FormTemplate<M extends AbstractModel>
   extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -1,6 +1,12 @@
-import { Injectable, QueryList, Type, ViewChildren } from "@angular/core";
+import {
+  Directive,
+  Injectable,
+  QueryList,
+  Type,
+  ViewChildren,
+} from "@angular/core";
 import { CanDeactivate } from "@angular/router";
-import { FormComponent } from "src/app/component/shared/form/form.component";
+import { FormComponent } from "@shared/form/form.component";
 
 /**
  * Interface for FormCheckingPageComponent.
@@ -16,6 +22,7 @@ export interface FormCheckingComponent {
  * @param Base Class to extend
  */
 export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
+  @Directive()
   class FormCheckingPageComponent extends Base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
@@ -51,6 +58,8 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
  */
 @Injectable()
 export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
+  @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
+
   canDeactivate(component: FormCheckingComponent): boolean {
     // If component doesn't have a form, ignore it
     if (typeof component.isFormTouched !== "function") {

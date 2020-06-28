@@ -1,4 +1,3 @@
-import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
@@ -26,12 +25,7 @@ const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
  */
 @NgModule({
   declarations: components,
-  imports: [
-    MapModule,
-    SharedModule,
-    AgmSnazzyInfoWindowModule,
-    RouterModule.forChild(routes),
-  ],
+  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
 })
 export class SitesModule {}

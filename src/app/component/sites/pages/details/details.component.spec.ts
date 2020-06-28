@@ -1,5 +1,5 @@
-import { AgmSnazzyInfoWindowModule } from "@agm/snazzy-info-window";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { GoogleMapsModule } from "@angular/google-maps";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -29,7 +29,7 @@ describe("SitesDetailsComponent", () => {
     siteError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, AgmSnazzyInfoWindowModule],
+      imports: [SharedModule, RouterTestingModule, GoogleMapsModule],
       declarations: [DetailsComponent, MockMapComponent],
       providers: [
         ...testBawServices,

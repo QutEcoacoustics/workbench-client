@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "baseUrl": "./",
+    "declaration": false,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "lib": ["ES2019", "dom"],
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "outDir": "./dist/out-tsc",
+    "paths": {
+      "@assets/*": ["./src/assets/*"],
+      "@shared/*": ["./src/app/component/shared/*"],
+      "@component/*": ["./src/app/component/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@guards/*": ["./src/app/guards/*"],
+      "@helpers/*": ["./src/app/helpers/*"],
+      "@interfaces/*": ["./src/app/interfaces/*"],
+      "@models/*": ["./src/app/models/*"],
+      "@baw-api/*": ["./src/app/services/baw-api/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@test/*": ["./src/app/test/*"]
+    },
+    "pretty": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "ES2015",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["karma-viewport", "jasmine"]
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "disableTypeScriptVersionCheck": true
+  }
+}

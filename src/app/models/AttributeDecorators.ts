@@ -106,6 +106,7 @@ function createDecorator<T extends AbstractModel>(
           this[overrideKey] = args;
           setValue(this, decoratedKey, args);
         },
+        configurable: true,
       });
     } else {
       // Whenever someone tries to set attribute, update decorated value instead
@@ -124,6 +125,7 @@ function createDecorator<T extends AbstractModel>(
         return this[decoratedKey];
       },
       set: keySetter,
+      configurable: true,
     });
 
     if (opts.persist) {

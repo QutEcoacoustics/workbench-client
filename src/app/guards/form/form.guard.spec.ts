@@ -1,8 +1,8 @@
 import { Component, OnInit, QueryList } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormComponent } from "@component/shared/form/form.component";
+import { SharedModule } from "@component/shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { FormComponent } from "src/app/component/shared/form/form.component";
-import { SharedModule } from "src/app/component/shared/shared.module";
 import {
   FormCheckingComponent,
   FormTouchedGuard,

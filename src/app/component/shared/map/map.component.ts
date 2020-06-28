@@ -1,4 +1,12 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { Site } from "src/app/models/Site";
 
 /**
@@ -7,27 +15,18 @@ import { Site } from "src/app/models/Site";
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="locationPins; else placeholderMap">
-      <div class="map-container">
-        <agm-map [fitBounds]="true" [mapTypeId]="'satellite'">
-          <ng-container *ngFor="let site of sites">
-            <agm-marker
-              *ngIf="containsLocation(site)"
-              [latitude]="site.customLatitude"
-              [longitude]="site.customLongitude"
-              [agmFitBounds]="true"
-            >
-              <agm-snazzy-info-window
-                [isOpen]="true"
-                [padding]="'10px 25px 10px 10px'"
-                [borderRadius]="'10px'"
-              >
-                <ng-template>{{ site.name }}</ng-template>
-              </agm-snazzy-info-window>
-            </agm-marker>
-          </ng-container>
-        </agm-map>
-      </div>
+    <ng-container *ngIf="hasMarkers; else placeholderMap">
+      <google-map height="400px" width="100%">
+        <map-marker
+          #marker
+          *ngFor="let marker of markers"
+          [options]="markerOptions"
+          [position]="marker.position"
+          [label]="marker.label"
+          (mapClick)="openInfo(marker, marker.info)"
+        ></map-marker>
+        <map-info-window>{{ infoContent }}</map-info-window>
+      </google-map>
     </ng-container>
     <ng-template #placeholderMap>
       <div class="map-placeholder"><span>No locations specified</span></div>
@@ -36,44 +35,73 @@ import { Site } from "src/app/models/Site";
   styleUrls: ["./map.component.scss"],
 })
 export class MapComponent implements OnInit, OnChanges {
-  @Input() sites: Site[];
-  locationPins = false;
-  containsLocation = containsLocation;
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
 
-  constructor() {}
+  @Input() sites: Site[];
+  public markers = [];
+  public hasMarkers = false;
+  public infoContent = "";
+  public mapOptions = { mapTypeId: "satellite" };
+  public markerOptions = { draggable: false };
+
+  constructor(private ref: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.locationPins = createMap(this.sites);
+    this.ngOnChanges();
   }
 
   ngOnChanges() {
-    this.locationPins = createMap(this.sites);
+    this.markers = createMarkers(this.sites);
+    this.hasMarkers = this.markers.length > 0;
+
+    if (this.hasMarkers) {
+      this.ref.detectChanges();
+      const bounds = new google.maps.LatLngBounds();
+      this.markers.forEach((marker) => {
+        bounds.extend(
+          new google.maps.LatLng(marker.position.lat, marker.position.lng)
+        );
+      });
+      this.map.fitBounds(bounds);
+      this.map.panToBounds(bounds);
+    }
+  }
+
+  public openInfo(marker: MapMarker, content: string) {
+    this.infoContent = content;
+    this.info.open(marker);
   }
 }
 
 /**
- * Determine whether google maps should be shown. This searches the list of sites
- * and determines if any have a custom latitude and longitude.
+ * Create list of markers for map
  * @param sites List of sites
- * @returns True if google map should be created
+ * @returns List of markers
  */
-export function createMap(sites: Site[]): boolean {
+export function createMarkers(sites: Site[]): any[] {
   if (!sites) {
-    return false;
+    return [];
   }
 
+  const markers = [];
   for (const site of sites) {
-    if (containsLocation(site)) {
-      return true;
+    if (
+      typeof site.customLatitude === "number" &&
+      typeof site.customLongitude === "number"
+    ) {
+      markers.push({
+        position: {
+          lat: site.customLatitude,
+          lng: site.customLongitude,
+        },
+        label: {
+          text: site.name,
+        },
+        info: site.name + ": " + site.description,
+      });
     }
   }
 
-  return false;
-}
-
-function containsLocation(site: Site): boolean {
-  return (
-    typeof site.customLatitude === "number" &&
-    typeof site.customLongitude === "number"
-  );
+  return markers;
 }

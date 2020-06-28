@@ -44,4 +44,6 @@ describe("workbench-client", () => {
   xit("should update home component on logout", () => {});
 
   xit("should display loading bar for long API requests", () => {});
+
+  xit("should run form guard and detect dirty forms", () => {});
 });
