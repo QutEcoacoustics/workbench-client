@@ -13,20 +13,34 @@ if (environment.production) {
 }
 
 // Fetch API config from baw server and add it to the initial bootstrap
-const apiConfig = fetchRetry("assets/environment.json", 1000, 5)
+const apiConfig = fetchRetry<Partial<Configuration>>(
+  "assets/environment.json",
+  1000,
+  5
+)
   .then((data) => {
-    return new Configuration(data as Partial<Configuration>);
+    let googleMapsUrl = `https://maps.googleapis.com/maps/api/js`;
+    if (data?.values?.keys?.googleMaps) {
+      googleMapsUrl += "?key=" + data.values.keys.googleMaps;
+    }
+
+    const node = document.createElement("script");
+    node.src = googleMapsUrl;
+    node.type = "text/javascript";
+    document.getElementsByTagName("head")[0].appendChild(node);
+
+    return new Configuration(data);
   })
   .catch((err: any) => {
     console.error("API_CONFIG Failed to load configuration file: ", err);
     return {};
   });
 
-const apiConfigProvider = {
-  provide: API_CONFIG,
-  useValue: apiConfig,
-};
-
-platformBrowserDynamic([apiConfigProvider])
+platformBrowserDynamic([
+  {
+    provide: API_CONFIG,
+    useValue: apiConfig,
+  },
+])
   .bootstrapModule(AppModule)
   .catch((err) => console.error(err));

@@ -5,12 +5,12 @@
  * @param limit Maximum number of attempts
  * @param init Fetch options
  */
-export function fetchRetry(
+export function fetchRetry<T = Response>(
   input: RequestInfo,
   delay: number,
   limit: number,
   init: RequestInit = {}
-): Promise<Response> {
+): Promise<T> {
   return new Promise((resolve, reject) => {
     const fetchAttempt = (attempt: number) => {
       fetch(input, init).then((response) => {
