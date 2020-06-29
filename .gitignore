@@ -72,3 +72,6 @@ junitresults.xml
 
 # Documentation
 documentation
+
+# Angular crash reports
+report.*.*.*.*.*.json

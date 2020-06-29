@@ -46,4 +46,8 @@ describe("workbench-client", () => {
   xit("should display loading bar for long API requests", () => {});
 
   xit("should run form guard and detect dirty forms", () => {});
+
+  xit("should load config from API", () => {});
+
+  xit("should insert google maps api key in index.html", () => {});
 });

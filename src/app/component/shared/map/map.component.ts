@@ -11,20 +11,21 @@ import { Site } from "src/app/models/Site";
 
 /**
  * Google Maps Wrapper Component
+ * ! Manually test when editing. No unit tests written
  */
 @Component({
   selector: "baw-map",
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
-      <google-map height="400px" width="100%">
+      <google-map height="400px" width="100%" [options]="mapOptions">
         <map-marker
-          #marker
+          #pin
           *ngFor="let marker of markers"
           [options]="markerOptions"
           [position]="marker.position"
-          [label]="marker.label"
-          (mapClick)="openInfo(marker, marker.info)"
-        ></map-marker>
+          (mapMouseover)="openInfo(pin, marker.info)"
+        >
+        </map-marker>
         <map-info-window>{{ infoContent }}</map-info-window>
       </google-map>
     </ng-container>
@@ -39,9 +40,11 @@ export class MapComponent implements OnInit, OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
 
   @Input() sites: Site[];
-  public markers = [];
   public hasMarkers = false;
   public infoContent = "";
+  public markers: (MapMarker & { info: string })[] = [];
+
+  // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions = { mapTypeId: "satellite" };
   public markerOptions = { draggable: false };
 
@@ -54,23 +57,35 @@ export class MapComponent implements OnInit, OnChanges {
   ngOnChanges() {
     this.markers = createMarkers(this.sites);
     this.hasMarkers = this.markers.length > 0;
+    this.ref.detectChanges();
 
+    // Calculate pin boundaries so that map can be auto-focused properly
     if (this.hasMarkers) {
-      this.ref.detectChanges();
       const bounds = new google.maps.LatLngBounds();
       this.markers.forEach((marker) => {
-        bounds.extend(
-          new google.maps.LatLng(marker.position.lat, marker.position.lng)
+        const position = new google.maps.LatLng(
+          this.getCoordinate(marker.position.lat),
+          this.getCoordinate(marker.position.lng)
         );
+        bounds.extend(position);
       });
       this.map.fitBounds(bounds);
       this.map.panToBounds(bounds);
     }
   }
 
+  /**
+   * Open info window for map marker
+   * @param marker Map marker
+   * @param content Content to display
+   */
   public openInfo(marker: MapMarker, content: string) {
     this.infoContent = content;
     this.info.open(marker);
+  }
+
+  private getCoordinate(coordinate: number | (() => number)): number {
+    return typeof coordinate === "function" ? coordinate() : coordinate;
   }
 }
 
@@ -79,7 +94,7 @@ export class MapComponent implements OnInit, OnChanges {
  * @param sites List of sites
  * @returns List of markers
  */
-export function createMarkers(sites: Site[]): any[] {
+export function createMarkers(sites: Site[]): (MapMarker & { info: string })[] {
   if (!sites) {
     return [];
   }
@@ -95,10 +110,8 @@ export function createMarkers(sites: Site[]): any[] {
           lat: site.customLatitude,
           lng: site.customLongitude,
         },
-        label: {
-          text: site.name,
-        },
-        info: site.name + ": " + site.description,
+        label: { text: site.name },
+        info: site.name,
       });
     }
   }

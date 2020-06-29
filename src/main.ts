@@ -1,5 +1,6 @@
 import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import embedGoogleMaps from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { AppModule } from "./app/app.module";
 import {
   API_CONFIG,
@@ -19,16 +20,7 @@ const apiConfig = fetchRetry<Partial<Configuration>>(
   5
 )
   .then((data) => {
-    let googleMapsUrl = `https://maps.googleapis.com/maps/api/js`;
-    if (data?.values?.keys?.googleMaps) {
-      googleMapsUrl += "?key=" + data.values.keys.googleMaps;
-    }
-
-    const node = document.createElement("script");
-    node.src = googleMapsUrl;
-    node.type = "text/javascript";
-    document.getElementsByTagName("head")[0].appendChild(node);
-
+    embedGoogleMaps(data?.values?.keys?.googleMaps);
     return new Configuration(data);
   })
   .catch((err: any) => {
