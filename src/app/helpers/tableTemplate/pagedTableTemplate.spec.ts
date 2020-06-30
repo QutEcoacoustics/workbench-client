@@ -42,13 +42,6 @@ class MockComponent extends PagedTableTemplate<
   { id: Id; name: string },
   Project
 > {
-  // TODO Check if this bug has been fixed
-  // Unsure why but this line is required in unit tests
-  // Specifically: a unit test which is run with another .spec.ts file
-  // in the pool of tests. If this test suite is run in isolation it
-  // will pass without this line.
-  @ViewChild(DatatableComponent) table: DatatableComponent;
-
   public columns = [{ prop: "id" }];
 
   constructor(api: ProjectsService, route: ActivatedRoute) {
