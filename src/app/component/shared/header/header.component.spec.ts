@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   async,
   ComponentFixture,
@@ -8,11 +8,12 @@ import {
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SecurityService } from "@baw-api/security/security.service";
+import { assertImage, assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { testBawServices } from "src/app/test/helpers/testbed";
+import { testBawServices, testSecureImage } from "src/app/test/helpers/testbed";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -41,15 +42,6 @@ describe("HeaderComponent", () => {
     spyOn(api, "getAuthTrigger").and.callFake(() => new BehaviorSubject(null));
   }
 
-  function assertRouterLink(element: HTMLElement, route: string) {
-    expect(
-      element.attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      element.attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe(route);
-  }
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -61,9 +53,9 @@ describe("HeaderComponent", () => {
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
-        HttpClientModule,
+        HttpClientTestingModule,
       ],
-      providers: [...testBawServices],
+      providers: [...testSecureImage, ...testBawServices],
     }).compileComponents();
   }));
 
@@ -148,7 +140,7 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const brand = fixture.nativeElement.querySelector("a.navbar-brand");
-          assertRouterLink(brand, homeMenuItem.route.toString());
+          assertRoute(brand, homeMenuItem.route.toString());
           expect(brand.innerText).toContain(env.values.brand.name);
         });
 
@@ -157,7 +149,7 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[0];
-          assertRouterLink(link, projectsMenuItem.route.toString());
+          assertRoute(link, projectsMenuItem.route.toString());
           expect(link.innerText).toContain(projectsMenuItem.label);
         });
 
@@ -166,7 +158,7 @@ describe("HeaderComponent", () => {
           fixture.detectChanges();
 
           const link = fixture.nativeElement.querySelectorAll("a.nav-link")[2];
-          assertRouterLink(link, contactUsMenuItem.route.toString());
+          assertRoute(link, contactUsMenuItem.route.toString());
           expect(link.innerText).toContain(contactUsMenuItem.label);
         });
 
@@ -206,7 +198,7 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.register) {
-              assertRouterLink(link, registerMenuItem.route.toString());
+              assertRoute(link, registerMenuItem.route.toString());
               expect(link.innerText).toContain(registerMenuItem.label);
             } else {
               expect(link).toBeFalsy();
@@ -227,7 +219,7 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.login) {
-              assertRouterLink(link, loginMenuItem.route.toString());
+              assertRoute(link, loginMenuItem.route.toString());
               expect(link.innerText).toContain(loginMenuItem.label);
             } else {
               expect(link).toBeFalsy();
@@ -248,7 +240,7 @@ describe("HeaderComponent", () => {
             );
 
             if (userType.links.profile) {
-              assertRouterLink(profile, myAccountMenuItem.route.toString());
+              assertRoute(profile, myAccountMenuItem.route.toString());
               expect(profile.innerText.trim()).toBe("Username");
             } else {
               expect(profile).toBeFalsy();
@@ -264,11 +256,11 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            const icon = profile.querySelector("img");
-            expect(icon).toBeTruthy();
-            expect(icon.alt).toBe("Profile Icon");
-            expect(icon.src).toBe(
-              `http://${window.location.host}/images/user/user_span1.png`
+            const image = profile.querySelector("img");
+            assertImage(
+              image,
+              `http://${window.location.host}/images/user/user_span1.png`,
+              "Profile Icon"
             );
           }));
 
@@ -314,10 +306,8 @@ describe("HeaderComponent", () => {
             const profile = fixture.nativeElement.querySelector(
               "#login-widget"
             );
-            const icon = profile.querySelector("img");
-            expect(icon).toBeTruthy();
-            expect(icon.alt).toBe("Profile Icon");
-            expect(icon.src).toBe("http://brokenlink/");
+            const image = profile.querySelector("img");
+            assertImage(image, "http://brokenlink/", "Profile Icon");
           }));
         }
 
@@ -354,10 +344,7 @@ describe("HeaderComponent", () => {
 
             if (userType.links.admin) {
               expect(settings).toBeTruthy();
-              assertRouterLink(
-                settings,
-                adminDashboardMenuItem.route.toString()
-              );
+              assertRoute(settings, adminDashboardMenuItem.route.toString());
             } else {
               expect(settings).toBeFalsy();
             }
@@ -464,7 +451,7 @@ describe("HeaderComponent", () => {
       const link = fixture.nativeElement.querySelectorAll("a.nav-link")[3];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(registerMenuItem.label);
-      assertRouterLink(link, registerMenuItem.route.toString());
+      assertRoute(link, registerMenuItem.route.toString());
     }));
 
     // TODO Move to E2E Tests
@@ -508,7 +495,7 @@ describe("HeaderComponent", () => {
       const link = fixture.nativeElement.querySelectorAll("a.nav-link")[4];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(loginMenuItem.label);
-      assertRouterLink(link, loginMenuItem.route.toString());
+      assertRoute(link, loginMenuItem.route.toString());
     }));
   });
 
