@@ -25,18 +25,11 @@ export function assertIcon(target: HTMLElement, prop: string) {
 export function assertImage(
   target: HTMLImageElement,
   src: string,
-  alt: string,
-  isInsecure?: boolean
+  alt: string
 ) {
   expect(target).toBeTruthy();
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
-
-  if (isInsecure) {
-    expect(target.attributes.getNamedItem("bawimage")).toBeFalsy();
-  } else {
-    expect(target.attributes.getNamedItem("bawimage")).toBeTruthy();
-  }
 }
 
 /**

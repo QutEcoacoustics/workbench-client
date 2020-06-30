@@ -13,7 +13,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { testBawServices, testSecureImage } from "src/app/test/helpers/testbed";
+import { testBawServices } from "src/app/test/helpers/testbed";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -55,7 +55,7 @@ describe("HeaderComponent", () => {
         RouterTestingModule,
         HttpClientTestingModule,
       ],
-      providers: [...testSecureImage, ...testBawServices],
+      providers: testBawServices,
     }).compileComponents();
   }));
 

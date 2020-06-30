@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { assertImage, assertRoute } from "@test/helpers/html";
-import { testSecureImage } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -51,7 +50,6 @@ describe("UserBadgeComponent", () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [UserBadgeComponent, TestUserBadgeComponent],
-      providers: [...testSecureImage],
     }).compileComponents();
   }));
 

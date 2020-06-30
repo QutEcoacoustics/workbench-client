@@ -1,5 +1,7 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { modelData } from "@test/helpers/faker";
+import { assertImage } from "@test/helpers/html";
 import { CardImageComponent } from "./card-image.component";
 
 describe("CardImageComponent", () => {
@@ -37,43 +39,27 @@ describe("CardImageComponent", () => {
     expect(title).toContain("title");
   });
 
-  it("should have image alt", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "alt" },
-    };
-    fixture.detectChanges();
-
-    const image = compiled.nativeElement.querySelector("img");
-    expect(image.alt).toBe("alt");
-  });
-
   it("should handle local image", () => {
     component.card = {
       title: "title",
-      image: { url: "image", alt: "alt" },
+      image: { url: "image", alt: "image alt" },
     };
     fixture.detectChanges();
 
     const image = compiled.nativeElement.querySelector("img");
-    expect(image.src).toBe(`http://${window.location.host}/image`);
+    assertImage(image, `http://${window.location.host}/image`, "image alt");
   });
 
   it("should handle remote image", () => {
+    const url = modelData.imageUrl();
     component.card = {
       title: "title",
-      image: {
-        url:
-          "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186",
-        alt: "alt",
-      },
+      image: { url, alt: "image alt" },
     };
     fixture.detectChanges();
 
     const image = compiled.nativeElement.querySelector("img");
-    expect(image.src).toBe(
-      "https://brokenlink/system/projects/images/000/001/029/span3/DSCN0286.JPG?1440543186"
-    );
+    assertImage(image, url, "image alt");
   });
 
   it("should handle description", () => {

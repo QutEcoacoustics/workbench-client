@@ -1,8 +1,7 @@
 import { NgModule } from "@angular/core";
 import { DatatableDirective } from "./datatable/datatable.directive";
-import { SecuredImageDirective } from "./secured-image/secured-image.directive";
 
-const directives = [DatatableDirective, SecuredImageDirective];
+const directives = [DatatableDirective];
 
 /**
  * App Shared Directives

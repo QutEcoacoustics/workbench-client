@@ -30,7 +30,7 @@ describe("HomeComponent", () => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
       imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [...testBawServices],
+      providers: testBawServices,
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

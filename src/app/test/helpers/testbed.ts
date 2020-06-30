@@ -10,8 +10,6 @@ import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
 import { serviceMockProviders } from "@baw-api/ServiceProviders";
-import { SecuredImageDirective } from "@directives/secured-image/secured-image.directive";
-import { MockSecuredImageDirective } from "@directives/secured-image/securedImageMock.directive";
 import {
   API_CONFIG,
   API_ROOT,
@@ -24,18 +22,6 @@ import {
   testApiConfig,
 } from "@services/app-config/appConfigMock.service";
 import { BehaviorSubject } from "rxjs";
-
-/**
- * Create mock class for secure image to prevent issues with
- * http mock
- */
-export const testSecureImage = [
-  MockSecuredImageDirective,
-  {
-    provide: SecuredImageDirective,
-    useClass: MockSecuredImageDirective,
-  },
-];
 
 /**
  * Create mock initializer values
