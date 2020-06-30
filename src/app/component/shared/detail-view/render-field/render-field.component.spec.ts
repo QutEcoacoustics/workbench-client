@@ -482,11 +482,11 @@ describe("RenderFieldComponent", () => {
       component["isImage"] = jasmine
         .createSpy()
         .and.callFake((src: string, onload: () => void, __: () => void) => {
-          expect(src).toBe("/test/test.png");
+          expect(src).toBe("/assets/test/test.png");
           onload();
         });
 
-      component.value = "/test/test.png";
+      component.value = "/assets/test/test.png";
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -515,11 +515,13 @@ describe("RenderFieldComponent", () => {
           onload();
         });
 
-      component.value = "/test/test.png";
+      component.value = "/assets/test/test.png";
       fixture.detectChanges();
 
       const value = getImageValues()[0];
-      expect(value.src).toBe(`http://${window.location.host}/test/test.png`);
+      expect(value.src).toBe(
+        `http://${window.location.host}/assets/test/test.png`
+      );
     });
   });
 });

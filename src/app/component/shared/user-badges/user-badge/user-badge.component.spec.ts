@@ -31,7 +31,7 @@ describe("UserBadgeComponent", () => {
   let component: UserBadgeComponent;
   let fixture: ComponentFixture<UserBadgeComponent>;
   let defaultUser: User;
-  const defaultImageSrc = `http://${window.location.host}/images/user/user_span1.png`;
+  const defaultImageSrc = `http://${window.location.host}/assets/images/user/user_span1.png`;
 
   const getLabels = (fix?: ComponentFixture<any>) =>
     (fix || fixture).nativeElement.querySelectorAll("#label");

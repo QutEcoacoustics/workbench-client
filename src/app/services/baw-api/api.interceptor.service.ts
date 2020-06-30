@@ -8,11 +8,7 @@ import {
   HttpResponse,
 } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import {
-  API_ROOT,
-  ASSET_ROOT,
-  CMS_ROOT,
-} from "@helpers/app-initializer/app-initializer";
+import { API_ROOT, CMS_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   toCamelCase,
   toSnakeCase,
@@ -32,7 +28,6 @@ export class BawApiInterceptor implements HttpInterceptor {
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(CMS_ROOT) private cmsRoot: string,
-    @Inject(ASSET_ROOT) private assetRoot: string,
     public api: SecurityService
   ) {}
 
@@ -49,14 +44,13 @@ export class BawApiInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     if (
       !request.url.includes(this.apiRoot) &&
-      !request.url.includes(this.assetRoot) &&
       !request.url.includes(this.cmsRoot)
     ) {
       return next.handle(request);
     }
 
-    // Don't add these headers to non-api requests
-    if (!["text", "blob"].includes(request.responseType)) {
+    // Don't add these headers to requests to cms service
+    if (request.responseType !== "text") {
       request = request.clone({
         setHeaders: {
           Accept: "application/json",

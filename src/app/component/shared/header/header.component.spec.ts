@@ -259,7 +259,7 @@ describe("HeaderComponent", () => {
             const image = profile.querySelector("img");
             assertImage(
               image,
-              `http://${window.location.host}/images/user/user_span1.png`,
+              `http://${window.location.host}/assets/images/user/user_span1.png`,
               "Profile Icon"
             );
           }));

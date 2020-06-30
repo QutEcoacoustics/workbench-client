@@ -90,7 +90,7 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.imageUrls = user.imageUrls || defaultUserImages;
+    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -147,7 +147,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
 
-    this.imageUrls = user.imageUrls || defaultUserImages;
+    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -171,35 +171,55 @@ export class SessionUser extends AbstractModel implements ISessionUser {
 const defaultUserImages: ImageURL[] = [
   {
     size: "extralarge",
-    url: "/images/user/user_span4.png",
+    url: "/assets/images/user/user_span4.png",
     width: 300,
     height: 300,
   },
   {
     size: "large",
-    url: "/images/user/user_span3.png",
+    url: "/assets/images/user/user_span3.png",
     width: 220,
     height: 220,
   },
   {
     size: "medium",
-    url: "/images/user/user_span2.png",
+    url: "/assets/images/user/user_span2.png",
     width: 140,
     height: 140,
   },
   {
     size: "small",
-    url: "/images/user/user_span1.png",
+    url: "/assets/images/user/user_span1.png",
     width: 60,
     height: 60,
   },
   {
     size: "tiny",
-    url: "/images/user/user_spanhalf.png",
+    url: "/assets/images/user/user_spanhalf.png",
     width: 30,
     height: 30,
   },
 ];
+
+function userImageUrls(imageUrls: ImageURL[]) {
+  // Do not change production urls
+  if (environment.production) {
+    return imageUrls;
+  }
+
+  return (
+    imageUrls?.map((imageUrl) => {
+      // Default values from API need to have /assets prepended
+      if (
+        imageUrl.url.startsWith("/") &&
+        !imageUrl.url.startsWith("/assets/")
+      ) {
+        imageUrl.url = "/assets" + imageUrl.url;
+      }
+      return imageUrl;
+    }) || defaultUserImages
+  );
+}
 
 /**
  * Determines if user is admin. Role mask stores user roles

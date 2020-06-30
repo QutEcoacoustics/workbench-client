@@ -13,7 +13,6 @@ import { serviceMockProviders } from "@baw-api/ServiceProviders";
 import {
   API_CONFIG,
   API_ROOT,
-  ASSET_ROOT,
   CMS_ROOT,
 } from "@helpers/app-initializer/app-initializer";
 import { AppConfigService } from "@services/app-config/app-config.service";
@@ -34,10 +33,6 @@ export const testAppInitializer = [
   {
     provide: CMS_ROOT,
     useValue: testApiConfig.environment.cmsRoot,
-  },
-  {
-    provide: ASSET_ROOT,
-    useValue: testApiConfig.environment.assetRoot,
   },
   {
     provide: API_CONFIG,
