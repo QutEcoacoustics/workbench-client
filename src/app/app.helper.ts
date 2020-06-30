@@ -13,6 +13,7 @@ import {
   API_CONFIG,
   API_ROOT,
   AppInitializer,
+  ASSET_ROOT,
   CMS_ROOT,
 } from "./helpers/app-initializer/app-initializer";
 import { BawApiInterceptor } from "./services/baw-api/api.interceptor.service";
@@ -122,6 +123,10 @@ export const providers = [
   {
     provide: CMS_ROOT,
     useFactory: AppInitializer.cmsRootFactory,
+  },
+  {
+    provide: ASSET_ROOT,
+    useFactory: AppInitializer.assetRootFactory,
   },
   FormTouchedGuard,
   ...serviceProviders,

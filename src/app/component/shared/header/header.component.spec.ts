@@ -1,5 +1,3 @@
-/// <reference types="karma-viewport" />
-
 import { HttpClientModule } from "@angular/common/http";
 import {
   async,
@@ -270,7 +268,7 @@ describe("HeaderComponent", () => {
             expect(icon).toBeTruthy();
             expect(icon.alt).toBe("Profile Icon");
             expect(icon.src).toBe(
-              `http://${window.location.host}/assets/images/user/user_span1.png`
+              `http://${window.location.host}/images/user/user_span1.png`
             );
           }));
 

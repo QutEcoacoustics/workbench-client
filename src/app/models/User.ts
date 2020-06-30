@@ -90,7 +90,7 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.imageUrls = userImageUrls(user.imageUrls);
+    this.imageUrls = user.imageUrls || defaultUserImages;
   }
 
   public get isAdmin(): boolean {
@@ -107,7 +107,7 @@ export class User extends AbstractModel implements IUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this, size);
+    return getModelImage(this.imageUrls, size);
   }
 
   public toString(): string {
@@ -147,7 +147,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
 
-    this.imageUrls = userImageUrls(user.imageUrls);
+    this.imageUrls = user.imageUrls || defaultUserImages;
   }
 
   public get isAdmin(): boolean {
@@ -164,62 +164,42 @@ export class SessionUser extends AbstractModel implements ISessionUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this, size);
+    return getModelImage(this.imageUrls, size);
   }
 }
 
 const defaultUserImages: ImageURL[] = [
   {
     size: "extralarge",
-    url: "/assets/images/user/user_span4.png",
+    url: "/images/user/user_span4.png",
     width: 300,
     height: 300,
   },
   {
     size: "large",
-    url: "/assets/images/user/user_span3.png",
+    url: "/images/user/user_span3.png",
     width: 220,
     height: 220,
   },
   {
     size: "medium",
-    url: "/assets/images/user/user_span2.png",
+    url: "/images/user/user_span2.png",
     width: 140,
     height: 140,
   },
   {
     size: "small",
-    url: "/assets/images/user/user_span1.png",
+    url: "/images/user/user_span1.png",
     width: 60,
     height: 60,
   },
   {
     size: "tiny",
-    url: "/assets/images/user/user_spanhalf.png",
+    url: "/images/user/user_spanhalf.png",
     width: 30,
     height: 30,
   },
 ];
-
-function userImageUrls(imageUrls: ImageURL[]) {
-  // Do not change production urls
-  if (environment.production) {
-    return imageUrls;
-  }
-
-  return (
-    imageUrls?.map((imageUrl) => {
-      // Default values from API need to have /assets prepended
-      if (
-        imageUrl.url.startsWith("/") &&
-        !imageUrl.url.startsWith("/assets/")
-      ) {
-        imageUrl.url = "/assets" + imageUrl.url;
-      }
-      return imageUrl;
-    }) || defaultUserImages
-  );
-}
 
 /**
  * Determines if user is admin. Role mask stores user roles
@@ -237,12 +217,12 @@ function isModelAdmin(model: User | SessionUser): boolean {
  * @param size Size of image
  * @returns Image URL
  */
-function getModelImage(model: User | SessionUser, size: ImageSizes): string {
-  for (const imageUrl of model.imageUrls) {
+function getModelImage(imageUrls: ImageURL[], size: ImageSizes): string {
+  for (const imageUrl of imageUrls) {
     if (imageUrl.size === size) {
       return imageUrl.url;
     }
   }
 
-  return "/assets/images/user/user_span4.png";
+  return getModelImage(defaultUserImages, size);
 }

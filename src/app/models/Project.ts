@@ -70,8 +70,7 @@ export class Project extends AbstractModel implements IProject {
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);
 
-    this.imageUrl =
-      project.imageUrl || "/assets/images/project/project_span4.png";
+    this.imageUrl = project.imageUrl || "/images/project/project_span4.png";
   }
 
   /**

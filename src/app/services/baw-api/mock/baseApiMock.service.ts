@@ -16,7 +16,7 @@ export class MockModel extends AbstractModel {
 }
 
 @Injectable()
-export class MockBawApiService {
+export abstract class MockBawApiService {
   constructor() {}
 
   public isLoggedIn() {

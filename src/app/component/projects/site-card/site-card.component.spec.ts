@@ -118,7 +118,7 @@ describe("SiteCardComponent", () => {
     const image = fixture.nativeElement.querySelector("img#image");
     expect(image).toBeTruthy();
     expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/site/site_span4.png`
+      `http://${window.location.host}/images/site/site_span4.png`
     );
     expect(image.alt).toBe("Test Site alt");
   });

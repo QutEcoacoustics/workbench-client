@@ -757,7 +757,7 @@ describe("FormComponent", () => {
     }
 
     it("should handle schemaUrl", () => {
-      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      const url = `http://${window.location.host}/tests/externalSchema.json`;
       component.fieldsUrl = url;
       fixture.detectChanges();
 
@@ -765,7 +765,7 @@ describe("FormComponent", () => {
     });
 
     it("should request schemaUrl when given", () => {
-      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      const url = `http://${window.location.host}/tests/externalSchema.json`;
       component.fieldsUrl = url;
       fixture.detectChanges();
 
@@ -798,7 +798,7 @@ describe("FormComponent", () => {
     });
 
     it("should create form with schemaUrl", () => {
-      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      const url = `http://${window.location.host}/tests/externalSchema.json`;
       component.fieldsUrl = url;
       fixture.detectChanges();
 
@@ -843,7 +843,7 @@ describe("FormComponent", () => {
     });
 
     it("should create inputs with schemaUrl", () => {
-      const url = `http://${window.location.host}/assets/tests/externalSchema.json`;
+      const url = `http://${window.location.host}/tests/externalSchema.json`;
       component.fieldsUrl = url;
       fixture.detectChanges();
 

@@ -80,7 +80,7 @@ export class Site extends AbstractModel implements ISite {
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
-    this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
+    this.imageUrl = site.imageUrl || "/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
   }
 

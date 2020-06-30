@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
 import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
@@ -10,9 +10,12 @@ import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
 import { serviceMockProviders } from "@baw-api/ServiceProviders";
+import { SecuredImageDirective } from "@directives/secured-image/secured-image.directive";
+import { MockSecuredImageDirective } from "@directives/secured-image/securedImageMock.directive";
 import {
   API_CONFIG,
   API_ROOT,
+  ASSET_ROOT,
   CMS_ROOT,
 } from "@helpers/app-initializer/app-initializer";
 import { AppConfigService } from "@services/app-config/app-config.service";
@@ -21,6 +24,18 @@ import {
   testApiConfig,
 } from "@services/app-config/appConfigMock.service";
 import { BehaviorSubject } from "rxjs";
+
+/**
+ * Create mock class for secure image to prevent issues with
+ * http mock
+ */
+export const testSecureImage = [
+  MockSecuredImageDirective,
+  {
+    provide: SecuredImageDirective,
+    useClass: MockSecuredImageDirective,
+  },
+];
 
 /**
  * Create mock initializer values
@@ -33,6 +48,10 @@ export const testAppInitializer = [
   {
     provide: CMS_ROOT,
     useValue: testApiConfig.environment.cmsRoot,
+  },
+  {
+    provide: ASSET_ROOT,
+    useValue: testApiConfig.environment.assetRoot,
   },
   {
     provide: API_CONFIG,
@@ -91,4 +110,24 @@ export interface MockData {
 }
 export interface MockParams {
   [key: string]: string | number;
+}
+
+export type HttpClientBody =
+  | ArrayBuffer
+  | Blob
+  | string
+  | number
+  // tslint:disable-next-line: ban-types
+  | Object
+  // tslint:disable-next-line: ban-types
+  | (string | number | Object | null)[]
+  | null;
+export interface HttpClientOpts {
+  headers?:
+    | HttpHeaders
+    | {
+        [name: string]: string | string[];
+      };
+  status?: number;
+  statusText?: string;
 }
