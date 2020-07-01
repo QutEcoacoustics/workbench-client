@@ -1,0 +1,25 @@
+name: "Update Dependencies"
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  push
+
+name: Update packages
+jobs:
+ release:
+   name: Update npm packages
+   runs-on: ubuntu-latest
+   steps:
+     - name: Update npm packages
+       uses: technote-space/create-pr-action@v2 #github.com/technote-space/create-pr-action
+       with:
+         EXECUTE_COMMANDS: |
+           npx npm-check-updates -u --packageFile package.json
+           npm install
+           npm upgrade
+           npm audit
+         COMMIT_MESSAGE: 'chore: Update NPM Dependencies'
+         COMMIT_NAME: 'GitHub Actions'
+         PR_BRANCH_NAME: 'chore-npm-update-${PR_ID}'
+         PR_TITLE: 'chore: Update NPM Dependencies'
