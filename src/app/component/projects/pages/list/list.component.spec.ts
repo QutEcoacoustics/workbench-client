@@ -78,7 +78,6 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Custom Project",
-        description: "Custom Description",
       }),
     ];
     configureTestingModule(projects, undefined);
@@ -93,7 +92,6 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Custom Project",
-        description: "Custom Description",
       }),
     ];
     configureTestingModule(projects, undefined);
@@ -137,17 +135,14 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Project 1",
-        description: "Description 1",
       }),
       new Project({
         id: 2,
         name: "Project 2",
-        description: "Description 2",
       }),
       new Project({
         id: 3,
         name: "Project 3",
-        description: "Description 3",
       }),
     ];
     configureTestingModule(projects, undefined);
@@ -162,17 +157,14 @@ describe("ProjectsListComponent", () => {
       new Project({
         id: 1,
         name: "Project 1",
-        description: "Description 1",
       }),
       new Project({
         id: 2,
         name: "Project 2",
-        description: "Description 2",
       }),
       new Project({
         id: 3,
         name: "Project 3",
-        description: "Description 3",
       }),
     ];
     configureTestingModule(projects, undefined);

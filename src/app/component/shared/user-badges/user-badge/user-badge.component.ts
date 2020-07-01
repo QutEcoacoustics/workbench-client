@@ -76,5 +76,5 @@ export class UserBadgeComponent implements OnInit, OnChanges {
 export interface Badge {
   label: string;
   users: List<User>;
-  lengthOfTime: string;
+  lengthOfTime?: string;
 }

@@ -11,6 +11,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -137,15 +138,7 @@ describe("HomeComponent", () => {
     });
 
     it("should display single project", async () => {
-      await setupComponent([
-        new Project({
-          id: 1,
-          name: "Project",
-          creatorId: 1,
-          description: "Description",
-          siteIds: new Set([]),
-        }),
-      ]);
+      await setupComponent([new Project(generateProject())]);
 
       const cards = getCardImages();
       expect(cards.length).toBe(1);
@@ -154,13 +147,7 @@ describe("HomeComponent", () => {
 
     it("should display project name", async () => {
       await setupComponent([
-        new Project({
-          id: 1,
-          name: "Project",
-          creatorId: 1,
-          description: "Description",
-          siteIds: new Set([]),
-        }),
+        new Project({ ...generateProject(), name: "Project" }),
       ]);
 
       const cards = getCardImages();
@@ -170,11 +157,8 @@ describe("HomeComponent", () => {
     it("should display description", async () => {
       await setupComponent([
         new Project({
-          id: 1,
-          name: "Project",
-          creatorId: 1,
+          ...generateProject(),
           description: "Description",
-          siteIds: new Set([]),
         }),
       ]);
 
@@ -185,10 +169,8 @@ describe("HomeComponent", () => {
     it("should display missing description", async () => {
       await setupComponent([
         new Project({
-          id: 1,
-          name: "Project",
-          creatorId: 1,
-          siteIds: new Set([]),
+          ...generateProject(),
+          description: undefined,
         }),
       ]);
 
@@ -206,11 +188,9 @@ describe("HomeComponent", () => {
         ids.map(
           (id, index) =>
             new Project({
-              id: index,
+              ...generateProject(id),
               name: names[index],
-              creatorId: 1,
               description: descriptions[index],
-              siteIds: new Set([]),
             })
         )
       );

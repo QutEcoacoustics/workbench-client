@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
+import { retrieveResolvers } from "src/app/services/baw-api/resolver-common";
 import { WidgetComponent } from "../widget/widget.component";
 
 /**
@@ -13,7 +13,7 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "baw-permissions-shield",
   template: `
     <div *ngIf="model">
-      <baw-user-badges [model]="model"></baw-user-badges>
+      <baw-user-badges *ngIf="model" [model]="model"></baw-user-badges>
       <h4>Your access level</h4>
       <p>Not Implemented</p>
     </div>
@@ -27,14 +27,14 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data
-      .project;
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data.site;
+    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
 
-    if (siteModel && !siteModel.error) {
-      this.model = siteModel.model;
-    } else if (projectModel && !projectModel.error) {
-      this.model = projectModel.model;
+    if (!resolvedModels) {
+      this.model = undefined;
+    } else if (resolvedModels.site) {
+      this.model = resolvedModels.site as Site;
+    } else if (resolvedModels.project) {
+      this.model = resolvedModels.project as Project;
     }
   }
 }
