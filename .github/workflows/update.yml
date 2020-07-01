@@ -3,7 +3,6 @@ name: "Update Dependencies"
 on:
   schedule:
     - cron: "0 0 * * 1"
-  push:
 
 jobs:
   release:
@@ -18,7 +17,6 @@ jobs:
             npm install
             npm upgrade
             npm audit
-          COMMIT_MESSAGE: "chore: Update NPM Dependencies"
-          COMMIT_NAME: "GitHub Actions"
+          COMMIT_NAME: "chore: Update NPM Dependencies"
           PR_BRANCH_NAME: "chore-npm-update-${PR_ID}"
           PR_TITLE: "chore: Update NPM Dependencies"
