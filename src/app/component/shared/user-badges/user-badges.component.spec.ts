@@ -1,58 +1,62 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { BehaviorSubject } from "rxjs";
-import { Id } from "src/app/interfaces/apiInterfaces";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { BawDateTime } from "@models/AttributeDecorators";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { nStepObservable } from "@test/helpers/general";
+import { BehaviorSubject, Subject } from "rxjs";
 import { User } from "src/app/models/User";
 import { testBawServices } from "src/app/test/helpers/testbed";
-import { MenuModule } from "../menu/menu.module";
+import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
-describe("UserBadgesComponent", () => {
-  const defaultId: Id = 1;
-  let api: AccountsService;
-  let component: UserBadgesComponent;
-  let fixture: ComponentFixture<UserBadgesComponent>;
-  let defaultProject: Project;
-  let defaultSite: Site;
-  let defaultUser: User;
+export class MockModel extends AbstractModel {
+  public kind = "MockModel";
+  public id: Id;
+  public creatorId?: Id;
+  public updaterId?: Id;
+  public ownerId?: Id;
+  @BawDateTime()
+  public createdAt?: DateTimeTimezone;
+  @BawDateTime()
+  public updatedAt?: DateTimeTimezone;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [MenuModule, HttpClientTestingModule, RouterTestingModule],
-      declarations: [UserBadgesComponent],
-      providers: [...testBawServices],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(UserBadgesComponent);
-    api = TestBed.inject(AccountsService);
-    component = fixture.componentInstance;
-
-    defaultProject = new Project({
-      id: defaultId,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: defaultId,
-      name: "Site",
-    });
-    defaultUser = new User({
-      id: defaultId,
-      userName: "UserName",
-    });
-  });
-
-  function interceptApiRequest(user: User) {
-    spyOn(api, "show").and.callFake(() => {
-      return new BehaviorSubject<User>(user);
-    });
+  public toJSON() {
+    return { id: this.id };
   }
 
-  function getUserBadges() {
-    return fixture.nativeElement.querySelectorAll("baw-user-badge");
+  public get viewUrl(): string {
+    return "";
+  }
+}
+
+describe("UserBadgesComponent Spec", () => {
+  let api: AccountsService;
+  let spectator: Spectator<UserBadgesComponent>;
+  const createComponent = createComponentFactory({
+    component: UserBadgesComponent,
+    declarations: [UserBadgeComponent],
+    imports: [RouterTestingModule, HttpClientTestingModule],
+    providers: testBawServices,
+  });
+
+  function getUserBadges(): HTMLElement[] {
+    return spectator.queryAll("baw-user-badge");
+  }
+
+  function interceptApiRequest(user?: User): Promise<any> {
+    if (!user) {
+      user = new User(generateUser());
+    }
+
+    const subject = new Subject<User>();
+    const promise = nStepObservable(subject, () => user);
+    spyOn(api, "show").and.callFake(() => subject);
+    return promise;
   }
 
   function assertBadgeLabel(badge: HTMLElement, label: string) {
@@ -60,134 +64,122 @@ describe("UserBadgesComponent", () => {
     expect(labelEl.innerText.trim()).toBe(label);
   }
 
-  function assertBadgeUserName(badge: HTMLElement, userName: string) {
+  function assertBadgeUsers(badge: HTMLElement, userName: string) {
     const usernameEl = badge.querySelector<HTMLAnchorElement>("a#username");
     expect(usernameEl.innerText.trim()).toBe(userName);
   }
 
+  beforeEach(() => {
+    spectator = createComponent();
+    api = spectator.inject(AccountsService);
+  });
+
   it("should create", () => {
-    component.model = defaultProject;
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spectator.setInput("model", new MockModel({ id: 1 }));
+    spectator.component.ngOnChanges();
+    expect(spectator.element).toBeTruthy();
   });
 
   it("should handle no users", () => {
-    component.model = defaultProject;
-    fixture.detectChanges();
+    spectator.setInput("model", new MockModel({ id: 1 }));
+    spectator.component.ngOnChanges();
 
     const badges = getUserBadges();
-    expect(badges).toBeTruthy();
     expect(badges.length).toBe(0);
   });
 
-  const userTypes = [
+  [
     {
       title: "Created By",
       keys: {
-        creatorId: defaultId,
-        createdAt: "2019-12-18T11:16:08.233+10:00",
+        creatorId: modelData.id(),
+        createdAt: modelData.timestamp(),
       },
     },
     {
       title: "Updated By",
       keys: {
-        updaterId: defaultId,
-        updatedBy: "2019-12-18T11:16:08.233+10:00",
+        updaterId: modelData.id(),
+        updatedBy: modelData.timestamp(),
       },
     },
     {
       title: "Owned By",
       keys: {
-        ownerId: defaultId,
+        ownerId: modelData.id(),
       },
     },
-  ];
-
-  userTypes.forEach((userType) => {
+  ].forEach((userType) => {
     describe(userType.title + " User Badge", () => {
       beforeEach(() => {
-        component.model = new Project({
-          ...defaultProject,
-          ...userType.keys,
-        });
-      });
-
-      it("should handle user badge", () => {
-        interceptApiRequest(defaultUser);
-        fixture.detectChanges();
-
-        const badges = getUserBadges();
-        expect(badges).toBeTruthy();
-        expect(badges.length).toBe(1);
-      });
-
-      it("should handle user badge title", () => {
-        interceptApiRequest(defaultUser);
-        fixture.detectChanges();
-
-        const badges = getUserBadges();
-        assertBadgeLabel(badges[0], userType.title);
-      });
-
-      it("should handle user badge username", () => {
-        interceptApiRequest(
-          new User({ ...defaultUser, userName: "Custom Username" })
+        spectator.setInput(
+          "model",
+          new MockModel({
+            id: 1,
+            ...userType.keys,
+          })
         );
-        fixture.detectChanges();
+      });
 
-        const badges = getUserBadges();
-        assertBadgeUserName(badges[0], "Custom Username");
+      it("should handle user badge", async () => {
+        const promise = interceptApiRequest();
+        spectator.component.ngOnChanges();
+        await promise;
+        expect(getUserBadges().length).toBe(1);
+      });
+
+      it("should handle badge title", async () => {
+        const promise = interceptApiRequest();
+        spectator.component.ngOnChanges();
+        await promise;
+        assertBadgeLabel(getUserBadges()[0], userType.title);
+      });
+
+      it("should handle badge users", async () => {
+        const user = new User(generateUser());
+        const promise = interceptApiRequest(user);
+        spectator.component.ngOnChanges();
+        await promise;
+
+        assertBadgeUsers(getUserBadges()[0], user.userName);
       });
     });
   });
 
-  it("should handle all badges for project", fakeAsync(() => {
-    interceptApiRequest(defaultUser);
-    component.model = new Project({
-      ...defaultProject,
-      creatorId: defaultId,
-      createdAt: "2019-12-18T11:16:08.233+10:00",
-      updaterId: defaultId,
-      updatedAt: "2019-12-18T11:16:08.233+10:00",
-      ownerId: defaultId,
+  it("should handle all badge types", async () => {
+    const promise = interceptApiRequest();
+    spectator.setInput(
+      "model",
+      new MockModel({
+        id: 1,
+        creatorId: modelData.id(),
+        createdAt: modelData.timestamp(),
+        updaterId: modelData.id(),
+        updatedAt: modelData.timestamp(),
+        ownerId: modelData.id(),
+      })
+    );
+    spectator.component.ngOnChanges();
+    await promise;
+
+    expect(getUserBadges().length).toBe(3);
+  });
+
+  // TODO Implement test to verify badges are in order
+  xit("should display all badge types in order", () => {});
+
+  it("should use luxon.toRelative to get length of time", async () => {
+    const model = new MockModel({
+      id: 1,
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
     });
-    fixture.detectChanges();
+    spyOn(model.createdAt, "toRelative").and.callFake(() => "");
+    const promise = interceptApiRequest();
+    spectator.setInput("model", model);
+    spectator.component.ngOnChanges();
+    await promise;
 
-    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
-    expect(badges).toBeTruthy();
-    expect(badges.length).toBe(3);
-  }));
-
-  it("should handle all badges for site", fakeAsync(() => {
-    interceptApiRequest(defaultUser);
-    component.model = new Site({
-      ...defaultSite,
-      creatorId: defaultId,
-      createdAt: "2019-12-18T11:16:08.233+10:00",
-      updaterId: defaultId,
-      updatedAt: "2019-12-18T11:16:08.233+10:00",
-    });
-
-    fixture.detectChanges();
-
-    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
-    expect(badges).toBeTruthy();
-    expect(badges.length).toBe(2);
-  }));
-
-  it("should use luxon.toRelative to get length of time", () => {
-    component.model = new Project({
-      ...defaultProject,
-      creatorId: defaultId,
-      createdAt: "2019-12-18T11:16:08.233+10:00",
-    });
-    const spy = spyOn(
-      component.model.createdAt,
-      "toRelative"
-    ).and.callThrough();
-    interceptApiRequest(defaultUser);
-    fixture.detectChanges();
-
-    expect(spy).toHaveBeenCalled();
+    expect(model.createdAt.toRelative).toHaveBeenCalled();
   });
 });

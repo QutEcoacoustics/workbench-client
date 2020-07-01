@@ -2,13 +2,31 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { AbstractModel } from "@models/AbstractModel";
+import { User } from "@models/User";
+import {
+  createComponentFactory,
+  createRoutingFactory,
+  Spectator,
+  SpectatorRouting,
+} from "@ngneat/spectator";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { nStepObservable } from "@test/helpers/general";
+import { promises } from "fs";
+import { Subject } from "rxjs";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import {
   mockActivatedRoute,
+  MockData,
+  MockResolvers,
   testBawServices,
 } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
@@ -16,109 +34,45 @@ import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 describe("PermissionsShieldComponent", () => {
-  let component: PermissionsShieldComponent;
-  let fixture: ComponentFixture<PermissionsShieldComponent>;
-  let defaultProject: Project;
-  let defaultSite: Site;
-  let defaultError: ApiErrorDetails;
-
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails,
-    site: Site,
-    siteError: ApiErrorDetails
-  ) {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule],
-      declarations: [
-        PermissionsShieldComponent,
-        UserBadgesComponent,
-        UserBadgeComponent,
-      ],
-      providers: [
-        ...testBawServices,
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-              site: siteResolvers.show,
-            },
-            {
-              project:
-                project || projectError
-                  ? {
-                      model: project,
-                      error: projectError,
-                    }
-                  : undefined,
-              site:
-                site || siteError
-                  ? {
-                      model: site,
-                      error: siteError,
-                    }
-                  : undefined,
-            }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(PermissionsShieldComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }
-
-  beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: 1,
-      name: "Site",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+  let spectator: SpectatorRouting<PermissionsShieldComponent>;
+  let api: AccountsService;
+  const createComponent = createRoutingFactory({
+    component: PermissionsShieldComponent,
+    declarations: [UserBadgesComponent, UserBadgeComponent],
+    imports: [HttpClientTestingModule],
+    providers: testBawServices,
+    stubsEnabled: true,
   });
 
-  it("should create three user badges for project", fakeAsync(() => {
-    const project = new Project({
-      id: 1,
-      name: "Project",
-      creatorId: 1,
-      createdAt: "2019-01-01",
-      updaterId: 1,
-      updatedAt: "2019-01-01",
-      ownerId: 1,
-    });
+  function resolvedModel(model: AbstractModel, error?: ApiErrorDetails) {
+    return model || error ? { model, error } : undefined;
+  }
 
-    configureTestingModule(project, undefined, undefined, undefined);
+  function setup(resolvers: MockResolvers, data: MockData) {
+    // TODO Simplify this by mocking UserBadgesComponent
+    spectator = createComponent({ data: { resolvers, ...data } });
+    api = spectator.inject(AccountsService);
+    spyOn(api, "show").and.stub();
+  }
 
-    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
-    expect(badges).toBeTruthy();
-    expect(badges.length).toBe(3);
-  }));
+  it("should handle project model", async () => {
+    const project = new Project(generateProject());
+    setup(
+      { project: projectResolvers.show },
+      { project: resolvedModel(project) }
+    );
 
-  it("should create two user badges for site", fakeAsync(() => {
-    const site = new Site({
-      id: 1,
-      name: "Site",
-      creatorId: 1,
-      createdAt: "2019-01-01",
-      updaterId: 1,
-      updatedAt: "2019-01-01",
-    });
+    const badges = spectator.query(UserBadgesComponent);
+    expect(badges.model).toEqual(project);
+  });
 
-    configureTestingModule(undefined, undefined, site, undefined);
+  it("should handle site model", async () => {
+    const site = new Site(generateSite());
+    setup({ site: siteResolvers.show }, { site: resolvedModel(site) });
 
-    const badges = fixture.nativeElement.querySelectorAll("baw-user-badge");
-    expect(badges).toBeTruthy();
-    expect(badges.length).toBe(2);
-  }));
+    const badges = spectator.query(UserBadgesComponent);
+    expect(badges.model).toEqual(site);
+  });
 
   // TODO
   xit("should handle project error", () => {});

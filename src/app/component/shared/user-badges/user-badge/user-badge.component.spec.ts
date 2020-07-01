@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChange } from "@angular/core";
+import { Component } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { assertImage, assertRoute } from "@test/helpers/html";

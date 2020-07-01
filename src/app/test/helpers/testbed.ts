@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Params } from "@angular/router";
 import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
@@ -91,4 +91,24 @@ export interface MockData {
 }
 export interface MockParams {
   [key: string]: string | number;
+}
+
+export type HttpClientBody =
+  | ArrayBuffer
+  | Blob
+  | string
+  | number
+  // tslint:disable-next-line: ban-types
+  | Object
+  // tslint:disable-next-line: ban-types
+  | (string | number | Object | null)[]
+  | null;
+export interface HttpClientOpts {
+  headers?:
+    | HttpHeaders
+    | {
+        [name: string]: string | string[];
+      };
+  status?: number;
+  statusText?: string;
 }

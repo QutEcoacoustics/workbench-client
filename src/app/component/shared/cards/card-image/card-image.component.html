@@ -5,8 +5,8 @@
       <a [href]="card.link">
         <img
           class="card-img-top"
+          [alt]="card.image.alt"
           [src]="card.image.url"
-          alt="{{ card.image.alt }}"
         />
       </a>
     </ng-container>
@@ -15,19 +15,15 @@
       <a [routerLink]="card.route">
         <img
           class="card-img-top"
+          [alt]="card.image.alt"
           [src]="card.image.url"
-          alt="{{ card.image.alt }}"
         />
       </a>
     </ng-template>
   </ng-container>
 
   <ng-template #noLinkImage>
-    <img
-      class="card-img-top"
-      [src]="card.image.url"
-      alt="{{ card.image.alt }}"
-    />
+    <img class="card-img-top" [alt]="card.image.alt" [src]="card.image.url" />
   </ng-template>
 
   <!-- Card Body -->

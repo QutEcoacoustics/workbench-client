@@ -3,6 +3,9 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { assertImage } from "@test/helpers/html";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -20,47 +23,16 @@ describe("SiteCardComponent", () => {
   });
 
   it("should create", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 1,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
+    component.project = new Project(generateProject());
+    component.site = new Site(generateSite());
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should display site name", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 1,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project(generateProject());
+    component.site = new Site({ ...generateSite(), name: "Test Site" });
     fixture.detectChanges();
 
     const name = fixture.nativeElement.querySelector("h5#name");
@@ -69,24 +41,8 @@ describe("SiteCardComponent", () => {
   });
 
   it("should navigate user to site when clicking site name", fakeAsync(() => {
-    component.project = new Project({
-      id: 2,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 5,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project({ ...generateProject(), id: 2 });
+    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
 
     const nameHyperlink = fixture.nativeElement.querySelector("#imageLink");
@@ -95,53 +51,25 @@ describe("SiteCardComponent", () => {
   }));
 
   it("should display site image", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
+    component.project = new Project(generateProject());
     component.site = new Site({
-      id: 1,
+      ...generateSite(),
       name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
+      imageUrl: undefined,
     });
-
     fixture.detectChanges();
 
     const image = fixture.nativeElement.querySelector("img#image");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe(
-      `http://${window.location.host}/assets/images/site/site_span4.png`
+    assertImage(
+      image,
+      `http://${window.location.host}/assets/images/site/site_span4.png`,
+      "Test Site alt"
     );
-    expect(image.alt).toBe("Test Site alt");
   });
 
   it("should navigate user to site when clicking site image", () => {
-    component.project = new Project({
-      id: 2,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 5,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project({ ...generateProject(), id: 2 });
+    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
 
     const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
@@ -150,53 +78,21 @@ describe("SiteCardComponent", () => {
   });
 
   it("should display custom site image", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
+    component.project = new Project(generateProject());
     component.site = new Site({
-      id: 1,
+      ...generateSite(),
       name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
       imageUrl: "http://brokenlink/",
     });
-
     fixture.detectChanges();
 
     const image = fixture.nativeElement.querySelector("img");
-    expect(image).toBeTruthy();
-    expect(image.src).toBe("http://brokenlink/");
-    expect(image.alt).toBe("Test Site alt");
+    assertImage(image, "http://brokenlink/", "Test Site alt");
   });
 
   it("should navigate user to site when clicking custom site image", () => {
-    component.project = new Project({
-      id: 2,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 5,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-      imageUrl: "http://brokenlink/",
-    });
-
+    component.project = new Project({ ...generateProject(), id: 2 });
+    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
 
     const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
@@ -205,24 +101,8 @@ describe("SiteCardComponent", () => {
   });
 
   it("should display details button", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 1,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project(generateProject());
+    component.site = new Site(generateSite());
     fixture.detectChanges();
 
     const displayButton = fixture.nativeElement.querySelector("a#details");
@@ -231,24 +111,8 @@ describe("SiteCardComponent", () => {
   });
 
   it("should navigate user to site when clicking details button", () => {
-    component.project = new Project({
-      id: 2,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 5,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project({ ...generateProject(), id: 2 });
+    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
 
     const displayButton = fixture.nativeElement.querySelector("a#details");
@@ -257,24 +121,8 @@ describe("SiteCardComponent", () => {
   });
 
   it("should display play button", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 1,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project(generateProject());
+    component.site = new Site(generateSite());
     fixture.detectChanges();
 
     const playButton = fixture.nativeElement.querySelector("a#play");
@@ -285,24 +133,8 @@ describe("SiteCardComponent", () => {
   xit("should navigate user to listen page when clicking play button", () => {});
 
   it("should display visualise button", () => {
-    component.project = new Project({
-      id: 1,
-      name: "Test project",
-      description: "A test project",
-      creatorId: 1,
-      siteIds: new Set([]),
-    });
-    component.site = new Site({
-      id: 1,
-      name: "Test Site",
-      creatorId: 1,
-      description: "A sample site",
-      projectIds: new Set([1, 2, 3]),
-      locationObfuscated: true,
-      customLatitude: 0,
-      customLongitude: 0,
-    });
-
+    component.project = new Project(generateProject());
+    component.site = new Site(generateSite());
     fixture.detectChanges();
 
     const visualizeButton = fixture.nativeElement.querySelector("a#visualize");

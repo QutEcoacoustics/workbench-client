@@ -107,7 +107,7 @@ export class User extends AbstractModel implements IUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this, size);
+    return getModelImage(this.imageUrls, size);
   }
 
   public toString(): string {
@@ -164,7 +164,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this, size);
+    return getModelImage(this.imageUrls, size);
   }
 }
 
@@ -237,12 +237,12 @@ function isModelAdmin(model: User | SessionUser): boolean {
  * @param size Size of image
  * @returns Image URL
  */
-function getModelImage(model: User | SessionUser, size: ImageSizes): string {
-  for (const imageUrl of model.imageUrls) {
+function getModelImage(imageUrls: ImageURL[], size: ImageSizes): string {
+  for (const imageUrl of imageUrls) {
     if (imageUrl.size === size) {
       return imageUrl.url;
     }
   }
 
-  return "/assets/images/user/user_span4.png";
+  return getModelImage(defaultUserImages, size);
 }

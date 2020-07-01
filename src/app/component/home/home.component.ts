@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@component/projects/projects.menus";
@@ -20,12 +19,35 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 })
 @Component({
   selector: "app-home",
-  templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.scss"],
+  template: `
+    <baw-cms [page]="page"></baw-cms>
+    <div class="container-fluid" style="background-color: #e9ecef;">
+      <section class="container">
+        <h2>
+          Some of the projects you can access
+        </h2>
+        <p>
+          You can browse some public projects and audio recordings without
+          logging in. To participate in the analysis work you will need to Log
+          in with an existing account or Register for a new account.
+        </p>
+        <baw-cards [cards]="projectList" [content]="true">
+          <ng-container>
+            <button
+              class="m-auto btn btn-outline-primary"
+              [routerLink]="projectsLink"
+            >
+              More Projects
+            </button>
+          </ng-container>
+        </baw-cards>
+      </section>
+    </div>
+  `,
 })
 export class HomeComponent extends PageComponent implements OnInit {
   public page: string;
-  public moreProjectsLink = projectsMenuItem;
+  public projectsLink = projectsMenuItem.route.toString();
   public projectList: List<Card> = List([]);
 
   constructor(
@@ -42,21 +64,15 @@ export class HomeComponent extends PageComponent implements OnInit {
     this.securityApi
       .getAuthTrigger()
       .pipe(
-        flatMap(() => {
-          return this.projectApi.filter({ paging: { items: 3 } });
-        }),
+        flatMap(() => this.projectApi.filter({ paging: { items: 3 } })),
         map((data: Project[]) =>
           List(data.map((project) => project.getCard()))
         ),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        (cards: List<Card>) => {
-          this.projectList = cards;
-        },
-        (err: ApiErrorDetails) => {
-          this.projectList = List([]);
-        }
+        (cards: List<Card>) => (this.projectList = cards),
+        () => (this.projectList = List([]))
       );
   }
 }
