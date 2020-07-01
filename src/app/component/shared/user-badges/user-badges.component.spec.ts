@@ -1,54 +1,82 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { fakeAsync } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { MockModel } from "@baw-api/mock/baseApiMock.service";
-import { createHostFactory, Spectator } from "@ngneat/spectator";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { BawDateTime } from "@models/AttributeDecorators";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { List } from "immutable";
-import { BehaviorSubject } from "rxjs";
+import { nStepObservable } from "@test/helpers/general";
+import { BehaviorSubject, Subject } from "rxjs";
 import { User } from "src/app/models/User";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
+export class MockModel extends AbstractModel {
+  public kind = "MockModel";
+  public id: Id;
+  public creatorId?: Id;
+  public updaterId?: Id;
+  public ownerId?: Id;
+  @BawDateTime()
+  public createdAt?: DateTimeTimezone;
+  @BawDateTime()
+  public updatedAt?: DateTimeTimezone;
+
+  public toJSON() {
+    return { id: this.id };
+  }
+
+  public get viewUrl(): string {
+    return "";
+  }
+}
+
 describe("UserBadgesComponent Spec", () => {
   let api: AccountsService;
   let spectator: Spectator<UserBadgesComponent>;
-  const createComponent = createHostFactory({
+  const createComponent = createComponentFactory({
     component: UserBadgesComponent,
-    declarations: [UserBadgeComponent], // TODO Replace with ng-mock
-    imports: [HttpClientTestingModule],
+    declarations: [UserBadgeComponent],
+    imports: [RouterTestingModule, HttpClientTestingModule],
     providers: testBawServices,
   });
 
-  function getUserBadges() {
-    return spectator.queryAll(UserBadgeComponent);
+  function getUserBadges(): HTMLElement[] {
+    return spectator.queryAll("baw-user-badge");
   }
 
-  function interceptApiRequest(user: User) {
-    spyOn(api, "show").and.callFake(() => {
-      return new BehaviorSubject<User>(user);
-    });
-  }
-  function assertBadgeLabel(badge: UserBadgeComponent, label: string) {
-    expect(badge.label).toBe(label);
+  function interceptApiRequest(user?: User): Promise<any> {
+    if (!user) {
+      user = new User(generateUser());
+    }
+
+    const subject = new Subject<User>();
+    const promise = nStepObservable(subject, () => user);
+    spyOn(api, "show").and.callFake(() => subject);
+    return promise;
   }
 
-  function assertBadgeUsers(badge: UserBadgeComponent, users: List<User>) {
-    expect(badge.users).toEqual(users);
+  function assertBadgeLabel(badge: HTMLElement, label: string) {
+    const labelEl = badge.querySelector("h4");
+    expect(labelEl.innerText.trim()).toBe(label);
+  }
+
+  function assertBadgeUsers(badge: HTMLElement, userName: string) {
+    const usernameEl = badge.querySelector<HTMLAnchorElement>("a#username");
+    expect(usernameEl.innerText.trim()).toBe(userName);
   }
 
   beforeEach(() => {
-    spectator = createComponent(
-      `<app-user-badges [model]="model"></app-user-badges>`
-    );
+    spectator = createComponent();
     api = spectator.inject(AccountsService);
   });
 
   it("should create", () => {
     spectator.setInput("model", new MockModel({ id: 1 }));
-    spectator.detectChanges();
+    spectator.component.ngOnChanges();
     expect(spectator.element).toBeTruthy();
   });
 
@@ -93,31 +121,33 @@ describe("UserBadgesComponent Spec", () => {
         );
       });
 
-      it("should handle user badge", () => {
-        interceptApiRequest(new User(generateUser()));
-        spectator.detectChanges();
+      it("should handle user badge", async () => {
+        const promise = interceptApiRequest();
+        spectator.component.ngOnChanges();
+        await promise;
         expect(getUserBadges().length).toBe(1);
       });
 
-      it("should handle badge title", () => {
-        interceptApiRequest(new User(generateUser()));
-        spectator.detectChanges();
+      it("should handle badge title", async () => {
+        const promise = interceptApiRequest();
+        spectator.component.ngOnChanges();
+        await promise;
         assertBadgeLabel(getUserBadges()[0], userType.title);
       });
 
-      it("should handle badge users", () => {
+      it("should handle badge users", async () => {
         const user = new User(generateUser());
-        interceptApiRequest(user);
-        spectator.detectChanges();
+        const promise = interceptApiRequest(user);
+        spectator.component.ngOnChanges();
+        await promise;
 
-        const badges = getUserBadges();
-        assertBadgeUsers(badges[0], List([user]));
+        assertBadgeUsers(getUserBadges()[0], user.userName);
       });
     });
   });
 
-  it("should handle all badges for project", fakeAsync(() => {
-    interceptApiRequest(new User(generateUser()));
+  it("should handle all badge types", async () => {
+    const promise = interceptApiRequest();
     spectator.setInput(
       "model",
       new MockModel({
@@ -129,22 +159,27 @@ describe("UserBadgesComponent Spec", () => {
         ownerId: modelData.id(),
       })
     );
-    spectator.detectChanges();
+    spectator.component.ngOnChanges();
+    await promise;
 
     expect(getUserBadges().length).toBe(3);
-  }));
+  });
 
-  it("should use luxon.toRelative to get length of time", () => {
+  // TODO Implement test to verify badges are in order
+  xit("should display all badge types in order", () => {});
+
+  it("should use luxon.toRelative to get length of time", async () => {
     const model = new MockModel({
       id: 1,
       creatorId: modelData.id(),
       createdAt: modelData.timestamp(),
     });
-    (model as any).creatorId = jasmine.createSpy();
-    interceptApiRequest(new User(generateUser()));
+    spyOn(model.createdAt, "toRelative").and.callFake(() => "");
+    const promise = interceptApiRequest();
     spectator.setInput("model", model);
-    spectator.detectChanges();
+    spectator.component.ngOnChanges();
+    await promise;
 
-    expect((model as any).creatorId).toHaveBeenCalled();
+    expect(model.createdAt.toRelative).toHaveBeenCalled();
   });
 });

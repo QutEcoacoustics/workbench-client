@@ -60,29 +60,28 @@ export class UserBadgesComponent extends WithUnsubscribe()
         return;
       }
 
-      this.api
-        .show(this.model[badgeType.id])
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe(
-          (user: User) => {
-            const timestamp: DateTimeTimezone = this.model[badgeType.timestamp];
+      // TODO Don't make call if previously made
+      // TODO Sort badges so they follow the same order as badgeTypes
+      this.api.show(this.model[badgeType.id]).subscribe(
+        (user: User) => {
+          const timestamp: DateTimeTimezone = this.model[badgeType.timestamp];
 
-            this.badges.push({
-              label: badgeType.label,
-              users: List([user]),
-              lengthOfTime: timestamp ? timestamp.toRelative() : undefined,
-            });
-            this.ref.detectChanges();
-          },
-          () => {
-            this.badges.push({
-              label: badgeType.label,
-              users: List([]),
-              lengthOfTime: undefined,
-            });
-            this.ref.detectChanges();
-          }
-        );
+          this.badges.push({
+            label: badgeType.label,
+            users: List([user]),
+            lengthOfTime: timestamp ? timestamp.toRelative() : undefined,
+          });
+          this.ref.detectChanges();
+        },
+        () => {
+          this.badges.push({
+            label: badgeType.label,
+            users: List([]),
+            lengthOfTime: undefined,
+          });
+          this.ref.detectChanges();
+        }
+      );
     });
   }
 }

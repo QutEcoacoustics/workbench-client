@@ -24,8 +24,8 @@ export const modelData = {
   },
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substr(2),
   html: () => "hello <b>world</b>",
-  id: (id?: Id) => (id ? id : faker.random.number(25)),
-  ids: () => randomArray(0, 5, () => faker.random.number(100)),
+  id: (id?: Id) => (id ? id : faker.random.number(25) + 1),
+  ids: () => randomArray(0, 5, () => faker.random.number(100) + 1),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls: () =>
     new Array<ImageURL>(
