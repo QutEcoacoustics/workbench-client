@@ -6,3 +6,6 @@ updates:
     interval: weekly
     day: friday
     time: "00:00"
+  allow:
+    - dependency-type: all
+  open-pull-request-limit: 10
