@@ -1,13 +1,13 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: weekly
-    day: friday
-    time: "00:00"
-  allow:
-    - dependency-type: all
-  open-pull-requests-limit: 10
-  automerge-rule-development-deps: "semver:minor",
-  automerge-rule-runtime-deps: "semver:minor"
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: friday
+      time: "00:00"
+    allow:
+      - dependency-type: all
+    open-pull-requests-limit: 10
+    automerge-rule-development-deps: "semver:minor"
+    automerge-rule-runtime-deps: "semver:minor"
