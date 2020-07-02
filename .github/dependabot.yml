@@ -9,3 +9,5 @@ updates:
   allow:
     - dependency-type: all
   open-pull-requests-limit: 10
+  automerge-rule-development-deps: "semver:minor",
+  automerge-rule-runtime-deps: "semver:minor"
