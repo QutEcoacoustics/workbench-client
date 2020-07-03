@@ -3,9 +3,9 @@ updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: weekly
-      day: friday
-      time: "00:00"
+      interval: "daily"
+      time: "11:55"
+      timezone: "Australia/Brisbane"
     allow:
       - dependency-type: direct
     labels:
