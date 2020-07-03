@@ -1,11 +1,13 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: weekly
-    day: friday
-    time: "00:00"
-  allow:
-    - dependency-type: all
-  open-pull-requests-limit: 10
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: friday
+      time: "00:00"
+    allow:
+      - dependency-type: all
+    labels:
+      - "automerge"
+    open-pull-requests-limit: 10
