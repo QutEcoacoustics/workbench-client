@@ -3,7 +3,12 @@ on:
   pull_request:
     types:
       - labeled
+      - unlabeled
+      - synchronize
       - opened
+      - edited
+      - reopened
+      - unlocked
   check_suite:
     types:
       - completed
