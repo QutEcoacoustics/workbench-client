@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "11:55"
+      time: "12:05"
       timezone: "Australia/Brisbane"
     allow:
       - dependency-type: direct
