@@ -7,7 +7,7 @@ updates:
       day: friday
       time: "00:00"
     allow:
-      - dependency-type: all
+      - dependency-type: direct
     labels:
       - "automerge"
     open-pull-requests-limit: 10
