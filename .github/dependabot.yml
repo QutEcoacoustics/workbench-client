@@ -8,6 +8,6 @@ updates:
       time: "00:00"
     allow:
       - dependency-type: all
+    default-labels:
+      - "automerge"
     open-pull-requests-limit: 10
-    automerge-rule-development-deps: "semver:minor"
-    automerge-rule-runtime-deps: "semver:minor"
