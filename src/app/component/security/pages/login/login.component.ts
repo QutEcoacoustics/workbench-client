@@ -22,7 +22,6 @@ import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import url from "url";
 import { fields } from "./login.schema.json";
 
 @Page({
@@ -99,8 +98,8 @@ export class LoginComponent extends FormTemplate<LoginDetails>
 
     // If external redirect
     if (typeof redirect === "string") {
-      const redirectUrl = url.parse(redirect);
-      const validUrl = url.parse(this.apiRoot);
+      const redirectUrl = new URL(redirect);
+      const validUrl = new URL(this.apiRoot);
 
       // Check if redirect url is safe
       if (
