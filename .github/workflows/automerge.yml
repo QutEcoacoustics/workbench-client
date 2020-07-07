@@ -9,10 +9,16 @@ on:
       - edited
       - reopened
       - unlocked
+    branches:
+      - dependabot/**
   check_suite:
     types:
       - completed
-  status: {}
+    branches:
+      - dependabot/**
+  status:
+    branches:
+      - dependabot/**
 jobs:
   automerge:
     runs-on: ubuntu-latest
