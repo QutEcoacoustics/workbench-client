@@ -22,7 +22,6 @@ import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import url from "url";
 import { fields } from "./login.schema.json";
 
 @Page({
@@ -88,8 +87,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
     const navigationId = (this.location.getState() as any).navigationId;
-    const redirect: string | boolean | undefined = this.route.snapshot
-      .queryParams.redirect;
+    const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
     if (redirect === false) {
@@ -99,8 +97,8 @@ export class LoginComponent extends FormTemplate<LoginDetails>
 
     // If external redirect
     if (typeof redirect === "string") {
-      const redirectUrl = url.parse(redirect);
-      const validUrl = url.parse(this.apiRoot);
+      const redirectUrl = new URL(redirect, window.location.origin);
+      const validUrl = new URL(this.apiRoot, window.location.origin);
 
       // Check if redirect url is safe
       if (

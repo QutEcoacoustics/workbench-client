@@ -12,6 +12,7 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { SharedModule } from "@shared/shared.module";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { MockToastr } from "@test/helpers/toastr";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -23,7 +24,6 @@ describe("LoginComponent", () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let location: Location;
-  let notifications: ToastrService;
   let router: Router;
 
   function configureTestingModule(
@@ -35,14 +35,12 @@ describe("LoginComponent", () => {
       declarations: [LoginComponent, HomeComponent],
       providers: [
         ...testBawServices,
+        { provide: ToastrService, useClass: MockToastr },
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            {},
-            {},
-            {},
-            redirect ? { redirect } : {}
-          ),
+          useClass: mockActivatedRoute(undefined, undefined, undefined, {
+            redirect,
+          }),
         },
       ],
     }).compileComponents();
@@ -52,25 +50,21 @@ describe("LoginComponent", () => {
     api = TestBed.inject(SecurityService);
     router = TestBed.inject(Router);
     location = TestBed.inject(Location);
-    notifications = TestBed.inject(ToastrService);
 
     spyOn(component, "externalRedirect").and.stub();
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
-      navigationId: navigationId ? navigationId : 1,
+      navigationId: navigationId || 1, // Default to no history (navigationId = 1)
     }));
   }
 
-  function apiResponse() {
+  function setInvalidLoginResponse() {
     spyOn(api, "signIn").and.callFake(() => {
       const subject = new Subject<void>();
       subject.error({
         status: 401,
-        message:
-          "Incorrect user name, email, or password. Alternatively, you may need to confirm your account or it may be locked.",
+        message: "Incorrect user name, email, or password.",
       } as ApiErrorDetails);
       return subject;
     });
@@ -127,7 +121,7 @@ describe("LoginComponent", () => {
   describe("redirection", () => {
     it("should redirect user to previous page on login", fakeAsync(() => {
       configureTestingModule(undefined, 2);
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();
@@ -138,7 +132,7 @@ describe("LoginComponent", () => {
 
     it("should redirect user to home page on redirect=false", fakeAsync(() => {
       configureTestingModule(false);
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();
@@ -150,7 +144,7 @@ describe("LoginComponent", () => {
 
     it("should redirect user to home page when no previous location remembered", fakeAsync(() => {
       configureTestingModule();
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();
@@ -162,7 +156,7 @@ describe("LoginComponent", () => {
 
     it("should handle redirect url", fakeAsync(() => {
       configureTestingModule("/broken_link");
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();
@@ -175,7 +169,7 @@ describe("LoginComponent", () => {
       configureTestingModule(
         testApiConfig.environment.apiRoot + "/broken_link"
       );
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();
@@ -189,7 +183,7 @@ describe("LoginComponent", () => {
 
     it("should ignore non-ecosounds redirect url", fakeAsync(() => {
       configureTestingModule("http://broken_link");
-      apiResponse();
+      setInvalidLoginResponse();
       fixture.detectChanges();
 
       component["redirectUser"]();

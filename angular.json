@@ -35,7 +35,11 @@
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
             "scripts": [],
-            "sourceMap": true
+            "sourceMap": true,
+            "allowedCommonJsDependencies": [
+              "zone.js/dist/zone-error",
+              "humanize-duration"
+            ]
           },
           "configurations": {
             "production": {
