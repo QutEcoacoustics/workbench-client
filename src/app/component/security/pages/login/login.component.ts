@@ -87,8 +87,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
     const navigationId = (this.location.getState() as any).navigationId;
-    const redirect: string | boolean | undefined = this.route.snapshot
-      .queryParams.redirect;
+    const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
     if (redirect === false) {
@@ -98,8 +97,8 @@ export class LoginComponent extends FormTemplate<LoginDetails>
 
     // If external redirect
     if (typeof redirect === "string") {
-      const redirectUrl = new URL(redirect);
-      const validUrl = new URL(this.apiRoot);
+      const redirectUrl = new URL(redirect, window.location.origin);
+      const validUrl = new URL(this.apiRoot, window.location.origin);
 
       // Check if redirect url is safe
       if (
