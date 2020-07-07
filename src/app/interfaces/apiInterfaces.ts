@@ -64,11 +64,13 @@ export type Longitude = string;
  * BAW API Image Sizes
  */
 export enum ImageSizes {
-  extraLarge = "extralarge",
-  large = "large",
-  medium = "medium",
-  small = "small",
-  tiny = "tiny",
+  EXTRA_LARGE = "extralarge",
+  LARGE = "large",
+  MEDIUM = "medium",
+  SMALL = "small",
+  TINY = "tiny",
+  DEFAULT = "default",
+  UNKNOWN = "unknown",
 }
 
 /**
@@ -86,8 +88,15 @@ export interface TimezoneInformation {
  * BAW API Image Details
  */
 export interface ImageURL {
-  height: number;
-  size: "extralarge" | "large" | "medium" | "small" | "tiny";
+  size:
+    | "extralarge"
+    | "large"
+    | "medium"
+    | "small"
+    | "tiny"
+    | "default"
+    | "unknown";
   url: string;
-  width: number;
+  height?: number;
+  width?: number;
 }

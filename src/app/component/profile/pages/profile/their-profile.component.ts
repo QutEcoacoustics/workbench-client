@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
@@ -91,7 +91,7 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
-    this.imageUrl = this.user.getImage(ImageSizes.large);
+    this.imageUrl = this.user.getImage(ImageSizes.LARGE);
 
     this.projectsApi.filterByAccessLevel({}, this.user).subscribe(
       (models) => this.extractTotal(0, models),

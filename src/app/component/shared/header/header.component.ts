@@ -79,9 +79,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
           this.toggleCollapse(true);
         }
       },
-      (err) => {
-        console.error("HeaderComponent: ", err);
-      }
+      (err) => console.error("HeaderComponent: ", err)
     );
 
     this.api
@@ -89,9 +87,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => this.updateUser(),
-        (err: ApiErrorDetails) => {
-          this.notifications.error(err.message);
-        }
+        (err: ApiErrorDetails) => this.notifications.error(err.message)
       );
   }
 
@@ -108,13 +104,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Toggle the collapse of the navbar
    * @param setState Set the state of the navbar
    */
-  toggleCollapse(setState?: boolean) {
-    if (setState) {
-      this.collapsed = setState;
-    } else {
-      this.collapsed = !this.collapsed;
-    }
-  }
+  toggleCollapse(setState?: boolean) {}
 
   /**
    * Logout user
@@ -159,7 +149,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       return;
     }
 
-    this.userImage = this.user.getImage(ImageSizes.small);
+    this.userImage = this.user.getImage(ImageSizes.SMALL);
     this.isAdmin = isAdminPredicate(this.user);
   }
 

@@ -91,7 +91,7 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
-    this.imageUrl = this.user.getImage(ImageSizes.large);
+    this.imageUrl = this.user.getImage(ImageSizes.LARGE);
 
     this.projectsApi.list().subscribe(
       (models) => this.extractTotal(0, models),

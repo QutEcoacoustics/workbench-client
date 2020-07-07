@@ -13,7 +13,7 @@ import {
   UserName,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { BawDateTime, BawImage, BawPersistAttr } from "./AttributeDecorators";
 
 /**
  * A user model.
@@ -57,6 +57,8 @@ export class User extends AbstractModel implements IUser {
   public readonly failedAttempts?: number;
   @BawPersistAttr
   public readonly imageUrls?: ImageURL[];
+  @BawImage<User>("/assets/images/user/user_span4.png", { key: "imageUrls" })
+  public readonly image?: ImageURL[];
   @BawPersistAttr
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
@@ -107,7 +109,7 @@ export class User extends AbstractModel implements IUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this.imageUrls, size);
+    return getModelImage(this.image, size);
   }
 
   public toString(): string {
@@ -137,6 +139,10 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public readonly userName?: UserName;
   @BawPersistAttr
   public readonly imageUrls?: ImageURL[];
+  @BawImage<SessionUser>("/assets/images/user/user_span4.png", {
+    key: "imageUrls",
+  })
+  public readonly image?: ImageURL[];
   @BawPersistAttr
   public readonly preferences?: any;
   @BawPersistAttr
@@ -164,61 +170,27 @@ export class SessionUser extends AbstractModel implements ISessionUser {
    * @returns Image URL
    */
   public getImage(size: ImageSizes): string {
-    return getModelImage(this.imageUrls, size);
+    return getModelImage(this.image, size);
   }
 }
 
-const defaultUserImages: ImageURL[] = [
-  {
-    size: "extralarge",
-    url: "/assets/images/user/user_span4.png",
-    width: 300,
-    height: 300,
-  },
-  {
-    size: "large",
-    url: "/assets/images/user/user_span3.png",
-    width: 220,
-    height: 220,
-  },
-  {
-    size: "medium",
-    url: "/assets/images/user/user_span2.png",
-    width: 140,
-    height: 140,
-  },
-  {
-    size: "small",
-    url: "/assets/images/user/user_span1.png",
-    width: 60,
-    height: 60,
-  },
-  {
-    size: "tiny",
-    url: "/assets/images/user/user_spanhalf.png",
-    width: 30,
-    height: 30,
-  },
-];
-
+/**
+ * Extract user image urls from json data
+ * @param imageUrls Image Urls
+ */
 function userImageUrls(imageUrls: ImageURL[]) {
   // Do not change production urls
   if (environment.production) {
     return imageUrls;
   }
 
-  return (
-    imageUrls?.map((imageUrl) => {
-      // Default values from API need to have /assets prepended
-      if (
-        imageUrl.url.startsWith("/") &&
-        !imageUrl.url.startsWith("/assets/")
-      ) {
-        imageUrl.url = "/assets" + imageUrl.url;
-      }
-      return imageUrl;
-    }) || defaultUserImages
-  );
+  return imageUrls?.map((imageUrl) => {
+    // Default values from API need to have /assets prepended
+    if (imageUrl.url.startsWith("/") && !imageUrl.url.startsWith("/assets/")) {
+      imageUrl.url = "/assets" + imageUrl.url;
+    }
+    return imageUrl;
+  });
 }
 
 /**
@@ -237,12 +209,12 @@ function isModelAdmin(model: User | SessionUser): boolean {
  * @param size Size of image
  * @returns Image URL
  */
-function getModelImage(imageUrls: ImageURL[], size: ImageSizes): string {
-  for (const imageUrl of imageUrls) {
+function getModelImage(images: ImageURL[], size: ImageSizes): string {
+  for (const imageUrl of images) {
     if (imageUrl.size === size) {
       return imageUrl.url;
     }
   }
 
-  return getModelImage(defaultUserImages, size);
+  return getModelImage(images, ImageSizes.DEFAULT);
 }

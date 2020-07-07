@@ -8,7 +8,7 @@ import { Project } from "@models/Project";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { flatMap, map, takeUntil } from "rxjs/operators";
+import { map, mergeMap, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Page({
@@ -64,7 +64,7 @@ export class HomeComponent extends PageComponent implements OnInit {
     this.securityApi
       .getAuthTrigger()
       .pipe(
-        flatMap(() => this.projectApi.filter({ paging: { items: 3 } })),
+        mergeMap(() => this.projectApi.filter({ paging: { items: 3 } })),
         map((data: Project[]) =>
           List(data.map((project) => project.getCard()))
         ),

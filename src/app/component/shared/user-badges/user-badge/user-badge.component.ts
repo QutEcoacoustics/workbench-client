@@ -56,7 +56,7 @@ export class UserBadgeComponent implements OnInit, OnChanges {
   @Input() users: List<User>;
   @Input() lengthOfTime: string;
   userNotFound: boolean;
-  imageSize = ImageSizes.small;
+  imageSize = ImageSizes.SMALL;
 
   constructor() {}
 

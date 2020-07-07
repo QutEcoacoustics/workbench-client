@@ -6,7 +6,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { BawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, flatMap, map } from "rxjs/operators";
+import { catchError, map, mergeMap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
 import { BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
@@ -79,16 +79,15 @@ export class SecurityService extends BawApiService<SessionUser> {
    */
   private handleAuth(apiRequest: Observable<SessionUser>): Observable<void> {
     return apiRequest.pipe(
-      flatMap((sessionUser: SessionUser) => {
+      mergeMap((sessionUser: SessionUser) => {
         // Store authToken before making api request
         this.storeLocalUser(sessionUser);
 
-        return this.userService.show().pipe(
-          map((user) => {
-            // Order is important, ...sessionUser must come first
-            return new SessionUser({ ...sessionUser, ...user });
-          })
-        );
+        return this.userService
+          .show()
+          .pipe(
+            map((user) => new SessionUser({ ...sessionUser, ...user.toJSON() }))
+          );
       }),
       map((sessionUser: SessionUser) => {
         this.storeLocalUser(sessionUser);

@@ -1,4 +1,4 @@
-import { Id, Ids } from "@interfaces/apiInterfaces";
+import { Id, Ids, ImageSizes, ImageURL } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
@@ -11,6 +11,51 @@ export function BawPersistAttr(model: AbstractModel, key: string) {
   }
 
   model[AbstractModel.attributeKey].push(key);
+}
+
+/**
+ * Convert image url/s into an array of image urls
+ */
+export function BawImage<T extends AbstractModel>(
+  defaultUrl: string,
+  opts?: BawDecoratorOptions<T>
+) {
+  const defaultImage: ImageURL = { size: ImageSizes.DEFAULT, url: defaultUrl };
+
+  function sortImageUrls(a: ImageURL, b: ImageURL): number {
+    const imageASize = a.height * a.width;
+    const imageBSize = b.height * b.width;
+    return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
+  }
+
+  function hasDefault(images: ImageURL[]): boolean {
+    return !images.find((image) => image.size === ImageSizes.DEFAULT);
+  }
+
+  return createDecorator<T>(
+    opts,
+    (model, key, imageUrls: string | ImageURL[]) => {
+      // Convert string to ImageURL[] and append default image
+      if (typeof imageUrls === "string") {
+        model[key] = [
+          { size: ImageSizes.UNKNOWN, url: imageUrls },
+          defaultImage,
+        ];
+      } else if (imageUrls instanceof Array && imageUrls.length > 0) {
+        // Sort image urls
+        const output = imageUrls.slice();
+        output.sort((a, b) => sortImageUrls(a, b));
+
+        // Append default image
+        if (hasDefault(output)) {
+          output.push(defaultImage);
+        }
+        model[key] = output;
+      } else {
+        model[key] = [defaultImage];
+      }
+    }
+  );
 }
 
 /**
