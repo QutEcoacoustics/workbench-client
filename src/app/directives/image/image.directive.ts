@@ -1,7 +1,14 @@
-import { Directive, ElementRef, Input, OnChanges, OnInit } from "@angular/core";
+import {
+  Directive,
+  ElementRef,
+  Inject,
+  Input,
+  OnChanges,
+  OnInit,
+} from "@angular/core";
+import { ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageURL } from "@interfaces/apiInterfaces";
-import { AppConfigService } from "@services/app-config/app-config.service";
 
 @Directive({
   selector: "[bawImage]",
@@ -22,7 +29,10 @@ export class ImageDirective extends WithUnsubscribe()
    */
   private displayThumbnail = true;
 
-  constructor(private imageRef: ElementRef, private config: AppConfigService) {
+  constructor(
+    @Inject(ASSET_ROOT) private assetRoot: string,
+    private imageRef: ElementRef
+  ) {
     super();
   }
 
@@ -65,9 +75,8 @@ export class ImageDirective extends WithUnsubscribe()
    * @param url Url to potentially format
    */
   private formatLocalUrl(url: string): string {
-    if (url.startsWith("/")) {
-      // TODO Add asset root
-      return url;
+    if (url.startsWith("/") && !url.startsWith(this.assetRoot)) {
+      return this.assetRoot + url;
     }
     return url;
   }

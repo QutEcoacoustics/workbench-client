@@ -8,7 +8,11 @@
       <div class="col-sm-4">
         <!-- User profile picture and details -->
         <div class="thumbnail">
-          <img alt="{{ user.userName }} profile image" [src]="imageUrl" />
+          <img
+            bawImage
+            [alt]="user.userName + 'profile image'"
+            [src]="user.image"
+          />
           <div class="caption">
             <p>
               <fa-icon [icon]="['fas', 'clock']"></fa-icon>

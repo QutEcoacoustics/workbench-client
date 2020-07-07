@@ -7,6 +7,7 @@ export let API_CONFIG = new InjectionToken<Promise<Configuration>>(
 );
 export let API_ROOT = new InjectionToken<string>("baw.api.root");
 export let CMS_ROOT = new InjectionToken<string>("baw.cms.root");
+export let ASSET_ROOT = new InjectionToken<string>("baw.asset.root");
 
 /**
  * App Initializer class.
@@ -33,6 +34,12 @@ export class AppInitializer {
 
   static cmsRootFactory() {
     return isConfiguration(environment) ? environment.environment.cmsRoot : "";
+  }
+
+  static assetRootFactory() {
+    return isConfiguration(environment)
+      ? environment.environment.assetRoot
+      : "";
   }
 }
 
@@ -73,6 +80,7 @@ export interface Environment {
   siteRoot: string;
   siteDir: string;
   cmsRoot: string;
+  assetRoot: string;
   ga: {
     trackingId: string;
   };

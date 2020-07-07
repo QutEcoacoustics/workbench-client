@@ -7,6 +7,7 @@ import {
   Description,
   Id,
   Ids,
+  ImageURL,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
@@ -15,6 +16,7 @@ import { Creator, HasMany, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
   BawDateTime,
+  BawImage,
   BawPersistAttr,
 } from "./AttributeDecorators";
 import type { Project } from "./Project";
@@ -50,6 +52,10 @@ export class Site extends AbstractModel implements ISite {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly imageUrl?: string;
+  @BawImage<Site>("/assets/images/site/site_span4.png", {
+    key: "imageUrl",
+  })
+  public readonly image?: ImageURL[];
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr
@@ -80,7 +86,6 @@ export class Site extends AbstractModel implements ISite {
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
-    this.imageUrl = site.imageUrl || "/assets/images/site/site_span4.png";
     this.locationObfuscated = site.locationObfuscated || false;
   }
 

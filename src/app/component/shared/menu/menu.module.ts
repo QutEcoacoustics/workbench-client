@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { ImageDirectiveModule } from "@directives/image/image.module";
 import {
   FaIconLibrary,
   FontAwesomeModule,
@@ -30,7 +31,13 @@ import { MenuComponent } from "./menu.component";
     UserBadgeComponent,
     WidgetDirective,
   ],
-  imports: [CommonModule, RouterModule, NgbModule, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgbModule,
+    FontAwesomeModule,
+    ImageDirectiveModule,
+  ],
   exports: [
     MenuComponent,
     PermissionsShieldComponent,
