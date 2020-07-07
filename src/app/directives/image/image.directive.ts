@@ -1,0 +1,89 @@
+import { Directive, ElementRef, Input, OnChanges, OnInit } from "@angular/core";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { ImageSizes, ImageURL } from "@interfaces/apiInterfaces";
+import { AppConfigService } from "@services/app-config/app-config.service";
+
+@Directive({
+  selector: "[bawImage]",
+})
+export class ImageDirective extends WithUnsubscribe()
+  implements OnInit, OnChanges {
+  @Input() src: ImageURL[];
+  @Input() thumbnail: ImageSizes;
+
+  private image: HTMLImageElement;
+  /**
+   * Tracks which image from src array to display
+   */
+  private srcIndex = 0;
+  /**
+   * Tracks whether to display thumbnail. This will disable if
+   * the thumbnail fails to load
+   */
+  private displayThumbnail = true;
+
+  constructor(private imageRef: ElementRef, private config: AppConfigService) {
+    super();
+  }
+
+  ngOnChanges(): void {
+    // Define image on first load
+    if (!this.image) {
+      this.image = this.imageRef.nativeElement;
+    }
+
+    this.loadSource();
+  }
+
+  ngOnInit(): void {
+    this.image.onerror = () => {
+      // tslint:disable-next-line: no-console
+      console.warn("Failed to load image: ", this.image.src);
+
+      // Only increment index if thumbnail was not displayed
+      if (!this.displayThumbnail || !this.thumbnail) {
+        this.srcIndex++;
+      }
+
+      this.displayThumbnail = false;
+      this.loadSource();
+    };
+  }
+
+  private loadSource(): void {
+    let url =
+      this.displayThumbnail && !!this.thumbnail
+        ? this.getImageUrl(this.src, this.thumbnail)
+        : this.src[this.srcIndex].url;
+    url = this.formatLocalUrl(url);
+
+    this.image.src = url;
+  }
+
+  /**
+   * Prepend the asset root to any local urls
+   * @param url Url to potentially format
+   */
+  private formatLocalUrl(url: string): string {
+    if (url.startsWith("/")) {
+      // TODO Add asset root
+      return url;
+    }
+    return url;
+  }
+
+  /**
+   * Get image from imageUrls which relates to the given size
+   * @param size Size of image
+   * @returns Image URL
+   */
+  private getImageUrl(images: ImageURL[], size: ImageSizes): string {
+    for (const imageUrl of images) {
+      if (imageUrl.size === size) {
+        return imageUrl.url;
+      }
+    }
+
+    return this.getImageUrl(images, ImageSizes.DEFAULT);
+  }
+}

@@ -57,6 +57,10 @@ describe("Attribute Decorators", () => {
     });
   });
 
+  xdescribe("BawImage", () => {
+    // TODO Implement
+  });
+
   describe("BawCollection", () => {
     function createModel(data: Id[]) {
       class MockModel extends AbstractModel {
