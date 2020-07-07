@@ -1,4 +1,4 @@
-import { Id, ImageURL, TimezoneInformation } from "@interfaces/apiInterfaces";
+import { Id, ImageUrl, TimezoneInformation } from "@interfaces/apiInterfaces";
 import faker from "faker";
 
 export const modelData = {
@@ -28,7 +28,7 @@ export const modelData = {
   ids: () => randomArray(0, 5, () => faker.random.number(100) + 1),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls: () =>
-    new Array<ImageURL>(
+    new Array<ImageUrl>(
       {
         size: "extralarge",
         url: faker.image.imageUrl(300, 300),

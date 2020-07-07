@@ -6,7 +6,7 @@ import {
   Description,
   Id,
   Ids,
-  ImageURL,
+  ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
 import { Card } from "@shared/cards/cards.component";
@@ -52,7 +52,7 @@ export class Project extends AbstractModel implements IProject {
   @BawImage<Project>("/assets/images/project/project_span4.png", {
     key: "imageUrl",
   })
-  public readonly image?: ImageURL[];
+  public readonly image: ImageUrl[];
   public readonly creatorId?: Id;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
@@ -85,10 +85,7 @@ export class Project extends AbstractModel implements IProject {
     return {
       title: this.name,
       description: this.description,
-      image: {
-        url: this.imageUrl,
-        alt: this.name,
-      },
+      model: this,
       route: this.viewUrl,
     };
   }

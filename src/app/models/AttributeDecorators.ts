@@ -1,4 +1,4 @@
-import { Id, Ids, ImageSizes, ImageURL } from "@interfaces/apiInterfaces";
+import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
@@ -20,21 +20,21 @@ export function BawImage<T extends AbstractModel>(
   defaultUrl: string,
   opts?: BawDecoratorOptions<T>
 ) {
-  const defaultImage: ImageURL = { size: ImageSizes.DEFAULT, url: defaultUrl };
+  const defaultImage: ImageUrl = { size: ImageSizes.DEFAULT, url: defaultUrl };
 
-  function sortImageUrls(a: ImageURL, b: ImageURL): number {
+  function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
     const imageASize = a.height * a.width;
     const imageBSize = b.height * b.width;
     return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
   }
 
-  function hasDefault(images: ImageURL[]): boolean {
+  function hasDefault(images: ImageUrl[]): boolean {
     return !images.find((image) => image.size === ImageSizes.DEFAULT);
   }
 
   return createDecorator<T>(
     opts,
-    (model, key, imageUrls: string | ImageURL[]) => {
+    (model, key, imageUrls: string | ImageUrl[]) => {
       // Convert string to ImageURL[] and append default image
       if (typeof imageUrls === "string") {
         model[key] = [

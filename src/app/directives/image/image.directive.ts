@@ -8,14 +8,14 @@ import {
 } from "@angular/core";
 import { ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ImageSizes, ImageURL } from "@interfaces/apiInterfaces";
+import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 
 @Directive({
   selector: "[bawImage]",
 })
 export class ImageDirective extends WithUnsubscribe()
   implements OnInit, OnChanges {
-  @Input() src: ImageURL[];
+  @Input() src: ImageUrl[];
   @Input() thumbnail: ImageSizes;
 
   private image: HTMLImageElement;
@@ -86,7 +86,7 @@ export class ImageDirective extends WithUnsubscribe()
    * @param size Size of image
    * @returns Image URL
    */
-  private getImageUrl(images: ImageURL[], size: ImageSizes): string {
+  private getImageUrl(images: ImageUrl[], size: ImageSizes): string {
     for (const imageUrl of images) {
       if (imageUrl.size === size) {
         return imageUrl.url;

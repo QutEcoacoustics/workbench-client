@@ -87,7 +87,7 @@ export interface TimezoneInformation {
 /**
  * BAW API Image Details
  */
-export interface ImageURL {
+export interface ImageUrl {
   size:
     | "extralarge"
     | "large"

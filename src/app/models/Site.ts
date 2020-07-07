@@ -7,7 +7,7 @@ import {
   Description,
   Id,
   Ids,
-  ImageURL,
+  ImageUrl,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
@@ -55,7 +55,7 @@ export class Site extends AbstractModel implements ISite {
   @BawImage<Site>("/assets/images/site/site_span4.png", {
     key: "imageUrl",
   })
-  public readonly image?: ImageURL[];
+  public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
   @BawPersistAttr

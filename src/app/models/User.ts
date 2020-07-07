@@ -6,8 +6,7 @@ import {
   AuthToken,
   DateTimeTimezone,
   Id,
-  ImageSizes,
-  ImageURL,
+  ImageUrl,
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
@@ -26,7 +25,7 @@ export interface IUser {
   rolesMask?: number;
   rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
-  imageUrls?: ImageURL[];
+  imageUrls?: ImageUrl[];
   preferences?: any;
   isConfirmed?: boolean;
   resetPasswordSentAt?: DateTimeTimezone | string;
@@ -55,9 +54,9 @@ export class User extends AbstractModel implements IUser {
   public readonly signInCount?: number;
   public readonly failedAttempts?: number;
   @BawPersistAttr
-  public readonly imageUrls?: ImageURL[];
+  public readonly imageUrls?: ImageUrl[];
   @BawImage<User>("/assets/images/user/user_span4.png", { key: "imageUrls" })
-  public readonly image?: ImageURL[];
+  public readonly image: ImageUrl[];
   @BawPersistAttr
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
@@ -101,15 +100,6 @@ export class User extends AbstractModel implements IUser {
     return theirProfileMenuItem.route.format({ accountId: this.id });
   }
 
-  /**
-   * Get image from imageUrls which relates to the given size
-   * @param size Size of image
-   * @returns Image URL
-   */
-  public getImage(size: ImageSizes): string {
-    return getModelImage(this.image, size);
-  }
-
   public toString(): string {
     return super.toString(this.userName);
   }
@@ -136,11 +126,11 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   @BawPersistAttr
   public readonly userName?: UserName;
   @BawPersistAttr
-  public readonly imageUrls?: ImageURL[];
+  public readonly imageUrls?: ImageUrl[];
   @BawImage<SessionUser>("/assets/images/user/user_span4.png", {
     key: "imageUrls",
   })
-  public readonly image?: ImageURL[];
+  public readonly image: ImageUrl[];
   @BawPersistAttr
   public readonly preferences?: any;
   @BawPersistAttr
@@ -159,15 +149,6 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public get viewUrl(): string {
     return myAccountMenuItem.route.toString();
   }
-
-  /**
-   * Get image from imageUrls which relates to the given size
-   * @param size Size of image
-   * @returns Image URL
-   */
-  public getImage(size: ImageSizes): string {
-    return getModelImage(this.image, size);
-  }
 }
 
 /**
@@ -179,19 +160,4 @@ export class SessionUser extends AbstractModel implements ISessionUser {
 function isModelAdmin(model: User | SessionUser): boolean {
   // tslint:disable-next-line: no-bitwise
   return !!(model.rolesMask & 1);
-}
-
-/**
- * Get image from imageUrls which relates to the given size
- * @param size Size of image
- * @returns Image URL
- */
-function getModelImage(images: ImageURL[], size: ImageSizes): string {
-  for (const imageUrl of images) {
-    if (imageUrl.size === size) {
-      return imageUrl.url;
-    }
-  }
-
-  return getModelImage(images, ImageSizes.DEFAULT);
 }
