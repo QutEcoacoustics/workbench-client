@@ -1,5 +1,13 @@
-import { Directive, ElementRef, Inject, Input, OnChanges } from "@angular/core";
-import { ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
+import {
+  Directive,
+  ElementRef,
+  Inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
+import { SecurityService } from "@baw-api/security/security.service";
+import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 
@@ -23,15 +31,17 @@ export class ImageDirective extends WithUnsubscribe() implements OnChanges {
   private displayThumbnail = false;
 
   constructor(
+    @Inject(API_ROOT) private apiRoot: string,
     @Inject(ASSET_ROOT) private assetRoot: string,
+    private securityApi: SecurityService,
     private imageRef: ElementRef
   ) {
     super();
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
-    if (!this.image) {
+    if (changes.src.isFirstChange()) {
       this.image = this.imageRef.nativeElement;
       this.image.onerror = this.errorHandler;
     }
@@ -55,6 +65,7 @@ export class ImageDirective extends WithUnsubscribe() implements OnChanges {
     }
 
     url = this.formatIfLocalUrl(url);
+    url = this.appendAuthToken(url);
     this.image.src = url;
   }
 
@@ -94,6 +105,25 @@ export class ImageDirective extends WithUnsubscribe() implements OnChanges {
   private formatIfLocalUrl(url: string): string {
     if (url.startsWith("/") && !url.startsWith(this.assetRoot)) {
       return this.assetRoot + url;
+    }
+    return url;
+  }
+
+  /**
+   * Append authentication token to url if logged in
+   * and disableAuthentication is not set.
+   * @param url Url to append to, must be fully formed (not a relative path)
+   */
+  private appendAuthToken(url: string): string {
+    if (this.disableAuthentication || !url.startsWith(this.apiRoot)) {
+      return url;
+    }
+
+    const user = this.securityApi.getLocalUser();
+    if (user?.authToken) {
+      const tokenUrl = new URL(url);
+      tokenUrl.searchParams.set("authToken", user.authToken);
+      return tokenUrl.toString();
     }
     return url;
   }
