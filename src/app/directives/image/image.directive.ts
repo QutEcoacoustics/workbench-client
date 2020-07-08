@@ -15,7 +15,8 @@ import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
   // tslint:disable-next-line: directive-selector
   selector: "img",
 })
-export class ImageDirective extends WithUnsubscribe() implements OnChanges {
+export class AuthenticatedImageDirective extends WithUnsubscribe()
+  implements OnChanges {
   @Input() src: ImageUrl[];
   @Input() thumbnail: ImageSizes;
   @Input() disableAuthentication: boolean;

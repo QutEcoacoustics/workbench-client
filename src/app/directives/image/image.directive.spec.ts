@@ -1,4 +1,4 @@
-import { ImageDirective } from "./image.directive";
+import { AuthenticatedImageDirective } from "./image.directive";
 
 describe("ImageDirective", () => {
   // TODO Implement

@@ -1,12 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { ImageDirective } from "./image.directive";
+import { AuthenticatedImageDirective } from "./image.directive";
 
-const directives = [ImageDirective];
+const directives = [AuthenticatedImageDirective];
 
 @NgModule({
   declarations: directives,
   imports: [CommonModule],
   exports: directives,
 })
-export class ImageDirectiveModule {}
+export class AuthenticatedImageDirectiveModule {}

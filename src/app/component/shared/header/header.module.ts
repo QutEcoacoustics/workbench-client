@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { ImageDirectiveModule } from "@directives/image/image.module";
+import { AuthenticatedImageDirectiveModule } from "@directives/image/image.module";
 import {
   FaIconLibrary,
   FontAwesomeModule,
@@ -22,7 +22,7 @@ import { HeaderComponent } from "./header.component";
     RouterModule,
     NgbModule,
     FontAwesomeModule,
-    ImageDirectiveModule,
+    AuthenticatedImageDirectiveModule,
   ],
   exports: [HeaderComponent],
 })
