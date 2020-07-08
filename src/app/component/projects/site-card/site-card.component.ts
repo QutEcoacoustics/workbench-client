@@ -14,12 +14,7 @@ import { Site } from "@models/Site";
       <div class="site">
         <div class="image">
           <a id="imageLink" [routerLink]="site.getViewUrl(project)">
-            <img
-              bawImage
-              id="image"
-              [src]="site.image"
-              [alt]="site.name + ' alt'"
-            />
+            <img id="image" [src]="site.image" [alt]="site.name + ' alt'" />
           </a>
         </div>
         <div class="body">

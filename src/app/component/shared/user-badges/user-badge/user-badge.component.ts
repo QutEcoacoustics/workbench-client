@@ -26,7 +26,6 @@ import { User } from "src/app/models/User";
           <div class="image">
             <a id="imageLink" [routerLink]="user.viewUrl">
               <img
-                bawImage
                 [src]="user.image"
                 [alt]="user.userName + ' profile picture'"
                 [thumbnail]="ImageSizes.SMALL"

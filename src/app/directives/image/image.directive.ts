@@ -1,33 +1,26 @@
-import {
-  Directive,
-  ElementRef,
-  Inject,
-  Input,
-  OnChanges,
-  OnInit,
-} from "@angular/core";
+import { Directive, ElementRef, Inject, Input, OnChanges } from "@angular/core";
 import { ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 
 @Directive({
-  selector: "[bawImage]",
+  // tslint:disable-next-line: directive-selector
+  selector: "img",
 })
-export class ImageDirective extends WithUnsubscribe()
-  implements OnInit, OnChanges {
+export class ImageDirective extends WithUnsubscribe() implements OnChanges {
   @Input() src: ImageUrl[];
   @Input() thumbnail: ImageSizes;
+  @Input() disableAuthentication: boolean;
 
   private image: HTMLImageElement;
   /**
-   * Tracks which image from src array to display
+   * Tracks which src value to display, unless thumbnail is used
    */
   private srcIndex = 0;
   /**
-   * Tracks whether to display thumbnail. This will disable if
-   * the thumbnail fails to load
+   * Tracks whether to display src matching thumbnail size
    */
-  private displayThumbnail = true;
+  private displayThumbnail = false;
 
   constructor(
     @Inject(ASSET_ROOT) private assetRoot: string,
@@ -37,62 +30,71 @@ export class ImageDirective extends WithUnsubscribe()
   }
 
   ngOnChanges(): void {
-    // Define image on first load
+    // On Component Initial Load
     if (!this.image) {
       this.image = this.imageRef.nativeElement;
+      this.image.onerror = this.errorHandler;
     }
 
-    this.loadSource();
+    this.displayThumbnail = !!this.thumbnail;
+    this.setImageSrc();
   }
 
-  ngOnInit(): void {
-    this.image.onerror = () => {
-      // tslint:disable-next-line: no-console
-      console.warn("Failed to load image: ", this.image.src);
+  /**
+   * Set src for image element
+   */
+  private setImageSrc(): void {
+    let url: string;
 
-      // Only increment index if thumbnail was not displayed
-      if (!this.displayThumbnail || !this.thumbnail) {
-        this.srcIndex++;
-      }
+    if (this.displayThumbnail) {
+      url = this.retrieveThumbnail();
+    }
 
-      this.displayThumbnail = false;
-      this.loadSource();
-    };
-  }
+    if (!url) {
+      url = this.src[this.srcIndex].url;
+    }
 
-  private loadSource(): void {
-    let url =
-      this.displayThumbnail && !!this.thumbnail
-        ? this.getImageUrl(this.src, this.thumbnail)
-        : this.src[this.srcIndex].url;
-    url = this.formatLocalUrl(url);
-
+    url = this.formatIfLocalUrl(url);
     this.image.src = url;
+  }
+
+  /**
+   * Handle image error event
+   */
+  private errorHandler() {
+    // tslint:disable-next-line: no-console
+    console.warn("Failed to load image: ", this.image.src);
+
+    // Only increment index if thumbnail was not displayed
+    if (!this.displayThumbnail) {
+      this.srcIndex++;
+    } else {
+      this.displayThumbnail = false;
+    }
+
+    this.setImageSrc();
+  }
+
+  /**
+   * Retrieve thumbnail image url or return null
+   */
+  private retrieveThumbnail(): string | null {
+    for (const image of this.src) {
+      if (image.size === this.thumbnail) {
+        return image.url;
+      }
+    }
+    return null;
   }
 
   /**
    * Prepend the asset root to any local urls
    * @param url Url to potentially format
    */
-  private formatLocalUrl(url: string): string {
+  private formatIfLocalUrl(url: string): string {
     if (url.startsWith("/") && !url.startsWith(this.assetRoot)) {
       return this.assetRoot + url;
     }
     return url;
-  }
-
-  /**
-   * Get image from imageUrls which relates to the given size
-   * @param size Size of image
-   * @returns Image URL
-   */
-  private getImageUrl(images: ImageUrl[], size: ImageSizes): string {
-    for (const imageUrl of images) {
-      if (imageUrl.size === size) {
-        return imageUrl.url;
-      }
-    }
-
-    return this.getImageUrl(images, ImageSizes.DEFAULT);
   }
 }
