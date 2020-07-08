@@ -25,11 +25,18 @@ export function assertIcon(target: HTMLElement, prop: string) {
 export function assertImage(
   target: HTMLImageElement,
   src: string,
-  alt: string
+  alt: string,
+  isUnauthenticated?: boolean
 ) {
   expect(target).toBeTruthy();
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
+
+  if (isUnauthenticated) {
+    expect(target.attributes.getNamedItem("ng-reflect-src")).toBeFalsy();
+  } else {
+    expect(target.attributes.getNamedItem("ng-reflect-src")).toBeTruthy();
+  }
 }
 
 /**

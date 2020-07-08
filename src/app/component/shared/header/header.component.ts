@@ -101,7 +101,9 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Toggle the collapse of the navbar
    * @param setState Set the state of the navbar
    */
-  toggleCollapse(setState?: boolean) {}
+  toggleCollapse(setState?: boolean) {
+    this.collapsed = setState ? setState : !this.collapsed;
+  }
 
   /**
    * Logout user

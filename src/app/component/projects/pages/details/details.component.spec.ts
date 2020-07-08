@@ -9,6 +9,7 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock";
 import { SharedModule } from "@shared/shared.module";
+import { assertImage } from "@test/helpers/html";
 import {
   mockActivatedRoute,
   testBawServices,
@@ -125,11 +126,11 @@ describe("ProjectDetailsComponent", () => {
       fixture.detectChanges();
 
       const image = fixture.nativeElement.querySelector("img");
-      expect(image).toBeTruthy();
-      expect(image.src).toBe(
-        `http://${window.location.host}/assets/images/project/project_span4.png`
+      assertImage(
+        image,
+        `http://${window.location.host}/assets/images/project/project_span4.png`,
+        "Test project image"
       );
-      expect(image.alt.length).toBeGreaterThan(0);
     });
 
     it("should display custom project image", () => {
@@ -143,9 +144,7 @@ describe("ProjectDetailsComponent", () => {
       fixture.detectChanges();
 
       const image = fixture.nativeElement.querySelector("img");
-      expect(image).toBeTruthy();
-      expect(image.src).toBe("http://brokenlink/");
-      expect(image.alt.length).toBeGreaterThan(0);
+      assertImage(image, "http://brokenlink/", "Test project image");
     });
 
     it("should display description", () => {

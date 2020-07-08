@@ -281,7 +281,7 @@ describe("CardsComponent", () => {
     expect(() => fixture.detectChanges()).toThrow();
   });
 
-  it("should create image card with title and image", () => {
+  /* it("should create image card with title and image", () => {
     component.cards = List([
       { title: "title", image: { url: "image", alt: "alt" } },
     ]);
@@ -599,5 +599,5 @@ describe("CardsComponent", () => {
     testCard = cardFixture.nativeElement.querySelectorAll(".card")[0];
 
     expect(cards[1]).toEqual(testCard);
-  });
+  }); */
 });

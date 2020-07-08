@@ -6,6 +6,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
+import { testBawServices } from "@test/helpers/testbed";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -16,6 +17,7 @@ describe("SiteCardComponent", () => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
       declarations: [SiteCardComponent],
+      providers: testBawServices,
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteCardComponent);

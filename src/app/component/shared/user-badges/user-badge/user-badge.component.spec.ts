@@ -1,7 +1,10 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Component } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AuthenticatedImageDirectiveModule } from "@directives/image/image.module";
 import { assertImage, assertRoute } from "@test/helpers/html";
+import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -31,7 +34,6 @@ describe("UserBadgeComponent", () => {
   let component: UserBadgeComponent;
   let fixture: ComponentFixture<UserBadgeComponent>;
   let defaultUser: User;
-  const defaultImageSrc = `http://${window.location.host}/assets/images/user/user_span1.png`;
 
   const getLabels = (fix?: ComponentFixture<any>) =>
     (fix || fixture).nativeElement.querySelectorAll("#label");
@@ -48,8 +50,13 @@ describe("UserBadgeComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       declarations: [UserBadgeComponent, TestUserBadgeComponent],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        AuthenticatedImageDirectiveModule,
+      ],
+      providers: testBawServices,
     }).compileComponents();
   }));
 
@@ -120,7 +127,7 @@ describe("UserBadgeComponent", () => {
       fixture.detectChanges();
       assertImage(
         getImages()[0],
-        defaultImageSrc,
+        `http://${window.location.host}/assets/images/user/user_span4.png`,
         "custom username profile picture"
       );
     });
