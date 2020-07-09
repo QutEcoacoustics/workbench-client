@@ -3,7 +3,6 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
 } from "@angular/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -19,15 +18,15 @@ import { List } from "immutable";
       <ng-container *ngIf="imageCards; else defaultCards">
         <baw-card-image
           *ngFor="let item of cards"
-          [card]="item"
           class="col-lg-4 col-sm-6 portfolio-item mb-4"
+          [card]="item"
         ></baw-card-image>
       </ng-container>
       <ng-template #defaultCards>
         <baw-card
           *ngFor="let item of cards"
-          [card]="item"
           class="col-lg-4 col-sm-6 mb-4"
+          [card]="item"
         ></baw-card>
       </ng-template>
       <div
@@ -41,33 +40,35 @@ import { List } from "immutable";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardsComponent implements OnInit, OnChanges {
+export class CardsComponent implements OnChanges {
   @Input() cards: List<Card>;
   @Input() content: boolean;
-  imageCards: boolean;
+  public imageCards: boolean;
 
   constructor() {}
-
-  ngOnInit() {
-    this.ngOnChanges();
-  }
 
   ngOnChanges() {
     if (!this.cards) {
       this.cards = List<Card>([]);
     }
 
-    this.imageCards = false;
+    let hasNormalCards = false;
+    let hasImageCards = false;
     this.cards.forEach((card) => {
       if (card.model) {
-        this.imageCards = true;
-      } else if (this.imageCards) {
-        // If some cards have images but others do not, throw error
+        hasImageCards = true;
+      } else {
+        hasNormalCards = true;
+      }
+
+      // If some cards have images but others do not, throw error
+      if (hasNormalCards && hasImageCards) {
         throw new Error(
           "If an image is given, all cards must have image component."
         );
       }
     });
+    this.imageCards = hasImageCards;
   }
 }
 

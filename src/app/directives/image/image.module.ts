@@ -9,4 +9,4 @@ const directives = [AuthenticatedImageDirective];
   imports: [CommonModule],
   exports: directives,
 })
-export class AuthenticatedImageDirectiveModule {}
+export class AuthenticatedImageModule {}

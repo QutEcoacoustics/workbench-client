@@ -27,39 +27,7 @@ export const modelData = {
   id: (id?: Id) => (id ? id : faker.random.number(25) + 1),
   ids: () => randomArray(0, 5, () => faker.random.number(100) + 1),
   imageUrl: () => faker.image.imageUrl(),
-  imageUrls: () =>
-    new Array<ImageUrl>(
-      {
-        size: "extralarge",
-        url: faker.image.imageUrl(300, 300),
-        width: 300,
-        height: 300,
-      },
-      {
-        size: "large",
-        url: faker.image.imageUrl(220, 220),
-        width: 220,
-        height: 220,
-      },
-      {
-        size: "medium",
-        url: faker.image.imageUrl(140, 140),
-        width: 140,
-        height: 140,
-      },
-      {
-        size: "small",
-        url: faker.image.imageUrl(60, 60),
-        width: 60,
-        height: 60,
-      },
-      {
-        size: "tiny",
-        url: faker.image.imageUrl(30, 30),
-        width: 30,
-        height: 30,
-      }
-    ),
+  imageUrls,
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
   notes: () => randomObject(0, 5),
@@ -88,6 +56,45 @@ export const modelData = {
   randomObject,
   ...faker,
 };
+
+/**
+ * Generate image urls
+ * @param url Base url for image urls. Do not end url with '/' ie /broken_links/.
+ */
+function imageUrls(url?: string): ImageUrl[] {
+  return new Array<ImageUrl>(
+    {
+      size: "extralarge",
+      url: url ? url + "/300/300" : faker.image.imageUrl(300, 300),
+      width: 300,
+      height: 300,
+    },
+    {
+      size: "large",
+      url: url ? url + "/220/220" : faker.image.imageUrl(220, 220),
+      width: 220,
+      height: 220,
+    },
+    {
+      size: "medium",
+      url: url ? url + "/140/140" : faker.image.imageUrl(140, 140),
+      width: 140,
+      height: 140,
+    },
+    {
+      size: "small",
+      url: url ? url + "/60/60" : faker.image.imageUrl(60, 60),
+      width: 60,
+      height: 60,
+    },
+    {
+      size: "tiny",
+      url: url ? url + "/30/30" : faker.image.imageUrl(30, 30),
+      width: 30,
+      height: 30,
+    }
+  );
+}
 
 /**
  * Generate timezone data

@@ -59,6 +59,12 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
   // TODO Add accessability expectations
 }
 
+export function assertHref(target: HTMLAnchorElement, href: string) {
+  expect(target).toBeTruthy();
+  expect(target.href).toBe(href);
+  expect(target.attributes.getNamedItem("ng-reflect-router-link")).toBeFalsy();
+}
+
 /**
  * Assert router link
  * @param target Target element

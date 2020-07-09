@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { DatatableDirective } from "./datatable/datatable.directive";
-import { AuthenticatedImageDirectiveModule } from "./image/image.module";
+import { AuthenticatedImageModule } from "./image/image.module";
 
 const directives = [DatatableDirective];
 
@@ -9,7 +9,7 @@ const directives = [DatatableDirective];
  */
 @NgModule({
   declarations: directives,
-  imports: [AuthenticatedImageDirectiveModule],
-  exports: [...directives, AuthenticatedImageDirectiveModule],
+  imports: [AuthenticatedImageModule],
+  exports: [...directives, AuthenticatedImageModule],
 })
 export class DirectivesModule {}

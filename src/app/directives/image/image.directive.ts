@@ -44,7 +44,10 @@ export class AuthenticatedImageDirective extends WithUnsubscribe()
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
       this.image = this.imageRef.nativeElement;
-      this.image.onerror = this.errorHandler;
+      this.image.onerror = () => {
+        // Prevent overriding of 'this'
+        this.errorHandler();
+      };
     }
 
     this.displayThumbnail = !!this.thumbnail;
@@ -84,7 +87,9 @@ export class AuthenticatedImageDirective extends WithUnsubscribe()
       this.displayThumbnail = false;
     }
 
-    this.setImageSrc();
+    if (this.srcIndex < this.src.length) {
+      this.setImageSrc();
+    }
   }
 
   /**
