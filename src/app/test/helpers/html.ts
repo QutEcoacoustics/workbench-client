@@ -28,14 +28,20 @@ export function assertImage(
   alt: string,
   isUnauthenticated?: boolean
 ) {
-  expect(target).toBeTruthy();
+  expect(target).toBeTruthy("Image should exist");
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
 
   if (isUnauthenticated) {
-    expect(target.attributes.getNamedItem("ng-reflect-src")).toBeFalsy();
+    expect(target.attributes.getNamedItem("ng-reflect-src")).toBe(
+      undefined,
+      "Image should not be authenticated"
+    );
   } else {
-    expect(target.attributes.getNamedItem("ng-reflect-src")).toBeTruthy();
+    expect(target.attributes.getNamedItem("ng-reflect-src")).not.toBe(
+      undefined,
+      "Image should be authenticated"
+    );
   }
 }
 

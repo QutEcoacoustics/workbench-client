@@ -10,6 +10,8 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 
+export const image404RelativeSrc = "/assets/images/404.png";
+
 @Directive({
   // tslint:disable-next-line: directive-selector
   selector: "img",
@@ -17,9 +19,8 @@ import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 export class AuthenticatedImageDirective implements OnChanges {
   @Input() src: ImageUrl[];
   @Input() thumbnail: ImageSizes;
-  @Input() disableAuthentication: boolean;
+  @Input() disableAuth: boolean;
 
-  private image: HTMLImageElement;
   /**
    * Tracks which src value to display, unless thumbnail is used
    */
@@ -33,14 +34,13 @@ export class AuthenticatedImageDirective implements OnChanges {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(ASSET_ROOT) private assetRoot: string,
     private securityApi: SecurityService,
-    private imageRef: ElementRef
+    private imageRef: ElementRef<HTMLImageElement>
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      this.image = this.imageRef.nativeElement;
-      this.image.onerror = () => {
+      this.imageRef.nativeElement.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
       };
@@ -56,8 +56,12 @@ export class AuthenticatedImageDirective implements OnChanges {
   private setImageSrc(): void {
     let url: string;
 
-    if (this.displayThumbnail) {
-      url = this.retrieveThumbnail();
+    if (!this.src || this.srcIndex >= this.src.length) {
+      url = image404RelativeSrc;
+    }
+
+    if (!url && this.displayThumbnail) {
+      url = this.retrieveThumbnailIfExists();
     }
 
     if (!url) {
@@ -66,7 +70,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     url = this.formatIfLocalUrl(url);
     url = this.appendAuthToken(url);
-    this.image.src = url;
+    this.imageRef.nativeElement.src = url;
   }
 
   /**
@@ -74,7 +78,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private errorHandler() {
     // tslint:disable-next-line: no-console
-    console.warn("Failed to load image: ", this.image.src);
+    console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
     // Only increment index if thumbnail was not displayed
     if (!this.displayThumbnail) {
@@ -83,15 +87,13 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.displayThumbnail = false;
     }
 
-    if (this.srcIndex < this.src.length) {
-      this.setImageSrc();
-    }
+    this.setImageSrc();
   }
 
   /**
    * Retrieve thumbnail image url or return null
    */
-  private retrieveThumbnail(): string | null {
+  private retrieveThumbnailIfExists(): string | null {
     for (const image of this.src) {
       if (image.size === this.thumbnail) {
         return image.url;
@@ -117,7 +119,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * @param url Url to append to, must be fully formed (not a relative path)
    */
   private appendAuthToken(url: string): string {
-    if (this.disableAuthentication || !url.startsWith(this.apiRoot)) {
+    if (this.disableAuth || !url.startsWith(this.apiRoot)) {
       return url;
     }
 
