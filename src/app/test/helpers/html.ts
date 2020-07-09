@@ -33,13 +33,11 @@ export function assertImage(
   expect(target.alt).toBe(alt);
 
   if (isUnauthenticated) {
-    expect(target.attributes.getNamedItem("ng-reflect-src")).toBe(
-      undefined,
+    expect(target.attributes.getNamedItem("bawImage")).toBeFalsy(
       "Image should not be authenticated"
     );
   } else {
-    expect(target.attributes.getNamedItem("ng-reflect-src")).not.toBe(
-      undefined,
+    expect(target.attributes.getNamedItem("bawImage")).toBeTruthy(
       "Image should be authenticated"
     );
   }
