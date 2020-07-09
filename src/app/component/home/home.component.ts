@@ -31,7 +31,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
           logging in. To participate in the analysis work you will need to Log
           in with an existing account or Register for a new account.
         </p>
-        <baw-cards [cards]="projectList" [content]="true">
+        <baw-cards [cards]="projectList">
           <ng-container>
             <button
               class="m-auto btn btn-outline-primary"

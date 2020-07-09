@@ -1,7 +1,13 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  createHostFactory,
+  Spectator,
+  SpectatorHost,
+  SpectatorOptions,
+} from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
 import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
@@ -13,7 +19,7 @@ import { CardsComponent } from "./cards.component";
 describe("CardsComponent", () => {
   let defaultModel: CardImageMockModel;
   let spectator: Spectator<CardsComponent>;
-  const createComponent = createComponentFactory({
+  const options: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [CardComponent, CardImageComponent],
     imports: [
@@ -22,7 +28,9 @@ describe("CardsComponent", () => {
       AuthenticatedImageModule,
     ],
     providers: testBawServices,
-  });
+  };
+  const createComponent = createComponentFactory(options);
+  const createHost = createHostFactory(options);
 
   function getDefaultCards() {
     return spectator.queryAll("baw-card");
@@ -33,7 +41,6 @@ describe("CardsComponent", () => {
   }
 
   beforeEach(() => {
-    spectator = createComponent({ detectChanges: false });
     defaultModel = new CardImageMockModel({
       id: 1,
       image: modelData.imageUrls(),
@@ -41,11 +48,14 @@ describe("CardsComponent", () => {
   });
 
   it("should create", () => {
+    spectator = createComponent({ detectChanges: false });
     spectator.setInput("cards", List([{ title: "title" }]));
     expect(spectator.component).toBeTruthy();
   });
 
   describe("error handling", () => {
+    beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+
     it("should handle no cards", () => {
       spectator.component.ngOnChanges();
       spectator.detectChanges();
@@ -78,6 +88,8 @@ describe("CardsComponent", () => {
     function assertCard(card: Element, title: string) {
       expect(card.querySelector("h4").textContent).toBe(title);
     }
+
+    beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
     it("should create single card", () => {
       spectator.setInput("cards", List([{ title: "title" }]));
@@ -113,15 +125,14 @@ describe("CardsComponent", () => {
       expect(card.querySelector("h4").textContent).toBe(title);
     }
 
+    beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+
     it("should create single card", () => {
       spectator.setInput(
         "cards",
         List([{ title: "title", model: defaultModel }])
       );
       spectator.component.ngOnChanges();
-
-      debugger;
-
       expect(getImageCards().length).toBe(1);
     });
 
@@ -154,6 +165,26 @@ describe("CardsComponent", () => {
       getImageCards().forEach((card, index) => {
         assertCard(card, titles[index].title);
       });
+    });
+  });
+
+  describe("content", () => {
+    let hostSpectator: SpectatorHost<CardsComponent>;
+
+    it("should handle content", () => {
+      hostSpectator = createHost(
+        `<baw-cards><h1>Internal Content</h1></baw-cards>`
+      );
+      const content = hostSpectator.query<HTMLDivElement>("#content");
+      const header = hostSpectator.query<HTMLHeadingElement>("h1");
+      expect(content).not.toHaveStyle({ display: "none" });
+      expect(header.textContent).toBe("Internal Content");
+    });
+
+    it("should handle no content", () => {
+      hostSpectator = createHost(`<baw-cards></baw-cards>`);
+      const content = hostSpectator.query<HTMLDivElement>("#content");
+      expect(content).toHaveStyle({ display: "none" });
     });
   });
 });

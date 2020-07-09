@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -29,23 +30,26 @@ import { List } from "immutable";
           [card]="item"
         ></baw-card>
       </ng-template>
-      <div
-        *ngIf="content"
-        id="content"
-        class="col-lg-4 col-sm-6 mb-4 d-flex center content"
-      >
+      <div id="content" class="col-lg-4 col-sm-6 mb-4 d-flex center">
         <ng-content></ng-content>
       </div>
     </div>
   `,
+  styles: [
+    `
+      /* Remove content div if no content is inserted */
+      #content:empty {
+        display: none !important;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardsComponent implements OnChanges {
   @Input() cards: List<Card>;
-  @Input() content: boolean;
   public imageCards: boolean;
 
-  constructor() {}
+  constructor(private ref: ChangeDetectorRef) {}
 
   ngOnChanges() {
     if (!this.cards) {
@@ -54,8 +58,9 @@ export class CardsComponent implements OnChanges {
 
     let hasNormalCards = false;
     let hasImageCards = false;
-    this.cards.forEach((card) => {
-      if (card.model) {
+
+    for (const card of this.cards) {
+      if (card.model?.image) {
         hasImageCards = true;
       } else {
         hasNormalCards = true;
@@ -67,8 +72,10 @@ export class CardsComponent implements OnChanges {
           "If an image is given, all cards must have image component."
         );
       }
-    });
+    }
+
     this.imageCards = hasImageCards;
+    this.ref.detectChanges();
   }
 }
 
