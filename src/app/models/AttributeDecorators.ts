@@ -23,6 +23,13 @@ export function BawImage<T extends AbstractModel>(
   const defaultImage: ImageUrl = { size: ImageSizes.DEFAULT, url: defaultUrl };
 
   function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
+    // Default image should always be last in array
+    if (a.size === ImageSizes.DEFAULT) {
+      return 1;
+    } else if (b.size === ImageSizes.DEFAULT) {
+      return -1;
+    }
+
     const imageASize = a.height * a.width;
     const imageBSize = b.height * b.width;
     return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
@@ -180,7 +187,7 @@ function createDecorator<T extends AbstractModel>(
   };
 }
 
-interface BawDecoratorOptions<T> {
+export interface BawDecoratorOptions<T> {
   /**
    * Persist key in models toJSON() method
    */

@@ -25,11 +25,17 @@ describe("ImageDirective", () => {
   function getImage() {
     return spectator.query<HTMLImageElement>("img");
   }
-
   function createDefaultDirective(src: ImageUrl[]) {
     return createDirective(`<img alt="alt" [src]="src" />`, {
       hostProps: { src },
     });
+  }
+
+  function createThumbnailDirective(src: ImageUrl[], thumbnail: ImageSizes) {
+    return createDirective(
+      `<img alt="alt" [src]="src" [thumbnail]="thumbnail" />`,
+      { hostProps: { src, thumbnail } }
+    );
   }
 
   it("should create", () => {
@@ -79,16 +85,18 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(undefined);
       assertImage(getImage(), image404Src, "alt");
     });
+
+    it("should handle thumbnail url error", () => {
+      const imageUrls = modelData.imageUrls();
+      // MEDIUM image size is created at 2nd index by modelData.imageUrls
+      spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
+      const image = getImage();
+      createImgErrorEvent(image);
+      assertImage(image, imageUrls[0].url, "alt");
+    });
   });
 
   describe("thumbnail", () => {
-    function createThumbnailDirective(src: ImageUrl[], thumbnail: ImageSizes) {
-      return createDirective(
-        `<img alt="alt" [src]="src" [thumbnail]="thumbnail" />`,
-        { hostProps: { src, thumbnail } }
-      );
-    }
-
     it("should use thumbnail url", () => {
       const imageUrls = modelData.imageUrls();
       spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
@@ -96,7 +104,7 @@ describe("ImageDirective", () => {
       assertImage(getImage(), imageUrls[2].url, "alt");
     });
 
-    it("should handle missing thumbnail url", () => {
+    it("should handle missing thumbnail", () => {
       const imageUrls = modelData.imageUrls();
       // DEFAULT image size is not set by modelData.imageUrls
       spectator = createThumbnailDirective(imageUrls, ImageSizes.DEFAULT);
