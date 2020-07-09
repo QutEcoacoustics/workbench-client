@@ -58,7 +58,15 @@ describe("Attribute Decorators", () => {
   });
 
   xdescribe("BawImage", () => {
-    // TODO Implement
+    it("should handle persist option", () => {});
+    it("should handle override key option", () => {});
+    it("should handle undefined", () => {});
+    it("should handle single url string", () => {});
+    it("should handle empty array", () => {});
+    it("should handle single item array", () => {});
+    it("should handle multiple items array", () => {});
+    it("should sort array", () => {});
+    it("should not double append default image", () => {});
   });
 
   describe("BawCollection", () => {

@@ -8,15 +8,13 @@ import {
 } from "@angular/core";
 import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 
 @Directive({
   // tslint:disable-next-line: directive-selector
   selector: "img",
 })
-export class AuthenticatedImageDirective extends WithUnsubscribe()
-  implements OnChanges {
+export class AuthenticatedImageDirective implements OnChanges {
   @Input() src: ImageUrl[];
   @Input() thumbnail: ImageSizes;
   @Input() disableAuthentication: boolean;
@@ -36,9 +34,7 @@ export class AuthenticatedImageDirective extends WithUnsubscribe()
     @Inject(ASSET_ROOT) private assetRoot: string,
     private securityApi: SecurityService,
     private imageRef: ElementRef
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
