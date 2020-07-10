@@ -1,12 +1,14 @@
 # Workbench Client
 
-The Angular LSR client for an acoustic workbench application.
+The Angular client for an acoustic workbench application.
 
 ![Build, Test, and Publish](https://github.com/QutEcoacoustics/workbench-client/workflows/Build,%20Test,%20and%20Publish/badge.svg)
 
 ## Install instructions
 
 ### Requirements
+
+Generally we try to stick to the Latest Stable Release (LSR) for all requirements and dependencies.
 
 - Node LSR
 - NPM LSR
