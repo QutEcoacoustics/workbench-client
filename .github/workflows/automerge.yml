@@ -1,6 +1,6 @@
 name: automerge
 
-on: [status, label]
+on: [pull_request, status, label]
 
 jobs:
   automerge:
