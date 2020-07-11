@@ -1,4 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { SimpleChange } from "@angular/core";
+import { ITS_JUST_ANGULAR } from "@angular/core/src/r3_symbols";
 import { SecurityService } from "@baw-api/security/security.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { SessionUser } from "@models/User";
@@ -8,6 +10,7 @@ import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
 import { testBawServices } from "@test/helpers/testbed";
+import { assert } from "console";
 import {
   AuthenticatedImageDirective,
   image404RelativeSrc,
@@ -38,18 +41,18 @@ describe("ImageDirective", () => {
     );
   }
 
+  function createImgErrorEvent(image: HTMLImageElement) {
+    image.onerror("unit test");
+    spectator.detectChanges();
+  }
+
   it("should create", () => {
     spectator = createDefaultDirective(modelData.imageUrls());
     expect(getImage()).toBeTruthy();
   });
 
   describe("error handling", () => {
-    function createImgErrorEvent(image: HTMLImageElement) {
-      image.onerror("unit test");
-      spectator.detectChanges();
-    }
-
-    it("should handle url error", () => {
+    it("given an invalid url, it loads the next available url", () => {
       const imageUrls = modelData.imageUrls();
       spectator = createDefaultDirective(imageUrls);
 
@@ -58,7 +61,7 @@ describe("ImageDirective", () => {
       assertImage(image, imageUrls[1].url, "alt");
     });
 
-    it("should handle multiple url errors", () => {
+    it("given multiple bad urls, it ties to load each until one succeeds", () => {
       const imageUrls = modelData.imageUrls();
       spectator = createDefaultDirective(imageUrls);
 
@@ -67,7 +70,7 @@ describe("ImageDirective", () => {
       assertImage(image, imageUrls[3].url, "alt");
     });
 
-    it("should handle running out of urls", () => {
+    it("given all bad urls, it loads 404 image", () => {
       const imageUrls = modelData.imageUrls();
       spectator = createDefaultDirective(imageUrls);
 
@@ -76,39 +79,39 @@ describe("ImageDirective", () => {
       assertImage(image, image404Src, "alt");
     });
 
-    it("should handle empty list of urls", () => {
+    it("given empty array of urls, it loads 404 image", () => {
       spectator = createDefaultDirective([]);
       assertImage(getImage(), image404Src, "alt");
     });
 
-    it("should handle undefined src", () => {
+    it("given undefined src, it loads 404 image", () => {
       spectator = createDefaultDirective(undefined);
       assertImage(getImage(), image404Src, "alt");
-    });
-
-    it("should handle thumbnail url error", () => {
-      const imageUrls = modelData.imageUrls();
-      // MEDIUM image size is created at 2nd index by modelData.imageUrls
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
-      const image = getImage();
-      createImgErrorEvent(image);
-      assertImage(image, imageUrls[0].url, "alt");
     });
   });
 
   describe("thumbnail", () => {
-    it("should use thumbnail url", () => {
+    it("given a valid thumbnail, it displays the thumbnail url", () => {
       const imageUrls = modelData.imageUrls();
+      imageUrls[1].size = ImageSizes.MEDIUM;
       spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
-      // MEDIUM image size is created at 2nd index by modelData.imageUrls
-      assertImage(getImage(), imageUrls[2].url, "alt");
+      assertImage(getImage(), imageUrls[1].url, "alt");
     });
 
-    it("should handle missing thumbnail", () => {
+    it("given a missing thumbnail, it loads the next available url", () => {
       const imageUrls = modelData.imageUrls();
       // DEFAULT image size is not set by modelData.imageUrls
       spectator = createThumbnailDirective(imageUrls, ImageSizes.DEFAULT);
       assertImage(getImage(), imageUrls[0].url, "alt");
+    });
+
+    it("given an invalid thumbnail, it loads the next available url", () => {
+      const imageUrls = modelData.imageUrls();
+      imageUrls[1].size = ImageSizes.MEDIUM;
+      spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
+      const image = getImage();
+      createImgErrorEvent(image);
+      assertImage(image, imageUrls[0].url, "alt");
     });
   });
 
@@ -170,7 +173,7 @@ describe("ImageDirective", () => {
       return testApiConfig.environment.apiRoot;
     }
 
-    it("should append authToken", () => {
+    it("should append authToken to url", () => {
       const user = new SessionUser(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
@@ -185,7 +188,7 @@ describe("ImageDirective", () => {
       );
     });
 
-    it("should not double append authToken", () => {
+    it("should not double append authToken to url", () => {
       const user = new SessionUser(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url =
@@ -201,7 +204,7 @@ describe("ImageDirective", () => {
       );
     });
 
-    it("should not append authToken if disableAuth set", () => {
+    it("should not append authToken to url if disableAuth set", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls, true);
@@ -211,7 +214,7 @@ describe("ImageDirective", () => {
       assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
     });
 
-    it("should not append authToken if not logged in", () => {
+    it("should not append authToken to url if not logged in", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls);
@@ -220,7 +223,7 @@ describe("ImageDirective", () => {
       assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
     });
 
-    it("should handle parameters in url", () => {
+    it("should handle additional parameters in url", () => {
       const user = new SessionUser(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png?testing=value";
@@ -241,6 +244,62 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       spectator = createDefaultDirective(imageUrls);
       assertImage(getImage(), imageUrls[0].url, "alt");
+    });
+  });
+
+  describe("change detection", () => {
+    function updateDirective(imageUrls: ImageUrl[]) {
+      const change = new SimpleChange(undefined, imageUrls, false);
+      spectator.setInput("src", imageUrls);
+      spectator.directive.ngOnChanges({ src: change });
+    }
+
+    function assertImageUrls(image: HTMLImageElement, imageUrls: ImageUrl[]) {
+      imageUrls.forEach((imageUrl) => {
+        assertImage(image, imageUrl.url, "alt");
+        createImgErrorEvent(image);
+      });
+    }
+
+    it("should handle update appending new urls", () => {
+      const imageUrls = modelData.imageUrls();
+      spectator = createDefaultDirective(undefined);
+
+      imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
+      assertImageUrls(getImage(), imageUrls);
+    });
+
+    it("should handle update appending new urls with duplicates", () => {
+      const imageUrls = modelData.imageUrls();
+      spectator = createDefaultDirective(undefined);
+
+      imageUrls.forEach((_, index) =>
+        updateDirective(imageUrls.slice(0, index + 1))
+      );
+      assertImageUrls(getImage(), imageUrls);
+    });
+
+    it("should display 404 image after all urls attempted", () => {
+      const imageUrls = modelData.imageUrls();
+      spectator = createDefaultDirective(undefined);
+      const image = getImage();
+
+      imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
+      imageUrls.forEach(() => createImgErrorEvent(image));
+      assertImage(image, image404Src, "alt");
+    });
+
+    it("should display default image last", () => {
+      const imageUrls = modelData.imageUrls();
+      imageUrls[0].size = ImageSizes.DEFAULT;
+      spectator = createDefaultDirective(undefined);
+      const image = getImage();
+
+      imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
+      imageUrls
+        .slice(0, imageUrls.length - 1)
+        .forEach(() => createImgErrorEvent(image));
+      assertImage(image, imageUrls[0].url, "alt");
     });
   });
 });

@@ -9,10 +9,13 @@ import {
 import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { OrderedSet } from "immutable";
 
 export const image404RelativeSrc = "/assets/images/404.png";
 
 @Directive({
+  // Directive applies directly to all image tags instead of being
+  // explicitly called
   // tslint:disable-next-line: directive-selector
   selector: "img",
 })
@@ -22,9 +25,13 @@ export class AuthenticatedImageDirective implements OnChanges {
   @Input() disableAuth: boolean;
 
   /**
-   * Tracks which src value to display, unless thumbnail is used
+   * Tracks potential url options to be used for src
    */
-  private srcIndex = 0;
+  private urls = OrderedSet<string>();
+  /**
+   * Tracks used url options
+   */
+  private usedUrls = OrderedSet<string>();
   /**
    * Tracks whether to display src matching thumbnail size
    */
@@ -48,6 +55,16 @@ export class AuthenticatedImageDirective implements OnChanges {
       };
     }
 
+    // Re-enable use of current src
+    if (this.usedUrls.count() > 0) {
+      this.usedUrls = this.usedUrls.delete(this.usedUrls.last());
+    }
+
+    // Append new urls to urls set
+    this.urls = this.urls.concat(
+      this.src?.map((imageUrl) => imageUrl.url) ?? []
+    );
+
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
   }
@@ -58,18 +75,22 @@ export class AuthenticatedImageDirective implements OnChanges {
   private setImageSrc(): void {
     let url: string;
 
-    if (!this.src || this.srcIndex >= this.src.length) {
+    // Use 404 image src
+    if (!this.src || this.urls.count() === this.usedUrls.count()) {
       url = image404RelativeSrc;
     }
 
+    // Find thumbnail if exists
     if (!url && this.displayThumbnail) {
-      url = this.retrieveThumbnailIfExists();
+      url = this.src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
     }
 
+    // Retrieve first url from set
     if (!url) {
-      url = this.src[this.srcIndex].url;
+      url = this.urls.subtract(this.usedUrls).first();
     }
 
+    this.usedUrls = this.usedUrls.add(url);
     url = this.formatIfLocalUrl(url);
     url = this.appendAuthToken(url);
     this.imageRef.nativeElement.src = url;
@@ -82,26 +103,12 @@ export class AuthenticatedImageDirective implements OnChanges {
     // tslint:disable-next-line: no-console
     console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
-    // Only increment index if thumbnail was not displayed
-    if (!this.displayThumbnail) {
-      this.srcIndex++;
-    } else {
+    // No longer attempt to use thumbnail
+    if (this.displayThumbnail) {
       this.displayThumbnail = false;
     }
 
     this.setImageSrc();
-  }
-
-  /**
-   * Retrieve thumbnail image url or return null
-   */
-  private retrieveThumbnailIfExists(): string | null {
-    for (const image of this.src) {
-      if (image.size === this.thumbnail) {
-        return image.url;
-      }
-    }
-    return null;
   }
 
   /**
