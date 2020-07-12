@@ -88,7 +88,7 @@
     "karma-opera-launcher": "^1.0.0",
     "karma-viewport": "^1.0.6",
     "protractor": "^7.0.0",
-    "rxjs-tslint-rules": "^4.33.3",
+    "rxjs-tslint-rules": "^4.34.0",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
     "tslint-angular": "^3.0.2",
