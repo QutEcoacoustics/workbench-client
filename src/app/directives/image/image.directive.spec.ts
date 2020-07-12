@@ -266,7 +266,8 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(undefined);
 
       imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
-      assertImageUrls(getImage(), imageUrls);
+      // Images in reverse order because each new image is prepended to ordered set
+      assertImageUrls(getImage(), imageUrls.reverse());
     });
 
     it("should handle update appending new urls with duplicates", () => {
@@ -276,6 +277,7 @@ describe("ImageDirective", () => {
       imageUrls.forEach((_, index) =>
         updateDirective(imageUrls.slice(0, index + 1))
       );
+      // Images not in reverse order because ordering from the input is kept
       assertImageUrls(getImage(), imageUrls);
     });
 

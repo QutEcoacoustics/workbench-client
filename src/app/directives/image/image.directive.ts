@@ -36,6 +36,10 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Tracks whether to display src matching thumbnail size
    */
   private displayThumbnail = false;
+  /**
+   * Contains url for default image
+   */
+  private defaultImage: string;
 
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
@@ -60,10 +64,17 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.usedUrls = this.usedUrls.delete(this.usedUrls.last());
     }
 
-    // Append new urls to urls set
-    this.urls = this.urls.concat(
-      this.src?.map((imageUrl) => imageUrl.url) ?? []
-    );
+    // Prepend new urls (except default urls) to urls set
+    this.urls = OrderedSet<string>(
+      this.src
+        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.DEFAULT)
+        .map((imageUrl) => imageUrl.url) ?? []
+    ).concat(this.urls);
+
+    // Retrieve default image if exists
+    this.defaultImage =
+      this.src?.find((imageUrl) => imageUrl.size === ImageSizes.DEFAULT)?.url ??
+      this.defaultImage;
 
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
@@ -75,9 +86,12 @@ export class AuthenticatedImageDirective implements OnChanges {
   private setImageSrc(): void {
     let url: string;
 
-    // Use 404 image src
-    if (!this.src || this.urls.count() === this.usedUrls.count()) {
+    if (this.use404Image()) {
       url = image404RelativeSrc;
+    }
+
+    if (this.useDefaultImage(url)) {
+      url = this.defaultImage;
     }
 
     // Find thumbnail if exists
@@ -139,5 +153,26 @@ export class AuthenticatedImageDirective implements OnChanges {
       return tokenUrl.toString();
     }
     return url;
+  }
+
+  /**
+   * Returns true is there are no image options available
+   */
+  private use404Image() {
+    const hasDefaultImageAvailable = this.defaultImage
+      ? this.urls.count() + 1 === this.usedUrls.count()
+      : this.urls.count() === this.usedUrls.count();
+
+    return !this.src || hasDefaultImageAvailable;
+  }
+
+  /**
+   * Returns true if the default image is the only option available
+   * @param url Url
+   */
+  private useDefaultImage(url: string) {
+    return (
+      !url && this.defaultImage && this.urls.count() === this.usedUrls.count()
+    );
   }
 }
