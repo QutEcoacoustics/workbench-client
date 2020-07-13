@@ -102,6 +102,11 @@ export class AuthenticatedImageDirective implements OnChanges {
       url = this.urls.subtract(this.usedUrls).first();
     }
 
+    // Catch any final edge cases
+    if (!url) {
+      url = image404RelativeSrc;
+    }
+
     this.usedUrls = this.usedUrls.add(url);
     url = this.formatIfLocalUrl(url);
     url = this.appendAuthToken(url);
