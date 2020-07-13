@@ -1,6 +1,9 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+
+declare const ng: any;
 
 /**
  * Assert icon
@@ -32,14 +35,14 @@ export function assertImage(
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
 
+  const imageDirective = ng
+    .getDirectives(target)
+    .find((directive) => directive instanceof AuthenticatedImageDirective);
+
   if (isUnauthenticated) {
-    expect(target.attributes.getNamedItem("bawImage")).toBeFalsy(
-      "Image should not be authenticated"
-    );
+    expect(imageDirective).toBeFalsy();
   } else {
-    expect(target.attributes.getNamedItem("bawImage")).toBeTruthy(
-      "Image should be authenticated"
-    );
+    expect(imageDirective).toBeTruthy();
   }
 }
 

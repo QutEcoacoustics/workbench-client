@@ -51,8 +51,6 @@ export class AuthenticatedImageDirective implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      // Set attribute so that unit tests can track authenticated images
-      this.imageRef.nativeElement.setAttribute("bawImage", "true");
       this.imageRef.nativeElement.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();

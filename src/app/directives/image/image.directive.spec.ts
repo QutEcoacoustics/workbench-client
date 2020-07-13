@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
-import { ITS_JUST_ANGULAR } from "@angular/core/src/r3_symbols";
 import { SecurityService } from "@baw-api/security/security.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { SessionUser } from "@models/User";
@@ -10,7 +9,6 @@ import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
 import { testBawServices } from "@test/helpers/testbed";
-import { assert } from "console";
 import {
   AuthenticatedImageDirective,
   image404RelativeSrc,
