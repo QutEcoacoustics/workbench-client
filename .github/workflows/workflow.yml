@@ -35,12 +35,15 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Run windows-only test suite
+      - name: Run test suite on chrome
+        run: npm run test:pipeline -- --browsers ChromeHeadless
+
+      - name: Run test suite on firefox
+        run: npm run test:pipeline -- --browsers FirefoxHeadless
+
+      - name: Run test suite on edge
         run: npm run test:pipeline -- --browsers EdgeHeadless
         if: matrix.os == 'windows-latest'
-
-      - name: Run test suite
-        run: npm run test:pipeline -- --browsers FirefoxHeadless,ChromeHeadless
 
       - name: Run e2e test suite
         run: npm run e2e

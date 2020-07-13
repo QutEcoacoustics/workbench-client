@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
@@ -19,7 +19,6 @@ import { projectsMenuItem } from "@component/projects/projects.menus";
 import { siteMenuItem } from "@component/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
@@ -54,7 +53,6 @@ const accountKey = "account";
   styleUrls: ["./profile.component.scss"],
 })
 export class TheirProfileComponent extends PageComponent implements OnInit {
-  public imageUrl: string;
   public lastSeenAt: string;
   public tags: Tag[];
   public thirdPerson = true;
@@ -91,7 +89,6 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
-    this.imageUrl = this.user.getImage(ImageSizes.large);
 
     this.projectsApi.filterByAccessLevel({}, this.user).subscribe(
       (models) => this.extractTotal(0, models),

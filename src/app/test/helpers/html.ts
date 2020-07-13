@@ -1,6 +1,9 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+
+declare const ng: any;
 
 /**
  * Assert icon
@@ -25,11 +28,22 @@ export function assertIcon(target: HTMLElement, prop: string) {
 export function assertImage(
   target: HTMLImageElement,
   src: string,
-  alt: string
+  alt: string,
+  isUnauthenticated?: boolean
 ) {
-  expect(target).toBeTruthy();
+  expect(target).toBeTruthy("Image should exist");
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
+
+  const imageDirective = ng
+    .getDirectives(target)
+    .find((directive) => directive instanceof AuthenticatedImageDirective);
+
+  if (isUnauthenticated) {
+    expect(imageDirective).toBeFalsy();
+  } else {
+    expect(imageDirective).toBeTruthy();
+  }
 }
 
 /**
@@ -50,6 +64,12 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
   expect(attr.value.trim()).toBe(tooltip);
 
   // TODO Add accessability expectations
+}
+
+export function assertHref(target: HTMLAnchorElement, href: string) {
+  expect(target).toBeTruthy();
+  expect(target.href).toBe(href);
+  expect(target.attributes.getNamedItem("ng-reflect-router-link")).toBeFalsy();
 }
 
 /**

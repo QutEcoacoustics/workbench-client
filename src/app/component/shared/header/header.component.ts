@@ -1,16 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
+import { ImageSizes } from "@interfaces/apiInterfaces";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
-import { isAdminPredicate } from "src/app/app.menus";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
 } from "src/app/helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { ImageSizes } from "src/app/interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
   MenuLink,
@@ -38,10 +37,8 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   public activeLink: string;
   public collapsed: boolean;
   public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
-  public isAdmin: boolean;
   public title: string;
   public user: SessionUser;
-  public userImage: string;
   public routes = {
     admin: adminDashboardMenuItem,
     home: homeMenuItem,
@@ -49,8 +46,8 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     profile: myAccountMenuItem,
     register: registerMenuItem,
   };
-
-  isNavigableMenuItem = isNavigableMenuItem;
+  public ImageSizes = ImageSizes;
+  public isNavigableMenuItem = isNavigableMenuItem;
 
   constructor(
     private api: SecurityService,
@@ -79,9 +76,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
           this.toggleCollapse(true);
         }
       },
-      (err) => {
-        console.error("HeaderComponent: ", err);
-      }
+      (err) => console.error("HeaderComponent: ", err)
     );
 
     this.api
@@ -89,9 +84,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         () => this.updateUser(),
-        (err: ApiErrorDetails) => {
-          this.notifications.error(err.message);
-        }
+        (err: ApiErrorDetails) => this.notifications.error(err.message)
       );
   }
 
@@ -109,11 +102,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * @param setState Set the state of the navbar
    */
   toggleCollapse(setState?: boolean) {
-    if (setState) {
-      this.collapsed = setState;
-    } else {
-      this.collapsed = !this.collapsed;
-    }
+    this.collapsed = setState ? setState : !this.collapsed;
   }
 
   /**
@@ -158,9 +147,6 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     if (!this.user) {
       return;
     }
-
-    this.userImage = this.user.getImage(ImageSizes.small);
-    this.isAdmin = isAdminPredicate(this.user);
   }
 
   /**

@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { AuthenticatedImageModule } from "@directives/image/image.module";
 import {
   FaIconLibrary,
   FontAwesomeModule,
@@ -16,7 +17,13 @@ import { HeaderComponent } from "./header.component";
  */
 @NgModule({
   declarations: [HeaderComponent, HeaderItemComponent, HeaderDropdownComponent],
-  imports: [CommonModule, RouterModule, NgbModule, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgbModule,
+    FontAwesomeModule,
+    AuthenticatedImageModule,
+  ],
   exports: [HeaderComponent],
 })
 export class HeaderModule {

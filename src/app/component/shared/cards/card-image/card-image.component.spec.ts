@@ -1,116 +1,130 @@
-import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { Id, ImageUrl } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import { assertImage } from "@test/helpers/html";
+import { assertHref, assertImage, assertRoute } from "@test/helpers/html";
+import { testBawServices } from "@test/helpers/testbed";
+import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
 
+export class CardImageMockModel extends AbstractModel {
+  public readonly id: Id = 1;
+  public readonly image: ImageUrl[];
+
+  constructor(data: { id?: Id; image: ImageUrl[] }) {
+    super(data);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("Method not implemented.");
+  }
+}
+
 describe("CardImageComponent", () => {
-  let component: CardImageComponent;
-  let fixture: ComponentFixture<CardImageComponent>;
-  let compiled: DebugElement;
+  let defaultCard: Card;
+  let spectator: Spectator<CardImageComponent>;
+  const createComponent = createComponentFactory({
+    component: CardImageComponent,
+    imports: [
+      HttpClientTestingModule,
+      RouterTestingModule,
+      AuthenticatedImageModule,
+    ],
+    providers: testBawServices,
+  });
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [CardImageComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CardImageComponent);
-    component = fixture.componentInstance;
-    compiled = fixture.debugElement;
+    spectator = createComponent({ detectChanges: false });
+    defaultCard = {
+      title: "title",
+      model: new CardImageMockModel({ id: 1, image: modelData.imageUrls() }),
+    };
   });
 
   it("should create", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "alt" },
-    };
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spectator.setInput("card", defaultCard);
+    expect(spectator.component).toBeTruthy();
   });
 
   it("should have title", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "alt" },
-    };
-    fixture.detectChanges();
+    spectator.setInput("card", {
+      ...defaultCard,
+      title: "custom title",
+    });
 
-    const title = compiled.nativeElement.querySelector("h4").textContent;
-    expect(title).toContain("title");
+    const title = spectator.query<HTMLHeadingElement>("h4");
+    expect(title.textContent).toContain("custom title");
   });
 
   it("should handle local image", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "image alt" },
-    };
-    fixture.detectChanges();
+    const baseUrl = "/assets/broken_link";
+    spectator.setInput("card", {
+      title: "custom title",
+      model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
+    });
 
-    const image = compiled.nativeElement.querySelector("img");
-    assertImage(image, `http://${window.location.host}/image`, "image alt");
+    const image = spectator.query<HTMLImageElement>("img");
+    assertImage(
+      image,
+      `http://${window.location.host}${baseUrl}/300/300`,
+      "custom title image"
+    );
   });
 
   it("should handle remote image", () => {
-    const url = modelData.imageUrl();
-    component.card = {
-      title: "title",
-      image: { url, alt: "image alt" },
-    };
-    fixture.detectChanges();
+    const baseUrl = "https://broken_link/broken_link";
+    spectator.setInput("card", {
+      title: "custom title",
+      model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
+    });
 
-    const image = compiled.nativeElement.querySelector("img");
-    assertImage(image, url, "image alt");
+    const image = spectator.query<HTMLImageElement>("img");
+    assertImage(image, baseUrl + "/300/300", "custom title image");
   });
 
   it("should handle description", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "alt" },
-      description: "description",
-    };
-    fixture.detectChanges();
+    spectator.setInput("card", { ...defaultCard, description: "description" });
 
-    const description = compiled.nativeElement.querySelector(".card-text");
+    const description = spectator.query(".card-text");
     expect(description.textContent).toContain("description");
   });
 
-  it("correct number of links", () => {
-    component.card = {
-      title: "title",
-      image: { url: "image", alt: "alt" },
-      link: "https://link/",
-    };
-    fixture.detectChanges();
+  it("should have image href", () => {
+    spectator.setInput("card", { ...defaultCard, link: "https://link/" });
 
-    const links = compiled.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(2);
+    const link = spectator.query("a img").parentElement as HTMLAnchorElement;
+    assertHref(link, "https://link/");
   });
 
-  it("should have image link", () => {
-    component.card = {
+  it("should have title href", () => {
+    spectator.setInput("card", {
+      ...defaultCard,
       title: "title",
-      image: { url: "image", alt: "alt" },
       link: "https://link/",
-    };
-    fixture.detectChanges();
+    });
 
-    const imageLink = compiled.nativeElement.querySelector("a img");
-
-    expect(imageLink).toBeTruthy();
-    expect(imageLink.parentElement.href).toBe("https://link/");
+    const link = spectator.query<HTMLAnchorElement>("h4 a");
+    assertHref(link, "https://link/");
   });
 
-  it("should have title link", () => {
-    component.card = {
+  it("should have image route", () => {
+    spectator.setInput("card", { ...defaultCard, route: "/broken_link" });
+
+    const route = spectator.query("a img").parentElement as HTMLAnchorElement;
+    assertRoute(route, "/broken_link");
+  });
+
+  it("should have title route", () => {
+    spectator.setInput("card", {
+      ...defaultCard,
       title: "title",
-      image: { url: "image", alt: "alt" },
-      link: "https://link/",
-    };
-    fixture.detectChanges();
+      route: "/broken_link",
+    });
 
-    const headerLink = compiled.nativeElement.querySelector("h4 a");
-
-    expect(headerLink).toBeTruthy();
-    expect(headerLink.href).toBe("https://link/");
+    const link = spectator.query<HTMLAnchorElement>("h4 a");
+    assertRoute(link, "/broken_link");
   });
 });

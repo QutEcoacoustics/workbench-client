@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
-import { assertRoute } from "@test/helpers/html";
+import { assertIcon, assertImage, assertRoute } from "@test/helpers/html";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
 import { RenderFieldComponent } from "./render-field.component";
@@ -519,8 +519,11 @@ describe("RenderFieldComponent", () => {
       fixture.detectChanges();
 
       const value = getImageValues()[0];
-      expect(value.src).toBe(
-        `http://${window.location.host}/assets/test/test.png`
+      assertImage(
+        value,
+        `http://${window.location.host}/assets/test/test.png`,
+        "model image alt",
+        true
       );
     });
   });

@@ -20,7 +20,6 @@ import { siteMenuItem } from "@component/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
@@ -56,7 +55,6 @@ const userKey = "user";
 })
 export class MyProfileComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
-  public imageUrl: string;
   public lastSeenAt: string;
   public tags: Tag[];
   public thirdPerson = false;
@@ -91,7 +89,6 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
-    this.imageUrl = this.user.getImage(ImageSizes.large);
 
     this.projectsApi.list().subscribe(
       (models) => this.extractTotal(0, models),

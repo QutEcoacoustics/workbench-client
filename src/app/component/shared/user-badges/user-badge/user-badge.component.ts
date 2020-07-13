@@ -26,8 +26,9 @@ import { User } from "src/app/models/User";
           <div class="image">
             <a id="imageLink" [routerLink]="user.viewUrl">
               <img
-                [src]="user.getImage(imageSize)"
+                [src]="user.image"
                 [alt]="user.userName + ' profile picture'"
+                [thumbnail]="ImageSizes.SMALL"
               />
             </a>
           </div>
@@ -55,8 +56,8 @@ export class UserBadgeComponent implements OnInit, OnChanges {
   @Input() label: string;
   @Input() users: List<User>;
   @Input() lengthOfTime: string;
-  userNotFound: boolean;
-  imageSize = ImageSizes.small;
+  public userNotFound: boolean;
+  public ImageSizes = ImageSizes;
 
   constructor() {}
 

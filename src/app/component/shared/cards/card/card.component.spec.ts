@@ -1,110 +1,61 @@
-import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { Card } from "../cards.component";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { assertHref, assertRoute } from "@test/helpers/html";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
-  let component: CardComponent;
-  let fixture: ComponentFixture<CardComponent>;
-  let compiled: DebugElement;
+  let spectator: SpectatorRouting<CardComponent>;
+  const createComponent = createRoutingFactory(CardComponent);
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [CardComponent],
-      imports: [RouterTestingModule],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CardComponent);
-    component = fixture.componentInstance;
-    compiled = fixture.debugElement;
-  });
+  beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
   it("should create", () => {
-    component.card = {
-      title: "title",
-    } as Card;
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spectator.setInput("card", { title: "title" });
+    expect(spectator.component).toBeTruthy();
   });
 
   it("should have title", () => {
-    component.card = {
-      title: "title",
-    } as Card;
-    fixture.detectChanges();
+    spectator.setInput("card", { title: "title" });
 
-    const titles = fixture.nativeElement.querySelectorAll("h4");
-    expect(titles.length).toBe(1);
-    expect(titles[0].innerText).toContain("title");
+    const title = spectator.query<HTMLHeadingElement>("h4");
+    expect(title.textContent).toContain("title");
   });
 
-  it("should have default description when non provided", () => {
-    component.card = {
-      title: "title",
-    } as Card;
-    fixture.detectChanges();
+  it("should create title without link", () => {
+    spectator.setInput("card", { title: "title" });
 
-    const description = fixture.nativeElement.querySelectorAll("p");
-    expect(description.length).toBe(1);
-    expect(description[0].innerText).toContain("No description given");
-  });
-
-  it("should have description when provided", () => {
-    component.card = {
-      title: "title",
-      description: "description",
-    } as Card;
-    fixture.detectChanges();
-
-    const description = fixture.nativeElement.querySelectorAll("p");
-    expect(description.length).toBe(1);
-    expect(description[0].innerText).toContain("description");
-  });
-
-  it("should not have link if no link or route provided", () => {
-    component.card = {
-      title: "title",
-    } as Card;
-    fixture.detectChanges();
-
-    const links = fixture.nativeElement.querySelectorAll("a");
+    const links = spectator.queryAll<HTMLAnchorElement>("a");
     expect(links.length).toBe(0);
   });
 
-  it("should have href if link provided", () => {
-    component.card = {
-      title: "title",
-      link: "https://brokenlink/",
-    } as Card;
-    fixture.detectChanges();
+  it("should have default description when none provided", () => {
+    spectator.setInput("card", { title: "title" });
 
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(1);
-    expect(links[0].innerText).toContain("title");
-    expect(links[0].href).toBe("https://brokenlink/");
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeFalsy();
+    const description = spectator.query<HTMLParagraphElement>("p");
+    expect(description.textContent).toContain("No description given");
   });
 
-  it("should have routerLink if route provided", () => {
-    component.card = {
-      title: "title",
-      route: "/brokenlink",
-    } as Card;
-    fixture.detectChanges();
+  it("should have description when provided", () => {
+    spectator.setInput("card", { title: "title", description: "description" });
 
-    const links = fixture.nativeElement.querySelectorAll("a");
+    const description = spectator.query<HTMLParagraphElement>("p");
+    expect(description.textContent).toContain("description");
+  });
 
+  it("should create href link", () => {
+    spectator.setInput("card", { title: "title", link: "https://brokenlink/" });
+
+    const links = spectator.queryAll<HTMLAnchorElement>("a");
     expect(links.length).toBe(1);
     expect(links[0].innerText).toContain("title");
-    expect(links[0].getAttribute("href")).toBe("/brokenlink");
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe("/brokenlink");
+    assertHref(links[0], "https://brokenlink/");
+  });
+
+  it("should create route link", () => {
+    spectator.setInput("card", { title: "title", route: "/brokenlink" });
+
+    const links = spectator.queryAll<HTMLAnchorElement>("a");
+    expect(links.length).toBe(1);
+    expect(links[0].innerText).toContain("title");
+    assertRoute(links[0], "/brokenlink");
   });
 });

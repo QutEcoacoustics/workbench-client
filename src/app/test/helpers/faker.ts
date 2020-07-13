@@ -1,4 +1,9 @@
-import { Id, ImageURL, TimezoneInformation } from "@interfaces/apiInterfaces";
+import {
+  Id,
+  ImageSizes,
+  ImageUrl,
+  TimezoneInformation,
+} from "@interfaces/apiInterfaces";
 import faker from "faker";
 
 export const modelData = {
@@ -27,39 +32,7 @@ export const modelData = {
   id: (id?: Id) => (id ? id : faker.random.number(25) + 1),
   ids: () => randomArray(0, 5, () => faker.random.number(100) + 1),
   imageUrl: () => faker.image.imageUrl(),
-  imageUrls: () =>
-    new Array<ImageURL>(
-      {
-        size: "extralarge",
-        url: faker.image.imageUrl(300, 300),
-        width: 300,
-        height: 300,
-      },
-      {
-        size: "large",
-        url: faker.image.imageUrl(220, 220),
-        width: 220,
-        height: 220,
-      },
-      {
-        size: "medium",
-        url: faker.image.imageUrl(140, 140),
-        width: 140,
-        height: 140,
-      },
-      {
-        size: "small",
-        url: faker.image.imageUrl(60, 60),
-        width: 60,
-        height: 60,
-      },
-      {
-        size: "tiny",
-        url: faker.image.imageUrl(30, 30),
-        width: 30,
-        height: 30,
-      }
-    ),
+  imageUrls,
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
   notes: () => randomObject(0, 5),
@@ -82,12 +55,76 @@ export const modelData = {
   },
   timestamp: () => faker.date.past().toISOString(),
   uuid: () => faker.random.uuid(),
-  timezone,
   hexaDecimal,
   randomArray,
   randomObject,
+  shuffleArray,
+  timezone,
   ...faker,
 };
+
+/**
+ * Randomly shuffle array using Fisher-Yates Shuffle
+ * @param array Array to shuffle
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  let currentIndex = array.length;
+  let temporaryValue: T;
+  let randomIndex: number;
+
+  // While there remain elements to shuffle...
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+/**
+ * Generate image urls
+ * @param url Base url for image urls. Do not end url with '/' ie /broken_links/.
+ */
+function imageUrls(url?: string): ImageUrl[] {
+  return new Array<ImageUrl>(
+    {
+      size: ImageSizes.EXTRA_LARGE,
+      url: url ? url + "/300/300" : faker.image.imageUrl(300, 300),
+      width: 300,
+      height: 300,
+    },
+    {
+      size: ImageSizes.LARGE,
+      url: url ? url + "/220/220" : faker.image.imageUrl(220, 220),
+      width: 220,
+      height: 220,
+    },
+    {
+      size: ImageSizes.MEDIUM,
+      url: url ? url + "/140/140" : faker.image.imageUrl(140, 140),
+      width: 140,
+      height: 140,
+    },
+    {
+      size: ImageSizes.SMALL,
+      url: url ? url + "/60/60" : faker.image.imageUrl(60, 60),
+      width: 60,
+      height: 60,
+    },
+    {
+      size: ImageSizes.TINY,
+      url: url ? url + "/30/30" : faker.image.imageUrl(30, 30),
+      width: 30,
+      height: 30,
+    }
+  );
+}
 
 /**
  * Generate timezone data

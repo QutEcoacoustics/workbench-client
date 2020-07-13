@@ -64,7 +64,7 @@
 
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
-        <li *ngIf="isAdmin" class="nav-item">
+        <li *ngIf="user.isAdmin" class="nav-item">
           <a
             id="admin-settings"
             class="nav-link"
@@ -82,7 +82,11 @@
             routerLinkActive="active"
           >
             <span>{{ user.userName }}</span>
-            <img alt="Profile Icon" [src]="userImage" />
+            <img
+              alt="Profile Icon"
+              [src]="user.image"
+              [thumbnail]="ImageSizes.SMALL"
+            />
           </a>
         </li>
         <li class="nav-item">

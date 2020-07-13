@@ -6,6 +6,7 @@ import {
   Description,
   Id,
   Ids,
+  ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
 import { Card } from "@shared/cards/cards.component";
@@ -14,6 +15,7 @@ import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
   BawDateTime,
+  BawImage,
   BawPersistAttr,
 } from "./AttributeDecorators";
 import type { Site } from "./Site";
@@ -47,6 +49,10 @@ export class Project extends AbstractModel implements IProject {
   @BawPersistAttr
   public readonly description?: Description;
   public readonly imageUrl?: string;
+  @BawImage<Project>("/assets/images/project/project_span4.png", {
+    key: "imageUrl",
+  })
+  public readonly image: ImageUrl[];
   public readonly creatorId?: Id;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
@@ -69,9 +75,6 @@ export class Project extends AbstractModel implements IProject {
 
   constructor(project: IProject, injector?: Injector) {
     super(project, injector);
-
-    this.imageUrl =
-      project.imageUrl || "/assets/images/project/project_span4.png";
   }
 
   /**
@@ -82,10 +85,7 @@ export class Project extends AbstractModel implements IProject {
     return {
       title: this.name,
       description: this.description,
-      image: {
-        url: this.imageUrl,
-        alt: this.name,
-      },
+      model: this,
       route: this.viewUrl,
     };
   }

@@ -48,7 +48,7 @@ class MockModel extends AbstractModel {
     </ng-container>
   `,
 })
-export class MockComponent {
+class MockComponent {
   @Input() public model: MockModel;
   @Input() public hasMany: boolean;
 }

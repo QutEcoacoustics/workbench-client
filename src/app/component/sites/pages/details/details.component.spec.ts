@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { assertImage } from "@test/helpers/html";
 import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
@@ -141,11 +142,11 @@ describe("SitesDetailsComponent", () => {
       fixture.detectChanges();
 
       const image = fixture.nativeElement.querySelector("img");
-      expect(image).toBeTruthy();
-      expect(image.src).toBe(
-        `http://${window.location.host}/assets/images/site/site_span4.png`
+      assertImage(
+        image,
+        `http://${window.location.host}/assets/images/site/site_span4.png`,
+        "Site image"
       );
-      expect(image.alt.length).toBeGreaterThan(0);
     });
 
     it("should display custom site image", () => {
@@ -158,9 +159,7 @@ describe("SitesDetailsComponent", () => {
       fixture.detectChanges();
 
       const image = fixture.nativeElement.querySelector("img");
-      expect(image).toBeTruthy();
-      expect(image.src).toBe("http://brokenlink/");
-      expect(image.alt.length).toBeGreaterThan(0);
+      assertImage(image, "http://brokenlink/", "Site image");
     });
 
     it("should display site description", () => {

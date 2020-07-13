@@ -1,4 +1,3 @@
-import { environment } from "src/environments/environment";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
@@ -7,13 +6,12 @@ import {
   AuthToken,
   DateTimeTimezone,
   Id,
-  ImageSizes,
-  ImageURL,
+  ImageUrl,
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { BawDateTime, BawImage, BawPersistAttr } from "./AttributeDecorators";
 
 /**
  * A user model.
@@ -27,7 +25,7 @@ export interface IUser {
   rolesMask?: number;
   rolesMaskNames?: string[];
   timezoneInformation?: TimezoneInformation;
-  imageUrls?: ImageURL[];
+  imageUrls?: ImageUrl[];
   preferences?: any;
   isConfirmed?: boolean;
   resetPasswordSentAt?: DateTimeTimezone | string;
@@ -56,7 +54,9 @@ export class User extends AbstractModel implements IUser {
   public readonly signInCount?: number;
   public readonly failedAttempts?: number;
   @BawPersistAttr
-  public readonly imageUrls?: ImageURL[];
+  public readonly imageUrls?: ImageUrl[];
+  @BawImage<User>("/assets/images/user/user_span4.png", { key: "imageUrls" })
+  public readonly image: ImageUrl[];
   @BawPersistAttr
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
@@ -90,7 +90,6 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName || "Deleted User";
-    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -99,15 +98,6 @@ export class User extends AbstractModel implements IUser {
 
   public get viewUrl(): string {
     return theirProfileMenuItem.route.format({ accountId: this.id });
-  }
-
-  /**
-   * Get image from imageUrls which relates to the given size
-   * @param size Size of image
-   * @returns Image URL
-   */
-  public getImage(size: ImageSizes): string {
-    return getModelImage(this.imageUrls, size);
   }
 
   public toString(): string {
@@ -136,7 +126,11 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   @BawPersistAttr
   public readonly userName?: UserName;
   @BawPersistAttr
-  public readonly imageUrls?: ImageURL[];
+  public readonly imageUrls?: ImageUrl[];
+  @BawImage<SessionUser>("/assets/images/user/user_span4.png", {
+    key: "imageUrls",
+  })
+  public readonly image: ImageUrl[];
   @BawPersistAttr
   public readonly preferences?: any;
   @BawPersistAttr
@@ -146,8 +140,6 @@ export class SessionUser extends AbstractModel implements ISessionUser {
 
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
-
-    this.imageUrls = userImageUrls(user.imageUrls);
   }
 
   public get isAdmin(): boolean {
@@ -157,68 +149,6 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public get viewUrl(): string {
     return myAccountMenuItem.route.toString();
   }
-
-  /**
-   * Get image from imageUrls which relates to the given size
-   * @param size Size of image
-   * @returns Image URL
-   */
-  public getImage(size: ImageSizes): string {
-    return getModelImage(this.imageUrls, size);
-  }
-}
-
-const defaultUserImages: ImageURL[] = [
-  {
-    size: "extralarge",
-    url: "/assets/images/user/user_span4.png",
-    width: 300,
-    height: 300,
-  },
-  {
-    size: "large",
-    url: "/assets/images/user/user_span3.png",
-    width: 220,
-    height: 220,
-  },
-  {
-    size: "medium",
-    url: "/assets/images/user/user_span2.png",
-    width: 140,
-    height: 140,
-  },
-  {
-    size: "small",
-    url: "/assets/images/user/user_span1.png",
-    width: 60,
-    height: 60,
-  },
-  {
-    size: "tiny",
-    url: "/assets/images/user/user_spanhalf.png",
-    width: 30,
-    height: 30,
-  },
-];
-
-function userImageUrls(imageUrls: ImageURL[]) {
-  // Do not change production urls
-  if (environment.production) {
-    return imageUrls;
-  }
-
-  return (
-    imageUrls?.map((imageUrl) => {
-      // Default values from API need to have /assets prepended
-      if (
-        imageUrl.url.startsWith("/") &&
-        !imageUrl.url.startsWith("/assets/")
-      ) {
-        imageUrl.url = "/assets" + imageUrl.url;
-      }
-      return imageUrl;
-    }) || defaultUserImages
-  );
 }
 
 /**
@@ -230,19 +160,4 @@ function userImageUrls(imageUrls: ImageURL[]) {
 function isModelAdmin(model: User | SessionUser): boolean {
   // tslint:disable-next-line: no-bitwise
   return !!(model.rolesMask & 1);
-}
-
-/**
- * Get image from imageUrls which relates to the given size
- * @param size Size of image
- * @returns Image URL
- */
-function getModelImage(imageUrls: ImageURL[], size: ImageSizes): string {
-  for (const imageUrl of imageUrls) {
-    if (imageUrl.size === size) {
-      return imageUrl.url;
-    }
-  }
-
-  return getModelImage(defaultUserImages, size);
 }

@@ -8,6 +8,8 @@ import {
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SecurityService } from "@baw-api/security/security.service";
+import { generateSessionUser, generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -249,7 +251,7 @@ describe("HeaderComponent", () => {
         );
 
         if (userType.links.profile) {
-          it("should display profile icon", fakeAsync(() => {
+          it("should display default profile icon", fakeAsync(() => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
@@ -259,42 +261,31 @@ describe("HeaderComponent", () => {
             const image = profile.querySelector("img");
             assertImage(
               image,
-              `http://${window.location.host}/assets/images/user/user_span1.png`,
+              `http://${window.location.host}/assets/images/user/user_span4.png`,
               "Profile Icon"
             );
           }));
 
-          it("should display profile custom icon", fakeAsync(() => {
+          it("should display small profile custom icon", fakeAsync(() => {
+            const url = modelData.image.imageUrl(60, 60);
             const customUser = new SessionUser({
               ...user,
               imageUrls: [
                 {
-                  size: "extralarge",
-                  url: "http://brokenlink/",
-                  width: 300,
-                  height: 300,
-                },
-                {
-                  size: "large",
-                  url: "http://brokenlink/",
-                  width: 220,
-                  height: 220,
-                },
-                {
                   size: "medium",
-                  url: "http://brokenlink/",
+                  url: modelData.image.imageUrl(140, 140),
                   width: 140,
                   height: 140,
                 },
                 {
                   size: "small",
-                  url: "http://brokenlink/",
+                  url,
                   width: 60,
                   height: 60,
                 },
                 {
                   size: "tiny",
-                  url: "http://brokenlink/",
+                  url: modelData.image.imageUrl(30, 30),
                   width: 30,
                   height: 30,
                 },
@@ -307,7 +298,7 @@ describe("HeaderComponent", () => {
               "#login-widget"
             );
             const image = profile.querySelector("img");
-            assertImage(image, "http://brokenlink/", "Profile Icon");
+            assertImage(image, url, "Profile Icon");
           }));
         }
 
