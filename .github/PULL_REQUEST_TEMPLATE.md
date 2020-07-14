@@ -6,17 +6,13 @@ What is the purpose of this PR?
 
 List of changes added as part of this PR. This only needs to include the big changes which reviewers should carefully check.
 
+## Problems
+
+Any problems caused by the PR that will need to be address in another PR. For example, these issues may be caused by another branch which will change how this branch functions.
+
 ## Issues
 
-Any issues that are causes by the PR that will need to be address in another PR. These issues may be caused by another branch which will change how this branch functions.
-
-## Closes
-
-Issues closed by this PR. Most PR's should not address more than one issue. If an issue does not exist for this PR to fix, create one so that admins can verify that the change is wanted.
-
-## Blocked By
-
-List of PR's blocking this PR from being reviewed or merged. This is required if the PR is not built from the master branch. If the PR is blocked, add the blocked label to the issue. If this PR is blocked, you will need to merge or rebase it with master after the blocking PR is accepted.
+Issues relevant to this PR. Most PR's should not address more than one issue. If an issue does not exist for this PR to fix, create one so that admins can verify that the change is wanted.
 
 ## Visual Changes
 
