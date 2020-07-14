@@ -23,7 +23,7 @@ export class HarvestReviewComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const projectPool = [
       new Project({ id: 1, name: "QLD" }),
       new Project({ id: 2, name: "NSW" }),

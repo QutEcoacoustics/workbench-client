@@ -77,7 +77,7 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  add(name: string, config: Partial<Route> = {}) {
+  public add(name: string, config: Partial<Route> = {}) {
     return new StrongRoute(this, name, config);
   }
 
@@ -86,7 +86,7 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  addFeatureModule(name: string, config: Partial<Route> = {}) {
+  public addFeatureModule(name: string, config: Partial<Route> = {}) {
     return new StrongRoute(this, name, config, true);
   }
 
@@ -95,7 +95,7 @@ export class StrongRoute {
    * Use this in a template like so:
    * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
    */
-  format(args: { [key: string]: string | number }): string {
+  public format(args: { [key: string]: string | number }): string {
     if (!args) {
       // Should only be unit tests which encounter this
       console.error("Route arguments are " + args);
@@ -133,7 +133,7 @@ export class StrongRoute {
    * Compile the list of routes for a module
    * @param callback Callback function (usually: GetRouteConfigForPage)
    */
-  compileRoutes(callback: RouteConfigCallback): Routes {
+  public compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
     const output: Routes = [];
 
@@ -185,7 +185,7 @@ export class StrongRoute {
    * String representation of the route
    * eg. "/home/house"
    */
-  toString(): string {
+  public toString(): string {
     return "/" + (this.fullRoute ? this.fullRoute : "");
   }
 
@@ -193,7 +193,7 @@ export class StrongRoute {
    * Router representation of the route
    * eg. ["home", "house"]
    */
-  toRoute(): string[] {
+  public toRoute(): string[] {
     return this.full.slice(1).map((x) => x.name);
   }
 

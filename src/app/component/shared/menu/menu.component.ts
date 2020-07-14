@@ -34,22 +34,22 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent extends WithUnsubscribe() implements OnInit {
-  @Input() title?: LabelAndIcon;
-  @Input() links: List<AnyMenuItem>;
-  @Input() menuType: "action" | "secondary";
-  @Input() widget?: WidgetMenuItem;
-  @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
+  @Input() public title?: LabelAndIcon;
+  @Input() public links: List<AnyMenuItem>;
+  @Input() public menuType: "action" | "secondary";
+  @Input() public widget?: WidgetMenuItem;
+  @ViewChild(WidgetDirective, { static: true }) public menuWidget: WidgetDirective;
 
-  filteredLinks: Set<AnyMenuItem>;
-  placement: "left" | "right";
-  params: Params;
-  url: string;
-  user: SessionUser;
-  loading: boolean;
+  public filteredLinks: Set<AnyMenuItem>;
+  public placement: "left" | "right";
+  public params: Params;
+  public url: string;
+  public user: SessionUser;
+  public loading: boolean;
 
-  isInternalLink = isInternalRoute;
-  isExternalLink = isExternalLink;
-  isAction = isButton;
+  public isInternalLink = isInternalRoute;
+  public isExternalLink = isExternalLink;
+  public isAction = isButton;
 
   constructor(
     private api: SecurityService,
@@ -59,7 +59,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Get user details
     this.user = this.api.getLocalUser();
     this.placement = this.menuType === "action" ? "left" : "right";
@@ -91,7 +91,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   /**
    * Determine whether to show links
    */
-  linksExist() {
+  public linksExist() {
     return this.filteredLinks.size > 0 && !this.loading;
   }
 
@@ -99,7 +99,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
    * Calculate the indentation of a secondary link item
    * @param link Link to calculate padding for
    */
-  calculateIndentation(link: AnyMenuItem) {
+  public calculateIndentation(link: AnyMenuItem) {
     // Only the secondary menu implements this option
     if (this.menuType !== "secondary" || !link.indentation) {
       return 0;
@@ -111,7 +111,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   /**
    * Load widget component
    */
-  loadComponent() {
+  public loadComponent() {
     if (!this.widget) {
       return;
     }

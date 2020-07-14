@@ -31,13 +31,13 @@ export class BookmarksService extends StandardApi<Bookmark> {
     super(http, apiRoot, Bookmark, injector);
   }
 
-  list(): Observable<Bookmark[]> {
+  public list(): Observable<Bookmark[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IBookmark>): Observable<Bookmark[]> {
+  public filter(filters: Filters<IBookmark>): Observable<Bookmark[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  filterByCreator(
+  public filterByCreator(
     filters: Filters<IBookmark>,
     user?: IdOr<User>
   ): Observable<Bookmark[]> {
@@ -46,16 +46,16 @@ export class BookmarksService extends StandardApi<Bookmark> {
       user ? filterByForeignKey<Bookmark>(filters, "creatorId", user) : filters
     );
   }
-  show(model: IdOr<Bookmark>): Observable<Bookmark> {
+  public show(model: IdOr<Bookmark>): Observable<Bookmark> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Bookmark): Observable<Bookmark> {
+  public create(model: Bookmark): Observable<Bookmark> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Bookmark): Observable<Bookmark> {
+  public update(model: Bookmark): Observable<Bookmark> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
+  public destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

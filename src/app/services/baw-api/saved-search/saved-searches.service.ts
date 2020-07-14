@@ -29,19 +29,19 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
     super(http, apiRoot, SavedSearch, injector);
   }
 
-  list(): Observable<SavedSearch[]> {
+  public list(): Observable<SavedSearch[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<ISavedSearch>): Observable<SavedSearch[]> {
+  public filter(filters: Filters<ISavedSearch>): Observable<SavedSearch[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<SavedSearch>): Observable<SavedSearch> {
+  public show(model: IdOr<SavedSearch>): Observable<SavedSearch> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: SavedSearch): Observable<SavedSearch> {
+  public create(model: SavedSearch): Observable<SavedSearch> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
+  public destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

@@ -46,12 +46,12 @@ import { List } from "immutable";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardsComponent implements OnChanges {
-  @Input() cards: List<Card>;
+  @Input() public cards: List<Card>;
   public imageCards: boolean;
 
   constructor(private ref: ChangeDetectorRef) {}
 
-  ngOnChanges() {
+  public ngOnChanges() {
     this.cards = this.cards ?? List<Card>([]);
 
     let hasNormalCards = false;

@@ -27,7 +27,7 @@ export class WIPComponent implements OnInit {
 
   constructor(private env: AppConfigService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.tooltip = this.env.config.production
       ? "This feature is currently not functional."
       : null;

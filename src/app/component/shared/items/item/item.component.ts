@@ -51,16 +51,16 @@ import { StrongRoute } from "src/app/interfaces/strongRoute";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemComponent implements OnInit {
-  @Input() icon: IconProp;
-  @Input() name: string;
-  @Input() value: string | number;
-  @Input() uri?: Href | StrongRoute;
-  link: string;
-  internalLink: boolean;
+  @Input() public icon: IconProp;
+  @Input() public name: string;
+  @Input() public value: string | number;
+  @Input() public uri?: Href | StrongRoute;
+  public link: string;
+  public internalLink: boolean;
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     if (!this.uri) {
       return;
     }

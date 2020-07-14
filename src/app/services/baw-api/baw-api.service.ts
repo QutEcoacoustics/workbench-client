@@ -296,7 +296,7 @@ export class RangeInterval {
     }
   }
 
-  toJSON() {
+  public toJSON() {
     return { interval: this.interval };
   }
 }

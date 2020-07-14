@@ -37,13 +37,13 @@ export class TaggingsService extends StandardApi<
     super(http, apiRoot, Tagging, injector);
   }
 
-  list(
+  public list(
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {
     return this.apiList(endpoint(analysisJob, audioEvent, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<ITagging>,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
@@ -53,14 +53,14 @@ export class TaggingsService extends StandardApi<
       filters
     );
   }
-  show(
+  public show(
     model: IdOr<Tagging>,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.apiShow(endpoint(analysisJob, audioEvent, model, Empty));
   }
-  create(
+  public create(
     model: Tagging,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
@@ -70,7 +70,7 @@ export class TaggingsService extends StandardApi<
       model
     );
   }
-  update(
+  public update(
     model: Tagging,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
@@ -80,7 +80,7 @@ export class TaggingsService extends StandardApi<
       model
     );
   }
-  destroy(
+  public destroy(
     model: IdOr<Tagging>,
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>

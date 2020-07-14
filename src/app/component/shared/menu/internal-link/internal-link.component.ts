@@ -30,16 +30,16 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuInternalLinkComponent implements OnInit {
-  @Input() id: string;
-  @Input() link: MenuRoute;
-  @Input() route: string;
-  @Input() placement: "left" | "right";
-  @Input() tooltip: string;
-  active: boolean;
+  @Input() public id: string;
+  @Input() public link: MenuRoute;
+  @Input() public route: string;
+  @Input() public placement: "left" | "right";
+  @Input() public tooltip: string;
+  public active: boolean;
 
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.active = this.route === window.location.pathname;
   }
 }

@@ -67,7 +67,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
       projectKey
     ];
@@ -103,7 +103,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     //   );
   }
 
-  extremityDates(recordings: AudioRecording[]) {
+  public extremityDates(recordings: AudioRecording[]) {
     let startDate: DateTimeTimezone = null;
     let endDate: DateTimeTimezone = null;
 

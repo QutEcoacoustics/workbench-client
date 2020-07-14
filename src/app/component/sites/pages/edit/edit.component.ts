@@ -71,7 +71,7 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (!this.failure) {

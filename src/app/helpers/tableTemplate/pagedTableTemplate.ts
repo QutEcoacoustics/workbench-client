@@ -26,7 +26,7 @@ import { PageComponent } from "../page/pageComponent";
 export abstract class PagedTableTemplate<T, M extends AbstractModel>
   extends PageComponent
   implements OnInit {
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
   public ColumnMode = ColumnMode;
@@ -78,7 +78,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.route) {
       // Retrieve models
       const resolvedModels = retrieveResolvers(this.route.snapshot.data);

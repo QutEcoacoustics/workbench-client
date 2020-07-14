@@ -69,7 +69,7 @@ export class TheirEditComponent extends FormTemplate<User> implements OnInit {
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (!this.failure) {

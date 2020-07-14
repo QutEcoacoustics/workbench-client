@@ -39,16 +39,16 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderItemComponent implements OnInit {
-  @Input() link: NavigableMenuItem;
+  @Input() public link: NavigableMenuItem;
   public params: Params;
 
-  isInternalRoute = isInternalRoute;
-  isExternalLink = isExternalLink;
-  getRoute = getRoute;
+  public isInternalRoute = isInternalRoute;
+  public isExternalLink = isExternalLink;
+  public getRoute = getRoute;
 
   constructor(private route: ActivatedRoute) {
     this.params = this.route.snapshot.params;
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

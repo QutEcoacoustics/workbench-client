@@ -1,23 +1,23 @@
 import { browser, by, element } from "protractor";
 
 export class AppPage {
-  navigateTo() {
+  public navigateTo() {
     return browser.get(browser.baseUrl) as Promise<any>;
   }
 
-  getNavbar() {
+  public getNavbar() {
     return element(by.css("nav"));
   }
 
-  getLogo() {
+  public getLogo() {
     return element(by.css("nav .navbar-brand")).getText();
   }
 
-  login() {
+  public login() {
     return element(by.id("login-header-link")).click();
   }
 
-  logout() {
+  public logout() {
     return element(by.id("logout-header-link")).click();
   }
 }

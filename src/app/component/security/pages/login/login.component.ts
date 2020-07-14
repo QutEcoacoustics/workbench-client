@@ -77,7 +77,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (this.api.isLoggedIn()) {

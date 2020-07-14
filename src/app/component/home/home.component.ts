@@ -58,7 +58,7 @@ export class HomeComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.page = this.env.values.cms.home;
 
     this.securityApi

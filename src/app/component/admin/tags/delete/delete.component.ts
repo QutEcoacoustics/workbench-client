@@ -65,7 +65,7 @@ export class AdminTagsDeleteComponent extends FormTemplate<Tag>
     );
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     super.ngOnInit();
 
     if (!this.failure) {

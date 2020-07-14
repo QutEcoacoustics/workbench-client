@@ -29,13 +29,13 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     super(http, apiRoot, AudioRecording, injector);
   }
 
-  list(): Observable<AudioRecording[]> {
+  public list(): Observable<AudioRecording[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IAudioRecording>): Observable<AudioRecording[]> {
+  public filter(filters: Filters<IAudioRecording>): Observable<AudioRecording[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
+  public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
     return this.apiShow(endpoint(model, Empty));
   }
 }

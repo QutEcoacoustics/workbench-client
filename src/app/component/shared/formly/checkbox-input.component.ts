@@ -23,5 +23,5 @@ import { FieldType } from "@ngx-formly/core";
 })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyCheckboxInput extends FieldType {
-  formControl: FormControl;
+  public formControl: FormControl;
 }

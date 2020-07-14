@@ -58,7 +58,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
     this.title = this.env.values.brand.name;
@@ -93,7 +93,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * @param link Navbar link
    * @returns True if navbar is active
    */
-  isActive(link: string) {
+  public isActive(link: string) {
     return this.activeLink.toLowerCase() === link.toLowerCase();
   }
 
@@ -101,14 +101,14 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * Toggle the collapse of the navbar
    * @param setState Set the state of the navbar
    */
-  toggleCollapse(setState?: boolean) {
+  public toggleCollapse(setState?: boolean) {
     this.collapsed = setState ? setState : !this.collapsed;
   }
 
   /**
    * Logout user
    */
-  logout() {
+  public logout() {
     this.api
       .signOut()
       .pipe(takeUntil(this.unsubscribe))

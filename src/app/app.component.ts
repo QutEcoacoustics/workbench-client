@@ -29,7 +29,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.title.setTitle(this.env.values.brand.name);
     this.menuLayout = true;
 

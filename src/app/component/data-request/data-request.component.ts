@@ -57,7 +57,7 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.page = this.env.values.cms.downloadAnnotations;
   }
 
@@ -65,7 +65,7 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
    * Form submission
    * @param $event Form response
    */
-  submitDownloadAnnotation($event: any) {
+  public submitDownloadAnnotation($event: any) {
     this.annotationLoading = true;
     console.log($event);
     this.annotationLoading = false;
@@ -75,7 +75,7 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
    * Form submission
    * @param $event Form response
    */
-  submitDataRequest($event: any) {
+  public submitDataRequest($event: any) {
     this.requestLoading = true;
     console.log($event);
     this.requestLoading = false;

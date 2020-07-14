@@ -20,9 +20,9 @@ export const image404RelativeSrc = "/assets/images/404.png";
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
-  @Input() src: ImageUrl[];
-  @Input() thumbnail: ImageSizes;
-  @Input() disableAuth: boolean;
+  @Input() public src: ImageUrl[];
+  @Input() public thumbnail: ImageSizes;
+  @Input() public disableAuth: boolean;
 
   /**
    * Tracks potential url options to be used for src
@@ -48,7 +48,7 @@ export class AuthenticatedImageDirective implements OnChanges {
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
       this.imageRef.nativeElement.onerror = () => {

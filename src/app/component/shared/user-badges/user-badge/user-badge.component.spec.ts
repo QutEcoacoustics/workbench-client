@@ -19,11 +19,11 @@ import { UserBadgeComponent } from "./user-badge.component";
   `,
 })
 class TestUserBadgeComponent {
-  label: string;
-  users: List<User>;
-  lengthOfTime: string;
+  public label: string;
+  public users: List<User>;
+  public lengthOfTime: string;
 
-  updateComponent(label: string, lengthOfTime: string, users: List<User>) {
+  public updateComponent(label: string, lengthOfTime: string, users: List<User>) {
     this.label = label;
     this.users = users;
     this.lengthOfTime = lengthOfTime;

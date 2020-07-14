@@ -40,23 +40,23 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     super(http, apiRoot, Site, injector);
   }
 
-  list(project: IdOr<Project>): Observable<Site[]> {
+  public list(project: IdOr<Project>): Observable<Site[]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
-  filter(filters: Filters<ISite>, project: IdOr<Project>): Observable<Site[]> {
+  public filter(filters: Filters<ISite>, project: IdOr<Project>): Observable<Site[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/437
     return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
-  show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
+  public show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.apiShow(endpoint(project, model, Empty));
   }
-  create(model: Site, project: IdOr<Project>): Observable<Site> {
+  public create(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiCreate(endpoint(project, Empty, Empty), model);
   }
-  update(model: Site, project: IdOr<Project>): Observable<Site> {
+  public update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, Empty), model);
   }
-  destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site | void> {
+  public destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site | void> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
@@ -76,11 +76,11 @@ export class ShallowSitesService extends StandardApi<Site> {
     super(http, apiRoot, Site, injector);
   }
 
-  list(): Observable<Site[]> {
+  public list(): Observable<Site[]> {
     return this.filter({});
     // return this.apiList(endpointShallow(Empty, Empty));
   }
-  filter(filters: Filters<ISite>): Observable<Site[]> {
+  public filter(filters: Filters<ISite>): Observable<Site[]> {
     return filterMock<Site>(
       filters,
       (index) =>
@@ -96,7 +96,7 @@ export class ShallowSitesService extends StandardApi<Site> {
     );
     // return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
-  filterByAccessLevel(
+  public filterByAccessLevel(
     filters: Filters<ISite>,
     user?: IdOr<User>
   ): Observable<Site[]> {
@@ -107,7 +107,7 @@ export class ShallowSitesService extends StandardApi<Site> {
       user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
     );
   }
-  show(model: IdOr<Site>): Observable<Site> {
+  public show(model: IdOr<Site>): Observable<Site> {
     return showMock(
       model,
       (index) =>
@@ -129,20 +129,20 @@ export class ShallowSitesService extends StandardApi<Site> {
     );
     return this.apiShow(endpointShallow(model, Empty));
   }
-  create(model: Site): Observable<Site> {
+  public create(model: Site): Observable<Site> {
     return this.apiCreate(endpointShallow(Empty, Empty), model);
   }
-  update(model: Site): Observable<Site> {
+  public update(model: Site): Observable<Site> {
     return this.apiUpdate(endpointShallow(model, Empty), model);
   }
-  destroy(model: IdOr<Site>): Observable<Site | void> {
+  public destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
   /**
    * Retrieve orphaned sites (sites which have no parent projects)
    * @param filters Filters to apply
    */
-  orphans(filters: Filters<Site>): Observable<Site[]> {
+  public orphans(filters: Filters<Site>): Observable<Site[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/430
     return filterMock<Site>(
       filters,

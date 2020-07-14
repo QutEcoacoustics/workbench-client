@@ -25,7 +25,7 @@ export class UserService extends BawApiService<User>
     super(http, apiRoot, User, injector);
   }
 
-  show(): Observable<User> {
+  public show(): Observable<User> {
     return this.apiShow(endpoint());
   }
 }

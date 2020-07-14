@@ -39,11 +39,11 @@ import { Site } from "src/app/models/Site";
   styleUrls: ["./map.component.scss"],
 })
 export class MapComponent extends WithUnsubscribe() implements OnChanges {
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
-  @ViewChildren(MapMarker) mapMarkers: QueryList<MapMarker>;
+  @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
+  @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() sites: Site[];
+  @Input() public sites: Site[];
   public hasMarkers = false;
   public infoContent = "";
   public markers: google.maps.ReadonlyMarkerOptions[] = [];
@@ -56,7 +56,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
     super();
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     this.markers = createMarkers(this.sites);
     this.hasMarkers = this.markers.length > 0;
     this.ref.detectChanges();

@@ -39,13 +39,13 @@ export class ContactUsComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
   /**
    * Form submission
    * @param $event Form response
    */
-  submit($event: any) {
+  public submit($event: any) {
     this.loading = true;
     console.log($event);
     this.loading = false;

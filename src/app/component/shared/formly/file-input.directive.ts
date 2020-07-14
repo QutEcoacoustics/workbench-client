@@ -21,15 +21,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 // https://github.com/angular/angular/issues/7341
 // tslint:disable-next-line: directive-class-suffix
 export class FileValueAccessor implements ControlValueAccessor {
-  value: any;
-  onChange = (_) => {};
-  onTouched = () => {};
+  public value: any;
+  public onChange = (_) => {};
+  public onTouched = () => {};
 
-  writeValue(value) {}
-  registerOnChange(fn: any) {
+  public writeValue(value) {}
+  public registerOnChange(fn: any) {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any) {
+  public registerOnTouched(fn: any) {
     this.onTouched = fn;
   }
 }

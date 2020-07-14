@@ -35,16 +35,16 @@ export class AnalysisJobItemsService extends ReadonlyApi<
     super(http, apiRoot, AnalysisJobItem, injector);
   }
 
-  list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {
+  public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {
     return this.apiList(endpoint(analysisJob, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<IAnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem[]> {
     return this.apiFilter(endpoint(analysisJob, Empty, Filter), filters);
   }
-  show(
+  public show(
     model: IdOr<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem> {

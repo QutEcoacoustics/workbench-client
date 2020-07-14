@@ -51,11 +51,11 @@ export class ResetPasswordComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loading = false;
   }
 
-  submit(model) {
+  public submit(model) {
     this.loading = true;
     console.log(model);
     this.loading = false;

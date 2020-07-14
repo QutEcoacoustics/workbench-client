@@ -33,22 +33,22 @@ export class AccountsService extends StandardApi<User> {
     super(http, apiRoot, User, injector);
   }
 
-  list(): Observable<User[]> {
+  public list(): Observable<User[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IUser>): Observable<User[]> {
+  public filter(filters: Filters<IUser>): Observable<User[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<User>): Observable<User> {
+  public show(model: IdOr<User>): Observable<User> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: User): Observable<User> {
+  public create(model: User): Observable<User> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: User): Observable<User> {
+  public update(model: User): Observable<User> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<User>): Observable<User | void> {
+  public destroy(model: IdOr<User>): Observable<User | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

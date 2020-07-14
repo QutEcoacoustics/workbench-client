@@ -68,7 +68,7 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
     const typeOfTagIndex = 1;
 

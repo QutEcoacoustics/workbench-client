@@ -61,9 +61,9 @@ describe("BawApiService", () => {
    * Mock model interface
    */
   class MockModelInterface {
-    id?: number;
-    name?: string;
-    caseConversion?: {
+    public id?: number;
+    public name?: string;
+    public caseConversion?: {
       testConvert?: string;
     };
   }

@@ -25,7 +25,7 @@ export class EthicsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.page = this.env.values.cms.ethics;
   }
 }

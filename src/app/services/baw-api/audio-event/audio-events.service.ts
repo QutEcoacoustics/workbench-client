@@ -35,34 +35,34 @@ export class AudioEventsService extends StandardApi<
     super(http, apiRoot, AudioEvent, injector);
   }
 
-  list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
+  public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
     return this.apiList(endpoint(audioRecording, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<IAudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
     return this.apiFilter(endpoint(audioRecording, Empty, Filter), filters);
   }
-  show(
+  public show(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
     return this.apiShow(endpoint(audioRecording, model, Empty));
   }
-  create(
+  public create(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
     return this.apiCreate(endpoint(audioRecording, Empty, Empty), model);
   }
-  update(
+  public update(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
     return this.apiUpdate(endpoint(audioRecording, model, Empty), model);
   }
-  destroy(
+  public destroy(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {

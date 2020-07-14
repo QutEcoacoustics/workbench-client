@@ -31,14 +31,14 @@ import { WidgetMenuItem } from "../widget/widgetItem";
 })
 export class SecondaryMenuComponent extends WithUnsubscribe()
   implements OnInit {
-  contextLinks: List<NavigableMenuItem>;
-  linksWidget: WidgetMenuItem;
+  public contextLinks: List<NavigableMenuItem>;
+  public linksWidget: WidgetMenuItem;
 
   constructor(private route: ActivatedRoute) {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         // get default links

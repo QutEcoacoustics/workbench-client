@@ -86,7 +86,7 @@ describe("WithFormCheck", () => {
     public schemas = [];
     public numForms = 0;
 
-    ngOnInit() {
+    public ngOnInit() {
       for (let i = 0; i < this.numForms; i++) {
         this.schemas.push({
           model: {},

@@ -60,13 +60,13 @@ export class AdminTagGroupsComponent extends PagedTableTemplate<
     this.filterKey = "groupIdentifier";
   }
 
-  editPath(tagGroup: TagGroup): string {
+  public editPath(tagGroup: TagGroup): string {
     return adminEditTagGroupMenuItem.route
       .toString()
       .replace(":tagGroupId", tagGroup.id.toString());
   }
 
-  deletePath(tag: TagGroup): string {
+  public deletePath(tag: TagGroup): string {
     return adminDeleteTagGroupMenuItem.route
       .toString()
       .replace(":tagGroupId", tag.id.toString());

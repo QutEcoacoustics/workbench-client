@@ -64,7 +64,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 })
 export class RenderFieldComponent extends WithUnsubscribe()
   implements OnInit, OnChanges {
-  @Input() value: ModelView;
+  @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean;
   public FieldStyling = FieldStyling;
@@ -78,11 +78,11 @@ export class RenderFieldComponent extends WithUnsubscribe()
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.ngOnChanges();
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.humanize(this.value);
   }
 

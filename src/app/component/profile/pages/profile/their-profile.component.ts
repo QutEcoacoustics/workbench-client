@@ -76,7 +76,7 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const accountModel: ResolvedModel<User> = this.route.snapshot.data[
       accountKey
     ];

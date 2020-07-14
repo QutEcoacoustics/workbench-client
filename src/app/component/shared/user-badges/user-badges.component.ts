@@ -28,7 +28,7 @@ import { Badge } from "./user-badge/user-badge.component";
 })
 export class UserBadgesComponent extends WithUnsubscribe()
   implements OnChanges {
-  @Input() model: AbstractModel;
+  @Input() public model: AbstractModel;
   public badges: Badge[];
   private badgeTypes = [
     {
@@ -52,7 +52,7 @@ export class UserBadgesComponent extends WithUnsubscribe()
     super();
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     this.badges = [];
 
     this.badgeTypes.forEach((badgeType) => {

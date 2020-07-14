@@ -31,15 +31,15 @@ import { MenuLink } from "src/app/interfaces/menusInterfaces";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuExternalLinkComponent implements OnInit {
-  @Input() id: string;
-  @Input() link: MenuLink;
-  @Input() placement: "left" | "right";
-  @Input() tooltip: string;
-  @Input() uri: string;
+  @Input() public id: string;
+  @Input() public link: MenuLink;
+  @Input() public placement: "left" | "right";
+  @Input() public tooltip: string;
+  @Input() public uri: string;
 
   constructor(@Inject(API_ROOT) private apiRoot: string) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.uri.startsWith("/")) {
       this.uri = this.apiRoot + this.uri;
     }
