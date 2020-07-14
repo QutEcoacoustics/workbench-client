@@ -10,11 +10,11 @@ import { ErrorHandlerComponent } from "./error-handler.component";
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
 })
 class MockComponent implements OnInit {
-  error: ApiErrorDetails;
+  public error: ApiErrorDetails;
 
   constructor(private ref: ChangeDetectorRef) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.error = {
       status: 401,
       message: "You need to log in or register before continuing.",
@@ -22,7 +22,7 @@ class MockComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  setError(error: ApiErrorDetails) {
+  public setError(error: ApiErrorDetails) {
     this.error = error;
     this.ref.detectChanges();
   }

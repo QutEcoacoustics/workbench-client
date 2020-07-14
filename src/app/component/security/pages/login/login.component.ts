@@ -77,7 +77,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (this.api.isLoggedIn()) {
@@ -90,7 +90,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
-    if (redirect === false) {
+    if (typeof redirect === "boolean" && !redirect) {
       this.redirectUrl = homeMenuItem.route.toString();
       return;
     }

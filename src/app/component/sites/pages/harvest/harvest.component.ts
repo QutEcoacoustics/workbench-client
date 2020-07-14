@@ -32,7 +32,7 @@ export class HarvestComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.page = this.env.values.cms.harvest;
   }
 }

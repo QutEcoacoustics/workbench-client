@@ -76,7 +76,7 @@ export function BawCollection<T extends AbstractModel>(
       return;
     }
 
-    model[key] = new Set(ids || []);
+    model[key] = new Set(ids ?? []);
   });
 }
 

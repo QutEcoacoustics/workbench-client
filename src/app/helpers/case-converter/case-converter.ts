@@ -15,14 +15,14 @@ import * as whitelist from "./whitelist.json";
  */
 const convertCase = (
   oldObject: any,
-  callback: (string?: string) => string,
+  callback: (callbackVal?: string) => string,
   convertValue?: boolean
 ): any => {
   let newObject: any;
 
   // Prevent conversion of periods (.)
-  function converterFn(string?: string): string {
-    return string
+  function converterFn(valToConvert?: string): string {
+    return valToConvert
       .split(".")
       .map((split) => callback(split))
       .join(".");

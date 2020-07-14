@@ -42,7 +42,7 @@ export class RegisterComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.api.isLoggedIn()) {
       // Disable submit button
       this.loading = true;
@@ -50,7 +50,7 @@ export class RegisterComponent extends PageComponent implements OnInit {
     }
   }
 
-  submit(model) {
+  public submit(model) {
     this.loading = true;
     console.log(model);
     this.loading = false;

@@ -1,12 +1,17 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
   OnInit,
+  QueryList,
   ViewChild,
+  ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { takeUntil } from "rxjs/operators";
 import { Site } from "src/app/models/Site";
 
 /**
@@ -19,11 +24,9 @@ import { Site } from "src/app/models/Site";
     <ng-container *ngIf="hasMarkers; else placeholderMap">
       <google-map height="400px" width="100%" [options]="mapOptions">
         <map-marker
-          #pin
           *ngFor="let marker of markers"
           [options]="markerOptions"
           [position]="marker.position"
-          (mapMouseover)="openInfo(pin, marker.info)"
         >
         </map-marker>
         <map-info-window>{{ infoContent }}</map-info-window>
@@ -35,26 +38,25 @@ import { Site } from "src/app/models/Site";
   `,
   styleUrls: ["./map.component.scss"],
 })
-export class MapComponent implements OnInit, OnChanges {
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-  @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
+export class MapComponent extends WithUnsubscribe() implements OnChanges {
+  @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
+  @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() sites: Site[];
+  @Input() public sites: Site[];
   public hasMarkers = false;
   public infoContent = "";
-  public markers: (MapMarker & { info: string })[] = [];
+  public markers: google.maps.ReadonlyMarkerOptions[] = [];
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions = { mapTypeId: "satellite" };
   public markerOptions = { draggable: false };
 
-  constructor(private ref: ChangeDetectorRef) {}
-
-  ngOnInit() {
-    this.ngOnChanges();
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     this.markers = createMarkers(this.sites);
     this.hasMarkers = this.markers.length > 0;
     this.ref.detectChanges();
@@ -62,30 +64,21 @@ export class MapComponent implements OnInit, OnChanges {
     // Calculate pin boundaries so that map can be auto-focused properly
     if (this.hasMarkers) {
       const bounds = new google.maps.LatLngBounds();
-      this.markers.forEach((marker) => {
-        const position = new google.maps.LatLng(
-          this.getCoordinate(marker.position.lat),
-          this.getCoordinate(marker.position.lng)
-        );
-        bounds.extend(position);
-      });
+      this.markers.forEach((marker) => bounds.extend(marker.position));
       this.map.fitBounds(bounds);
       this.map.panToBounds(bounds);
     }
-  }
 
-  /**
-   * Open info window for map marker
-   * @param marker Map marker
-   * @param content Content to display
-   */
-  public openInfo(marker: MapMarker, content: string) {
-    this.infoContent = content;
-    this.info.open(marker);
-  }
-
-  private getCoordinate(coordinate: number | (() => number)): number {
-    return typeof coordinate === "function" ? coordinate() : coordinate;
+    // Setup info windows for each marker
+    this.mapMarkers?.forEach((marker, index) => {
+      marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(
+        () => {
+          this.infoContent = this.markers[index].label as string;
+          this.info.open(marker);
+        },
+        () => console.error("Failed to create info content for map marker")
+      );
+    });
   }
 }
 
@@ -94,27 +87,23 @@ export class MapComponent implements OnInit, OnChanges {
  * @param sites List of sites
  * @returns List of markers
  */
-export function createMarkers(sites: Site[]): (MapMarker & { info: string })[] {
-  if (!sites) {
-    return [];
-  }
-
+export function createMarkers(
+  sites: Site[]
+): google.maps.ReadonlyMarkerOptions[] {
   const markers = [];
-  for (const site of sites) {
-    if (
-      typeof site.customLatitude === "number" &&
-      typeof site.customLongitude === "number"
-    ) {
+  sites?.forEach((site) => {
+    const hasLatitude = typeof site.customLatitude === "number";
+    const hasLongitude = typeof site.customLongitude === "number";
+
+    if (hasLatitude && hasLongitude) {
       markers.push({
         position: {
           lat: site.customLatitude,
           lng: site.customLongitude,
         },
-        label: { text: site.name },
-        info: site.name,
+        label: site.name,
       });
     }
-  }
-
+  });
   return markers;
 }

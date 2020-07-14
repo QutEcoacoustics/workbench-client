@@ -63,5 +63,5 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
     super();
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

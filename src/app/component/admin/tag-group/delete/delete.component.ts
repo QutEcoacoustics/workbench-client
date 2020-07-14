@@ -62,7 +62,7 @@ export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (!this.failure) {

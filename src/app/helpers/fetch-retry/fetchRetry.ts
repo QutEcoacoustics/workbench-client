@@ -15,7 +15,7 @@ export function fetchRetry<T = Response>(
     const fetchAttempt = (attempt: number) => {
       fetch(input, init).then((response) => {
         // Check if response is OK
-        if (response.status !== 200) {
+        if (!response.ok) {
           return retry(attempt);
         }
 

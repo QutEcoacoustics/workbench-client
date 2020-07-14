@@ -23,12 +23,12 @@ export class Question extends AbstractModel implements IQuestion {
   public readonly text?: string;
   @BawPersistAttr
   public readonly data?: Blob;
-  creatorId?: Id;
-  updaterId?: Id;
+  public creatorId?: Id;
+  public updaterId?: Id;
   @BawDateTime()
-  createdAt?: DateTimeTimezone;
+  public createdAt?: DateTimeTimezone;
   @BawDateTime()
-  updatedAt?: DateTimeTimezone;
+  public updatedAt?: DateTimeTimezone;
 
   // Associations
   @Creator<Question>()

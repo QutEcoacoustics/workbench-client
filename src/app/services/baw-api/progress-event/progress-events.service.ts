@@ -29,16 +29,16 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
     super(http, apiRoot, ProgressEvent, injector);
   }
 
-  list(): Observable<ProgressEvent[]> {
+  public list(): Observable<ProgressEvent[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IProgressEvent>): Observable<ProgressEvent[]> {
+  public filter(filters: Filters<IProgressEvent>): Observable<ProgressEvent[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
+  public show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: ProgressEvent): Observable<ProgressEvent> {
+  public create(model: ProgressEvent): Observable<ProgressEvent> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
 }

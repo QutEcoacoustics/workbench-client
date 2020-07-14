@@ -15,7 +15,7 @@ import { PageComponent } from "../page/pageComponent";
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
 export abstract class TableTemplate<T> extends PageComponent {
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
   public ColumnMode = ColumnMode;

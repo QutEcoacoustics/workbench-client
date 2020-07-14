@@ -50,7 +50,7 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
       accounts.map((account) => ({
         account,
         user: account.userName,
-        lastLogin: account.lastSeenAt?.toRelative() || "?",
+        lastLogin: account.lastSeenAt?.toRelative() ?? "?",
         confirmed: account.isConfirmed,
       }))
     );

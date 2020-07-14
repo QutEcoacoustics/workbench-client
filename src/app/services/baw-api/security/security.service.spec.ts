@@ -21,6 +21,7 @@ import {
 import { UserService } from "../user/user.service";
 import { LoginDetails, SecurityService } from "./security.service";
 
+// TODO Rewrite using spectator
 describe("SecurityService", () => {
   let service: SecurityService;
   let userApi: UserService;
@@ -39,7 +40,7 @@ describe("SecurityService", () => {
       | "apiDestroy",
     url: string,
     error: ApiErrorDetails
-  ) {
+  ): void {
     service[func] = jasmine.createSpy().and.callFake((path: string) => {
       expect(path).toBe(url);
       const subject = new Subject();
@@ -110,11 +111,11 @@ describe("SecurityService", () => {
       details: LoginDetails,
       model: SessionUser,
       user?: User
-    ) {
+    ): void {
       spyOn(service as any, "apiCreate").and.callFake(
-        (_path: string, _details: object) => {
-          expect(_path).toBe(path);
-          expect(_details).toEqual(details);
+        (createPath: string, createDetails: object) => {
+          expect(createPath).toBe(path);
+          expect(createDetails).toEqual(details);
 
           return new BehaviorSubject<SessionUser>(model);
         }
@@ -298,12 +299,14 @@ describe("SecurityService", () => {
   });
 
   describe("signOut", () => {
-    function createSuccess(path: string) {
-      spyOn(service as any, "apiDestroy").and.callFake((_path: string) => {
-        expect(_path).toBe(path);
+    function createSuccess(path: string): void {
+      spyOn(service as any, "apiDestroy").and.callFake(
+        (destroyPath: string) => {
+          expect(destroyPath).toBe(path);
 
-        return new BehaviorSubject<void>(null);
-      });
+          return new BehaviorSubject<void>(null);
+        }
+      );
     }
 
     it("should call apiDestroy", fakeAsync(() => {

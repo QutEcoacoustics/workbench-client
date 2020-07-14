@@ -51,17 +51,17 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderDropdownComponent implements OnInit {
-  @Input() active: boolean;
-  @Input() links: HeaderDropDownConvertedLink;
+  @Input() public active: boolean;
+  @Input() public links: HeaderDropDownConvertedLink;
   public params: Params;
 
-  isInternalRoute = isInternalRoute;
-  isExternalLink = isExternalLink;
-  getRoute = getRoute;
+  public isInternalRoute = isInternalRoute;
+  public isExternalLink = isExternalLink;
+  public getRoute = getRoute;
 
   constructor(private route: ActivatedRoute) {
     this.params = this.route.snapshot.params;
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

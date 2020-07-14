@@ -44,7 +44,7 @@ export class ReportProblemComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.subTitle = `Complete the form below to report a problem.
     Alternatively, we have a <a href='https://github.com/QutEcoacoustics/baw-server/issues'>Github Issues</a> page.`;
   }
@@ -53,7 +53,7 @@ export class ReportProblemComponent extends WithFormCheck(PageComponent)
    * Form submission
    * @param $event Form response
    */
-  submit($event: any) {
+  public submit($event: any) {
     this.loading = true;
     console.log($event);
     this.loading = false;

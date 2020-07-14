@@ -33,25 +33,25 @@ export class QuestionsService extends StandardApi<Question, [IdOr<Study>]> {
     super(http, apiRoot, Question, injector);
   }
 
-  list(study: IdOr<Study>): Observable<Question[]> {
+  public list(study: IdOr<Study>): Observable<Question[]> {
     return this.apiList(endpoint(study, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<IQuestion>,
     study: IdOr<Study>
   ): Observable<Question[]> {
     return this.apiFilter(endpoint(study, Empty, Filter), filters);
   }
-  show(model: IdOr<Question>, study: IdOr<Study>): Observable<Question> {
+  public show(model: IdOr<Question>, study: IdOr<Study>): Observable<Question> {
     return this.apiShow(endpoint(study, model, Empty));
   }
-  create(model: Question, study: IdOr<Study>): Observable<Question> {
+  public create(model: Question, study: IdOr<Study>): Observable<Question> {
     return this.apiCreate(endpoint(study, Empty, Empty), model);
   }
-  update(model: Question, study: IdOr<Study>): Observable<Question> {
+  public update(model: Question, study: IdOr<Study>): Observable<Question> {
     return this.apiUpdate(endpoint(study, model, Empty), model);
   }
-  destroy(
+  public destroy(
     model: IdOr<Question>,
     study: IdOr<Study>
   ): Observable<Question | void> {
@@ -69,22 +69,22 @@ export class ShallowQuestionsService extends StandardApi<Question> {
     super(http, apiRoot, Question, injector);
   }
 
-  list(): Observable<Question[]> {
+  public list(): Observable<Question[]> {
     return this.apiList(endpointShallow(Empty, Empty));
   }
-  filter(filters: Filters<IQuestion>): Observable<Question[]> {
+  public filter(filters: Filters<IQuestion>): Observable<Question[]> {
     return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
-  show(model: IdOr<Question>): Observable<Question> {
+  public show(model: IdOr<Question>): Observable<Question> {
     return this.apiShow(endpointShallow(model, Empty));
   }
-  create(model: Question): Observable<Question> {
+  public create(model: Question): Observable<Question> {
     return this.apiCreate(endpointShallow(Empty, Empty), model);
   }
-  update(model: Question): Observable<Question> {
+  public update(model: Question): Observable<Question> {
     return this.apiUpdate(endpointShallow(model, Empty), model);
   }
-  destroy(model: IdOr<Question>): Observable<Question | void> {
+  public destroy(model: IdOr<Question>): Observable<Question | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
 }

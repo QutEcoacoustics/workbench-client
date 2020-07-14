@@ -19,11 +19,11 @@ import { UserBadgeComponent } from "./user-badge.component";
   `,
 })
 class TestUserBadgeComponent {
-  label: string;
-  users: List<User>;
-  lengthOfTime: string;
+  public label: string;
+  public users: List<User>;
+  public lengthOfTime: string;
 
-  updateComponent(label: string, lengthOfTime: string, users: List<User>) {
+  public updateComponent(label: string, lengthOfTime: string, users: List<User>) {
     this.label = label;
     this.users = users;
     this.lengthOfTime = lengthOfTime;
@@ -36,17 +36,17 @@ describe("UserBadgeComponent", () => {
   let defaultUser: User;
 
   const getLabels = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#label");
+    (fix ?? fixture).nativeElement.querySelectorAll("#label");
   const getGhostUsers = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#notFound");
+    (fix ?? fixture).nativeElement.querySelectorAll("#notFound");
   const getUsernames = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#username");
+    (fix ?? fixture).nativeElement.querySelectorAll("#username");
   const getImageWrappers = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#imageLink");
+    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink");
   const getImages = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#imageLink img");
+    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink img");
   const getTimespans = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#lengthOfTime");
+    (fix ?? fixture).nativeElement.querySelectorAll("#lengthOfTime");
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

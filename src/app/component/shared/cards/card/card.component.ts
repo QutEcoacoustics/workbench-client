@@ -39,9 +39,9 @@ import { Card } from "../cards.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent implements OnInit {
-  @Input() card: Card;
+  @Input() public card: Card;
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

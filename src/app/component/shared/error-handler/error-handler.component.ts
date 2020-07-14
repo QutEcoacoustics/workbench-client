@@ -26,7 +26,7 @@ import { apiReturnCodes } from "src/app/services/baw-api/baw-api.service";
   `,
 })
 export class ErrorHandlerComponent {
-  @Input() error: ApiErrorDetails;
+  @Input() public error: ApiErrorDetails;
   public apiReturnCodes = apiReturnCodes;
 
   constructor() {}

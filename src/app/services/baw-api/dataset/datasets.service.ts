@@ -29,22 +29,22 @@ export class DatasetsService extends StandardApi<Dataset> {
     super(http, apiRoot, Dataset, injector);
   }
 
-  list(): Observable<Dataset[]> {
+  public list(): Observable<Dataset[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IDataset>): Observable<Dataset[]> {
+  public filter(filters: Filters<IDataset>): Observable<Dataset[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<Dataset>): Observable<Dataset> {
+  public show(model: IdOr<Dataset>): Observable<Dataset> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Dataset): Observable<Dataset> {
+  public create(model: Dataset): Observable<Dataset> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Dataset): Observable<Dataset> {
+  public update(model: Dataset): Observable<Dataset> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Dataset>): Observable<Dataset | void> {
+  public destroy(model: IdOr<Dataset>): Observable<Dataset | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

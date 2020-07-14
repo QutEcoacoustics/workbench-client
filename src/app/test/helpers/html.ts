@@ -105,6 +105,7 @@ export function getInputs(fixture: ComponentFixture<any>) {
 }
 
 /**
+ * TODO Replace with spectator method
  * Insert value into input element
  * @param wrapper Wrapper element
  * @param selector HTML selector

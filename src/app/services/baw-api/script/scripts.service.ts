@@ -33,21 +33,21 @@ export class ScriptsService extends NonDestructibleApi<Script> {
     super(http, apiRoot, Script, injector);
   }
 
-  list(): Observable<Script[]> {
+  public list(): Observable<Script[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IScript>): Observable<Script[]> {
+  public filter(filters: Filters<IScript>): Observable<Script[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<Script>): Observable<Script> {
+  public show(model: IdOr<Script>): Observable<Script> {
     return this.apiShow(endpoint(model, Empty));
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
-  create(model: Script): Observable<Script> {
+  public create(model: Script): Observable<Script> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
-  update(model: Script): Observable<Script> {
+  public update(model: Script): Observable<Script> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
 }

@@ -19,12 +19,12 @@ import { createMarkers } from "./map.component";
   styleUrls: ["./map.component.scss"],
 })
 export class MockMapComponent implements OnInit {
-  @Input() sites: Site[];
+  @Input() public sites: Site[];
   public hasMarkers = false;
 
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     const markers = createMarkers(this.sites);
     this.hasMarkers = markers.length > 0;
   }

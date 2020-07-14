@@ -39,7 +39,6 @@ export function Page(
     });
 
     // we know this conversion is correct
-    // tslint:disable-next-line: no-angle-bracket-type-assertion
-    return <DecoratedPageComponent>componentConstructor;
+    return componentConstructor as DecoratedPageComponent;
   };
 }

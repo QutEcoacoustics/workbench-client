@@ -11,7 +11,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
 })
 export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
-  @Input() project: Project;
+  @Input() public project: Project;
   public sites: Site[];
   public error: ApiErrorDetails;
   public columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];

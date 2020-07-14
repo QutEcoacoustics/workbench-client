@@ -63,7 +63,7 @@ export abstract class FormTemplate<M extends AbstractModel>
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Override form checking
     if (!this.hasFormCheck) {
       this.isFormTouched = () => {

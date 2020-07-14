@@ -37,8 +37,8 @@ import type { UserService } from "./user/user.service";
  * https://github.com/angular/angular/issues/36736.
  */
 export class ServiceToken<T> {
-  kind: T;
-  token: InjectionToken<T>;
+  public kind: T;
+  public token: InjectionToken<T>;
 
   constructor(_desc: string) {
     this.kind = (_desc as unknown) as T;

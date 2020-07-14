@@ -18,10 +18,10 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent implements OnInit {
-  version: string;
-  year: number = new Date().getFullYear();
+  public version: string;
+  public year: number = new Date().getFullYear();
 
-  routes = {
+  public routes = {
     contactUs: contactUsMenuItem,
     ethics: ethicsMenuItem,
     credits: creditsMenuItem,
@@ -31,7 +31,7 @@ export class FooterComponent implements OnInit {
 
   constructor(private env: AppConfigService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.version = this.env.config.version;
   }
 }

@@ -51,11 +51,11 @@ export class ConfirmPasswordComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loading = false;
   }
 
-  submit($event: any) {
+  public submit($event: any) {
     this.loading = true;
     console.log($event);
     this.loading = false;

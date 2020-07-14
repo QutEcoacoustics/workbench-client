@@ -55,7 +55,7 @@ export class PermissionsComponent extends TableTemplate<TableRow>
     super((val, row) => this.checkMatch(val, row.user));
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.columns = [
       { name: "User" },
       { name: "Individual" },

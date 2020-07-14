@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnInit,
 } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
@@ -63,7 +64,7 @@ import { toRelative } from "src/app/interfaces/apiInterfaces";
 })
 export class RenderFieldComponent extends WithUnsubscribe()
   implements OnInit, OnChanges {
-  @Input() value: ModelView;
+  @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean;
   public FieldStyling = FieldStyling;
@@ -77,16 +78,16 @@ export class RenderFieldComponent extends WithUnsubscribe()
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.ngOnChanges();
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.humanize(this.value);
   }
 
   private humanize(value: ModelView) {
-    if (value === null || value === undefined) {
+    if (!isInstantiated(value)) {
       this.display = this.noValueText;
     } else if (value instanceof DateTime) {
       this.display = humanizeDateTime(value);

@@ -20,9 +20,9 @@ export const image404RelativeSrc = "/assets/images/404.png";
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
-  @Input() src: ImageUrl[];
-  @Input() thumbnail: ImageSizes;
-  @Input() disableAuth: boolean;
+  @Input() public src: ImageUrl[];
+  @Input() public thumbnail: ImageSizes;
+  @Input() public disableAuth: boolean;
 
   /**
    * Tracks potential url options to be used for src
@@ -48,7 +48,7 @@ export class AuthenticatedImageDirective implements OnChanges {
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
       this.imageRef.nativeElement.onerror = () => {
@@ -161,7 +161,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Returns true is there are no image options available
    */
-  private use404Image() {
+  private use404Image(): boolean {
     const hasDefaultImageAvailable = this.defaultImage
       ? this.urls.count() + 1 === this.usedUrls.count()
       : this.urls.count() === this.usedUrls.count();
@@ -173,7 +173,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if the default image is the only option available
    * @param url Url
    */
-  private useDefaultImage(url: string) {
+  private useDefaultImage(url: string): boolean {
     return (
       !url && this.defaultImage && this.urls.count() === this.usedUrls.count()
     );

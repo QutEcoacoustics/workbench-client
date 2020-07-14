@@ -26,7 +26,7 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     const resolvedModels = retrieveResolvers(this.route.snapshot.data);
 
     if (!resolvedModels) {

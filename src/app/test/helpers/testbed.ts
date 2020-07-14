@@ -1,5 +1,5 @@
 import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { Params } from "@angular/router";
+import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
 import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
 import {
@@ -15,6 +15,7 @@ import {
   API_ROOT,
   ASSET_ROOT,
   CMS_ROOT,
+  Configuration,
 } from "@helpers/app-initializer/app-initializer";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import {
@@ -41,7 +42,7 @@ export const testAppInitializer = [
   },
   {
     provide: API_CONFIG,
-    useValue: new Promise((resolve) => {
+    useValue: new Promise<Configuration>((resolve) => {
       resolve(testApiConfig);
     }),
   },
@@ -81,9 +82,13 @@ export function mockActivatedRoute(
   queryParams: Params = {}
 ) {
   return class MockActivatedRoute {
-    public snapshot = { data: { resolvers, ...data }, params, queryParams };
-    public data = new BehaviorSubject<any>({ resolvers, ...data });
-    public params = new BehaviorSubject<any>(params);
+    public snapshot: Partial<ActivatedRouteSnapshot> = {
+      data: { resolvers, ...data },
+      params,
+      queryParams,
+    };
+    public data = new BehaviorSubject<Data>({ resolvers, ...data });
+    public params = new BehaviorSubject<Params>(params);
     public queryParams = new BehaviorSubject<Params>(queryParams);
   };
 }

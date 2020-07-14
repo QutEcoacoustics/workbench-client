@@ -69,7 +69,7 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loading = false;
     const userModel: ResolvedModel<User> = this.route.snapshot.data[userKey];
 
@@ -84,7 +84,7 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
    * Edit form submission
    * @param $event Form response
    */
-  submitEdit($event: any) {
+  public submitEdit($event: any) {
     console.log("Edit Submission: ", $event);
   }
 
@@ -92,7 +92,7 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
    * Delete form submission
    * @param $event Form response
    */
-  submitDelete($event: any) {
+  public submitDelete($event: any) {
     console.log("Delete Submission", $event);
   }
 }

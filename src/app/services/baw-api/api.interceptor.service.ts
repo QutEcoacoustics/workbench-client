@@ -38,7 +38,7 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @param request Http Request
    * @param next Function to be run after interceptor
    */
-  intercept(
+  public intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {

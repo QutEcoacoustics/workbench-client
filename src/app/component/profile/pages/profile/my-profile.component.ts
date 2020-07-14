@@ -78,7 +78,7 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const userModel: ResolvedModel<User> = this.route.snapshot.data[userKey];
 
     if (userModel.error) {

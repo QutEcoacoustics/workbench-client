@@ -58,10 +58,10 @@ import { Site } from "@models/Site";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteCardComponent implements OnInit {
-  @Input() project: Project;
-  @Input() site: Site;
+  @Input() public project: Project;
+  @Input() public site: Site;
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

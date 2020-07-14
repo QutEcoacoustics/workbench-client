@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
-  @Input() isLoading: boolean;
+  @Input() public isLoading: boolean;
 
   constructor() {}
 }
