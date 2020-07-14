@@ -61,13 +61,13 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     this.filterKey = "text";
   }
 
-  editPath(tag: Tag): string {
+  public editPath(tag: Tag): string {
     return adminEditTagMenuItem.route
       .toString()
       .replace(":tagId", tag.id.toString());
   }
 
-  deletePath(tag: Tag): string {
+  public deletePath(tag: Tag): string {
     return adminDeleteTagMenuItem.route
       .toString()
       .replace(":tagId", tag.id.toString());

@@ -33,25 +33,25 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
     super(http, apiRoot, Response, injector);
   }
 
-  list(study: IdOr<Study>): Observable<Response[]> {
+  public list(study: IdOr<Study>): Observable<Response[]> {
     return this.apiList(endpoint(study, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<IResponse>,
     study: IdOr<Study>
   ): Observable<Response[]> {
     return this.apiFilter(endpoint(study, Empty, Filter), filters);
   }
-  show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
+  public show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
     return this.apiShow(endpoint(study, model, Empty));
   }
-  create(model: Response, study: IdOr<Study>): Observable<Response> {
+  public create(model: Response, study: IdOr<Study>): Observable<Response> {
     return this.apiCreate(endpoint(study, Empty, Empty), model);
   }
-  update(model: Response, study: IdOr<Study>): Observable<Response> {
+  public update(model: Response, study: IdOr<Study>): Observable<Response> {
     return this.apiUpdate(endpoint(study, model, Empty), model);
   }
-  destroy(
+  public destroy(
     model: IdOr<Response>,
     study: IdOr<Study>
   ): Observable<Response | void> {
@@ -69,22 +69,22 @@ export class ShallowResponsesService extends StandardApi<Response> {
     super(http, apiRoot, Response, injector);
   }
 
-  list(): Observable<Response[]> {
+  public list(): Observable<Response[]> {
     return this.apiList(endpointShallow(Empty, Empty));
   }
-  filter(filters: Filters<IResponse>): Observable<Response[]> {
+  public filter(filters: Filters<IResponse>): Observable<Response[]> {
     return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
-  show(model: IdOr<Response>): Observable<Response> {
+  public show(model: IdOr<Response>): Observable<Response> {
     return this.apiShow(endpointShallow(model, Empty));
   }
-  create(model: Response): Observable<Response> {
+  public create(model: Response): Observable<Response> {
     return this.apiCreate(endpointShallow(Empty, Empty), model);
   }
-  update(model: Response): Observable<Response> {
+  public update(model: Response): Observable<Response> {
     return this.apiUpdate(endpointShallow(model, Empty), model);
   }
-  destroy(model: IdOr<Response>): Observable<Response | void> {
+  public destroy(model: IdOr<Response>): Observable<Response | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
 }

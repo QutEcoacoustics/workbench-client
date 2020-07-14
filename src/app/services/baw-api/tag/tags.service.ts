@@ -38,13 +38,13 @@ export class TagsService extends StandardApi<Tag> {
     super(http, apiRoot, Tag, injector);
   }
 
-  list(): Observable<Tag[]> {
+  public list(): Observable<Tag[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<ITag>): Observable<Tag[]> {
+  public filter(filters: Filters<ITag>): Observable<Tag[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  filterByCreator(
+  public filterByCreator(
     filters: Filters<ITag>,
     user?: IdOr<User>
   ): Observable<Tag[]> {
@@ -53,24 +53,24 @@ export class TagsService extends StandardApi<Tag> {
       user ? filterByForeignKey<Tag>(filters, "creatorId", user) : filters
     );
   }
-  show(model: IdOr<Tag>): Observable<Tag> {
+  public show(model: IdOr<Tag>): Observable<Tag> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Tag): Observable<Tag> {
+  public create(model: Tag): Observable<Tag> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
-  update(model: Tag): Observable<Tag> {
+  public update(model: Tag): Observable<Tag> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Tag>): Observable<Tag | void> {
+  public destroy(model: IdOr<Tag>): Observable<Tag | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
   /**
    * List type of tags
    * TODO Replace with reference to baw server
    */
-  tagTypes(): Observable<TagType[]> {
+  public tagTypes(): Observable<TagType[]> {
     return of([
       "general",
       "common_name",

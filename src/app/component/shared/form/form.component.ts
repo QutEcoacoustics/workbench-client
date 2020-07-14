@@ -22,19 +22,19 @@ import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
   encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
-  @Input() btnColor: ButtonClassTypes = "btn-success";
-  @Input() fields: FormlyFieldConfig[];
-  @Input() fieldsUrl: string;
-  @Input() model: object = {};
-  @Input() size: "small" | "default" = "default";
-  @Input() submitLabel = "Submit";
-  @Input() submitLoading: boolean;
-  @Input() subTitle?: string;
-  @Input() title?: string;
+  @Input() public btnColor: ButtonClassTypes = "btn-success";
+  @Input() public fields: FormlyFieldConfig[];
+  @Input() public fieldsUrl: string;
+  @Input() public model: object = {};
+  @Input() public size: "small" | "default" = "default";
+  @Input() public submitLabel = "Submit";
+  @Input() public submitLoading: boolean;
+  @Input() public subTitle?: string;
+  @Input() public title?: string;
 
   // Rename is required to stop formly from hijacking the variable
   // tslint:disable-next-line: no-output-rename
-  @Output("onSubmit") submitFunction: EventEmitter<any> = new EventEmitter();
+  @Output("onSubmit") public submitFunction: EventEmitter<any> = new EventEmitter();
 
   public form: FormGroup;
 
@@ -42,7 +42,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.form = new FormGroup({});
 
     if (this.fieldsUrl) {
@@ -59,10 +59,8 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    * within the limitations of JSON (eg. Cannot transmit functions).
    * @param fields Form fields
    */
-  convertFunctions(fields: any) {
-    if (!fields) {
-      return [];
-    }
+  public convertFunctions(fields: any) {
+    fields = fields ?? [];
 
     fields.forEach((field: any) => {
       const validator = field.validators;
@@ -82,7 +80,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    * Check form submission is valid, and if so emit output event
    * @param model Form response
    */
-  submit(model: any) {
+  public submit(model: any) {
     if (this.form.status === "VALID") {
       this.submitFunction.emit(this.flattenFields(model));
     } else {
@@ -94,14 +92,10 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    * Used to flatten formly model field groups into an object with 1 depth
    * @param model Formly model output
    */
-  flattenFields(model: any): any {
+  public flattenFields(model: any): any {
     let output = {};
 
-    if (!model) {
-      return output;
-    }
-
-    for (const key of Object.keys(model)) {
+    for (const key of Object.keys(model ?? {})) {
       if (typeof model[key] === "string" || typeof model[key] === "number") {
         output[key] = model[key];
       } else {

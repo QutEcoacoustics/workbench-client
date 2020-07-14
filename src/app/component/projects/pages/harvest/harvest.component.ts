@@ -113,7 +113,7 @@ export class HarvestComponent implements OnInit {
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const resolvedProject: ResolvedModel<Project> = this.route.snapshot.data[
       projectKey
     ];

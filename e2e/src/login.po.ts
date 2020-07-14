@@ -1,15 +1,15 @@
 import { by, element } from "protractor";
 
 export class LoginPage {
-  getUsernameInput() {
+  public getUsernameInput() {
     return element(by.css("input[type=text]"));
   }
 
-  getPasswordInput() {
+  public getPasswordInput() {
     return element(by.css("input[type=password]"));
   }
 
-  submitForm() {
+  public submitForm() {
     element(by.css("button[type=submit]")).click();
   }
 }

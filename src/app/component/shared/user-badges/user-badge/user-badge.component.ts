@@ -53,19 +53,19 @@ import { User } from "src/app/models/User";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserBadgeComponent implements OnInit, OnChanges {
-  @Input() label: string;
-  @Input() users: List<User>;
-  @Input() lengthOfTime: string;
+  @Input() public label: string;
+  @Input() public users: List<User>;
+  @Input() public lengthOfTime: string;
   public userNotFound: boolean;
   public ImageSizes = ImageSizes;
 
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.checkUserExists();
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     this.checkUserExists();
   }
 

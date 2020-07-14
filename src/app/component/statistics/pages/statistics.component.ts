@@ -25,16 +25,16 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
   styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent extends PageComponent implements OnInit {
-  groupOne: List<{ icon: IconProp; name: string; value: string | number }>;
-  groupTwo: List<{ icon: IconProp; name: string; value: string | number }>;
-  recentAnnotations: Annotation[] | AnnotationExpanded[];
-  recentRecordings: Recording[] | RecordingExpanded[];
+  public groupOne: List<{ icon: IconProp; name: string; value: string | number }>;
+  public groupTwo: List<{ icon: IconProp; name: string; value: string | number }>;
+  public recentAnnotations: Annotation[] | AnnotationExpanded[];
+  public recentRecordings: Recording[] | RecordingExpanded[];
 
   constructor() {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.groupOne = List([
       {
         icon: ["fas", "home"],
@@ -116,7 +116,7 @@ export class StatisticsComponent extends PageComponent implements OnInit {
     this.recentRecordings = [{ duration: "Unknown", uploaded: "Unknown" }];
   }
 
-  isExpanded(
+  public isExpanded(
     group:
       | Annotation[]
       | AnnotationExpanded[]

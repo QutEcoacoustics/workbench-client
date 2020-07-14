@@ -47,7 +47,7 @@ export class AdminAudioRecordingsComponent
     );
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.columns = [
       { name: "Id" },
       { name: "Site" },

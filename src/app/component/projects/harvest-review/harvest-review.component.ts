@@ -23,7 +23,7 @@ export class HarvestReviewComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const projectPool = [
       new Project({ id: 1, name: "QLD" }),
       new Project({ id: 2, name: "NSW" }),
@@ -226,9 +226,9 @@ export class HarvestReviewComponent implements OnInit {
 }
 
 function union(setA: Set<any>, setB: Set<any>) {
-  const _union = new Set(setA);
+  const unionSet = new Set(setA);
   for (const elem of setB) {
-    _union.add(elem);
+    unionSet.add(elem);
   }
-  return _union;
+  return unionSet;
 }

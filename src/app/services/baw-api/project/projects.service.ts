@@ -35,13 +35,13 @@ export class ProjectsService extends StandardApi<Project> {
     super(http, apiRoot, Project, injector);
   }
 
-  list(): Observable<Project[]> {
+  public list(): Observable<Project[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IProject>): Observable<Project[]> {
+  public filter(filters: Filters<IProject>): Observable<Project[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  filterByAccessLevel(
+  public filterByAccessLevel(
     filters: Filters<IProject>,
     user?: IdOr<User>
   ): Observable<Project[]> {
@@ -51,16 +51,16 @@ export class ProjectsService extends StandardApi<Project> {
       user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters
     );
   }
-  show(model: IdOr<Project>): Observable<Project> {
+  public show(model: IdOr<Project>): Observable<Project> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Project): Observable<Project> {
+  public create(model: Project): Observable<Project> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Project): Observable<Project> {
+  public update(model: Project): Observable<Project> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Project>): Observable<Project | void> {
+  public destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

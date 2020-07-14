@@ -24,17 +24,17 @@ import { AbstractModel } from "src/app/models/AbstractModel";
   ],
 })
 export class DetailViewComponent implements OnInit, OnChanges {
-  @Input() fields: FormlyFieldConfig[];
-  @Input() model: AbstractModel;
+  @Input() public fields: FormlyFieldConfig[];
+  @Input() public model: AbstractModel;
   public sanitizedFields: FormlyFieldConfig[];
 
   constructor() {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.ngOnChanges();
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.sanitizedFields = [];
     this.recursiveSanitization(this.fields);
   }

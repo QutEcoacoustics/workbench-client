@@ -24,8 +24,8 @@ import { MenuAction } from "src/app/interfaces/menusInterfaces";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuButtonComponent {
-  @Input() id: string;
-  @Input() link: MenuAction;
-  @Input() placement: "left" | "right";
-  @Input() tooltip: string;
+  @Input() public id: string;
+  @Input() public link: MenuAction;
+  @Input() public placement: "left" | "right";
+  @Input() public tooltip: string;
 }

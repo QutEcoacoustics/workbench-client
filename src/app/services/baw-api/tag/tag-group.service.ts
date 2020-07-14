@@ -34,22 +34,22 @@ export class TagGroupsService extends StandardApi<TagGroup> {
     super(http, apiRoot, TagGroup, injector);
   }
 
-  list(): Observable<TagGroup[]> {
+  public list(): Observable<TagGroup[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<ITagGroup>): Observable<TagGroup[]> {
+  public filter(filters: Filters<ITagGroup>): Observable<TagGroup[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<TagGroup>): Observable<TagGroup> {
+  public show(model: IdOr<TagGroup>): Observable<TagGroup> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: TagGroup): Observable<TagGroup> {
+  public create(model: TagGroup): Observable<TagGroup> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: TagGroup): Observable<TagGroup> {
+  public update(model: TagGroup): Observable<TagGroup> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
+  public destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

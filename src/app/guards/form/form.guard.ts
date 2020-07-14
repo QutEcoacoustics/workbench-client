@@ -25,26 +25,20 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
   @Directive()
   class FormCheckingPageComponent extends Base
     implements FormCheckingComponent {
-    @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
+    @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
     /**
      * Determine if any forms have been touched
      */
     public isFormTouched(): boolean {
-      return this.appForms
-        ? this.appForms.some((appForm) => appForm.form.dirty)
-        : false;
+      return this.appForms?.some((appForm) => appForm.form.dirty) ?? false;
     }
 
     /**
      * Reset all forms on the page, this should be used before navigation
      */
     public resetForms() {
-      if (!this.appForms) {
-        return;
-      }
-
-      this.appForms.map((appForm) => appForm.form.markAsPristine());
+      this.appForms?.map((appForm) => appForm.form.markAsPristine());
     }
   }
 
@@ -58,9 +52,9 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
  */
 @Injectable()
 export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
-  @ViewChildren(FormComponent) appForms: QueryList<FormComponent>;
+  @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
-  canDeactivate(component: FormCheckingComponent): boolean {
+  public canDeactivate(component: FormCheckingComponent): boolean {
     // If component doesn't have a form, ignore it
     if (typeof component.isFormTouched !== "function") {
       return true;

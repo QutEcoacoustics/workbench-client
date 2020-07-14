@@ -16,23 +16,23 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
   ],
 })
 export class SelectableItemsComponent implements OnInit {
-  @Input() title: string;
-  @Input() description: string;
-  @Input() options: ISelectableItem[];
-  @Input() selected: number;
-  @Input() inline = false;
-  @Output() change = new EventEmitter<number>();
+  @Input() public title: string;
+  @Input() public description: string;
+  @Input() public options: ISelectableItem[];
+  @Input() public selected: number;
+  @Input() public inline = false;
+  @Output() public selectionChange = new EventEmitter<number>();
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
-  changeSelection(index: number) {
+  public changeSelection(index: number) {
     this.selected = index;
-    this.change.next(this.selected);
+    this.selectionChange.next(this.selected);
   }
 
-  isSelected(index: number): boolean {
+  public isSelected(index: number): boolean {
     return this.selected === index;
   }
 }

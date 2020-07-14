@@ -54,7 +54,7 @@ export class ListComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const projects: ResolvedModel<Project[]> = this.route.snapshot.data[
       projectsKey
     ];

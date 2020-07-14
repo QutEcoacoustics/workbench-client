@@ -27,15 +27,15 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `,
 })
 export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
-  actionTitle: LabelAndIcon;
-  actionLinks: List<AnyMenuItem>;
-  actionWidget: WidgetMenuItem;
+  public actionTitle: LabelAndIcon;
+  public actionLinks: List<AnyMenuItem>;
+  public actionWidget: WidgetMenuItem;
 
   constructor(private route: ActivatedRoute) {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         const actionMenu =

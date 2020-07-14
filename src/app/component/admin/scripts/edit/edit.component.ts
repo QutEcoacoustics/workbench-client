@@ -63,7 +63,7 @@ export class AdminScriptsEditComponent extends FormTemplate<Script>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (!this.failure) {

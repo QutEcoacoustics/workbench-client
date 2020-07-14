@@ -29,22 +29,22 @@ export class StudiesService extends StandardApi<Study> {
     super(http, apiRoot, Study, injector);
   }
 
-  list(): Observable<Study[]> {
+  public list(): Observable<Study[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IStudy>): Observable<Study[]> {
+  public filter(filters: Filters<IStudy>): Observable<Study[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<Study>): Observable<Study> {
+  public show(model: IdOr<Study>): Observable<Study> {
     return this.apiShow(endpoint(model, Empty));
   }
-  create(model: Study): Observable<Study> {
+  public create(model: Study): Observable<Study> {
     return this.apiCreate(endpoint(Empty, Empty), model);
   }
-  update(model: Study): Observable<Study> {
+  public update(model: Study): Observable<Study> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
-  destroy(model: IdOr<Study>): Observable<Study | void> {
+  public destroy(model: IdOr<Study>): Observable<Study | void> {
     return this.apiDestroy(endpoint(model, Empty));
   }
 }

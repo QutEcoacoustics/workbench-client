@@ -47,7 +47,7 @@ export class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const data = this.route.snapshot.data;
     const models = retrieveResolvers(data);
 

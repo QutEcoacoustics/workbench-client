@@ -44,18 +44,18 @@ import { ItemInterface } from "../item/item.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemsComponent implements OnInit, OnChanges {
-  @Input() items: List<ItemInterface>;
+  @Input() public items: List<ItemInterface>;
 
-  groupOne: List<ItemInterface>;
-  groupTwo: List<ItemInterface>;
+  public groupOne: List<ItemInterface>;
+  public groupTwo: List<ItemInterface>;
 
   constructor() {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.ngOnChanges();
   }
 
-  ngOnChanges() {
+  public ngOnChanges() {
     if (!this.items) {
       this.groupOne = List([]);
       this.groupTwo = List([]);

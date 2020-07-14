@@ -18,7 +18,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Detect any page errors
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (data: PageInfoInterface) => {

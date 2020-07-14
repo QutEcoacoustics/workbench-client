@@ -61,7 +61,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     const resolvedModels = retrieveResolvers(this.route.snapshot.data);
     if (!resolvedModels) {
       return;

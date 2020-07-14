@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { List } from "immutable";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
@@ -33,22 +34,22 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent extends WithUnsubscribe() implements OnInit {
-  @Input() title?: LabelAndIcon;
-  @Input() links: List<AnyMenuItem>;
-  @Input() menuType: "action" | "secondary";
-  @Input() widget?: WidgetMenuItem;
-  @ViewChild(WidgetDirective, { static: true }) menuWidget: WidgetDirective;
+  @Input() public title?: LabelAndIcon;
+  @Input() public links: List<AnyMenuItem>;
+  @Input() public menuType: "action" | "secondary";
+  @Input() public widget?: WidgetMenuItem;
+  @ViewChild(WidgetDirective, { static: true }) public menuWidget: WidgetDirective;
 
-  filteredLinks: Set<AnyMenuItem>;
-  placement: "left" | "right";
-  params: Params;
-  url: string;
-  user: SessionUser;
-  loading: boolean;
+  public filteredLinks: Set<AnyMenuItem>;
+  public placement: "left" | "right";
+  public params: Params;
+  public url: string;
+  public user: SessionUser;
+  public loading: boolean;
 
-  isInternalLink = isInternalRoute;
-  isExternalLink = isExternalLink;
-  isAction = isButton;
+  public isInternalLink = isInternalRoute;
+  public isExternalLink = isExternalLink;
+  public isAction = isButton;
 
   constructor(
     private api: SecurityService,
@@ -58,7 +59,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     // Get user details
     this.user = this.api.getLocalUser();
     this.placement = this.menuType === "action" ? "left" : "right";
@@ -90,7 +91,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   /**
    * Determine whether to show links
    */
-  linksExist() {
+  public linksExist() {
     return this.filteredLinks.size > 0 && !this.loading;
   }
 
@@ -98,7 +99,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
    * Calculate the indentation of a secondary link item
    * @param link Link to calculate padding for
    */
-  calculateIndentation(link: AnyMenuItem) {
+  public calculateIndentation(link: AnyMenuItem) {
     // Only the secondary menu implements this option
     if (this.menuType !== "secondary" || !link.indentation) {
       return 0;
@@ -110,7 +111,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   /**
    * Load widget component
    */
-  loadComponent() {
+  public loadComponent() {
     if (!this.widget) {
       return;
     }
@@ -133,7 +134,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
    */
   private compare(a: AnyMenuItem, b: AnyMenuItem): number {
     // If no order, return equal - i.e. a stable sort!
-    if (!a.order && !b.order) {
+    if (!isInstantiated(a.order) && !isInstantiated(b.order)) {
       return 0;
     }
 
@@ -141,13 +142,13 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     // prioritize based on indentation and alphabetical order
     if (a.order === b.order) {
       if (a.indentation === b.indentation) {
-        return a?.label.localeCompare(b.label);
+        return a.label.localeCompare(b.label);
       }
 
       return a.indentation < b.indentation ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return (a?.order || Infinity) < (b?.order || Infinity) ? -1 : 1;
+    return (a.order ?? Infinity) < (b.order ?? Infinity) ? -1 : 1;
   }
 }

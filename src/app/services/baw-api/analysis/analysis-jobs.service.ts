@@ -33,16 +33,16 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
     super(http, apiRoot, AnalysisJob, injector);
   }
 
-  list(): Observable<AnalysisJob[]> {
+  public list(): Observable<AnalysisJob[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  filter(filters: Filters<IAnalysisJob>): Observable<AnalysisJob[]> {
+  public filter(filters: Filters<IAnalysisJob>): Observable<AnalysisJob[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
+  public show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
     return this.apiShow(endpoint(model, Empty));
   }
-  update(model: AnalysisJob): Observable<AnalysisJob> {
+  public update(model: AnalysisJob): Observable<AnalysisJob> {
     return this.apiUpdate(endpoint(model, Empty), model);
   }
 }

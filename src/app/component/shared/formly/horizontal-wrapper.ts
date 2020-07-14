@@ -8,9 +8,9 @@ import { FieldWrapper } from "@ngx-formly/core";
     <div class="form-group row">
       <label [attr.for]="id" class="col-sm-2 col-form-label" *ngIf="to.label">
         {{ to.label }}
-        <ng-container *ngIf="to.required && to.hideRequiredMarker !== true"
-          >*</ng-container
-        >
+        <ng-container *ngIf="to.required && !to.hideRequiredMarker">
+          *
+        </ng-container>
       </label>
       <div class="col-sm-7">
         <ng-template #fieldComponent></ng-template>

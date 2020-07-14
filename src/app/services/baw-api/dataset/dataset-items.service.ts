@@ -35,25 +35,25 @@ export class DatasetItemsService extends ImmutableApi<
     super(http, apiRoot, DatasetItem, injector);
   }
 
-  list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
+  public list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
     return this.apiList(endpoint(dataset, Empty, Empty));
   }
-  filter(
+  public filter(
     filters: Filters<IDatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem[]> {
     return this.apiFilter(endpoint(dataset, Empty, Filter), filters);
   }
-  show(
+  public show(
     model: IdOr<DatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem> {
     return this.apiShow(endpoint(dataset, model, Empty));
   }
-  create(model: DatasetItem, dataset: IdOr<Dataset>): Observable<DatasetItem> {
+  public create(model: DatasetItem, dataset: IdOr<Dataset>): Observable<DatasetItem> {
     return this.apiCreate(endpoint(dataset, Empty, Empty), model);
   }
-  destroy(
+  public destroy(
     model: IdOr<DatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem | void> {

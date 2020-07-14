@@ -26,7 +26,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
   `,
 })
 export class CmsComponent extends WithUnsubscribe() implements OnInit {
-  @Input() page: string;
+  @Input() public page: string;
   public blob: SafeHtml;
   public error: ApiErrorDetails;
   public loading: boolean;
@@ -40,7 +40,7 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loading = true;
 
     this.http

@@ -18,7 +18,7 @@ export let ASSET_ROOT = new InjectionToken<string>("baw.asset.root");
 export class AppInitializer {
   constructor() {}
 
-  static initializerFactory(
+  public static initializerFactory(
     @Inject(API_CONFIG)
     apiEnvironment: Promise<Configuration>
   ) {
@@ -28,15 +28,15 @@ export class AppInitializer {
     };
   }
 
-  static apiRootFactory() {
+  public static apiRootFactory() {
     return isConfiguration(environment) ? environment.environment.apiRoot : "";
   }
 
-  static cmsRootFactory() {
+  public static cmsRootFactory() {
     return isConfiguration(environment) ? environment.environment.cmsRoot : "";
   }
 
-  static assetRootFactory() {
+  public static assetRootFactory() {
     return isConfiguration(environment)
       ? environment.environment.assetRoot
       : "";
@@ -102,11 +102,11 @@ export interface Configuration {
  * Wrapper to automatically initialize kind key
  */
 export class Configuration implements Configuration {
-  kind: "Configuration" = "Configuration";
-  production: boolean;
-  version: string;
-  environment: Environment;
-  values: Values;
+  public kind: "Configuration" = "Configuration";
+  public production: boolean;
+  public version: string;
+  public environment: Environment;
+  public values: Values;
 
   constructor(configuration: Partial<Configuration>) {
     Object.assign(this, configuration);

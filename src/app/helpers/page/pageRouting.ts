@@ -1,5 +1,6 @@
 import { Type } from "@angular/core";
 import { Route } from "@angular/router";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ResolverHandlerComponent } from "src/app/component/error/resolver-handler.component";
 import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
@@ -17,8 +18,7 @@ export function GetRouteConfigForPage(
 ) {
   const page = getPageInfo(component);
 
-  // tslint:disable-next-line: triple-equals
-  if (!page || page.route.fullRoute == null) {
+  if (!page || !isInstantiated(page.route.fullRoute)) {
     return;
   }
 

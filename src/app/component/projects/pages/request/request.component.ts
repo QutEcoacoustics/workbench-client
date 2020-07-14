@@ -53,7 +53,7 @@ export class RequestComponent extends WithFormCheck(PageComponent)
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loading = false;
 
     // TODO Change this to the list of projects a user does not have access to
@@ -80,7 +80,7 @@ export class RequestComponent extends WithFormCheck(PageComponent)
    * Form submission
    * @param $event Form response
    */
-  submit($event: any) {
+  public submit($event: any) {
     this.loading = true;
     console.log($event);
     this.loading = false;

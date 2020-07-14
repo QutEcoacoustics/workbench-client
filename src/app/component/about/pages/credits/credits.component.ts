@@ -25,7 +25,7 @@ export class CreditsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.page = this.env.values.cms.credits;
   }
 }

@@ -47,7 +47,7 @@ export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
     this.filterKey = "name";
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.columns = [{ name: "Id" }, { name: "Site" }, { name: "Model" }];
     this.sortKeys = { id: "id", site: "siteId" };
     this.getPageData();

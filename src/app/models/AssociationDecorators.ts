@@ -1,5 +1,6 @@
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
@@ -149,7 +150,7 @@ function createModelDecorator<M extends AbstractModel, S>(
 
     // Get model identifying ID/s
     const identifier: Id | Ids = target[modelIdentifier] as any;
-    if (identifier === undefined || identifier === null) {
+    if (!isInstantiated(identifier)) {
       console.warn(`${target} is missing identifier: `, {
         target,
         associationKey,
@@ -161,7 +162,7 @@ function createModelDecorator<M extends AbstractModel, S>(
     // Map through model parameters and extract values
     const parameters = modelParameters.map((param) => {
       const paramValue = target[param];
-      if (paramValue === undefined || paramValue === null) {
+      if (!isInstantiated(paramValue)) {
         console.warn(`${target} is missing parameter: `, {
           target,
           associationKey,

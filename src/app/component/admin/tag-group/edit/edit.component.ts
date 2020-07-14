@@ -63,7 +63,7 @@ export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
     );
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
 
     if (!this.failure) {

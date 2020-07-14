@@ -24,12 +24,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent implements OnInit {
-  @Input() id: string;
-  @Input() checked: boolean;
-  @Input() disabled: boolean;
-  @Input() isCentered = true;
+  @Input() public id: string;
+  @Input() public checked: boolean;
+  @Input() public disabled: boolean;
+  @Input() public isCentered = true;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

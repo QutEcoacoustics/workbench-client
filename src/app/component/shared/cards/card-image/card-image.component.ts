@@ -16,9 +16,9 @@ import { Card } from "../cards.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardImageComponent implements OnInit {
-  @Input() card: Card;
+  @Input() public card: Card;
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }
