@@ -226,13 +226,13 @@ for (const service of serviceList) {
   const providers = [
     service.service,
     { provide: service.serviceToken.token, useExisting: service.service },
-    ...(service.resolvers?.providers || []),
+    ...(service.resolvers?.providers ?? []),
   ];
 
   const mockProviders = [
     { provide: service.service, useClass: service.mock },
     { provide: service.serviceToken.token, useClass: service.mock },
-    ...(service.resolvers?.providers || []),
+    ...(service.resolvers?.providers ?? []),
   ];
 
   serviceProviders.push(...providers);

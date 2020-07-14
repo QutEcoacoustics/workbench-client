@@ -95,12 +95,8 @@ export class MapComponent implements OnInit, OnChanges {
  * @returns List of markers
  */
 export function createMarkers(sites: Site[]): (MapMarker & { info: string })[] {
-  if (!sites) {
-    return [];
-  }
-
   const markers = [];
-  for (const site of sites) {
+  sites?.forEach((site) => {
     if (
       typeof site.customLatitude === "number" &&
       typeof site.customLongitude === "number"
@@ -114,7 +110,6 @@ export function createMarkers(sites: Site[]): (MapMarker & { info: string })[] {
         info: site.name,
       });
     }
-  }
-
+  });
   return markers;
 }

@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { List } from "immutable";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 import {
@@ -133,7 +134,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
    */
   private compare(a: AnyMenuItem, b: AnyMenuItem): number {
     // If no order, return equal - i.e. a stable sort!
-    if (!a.order && !b.order) {
+    if (!isInstantiated(a.order) && !isInstantiated(b.order)) {
       return 0;
     }
 
@@ -141,13 +142,13 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     // prioritize based on indentation and alphabetical order
     if (a.order === b.order) {
       if (a.indentation === b.indentation) {
-        return a?.label.localeCompare(b.label);
+        return a.label.localeCompare(b.label);
       }
 
       return a.indentation < b.indentation ? -1 : 1;
     }
 
     // Return the menu item with the lower order value
-    return (a?.order || Infinity) < (b?.order || Infinity) ? -1 : 1;
+    return (a.order ?? Infinity) < (b.order ?? Infinity) ? -1 : 1;
   }
 }

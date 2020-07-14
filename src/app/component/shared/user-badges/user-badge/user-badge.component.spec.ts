@@ -36,17 +36,17 @@ describe("UserBadgeComponent", () => {
   let defaultUser: User;
 
   const getLabels = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#label");
+    (fix ?? fixture).nativeElement.querySelectorAll("#label");
   const getGhostUsers = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#notFound");
+    (fix ?? fixture).nativeElement.querySelectorAll("#notFound");
   const getUsernames = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#username");
+    (fix ?? fixture).nativeElement.querySelectorAll("#username");
   const getImageWrappers = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#imageLink");
+    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink");
   const getImages = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#imageLink img");
+    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink img");
   const getTimespans = (fix?: ComponentFixture<any>) =>
-    (fix || fixture).nativeElement.querySelectorAll("#lengthOfTime");
+    (fix ?? fixture).nativeElement.querySelectorAll("#lengthOfTime");
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

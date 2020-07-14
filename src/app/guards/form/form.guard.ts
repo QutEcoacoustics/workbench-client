@@ -31,20 +31,14 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
      * Determine if any forms have been touched
      */
     public isFormTouched(): boolean {
-      return this.appForms
-        ? this.appForms.some((appForm) => appForm.form.dirty)
-        : false;
+      return this.appForms?.some((appForm) => appForm.form.dirty) ?? false;
     }
 
     /**
      * Reset all forms on the page, this should be used before navigation
      */
     public resetForms() {
-      if (!this.appForms) {
-        return;
-      }
-
-      this.appForms.map((appForm) => appForm.form.markAsPristine());
+      this.appForms?.map((appForm) => appForm.form.markAsPristine());
     }
   }
 

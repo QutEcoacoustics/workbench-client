@@ -60,9 +60,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    * @param fields Form fields
    */
   convertFunctions(fields: any) {
-    if (!fields) {
-      return [];
-    }
+    fields = fields ?? [];
 
     fields.forEach((field: any) => {
       const validator = field.validators;
@@ -97,11 +95,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   flattenFields(model: any): any {
     let output = {};
 
-    if (!model) {
-      return output;
-    }
-
-    for (const key of Object.keys(model)) {
+    for (const key of Object.keys(model ?? {})) {
       if (typeof model[key] === "string" || typeof model[key] === "number") {
         output[key] = model[key];
       } else {

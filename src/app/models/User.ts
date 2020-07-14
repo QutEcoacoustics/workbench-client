@@ -89,7 +89,7 @@ export class User extends AbstractModel implements IUser {
   constructor(user: IUser) {
     super(user);
 
-    this.userName = user.userName || "Deleted User";
+    this.userName = user.userName ?? "Deleted User";
   }
 
   public get isAdmin(): boolean {

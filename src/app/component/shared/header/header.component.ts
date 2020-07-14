@@ -83,7 +83,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       .getAuthTrigger()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        () => this.updateUser(),
+        () => (this.user = this.api.getLocalUser()),
         (err: ApiErrorDetails) => this.notifications.error(err.message)
       );
   }
@@ -136,17 +136,6 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
         return this.generateLink(header);
       }
     });
-  }
-
-  /**
-   * Update header user profile
-   */
-  private updateUser() {
-    this.user = this.api.getLocalUser();
-
-    if (!this.user) {
-      return;
-    }
   }
 
   /**

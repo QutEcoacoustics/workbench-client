@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnInit,
 } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
@@ -86,7 +87,7 @@ export class RenderFieldComponent extends WithUnsubscribe()
   }
 
   private humanize(value: ModelView) {
-    if (value === null || value === undefined) {
+    if (!isInstantiated(value)) {
       this.display = this.noValueText;
     } else if (value instanceof DateTime) {
       this.display = humanizeDateTime(value);

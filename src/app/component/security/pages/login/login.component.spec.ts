@@ -55,7 +55,7 @@ describe("LoginComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
     spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
-      navigationId: navigationId || 1, // Default to no history (navigationId = 1)
+      navigationId: navigationId ?? 1, // Default to no history (navigationId = 1)
     }));
   }
 

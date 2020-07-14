@@ -49,9 +49,7 @@ describe("UserBadgesComponent Spec", () => {
   }
 
   function interceptApiRequest(user?: User): Promise<any> {
-    if (!user) {
-      user = new User(generateUser());
-    }
+    user = user ?? new User(generateUser());
 
     const subject = new Subject<User>();
     const promise = nStepObservable(subject, () => user);

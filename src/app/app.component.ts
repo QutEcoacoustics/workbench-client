@@ -53,9 +53,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
           while (search && count < 50) {
             if (!displayComponent) {
               return;
-            }
-
-            if (!!displayComponent.component) {
+            } else if (displayComponent.component) {
               search = false;
             } else {
               displayComponent = displayComponent.firstChild;

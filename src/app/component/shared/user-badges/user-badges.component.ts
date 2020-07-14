@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { List } from "immutable";
 import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
@@ -55,7 +56,7 @@ export class UserBadgesComponent extends WithUnsubscribe()
     this.badges = [];
 
     this.badgeTypes.forEach((badgeType) => {
-      if (!this.model[badgeType.id]) {
+      if (!isInstantiated(this.model[badgeType.id])) {
         return;
       }
 

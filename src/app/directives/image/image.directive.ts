@@ -161,7 +161,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Returns true is there are no image options available
    */
-  private use404Image() {
+  private use404Image(): boolean {
     const hasDefaultImageAvailable = this.defaultImage
       ? this.urls.count() + 1 === this.usedUrls.count()
       : this.urls.count() === this.usedUrls.count();
@@ -173,7 +173,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if the default image is the only option available
    * @param url Url
    */
-  private useDefaultImage(url: string) {
+  private useDefaultImage(url: string): boolean {
     return (
       !url && this.defaultImage && this.urls.count() === this.usedUrls.count()
     );

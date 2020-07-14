@@ -86,7 +86,7 @@ export class Site extends AbstractModel implements ISite {
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
-    this.locationObfuscated = site.locationObfuscated || false;
+    this.locationObfuscated = site.locationObfuscated ?? false;
   }
 
   public get viewUrl(): string {

@@ -52,9 +52,7 @@ export class CardsComponent implements OnChanges {
   constructor(private ref: ChangeDetectorRef) {}
 
   ngOnChanges() {
-    if (!this.cards) {
-      this.cards = List<Card>([]);
-    }
+    this.cards = this.cards ?? List<Card>([]);
 
     let hasNormalCards = false;
     let hasImageCards = false;
