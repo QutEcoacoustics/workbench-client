@@ -21,7 +21,7 @@ export class SelectableItemsComponent implements OnInit {
   @Input() options: ISelectableItem[];
   @Input() selected: number;
   @Input() inline = false;
-  @Output() change = new EventEmitter<number>();
+  @Output() selectionChange = new EventEmitter<number>();
 
   constructor() {}
 
@@ -29,7 +29,7 @@ export class SelectableItemsComponent implements OnInit {
 
   changeSelection(index: number) {
     this.selected = index;
-    this.change.next(this.selected);
+    this.selectionChange.next(this.selected);
   }
 
   isSelected(index: number): boolean {
