@@ -39,18 +39,13 @@ jobs:
           brew cask reinstall google-chrome
         if: matrix.os == 'macos-latest'
 
+      - name: Windows Chrome install
+        run: |
+          choco install googlechrome
+        if: matrix.os == 'windows-latest'
+
       - name: NPM install
         run: npm install
-
-      - name: Run test suite on chrome
-        run: npm run test:pipeline -- --browsers ChromeHeadless
-
-      - name: Run test suite on firefox
-        run: npm run test:pipeline -- --browsers FirefoxHeadless
-
-      - name: Run test suite on edge
-        run: npm run test:pipeline -- --browsers EdgeHeadless
-        if: matrix.os == 'windows-latest'
 
       - name: Run e2e test suite
         run: npm run e2e
