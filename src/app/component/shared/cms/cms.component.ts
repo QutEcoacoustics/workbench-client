@@ -21,7 +21,7 @@ import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.servic
     <ng-container *ngIf="blob">
       <div [innerHtml]="blob"></div>
     </ng-container>
-    <baw-loading [isLoading]="loading"></baw-loading>
+    <baw-loading title="Loading" [display]="loading"></baw-loading>
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
 })

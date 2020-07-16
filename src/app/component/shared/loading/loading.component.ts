@@ -6,10 +6,10 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 @Component({
   selector: "baw-loading",
   template: `
-    <ng-container *ngIf="isLoading">
-      <h4 id="app-loading" class="text-center">Loading</h4>
-      <div id="app-spinner" class="d-flex justify-content-center">
-        <div class="spinner-border text-info" role="status">
+    <ng-container *ngIf="display">
+      <h4 *ngIf="title" class="text-center">{{ title }}</h4>
+      <div id="baw-spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" [ngClass]="'text-' + type" role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
@@ -18,7 +18,17 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
-  @Input() public isLoading: boolean;
+  @Input() public display: boolean;
+  @Input() public title: string;
+  @Input() public type:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "danger"
+    | "warning"
+    | "info"
+    | "light"
+    | "dark" = "info";
 
   constructor() {}
 }

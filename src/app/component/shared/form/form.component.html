@@ -10,7 +10,7 @@
 
   <div class="clearfix">
     <form [formGroup]="form" (ngSubmit)="submit(model)">
-      <baw-loading [isLoading]="!fields"></baw-loading>
+      <baw-loading title="Loading" [display]="!fields"></baw-loading>
 
       <!-- Form -->
       <formly-form

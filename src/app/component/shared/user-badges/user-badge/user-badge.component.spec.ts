@@ -1,130 +1,121 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Component } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { assertImage, assertRoute } from "@test/helpers/html";
+import { ImageSizes } from "@interfaces/apiInterfaces";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { LoadingModule } from "@shared/loading/loading.module";
+import { generateUser } from "@test/fakes/User";
+import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
 import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
 
-@Component({
-  template: `
-    <baw-user-badge
-      [label]="label"
-      [users]="users"
-      [lengthOfTime]="lengthOfTime"
-    ></baw-user-badge>
-  `,
-})
-class TestUserBadgeComponent {
-  public label: string;
-  public users: List<User>;
-  public lengthOfTime: string;
-
-  public updateComponent(label: string, lengthOfTime: string, users: List<User>) {
-    this.label = label;
-    this.users = users;
-    this.lengthOfTime = lengthOfTime;
-  }
-}
-
 describe("UserBadgeComponent", () => {
-  let component: UserBadgeComponent;
-  let fixture: ComponentFixture<UserBadgeComponent>;
-  let defaultUser: User;
-
-  const getLabels = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#label");
-  const getGhostUsers = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#notFound");
-  const getUsernames = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#username");
-  const getImageWrappers = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink");
-  const getImages = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#imageLink img");
-  const getTimespans = (fix?: ComponentFixture<any>) =>
-    (fix ?? fixture).nativeElement.querySelectorAll("#lengthOfTime");
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserBadgeComponent, TestUserBadgeComponent],
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        AuthenticatedImageModule,
-      ],
-      providers: testBawServices,
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UserBadgeComponent);
-    component = fixture.componentInstance;
-
-    defaultUser = new User({
-      id: 1,
-      userName: "username",
-      rolesMask: 2,
-      rolesMaskNames: ["user"],
-      lastSeenAt: "2019-12-18T11:16:08.233+10:00",
-    });
+  let spectator: Spectator<UserBadgeComponent>;
+  const createComponent = createComponentFactory({
+    component: UserBadgeComponent,
+    imports: [
+      RouterTestingModule,
+      HttpClientTestingModule,
+      AuthenticatedImageModule,
+      LoadingModule,
+    ],
+    providers: testBawServices,
   });
 
+  const getLabels = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLHeadingElement>("#label");
+  const getGhostUsers = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLParagraphElement>("#notFound");
+  const getUsernames = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLAnchorElement>("#username");
+  const getImageWrappers = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLAnchorElement>("#imageLink");
+  const getImages = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLImageElement>("#imageLink img");
+  const getTimespans = (spec?: Spectator<any>) =>
+    (spec ?? spectator).queryAll<HTMLParagraphElement>("#lengthOfTime");
+
+  function detectChanges() {
+    spectator.component.ngOnChanges();
+  }
+
+  beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+
   it("should create", () => {
-    component.label = "custom label";
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spectator.setInput("label", "label");
+    detectChanges();
+    expect(spectator.component).toBeTruthy();
   });
 
   it("should display label", () => {
-    component.label = "custom label";
-    fixture.detectChanges();
+    spectator.setInput("label", "custom label");
+    detectChanges();
     expect(getLabels()[0].innerText.trim()).toBe("custom label");
+  });
+
+  describe("loading", () => {
+    it("should display loading spinner when loading is true", () => {
+      spectator.setInput("label", "label");
+      spectator.setInput("loading", true);
+      detectChanges();
+
+      assertSpinner(spectator.fixture, true);
+      expect(getGhostUsers().length).toBe(0);
+    });
+
+    it("should not display loading spinner when loading is false", () => {
+      spectator.setInput("label", "label");
+      spectator.setInput("loading", false);
+      detectChanges();
+
+      assertSpinner(spectator.fixture, false);
+      expect(getGhostUsers().length).toBe(1);
+    });
   });
 
   describe("ghost users", () => {
     it("should show user not found", () => {
-      component.label = "custom label";
-      fixture.detectChanges();
+      spectator.setInput("label", "label");
+      detectChanges();
       expect(getGhostUsers()[0].innerText.trim()).toBe("User not found");
     });
 
     it("should show user not found when users list is empty", () => {
-      component.label = "custom label";
-      component.users = List([]);
-      fixture.detectChanges();
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([]));
+      detectChanges();
       expect(getGhostUsers()[0].innerText.trim()).toBe("User not found");
     });
   });
 
   describe("single user", () => {
     it("should display username", () => {
-      component.label = "custom label";
-      component.users = List<User>([
-        new User({ ...defaultUser, userName: "custom username" }),
-      ]);
-      fixture.detectChanges();
-      expect(getUsernames()[0].innerHTML.trim()).toBe("custom username");
+      const user = new User(generateUser());
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([user]));
+      detectChanges();
+      expect(getUsernames()[0].innerHTML.trim()).toBe(user.userName);
     });
 
     it("username should route to user page", () => {
-      component.label = "custom label";
-      component.users = List<User>([
-        new User({ ...defaultUser, userName: "custom username" }),
-      ]);
-      fixture.detectChanges();
-      assertRoute(getUsernames()[0], "/user_accounts/1");
+      const user = new User(generateUser());
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([user]));
+      detectChanges();
+      assertRoute(getUsernames()[0], user.viewUrl);
     });
 
-    it("should display image", () => {
-      component.label = "custom label";
-      component.users = List<User>([
-        new User({ ...defaultUser, userName: "custom username" }),
-      ]);
-      fixture.detectChanges();
+    it("should display default image", () => {
+      const user = new User({
+        ...generateUser(),
+        userName: "custom username",
+        imageUrls: undefined,
+      });
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([user]));
+      detectChanges();
       assertImage(
         getImages()[0],
         `http://${window.location.host}/assets/images/user/user_span4.png`,
@@ -132,74 +123,67 @@ describe("UserBadgeComponent", () => {
       );
     });
 
+    it("should display custom image", () => {
+      const imageIndex = 1;
+      const user = new User({ ...generateUser(), userName: "custom username" });
+      user.image[imageIndex].size = ImageSizes.SMALL;
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([user]));
+      detectChanges();
+      assertImage(
+        getImages()[0],
+        user.image[imageIndex].url,
+        "custom username profile picture"
+      );
+    });
+
     it("image should route to user page", () => {
-      component.label = "custom label";
-      component.users = List<User>([defaultUser]);
-      fixture.detectChanges();
-      assertRoute(getImageWrappers()[0], "/user_accounts/1");
+      const user = new User(generateUser());
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([user]));
+      detectChanges();
+      assertRoute(getImageWrappers()[0], user.viewUrl);
     });
 
     it("should handle missing length of time", () => {
-      component.label = "custom label";
-      component.users = List<User>([defaultUser]);
-      fixture.detectChanges();
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([new User(generateUser())]));
+      detectChanges();
       expect(getTimespans()[0]).toBeFalsy();
     });
 
     it("should display length of time", () => {
-      component.label = "custom label";
-      component.users = List<User>([defaultUser]);
-      component.lengthOfTime = "5 years ago";
-      fixture.detectChanges();
+      spectator.setInput("label", "label");
+      spectator.setInput("users", List([new User(generateUser())]));
+      spectator.setInput("lengthOfTime", "5 years ago");
+      detectChanges();
       expect(getTimespans()[0].innerText.trim()).toBe("5 years ago");
     });
   });
 
   it("should display multiple users", () => {
-    component.label = "custom label";
-    component.users = List<User>([
-      new User({ ...defaultUser, id: 1, userName: "custom username 1" }),
-      new User({ ...defaultUser, id: 2, userName: "custom username 2" }),
-    ]);
-    fixture.detectChanges();
+    const users = [new User(generateUser()), new User(generateUser())];
+    spectator.setInput("label", "label");
+    spectator.setInput("users", List(users));
+    detectChanges();
 
     const usernames = getUsernames();
     expect(usernames.length).toBe(2);
-    expect(usernames[0].innerHTML.trim()).toBe("custom username 1");
-    expect(usernames[1].innerHTML.trim()).toBe("custom username 2");
+    expect(usernames[0].innerHTML.trim()).toBe(users[0].userName);
+    expect(usernames[1].innerHTML.trim()).toBe(users[1].userName);
   });
 
-  describe("change detection", () => {
-    let parentFixture: ComponentFixture<TestUserBadgeComponent>;
-    let parentComponent: TestUserBadgeComponent;
+  it("should detect changes list of users", () => {
+    const users = [new User(generateUser()), new User(generateUser())];
+    spectator.setInput("label", "label");
+    spectator.setInput("users", List([]));
+    detectChanges();
+    spectator.setInput("users", List(users));
+    detectChanges();
 
-    beforeEach(() => {
-      parentFixture = TestBed.createComponent(TestUserBadgeComponent);
-      parentComponent = parentFixture.componentInstance;
-    });
-
-    it("should detect changes", () => {
-      parentComponent.updateComponent(
-        "custom label",
-        "5 years ago",
-        List<User>([])
-      );
-      parentFixture.detectChanges();
-
-      parentComponent.updateComponent(
-        "custom label",
-        "5 years ago",
-        List<User>([
-          new User({ ...defaultUser, id: 1, userName: "custom username 1" }),
-          new User({ ...defaultUser, id: 2, userName: "custom username 2" }),
-        ])
-      );
-      parentFixture.detectChanges();
-
-      const usernames = getUsernames(parentFixture);
-      expect(usernames.length).toBe(2);
-      expect(usernames[0].innerHTML.trim()).toBe("custom username 1");
-      expect(usernames[1].innerHTML.trim()).toBe("custom username 2");
-    });
+    const usernames = getUsernames(spectator);
+    expect(usernames.length).toBe(2);
+    expect(usernames[0].innerHTML.trim()).toBe(users[0].userName);
+    expect(usernames[1].innerHTML.trim()).toBe(users[1].userName);
   });
 });

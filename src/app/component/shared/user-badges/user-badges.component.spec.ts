@@ -1,14 +1,18 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { BawDateTime } from "@models/AttributeDecorators";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { BehaviorSubject, Subject } from "rxjs";
+import { assertSpinner } from "@test/helpers/html";
+import { Subject } from "rxjs";
 import { User } from "src/app/models/User";
 import { testBawServices } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
@@ -40,7 +44,12 @@ describe("UserBadgesComponent Spec", () => {
   const createComponent = createComponentFactory({
     component: UserBadgesComponent,
     declarations: [UserBadgeComponent],
-    imports: [RouterTestingModule, HttpClientTestingModule],
+    imports: [
+      RouterTestingModule,
+      HttpClientTestingModule,
+      LoadingModule,
+      AuthenticatedImageModule,
+    ],
     providers: testBawServices,
   });
 
@@ -48,11 +57,18 @@ describe("UserBadgesComponent Spec", () => {
     return spectator.queryAll("baw-user-badge");
   }
 
-  function interceptApiRequest(user?: User): Promise<any> {
+  function interceptApiRequest(
+    user?: User,
+    error?: ApiErrorDetails
+  ): Promise<any> {
     user = user ?? new User(generateUser());
 
     const subject = new Subject<User>();
-    const promise = nStepObservable(subject, () => user);
+    const promise = nStepObservable(
+      subject,
+      () => (error ? error : user),
+      !!error
+    );
     spyOn(api, "show").and.callFake(() => subject);
     return promise;
   }
@@ -62,9 +78,14 @@ describe("UserBadgesComponent Spec", () => {
     expect(labelEl.innerText.trim()).toBe(label);
   }
 
-  function assertBadgeUsers(badge: HTMLElement, userName: string) {
+  function assertBadgeUser(badge: HTMLElement, userName: string) {
     const usernameEl = badge.querySelector<HTMLAnchorElement>("a#username");
     expect(usernameEl.innerText.trim()).toBe(userName);
+  }
+
+  function assertGhostUser(badge: HTMLElement) {
+    const ghostEl = badge.querySelector<HTMLAnchorElement>("p#notFound");
+    expect(ghostEl.innerText.trim()).toBe("User not found");
   }
 
   beforeEach(() => {
@@ -119,27 +140,71 @@ describe("UserBadgesComponent Spec", () => {
         );
       });
 
-      it("should handle user badge", async () => {
+      it("should display user badge", async () => {
         const promise = interceptApiRequest();
         spectator.component.ngOnChanges();
         await promise;
         expect(getUserBadges().length).toBe(1);
       });
 
-      it("should handle badge title", async () => {
+      it("should display loading animation", async () => {
+        spectator.component.ngOnChanges();
+        assertSpinner(spectator.fixture, true);
+      });
+
+      it("should clear loading animation", async () => {
+        const promise = interceptApiRequest();
+        spectator.component.ngOnChanges();
+        await promise;
+        assertSpinner(spectator.fixture, false);
+      });
+
+      it("should clear loading animation after api error", async () => {
+        const promise = interceptApiRequest(undefined, {
+          status: 404,
+          message: "Not Found",
+        });
+        spectator.component.ngOnChanges();
+        await promise;
+        assertSpinner(spectator.fixture, false);
+      });
+
+      it("should display badge title", async () => {
         const promise = interceptApiRequest();
         spectator.component.ngOnChanges();
         await promise;
         assertBadgeLabel(getUserBadges()[0], userType.title);
       });
 
-      it("should handle badge users", async () => {
+      it("should display badge username", async () => {
         const user = new User(generateUser());
         const promise = interceptApiRequest(user);
         spectator.component.ngOnChanges();
         await promise;
 
-        assertBadgeUsers(getUserBadges()[0], user.userName);
+        assertBadgeUser(getUserBadges()[0], user.userName);
+      });
+
+      it("should display badge title on api error", async () => {
+        const promise = interceptApiRequest(undefined, {
+          status: 404,
+          message: "Not Found",
+        });
+        spectator.component.ngOnChanges();
+        await promise;
+
+        assertBadgeLabel(getUserBadges()[0], userType.title);
+      });
+
+      it("should display ghost user on api error", async () => {
+        const promise = interceptApiRequest(undefined, {
+          status: 404,
+          message: "Not Found",
+        });
+        spectator.component.ngOnChanges();
+        await promise;
+
+        assertGhostUser(getUserBadges()[0]);
       });
     });
   });
@@ -163,8 +228,40 @@ describe("UserBadgesComponent Spec", () => {
     expect(getUserBadges().length).toBe(3);
   });
 
-  // TODO Implement test to verify badges are in order
-  xit("should display all badge types in order", () => {});
+  it("should display all badge types in order", async () => {
+    let count = 0;
+    const subjects = [1, 2, 3].map(() => new Subject<User>());
+    const promise = Promise.all(
+      subjects.map((subject) =>
+        nStepObservable(
+          subject,
+          () => new User(generateUser()),
+          false,
+          modelData.random.number(3)
+        )
+      )
+    );
+    spyOn(api, "show").and.callFake(() => subjects[count++]);
+
+    spectator.setInput(
+      "model",
+      new MockModel({
+        id: 1,
+        creatorId: modelData.id(),
+        createdAt: modelData.timestamp(),
+        updaterId: modelData.id(),
+        updatedAt: modelData.timestamp(),
+        ownerId: modelData.id(),
+      })
+    );
+    spectator.component.ngOnChanges();
+    await promise;
+
+    const userBadges = getUserBadges();
+    assertBadgeLabel(userBadges[0], "Created By");
+    assertBadgeLabel(userBadges[1], "Updated By");
+    assertBadgeLabel(userBadges[2], "Owned By");
+  });
 
   it("should use luxon.toRelative to get length of time", async () => {
     const model = new MockModel({

@@ -149,3 +149,23 @@ export function assertResolverErrorHandling(fixture: ComponentFixture<any>) {
   const body = fixture.nativeElement;
   expect(body.childElementCount).toBe(0);
 }
+
+/**
+ * Assert whether spinner is visible
+ * @param fixture Component fixture
+ * @param visible Is spinner visible
+ */
+export function assertSpinner(
+  fixture: ComponentFixture<any>,
+  visible: boolean
+) {
+  const expectation = expect(
+    fixture.nativeElement.querySelector("#baw-spinner")
+  );
+
+  if (visible) {
+    expectation.toBeTruthy();
+  } else {
+    expectation.toBeFalsy();
+  }
+}

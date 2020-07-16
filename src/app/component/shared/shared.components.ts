@@ -29,7 +29,7 @@ import { FormlyTimezoneInput } from "./formly/timezone-input.component";
 import { HeaderModule } from "./header/header.module";
 import { IndicatorComponent } from "./indicator/indicator.component";
 import { ItemsModule } from "./items/items.module";
-import { LoadingComponent } from "./loading/loading.component";
+import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { WIPComponent } from "./wip/wip.component";
@@ -47,7 +47,6 @@ export const sharedComponents = [
   FormlyImageInput,
   FormlyTimezoneInput,
   IndicatorComponent,
-  LoadingComponent,
   SecondaryMenuComponent,
   WIPComponent,
 ];
@@ -75,6 +74,7 @@ export const sharedModules = [
   HeaderModule,
   ItemsModule,
   MenuModule,
+  LoadingModule,
 ];
 
 export const formlyAccessors = [FileValueAccessor];
