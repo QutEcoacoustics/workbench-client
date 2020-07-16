@@ -39,6 +39,11 @@ jobs:
           brew cask reinstall google-chrome
         if: matrix.os == 'macos-latest'
 
+      - name: Windows Chrome install
+        run: |
+          choco install googlechrome
+        if: matrix.os == 'windows-latest'
+
       - name: NPM install
         run: npm install
 
