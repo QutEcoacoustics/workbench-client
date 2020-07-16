@@ -22,4 +22,6 @@ describe("LoadingComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO Write tests
 });

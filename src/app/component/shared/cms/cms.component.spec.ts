@@ -5,6 +5,7 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SecurityService } from "@baw-api/security/security.service";
+import { assertSpinner } from "@test/helpers/html";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { testBawServices } from "src/app/test/helpers/testbed";
@@ -67,9 +68,7 @@ describe("CmsComponent", () => {
     fixture.detectChanges();
 
     httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
-
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeTruthy();
+    assertSpinner(fixture, true);
   });
 
   it("should hide loading animation after success response", () => {
@@ -82,9 +81,7 @@ describe("CmsComponent", () => {
     req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
 
     fixture.detectChanges();
-
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeFalsy();
+    assertSpinner(fixture, false);
   });
 
   it("should hide loading animation after error response", () => {
@@ -97,9 +94,7 @@ describe("CmsComponent", () => {
     req.flush("", { status: 404, statusText: "Not Found" });
 
     fixture.detectChanges();
-
-    const spinner = fixture.nativeElement.querySelector("#app-spinner");
-    expect(spinner).toBeFalsy();
+    assertSpinner(fixture, false);
   });
 
   it("should request page from api with 'responseType' of type text", () => {

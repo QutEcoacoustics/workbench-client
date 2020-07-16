@@ -20,6 +20,7 @@ import { Badge } from "./user-badge/user-badge.component";
         *ngFor="let badge of badges"
         [label]="badge.label"
         [users]="badge.users"
+        [loading]="badge.loading"
         [lengthOfTime]="badge.lengthOfTime"
       ></baw-user-badge>
     </div>
@@ -60,25 +61,23 @@ export class UserBadgesComponent extends WithUnsubscribe()
         return;
       }
 
+      const index =
+        this.badges.push({ label: badgeType.label, loading: true }) - 1;
+      this.ref.detectChanges();
+
       // TODO Don't make call if previously made
-      // TODO Sort badges so they follow the same order as badgeTypes
       this.api.show(this.model[badgeType.id]).subscribe(
         (user: User) => {
           const timestamp: DateTimeTimezone = this.model[badgeType.timestamp];
 
-          this.badges.push({
-            label: badgeType.label,
-            users: List([user]),
-            lengthOfTime: timestamp ? timestamp.toRelative() : undefined,
-          });
+          this.badges[index].loading = false;
+          this.badges[index].users = List([user]);
+          this.badges[index].lengthOfTime = timestamp?.toRelative();
           this.ref.detectChanges();
         },
         () => {
-          this.badges.push({
-            label: badgeType.label,
-            users: List([]),
-            lengthOfTime: undefined,
-          });
+          this.badges[index].loading = false;
+          this.badges[index].users = List([]);
           this.ref.detectChanges();
         }
       );

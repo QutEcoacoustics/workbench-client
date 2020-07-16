@@ -4,7 +4,6 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
 } from "@angular/core";
 import { List } from "immutable";
 import { ImageSizes } from "src/app/interfaces/apiInterfaces";
@@ -17,13 +16,22 @@ import { User } from "src/app/models/User";
 @Component({
   selector: "baw-user-badge",
   template: `
+    <!-- Heading -->
     <h4 id="label">{{ label }}</h4>
-    <ng-container *ngIf="userNotFound; else userFound">
+
+    <!-- No users -->
+    <baw-loading [display]="loading"></baw-loading>
+
+    <!-- No users -->
+    <ng-container *ngIf="!loading && !userFound">
       <p id="notFound">User not found</p>
     </ng-container>
-    <ng-template #userFound>
+
+    <!-- Has users -->
+    <ng-container *ngIf="!loading && userFound">
       <div id="users">
         <div class="media" *ngFor="let user of users">
+          <!-- User image -->
           <div class="image">
             <a id="imageLink" [routerLink]="user.viewUrl">
               <img
@@ -33,10 +41,12 @@ import { User } from "src/app/models/User";
               />
             </a>
           </div>
+
+          <!-- Username and length of time -->
           <div class="body">
-            <a id="username" class="heading" [routerLink]="user.viewUrl">{{
-              user.userName
-            }}</a>
+            <a id="username" class="heading" [routerLink]="user.viewUrl">
+              {{ user.userName }}
+            </a>
             <br />
             <p
               id="lengthOfTime"
@@ -48,7 +58,7 @@ import { User } from "src/app/models/User";
           </div>
         </div>
       </div>
-    </ng-template>
+    </ng-container>
   `,
   styleUrls: ["./user-badge.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,19 +67,21 @@ export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;
   @Input() public users: List<User>;
   @Input() public lengthOfTime: string;
-  public userNotFound: boolean;
+  @Input() public loading: boolean;
+  public userFound: boolean;
   public ImageSizes = ImageSizes;
 
   constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnChanges() {
-    this.userNotFound = !(this.users?.count() > 0);
+    this.userFound = this.users?.count() > 0;
     this.ref.detectChanges();
   }
 }
 
 export interface Badge {
   label: string;
-  users: List<User>;
+  loading: boolean;
+  users?: List<User>;
   lengthOfTime?: string;
 }

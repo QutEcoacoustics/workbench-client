@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { fontAwesomeLibraries } from "src/app/app.helper";
+import { LoadingModule } from "../loading/loading.module";
 import { PermissionsShieldComponent } from "../permissions-shield/permissions-shield.component";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
@@ -37,6 +38,7 @@ import { MenuComponent } from "./menu.component";
     NgbModule,
     FontAwesomeModule,
     AuthenticatedImageModule,
+    LoadingModule,
   ],
   exports: [
     MenuComponent,

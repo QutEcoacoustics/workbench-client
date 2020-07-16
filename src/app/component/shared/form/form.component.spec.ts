@@ -1007,4 +1007,6 @@ describe("FormComponent", () => {
       expect(output).toEqual(flattened);
     });
   });
+
+  // TODO Add tests for spinner
 });
