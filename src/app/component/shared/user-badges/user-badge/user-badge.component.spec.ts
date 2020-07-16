@@ -2,30 +2,27 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { ImageSizes } from "@interfaces/apiInterfaces";
-import {
-  createComponentFactory,
-  Spectator,
-  SpectatorOptions,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
-import { assertImage, assertRoute } from "@test/helpers/html";
+import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
 import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
 
-describe("UserBadgeComponent new", () => {
+describe("UserBadgeComponent", () => {
   let spectator: Spectator<UserBadgeComponent>;
-  const options: SpectatorOptions<UserBadgeComponent> = {
+  const createComponent = createComponentFactory({
     component: UserBadgeComponent,
     imports: [
       RouterTestingModule,
       HttpClientTestingModule,
       AuthenticatedImageModule,
+      LoadingModule,
     ],
     providers: testBawServices,
-  };
-  const createComponent = createComponentFactory(options);
+  });
 
   const getLabels = (spec?: Spectator<any>) =>
     (spec ?? spectator).queryAll<HTMLHeadingElement>("#label");
@@ -56,6 +53,26 @@ describe("UserBadgeComponent new", () => {
     spectator.setInput("label", "custom label");
     detectChanges();
     expect(getLabels()[0].innerText.trim()).toBe("custom label");
+  });
+
+  describe("loading", () => {
+    it("should display loading spinner when loading is true", () => {
+      spectator.setInput("label", "label");
+      spectator.setInput("loading", true);
+      detectChanges();
+
+      assertSpinner(spectator.fixture, true);
+      expect(getGhostUsers().length).toBe(0);
+    });
+
+    it("should not display loading spinner when loading is false", () => {
+      spectator.setInput("label", "label");
+      spectator.setInput("loading", false);
+      detectChanges();
+
+      assertSpinner(spectator.fixture, false);
+      expect(getGhostUsers().length).toBe(1);
+    });
   });
 
   describe("ghost users", () => {
