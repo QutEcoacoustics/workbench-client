@@ -33,7 +33,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Mac Chrome install
-        run: brew cask install google-chrome
+        run: brew cask reinstall google-chrome
         if: matrix.os == 'macos-latest'
 
       - name: NPM install
