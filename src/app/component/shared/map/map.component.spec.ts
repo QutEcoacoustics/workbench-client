@@ -68,10 +68,8 @@ describe("MapComponent new", () => {
   });
 
   it("should display multiple sites", () => {
-    spectator.setInput(
-      "sites",
-      [1, 2, 3].map(() => new Site(generateSite()))
-    );
+    const sites = [1, 2, 3].map(() => new Site(generateSite()));
+    spectator.setInput("sites", sites);
     spectator.component.ngOnChanges();
 
     expect(getMarker().length).toBe(3);

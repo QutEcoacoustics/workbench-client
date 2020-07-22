@@ -28,11 +28,6 @@ const apiConfig = fetchRetry<Partial<Configuration>>(
     return new Configuration(undefined);
   });
 
-platformBrowserDynamic([
-  {
-    provide: API_CONFIG,
-    useValue: apiConfig,
-  },
-])
+platformBrowserDynamic([{ provide: API_CONFIG, useValue: apiConfig }])
   .bootstrapModule(AppModule)
   .catch((err) => console.error(err));

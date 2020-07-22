@@ -1,5 +1,6 @@
-export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
+declare var google: any;
 
+export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 let node: HTMLScriptElement;
 
 /**
@@ -14,13 +15,28 @@ export async function embedGoogleMaps(key?: string) {
   }
 
   node = document.createElement("script");
+  node.async = true;
   node.src = googleMapsUrl;
   node.type = "text/javascript";
   document.getElementsByTagName("head")[0].appendChild(node);
 
+  // Detect when google maps properly embeds
   await new Promise((resolve, reject) => {
-    node.onload = () => resolve();
-    node.onerror = () => reject();
+    let count = 0;
+
+    function mapLoaded() {
+      if (typeof google !== "undefined") {
+        resolve();
+      } else if (count > 5) {
+        console.error("Failed to load google maps.");
+        reject();
+      } else {
+        count++;
+        setTimeout(() => mapLoaded(), 500);
+      }
+    }
+
+    mapLoaded();
   });
 }
 
