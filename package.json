@@ -51,6 +51,7 @@
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.1.0",
     "luxon": "^1.24.1",
+    "moment-timezone": "^0.5.31",
     "ngx-toastr": "^13.0.0",
     "primeicons": "^4.0.0",
     "primeng": "^9.1.3",
