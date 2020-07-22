@@ -12,7 +12,7 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { SharedModule } from "@shared/shared.module";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
-import { MockToastr } from "@test/helpers/toastr";
+import { MockToastrService } from "@test/helpers/toastr";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -35,7 +35,7 @@ describe("LoginComponent", () => {
       declarations: [LoginComponent, HomeComponent],
       providers: [
         ...testBawServices,
-        { provide: ToastrService, useClass: MockToastr },
+        { provide: ToastrService, useClass: MockToastrService },
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(undefined, undefined, undefined, {
