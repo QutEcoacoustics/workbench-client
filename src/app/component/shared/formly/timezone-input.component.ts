@@ -20,7 +20,7 @@ import { DateTime, IANAZone } from "luxon";
 
       <div class="input-group">
         <select
-          class="w-100 form-control"
+          class="form-control"
           [id]="field.id"
           [formControl]="formControl"
           [formlyAttributes]="field"
@@ -35,12 +35,11 @@ import { DateTime, IANAZone } from "luxon";
           </ng-container>
         </select>
         <div class="input-group-append">
-          <div class="input-group-text">
+          <span class="input-group-text">
             <small>{{ offset }}</small>
-          </div>
+          </span>
         </div>
       </div>
-      <small class="form-text text-muted">{{ currentTime }}</small>
     </div>
   `,
 })
@@ -48,7 +47,6 @@ import { DateTime, IANAZone } from "luxon";
 export class FormlyTimezoneInput extends FieldType implements OnInit {
   public defaultTime = "(no match)";
   public timezones: string[];
-  public currentTime = this.defaultTime;
   public offset: string = this.defaultTime;
 
   constructor() {
@@ -59,13 +57,16 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
     this.timezones = moment.tz.names();
   }
 
-  public calculateCurrentTime() {
-    const key = this.field.key;
-    const locale = this.field.model[key];
-    const zone = IANAZone.create(locale);
+  public calculateCurrentTime(): void {
+    const zoneName = this.field.model[this.field.key];
+
+    if (!IANAZone.isValidZone(zoneName)) {
+      this.offset = this.defaultTime;
+      return;
+    }
+
+    const zone = IANAZone.create(zoneName);
     const now = DateTime.local().setZone(zone);
-    this.currentTime = now.toFormat("yyyy LLL dd HH:mm");
     this.offset = zone.formatOffset(now.millisecond, "short");
-    zone.offset(now.millisecond).toString();
   }
 }
