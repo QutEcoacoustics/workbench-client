@@ -1,10 +1,8 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
-  OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -16,7 +14,7 @@ import { Site } from "src/app/models/Site";
 
 /**
  * Google Maps Wrapper Component
- * ! Manually test when editing. No unit tests written
+ * ! Manually test when editing, unit test coverage is poor
  */
 @Component({
   selector: "baw-map",

@@ -1,41 +1,77 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { GoogleMapsModule } from "@angular/google-maps";
-import embedGoogleMaps from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import {
+  destroyGoogleMaps,
+  embedGoogleMaps,
+} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import { Site } from "@models/Site";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { generateSite } from "@test/fakes/Site";
 import { MapComponent } from "./map.component";
 
-describe("MapComponent", () => {
-  let component: MapComponent;
-  let fixture: ComponentFixture<MapComponent>;
-
-  beforeAll(() => {
-    embedGoogleMaps();
+describe("MapComponent new", () => {
+  let spectator: Spectator<MapComponent>;
+  const createComponent = createComponentFactory({
+    component: MapComponent,
+    imports: [GoogleMapsModule],
   });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MapComponent],
-      imports: [GoogleMapsModule],
-    }).compileComponents();
-  }));
+  function getMap() {
+    return spectator.query<HTMLElement>("google-map");
+  }
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MapComponent);
-    component = fixture.componentInstance;
-  });
+  function getInfoWindow() {
+    return spectator.query<HTMLElement>("map-info-window");
+  }
+
+  function getMarker() {
+    return spectator.queryAll<HTMLElement>("map-marker");
+  }
+
+  beforeAll(async () => await embedGoogleMaps());
+  beforeEach(async () => (spectator = createComponent()));
+  afterAll(() => destroyGoogleMaps());
 
   it("should create", () => {
-    component.sites = [];
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spectator.setInput("sites", []);
+    spectator.component.ngOnChanges();
+    expect(spectator.component).toBeTruthy();
   });
 
   it("should display placeholder", () => {
-    component.sites = [];
-    fixture.detectChanges();
+    spectator.setInput("sites", []);
+    spectator.component.ngOnChanges();
+    const label = spectator
+      .query<HTMLDivElement>("div.map-placeholder")
+      .innerText.trim();
+    expect(label).toBe("No locations specified");
+  });
 
-    const placeholder: HTMLDivElement = fixture.nativeElement.querySelector(
-      "div.map-placeholder"
-    );
-    expect(placeholder.innerText).toBe("No locations specified");
+  it("should display map", () => {
+    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.component.ngOnChanges();
+
+    expect(getMap()).toBeTruthy();
+  });
+
+  it("should have info window", () => {
+    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.component.ngOnChanges();
+
+    expect(getMap()).toBeTruthy();
+  });
+
+  it("should display single site", () => {
+    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.component.ngOnChanges();
+
+    expect(getInfoWindow()).toBeTruthy();
+  });
+
+  it("should display multiple sites", () => {
+    const sites = [1, 2, 3].map(() => new Site(generateSite()));
+    spectator.setInput("sites", sites);
+    spectator.component.ngOnChanges();
+
+    expect(getMarker().length).toBe(3);
   });
 });
