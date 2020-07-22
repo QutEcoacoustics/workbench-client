@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import moment from "moment-timezone";
 import { DateTime, IANAZone } from "luxon";
+import moment from "moment-timezone";
 
 /**
  * Timezone Input
