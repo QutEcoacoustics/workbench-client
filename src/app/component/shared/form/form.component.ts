@@ -34,7 +34,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
 
   // Rename is required to stop formly from hijacking the variable
   // tslint:disable-next-line: no-output-rename
-  @Output("onSubmit") public submitFunction: EventEmitter<any> = new EventEmitter();
+  @Output("onSubmit") public submitFunction = new EventEmitter<any>();
 
   public form: FormGroup;
 

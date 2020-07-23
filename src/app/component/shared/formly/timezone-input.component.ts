@@ -1,7 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
-import { DateTime, IANAZone } from "luxon";
-import moment from "moment-timezone";
+import { merge, Observable, Subject } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+} from "rxjs/operators";
 
 /**
  * Timezone Input
@@ -18,55 +24,110 @@ import moment from "moment-timezone";
         }}
       </label>
 
-      <div class="input-group">
-        <select
-          class="form-control"
-          [id]="field.id"
-          [formControl]="formControl"
-          [formlyAttributes]="field"
-          (change)="calculateCurrentTime()"
-        >
-          <option value=""></option>
-          <ng-container *ngFor="let timezone of timezones">
-            <!-- Create singular option -->
-            <option [value]="timezone">
-              {{ timezone }}
-            </option>
-          </ng-container>
-        </select>
-        <div class="input-group-append">
-          <span class="input-group-text">
-            <small>{{ offset }}</small>
-          </span>
-        </div>
-      </div>
+      <ng-template #rt let-r="result" let-t="term">
+        <ngb-highlight
+          [result]="r.currentTimeFormat"
+          [term]="t"
+        ></ngb-highlight>
+      </ng-template>
+
+      <input
+        #instance="ngbTypeahead"
+        type="text"
+        class="form-control"
+        placeholder="Type a city or country name."
+        [editable]="false"
+        [ngbTypeahead]="search"
+        [inputFormatter]="formatter"
+        [resultTemplate]="rt"
+        [formlyAttributes]="field"
+        [(ngModel)]="timezone"
+        (ngModelChange)="updateValue()"
+        (focus)="focus$.next($any($event).target.value)"
+        (click)="click$.next($any($event).target.value)"
+      />
+
+      <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
   `,
 })
 // tslint:disable-next-line: component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
+  @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
+  public focus$ = new Subject<string>();
+  public click$ = new Subject<string>();
   public defaultTime = "(no match)";
-  public timezones: string[];
+  public timezones: Timezone[] = [];
+  public timezone: Timezone;
   public offset: string = this.defaultTime;
 
   constructor() {
     super();
   }
 
-  public ngOnInit() {
-    this.timezones = moment.tz.names();
+  public async ngOnInit() {
+    this.timezones = (await import("@vvo/tzdb")).getTimeZones();
   }
 
-  public calculateCurrentTime(): void {
-    const zoneName = this.field.model[this.field.key];
+  /**
+   * Update form controller with latest timezone value
+   */
+  public updateValue() {
+    this.formControl.setValue(this.timezone?.name);
+  }
 
-    if (!IANAZone.isValidZone(zoneName)) {
-      this.offset = this.defaultTime;
-      return;
+  /**
+   * Format typeahead output to show current time format of timezone
+   * @param selected Selected timezone
+   */
+  public formatter = (selected: Timezone): string => selected.currentTimeFormat;
+
+  /**
+   * Update typeahead dropdown list whenever event is detected
+   * @param text$ Search event
+   */
+  public search = (text$: Observable<string>): Observable<Timezone[]> => {
+    const debouncedText$ = text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged()
+    );
+    const clicksWithClosedPopup$ = this.click$.pipe(
+      filter(() => !this.instance.isPopupOpen())
+    );
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) => this.searchTimezones(term))
+    );
+  };
+
+  /**
+   * Search timezones and select any which reference the input
+   * @param term Term to search for
+   */
+  private searchTimezones(term: string): Timezone[] {
+    let zones = this.timezones;
+
+    if (term?.length > 0) {
+      zones = zones.filter((zone) =>
+        zone.currentTimeFormat
+          .toLocaleLowerCase()
+          .includes(term.toLocaleLowerCase())
+      );
     }
 
-    const zone = IANAZone.create(zoneName);
-    const now = DateTime.local().setZone(zone);
-    this.offset = zone.formatOffset(now.millisecond, "short");
+    return zones.slice(0, 10);
   }
+}
+
+interface Timezone {
+  name: string;
+  alternativeName: string;
+  group: string[];
+  countryName: string;
+  mainCities: string[];
+  rawOffsetInMinutes: number;
+  rawFormat: string;
+  currentTimeOffsetInMinute: number;
+  currentTimeFormat: string;
 }
