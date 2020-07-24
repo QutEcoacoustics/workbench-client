@@ -24,7 +24,7 @@ import {
         }}
       </label>
 
-      <ng-template #rt let-r="result" let-t="term">
+      <ng-template #resultTemplate let-r="result" let-t="term">
         <ngb-highlight
           [result]="r.currentTimeFormat"
           [term]="t"
@@ -39,7 +39,7 @@ import {
         [editable]="false"
         [ngbTypeahead]="search"
         [inputFormatter]="formatter"
-        [resultTemplate]="rt"
+        [resultTemplate]="resultTemplate"
         [formlyAttributes]="field"
         [(ngModel)]="timezone"
         (ngModelChange)="updateValue()"
