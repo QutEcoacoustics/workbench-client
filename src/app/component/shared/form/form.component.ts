@@ -24,7 +24,6 @@ import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() public btnColor: ButtonClassTypes = "btn-success";
   @Input() public fields: FormlyFieldConfig[];
-  @Input() public fieldsUrl: string;
   @Input() public model: object = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
@@ -44,36 +43,6 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.form = new FormGroup({});
-
-    if (this.fieldsUrl) {
-      // TODO Retrieve Schema from url
-      // this.convertFunctions(this.fields);
-    } else {
-      this.fields = this.convertFunctions(this.fields);
-    }
-  }
-
-  /**
-   * Convert any validator functions to Function datatype.
-   * This allows us to follow the format given by formly whilst also staying
-   * within the limitations of JSON (eg. Cannot transmit functions).
-   * @param fields Form fields
-   */
-  public convertFunctions(fields: any) {
-    fields = fields ?? [];
-
-    fields.forEach((field: any) => {
-      const validator = field.validators;
-
-      if (typeof validator?.fieldMatch?.expression === "string") {
-        validator.fieldMatch.expression = new Function(
-          "control",
-          validator.fieldMatch.expression
-        );
-      }
-    });
-
-    return fields;
   }
 
   /**
@@ -87,26 +56,9 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
       this.notifications.error("Please fill all required fields.");
     }
   }
-
-  /**
-   * @deprecated
-   * Used to flatten formly model field groups into an object with 1 depth.
-   * This is done by mutating the model object so that references are not
-   * lost.
-   * @param model Form model
-   */
-  public flattenFields(model: any): any {
-    console.log(model);
-
-    const fieldGroups = this.fields.filter(
-      (field) => field.fieldGroup?.length > 0
-    );
-    for (const field of fieldGroups) {
-      console.log(field);
-    }
-  }
 }
 
+// TODO Remove btn- from type, this also be a generic bootstrap class type that is reusable
 type ButtonClassTypes =
   | "btn-danger"
   | "btn-success"

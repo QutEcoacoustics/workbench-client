@@ -21,11 +21,7 @@ import { RenderFieldComponent } from "./detail-view/render-field/render-field.co
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
-import { FormlyCheckboxInput } from "./formly/checkbox-input.component";
-import { FileValueAccessor } from "./formly/file-input.directive";
-import { FormlyHorizontalWrapper } from "./formly/horizontal-wrapper";
-import { FormlyImageInput } from "./formly/image-input.component";
-import { FormlyTimezoneInput } from "./formly/timezone-input.component";
+import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { HeaderModule } from "./header/header.module";
 import { IndicatorComponent } from "./indicator/indicator.component";
 import { ItemsModule } from "./items/items.module";
@@ -42,10 +38,6 @@ export const sharedComponents = [
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
-  FormlyCheckboxInput,
-  FormlyHorizontalWrapper,
-  FormlyImageInput,
-  FormlyTimezoneInput,
   IndicatorComponent,
   SecondaryMenuComponent,
   WIPComponent,
@@ -70,11 +62,10 @@ export const sharedModules = [
   StepsModule,
 
   DirectivesModule,
+  CustomInputsModule,
   CardsModule,
   HeaderModule,
   ItemsModule,
   MenuModule,
   LoadingModule,
 ];
-
-export const formlyAccessors = [FileValueAccessor];

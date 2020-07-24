@@ -61,10 +61,6 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
   public timezone: Timezone;
   public offset: string = this.defaultTime;
 
-  constructor() {
-    super();
-  }
-
   public async ngOnInit() {
     this.timezones = (await import("@vvo/tzdb")).getTimeZones();
   }

@@ -1,13 +1,16 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
+import { AbstractControl } from "@angular/forms";
 import { serviceProviders } from "@baw-api/ServiceProviders";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ConfigOption, FormlyFieldConfig } from "@ngx-formly/core";
-import { FormlyCheckboxInput } from "./component/shared/formly/checkbox-input.component";
-import { FormlyHorizontalWrapper } from "./component/shared/formly/horizontal-wrapper";
-import { FormlyImageInput } from "./component/shared/formly/image-input.component";
-import { FormlyTimezoneInput } from "./component/shared/formly/timezone-input.component";
+import {
+  formlyInputTypes,
+  formlyWrappers,
+} from "@shared/formly/custom-inputs.module";
+import { GlobalConfig } from "ngx-toastr";
 import { FormTouchedGuard } from "./guards/form/form.guard";
 import {
   API_CONFIG,
@@ -55,9 +58,32 @@ export function maxValidationMessage(_, field: FormlyFieldConfig) {
 }
 
 /**
+ * Location validator
+ */
+export function locationValidator(control: AbstractControl) {
+  const { latitude, longitude } = control.value;
+
+  if (!isInstantiated(latitude) && !isInstantiated(longitude)) {
+    return null;
+  } else if (!isInstantiated(latitude) || !isInstantiated(longitude)) {
+    return {
+      location: {
+        message: "Both latitude and longitude must be set or left empty",
+      },
+    };
+  } else if (latitude < -90 || latitude > 90) {
+    return { location: { message: "Latitude must be between -90 and 90" } };
+  } else if (longitude < -180 || longitude > 180) {
+    return { location: { message: "Longitude must be between -180 and 180" } };
+  } else {
+    return null;
+  }
+}
+
+/**
  * Toastr Service global defaults
  */
-export const toastrRoot = {
+export const toastrRoot: Partial<GlobalConfig> = {
   closeButton: true,
   enableHtml: true,
   positionClass: "toast-top-center",
@@ -66,24 +92,9 @@ export const toastrRoot = {
 /**
  * Formly types and validation messages
  */
-export const formlyRoot = {
-  types: [
-    {
-      name: "checkbox",
-      component: FormlyCheckboxInput,
-    },
-    {
-      name: "image",
-      component: FormlyImageInput,
-    },
-    {
-      name: "timezone",
-      component: FormlyTimezoneInput,
-    },
-  ],
-  wrappers: [
-    { name: "form-field-horizontal", component: FormlyHorizontalWrapper },
-  ],
+export const formlyRoot: ConfigOption = {
+  types: formlyInputTypes,
+  wrappers: formlyWrappers,
   validationMessages: [
     { name: "required", message: "This field is required" },
     { name: "minlength", message: minLengthValidationMessage },
@@ -91,7 +102,8 @@ export const formlyRoot = {
     { name: "min", message: minValidationMessage },
     { name: "max", message: maxValidationMessage },
   ],
-} as ConfigOption;
+  validators: [{ name: "location", validation: locationValidator }],
+};
 
 /**
  * Load icon packs into font awesome library
