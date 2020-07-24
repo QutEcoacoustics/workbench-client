@@ -82,28 +82,28 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    */
   public submit(model: any) {
     if (this.form.status === "VALID") {
-      this.submitFunction.emit(this.flattenFields(model));
+      this.submitFunction.emit(model);
     } else {
       this.notifications.error("Please fill all required fields.");
     }
   }
 
   /**
-   * Used to flatten formly model field groups into an object with 1 depth
-   * @param model Formly model output
+   * @deprecated
+   * Used to flatten formly model field groups into an object with 1 depth.
+   * This is done by mutating the model object so that references are not
+   * lost.
+   * @param model Form model
    */
   public flattenFields(model: any): any {
-    let output = {};
+    console.log(model);
 
-    for (const key of Object.keys(model ?? {})) {
-      if (typeof model[key] === "string" || typeof model[key] === "number") {
-        output[key] = model[key];
-      } else {
-        output = { ...output, ...this.flattenFields(model[key]) };
-      }
+    const fieldGroups = this.fields.filter(
+      (field) => field.fieldGroup?.length > 0
+    );
+    for (const field of fieldGroups) {
+      console.log(field);
     }
-
-    return output;
   }
 }
 

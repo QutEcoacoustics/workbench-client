@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { List } from "immutable";
@@ -8,6 +9,7 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   defaultSuccessMsg,
+  extendedErrorMsg,
   FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -66,8 +68,13 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, siteKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
+    super(
+      notifications,
+      route,
+      router,
+      siteKey,
+      (model) => defaultSuccessMsg("updated", model.name),
+      siteErrorMsg
     );
   }
 
@@ -90,4 +97,10 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
   protected apiAction(model: Partial<Site>) {
     return this.api.update(new Site(model), this.project);
   }
+}
+
+export function siteErrorMsg(err: ApiErrorDetails) {
+  return extendedErrorMsg(err, {
+    tzinfoTz: (value) => `timezone identifier ${value[0]}`,
+  });
 }

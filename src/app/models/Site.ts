@@ -36,8 +36,11 @@ export interface ISite {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   projectIds?: Ids | Id[];
+  latitude?: number;
   customLatitude?: number;
+  longitude?: number;
   customLongitude?: number;
+  tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
 }
 
@@ -58,7 +61,6 @@ export class Site extends AbstractModel implements ISite {
   public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
-  @BawPersistAttr
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -69,10 +71,13 @@ export class Site extends AbstractModel implements ISite {
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
   @BawPersistAttr
+  public readonly latitude?: number;
   public readonly customLatitude?: number;
   @BawPersistAttr
+  public readonly longitude?: number;
   public readonly customLongitude?: number;
   @BawPersistAttr
+  public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
 
   // Associations
@@ -86,7 +91,13 @@ export class Site extends AbstractModel implements ISite {
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
-    this.locationObfuscated = site.locationObfuscated ?? false;
+    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
+
+    // This only affects admins, owners, and if not coordinate is set
+    if (!this.locationObfuscated) {
+      this.latitude = this.latitude ?? this.customLatitude;
+      this.longitude = this.longitude ?? this.customLongitude;
+    }
   }
 
   public get viewUrl(): string {

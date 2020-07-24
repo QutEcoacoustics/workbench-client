@@ -78,6 +78,7 @@ describe("BawApiInterceptor", () => {
           expect(err).toEqual({
             status: 401,
             message: "Incorrect user name",
+            info: undefined,
           });
         });
 
@@ -110,6 +111,7 @@ describe("BawApiInterceptor", () => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${apiRoot}/brokenapiroute: 404 Page Not Found`,
+            info: undefined,
           });
         });
 
