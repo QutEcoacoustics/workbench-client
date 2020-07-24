@@ -18,35 +18,18 @@
       }
     },
     {
-      "key": "timezoneInformation",
-      "type": "input",
+      "key": "tzinfoTz",
+      "type": "timezone",
       "templateOptions": {
-        "label": "Time Zone",
+        "label": "Time Zone Identifier",
         "required": false
       }
     },
     {
-      "key": "password",
-      "type": "input",
+      "key": "confirmation",
+      "type": "passwordConfirmation",
       "templateOptions": {
-        "type": "password",
-        "label": "Password",
-        "required": false,
-        "minLength": 6,
-        "description": "leave blank if you don't want to change it"
-      }
-    },
-    {
-      "key": "passwordConfirmation",
-      "type": "input",
-      "templateOptions": {
-        "type": "password",
-        "label": "Password Confirmation",
-        "minLength": 6,
-        "required": false
-      },
-      "expressionProperties": {
-        "templateOptions.disabled": "!model.password"
+        "required": true
       }
     },
     {
@@ -61,7 +44,7 @@
       }
     },
     {
-      "key": "userImage",
+      "key": "imageUrls",
       "type": "input",
       "templateOptions": {
         "label": "Image",

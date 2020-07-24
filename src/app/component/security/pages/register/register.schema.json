@@ -19,26 +19,10 @@
       }
     },
     {
-      "key": "password",
-      "type": "input",
+      "key": "confirmation",
+      "type": "passwordConfirmation",
       "templateOptions": {
-        "type": "password",
-        "label": "Password",
-        "minLength": 6,
         "required": true
-      }
-    },
-    {
-      "key": "passwordConfirm",
-      "type": "input",
-      "templateOptions": {
-        "type": "password",
-        "label": "Password Confirmation",
-        "minLength": 6,
-        "required": true
-      },
-      "expressionProperties": {
-        "templateOptions.disabled": "!model.password"
       }
     }
   ]

@@ -13,6 +13,7 @@ import { FileValueAccessor } from "./file-input.directive";
 import { FormlyHorizontalWrapper } from "./horizontal-wrapper";
 import { FormlyImageInput } from "./image-input.component";
 import { FormlyLocationInput } from "./location-input.component";
+import { FormlyPasswordConfirmationInput } from "./password-confirmation-input.component";
 import { FormlyTimezoneInput } from "./timezone-input.component";
 
 export const formlyInputTypes: TypeOption[] = [
@@ -20,6 +21,7 @@ export const formlyInputTypes: TypeOption[] = [
   { name: "image", component: FormlyImageInput },
   { name: "timezone", component: FormlyTimezoneInput },
   { name: "location", component: FormlyLocationInput },
+  { name: "passwordConfirmation", component: FormlyPasswordConfirmationInput },
 ];
 
 export const formlyWrappers: WrapperOption[] = [
@@ -27,12 +29,13 @@ export const formlyWrappers: WrapperOption[] = [
 ];
 
 const components = [
+  FileValueAccessor,
   FormlyCheckboxInput,
   FormlyHorizontalWrapper,
   FormlyImageInput,
-  FormlyTimezoneInput,
   FormlyLocationInput,
-  FileValueAccessor,
+  FormlyPasswordConfirmationInput,
+  FormlyTimezoneInput,
 ];
 
 @NgModule({

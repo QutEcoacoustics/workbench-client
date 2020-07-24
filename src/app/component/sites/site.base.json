@@ -42,7 +42,6 @@
     {
       "key": "latitude",
       "hide": true,
-      "type": "input",
       "templateOptions": {
         "label": "Latitude"
       }
@@ -50,7 +49,6 @@
     {
       "key": "longitude",
       "hide": true,
-      "type": "input",
       "templateOptions": {
         "label": "Longitude"
       }
@@ -58,7 +56,6 @@
     {
       "key": "customLatitude",
       "hide": true,
-      "type": "input",
       "templateOptions": {
         "label": "Custom Latitude"
       }
@@ -66,7 +63,6 @@
     {
       "key": "customLongitude",
       "hide": true,
-      "type": "input",
       "templateOptions": {
         "label": "Custom Longitude"
       }
@@ -99,7 +95,6 @@
     {
       "key": "timezoneInformation",
       "hide": true,
-      "type": "timezone",
       "templateOptions": {
         "label": "Time Zone Information"
       }

@@ -20,7 +20,7 @@ import { FieldType } from "@ngx-formly/core";
         [class]="{ 'is-invalid': latitudeError }"
         [formlyAttributes]="field"
         [(ngModel)]="latitude"
-        (ngModelChange)="updateValue()"
+        (ngModelChange)="updateModel()"
       />
 
       <div
@@ -30,7 +30,9 @@ import { FieldType } from "@ngx-formly/core";
       >
         {{ getError() }}
       </div>
+    </div>
 
+    <div class="form-group">
       <label for="longitude">
         Longitude {{ field.templateOptions.required ? " *" : "" }}
       </label>
@@ -41,7 +43,7 @@ import { FieldType } from "@ngx-formly/core";
         [class]="{ 'is-invalid': longitudeError }"
         [formlyAttributes]="field"
         [(ngModel)]="longitude"
-        (ngModelChange)="updateValue()"
+        (ngModelChange)="updateModel()"
       />
 
       <div
@@ -67,7 +69,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
     this.latitude = this.model["latitude"];
     this.longitude = this.model["longitude"];
     this.formControl.setValidators(() => {
-      const error = this.validateValues();
+      const error = this.validateCoordinates();
       return error ? { [this.field.key]: error } : null;
     });
     this.formControl.updateValueAndValidity();
@@ -76,7 +78,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
   /**
    * Update hidden input
    */
-  public updateValue() {
+  public updateModel() {
     this.formControl.setValue({
       latitude: this.latitude,
       longitude: this.longitude,
@@ -92,7 +94,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
   /**
    * Validate location values and return error if any
    */
-  private validateValues(): string {
+  private validateCoordinates(): string {
     this.latitudeError = false;
     this.longitudeError = false;
 

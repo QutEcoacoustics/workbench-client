@@ -24,6 +24,7 @@ export interface IUser {
   failedAttempts?: number;
   rolesMask?: number;
   rolesMaskNames?: string[];
+  tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
   imageUrls?: ImageUrl[];
   preferences?: any;
@@ -64,6 +65,8 @@ export class User extends AbstractModel implements IUser {
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
   @BawPersistAttr
+  public readonly tzinfoTz?: string;
+  @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
   @BawDateTime()
   public readonly resetPasswordSentAt?: DateTimeTimezone;
@@ -90,6 +93,7 @@ export class User extends AbstractModel implements IUser {
     super(user);
 
     this.userName = user.userName ?? "Deleted User";
+    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
   public get isAdmin(): boolean {
@@ -136,10 +140,14 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   @BawPersistAttr
   public readonly rolesMask?: number;
   @BawPersistAttr
+  public readonly tzinfoTz?: string;
+  @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
   constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
+
+    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
   public get isAdmin(): boolean {
