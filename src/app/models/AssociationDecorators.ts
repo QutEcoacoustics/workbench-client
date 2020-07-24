@@ -7,6 +7,7 @@ import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 
 /**
  * Creates an association between the ownerId and its user model
+ * TODO Modify to handle ghost users
  */
 export function Owner<M extends AbstractModel & { ownerId?: Id }>() {
   return HasOne<M>(ACCOUNT, "ownerId");
@@ -14,6 +15,7 @@ export function Owner<M extends AbstractModel & { ownerId?: Id }>() {
 
 /**
  * Creates an association between the creatorId and its user model
+ * TODO Modify to handle ghost users
  */
 export function Creator<M extends AbstractModel & { creatorId?: Id }>() {
   return HasOne<M>(ACCOUNT, "creatorId");
@@ -21,6 +23,7 @@ export function Creator<M extends AbstractModel & { creatorId?: Id }>() {
 
 /**
  * Creates an association between the updaterId and its user model
+ * TODO Modify to handle ghost users
  */
 export function Updater<M extends AbstractModel & { updaterId?: Id }>() {
   return HasOne<M>(ACCOUNT, "updaterId");
@@ -28,6 +31,7 @@ export function Updater<M extends AbstractModel & { updaterId?: Id }>() {
 
 /**
  * Creates an association between the deleterId and its user model
+ * TODO Modify to handle ghost users
  */
 export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
   return HasOne<M>(ACCOUNT, "deleterId");

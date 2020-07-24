@@ -34,24 +34,33 @@
     },
     {
       "key": "location",
-      "type": "location"
+      "type": "location",
+      "templateOptions": {
+        "label": "Location"
+      }
     },
     {
       "key": "latitude",
+      "hide": true,
       "type": "input",
       "templateOptions": {
-        "label": "Latitude",
-        "type": "number",
-        "required": false
+        "label": "Latitude"
       }
     },
     {
       "key": "longitude",
+      "hide": true,
       "type": "input",
       "templateOptions": {
-        "label": "Longitude",
-        "type": "number",
-        "required": false
+        "label": "Longitude"
+      }
+    },
+    {
+      "key": "customLatitude",
+      "hide": true,
+      "type": "input",
+      "templateOptions": {
+        "label": "Custom Latitude"
       }
     },
     {
@@ -64,6 +73,15 @@
     },
     {
       "key": "imageUrl",
+      "type": "image",
+      "templateOptions": {
+        "label": "Image URL",
+        "required": false
+      }
+    },
+    {
+      "key": "image",
+      "hide": true,
       "type": "image",
       "templateOptions": {
         "label": "Image",

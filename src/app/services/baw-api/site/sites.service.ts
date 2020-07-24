@@ -5,6 +5,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
+import { generateSite } from "@test/fakes/Site";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -43,7 +44,10 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   public list(project: IdOr<Project>): Observable<Site[]> {
     return this.apiList(endpoint(project, Empty, Empty));
   }
-  public filter(filters: Filters<ISite>, project: IdOr<Project>): Observable<Site[]> {
+  public filter(
+    filters: Filters<ISite>,
+    project: IdOr<Project>
+  ): Observable<Site[]> {
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/437
     return this.apiFilter(endpoint(project, Empty, Filter), filters);
   }
@@ -56,7 +60,10 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, Empty), model);
   }
-  public destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site | void> {
+  public destroy(
+    model: IdOr<Site>,
+    project: IdOr<Project>
+  ): Observable<Site | void> {
     return this.apiDestroy(endpoint(project, model, Empty));
   }
 }
@@ -102,32 +109,21 @@ export class ShallowSitesService extends StandardApi<Site> {
   ): Observable<Site[]> {
     return this.filter(filters);
     // TODO https://github.com/QutEcoacoustics/baw-server/issues/453
-    return this.apiFilter(
+    /* return this.apiFilter(
       endpointShallow(Empty, Filter),
       user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
-    );
+    ); */
   }
   public show(model: IdOr<Site>): Observable<Site> {
     return showMock(
       model,
       (index) =>
         new Site(
-          {
-            id: index,
-            name: "custom site",
-            description: "custom description",
-            customLatitude: 100,
-            customLongitude: 101,
-            creatorId: 7,
-            updaterId: 2,
-            createdAt: "2020-01-01T10:00:00",
-            updatedAt: "2020-01-01T11:00:00",
-            projectIds: [1, 2, 3],
-          },
+          { ...generateSite(index), name: "EXAMPLE SITE" },
           this.injector
         )
     );
-    return this.apiShow(endpointShallow(model, Empty));
+    // return this.apiShow(endpointShallow(model, Empty));
   }
   public create(model: Site): Observable<Site> {
     return this.apiCreate(endpointShallow(Empty, Empty), model);
@@ -148,12 +144,7 @@ export class ShallowSitesService extends StandardApi<Site> {
       filters,
       (index) =>
         new Site(
-          {
-            id: index,
-            name: "PLACEHOLDER SITE",
-            description: "PLACEHOLDER DESCRIPTION",
-            creatorId: 1,
-          },
+          { ...generateSite(index), name: "EXAMPLE SITE" },
           this.injector
         )
     );

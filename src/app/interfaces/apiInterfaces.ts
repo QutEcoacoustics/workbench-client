@@ -100,3 +100,27 @@ export interface ImageUrl {
   height?: number;
   width?: number;
 }
+
+/**
+ * Evaluate if value is an ImageUrl
+ * @param value Value to evaluate
+ */
+export function isImageUrl(value: any): value is ImageUrl {
+  if (!(value instanceof Object)) {
+    return false;
+  }
+
+  const keys = Object.keys(value);
+  const hasHeight = keys.includes("height");
+  const hasWidth = keys.includes("width");
+
+  let expectedKeys = 2;
+  expectedKeys += hasHeight ? 1 : 0;
+  expectedKeys += hasWidth ? 1 : 0;
+
+  return (
+    keys.length === expectedKeys &&
+    keys.includes("size") &&
+    keys.includes("url")
+  );
+}
