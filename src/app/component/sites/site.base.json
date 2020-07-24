@@ -33,6 +33,10 @@
       }
     },
     {
+      "key": "location",
+      "type": "location"
+    },
+    {
       "key": "latitude",
       "type": "input",
       "templateOptions": {
