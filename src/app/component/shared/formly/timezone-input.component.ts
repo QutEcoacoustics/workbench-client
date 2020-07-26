@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
 import { merge, Observable, Subject } from "rxjs";
@@ -36,6 +37,7 @@ import {
         type="text"
         class="form-control"
         placeholder="Type a city or country name."
+        [class]="{ 'is-invalid': error }"
         [editable]="false"
         [ngbTypeahead]="search"
         [inputFormatter]="formatter"
@@ -47,6 +49,10 @@ import {
         (click)="click$.next($any($event).target.value)"
       />
 
+      <div *ngIf="error" class="invalid-feedback" style="display: block;">
+        {{ getError() }}
+      </div>
+
       <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
   `,
@@ -54,15 +60,37 @@ import {
 // tslint:disable-next-line: component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
-  public focus$ = new Subject<string>();
   public click$ = new Subject<string>();
+  public focus$ = new Subject<string>();
   public defaultTime = "(no match)";
-  public timezones: Timezone[] = [];
-  public timezone: Timezone;
+  public error: boolean;
   public offset: string = this.defaultTime;
+  public timezone: Timezone;
+  public timezones: Timezone[] = [];
 
   public async ngOnInit() {
     this.timezones = (await import("@vvo/tzdb")).getTimeZones();
+    this.formControl.setValidators(() => {
+      if (!isInstantiated(this.timezone)) {
+        if (this.field.templateOptions.required && this.formControl.dirty) {
+          return { [this.field.key]: "You must select a timezone" };
+        } else {
+          return null;
+        }
+      }
+
+      this.error = !this.timezones.find(
+        (timezone) => timezone === this.timezone
+      );
+      return this.error
+        ? { [this.field.key]: "Invalid timezone selected" }
+        : null;
+    });
+    this.formControl.updateValueAndValidity();
+  }
+
+  public getError(): string {
+    return this.formControl.getError(this.field.key);
   }
 
   /**

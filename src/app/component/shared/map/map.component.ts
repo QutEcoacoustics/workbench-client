@@ -4,10 +4,12 @@ import {
   Input,
   OnChanges,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
@@ -21,7 +23,7 @@ import { takeUntil } from "rxjs/operators";
     <ng-container *ngIf="hasMarkers; else placeholderMap">
       <google-map height="400px" width="100%" [options]="mapOptions">
         <map-marker
-          *ngFor="let marker of markers"
+          *ngFor="let marker of filteredMarkers"
           [options]="markerOptions"
           [position]="marker.position"
         >
@@ -40,7 +42,8 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() public markers: google.maps.ReadonlyMarkerOptions[];
+  @Input() public markers: MapMarkerOption[];
+  public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
   public infoContent = "";
 
@@ -52,29 +55,70 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
     super();
   }
 
-  public ngOnChanges() {
-    this.hasMarkers = this.markers?.length > 0;
-    this.ref.detectChanges();
+  public ngOnChanges(changes: SimpleChanges) {
+    this.hasMarkers = false;
+    this.filteredMarkers = [];
 
     // Calculate pin boundaries so that map can be auto-focused properly
-    if (this.hasMarkers) {
-      const bounds = new google.maps.LatLngBounds();
-      this.markers.forEach((marker) => bounds.extend(marker.position));
-      this.map.fitBounds(bounds);
-      this.map.panToBounds(bounds);
-    }
+    const bounds = new google.maps.LatLngBounds();
+    this.markers?.forEach((marker) => {
+      if (isMarkerValid(marker)) {
+        this.hasMarkers = true;
+        this.filteredMarkers.push(marker);
+        bounds.extend(marker.position);
+      }
+    });
+
+    // Detect changes required so map loads
+    this.ref.detectChanges();
+    this.map.fitBounds(bounds);
+    this.map.panToBounds(bounds);
 
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(
         () => {
-          this.infoContent = this.markers[index].label as string;
+          this.infoContent = this.filteredMarkers[index].label as string;
           this.info.open(marker);
         },
         () => console.error("Failed to create info content for map marker")
       );
     });
   }
+}
+
+/**
+ * Validate a marker
+ * @param marker Marker to validate
+ */
+function isMarkerValid(marker: MapMarkerOption): boolean {
+  return (
+    typeof marker?.position?.lat === "number" &&
+    typeof marker?.position?.lng === "number"
+  );
+}
+
+/**
+ * Handles sanitization of map markers so change detection will run properly
+ */
+export function sanitizeMapMarkers(
+  markers: MapMarkerOption | MapMarkerOption[]
+): MapMarkerOption[] {
+  const output: MapMarkerOption[] = [];
+
+  if (markers instanceof Array) {
+    markers.forEach((marker) => {
+      if (isMarkerValid(marker)) {
+        output.push(marker);
+      }
+    });
+  } else {
+    if (isMarkerValid(markers)) {
+      output.push(markers);
+    }
+  }
+
+  return output;
 }
 
 export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;

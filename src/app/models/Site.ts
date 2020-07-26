@@ -137,6 +137,7 @@ export class Site extends AbstractModel implements ISite {
 
   /**
    * Create google maps marker options
+   * ! When using map markers, you should always run the output through `sanitizeMapMarkers()`
    */
   public getMapMarker(): MapMarkerOption {
     const hasCoordinates =

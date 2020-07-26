@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { projectMenuItem } from "src/app/component/projects/projects.menus";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
@@ -62,6 +63,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
   public recordingsEnd: DateTimeTimezone;
   public recordingsStart: DateTimeTimezone;
   public site: Site;
+  public marker: MapMarkerOption[];
 
   constructor(private route: ActivatedRoute) {
     super();
@@ -80,6 +82,7 @@ export class DetailsComponent extends PageComponent implements OnInit {
     this.project = projectModel.model;
     this.site = siteModel.model;
     this.recordings = [];
+    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
 
     // Retrieve audio recording details
     // this.route.params

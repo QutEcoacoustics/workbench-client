@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
-import { MapMarkerOption } from "@shared/map/map.component";
+import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 
 /**
  * Location Input
@@ -58,7 +58,7 @@ import { MapMarkerOption } from "@shared/map/map.component";
       <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
 
-    <baw-map *ngIf="marker" [markers]="[marker]"></baw-map>
+    <baw-map [markers]="marker"></baw-map>
   `,
 })
 // tslint:disable-next-line: component-class-suffix
@@ -67,7 +67,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
   public latitudeError: boolean;
   public longitude: number;
   public longitudeError: boolean;
-  public marker: MapMarkerOption;
+  public marker: MapMarkerOption[];
 
   public ngOnInit() {
     this.latitude = this.model["latitude"];
@@ -103,13 +103,14 @@ export class FormlyLocationInput extends FieldType implements OnInit {
    * @param longitude Longitude
    */
   private setMarker(latitude: number, longitude: number) {
-    this.marker =
-      typeof latitude === "number" && typeof longitude === "number"
+    this.marker = sanitizeMapMarkers(
+      isInstantiated(latitude) && isInstantiated(longitude)
         ? {
             position: { lat: latitude, lng: longitude },
             label: `Position (${latitude},${longitude})`,
           }
-        : null;
+        : null
+    );
   }
 
   /**
