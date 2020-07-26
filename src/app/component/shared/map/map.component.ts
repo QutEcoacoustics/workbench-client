@@ -10,7 +10,6 @@ import {
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
-import { Site } from "src/app/models/Site";
 
 /**
  * Google Maps Wrapper Component
@@ -41,10 +40,9 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() public sites: Site[];
+  @Input() public markers: google.maps.ReadonlyMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
-  public markers: google.maps.ReadonlyMarkerOptions[] = [];
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions = { mapTypeId: "satellite" };
@@ -55,8 +53,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   }
 
   public ngOnChanges() {
-    this.markers = createMarkers(this.sites);
-    this.hasMarkers = this.markers.length > 0;
+    this.hasMarkers = this.markers?.length > 0;
     this.ref.detectChanges();
 
     // Calculate pin boundaries so that map can be auto-focused properly
@@ -80,28 +77,4 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   }
 }
 
-/**
- * Create list of markers for map
- * @param sites List of sites
- * @returns List of markers
- */
-export function createMarkers(
-  sites: Site[]
-): google.maps.ReadonlyMarkerOptions[] {
-  const markers = [];
-  sites?.forEach((site) => {
-    const hasLatitude = typeof site.customLatitude === "number";
-    const hasLongitude = typeof site.customLongitude === "number";
-
-    if (hasLatitude && hasLongitude) {
-      markers.push({
-        position: {
-          lat: site.customLatitude,
-          lng: site.customLongitude,
-        },
-        label: site.name,
-      });
-    }
-  });
-  return markers;
-}
+export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;

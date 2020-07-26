@@ -8,6 +8,7 @@ import {
   TypeOption,
   WrapperOption,
 } from "@ngx-formly/core/lib/services/formly.config";
+import { MapModule } from "@shared/map/map.module";
 import { FormlyCheckboxInput } from "./checkbox-input.component";
 import { FileValueAccessor } from "./file-input.directive";
 import { FormlyHorizontalWrapper } from "./horizontal-wrapper";
@@ -47,6 +48,7 @@ const components = [
     ReactiveFormsModule,
     FormlyModule,
     FormlyBootstrapModule,
+    MapModule,
   ],
   exports: components,
 })

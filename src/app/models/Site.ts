@@ -1,6 +1,8 @@
 import { Injector } from "@angular/core";
 import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
@@ -117,5 +119,34 @@ export class Site extends AbstractModel implements ISite {
       projectId: typeof project === "number" ? project : project.id,
       siteId: this.id,
     });
+  }
+
+  /**
+   * Get site latitude
+   */
+  public getLatitude(): number {
+    return this.latitude ?? this.customLatitude;
+  }
+
+  /**
+   * Get site longitude
+   */
+  public getLongitude(): number {
+    return this.longitude ?? this.customLongitude;
+  }
+
+  /**
+   * Create google maps marker options
+   */
+  public getMapMarker(): MapMarkerOption {
+    const hasCoordinates =
+      isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
+
+    return hasCoordinates
+      ? {
+          position: { lat: this.getLatitude(), lng: this.getLongitude() },
+          label: this.name,
+        }
+      : null;
   }
 }

@@ -19,6 +19,7 @@ import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { MapMarkerOption } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
@@ -56,6 +57,7 @@ const sitesKey = "sites";
 export class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
   public sites: Site[];
+  public markers: MapMarkerOption[];
 
   constructor(private route: ActivatedRoute) {
     super();
@@ -68,5 +70,6 @@ export class DetailsComponent extends PageComponent implements OnInit {
     }
     this.project = resolvedModels[projectKey] as Project;
     this.sites = resolvedModels[sitesKey] as Site[];
+    this.markers = this.sites?.map((site) => site.getMapMarker());
   }
 }
