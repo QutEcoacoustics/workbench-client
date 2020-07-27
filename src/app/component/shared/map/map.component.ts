@@ -4,12 +4,10 @@ import {
   Input,
   OnChanges,
   QueryList,
-  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
@@ -55,7 +53,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
     super();
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges() {
     this.hasMarkers = false;
     this.filteredMarkers = [];
 
