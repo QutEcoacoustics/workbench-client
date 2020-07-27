@@ -1,10 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { APP_INITIALIZER } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
 import { serviceProviders } from "@baw-api/ServiceProviders";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ConfigOption, FormlyFieldConfig } from "@ngx-formly/core";
 import {
   formlyInputTypes,
@@ -58,29 +56,6 @@ export function maxValidationMessage(_, field: FormlyFieldConfig) {
 }
 
 /**
- * Location validator
- */
-export function locationValidator(control: AbstractControl) {
-  const { latitude, longitude } = control.value;
-
-  if (!isInstantiated(latitude) && !isInstantiated(longitude)) {
-    return null;
-  } else if (!isInstantiated(latitude) || !isInstantiated(longitude)) {
-    return {
-      location: {
-        message: "Both latitude and longitude must be set or left empty",
-      },
-    };
-  } else if (latitude < -90 || latitude > 90) {
-    return { location: { message: "Latitude must be between -90 and 90" } };
-  } else if (longitude < -180 || longitude > 180) {
-    return { location: { message: "Longitude must be between -180 and 180" } };
-  } else {
-    return null;
-  }
-}
-
-/**
  * Toastr Service global defaults
  */
 export const toastrRoot: Partial<GlobalConfig> = {
@@ -102,7 +77,6 @@ export const formlyRoot: ConfigOption = {
     { name: "min", message: minValidationMessage },
     { name: "max", message: maxValidationMessage },
   ],
-  validators: [{ name: "location", validation: locationValidator }],
 };
 
 /**
