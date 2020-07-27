@@ -58,7 +58,9 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
       <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
 
-    <baw-map [markers]="marker"></baw-map>
+    <div class="mb-3">
+      <baw-map [markers]="marker"></baw-map>
+    </div>
   `,
 })
 // tslint:disable-next-line: component-class-suffix

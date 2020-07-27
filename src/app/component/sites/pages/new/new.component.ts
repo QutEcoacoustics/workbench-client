@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { List } from "immutable";
@@ -11,6 +12,7 @@ import {
 } from "src/app/component/projects/projects.menus";
 import {
   defaultSuccessMsg,
+  extendedErrorMsg,
   FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
 import { Page } from "src/app/helpers/page/pageDecorator";
@@ -59,8 +61,13 @@ export class NewComponent extends FormTemplate<Site> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.name)
+    super(
+      notifications,
+      route,
+      router,
+      undefined,
+      (model) => defaultSuccessMsg("created", model.name),
+      siteErrorMsg
     );
   }
 
@@ -75,4 +82,10 @@ export class NewComponent extends FormTemplate<Site> {
   protected apiAction(model: Partial<Site>) {
     return this.api.create(new Site(model), this.project);
   }
+}
+
+export function siteErrorMsg(err: ApiErrorDetails) {
+  return extendedErrorMsg(err, {
+    tzinfoTz: (value) => `timezone identifier ${value[0]}`,
+  });
 }
