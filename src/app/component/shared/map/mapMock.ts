@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { sanitizeMapMarkers } from "./map.component";
 
 @Component({
   selector: "baw-map",
@@ -17,12 +18,12 @@ import { Component, Input, OnInit } from "@angular/core";
   styleUrls: ["./map.component.scss"],
 })
 export class MockMapComponent implements OnInit {
-  @Input() public markers: google.maps.ReadonlyMarkerOptions[];
+  @Input() public markers: any;
   public hasMarkers = false;
 
   constructor() {}
 
   public ngOnInit() {
-    this.hasMarkers = this.markers.length > 0;
+    this.hasMarkers = sanitizeMapMarkers(this.markers)?.length > 0;
   }
 }

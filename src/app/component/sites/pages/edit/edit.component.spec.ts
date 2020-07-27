@@ -7,7 +7,9 @@ import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
-import { testFormlyFields } from "@test/helpers/formly";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { FormlyFieldTestSuite, testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -45,14 +47,8 @@ describe("SitesEditComponent", () => {
               site: siteResolvers.show,
             },
             {
-              project: {
-                model: project,
-                error: projectError,
-              },
-              site: {
-                model: site,
-                error: siteError,
-              },
+              project: { model: project, error: projectError },
+              site: { model: site, error: siteError },
             }
           ),
         },
@@ -73,62 +69,45 @@ describe("SitesEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({ id: 1, name: "Project" });
-    defaultSite = new Site({ id: 1, name: "Site" });
+    defaultProject = new Project(generateProject());
+    defaultSite = new Site(generateSite());
     defaultError = { status: 401, message: "Unauthorized" };
   });
 
-  const formInputs = [
+  const formInputs: FormlyFieldTestSuite[] = [
     {
       testGroup: "Site Name Input",
-      setup: undefined,
       field: fields[1],
       key: "name",
       htmlType: "input",
       required: true,
       label: "Site Name",
       type: "text",
-      description: undefined,
     },
     {
       testGroup: "Site Description Input",
-      setup: undefined,
       field: fields[2],
       key: "description",
       htmlType: "textarea",
-      required: false,
       label: "Description",
-      type: undefined,
-      description: undefined,
     },
     {
       testGroup: "Site Location Input",
-      setup: undefined,
       field: fields[4],
       key: "location",
-      htmlType: "input",
-      required: false,
       label: "Location",
-      type: undefined,
-      description: undefined,
     },
     {
       testGroup: "Site Image Input",
-      setup: undefined,
       field: fields[9],
       key: "imageUrl",
       htmlType: "image",
-      required: false,
       label: "Image",
-      type: undefined,
-      description: undefined,
     },
   ];
 
   describe("form", () => {
     testFormlyFields(formInputs);
-
-    // TODO Add input validation for custom location logic
   });
 
   describe("component", () => {
@@ -163,17 +142,7 @@ describe("SitesEditComponent", () => {
 
     it("should redirect to site", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
-      const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "getViewUrl").and.stub();
-      spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
-
-      component.submit({});
-      expect(site.getViewUrl).toHaveBeenCalled();
-    });
-
-    it("should redirect to site with project", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
-      const site = new Site({ id: 1, name: "Site" });
+      const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 

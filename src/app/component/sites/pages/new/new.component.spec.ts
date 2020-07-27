@@ -6,10 +6,14 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { MockMapComponent } from "@shared/map/mapMock";
 import { SharedModule } from "@shared/shared.module";
-import { testFormlyFields } from "@test/helpers/formly";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { FormlyFieldTestSuite, testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { MockToastrService } from "@test/helpers/toastr";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -27,25 +31,19 @@ describe("SitesNewComponent", () => {
 
   function configureTestingModule(
     project: Project,
-    projectError: ApiErrorDetails
+    projectError?: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [NewComponent],
+      declarations: [NewComponent, MockMapComponent],
       providers: [
         ...testBawServices,
+        { provide: ToastrService, useClass: MockToastrService },
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            },
+            { project: projectResolvers.show },
+            { project: { model: project, error: projectError } },
             { projectId: project?.id }
           ),
         },
@@ -58,76 +56,54 @@ describe("SitesNewComponent", () => {
     api = TestBed.inject(SitesService);
     notifications = TestBed.inject(ToastrService);
 
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
     spyOn(router, "navigateByUrl").and.stub();
-
     fixture.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project({ id: 1, name: "Project" });
+    defaultProject = new Project(generateProject());
     defaultError = { status: 401, message: "Unauthorized" };
   });
 
-  // TODO Add timezone checks
-  const formInputs = [
+  const formInputs: FormlyFieldTestSuite[] = [
     {
       testGroup: "Site Name Input",
-      setup: undefined,
       field: fields[1],
       key: "name",
       htmlType: "input",
       required: true,
       label: "Site Name",
       type: "text",
-      description: undefined,
     },
     {
       testGroup: "Site Description Input",
-      setup: undefined,
       field: fields[2],
       key: "description",
       htmlType: "textarea",
-      required: false,
       label: "Description",
-      type: undefined,
-      description: undefined,
     },
     {
       testGroup: "Site Location Input",
-      setup: undefined,
       field: fields[4],
       key: "location",
-      htmlType: "input",
-      required: false,
       label: "Location",
-      type: undefined,
-      description: undefined,
     },
     {
       testGroup: "Site Image Input",
-      setup: undefined,
       field: fields[9],
       key: "imageUrl",
       htmlType: "image",
-      required: false,
       label: "Image",
-      type: undefined,
-      description: undefined,
     },
   ];
 
   describe("form", () => {
     testFormlyFields(formInputs);
-
-    // TODO Add input validation for custom location logic
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject, undefined);
-
+      configureTestingModule(defaultProject);
       expect(component).toBeTruthy();
     });
 
@@ -137,7 +113,7 @@ describe("SitesNewComponent", () => {
     }));
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       spyOn(api, "create").and.callThrough();
 
       component.submit({});
@@ -145,18 +121,8 @@ describe("SitesNewComponent", () => {
     });
 
     it("should redirect to site", () => {
-      configureTestingModule(defaultProject, undefined);
-      const site = new Site({ id: 1, name: "Site" });
-      spyOn(site, "getViewUrl").and.stub();
-      spyOn(api, "create").and.callFake(() => new BehaviorSubject<Site>(site));
-
-      component.submit({});
-      expect(site.getViewUrl).toHaveBeenCalled();
-    });
-
-    it("should redirect to site with project", () => {
-      configureTestingModule(defaultProject, undefined);
-      const site = new Site({ id: 1, name: "Site" });
+      configureTestingModule(defaultProject);
+      const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "create").and.callFake(() => new BehaviorSubject<Site>(site));
 

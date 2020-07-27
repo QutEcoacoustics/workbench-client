@@ -71,7 +71,7 @@
       "key": "imageUrl",
       "type": "image",
       "templateOptions": {
-        "label": "Image URL",
+        "label": "Image",
         "required": false
       }
     },

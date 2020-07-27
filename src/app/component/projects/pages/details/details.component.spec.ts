@@ -61,15 +61,9 @@ describe("ProjectDetailsComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
+    defaultProject = new Project({ id: 1, name: "Project" });
     defaultSites = [];
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
