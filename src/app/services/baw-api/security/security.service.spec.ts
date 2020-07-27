@@ -128,6 +128,7 @@ describe("SecurityService", () => {
           subject.error({
             status: 401,
             message: "Unauthorized",
+            info: undefined,
           } as ApiErrorDetails);
           return subject;
         }
