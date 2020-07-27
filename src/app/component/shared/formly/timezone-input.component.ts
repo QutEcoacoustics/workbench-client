@@ -32,22 +32,30 @@ import {
         ></ngb-highlight>
       </ng-template>
 
-      <input
-        #instance="ngbTypeahead"
-        type="text"
-        class="form-control"
-        placeholder="Type a city or country name."
-        [class]="{ 'is-invalid': error }"
-        [editable]="false"
-        [ngbTypeahead]="search"
-        [inputFormatter]="formatter"
-        [resultTemplate]="rt"
-        [formlyAttributes]="field"
-        [(ngModel)]="timezone"
-        (ngModelChange)="updateValue()"
-        (focus)="focus$.next($any($event).target.value)"
-        (click)="click$.next($any($event).target.value)"
-      />
+      <div class="input-group">
+        <input
+          #instance="ngbTypeahead"
+          type="text"
+          class="form-control"
+          placeholder="Type a city or country name."
+          [class]="{ 'is-invalid': error }"
+          [editable]="false"
+          [ngbTypeahead]="search"
+          [inputFormatter]="formatter"
+          [resultTemplate]="rt"
+          [formlyAttributes]="field"
+          [(ngModel)]="timezone"
+          (ngModelChange)="updateValue()"
+          (focus)="focus$.next($any($event).target.value)"
+          (click)="click$.next($any($event).target.value)"
+        />
+
+        <div class="input-group-append">
+          <span class="input-group-text">
+            {{ timezone ? timezone.countryName : "(no value)" }}
+          </span>
+        </div>
+      </div>
 
       <div *ngIf="error" class="invalid-feedback" style="display: block;">
         {{ getError() }}

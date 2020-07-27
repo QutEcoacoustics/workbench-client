@@ -23,7 +23,7 @@ import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { HeaderModule } from "./header/header.module";
-import { IndicatorComponent } from "./indicator/indicator.component";
+import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
@@ -38,7 +38,6 @@ export const sharedComponents = [
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
-  IndicatorComponent,
   SecondaryMenuComponent,
   WIPComponent,
 ];
@@ -68,4 +67,5 @@ export const sharedModules = [
   ItemsModule,
   MenuModule,
   LoadingModule,
+  IndicatorModule,
 ];
