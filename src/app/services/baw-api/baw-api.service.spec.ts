@@ -38,12 +38,13 @@ export const shouldNotComplete = () => {
   fail("Service should not complete");
 };
 
-export const apiErrorDetails = {
+export const apiErrorDetails: ApiErrorDetails = {
   status: 401,
   message: "Unauthorized",
-} as ApiErrorDetails;
+  info: undefined,
+};
 
-export const apiErrorInfoDetails = {
+export const apiErrorInfoDetails: ApiErrorDetails = {
   status: 422,
   message: "Record could not be saved",
   info: {
@@ -54,7 +55,7 @@ export const apiErrorInfoDetails = {
     imageContentType: [],
     imageUpdatedAt: [],
   },
-} as ApiErrorDetails;
+};
 
 describe("BawApiService", () => {
   /**
