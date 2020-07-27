@@ -8,20 +8,18 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
   formInputs.forEach(
     ({
       testGroup,
-      setup,
+      setup = () => {},
       field,
       key,
-      htmlType,
-      required,
-      label,
       type,
+      required = false,
+      label,
+      inputType,
       description,
     }) => {
       describe(testGroup, () => {
         beforeEach(() => {
-          if (setup) {
-            setup();
-          }
+          setup();
         });
 
         it("should contain input", () => {
@@ -36,9 +34,9 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           expect(field.templateOptions?.required ?? false).toBe(required);
         });
 
-        if (htmlType) {
-          it(`should be ${htmlType} input`, () => {
-            expect(field.type).toBe(htmlType);
+        if (type) {
+          it(`should use formly ${type}`, () => {
+            expect(field.type).toBe(type);
           });
         }
 
@@ -48,9 +46,9 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           });
         }
 
-        if (type) {
-          it(`should be of type "${type}"`, () => {
-            expect(field.templateOptions.type).toBe(type);
+        if (inputType) {
+          it(`should be input of type "${inputType}"`, () => {
+            expect(field.templateOptions.type).toBe(inputType);
           });
         }
 
@@ -76,11 +74,11 @@ export interface FormlyFieldTestSuite {
   /** Is field required */
   required?: boolean;
   /** Field input method (ie. textarea, input) */
-  htmlType?: string;
+  type?: string;
   /** Field label */
   label?: string;
   /** Field input type (ie. text, password) */
-  type?: string;
+  inputType?: string;
   /** Field description */
   description?: string;
 }

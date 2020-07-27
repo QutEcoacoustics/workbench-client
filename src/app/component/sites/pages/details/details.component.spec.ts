@@ -5,7 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { assertImage } from "@test/helpers/html";
-import { MockMapComponent } from "src/app/component/shared/map/mapMock";
+import { MockMapComponent } from "@shared/map/mapMock.component";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -15,6 +15,8 @@ import {
   testBawServices,
 } from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
+import { generateSite } from "@test/fakes/Site";
+import { generateProject } from "@test/fakes/Project";
 
 describe("SitesDetailsComponent", () => {
   let component: DetailsComponent;
@@ -42,14 +44,8 @@ describe("SitesDetailsComponent", () => {
               site: siteResolvers.show,
             },
             {
-              project: {
-                model: project,
-                error: projectError,
-              },
-              site: {
-                model: site,
-                error: siteError,
-              },
+              project: { model: project, error: projectError },
+              site: { model: site, error: siteError },
             }
           ),
         },
@@ -61,14 +57,8 @@ describe("SitesDetailsComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: 1,
-      name: "Site",
-    });
+    defaultProject = new Project(generateProject());
+    defaultSite = new Site(generateSite());
     defaultError = {
       status: 401,
       message: "Unauthorized",

@@ -4,11 +4,8 @@ import {
   fakeAsync,
   TestBed,
 } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { SecurityService } from "@baw-api/security/security.service";
-import { SharedModule } from "@shared/shared.module";
 import { ToastrService } from "ngx-toastr";
-import { appLibraryImports } from "src/app/app.module";
 import { testFormlyFields } from "src/app/test/helpers/formly";
 import {
   assertValidationMessage,
@@ -16,9 +13,11 @@ import {
   inputValue,
   submitForm,
 } from "src/app/test/helpers/html";
-import { testBawServices } from "src/app/test/helpers/testbed";
+import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
+import { FormComponent } from "@shared/form/form.component";
+import { WIPComponent } from "@shared/wip/wip.component";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;
@@ -35,52 +34,42 @@ describe("RegisterComponent", () => {
     spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
   }
 
-  const formInputs = [
-    {
-      testGroup: "Username Input",
-      setup: undefined,
-      field: fields[0],
-      key: "username",
-      htmlType: "input",
-      required: true,
-      label: "Username",
-      type: "text",
-      description: undefined,
-    },
-    {
-      testGroup: "Email Input",
-      setup: undefined,
-      field: fields[1],
-      key: "email",
-      htmlType: "input",
-      required: true,
-      label: "Email Address",
-      type: "email",
-      description: undefined,
-    },
-    {
-      testGroup: "Password",
-      setup: undefined,
-      field: fields[2],
-      key: "confirmation",
-      htmlType: "input",
-      required: true,
-      label: "Password",
-      type: "passwordConfirmation",
-      description: undefined,
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Username Input",
+        field: fields[0],
+        key: "username",
+        type: "input",
+        required: true,
+        label: "Username",
+        inputType: "text",
+      },
+      {
+        testGroup: "Email Input",
+        field: fields[1],
+        key: "email",
+        type: "input",
+        required: true,
+        label: "Email Address",
+        inputType: "email",
+      },
+      {
+        testGroup: "Password",
+        field: fields[2],
+        key: "confirmation",
+        required: true,
+        type: "passwordConfirmation",
+      },
+    ]);
   });
 
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [...appLibraryImports, RouterTestingModule, SharedModule],
-        declarations: [RegisterComponent],
-        providers: [...testBawServices],
+        imports: testFormImports,
+        declarations: [RegisterComponent, FormComponent, WIPComponent],
+        providers: testBawServices,
       }).compileComponents();
     }));
 
@@ -102,48 +91,6 @@ describe("RegisterComponent", () => {
 
     // TODO
     xit("should call api", () => {});
-
-    it("should display error if password and password confirmation do not match", fakeAsync(() => {
-      isSignedIn(false);
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      const inputs = getInputs(fixture);
-      inputValue(inputs[usernameIndex], "input", "username");
-      inputValue(inputs[emailIndex], "input", "a@b.com.au");
-      inputValue(inputs[passwordIndex], "input", "password 1");
-      inputValue(inputs[passwordConfIndex], "input", "password 2");
-      submitForm(fixture);
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Please fill all required fields."
-      );
-      assertValidationMessage(
-        inputs[passwordConfIndex],
-        "Passwords do not match."
-      );
-    }));
-
-    it("should display error if password is less than 6 characters", fakeAsync(() => {
-      isSignedIn(false);
-      spyOn(component, "submit");
-      fixture.detectChanges();
-
-      const inputs = getInputs(fixture);
-      inputValue(inputs[usernameIndex], "input", "username");
-      inputValue(inputs[emailIndex], "input", "a@b.com.au");
-      inputValue(inputs[passwordIndex], "input", "pass");
-      inputValue(inputs[passwordConfIndex], "input", "pass");
-      submitForm(fixture);
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Please fill all required fields."
-      );
-      assertValidationMessage(
-        inputs[passwordConfIndex],
-        "Input should have at least 6 characters"
-      );
-    }));
 
     describe("authenticated user", () => {
       it("should show error for authenticated user", () => {

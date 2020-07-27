@@ -1,19 +1,9 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
+import { HttpTestingController } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
-import { ToastrModule, ToastrService } from "ngx-toastr";
-import { formlyRoot, toastrRoot } from "src/app/app.helper";
-import { ApiResponse } from "src/app/services/baw-api/baw-api.service";
-import { LoadingComponent } from "../loading/loading.component";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
 import { FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
@@ -64,17 +54,8 @@ describe("FormComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        NgbModule,
-        ReactiveFormsModule,
-        FormlyModule.forRoot(formlyRoot),
-        FormlyBootstrapModule,
-        ToastrModule.forRoot(toastrRoot),
-        HttpClientTestingModule,
-      ],
-      declarations: [FormComponent, LoadingComponent],
+      imports: testFormImports,
+      declarations: [FormComponent],
     }).compileComponents();
   }));
 

@@ -7,7 +7,7 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@component/projects/site-card/site-card.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { MockMapComponent } from "@shared/map/mapMock";
+import { MockMapComponent } from "@shared/map/mapMock.component";
 import { SharedModule } from "@shared/shared.module";
 import { assertImage } from "@test/helpers/html";
 import {
@@ -42,14 +42,8 @@ describe("ProjectDetailsComponent", () => {
               sites: siteResolvers.list,
             },
             {
-              project: {
-                model: project,
-                error: projectError,
-              },
-              sites: {
-                model: sites,
-                error: sitesError,
-              },
+              project: { model: project, error: projectError },
+              sites: { model: sites, error: sitesError },
             }
           ),
         },

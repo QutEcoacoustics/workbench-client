@@ -23,6 +23,32 @@ import {
   testApiConfig,
 } from "@services/app-config/appConfigMock.service";
 import { BehaviorSubject } from "rxjs";
+import { ReactiveFormsModule } from "@angular/forms";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { CommonModule } from "@angular/common";
+import { formlyRoot, toastrRoot } from "src/app/app.helper";
+import { ToastrModule } from "ngx-toastr";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { LoadingModule } from "@shared/loading/loading.module";
+
+export const testFormImports = [
+  CommonModule,
+  BrowserModule,
+  BrowserAnimationsModule,
+  NgbModule,
+  ReactiveFormsModule,
+  FormlyModule.forRoot(formlyRoot),
+  FormlyBootstrapModule,
+  ToastrModule.forRoot(toastrRoot),
+  HttpClientTestingModule,
+  RouterTestingModule,
+  LoadingModule,
+];
 
 /**
  * Create mock initializer values

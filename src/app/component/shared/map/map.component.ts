@@ -56,7 +56,6 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   public ngOnChanges() {
     this.hasMarkers = false;
     this.filteredMarkers = [];
-
     // Calculate pin boundaries so that map can be auto-focused properly
     const bounds = new google.maps.LatLngBounds();
     this.markers?.forEach((marker) => {
@@ -66,12 +65,10 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
         bounds.extend(marker.position);
       }
     });
-
     // Detect changes required so map loads
     this.ref.detectChanges();
     this.map.fitBounds(bounds);
     this.map.panToBounds(bounds);
-
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(

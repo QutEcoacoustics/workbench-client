@@ -1,152 +1,131 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { MapComponent } from "@shared/map/map.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { FormlyFieldTestSuite, testFormlyFields } from "@test/helpers/formly";
+import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { testBawServices, testFormImports } from "@test/helpers/testbed";
+import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { fields } from "../../site.base.json";
 import { EditComponent } from "./edit.component";
 
 describe("SitesEditComponent", () => {
   let api: SitesService;
-  let component: EditComponent;
-  let defaultError: ApiErrorDetails;
-  let defaultProject: Project;
   let defaultSite: Site;
-  let fixture: ComponentFixture<EditComponent>;
-  let notifications: ToastrService;
-  let router: Router;
-
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails,
-    site: Site,
-    siteError: ApiErrorDetails
-  ) {
-    TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      declarations: [EditComponent],
-      providers: [
-        ...testBawServices,
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-              site: siteResolvers.show,
-            },
-            {
-              project: { model: project, error: projectError },
-              site: { model: site, error: siteError },
-            }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(EditComponent);
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    api = TestBed.inject(SitesService);
-    notifications = TestBed.inject(ToastrService);
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
-
-    fixture.detectChanges();
-  }
-
-  beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultSite = new Site(generateSite());
-    defaultError = { status: 401, message: "Unauthorized" };
+  let defaultProject: Project;
+  let defaultError: ApiErrorDetails;
+  let spectator: SpectatorRouting<EditComponent>;
+  let createComponent = createRoutingFactory({
+    component: EditComponent,
+    imports: testFormImports,
+    declarations: [FormComponent, MockComponent(MapComponent)],
+    providers: testBawServices,
+    mocks: [ToastrService],
+    stubsEnabled: true,
   });
 
-  const formInputs: FormlyFieldTestSuite[] = [
-    {
-      testGroup: "Site Name Input",
-      field: fields[1],
-      key: "name",
-      htmlType: "input",
-      required: true,
-      label: "Site Name",
-      type: "text",
-    },
-    {
-      testGroup: "Site Description Input",
-      field: fields[2],
-      key: "description",
-      htmlType: "textarea",
-      label: "Description",
-    },
-    {
-      testGroup: "Site Location Input",
-      field: fields[4],
-      key: "location",
-      label: "Location",
-    },
-    {
-      testGroup: "Site Image Input",
-      field: fields[9],
-      key: "imageUrl",
-      htmlType: "image",
-      label: "Image",
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Site Name Input",
+        field: fields[1],
+        key: "name",
+        type: "input",
+        required: true,
+        label: "Site Name",
+        inputType: "text",
+      },
+      {
+        testGroup: "Site Description Input",
+        field: fields[2],
+        key: "description",
+        type: "textarea",
+        label: "Description",
+      },
+      {
+        testGroup: "Site Location Input",
+        field: fields[4],
+        key: "location",
+        label: "Location",
+      },
+      {
+        testGroup: "Site Image Input",
+        field: fields[9],
+        key: "imageUrl",
+        type: "image",
+        label: "Image",
+      },
+    ]);
   });
 
   describe("component", () => {
-    it("should create", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+    function setup(
+      project: Project,
+      projectError: ApiErrorDetails,
+      site: Site,
+      siteError: ApiErrorDetails
+    ) {
+      spectator = createComponent({
+        detectChanges: false,
+        params: { projectId: project?.id, siteId: site?.id },
+        data: {
+          resolvers: {
+            project: projectResolvers.show,
+            site: siteResolvers.show,
+          },
+          project: { model: project, error: projectError },
+          site: { model: site, error: siteError },
+        },
+      });
 
-      expect(component).toBeTruthy();
+      api = spectator.inject(SitesService);
+      spectator.detectChanges();
+    }
+
+    beforeEach(() => {
+      defaultSite = new Site(generateSite());
+      defaultProject = new Project(generateProject());
+      defaultError = { status: 401, message: "Unauthorized" };
     });
 
-    it("should handle project error", () => {
-      configureTestingModule(undefined, defaultError, defaultSite, undefined);
-      assertResolverErrorHandling(fixture);
+    it("should create", () => {
+      setup(defaultProject, undefined, defaultSite, undefined);
+      expect(spectator.component).toBeTruthy();
     });
 
     it("should handle site error", () => {
-      configureTestingModule(
-        defaultProject,
-        undefined,
-        undefined,
-        defaultError
-      );
-      assertResolverErrorHandling(fixture);
+      setup(defaultProject, undefined, undefined, defaultError);
+      assertResolverErrorHandling(spectator.fixture);
+    });
+
+    it("should handle project error", () => {
+      setup(undefined, defaultError, defaultSite, undefined);
+      assertResolverErrorHandling(spectator.fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      setup(defaultProject, undefined, defaultSite, undefined);
       spyOn(api, "update").and.callThrough();
 
-      component.submit({});
-      expect(api.update).toHaveBeenCalled();
+      spectator.component.submit({});
+      expect(api.create).toHaveBeenCalled();
     });
 
     it("should redirect to site", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      setup(defaultProject, undefined, defaultSite, undefined);
       const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
 
-      component.submit({});
+      spectator.component.submit({});
       expect(site.getViewUrl).toHaveBeenCalledWith(defaultProject);
     });
   });
