@@ -65,6 +65,11 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
         bounds.extend(marker.position);
       }
     });
+
+    if (!this.hasMarkers) {
+      return;
+    }
+
     // Detect changes required so map loads
     this.ref.detectChanges();
     this.map.fitBounds(bounds);

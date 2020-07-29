@@ -1,32 +1,30 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  destroyGoogleMaps,
+  embedGoogleMaps,
+} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { MapComponent } from "@shared/map/map.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { testBawServices, testFormImports } from "@test/helpers/testbed";
-import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { fields } from "../../site.base.json";
 import { EditComponent } from "./edit.component";
 
 describe("SitesEditComponent", () => {
-  let api: SitesService;
-  let defaultSite: Site;
-  let defaultProject: Project;
-  let defaultError: ApiErrorDetails;
   let spectator: SpectatorRouting<EditComponent>;
-  let createComponent = createRoutingFactory({
+  const createComponent = createRoutingFactory({
     component: EditComponent,
     imports: testFormImports,
-    declarations: [FormComponent, MockComponent(MapComponent)],
+    declarations: [FormComponent],
     providers: testBawServices,
     mocks: [ToastrService],
     stubsEnabled: true,
@@ -67,22 +65,25 @@ describe("SitesEditComponent", () => {
   });
 
   describe("component", () => {
+    let api: SitesService;
+    let defaultError: ApiErrorDetails;
+    let defaultProject: Project;
+    let defaultSite: Site;
+
     function setup(
-      project: Project,
-      projectError: ApiErrorDetails,
-      site: Site,
-      siteError: ApiErrorDetails
+      projectError?: ApiErrorDetails,
+      siteError?: ApiErrorDetails
     ) {
       spectator = createComponent({
         detectChanges: false,
-        params: { projectId: project?.id, siteId: site?.id },
+        params: { projectId: defaultProject?.id, siteId: defaultSite?.id },
         data: {
           resolvers: {
             project: projectResolvers.show,
             site: siteResolvers.show,
           },
-          project: { model: project, error: projectError },
-          site: { model: site, error: siteError },
+          project: { model: defaultProject, error: projectError },
+          site: { model: defaultSite, error: siteError },
         },
       });
 
@@ -90,37 +91,39 @@ describe("SitesEditComponent", () => {
       spectator.detectChanges();
     }
 
+    beforeAll(async () => await embedGoogleMaps());
+    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
-      defaultSite = new Site(generateSite());
       defaultProject = new Project(generateProject());
+      defaultSite = new Site(generateSite());
       defaultError = { status: 401, message: "Unauthorized" };
     });
 
     it("should create", () => {
-      setup(defaultProject, undefined, defaultSite, undefined);
+      setup();
       expect(spectator.component).toBeTruthy();
     });
 
     it("should handle site error", () => {
-      setup(defaultProject, undefined, undefined, defaultError);
+      setup(undefined, defaultError);
       assertResolverErrorHandling(spectator.fixture);
     });
 
     it("should handle project error", () => {
-      setup(undefined, defaultError, defaultSite, undefined);
+      setup(defaultError);
       assertResolverErrorHandling(spectator.fixture);
     });
 
     it("should call api", () => {
-      setup(defaultProject, undefined, defaultSite, undefined);
+      setup();
       spyOn(api, "update").and.callThrough();
 
       spectator.component.submit({});
-      expect(api.create).toHaveBeenCalled();
+      expect(api.update).toHaveBeenCalled();
     });
 
     it("should redirect to site", () => {
-      setup(defaultProject, undefined, defaultSite, undefined);
+      setup();
       const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));

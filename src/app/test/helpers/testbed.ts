@@ -1,5 +1,11 @@
+import { CommonModule } from "@angular/common";
 import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
 import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
 import {
@@ -17,24 +23,18 @@ import {
   CMS_ROOT,
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import {
   AppConfigMockService,
   testApiConfig,
 } from "@services/app-config/appConfigMock.service";
-import { BehaviorSubject } from "rxjs";
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { CommonModule } from "@angular/common";
-import { formlyRoot, toastrRoot } from "src/app/app.helper";
-import { ToastrModule } from "ngx-toastr";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { ToastrModule } from "ngx-toastr";
+import { BehaviorSubject } from "rxjs";
+import { formlyRoot, toastrRoot } from "src/app/app.helper";
 
 export const testFormImports = [
   CommonModule,

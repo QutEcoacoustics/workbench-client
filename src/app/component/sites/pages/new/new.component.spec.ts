@@ -24,7 +24,7 @@ describe("SitesNewComponent", () => {
   let defaultProject: Project;
   let defaultError: ApiErrorDetails;
   let spectator: SpectatorRouting<NewComponent>;
-  let createComponent = createRoutingFactory({
+  const createComponent = createRoutingFactory({
     component: NewComponent,
     imports: testFormImports,
     declarations: [FormComponent],
@@ -68,13 +68,13 @@ describe("SitesNewComponent", () => {
   });
 
   describe("component", () => {
-    function setup(model: Project, error?: ApiErrorDetails) {
+    function setup(error?: ApiErrorDetails) {
       spectator = createComponent({
         detectChanges: false,
-        params: { projectId: model?.id },
+        params: { projectId: defaultProject?.id },
         data: {
           resolvers: { project: projectResolvers.show },
-          project: { model, error },
+          project: { model: defaultProject, error },
         },
       });
 
@@ -83,25 +83,24 @@ describe("SitesNewComponent", () => {
     }
 
     beforeAll(async () => await embedGoogleMaps());
+    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
       defaultError = { status: 401, message: "Unauthorized" };
     });
-    afterAll(() => destroyGoogleMaps());
 
     it("should create", () => {
-      setup(defaultProject);
-
+      setup();
       expect(spectator.component).toBeTruthy();
     });
 
     it("should handle project error", () => {
-      setup(undefined, defaultError);
+      setup(defaultError);
       assertResolverErrorHandling(spectator.fixture);
     });
 
     it("should call api", () => {
-      setup(defaultProject);
+      setup();
       spyOn(api, "create").and.callThrough();
 
       spectator.component.submit({});
@@ -109,7 +108,7 @@ describe("SitesNewComponent", () => {
     });
 
     it("should redirect to site", () => {
-      setup(defaultProject);
+      setup();
       const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
       spyOn(api, "create").and.callFake(() => new BehaviorSubject<Site>(site));
