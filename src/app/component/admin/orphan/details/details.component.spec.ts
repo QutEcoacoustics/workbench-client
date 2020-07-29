@@ -9,7 +9,6 @@ import { AdminAudioRecordingComponent } from "@component/admin/audio-recordings/
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -73,7 +72,7 @@ describe("AdminOrphanComponent", () => {
   }
 
   it("should create", () => {
-    configureTestingModule(new Site({ id: 1 }));
+    configureTestingModule(new Site(generateSite()));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -131,26 +130,10 @@ describe("AdminOrphanComponent", () => {
         key: "timezoneInformation",
         code: model.timezoneInformation,
       },
-      {
-        label: "Creator",
-        key: "creator",
-        model: `User: custom username (1)`,
-      },
-      {
-        label: "Updater",
-        key: "updater",
-        model: `User: custom username (1)`,
-      },
-      {
-        label: "Created At",
-        key: "createdAt",
-        plain: humanizeDateTime(model.createdAt),
-      },
-      {
-        label: "Updated At",
-        key: "updatedAt",
-        plain: humanizeDateTime(model.updatedAt),
-      },
+      { label: "Creator", key: "creator", model: "User: custom username (1)" },
+      { label: "Updater", key: "updater", model: "User: custom username (1)" },
+      { label: "Created At", key: "createdAt", plain: model.createdAt },
+      { label: "Updated At", key: "updatedAt", plain: model.updatedAt },
       {
         label: "Projects",
         key: "projects",

@@ -7,12 +7,11 @@ import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
-import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { SharedModule } from "@shared/shared.module";
-import { assertDetailView } from "@test/helpers/detail-view";
+import { generateScript } from "@test/fakes/Script";
+import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
-import { DateTime } from "luxon";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptComponent } from "./details.component";
@@ -59,11 +58,7 @@ describe("ScriptComponent", () => {
   }
 
   it("should create", () => {
-    configureTestingModule(
-      new Script({
-        id: 1,
-      })
-    );
+    configureTestingModule(new Script(generateScript()));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -78,29 +73,9 @@ describe("ScriptComponent", () => {
   });
 
   describe("details", () => {
-    const createdAt = DateTime.fromISO("2010-02-01T21:00:00.000+15:00", {
-      setZone: true,
-    });
+    const model = new Script(generateScript());
 
     beforeEach(async function () {
-      const model = new Script({
-        id: 1,
-        name: "custom script",
-        description: "custom description",
-        analysisIdentifier: "audio2csv",
-        version: 0.1,
-        verified: true,
-        groupId: 1,
-        creatorId: 1,
-        createdAt: createdAt.toISO(),
-        executableCommand: "executable command",
-        executableSettings: "executable settings",
-        executableSettingsMediaType: "text/json",
-        analysisActionParams: {
-          test: "value",
-        },
-      });
-
       const promise = configureTestingModule(model);
       fixture.detectChanges();
       await promise;
@@ -108,34 +83,42 @@ describe("ScriptComponent", () => {
       this.fixture = fixture;
     });
 
-    assertDetailView("Script Id", "id", "1");
-    assertDetailView("Name", "name", "custom script");
-    assertDetailView("Description", "description", "custom description");
-    assertDetailView("Version", "version", "0.1");
-    assertDetailView("Analysis Identifier", "analysisIdentifier", "audio2csv");
-    assertDetailView(
-      "Executable Command",
-      "executableCommand",
-      "executable command"
-    );
-    assertDetailView(
-      "Executable Settings",
-      "executableSettings",
-      "executable settings"
-    );
-    assertDetailView(
-      "Executable Settings Media Type",
-      "executableSettingsMediaType",
-      "text/json"
-    );
-    assertDetailView(
-      "Analysis Action Parameters",
-      "analysisActionParams",
-      '{"test":"value"}'
-    );
-    assertDetailView("Verified", "verified", true);
-    assertDetailView("Group Id", "groupId", "1");
-    assertDetailView("Creator", "creatorId", "User: custom username (1)");
-    assertDetailView("Created At", "createdAt", humanizeDateTime(createdAt));
+    const details: Detail[] = [
+      { label: "Script Id", key: "id", plain: model.id },
+      { label: "Name", key: "name", plain: model.name },
+      { label: "Description", key: "description", plain: model.description },
+      { label: "Version", key: "version", plain: model.version },
+      {
+        label: "Analysis Identifier",
+        key: "analysisIdentifier",
+        plain: model.analysisIdentifier,
+      },
+      {
+        label: "Executable Command",
+        key: "executableCommand",
+        plain: model.executableCommand,
+      },
+      {
+        label: "Executable Settings",
+        key: "executableSettings",
+        plain: model.executableSettings,
+      },
+      {
+        label: "Executable Settings Media Type",
+        key: "executableSettingsMediaType",
+        plain: model.executableSettingsMediaType,
+      },
+      {
+        label: "Analysis Action Parameters",
+        key: "analysisActionParams",
+        code: model.analysisActionParams,
+      },
+      { label: "Verified", key: "verified", checkbox: model.verified },
+      { label: "Group Id", key: "groupId", plain: model.groupId },
+      { label: "Creator", key: "creator", model: "User: custom username (1)" },
+      { label: "Created At", key: "createdAt", plain: model.createdAt },
+    ];
+
+    details.forEach((detail) => assertDetail(detail));
   });
 });

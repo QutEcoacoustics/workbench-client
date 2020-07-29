@@ -1,5 +1,7 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { ImageUrl } from "@interfaces/apiInterfaces";
+import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
+import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
+import { DateTime, Duration } from "luxon";
 import { assertImage } from "./html";
 
 /**
@@ -17,49 +19,6 @@ function findDetailIndex(nativeElement: HTMLElement, label: string) {
     }
   });
   return detailIndex;
-}
-
-/**
- * Assert detail view is correct
- * @deprecated
- * @param label Detail view label
- * @param key Model key where data is stored (if association, give the base key)
- * @param response Expected response
- */
-export function assertDetailView(
-  label: string,
-  key: string,
-  response?: string | string[] | boolean
-) {
-  describe(`${label} (${key})`, function () {
-    it("should display " + key, function () {
-      const index = findDetailIndex(this.fixture.nativeElement, label);
-      expect(index).toBeGreaterThanOrEqual(0);
-    });
-
-    it("should display " + key + " value", function () {
-      const index = findDetailIndex(this.fixture.nativeElement, label);
-      const views = (this.fixture
-        .nativeElement as HTMLElement).querySelectorAll("dl");
-
-      if (response instanceof Array) {
-        expect(views.length).toBe(response.length);
-        (response as string[]).forEach((output, i) => {
-          expect(views[index + i].innerText.trim()).toBe(output);
-        });
-      } else if (typeof response === "boolean") {
-        const view = views[index].querySelector("input");
-        if (response) {
-          expect(view.checked).toBeTruthy();
-        } else {
-          expect(view.checked).toBeFalsy();
-        }
-      } else {
-        const view = views[index];
-        expect(view.innerText.trim()).toBe(response);
-      }
-    });
-  });
 }
 
 /**
@@ -118,9 +77,22 @@ function assertCode(view: HTMLDListElement, value: object) {
   expect(code.innerHTML.trim()).toBe(JSON.stringify(value));
 }
 
-function assertPlainText(view: HTMLDListElement, value: string | number) {
+function assertPlainText(
+  view: HTMLDListElement,
+  value: string | number | DateTime | Duration
+) {
   const plainText: HTMLElement = view.querySelector("#plain");
-  expect(plainText.innerHTML.trim()).toBe(value.toString());
+  let result: string;
+
+  if (value instanceof DateTime) {
+    result = humanizeDateTime(value);
+  } else if (value instanceof Duration) {
+    result = `${value.toISO()} (${toRelative(value)})`;
+  } else {
+    result = value.toString();
+  }
+
+  expect(plainText.innerHTML.trim()).toBe(result);
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
@@ -155,7 +127,7 @@ export interface Detail extends View {
 interface View {
   checkbox?: boolean;
   code?: object;
-  plain?: string | number;
+  plain?: string | number | DateTime | Duration;
   model?: string;
   image?: string | ImageUrl[];
   children?: View[];
