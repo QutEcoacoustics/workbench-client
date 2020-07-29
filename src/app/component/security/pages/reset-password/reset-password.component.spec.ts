@@ -1,10 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { HomeComponent } from "@component/home/home.component";
-import { SharedModule } from "@shared/shared.module";
+import { FormComponent } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
-import { appLibraryImports } from "src/app/app.module";
 import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
+import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { fields } from "./reset-password.schema.json";
 
@@ -13,30 +11,26 @@ describe("ResetPasswordComponent", () => {
   let fixture: ComponentFixture<ResetPasswordComponent>;
   let notifications: ToastrService;
 
-  const formInputs = [
-    {
-      testGroup: "Username/Email Address Input",
-      setup: undefined,
-      field: fields[0],
-      key: "login",
-      htmlType: "input",
-      required: true,
-      label: "Username or Email Address",
-      type: "text",
-      description: undefined,
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Username/Email Address Input",
+        field: fields[0],
+        key: "login",
+        label: "Username or Email Address",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+    ]);
   });
 
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [...appLibraryImports, SharedModule],
-        declarations: [ResetPasswordComponent, HomeComponent],
-        providers: [...testAppInitializer],
+        imports: testFormImports,
+        declarations: [ResetPasswordComponent, FormComponent],
+        providers: testBawServices,
       }).compileComponents();
     }));
 
