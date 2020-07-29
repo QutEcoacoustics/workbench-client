@@ -1,19 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import {
+  mockActivatedRoute,
+  testBawServices,
+  testFormImports,
+} from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { fields } from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
 
@@ -31,22 +33,15 @@ describe("ProjectsEditComponent", () => {
     projectError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: testFormImports,
       declarations: [EditComponent],
       providers: [
         ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            }
+            { project: projectResolvers.show },
+            { project: { model: project, error: projectError } }
           ),
         },
       ],
@@ -66,54 +61,36 @@ describe("ProjectsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project(generateProject());
+    defaultError = { status: 401, message: "Unauthorized" };
   });
 
-  const formInputs = [
-    {
-      testGroup: "Project Name Input",
-      setup: undefined,
-      field: fields[0],
-      key: "name",
-      htmlType: "input",
-      required: true,
-      label: "Project Name",
-      type: "text",
-      description: undefined,
-    },
-    {
-      testGroup: "Project Description Input",
-      setup: undefined,
-      field: fields[1],
-      key: "description",
-      htmlType: "textarea",
-      required: false,
-      label: "Description",
-      type: undefined,
-      description: undefined,
-    },
-    {
-      testGroup: "Project Image Input",
-      setup: undefined,
-      field: fields[2],
-      key: "image",
-      htmlType: "image",
-      required: false,
-      label: "Image",
-      type: undefined,
-      description: undefined,
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Project Name Input",
+        field: fields[0],
+        key: "name",
+        label: "Project Name",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+      {
+        testGroup: "Project Description Input",
+        field: fields[1],
+        key: "description",
+        label: "Description",
+        type: "textarea",
+      },
+      {
+        testGroup: "Project Image Input",
+        field: fields[2],
+        key: "image",
+        label: "Image",
+        type: "image",
+      },
+    ]);
   });
 
   describe("component", () => {
