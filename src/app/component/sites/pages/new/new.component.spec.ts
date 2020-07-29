@@ -20,9 +20,6 @@ import { fields } from "../../site.base.json";
 import { NewComponent } from "./new.component";
 
 describe("SitesNewComponent", () => {
-  let api: SitesService;
-  let defaultProject: Project;
-  let defaultError: ApiErrorDetails;
   let spectator: SpectatorRouting<NewComponent>;
   const createComponent = createRoutingFactory({
     component: NewComponent,
@@ -68,6 +65,10 @@ describe("SitesNewComponent", () => {
   });
 
   describe("component", () => {
+    let api: SitesService;
+    let defaultProject: Project;
+    let defaultError: ApiErrorDetails;
+
     function setup(error?: ApiErrorDetails) {
       spectator = createComponent({
         detectChanges: false,
