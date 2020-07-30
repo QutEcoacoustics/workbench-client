@@ -203,11 +203,7 @@ export class RenderFieldComponent extends WithUnsubscribe()
     this.setLoading();
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
-        if (!models) {
-          this.display = this.noValueText;
-        } else {
-          this.humanize(models);
-        }
+        this.humanize(models);
         this.ref.detectChanges();
       },
       () => {

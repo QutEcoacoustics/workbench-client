@@ -44,7 +44,6 @@ const siteKey = "site";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <!-- Move ngIf to baw-form when baw-wip removed -->
     <baw-form
       *ngIf="!failure"
       [title]="title"
