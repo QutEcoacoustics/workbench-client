@@ -9,9 +9,7 @@ import { FieldType } from "@ngx-formly/core";
   selector: "formly-password-confirmation-input",
   template: `
     <div class="form-group">
-      <label for="password">
-        Password {{ field.templateOptions.required ? " *" : "" }}
-      </label>
+      <label for="password">Password {{ to.required ? " *" : "" }}</label>
       <input
         id="password"
         type="password"
@@ -33,8 +31,7 @@ import { FieldType } from "@ngx-formly/core";
 
     <div class="form-group">
       <label for="confirmation">
-        Password Confirmation
-        {{ field.templateOptions.required ? " *" : "" }}
+        Password Confirmation {{ to.required ? " *" : "" }}
       </label>
       <input
         id="confirmation"
@@ -53,9 +50,9 @@ import { FieldType } from "@ngx-formly/core";
       >
         {{ getError() }}
       </div>
-
-      <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
+
+    <input type="hidden" [id]="field.id" [formControl]="formControl" />
   `,
 })
 // tslint:disable-next-line: component-class-suffix

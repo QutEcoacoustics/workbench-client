@@ -10,11 +10,8 @@ import { FieldType } from "@ngx-formly/core";
   selector: "formly-image-input",
   template: `
     <div class="form-group">
-      <label *ngIf="field.templateOptions.label" [for]="field.id">
-        {{
-          field.templateOptions.label +
-            (field.templateOptions.required ? " *" : "")
-        }}
+      <label *ngIf="to.label" [for]="field.id">
+        {{ to.label + (to.required ? " *" : "") }}
       </label>
 
       <div
