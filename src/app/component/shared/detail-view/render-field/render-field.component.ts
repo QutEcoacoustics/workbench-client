@@ -114,7 +114,6 @@ export class RenderFieldComponent extends WithUnsubscribe()
       this.humanizeAbstractModel(value);
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
-      // TODO Handle ImageUrl
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;

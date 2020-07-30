@@ -4,8 +4,10 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { assertImage } from "@test/helpers/html";
 import { MockMapComponent } from "@shared/map/mapMock.component";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { assertImage } from "@test/helpers/html";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -15,8 +17,6 @@ import {
   testBawServices,
 } from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
-import { generateSite } from "@test/fakes/Site";
-import { generateProject } from "@test/fakes/Project";
 
 describe("SitesDetailsComponent", () => {
   let component: DetailsComponent;

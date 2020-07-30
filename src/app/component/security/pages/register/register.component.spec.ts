@@ -1,34 +1,18 @@
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { SecurityService } from "@baw-api/security/security.service";
+import { FormComponent } from "@shared/form/form.component";
+import { WIPComponent } from "@shared/wip/wip.component";
 import { ToastrService } from "ngx-toastr";
 import { testFormlyFields } from "src/app/test/helpers/formly";
-import {
-  assertValidationMessage,
-  getInputs,
-  inputValue,
-  submitForm,
-} from "src/app/test/helpers/html";
 import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
-import { FormComponent } from "@shared/form/form.component";
-import { WIPComponent } from "@shared/wip/wip.component";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let notifications: ToastrService;
-
-  const usernameIndex = 1;
-  const emailIndex = 2;
-  const passwordIndex = 3;
-  const passwordConfIndex = 4;
 
   function isSignedIn(signedIn: boolean = true) {
     spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
