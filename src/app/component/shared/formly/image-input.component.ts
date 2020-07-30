@@ -4,6 +4,7 @@ import { FieldType } from "@ngx-formly/core";
 
 /**
  * Image Input
+ * ! Warning, test manually after changes
  */
 @Component({
   // tslint:disable-next-line: component-selector

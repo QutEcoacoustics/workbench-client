@@ -5,6 +5,7 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 
 /**
  * Location Input
+ * ! Warning, test manually after changes
  */
 @Component({
   // tslint:disable-next-line: component-selector

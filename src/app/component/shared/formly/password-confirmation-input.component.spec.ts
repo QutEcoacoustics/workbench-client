@@ -129,7 +129,7 @@ describe("FormlyPasswordConfirmationInput", () => {
   });
 
   describe("submission", () => {
-    it("form should be valid on successful submission", () => {
+    it("form should be valid", () => {
       setup();
       const passwordInput = getPasswordInput().input;
       const confirmationInput = getConfirmationInput().input;
@@ -140,7 +140,7 @@ describe("FormlyPasswordConfirmationInput", () => {
       assertForm(true);
     });
 
-    it("should write password to model on successful submission", () => {
+    it("should write password to model", () => {
       setup();
       const passwordInput = getPasswordInput().input;
       const confirmationInput = getConfirmationInput().input;
@@ -152,7 +152,7 @@ describe("FormlyPasswordConfirmationInput", () => {
     });
   });
 
-  describe("error messages", () => {
+  describe("error handling", () => {
     it("should not initially display error on password field", () => {
       setup();
       const error = getPasswordInput().error;
