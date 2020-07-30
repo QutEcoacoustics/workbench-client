@@ -4,18 +4,16 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { createHostFactory, Spectator } from "@ngneat/spectator";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import {
-  FormlyFormOptions,
-  FormlyModule,
-  FormlyTemplateOptions,
-} from "@ngx-formly/core";
+import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
 import { FormlyPasswordConfirmationInput } from "./password-confirmation-input.component";
 
 describe("FormlyPasswordConfirmationInput", () => {
-  let spectator: Spectator<FormlyPasswordConfirmationInput>;
+  let model: { password?: string };
+  let formGroup: FormGroup;
+  let spectator: SpectatorHost<FormlyPasswordConfirmationInput>;
   const createHost = createHostFactory({
     component: FormlyPasswordConfirmationInput,
     imports: [
@@ -27,8 +25,7 @@ describe("FormlyPasswordConfirmationInput", () => {
   });
 
   function getInputs() {
-    const divs = spectator.queryAll<HTMLDivElement>("div.form-group");
-    return divs.map((div) => ({
+    return spectator.queryAll<HTMLDivElement>("div.form-group").map((div) => ({
       label: div.children[0] as HTMLLabelElement,
       input: div.children[1] as HTMLInputElement,
       error: div.children[2] as HTMLDivElement,
@@ -43,8 +40,14 @@ describe("FormlyPasswordConfirmationInput", () => {
     return getInputs()[1];
   }
 
+  function assertForm(isValid: boolean) {
+    expect(formGroup.valid).toBe(isValid);
+  }
+
   function setup(options: FormlyTemplateOptions = {}) {
-    const formGroup = new FormGroup({ confirmation: new FormControl("") });
+    formGroup = new FormGroup({ confirmation: new FormControl("") });
+    model = {};
+
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
@@ -55,6 +58,7 @@ describe("FormlyPasswordConfirmationInput", () => {
         hostProps: { formGroup },
         props: {
           field: {
+            model,
             key: "confirmation",
             formControl: formGroup.get("confirmation"),
             templateOptions: options,
@@ -124,6 +128,30 @@ describe("FormlyPasswordConfirmationInput", () => {
     });
   });
 
+  describe("submission", () => {
+    it("form should be valid on successful submission", () => {
+      setup();
+      const passwordInput = getPasswordInput().input;
+      const confirmationInput = getConfirmationInput().input;
+      spectator.typeInElement("valid pass", passwordInput);
+      spectator.typeInElement("valid pass", confirmationInput);
+      spectator.detectChanges();
+
+      assertForm(true);
+    });
+
+    it("should write password to model on successful submission", () => {
+      setup();
+      const passwordInput = getPasswordInput().input;
+      const confirmationInput = getConfirmationInput().input;
+      spectator.typeInElement("valid pass", passwordInput);
+      spectator.typeInElement("valid pass", confirmationInput);
+      spectator.detectChanges();
+
+      expect(model.password).toBe("valid pass");
+    });
+  });
+
   describe("error messages", () => {
     it("should not initially display error on password field", () => {
       setup();
@@ -146,6 +174,7 @@ describe("FormlyPasswordConfirmationInput", () => {
 
         const error = getPasswordInput().error;
         expect(error).toBeTruthy();
+        assertForm(false);
       });
 
       it("should not display error if password greater than or equal to 6 characters", () => {
@@ -170,6 +199,7 @@ describe("FormlyPasswordConfirmationInput", () => {
 
         const error = getConfirmationInput().error;
         expect(error).toBeTruthy();
+        assertForm(false);
       });
 
       it("should not display error is passwords match", () => {
