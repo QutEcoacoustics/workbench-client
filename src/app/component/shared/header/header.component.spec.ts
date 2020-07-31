@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -34,13 +35,7 @@ describe("HeaderComponent", () => {
   let router: Router;
 
   function setUser(isLoggedIn: boolean, user?: SessionUser) {
-    if (isLoggedIn) {
-      spyOn(api, "getLocalUser").and.callFake(() => {
-        return user;
-      });
-    }
-
-    spyOn(api, "getAuthTrigger").and.callFake(() => new BehaviorSubject(null));
+    spyOn(api, "getLocalUser").and.callFake(() => (isLoggedIn ? user : null));
   }
 
   beforeEach(async(() => {
@@ -83,36 +78,9 @@ describe("HeaderComponent", () => {
 
   describe("links", () => {
     const userRoles = [
-      {
-        type: "guest",
-        links: {
-          register: true,
-          login: true,
-          profile: false,
-          logout: false,
-          admin: false,
-        },
-      },
-      {
-        type: "logged in",
-        links: {
-          register: false,
-          login: false,
-          profile: true,
-          logout: true,
-          admin: false,
-        },
-      },
-      {
-        type: "admin",
-        links: {
-          register: false,
-          login: false,
-          profile: true,
-          logout: true,
-          admin: true,
-        },
-      },
+      { type: "guest", links: { register: true, login: true } },
+      { type: "logged in", links: { profile: true, logout: true } },
+      { type: "admin", links: { profile: true, logout: true, admin: true } },
     ];
 
     userRoles.forEach((userType) => {
@@ -373,14 +341,7 @@ describe("HeaderComponent", () => {
     it("should redirect to home page when logout successful", fakeAsync(() => {
       setUser(
         true,
-        new SessionUser({
-          id: 1,
-          authToken: "xxxxxxxxxxxxxxx",
-          userName: "custom username",
-          rolesMask: 2,
-          rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
-        })
+        new SessionUser({ ...generateSessionUser(), ...generateUser() })
       );
       spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<void>();
@@ -418,14 +379,7 @@ describe("HeaderComponent", () => {
           count++;
         }
 
-        return new SessionUser({
-          id: 1,
-          authToken: "xxxxxxxxxxxxxxx",
-          userName: "custom username",
-          rolesMask: 2,
-          rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
-        });
+        return new SessionUser({ ...generateSessionUser(), ...generateUser() });
       });
       fixture.detectChanges();
 
@@ -462,14 +416,7 @@ describe("HeaderComponent", () => {
           count++;
         }
 
-        return new SessionUser({
-          id: 1,
-          authToken: "xxxxxxxxxxxxxxx",
-          userName: "custom username",
-          rolesMask: 2,
-          rolesMaskNames: ["user"],
-          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
-        });
+        return new SessionUser({ ...generateSessionUser(), ...generateUser() });
       });
       fixture.detectChanges();
 

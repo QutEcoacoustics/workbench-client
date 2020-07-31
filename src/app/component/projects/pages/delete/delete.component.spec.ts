@@ -9,16 +9,18 @@ import {
 } from "@baw-api/project/projects.service";
 import { projectsMenuItem } from "@component/projects/projects.menus";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { assertResolverErrorHandling } from "src/app/test/helpers/html";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("ProjectsDeleteComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: DeleteComponent;
   let defaultError: ApiErrorDetails;
   let defaultProject: Project;
@@ -52,7 +54,7 @@ describe("ProjectsDeleteComponent", () => {
     fixture = TestBed.createComponent(DeleteComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService);
+    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     notifications = TestBed.inject(ToastrService);
 
     spyOn(notifications, "success").and.stub();
@@ -63,10 +65,7 @@ describe("ProjectsDeleteComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
+    defaultProject = new Project(generateProject());
     defaultError = {
       status: 401,
       message: "Unauthorized",
@@ -93,14 +92,14 @@ describe("ProjectsDeleteComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "destroy").and.callThrough();
+      api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to projects", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
+      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(

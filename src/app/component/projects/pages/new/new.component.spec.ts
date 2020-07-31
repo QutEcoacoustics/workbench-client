@@ -4,6 +4,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -12,7 +13,7 @@ import { fields } from "../../project.schema.json";
 import { NewComponent } from "./new.component";
 
 describe("ProjectsNewComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
   let notifications: ToastrService;
@@ -60,7 +61,7 @@ describe("ProjectsNewComponent", () => {
       }).compileComponents();
 
       fixture = TestBed.createComponent(NewComponent);
-      api = TestBed.inject(ProjectsService);
+      api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
       router = TestBed.inject(Router);
       notifications = TestBed.inject(ToastrService);
       component = fixture.componentInstance;
@@ -77,13 +78,13 @@ describe("ProjectsNewComponent", () => {
     });
 
     it("should call api", () => {
-      spyOn(api, "create").and.callThrough();
+      api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();
     });
 
     it("should handle general error", () => {
-      spyOn(api, "create").and.callFake(() => {
+      api.create.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({
@@ -102,7 +103,7 @@ describe("ProjectsNewComponent", () => {
     });
 
     it("should handle duplicate project name", () => {
-      spyOn(api, "create").and.callFake(() => {
+      api.create.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({

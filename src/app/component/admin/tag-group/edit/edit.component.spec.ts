@@ -8,15 +8,17 @@ import {
   TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
 describe("AdminTagGroupsEditComponent", () => {
-  let api: TagGroupsService;
+  let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsEditComponent;
   let defaultError: ApiErrorDetails;
   let defaultTagGroup: TagGroup;
@@ -45,7 +47,7 @@ describe("AdminTagGroupsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsEditComponent);
-    api = TestBed.inject(TagGroupsService);
+    api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -84,7 +86,7 @@ describe("AdminTagGroupsEditComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultTagGroup, undefined);
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });

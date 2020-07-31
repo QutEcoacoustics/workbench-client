@@ -7,7 +7,11 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { BawDateTime } from "@models/AttributeDecorators";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
@@ -39,7 +43,7 @@ export class MockModel extends AbstractModel {
 }
 
 describe("UserBadgesComponent Spec", () => {
-  let api: AccountsService;
+  let api: SpyObject<AccountsService>;
   let spectator: Spectator<UserBadgesComponent>;
   const createComponent = createComponentFactory({
     component: UserBadgesComponent,
@@ -69,7 +73,7 @@ describe("UserBadgesComponent Spec", () => {
       () => (error ? error : user),
       !!error
     );
-    spyOn(api, "show").and.callFake(() => subject);
+    api.show.and.callFake(() => subject);
     return promise;
   }
 
@@ -148,6 +152,7 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display loading animation", async () => {
+        api.show.and.callFake(() => new Subject());
         spectator.component.ngOnChanges();
         assertSpinner(spectator.fixture, true);
       });
@@ -241,7 +246,7 @@ describe("UserBadgesComponent Spec", () => {
         )
       )
     );
-    spyOn(api, "show").and.callFake(() => subjects[count++]);
+    api.show.and.callFake(() => subjects[count++]);
 
     spectator.setInput(
       "model",

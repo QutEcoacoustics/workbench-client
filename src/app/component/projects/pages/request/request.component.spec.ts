@@ -8,13 +8,16 @@ import {
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { RequestComponent } from "./request.component";
 
 describe("ProjectsRequestComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: RequestComponent;
   let defaultError: ApiErrorDetails;
   let defaultProject: Project;
@@ -36,15 +39,8 @@ describe("ProjectsRequestComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            }
+            { project: projectResolvers.show },
+            { project: { model: project, error: projectError } }
           ),
         },
       ],
@@ -52,16 +48,15 @@ describe("ProjectsRequestComponent", () => {
 
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(ProjectsService);
+    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
+
+    api.list.and.callFake(() => new Subject());
 
     fixture.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
+    defaultProject = new Project(generateProject());
     defaultError = {
       status: 401,
       message: "Unauthorized",

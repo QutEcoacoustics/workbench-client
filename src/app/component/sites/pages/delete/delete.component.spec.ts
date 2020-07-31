@@ -4,8 +4,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { SpyObject } from "@ngneat/spectator";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
@@ -16,7 +19,7 @@ import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {
-  let api: SitesService;
+  let api: SpyObject<SitesService>;
   let component: DeleteComponent;
   let defaultError: ApiErrorDetails;
   let defaultSite: Site;
@@ -48,14 +51,8 @@ describe("SitesDeleteComponent", () => {
               site: siteResolvers.show,
             },
             {
-              project: {
-                model: project,
-                error: projectError,
-              },
-              site: {
-                model: site,
-                error: siteError,
-              },
+              project: { model: project, error: projectError },
+              site: { model: site, error: siteError },
             }
           ),
         },
@@ -65,7 +62,7 @@ describe("SitesDeleteComponent", () => {
     fixture = TestBed.createComponent(DeleteComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    api = TestBed.inject(SitesService);
+    api = TestBed.inject(SitesService) as SpyObject<SitesService>;
     notifications = TestBed.inject(ToastrService);
 
     spyOn(notifications, "success").and.stub();
@@ -76,14 +73,8 @@ describe("SitesDeleteComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: 1,
-      name: "Site",
-    });
+    defaultProject = new Project(generateProject());
+    defaultSite = new Site(generateSite());
     defaultError = {
       status: 401,
       message: "Unauthorized",
@@ -120,7 +111,7 @@ describe("SitesDeleteComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
-      spyOn(api, "destroy").and.callThrough();
+      api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
@@ -128,7 +119,7 @@ describe("SitesDeleteComponent", () => {
     it("should redirect to projects", () => {
       const spy = spyOnProperty(defaultProject, "viewUrl");
       configureTestingModule(defaultProject, undefined, defaultSite, undefined);
-      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
+      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(spy).toHaveBeenCalled();

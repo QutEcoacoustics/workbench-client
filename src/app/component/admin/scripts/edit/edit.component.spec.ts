@@ -8,15 +8,18 @@ import {
   ScriptsService,
 } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateScript } from "@test/fakes/Script";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
-  let api: ScriptsService;
+  let api: SpyObject<ScriptsService>;
   let component: AdminScriptsEditComponent;
   let defaultError: ApiErrorDetails;
   let defaultModel: Script;
@@ -45,7 +48,7 @@ describe("AdminScriptsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsEditComponent);
-    api = TestBed.inject(ScriptsService);
+    api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -58,10 +61,7 @@ describe("AdminScriptsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultModel = new Script({
-      id: 1,
-      name: "Script",
-    });
+    defaultModel = new Script(generateScript());
     defaultError = {
       status: 401,
       message: "Unauthorized",
@@ -83,7 +83,7 @@ describe("AdminScriptsEditComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultModel, undefined);
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });

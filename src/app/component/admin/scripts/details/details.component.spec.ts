@@ -2,12 +2,14 @@ import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -44,7 +46,9 @@ describe("ScriptComponent", () => {
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token);
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
+      AccountsService
+    >;
     component = fixture.componentInstance;
 
     const subject = new Subject<User>();
@@ -52,7 +56,7 @@ describe("ScriptComponent", () => {
       subject,
       () => new User({ id: 1, userName: "custom username" })
     );
-    spyOn(accountsApi, "show").and.callFake(() => subject);
+    accountsApi.show.and.callFake(() => subject);
 
     // Update model to contain injector
     if (model) {

@@ -4,15 +4,18 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { SitesService } from "@baw-api/site/sites.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { AssignComponent } from "./assign.component";
 
 describe("AssignComponent", () => {
-  let api: SitesService;
+  let api: SpyObject<ShallowSitesService>;
   let component: AssignComponent;
   let defaultError: ApiErrorDetails;
   let defaultProject: Project;
@@ -43,16 +46,14 @@ describe("AssignComponent", () => {
 
     fixture = TestBed.createComponent(AssignComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(SitesService);
+    api = TestBed.inject(ShallowSitesService) as SpyObject<ShallowSitesService>;
+    api.filter.and.callFake(() => new Subject());
 
     fixture.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
+    defaultProject = new Project(generateProject());
     defaultError = {
       status: 401,
       message: "Unauthorized",

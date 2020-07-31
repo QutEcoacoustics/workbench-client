@@ -8,17 +8,18 @@ import {
   TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { adminTagGroupsMenuItem } from "../tag-group.menus";
 import { AdminTagGroupsDeleteComponent } from "./delete.component";
 
 describe("AdminTagGroupsDeleteComponent", () => {
-  let api: TagGroupsService;
+  let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsDeleteComponent;
   let defaultError: ApiErrorDetails;
   let defaultTagGroup: TagGroup;
@@ -47,7 +48,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsDeleteComponent);
-    api = TestBed.inject(TagGroupsService);
+    api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -91,14 +92,14 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultTagGroup, undefined);
-      spyOn(api, "destroy").and.callThrough();
+      api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to tag group list", () => {
       configureTestingModule(defaultTagGroup, undefined);
-      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
+      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(

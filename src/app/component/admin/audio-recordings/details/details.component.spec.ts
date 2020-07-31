@@ -2,13 +2,16 @@ import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -48,8 +51,12 @@ describe("AdminAudioRecordingComponent", () => {
 
     fixture = TestBed.createComponent(AdminAudioRecordingComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token);
-    const sitesApi = TestBed.inject(SHALLOW_SITE.token);
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
+      AccountsService
+    >;
+    const sitesApi = TestBed.inject(SHALLOW_SITE.token) as SpyObject<
+      ShallowSitesService
+    >;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();
@@ -66,8 +73,8 @@ describe("AdminAudioRecordingComponent", () => {
     ]);
 
     // Catch associated models
-    spyOn(accountsApi, "show").and.callFake(() => accountsSubject);
-    spyOn(sitesApi, "show").and.callFake(() => siteSubject);
+    accountsApi.show.and.callFake(() => accountsSubject);
+    sitesApi.show.and.callFake(() => siteSubject);
 
     // Update model to contain injector
     if (model) {

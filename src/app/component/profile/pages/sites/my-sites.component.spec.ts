@@ -7,7 +7,10 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ISite, Site } from "@models/Site";
 import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateSite } from "@test/fakes/Site";
+import { generateUser } from "@test/fakes/User";
 import { BehaviorSubject } from "rxjs";
 import {
   assertResolverErrorHandling,
@@ -17,7 +20,7 @@ import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { MySitesComponent } from "./my-sites.component";
 
 describe("MySitesComponent", () => {
-  let api: ShallowSitesService;
+  let api: SpyObject<ShallowSitesService>;
   let component: MySitesComponent;
   let defaultUser: User;
   let defaultError: ApiErrorDetails;
@@ -39,25 +42,54 @@ describe("MySitesComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MySitesComponent);
-    api = TestBed.inject(ShallowSitesService);
+    api = TestBed.inject(ShallowSitesService) as SpyObject<ShallowSitesService>;
     component = fixture.componentInstance;
   }
 
+  function setSite(data?: ISite): Site {
+    if (!data) {
+      api.filter.and.callFake(() => {
+        return new BehaviorSubject<Site[]>([]);
+      });
+      return;
+    }
+
+    const site = new Site({ ...generateSite(), ...data });
+    site.addMetadata({
+      status: 200,
+      message: "OK",
+      paging: {
+        page: 1,
+        items: 25,
+        total: 1,
+        maxPage: 1,
+      },
+    });
+
+    api.filter.and.callFake(() => {
+      return new BehaviorSubject<Site[]>([site]);
+    });
+
+    return site;
+  }
+
   beforeEach(() => {
-    defaultUser = new User({ id: 1, userName: "username" });
+    defaultUser = new User(generateUser());
     defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
     configureTestingModule(defaultUser);
+    setSite();
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should display username in title", () => {
     configureTestingModule(
-      new User({ ...defaultUser, userName: "custom username" })
+      new User({ ...generateUser(), userName: "custom username" })
     );
+    setSite();
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector("small");
@@ -66,6 +98,7 @@ describe("MySitesComponent", () => {
 
   it("should handle user error", () => {
     configureTestingModule(undefined, defaultError);
+    setSite();
     fixture.detectChanges();
     expect(component).toBeTruthy();
 
@@ -73,26 +106,6 @@ describe("MySitesComponent", () => {
   });
 
   describe("table", () => {
-    function setSite(data: ISite) {
-      const site = new Site({ id: 1, name: "site", ...data });
-      site.addMetadata({
-        status: 200,
-        message: "OK",
-        paging: {
-          page: 1,
-          items: 25,
-          total: 1,
-          maxPage: 1,
-        },
-      });
-
-      spyOn(api, "filter").and.callFake(() => {
-        return new BehaviorSubject<Site[]>([site]);
-      });
-
-      return site;
-    }
-
     function getCells(): NodeListOf<HTMLDivElement> {
       return fixture.nativeElement.querySelectorAll("datatable-body-cell");
     }

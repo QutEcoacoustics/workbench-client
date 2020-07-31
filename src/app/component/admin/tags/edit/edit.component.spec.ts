@@ -5,15 +5,18 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag, TagType } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {
-  let api: TagsService;
+  let api: SpyObject<TagsService>;
   let component: AdminTagsEditComponent;
   let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
@@ -54,7 +57,7 @@ describe("AdminTagsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsEditComponent);
-    api = TestBed.inject(TagsService);
+    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -67,10 +70,7 @@ describe("AdminTagsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTag = new Tag({
-      id: 1,
-      text: "Tag",
-    });
+    defaultTag = new Tag(generateTag());
     defaultTagTypes = [
       new TagType({
         name: "common_name",
@@ -107,7 +107,7 @@ describe("AdminTagsEditComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultTag, undefined, defaultTagTypes, undefined);
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });

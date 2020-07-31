@@ -7,6 +7,7 @@ import {
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
@@ -17,7 +18,7 @@ import { fields } from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: EditComponent;
   let defaultError: ApiErrorDetails;
   let defaultProject: Project;
@@ -46,7 +47,7 @@ describe("ProjectsEditComponent", () => {
     fixture = TestBed.createComponent(EditComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService);
+    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     notifications = TestBed.inject(ToastrService);
 
     spyOn(notifications, "success").and.stub();
@@ -102,14 +103,14 @@ describe("ProjectsEditComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
 
     it("should handle general error", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callFake(() => {
+      api.update.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({
@@ -129,7 +130,7 @@ describe("ProjectsEditComponent", () => {
 
     it("should handle duplicate project name", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callFake(() => {
+      api.update.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({
@@ -138,10 +139,10 @@ describe("ProjectsEditComponent", () => {
           info: {
             name: ["has already been taken"],
             image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: [],
+            imageFileName: [],
+            imageFileSize: [],
+            imageContentType: [],
+            imageUpdatedAt: [],
           },
         } as ApiErrorDetails);
 

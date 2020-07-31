@@ -10,6 +10,8 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock.component";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
@@ -52,7 +54,7 @@ describe("ProjectDetailsComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({ id: 1, name: "Project" });
+    defaultProject = new Project(generateProject());
     defaultSites = [];
     defaultError = { status: 401, message: "Unauthorized" };
   });
@@ -89,8 +91,8 @@ describe("ProjectDetailsComponent", () => {
   describe("Project", () => {
     it("should display project name", () => {
       const project = new Project({
-        id: 1,
-        name: "Test project",
+        ...generateProject(),
+        name: "Test Project",
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -98,13 +100,14 @@ describe("ProjectDetailsComponent", () => {
 
       const title = fixture.nativeElement.querySelector("h1");
       expect(title).toBeTruthy();
-      expect(title.innerText).toBe("Test project");
+      expect(title.innerText).toBe("Test Project");
     });
 
     it("should display default project image", () => {
       const project = new Project({
-        id: 1,
-        name: "Test project",
+        ...generateProject(),
+        name: "Test Project",
+        imageUrl: undefined,
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -114,14 +117,14 @@ describe("ProjectDetailsComponent", () => {
       assertImage(
         image,
         `http://${window.location.host}/assets/images/project/project_span4.png`,
-        "Test project image"
+        "Test Project image"
       );
     });
 
     it("should display custom project image", () => {
       const project = new Project({
-        id: 1,
-        name: "Test project",
+        ...generateProject(),
+        name: "Test Project",
         imageUrl: "http://brokenlink/",
       });
 
@@ -129,13 +132,12 @@ describe("ProjectDetailsComponent", () => {
       fixture.detectChanges();
 
       const image = fixture.nativeElement.querySelector("img");
-      assertImage(image, "http://brokenlink/", "Test project image");
+      assertImage(image, "http://brokenlink/", "Test Project image");
     });
 
     it("should display description", () => {
       const project = new Project({
-        id: 1,
-        name: "Test project",
+        ...generateProject(),
         description: "A test project",
       });
 
@@ -165,11 +167,7 @@ describe("ProjectDetailsComponent", () => {
     });
 
     it("should display single site", fakeAsync(() => {
-      const site = new Site({
-        id: 1,
-        name: "Site",
-        description: "A sample site",
-      });
+      const site = new Site(generateSite());
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
       fixture.detectChanges();
@@ -179,11 +177,7 @@ describe("ProjectDetailsComponent", () => {
     }));
 
     it("should display single site with name", fakeAsync(() => {
-      const site = new Site({
-        id: 1,
-        name: "Custom Site",
-        description: "A sample site",
-      });
+      const site = new Site({ ...generateSite(), name: "Custom Site" });
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
       fixture.detectChanges();
@@ -194,18 +188,7 @@ describe("ProjectDetailsComponent", () => {
     }));
 
     it("should display multiple sites", fakeAsync(() => {
-      const sites = [
-        new Site({
-          id: 1,
-          name: "Site 1",
-          description: "A sample site",
-        }),
-        new Site({
-          id: 2,
-          name: "Site 2",
-          description: "A sample site",
-        }),
-      ];
+      const sites = [new Site(generateSite()), new Site(generateSite())];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);
       fixture.detectChanges();
@@ -216,16 +199,8 @@ describe("ProjectDetailsComponent", () => {
 
     it("should display multiple sites in order", fakeAsync(() => {
       const sites = [
-        new Site({
-          id: 1,
-          name: "Site 1",
-          description: "A sample site",
-        }),
-        new Site({
-          id: 2,
-          name: "Site 2",
-          description: "A sample site",
-        }),
+        new Site({ ...generateSite(1), name: "Site 1" }),
+        new Site({ ...generateSite(2), name: "Site 2" }),
       ];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);
@@ -254,42 +229,20 @@ describe("ProjectDetailsComponent", () => {
     });
 
     it("should display google maps with pin for single site", () => {
-      const site = new Site({
-        id: 1,
-        name: "Site",
-        description: "A sample site",
-        locationObfuscated: true,
-        customLatitude: 0,
-        customLongitude: 1,
-      });
+      const site = new Site(generateSite());
 
       configureTestingModule(defaultProject, undefined, [site], undefined);
       fixture.detectChanges();
 
       const googleMaps = fixture.nativeElement.querySelector("baw-map");
       expect(googleMaps).toBeTruthy();
-      expect(googleMaps.querySelector("p").innerText).toBe("Lat: 0 Long: 1");
+      expect(googleMaps.querySelector("p").innerText).toBe(
+        `Lat: ${site.getLatitude()} Long: ${site.getLongitude()}`
+      );
     });
 
     it("should display google maps with pins for multiple sites", () => {
-      const sites = [
-        new Site({
-          id: 1,
-          name: "Site",
-          description: "A sample site",
-          locationObfuscated: true,
-          customLatitude: 0,
-          customLongitude: 1,
-        }),
-        new Site({
-          id: 2,
-          name: "Site",
-          description: "A sample site",
-          locationObfuscated: true,
-          customLatitude: 2,
-          customLongitude: 3,
-        }),
-      ];
+      const sites = [new Site(generateSite()), new Site(generateSite())];
 
       configureTestingModule(defaultProject, undefined, sites, undefined);
       fixture.detectChanges();
@@ -298,8 +251,12 @@ describe("ProjectDetailsComponent", () => {
       const output = googleMaps.querySelectorAll("p");
       expect(googleMaps).toBeTruthy();
       expect(output.length).toBe(2);
-      expect(output[0].innerText).toBe("Lat: 0 Long: 1");
-      expect(output[1].innerText).toBe("Lat: 2 Long: 3");
+      expect(output[0].innerText).toBe(
+        `Lat: ${sites[0].getLatitude()} Long: ${sites[0].getLongitude()}`
+      );
+      expect(output[1].innerText).toBe(
+        `Lat: ${sites[1].getLatitude()} Long: ${sites[1].getLongitude()}`
+      );
     });
   });
 });

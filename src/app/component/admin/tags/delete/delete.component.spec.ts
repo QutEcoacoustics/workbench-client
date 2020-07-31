@@ -5,17 +5,19 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { adminTagsMenuItem } from "../tags.menus";
 import { AdminTagsDeleteComponent } from "./delete.component";
 
 describe("AdminTagsDeleteComponent", () => {
-  let api: TagsService;
+  let api: SpyObject<TagsService>;
   let component: AdminTagsDeleteComponent;
   let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
@@ -44,7 +46,7 @@ describe("AdminTagsDeleteComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsDeleteComponent);
-    api = TestBed.inject(TagsService);
+    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -57,10 +59,7 @@ describe("AdminTagsDeleteComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTag = new Tag({
-      id: 1,
-      text: "Tag",
-    });
+    defaultTag = new Tag(generateTag());
     defaultError = {
       status: 401,
       message: "Unauthorized",
@@ -87,14 +86,14 @@ describe("AdminTagsDeleteComponent", () => {
 
     it("should call api", () => {
       configureTestingModule(defaultTag, undefined);
-      spyOn(api, "destroy").and.callThrough();
+      api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to tag list", () => {
       configureTestingModule(defaultTag, undefined);
-      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
+      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(

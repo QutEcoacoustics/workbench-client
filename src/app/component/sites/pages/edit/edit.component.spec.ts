@@ -8,7 +8,11 @@ import {
 } from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -16,7 +20,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { fields } from "../../site.base.json";
 import { EditComponent } from "./edit.component";
 
@@ -65,7 +69,7 @@ describe("SitesEditComponent", () => {
   });
 
   describe("component", () => {
-    let api: SitesService;
+    let api: SpyObject<SitesService>;
     let defaultError: ApiErrorDetails;
     let defaultProject: Project;
     let defaultSite: Site;
@@ -116,7 +120,7 @@ describe("SitesEditComponent", () => {
 
     it("should call api", () => {
       setup();
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
 
       spectator.component.submit({});
       expect(api.update).toHaveBeenCalled();
@@ -126,7 +130,7 @@ describe("SitesEditComponent", () => {
       setup();
       const site = new Site(generateSite());
       spyOn(site, "getViewUrl").and.stub();
-      spyOn(api, "update").and.callFake(() => new BehaviorSubject<Site>(site));
+      api.update.and.callFake(() => new BehaviorSubject<Site>(site));
 
       spectator.component.submit({});
       expect(site.getViewUrl).toHaveBeenCalledWith(defaultProject);
