@@ -9,6 +9,7 @@ import { IProject, Project } from "@models/Project";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
 import { BehaviorSubject } from "rxjs";
@@ -23,7 +24,6 @@ describe("MyProjectsComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: MyProjectsComponent;
   let defaultUser: User;
-  let defaultError: ApiErrorDetails;
   let fixture: ComponentFixture<MyProjectsComponent>;
 
   function configureTestingModule(model?: User, error?: ApiErrorDetails) {
@@ -66,16 +66,15 @@ describe("MyProjectsComponent", () => {
       },
     });
 
-    api.filter.and.callFake(() => {
-      return new BehaviorSubject<Project[]>([project]);
-    });
+    api.filter.and.callFake(
+      () => new BehaviorSubject<Project[]>([project])
+    );
 
     return project;
   }
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
-    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
@@ -97,7 +96,7 @@ describe("MyProjectsComponent", () => {
   });
 
   it("should handle user error", () => {
-    configureTestingModule(undefined, defaultError);
+    configureTestingModule(undefined, generateApiErrorDetails());
     setProject();
     fixture.detectChanges();
     expect(component).toBeTruthy();

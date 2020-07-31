@@ -14,6 +14,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -71,7 +72,6 @@ describe("SitesNewComponent", () => {
   describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
-    let defaultError: ApiErrorDetails;
 
     function setup(error?: ApiErrorDetails) {
       spectator = createComponent({
@@ -91,7 +91,6 @@ describe("SitesNewComponent", () => {
     afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
-      defaultError = { status: 401, message: "Unauthorized" };
     });
 
     it("should create", () => {
@@ -100,7 +99,7 @@ describe("SitesNewComponent", () => {
     });
 
     it("should handle project error", () => {
-      setup(defaultError);
+      setup(generateApiErrorDetails());
       assertResolverErrorHandling(spectator.fixture);
     });
 

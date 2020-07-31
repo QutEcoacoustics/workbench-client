@@ -9,6 +9,7 @@ import {
 } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
 import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { PermissionsComponent } from "./permissions.component";
@@ -16,14 +17,10 @@ import { PermissionsComponent } from "./permissions.component";
 describe("PermissionsComponent", () => {
   let api: ProjectsService;
   let component: PermissionsComponent;
-  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let fixture: ComponentFixture<PermissionsComponent>;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -36,15 +33,8 @@ describe("PermissionsComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            }
+            { project: projectResolvers.show },
+            { project: { model, error } }
           ),
         },
       ],
@@ -58,18 +48,11 @@ describe("PermissionsComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project(generateProject());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultProject, undefined);
+    configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });
 

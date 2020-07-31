@@ -10,6 +10,7 @@ import {
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateScript } from "@test/fakes/Script";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -21,13 +22,12 @@ import { AdminScriptsEditComponent } from "./edit.component";
 describe("AdminScriptsEditComponent", () => {
   let api: SpyObject<ScriptsService>;
   let component: AdminScriptsEditComponent;
-  let defaultError: ApiErrorDetails;
   let defaultModel: Script;
   let fixture: ComponentFixture<AdminScriptsEditComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(model: Script, error: ApiErrorDetails) {
+  function configureTestingModule(model: Script, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -62,27 +62,23 @@ describe("AdminScriptsEditComponent", () => {
 
   beforeEach(() => {
     defaultModel = new Script(generateScript());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultModel, undefined);
+      configureTestingModule(defaultModel);
       expect(component).toBeTruthy();
     });
 
     it("should handle script error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultModel, undefined);
+      configureTestingModule(defaultModel);
       api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();

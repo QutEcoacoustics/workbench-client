@@ -23,6 +23,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MockShowApiService } from "./mock/apiMocks.service";
 
@@ -38,24 +39,22 @@ export const shouldNotComplete = () => {
   fail("Service should not complete");
 };
 
-export const apiErrorDetails: ApiErrorDetails = {
-  status: 401,
-  message: "Unauthorized",
-  info: undefined,
-};
+export const apiErrorDetails = generateApiErrorDetails("Unauthorized");
 
-export const apiErrorInfoDetails: ApiErrorDetails = {
-  status: 422,
-  message: "Record could not be saved",
-  info: {
-    name: ["has already been taken"],
-    image: [],
-    imageFileName: [],
-    imageFileSize: [],
-    imageContentType: [],
-    imageUpdatedAt: [],
-  },
-};
+export const apiErrorInfoDetails = generateApiErrorDetails(
+  "Unprocessable Entity",
+  {
+    message: "Record could not be saved",
+    info: {
+      name: ["has already been taken"],
+      image: [],
+      imageFileName: [],
+      imageFileSize: [],
+      imageContentType: [],
+      imageUpdatedAt: [],
+    },
+  }
+);
 
 describe("BawApiService", () => {
   /**

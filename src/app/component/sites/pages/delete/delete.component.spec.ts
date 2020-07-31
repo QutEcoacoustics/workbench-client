@@ -5,6 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { ToastrService } from "ngx-toastr";
@@ -21,7 +22,6 @@ import { DeleteComponent } from "./delete.component";
 describe("SitesDeleteComponent", () => {
   let api: SpyObject<SitesService>;
   let component: DeleteComponent;
-  let defaultError: ApiErrorDetails;
   let defaultSite: Site;
   let defaultProject: Project;
   let fixture: ComponentFixture<DeleteComponent>;
@@ -75,10 +75,6 @@ describe("SitesDeleteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultSite = new Site(generateSite());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   describe("form", () => {
@@ -95,7 +91,12 @@ describe("SitesDeleteComponent", () => {
     });
 
     it("should handle project error", () => {
-      configureTestingModule(undefined, defaultError, defaultSite, undefined);
+      configureTestingModule(
+        undefined,
+        generateApiErrorDetails(),
+        defaultSite,
+        undefined
+      );
       assertResolverErrorHandling(fixture);
     });
 
@@ -104,7 +105,7 @@ describe("SitesDeleteComponent", () => {
         defaultProject,
         undefined,
         undefined,
-        defaultError
+        generateApiErrorDetails()
       );
       assertResolverErrorHandling(fixture);
     });

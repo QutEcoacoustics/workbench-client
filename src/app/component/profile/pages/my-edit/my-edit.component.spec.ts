@@ -6,6 +6,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { userResolvers, UserService } from "@baw-api/user/user.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
+import { generateUser } from "@test/fakes/User";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { MyEditComponent } from "./my-edit.component";
@@ -14,10 +15,9 @@ describe("MyProfileEditComponent", () => {
   let api: UserService;
   let component: MyEditComponent;
   let fixture: ComponentFixture<MyEditComponent>;
-  let defaultError: ApiErrorDetails;
   let defaultUser: User;
 
-  function configureTestingModule(user: User, error: ApiErrorDetails) {
+  function configureTestingModule(model: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -31,7 +31,7 @@ describe("MyProfileEditComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { user: userResolvers.show },
-            { user: { model: user, error } }
+            { user: { model, error } }
           ),
         },
       ],
@@ -45,18 +45,12 @@ describe("MyProfileEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUser = new User({
-      id: 1,
-      userName: "Username",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    // TODO Handle image urls
+    defaultUser = new User({ ...generateUser(), imageUrls: undefined });
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser, undefined);
+    configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });
 });

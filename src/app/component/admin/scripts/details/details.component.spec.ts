@@ -11,6 +11,7 @@ import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
@@ -73,10 +74,7 @@ describe("ScriptComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, {
-      status: 401,
-      message: "Unauthorized",
-    } as ApiErrorDetails);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

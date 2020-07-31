@@ -19,14 +19,10 @@ import { RequestComponent } from "./request.component";
 describe("ProjectsRequestComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: RequestComponent;
-  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let fixture: ComponentFixture<RequestComponent>;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -40,7 +36,7 @@ describe("ProjectsRequestComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { project: projectResolvers.show },
-            { project: { model: project, error: projectError } }
+            { project: { model, error } }
           ),
         },
       ],
@@ -57,14 +53,10 @@ describe("ProjectsRequestComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   it("should create", () => {
-    configureTestingModule(defaultProject, undefined);
+    configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });
 });

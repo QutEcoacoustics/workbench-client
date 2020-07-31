@@ -8,6 +8,7 @@ import { userResolvers } from "@baw-api/user/user.service";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateUser } from "@test/fakes/User";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -19,7 +20,6 @@ describe("MyBookmarksComponent", () => {
   let api: SpyObject<BookmarksService>;
   let component: MyBookmarksComponent;
   let defaultUser: User;
-  let defaultError: ApiErrorDetails;
   let fixture: ComponentFixture<MyBookmarksComponent>;
 
   function configureTestingModule(model?: User, error?: ApiErrorDetails) {
@@ -46,7 +46,6 @@ describe("MyBookmarksComponent", () => {
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
-    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
@@ -66,7 +65,7 @@ describe("MyBookmarksComponent", () => {
   });
 
   it("should handle user error", () => {
-    configureTestingModule(undefined, defaultError);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
 

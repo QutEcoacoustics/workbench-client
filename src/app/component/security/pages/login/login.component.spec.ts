@@ -9,6 +9,7 @@ import {
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { testFormImports } from "@test/helpers/testbed";
@@ -49,11 +50,14 @@ describe("LoginComponent New", () => {
 
   function setLoginError() {
     const subject = new Subject<void>();
-    const error: ApiErrorDetails = {
-      status: 401,
-      message: "Incorrect user name, email, or password.",
-    };
-    const promise = nStepObservable(subject, () => error, true);
+    const promise = nStepObservable(
+      subject,
+      () =>
+        generateApiErrorDetails("Unauthorized", {
+          message: "Incorrect user name, email, or password.",
+        }),
+      true
+    );
     spyOn(api, "signIn").and.callFake(() => subject);
     return promise;
   }

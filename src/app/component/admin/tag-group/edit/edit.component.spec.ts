@@ -10,6 +10,8 @@ import {
 import { TagGroup } from "@models/TagGroup";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -20,13 +22,12 @@ import { AdminTagGroupsEditComponent } from "./edit.component";
 describe("AdminTagGroupsEditComponent", () => {
   let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsEditComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTagGroup: TagGroup;
   let fixture: ComponentFixture<AdminTagGroupsEditComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(tagGroup: TagGroup, error: ApiErrorDetails) {
+  function configureTestingModule(model: TagGroup, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -40,7 +41,7 @@ describe("AdminTagGroupsEditComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { tagGroup: tagGroupResolvers.show },
-            { tagGroup: { model: tagGroup, error } }
+            { tagGroup: { model, error } }
           ),
         },
       ],
@@ -60,32 +61,24 @@ describe("AdminTagGroupsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTagGroup = new TagGroup({
-      id: 1,
-      groupIdentifier: "Group Identifier",
-      tagId: 1,
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultTagGroup = new TagGroup(generateTagGroup());
   });
 
   xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTagGroup, undefined);
+      configureTestingModule(defaultTagGroup);
       expect(component).toBeTruthy();
     });
 
     it("should handle tag group error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTagGroup, undefined);
+      configureTestingModule(defaultTagGroup);
       api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();

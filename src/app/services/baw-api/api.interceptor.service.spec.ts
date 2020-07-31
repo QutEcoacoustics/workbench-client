@@ -9,6 +9,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
 import {
   apiErrorInfoDetails,
@@ -74,11 +75,11 @@ describe("BawApiInterceptor", () => {
       http
         .get<any>(apiRoot + "/brokenapiroute")
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toEqual({
-            status: 401,
-            message: "Incorrect user name",
-            info: undefined,
-          });
+          expect(err).toEqual(
+            generateApiErrorDetails("Unauthorized", {
+              message: "Incorrect user name",
+            })
+          );
         });
 
       errorResponse(apiRoot + "/brokenapiroute", 401, "Unauthorized", {
@@ -90,11 +91,11 @@ describe("BawApiInterceptor", () => {
       http
         .get<any>(apiRoot + "/brokenapiroute")
         .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toEqual({
-            status: 422,
-            message: "Record could not be saved",
-            info: apiErrorInfoDetails.info,
-          });
+          expect(err).toEqual(
+            generateApiErrorDetails("Unprocessable Entity", {
+              info: apiErrorInfoDetails.info,
+            })
+          );
         });
 
       errorResponse(apiRoot + "/brokenapiroute", 422, "Unprocessable Entity", {
@@ -110,6 +111,7 @@ describe("BawApiInterceptor", () => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${apiRoot}/brokenapiroute: 404 Page Not Found`,
+            info: undefined,
           });
         });
 

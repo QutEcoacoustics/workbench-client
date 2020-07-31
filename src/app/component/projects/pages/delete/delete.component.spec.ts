@@ -11,6 +11,7 @@ import { projectsMenuItem } from "@component/projects/projects.menus";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -22,16 +23,12 @@ import { DeleteComponent } from "./delete.component";
 describe("ProjectsDeleteComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: DeleteComponent;
-  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let fixture: ComponentFixture<DeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -45,7 +42,7 @@ describe("ProjectsDeleteComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { project: projectResolvers.show },
-            { project: { model: project, error: projectError } }
+            { project: { model, error } }
           ),
         },
       ],
@@ -66,39 +63,35 @@ describe("ProjectsDeleteComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       expect(component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       expect(component).toBeTruthy();
     });
 
     it("should handle project error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to projects", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});

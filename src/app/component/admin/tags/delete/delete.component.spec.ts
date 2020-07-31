@@ -7,6 +7,7 @@ import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -19,13 +20,12 @@ import { AdminTagsDeleteComponent } from "./delete.component";
 describe("AdminTagsDeleteComponent", () => {
   let api: SpyObject<TagsService>;
   let component: AdminTagsDeleteComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
   let fixture: ComponentFixture<AdminTagsDeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(tag: Tag, tagError: ApiErrorDetails) {
+  function configureTestingModule(model: Tag, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -39,7 +39,7 @@ describe("AdminTagsDeleteComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { tag: tagResolvers.show },
-            { tag: { model: tag, error: tagError } }
+            { tag: { model, error } }
           ),
         },
       ],
@@ -60,39 +60,35 @@ describe("AdminTagsDeleteComponent", () => {
 
   beforeEach(() => {
     defaultTag = new Tag(generateTag());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       expect(component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       expect(component).toBeTruthy();
     });
 
     it("should handle tag error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to tag list", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});

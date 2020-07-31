@@ -9,6 +9,7 @@ import { ISite, Site } from "@models/Site";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { BehaviorSubject } from "rxjs";
@@ -23,7 +24,6 @@ describe("MySitesComponent", () => {
   let api: SpyObject<ShallowSitesService>;
   let component: MySitesComponent;
   let defaultUser: User;
-  let defaultError: ApiErrorDetails;
   let fixture: ComponentFixture<MySitesComponent>;
 
   function configureTestingModule(model?: User, error?: ApiErrorDetails) {
@@ -75,7 +75,6 @@ describe("MySitesComponent", () => {
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
-    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
@@ -97,7 +96,7 @@ describe("MySitesComponent", () => {
   });
 
   it("should handle user error", () => {
-    configureTestingModule(undefined, defaultError);
+    configureTestingModule(undefined, generateApiErrorDetails());
     setSite();
     fixture.detectChanges();
     expect(component).toBeTruthy();

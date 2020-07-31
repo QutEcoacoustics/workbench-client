@@ -14,6 +14,7 @@ import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
@@ -90,10 +91,7 @@ describe("AdminOrphanComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, {
-      status: 401,
-      message: "Unauthorized",
-    } as ApiErrorDetails);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

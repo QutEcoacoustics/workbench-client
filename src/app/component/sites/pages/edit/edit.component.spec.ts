@@ -14,6 +14,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -70,7 +71,6 @@ describe("SitesEditComponent", () => {
 
   describe("component", () => {
     let api: SpyObject<SitesService>;
-    let defaultError: ApiErrorDetails;
     let defaultProject: Project;
     let defaultSite: Site;
 
@@ -100,7 +100,6 @@ describe("SitesEditComponent", () => {
     beforeEach(() => {
       defaultProject = new Project(generateProject());
       defaultSite = new Site(generateSite());
-      defaultError = { status: 401, message: "Unauthorized" };
     });
 
     it("should create", () => {
@@ -109,12 +108,12 @@ describe("SitesEditComponent", () => {
     });
 
     it("should handle site error", () => {
-      setup(undefined, defaultError);
+      setup(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(spectator.fixture);
     });
 
     it("should handle project error", () => {
-      setup(defaultError);
+      setup(generateApiErrorDetails());
       assertResolverErrorHandling(spectator.fixture);
     });
 

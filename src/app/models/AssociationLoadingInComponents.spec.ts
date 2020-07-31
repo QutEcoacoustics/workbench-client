@@ -6,6 +6,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
@@ -145,10 +146,10 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasOne error", async () => {
-    const promise = interceptSingleModel(undefined, {
-      status: 404,
-      message: "Not Found",
-    });
+    const promise = interceptSingleModel(
+      undefined,
+      generateApiErrorDetails("Not Found")
+    );
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
     await promise;
@@ -221,10 +222,9 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasMany error", async () => {
-    const promise = interceptMultipleModels({
-      status: 404,
-      message: "Not Found",
-    });
+    const promise = interceptMultipleModels(
+      generateApiErrorDetails("Not Found")
+    );
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel

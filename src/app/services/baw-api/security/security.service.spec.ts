@@ -11,6 +11,7 @@ import {
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   apiErrorDetails,
@@ -124,11 +125,7 @@ describe("SecurityService", () => {
           return new BehaviorSubject<User>(user);
         } else {
           const subject = new Subject<User>();
-          subject.error({
-            status: 401,
-            message: "Unauthorized",
-            info: undefined,
-          } as ApiErrorDetails);
+          subject.error(generateApiErrorDetails("Unauthorized"));
           return subject;
         }
       });

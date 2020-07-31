@@ -10,6 +10,7 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock.component";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
@@ -21,7 +22,6 @@ describe("ProjectDetailsComponent", () => {
   let fixture: ComponentFixture<DetailsComponent>;
   let defaultProject: Project;
   let defaultSites: Site[];
-  let defaultError: ApiErrorDetails;
 
   function configureTestingModule(
     project: Project,
@@ -56,7 +56,6 @@ describe("ProjectDetailsComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultSites = [];
-    defaultError = { status: 401, message: "Unauthorized" };
   });
 
   it("should create", () => {
@@ -67,7 +66,12 @@ describe("ProjectDetailsComponent", () => {
 
   describe("Error Handling", () => {
     it("should handle failed project model", () => {
-      configureTestingModule(undefined, defaultError, defaultSites, undefined);
+      configureTestingModule(
+        undefined,
+        generateApiErrorDetails(),
+        defaultSites,
+        undefined
+      );
       fixture.detectChanges();
 
       const body = fixture.nativeElement;
@@ -79,7 +83,7 @@ describe("ProjectDetailsComponent", () => {
         defaultProject,
         undefined,
         undefined,
-        defaultError
+        generateApiErrorDetails()
       );
       fixture.detectChanges();
 

@@ -7,14 +7,15 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
   let fixture: ComponentFixture<ListComponent>;
-  let defaultError: ApiErrorDetails;
 
-  function configureTestingModule(projects: Project[], error: ApiErrorDetails) {
+  function configureTestingModule(model: Project[], error: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -27,15 +28,8 @@ describe("ProjectsListComponent", () => {
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              projects: projectResolvers.list,
-            },
-            {
-              projects: {
-                model: projects,
-                error,
-              },
-            }
+            { projects: projectResolvers.list },
+            { projects: { model, error } }
           ),
         },
       ],
@@ -56,13 +50,6 @@ describe("ProjectsListComponent", () => {
     expect(card.querySelector(".card-text").innerText.trim()).toBe(description);
   }
 
-  beforeEach(() => {
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
-  });
-
   it("should handle zero projects", () => {
     const projects = [];
     configureTestingModule(projects, undefined);
@@ -76,12 +63,7 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should display single project card", () => {
-    const projects = [
-      new Project({
-        id: 1,
-        name: "Custom Project",
-      }),
-    ];
+    const projects = [new Project(generateProject())];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
 
@@ -90,25 +72,17 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should display single project card with title", () => {
-    const projects = [
-      new Project({
-        id: 1,
-        name: "Custom Project",
-      }),
-    ];
+    const projects = [new Project(generateProject())];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
 
     const cards = getCards();
-    assertCardTitle(cards[0], "Custom Project");
+    assertCardTitle(cards[0], projects[0].name);
   });
 
   it("should display single project card with default description", () => {
     const projects = [
-      new Project({
-        id: 1,
-        name: "Custom Project",
-      }),
+      new Project({ ...generateProject(), description: undefined }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -118,34 +92,19 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should display single project card with custom description", () => {
-    const projects = [
-      new Project({
-        id: 1,
-        name: "Custom Project",
-        description: "Custom Description",
-      }),
-    ];
+    const projects = [new Project(generateProject())];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
 
     const cards = getCards();
-    assertCardDescription(cards[0], "Custom Description");
+    assertCardDescription(cards[0], projects[0].description);
   });
 
   it("should display multiple project cards", () => {
     const projects = [
-      new Project({
-        id: 1,
-        name: "Project 1",
-      }),
-      new Project({
-        id: 2,
-        name: "Project 2",
-      }),
-      new Project({
-        id: 3,
-        name: "Project 3",
-      }),
+      new Project(generateProject()),
+      new Project(generateProject()),
+      new Project(generateProject()),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -156,18 +115,9 @@ describe("ProjectsListComponent", () => {
 
   it("should display multiple project cards in order", () => {
     const projects = [
-      new Project({
-        id: 1,
-        name: "Project 1",
-      }),
-      new Project({
-        id: 2,
-        name: "Project 2",
-      }),
-      new Project({
-        id: 3,
-        name: "Project 3",
-      }),
+      new Project({ ...generateProject(), name: "Project 1" }),
+      new Project({ ...generateProject(), name: "Project 2" }),
+      new Project({ ...generateProject(), name: "Project 3" }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -179,7 +129,7 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should handle failed projects model", () => {
-    configureTestingModule(undefined, defaultError);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
 
     const body = fixture.nativeElement;

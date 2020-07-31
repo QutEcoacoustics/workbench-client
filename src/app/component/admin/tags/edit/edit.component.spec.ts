@@ -7,6 +7,7 @@ import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag, TagType } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -18,7 +19,6 @@ import { AdminTagsEditComponent } from "./edit.component";
 describe("AdminTagsEditComponent", () => {
   let api: SpyObject<TagsService>;
   let component: AdminTagsEditComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsEditComponent>;
@@ -76,10 +76,6 @@ describe("AdminTagsEditComponent", () => {
         name: "common_name",
       }),
     ];
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   xdescribe("form", () => {});
@@ -93,7 +89,7 @@ describe("AdminTagsEditComponent", () => {
     it("should handle tag error", () => {
       configureTestingModule(
         undefined,
-        defaultError,
+        generateApiErrorDetails(),
         defaultTagTypes,
         undefined
       );
@@ -101,7 +97,12 @@ describe("AdminTagsEditComponent", () => {
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(defaultTag, undefined, undefined, defaultError);
+      configureTestingModule(
+        defaultTag,
+        undefined,
+        undefined,
+        generateApiErrorDetails()
+      );
       assertResolverErrorHandling(fixture);
     });
 

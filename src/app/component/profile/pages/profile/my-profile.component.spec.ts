@@ -20,10 +20,9 @@ import { MyProfileComponent } from "./my-profile.component";
 describe("MyProfileComponent", () => {
   let component: MyProfileComponent;
   let fixture: ComponentFixture<MyProfileComponent>;
-  let defaultError: ApiErrorDetails;
   let defaultUser: User;
 
-  function configureTestingModule(user: User, error: ApiErrorDetails) {
+  function configureTestingModule(model: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -37,7 +36,7 @@ describe("MyProfileComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { user: userResolvers.show },
-            { user: { model: user, error } }
+            { user: { model, error } }
           ),
         },
       ],
@@ -66,14 +65,10 @@ describe("MyProfileComponent", () => {
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser, undefined);
+    configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });
 });

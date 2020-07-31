@@ -7,6 +7,7 @@ import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { TagType } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { assertResolverErrorHandling } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -17,16 +18,12 @@ import { AdminTagsNewComponent } from "./new.component";
 describe("AdminTagsNewComponent", () => {
   let api: SpyObject<TagsService>;
   let component: AdminTagsNewComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsNewComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    tagTypes: TagType[],
-    tagTypesError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: TagType[], error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -40,7 +37,7 @@ describe("AdminTagsNewComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { typeOfTags: tagResolvers.tagTypes },
-            { tagTypes: { model: tagTypes, error: tagTypesError } }
+            { tagTypes: { model, error } }
           ),
         },
       ],
@@ -65,27 +62,23 @@ describe("AdminTagsNewComponent", () => {
         name: "common_name",
       }),
     ];
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTagTypes, undefined);
+      configureTestingModule(defaultTagTypes);
       expect(component).toBeTruthy();
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTagTypes, undefined);
+      configureTestingModule(defaultTagTypes);
       api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();

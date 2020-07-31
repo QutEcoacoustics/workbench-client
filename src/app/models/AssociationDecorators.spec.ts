@@ -6,6 +6,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
 import { Id, Ids } from "@interfaces/apiInterfaces";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
@@ -181,10 +182,10 @@ describe("Association Decorators", () => {
         });
 
         it("should handle error", async () => {
-          const promise = interceptApiRequest(undefined, {
-            status: 401,
-            message: "Unauthorized",
-          });
+          const promise = interceptApiRequest(
+            undefined,
+            generateApiErrorDetails("Unauthorized")
+          );
           const model = createModel({ ids: idsType.empty }, injector);
           await assertModel(promise, model, "childModels", []);
         });
@@ -329,10 +330,10 @@ describe("Association Decorators", () => {
     });
 
     it("should handle error", async () => {
-      const promise = interceptApiRequest(undefined, {
-        status: 401,
-        message: "Unauthorized",
-      });
+      const promise = interceptApiRequest(
+        undefined,
+        generateApiErrorDetails("Unauthorized")
+      );
       const model = createModel({ id: 1 }, injector);
       await assertModel(promise, model, "childModel", null);
     });

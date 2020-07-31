@@ -5,6 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -105,20 +106,11 @@ describe("ProjectsNewComponent", () => {
     it("should handle duplicate project name", () => {
       api.create.and.callFake(() => {
         const subject = new Subject<Project>();
-
-        subject.error({
-          message: "Record could not be saved",
-          status: 422,
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            imageFileName: [],
-            imageFileSize: [],
-            imageContentType: [],
-            imageUpdatedAt: [],
-          },
-        } as ApiErrorDetails);
-
+        subject.error(
+          generateApiErrorDetails("Unprocessable Entity", {
+            info: { name: ["has already been taken"] },
+          })
+        );
         return subject;
       });
 

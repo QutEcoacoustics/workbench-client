@@ -1,14 +1,9 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { AccountsService } from "@baw-api/account/accounts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { AbstractModel } from "@models/AbstractModel";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { MockComponent } from "ng-mocks";
@@ -21,7 +16,6 @@ import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 describe("PermissionsShieldComponent", () => {
   let spectator: SpectatorRouting<PermissionsShieldComponent>;
-  let api: SpyObject<AccountsService>;
   const createComponent = createRoutingFactory({
     component: PermissionsShieldComponent,
     declarations: [MockComponent(UserBadgesComponent)],
@@ -34,7 +28,6 @@ describe("PermissionsShieldComponent", () => {
   }
 
   function setup(resolvers: MockResolvers, data: MockData) {
-    // TODO Simplify this by mocking UserBadgesComponent
     spectator = createComponent({ data: { resolvers, ...data } });
   }
 

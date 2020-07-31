@@ -13,6 +13,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
@@ -128,9 +129,7 @@ describe("UserBadgesComponent Spec", () => {
     },
     {
       title: "Owned By",
-      keys: {
-        ownerId: modelData.id(),
-      },
+      keys: { ownerId: modelData.id() },
     },
   ].forEach((userType) => {
     describe(userType.title + " User Badge", () => {
@@ -191,10 +190,10 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display badge title on api error", async () => {
-        const promise = interceptApiRequest(undefined, {
-          status: 404,
-          message: "Not Found",
-        });
+        const promise = interceptApiRequest(
+          undefined,
+          generateApiErrorDetails("Not Found")
+        );
         spectator.component.ngOnChanges();
         await promise;
 
@@ -202,10 +201,10 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display ghost user on api error", async () => {
-        const promise = interceptApiRequest(undefined, {
-          status: 404,
-          message: "Not Found",
-        });
+        const promise = interceptApiRequest(
+          undefined,
+          generateApiErrorDetails("Not Found")
+        );
         spectator.component.ngOnChanges();
         await promise;
 

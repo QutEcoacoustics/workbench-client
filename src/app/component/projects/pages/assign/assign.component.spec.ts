@@ -17,14 +17,10 @@ import { AssignComponent } from "./assign.component";
 describe("AssignComponent", () => {
   let api: SpyObject<ShallowSitesService>;
   let component: AssignComponent;
-  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let fixture: ComponentFixture<AssignComponent>;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -38,7 +34,7 @@ describe("AssignComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { project: projectResolvers.show },
-            { project: { model: project, error: projectError } }
+            { project: { model, error } }
           ),
         },
       ],
@@ -54,14 +50,10 @@ describe("AssignComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   it("should create", () => {
-    configureTestingModule(defaultProject, undefined);
+    configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });
 

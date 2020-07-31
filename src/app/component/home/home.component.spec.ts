@@ -13,6 +13,7 @@ import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
@@ -125,7 +126,7 @@ describe("HomeComponent", () => {
     });
 
     it("should handle filter error", async () => {
-      await setupComponent(undefined, { status: 404, message: "Not Found" });
+      await setupComponent(undefined, generateApiErrorDetails());
       expect(getCardImages().length).toBe(0);
       expect(getButton()).toBeTruthy();
     });

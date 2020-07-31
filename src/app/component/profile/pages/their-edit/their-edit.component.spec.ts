@@ -13,10 +13,9 @@ import { TheirEditComponent } from "./their-edit.component";
 describe("TheirProfileEditComponent", () => {
   let component: TheirEditComponent;
   let fixture: ComponentFixture<TheirEditComponent>;
-  let defaultError: ApiErrorDetails;
   let defaultUser: User;
 
-  function configureTestingModule(user: User, error: ApiErrorDetails) {
+  function configureTestingModule(model: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -30,7 +29,7 @@ describe("TheirProfileEditComponent", () => {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             { account: accountResolvers.show },
-            { account: { model: user, error } }
+            { account: { model, error } }
           ),
         },
       ],
@@ -47,14 +46,10 @@ describe("TheirProfileEditComponent", () => {
       id: 1,
       userName: "Username",
     });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser, undefined);
+    configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });
 });
