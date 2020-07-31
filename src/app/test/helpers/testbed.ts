@@ -15,7 +15,11 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
-import { serviceMockProviders } from "@baw-api/ServiceProviders";
+import {
+  serviceResolvers,
+  services,
+  serviceTokens,
+} from "@baw-api/ServiceProviders";
 import {
   API_CONFIG,
   API_ROOT,
@@ -24,6 +28,7 @@ import {
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { mockProvider } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { AppConfigService } from "@services/app-config/app-config.service";
@@ -91,7 +96,6 @@ export const testBawServices = [
   { provide: STUB_MODEL_BUILDER, useValue: MockModel },
   { provide: BawApiService, useClass: MockBawApiService },
   { provide: SecurityService, useClass: MockSecurityService },
-  ...serviceMockProviders,
 ];
 
 /**
@@ -122,9 +126,11 @@ export function mockActivatedRoute(
 export interface MockResolvers {
   [key: string]: string;
 }
+
 export interface MockData {
   [key: string]: ResolvedModel;
 }
+
 export interface MockParams {
   [key: string]: string | number;
 }
@@ -139,12 +145,9 @@ export type HttpClientBody =
   // tslint:disable-next-line: ban-types
   | (string | number | Object | null)[]
   | null;
+
 export interface HttpClientOpts {
-  headers?:
-    | HttpHeaders
-    | {
-        [name: string]: string | string[];
-      };
+  headers?: HttpHeaders | { [name: string]: string | string[] };
   status?: number;
   statusText?: string;
 }
