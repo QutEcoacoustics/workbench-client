@@ -15,27 +15,9 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
-import {
-  serviceResolvers,
-  services,
-  serviceTokens,
-} from "@baw-api/ServiceProviders";
-import {
-  API_CONFIG,
-  API_ROOT,
-  ASSET_ROOT,
-  CMS_ROOT,
-  Configuration,
-} from "@helpers/app-initializer/app-initializer";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { mockProvider } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import {
-  AppConfigMockService,
-  testApiConfig,
-} from "@services/app-config/appConfigMock.service";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
@@ -56,38 +38,9 @@ export const testFormImports = [
 ];
 
 /**
- * Create mock initializer values
- */
-export const testAppInitializer = [
-  {
-    provide: API_ROOT,
-    useValue: testApiConfig.environment.apiRoot,
-  },
-  {
-    provide: CMS_ROOT,
-    useValue: testApiConfig.environment.cmsRoot,
-  },
-  {
-    provide: ASSET_ROOT,
-    useValue: testApiConfig.environment.assetRoot,
-  },
-  {
-    provide: API_CONFIG,
-    useValue: new Promise<Configuration>((resolve) => {
-      resolve(testApiConfig);
-    }),
-  },
-  {
-    provide: AppConfigService,
-    useClass: AppConfigMockService,
-  },
-];
-
-/**
  * Mock classes for baw services
  */
 export const testBawServices = [
-  ...testAppInitializer,
   {
     provide: HTTP_INTERCEPTORS,
     useClass: BawApiInterceptor,

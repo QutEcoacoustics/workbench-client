@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioEvent } from "@models/AudioEvent";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,20 +11,17 @@ import {
   validateApiShow,
   validateApiUpdate,
 } from "src/app/test/helpers/api-common";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { BawApiService } from "../baw-api.service";
-import { MockBawApiService } from "../mock/baseApiMock.service";
 import { AudioEventsService } from "./audio-events.service";
 
 describe("AudioEventsService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        ...testAppInitializer,
-        AudioEventsService,
-        { provide: BawApiService, useClass: MockBawApiService },
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
       ],
+      providers: [AudioEventsService],
     });
 
     this.service = TestBed.inject(AudioEventsService);

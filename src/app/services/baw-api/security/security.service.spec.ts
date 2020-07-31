@@ -10,8 +10,8 @@ import {
 } from "@baw-api/api.interceptor.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import {
   apiErrorDetails,
   shouldNotComplete,
@@ -51,15 +51,14 @@ describe("SecurityService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [
-        ...testAppInitializer,
-        { provide: UserService, useClass: MockShowApiService },
         {
           provide: HTTP_INTERCEPTORS,
           useClass: BawApiInterceptor,
           multi: true,
         },
+        { provide: UserService, useClass: MockShowApiService },
         SecurityService,
       ],
     });

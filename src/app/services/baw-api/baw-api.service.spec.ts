@@ -22,8 +22,8 @@ import { UserService } from "@baw-api/user/user.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { MockShowApiService } from "./mock/apiMocks.service";
 
 export const shouldNotSucceed = () => {
@@ -189,9 +189,8 @@ describe("BawApiService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [
-        ...testAppInitializer,
         BawApiService,
         { provide: SecurityService, useClass: MockSecurityService },
         { provide: UserService, useClass: MockShowApiService },

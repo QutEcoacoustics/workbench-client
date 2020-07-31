@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
@@ -66,9 +66,8 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
       declarations: [ErrorHandlerComponent, MockComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
