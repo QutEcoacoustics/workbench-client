@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
@@ -9,10 +10,7 @@ import {
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { RequestComponent } from "./request.component";
 
 describe("ProjectsRequestComponent", () => {
@@ -27,10 +25,14 @@ describe("ProjectsRequestComponent", () => {
     projectError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [RequestComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(

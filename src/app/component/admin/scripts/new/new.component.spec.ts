@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { SharedModule } from "@shared/shared.module";
-import { testBawServices } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsNewComponent } from "./new.component";
@@ -17,9 +17,13 @@ describe("AdminScriptsNewComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminScriptsNewComponent],
-      providers: [...testBawServices],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsNewComponent);

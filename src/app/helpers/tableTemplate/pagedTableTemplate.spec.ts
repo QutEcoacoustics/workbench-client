@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component } from "@angular/core";
 import {
   ComponentFixture,
   fakeAsync,
@@ -7,19 +7,18 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { SharedModule } from "@shared/shared.module";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-  testBawServices,
 } from "src/app/test/helpers/testbed";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
@@ -64,9 +63,8 @@ describe("PagedTableTemplate", () => {
   ) {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(resolvers, data),

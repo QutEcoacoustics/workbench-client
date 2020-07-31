@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { AbstractModel } from "@models/AbstractModel";
@@ -9,11 +10,7 @@ import { generateSite } from "@test/fakes/Site";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  MockData,
-  MockResolvers,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { MockData, MockResolvers } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
@@ -24,8 +21,7 @@ describe("PermissionsShieldComponent", () => {
   const createComponent = createRoutingFactory({
     component: PermissionsShieldComponent,
     declarations: [UserBadgesComponent, UserBadgeComponent],
-    imports: [HttpClientTestingModule],
-    providers: testBawServices,
+    imports: [HttpClientTestingModule, MockBawApiModule],
     stubsEnabled: true,
   });
 

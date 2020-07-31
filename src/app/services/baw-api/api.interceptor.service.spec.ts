@@ -5,11 +5,11 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { generateSessionUser } from "@test/fakes/User";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import {
   apiErrorInfoDetails,
   shouldNotFail,
@@ -54,8 +54,7 @@ describe("BawApiInterceptor", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule],
-      providers: testBawServices,
+      imports: [HttpClientModule, HttpClientTestingModule, MockBawApiModule],
     });
 
     api = TestBed.inject(SecurityService);

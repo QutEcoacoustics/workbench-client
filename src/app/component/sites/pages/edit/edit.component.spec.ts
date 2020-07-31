@@ -1,4 +1,5 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
@@ -13,7 +14,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { testBawServices, testFormImports } from "@test/helpers/testbed";
+import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { fields } from "../../site.base.json";
@@ -23,9 +24,8 @@ describe("SitesEditComponent", () => {
   let spectator: SpectatorRouting<EditComponent>;
   const createComponent = createRoutingFactory({
     component: EditComponent,
-    imports: testFormImports,
+    imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    providers: testBawServices,
     mocks: [ToastrService],
     stubsEnabled: true,
   });

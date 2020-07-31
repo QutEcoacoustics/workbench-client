@@ -6,6 +6,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
@@ -15,7 +16,6 @@ import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -30,8 +30,12 @@ describe("HomeComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
-      providers: testBawServices,
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

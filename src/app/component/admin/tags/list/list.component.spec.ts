@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { SharedModule } from "@shared/shared.module";
+import { generateTag } from "@test/fakes/Tag";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsComponent } from "./list.component";
 
@@ -16,9 +17,13 @@ describe("AdminTagsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminTagsComponent],
-      providers: [...testBawServices],
     }).compileComponents();
   }));
 
@@ -26,24 +31,10 @@ describe("AdminTagsComponent", () => {
     fixture = TestBed.createComponent(AdminTagsComponent);
     api = TestBed.inject(TagsService);
 
-    defaultModel = new Tag({
-      id: 1,
-      text: "tag",
-      isTaxanomic: false,
-      retired: false,
-      typeOfTag: "common",
-    });
+    defaultModel = new Tag(generateTag());
     defaultModels = [];
     for (let i = 0; i < 25; i++) {
-      defaultModels.push(
-        new Tag({
-          id: i,
-          text: "tag " + i,
-          isTaxanomic: false,
-          retired: false,
-          typeOfTag: "common",
-        })
-      );
+      defaultModels.push(new Tag(generateTag(i)));
     }
 
     this.defaultModels = defaultModels;

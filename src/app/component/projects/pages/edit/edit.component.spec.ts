@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
@@ -9,11 +10,7 @@ import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-  testFormImports,
-} from "@test/helpers/testbed";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { fields } from "../../project.schema.json";
@@ -33,10 +30,9 @@ describe("ProjectsEditComponent", () => {
     projectError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: testFormImports,
+      imports: [...testFormImports, MockBawApiModule],
       declarations: [EditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(

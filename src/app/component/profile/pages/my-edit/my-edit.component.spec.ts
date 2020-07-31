@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { userResolvers, UserService } from "@baw-api/user/user.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { MyEditComponent } from "./my-edit.component";
 
@@ -18,22 +19,19 @@ describe("MyProfileEditComponent", () => {
 
   function configureTestingModule(user: User, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [MyEditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              user: userResolvers.show,
-            },
-            {
-              user: {
-                model: user,
-                error,
-              },
-            }
+            { user: userResolvers.show },
+            { user: { model: user, error } }
           ),
         },
       ],

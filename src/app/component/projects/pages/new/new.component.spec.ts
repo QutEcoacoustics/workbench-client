@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { testFormlyFields } from "@test/helpers/formly";
-import {
-  mockActivatedRoute,
-  testBawServices,
-  testFormImports,
-} from "@test/helpers/testbed";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { fields } from "../../project.schema.json";
@@ -52,10 +49,9 @@ describe("ProjectsNewComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: testFormImports,
+        imports: [...testFormImports, MockBawApiModule],
         declarations: [NewComponent],
         providers: [
-          ...testBawServices,
           {
             provide: ActivatedRoute,
             useClass: mockActivatedRoute(),

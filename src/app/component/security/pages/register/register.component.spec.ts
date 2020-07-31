@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { FormComponent } from "@shared/form/form.component";
 import { WIPComponent } from "@shared/wip/wip.component";
 import { ToastrService } from "ngx-toastr";
 import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
+import { testFormImports } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
 
@@ -51,9 +52,8 @@ describe("RegisterComponent", () => {
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: testFormImports,
+        imports: [...testFormImports, MockBawApiModule],
         declarations: [RegisterComponent, FormComponent, WIPComponent],
-        providers: testBawServices,
       }).compileComponents();
     }));
 

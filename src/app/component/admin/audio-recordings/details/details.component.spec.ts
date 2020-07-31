@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
@@ -12,7 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminAudioRecordingComponent } from "./details.component";
@@ -27,10 +28,14 @@ describe("AdminAudioRecordingComponent", () => {
     error?: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminAudioRecordingComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(

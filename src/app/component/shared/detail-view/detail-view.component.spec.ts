@@ -1,13 +1,13 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { HasMany, HasOne } from "@models/AssociationDecorators";
 import { nStepObservable } from "@test/helpers/general";
-import { testBawServices } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -52,9 +52,8 @@ describe("DetailViewComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DetailViewComponent, RenderFieldComponent],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ],

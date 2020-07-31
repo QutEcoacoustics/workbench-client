@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   LoginDetails,
   SecurityService,
@@ -10,7 +11,7 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
-import { testBawServices, testFormImports } from "@test/helpers/testbed";
+import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
@@ -23,9 +24,8 @@ describe("LoginComponent New", () => {
   let spectator: SpectatorRouting<LoginComponent>;
   const createComponent = createRoutingFactory({
     component: LoginComponent,
-    imports: testFormImports,
+    imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    providers: testBawServices,
     mocks: [ToastrService],
     stubsEnabled: true,
   });

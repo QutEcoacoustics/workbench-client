@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -14,7 +15,6 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { User } from "src/app/models/User";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
@@ -49,8 +49,8 @@ describe("UserBadgesComponent Spec", () => {
       HttpClientTestingModule,
       LoadingModule,
       AuthenticatedImageModule,
+      MockBawApiModule,
     ],
-    providers: testBawServices,
   });
 
   function getUserBadges(): HTMLElement[] {

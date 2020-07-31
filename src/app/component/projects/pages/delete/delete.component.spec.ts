@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
@@ -13,10 +14,7 @@ import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("ProjectsDeleteComponent", () => {
@@ -33,22 +31,19 @@ describe("ProjectsDeleteComponent", () => {
     projectError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [DeleteComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            }
+            { project: projectResolvers.show },
+            { project: { model: project, error: projectError } }
           ),
         },
       ],

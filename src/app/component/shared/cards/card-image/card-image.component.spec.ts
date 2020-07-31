@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
 import { assertHref, assertImage, assertRoute } from "@test/helpers/html";
-import { testBawServices } from "@test/helpers/testbed";
 import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
 
@@ -32,8 +32,8 @@ describe("CardImageComponent", () => {
       HttpClientTestingModule,
       RouterTestingModule,
       AuthenticatedImageModule,
+      MockBawApiModule,
     ],
-    providers: testBawServices,
   });
 
   beforeEach(() => {

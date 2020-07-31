@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
-import { testBawServices } from "@test/helpers/testbed";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
 import { RenderFieldComponent } from "./render-field.component";
@@ -54,8 +54,8 @@ describe("RenderFieldComponent", () => {
         RouterTestingModule,
         AuthenticatedImageModule,
         HttpClientTestingModule,
+        MockBawApiModule,
       ],
-      providers: testBawServices,
     }).compileComponents();
   }));
 

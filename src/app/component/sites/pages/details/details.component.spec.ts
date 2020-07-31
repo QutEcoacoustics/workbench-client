@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { MockMapComponent } from "@shared/map/mapMock.component";
@@ -12,10 +13,7 @@ import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {
@@ -32,10 +30,14 @@ describe("SitesDetailsComponent", () => {
     siteError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, GoogleMapsModule],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        GoogleMapsModule,
+        MockBawApiModule,
+      ],
       declarations: [DetailsComponent, MockMapComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(

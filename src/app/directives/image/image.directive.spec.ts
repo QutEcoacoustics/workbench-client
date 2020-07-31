@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { SessionUser } from "@models/User";
@@ -8,7 +9,6 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
-import { testBawServices } from "@test/helpers/testbed";
 import {
   AuthenticatedImageDirective,
   image404RelativeSrc,
@@ -19,8 +19,7 @@ describe("ImageDirective", () => {
   const image404Src = `http://${window.location.host}${image404RelativeSrc}`;
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
-    imports: [HttpClientTestingModule],
-    providers: testBawServices,
+    imports: [HttpClientTestingModule, MockBawApiModule],
   });
 
   function getImage() {

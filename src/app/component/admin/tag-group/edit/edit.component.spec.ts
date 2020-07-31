@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   tagGroupResolvers,
   TagGroupsService,
@@ -9,7 +10,7 @@ import {
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsEditComponent } from "./edit.component";
@@ -25,22 +26,19 @@ describe("AdminTagGroupsEditComponent", () => {
 
   function configureTestingModule(tagGroup: TagGroup, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminTagGroupsEditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              tagGroup: tagGroupResolvers.show,
-            },
-            {
-              tagGroup: {
-                model: tagGroup,
-                error,
-              },
-            }
+            { tagGroup: tagGroupResolvers.show },
+            { tagGroup: { model: tagGroup, error } }
           ),
         },
       ],

@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsNewComponent } from "./new.component";
@@ -20,10 +21,14 @@ describe("AdminTagGroupsNewComponent", () => {
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+        imports: [
+          ...appLibraryImports,
+          SharedModule,
+          RouterTestingModule,
+          MockBawApiModule,
+        ],
         declarations: [AdminTagGroupsNewComponent],
         providers: [
-          ...testBawServices,
           {
             provide: ActivatedRoute,
             useClass: mockActivatedRoute(),

@@ -5,6 +5,7 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { BehaviorSubject } from "rxjs";
 import { AppComponent } from "./app.component";
@@ -13,7 +14,6 @@ import { SharedModule } from "./component/shared/shared.module";
 import { AppConfigService } from "./services/app-config/app-config.service";
 import { SecurityService } from "./services/baw-api/security/security.service";
 import { UserService } from "./services/baw-api/user/user.service";
-import { testBawServices } from "./test/helpers/testbed";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -30,9 +30,9 @@ describe("AppComponent", () => {
         RouterTestingModule,
         HttpClientTestingModule,
         LoadingBarHttpClientModule,
+        MockBawApiModule,
       ],
       declarations: [AppComponent],
-      providers: [...testBawServices],
     }).compileComponents();
   }));
 

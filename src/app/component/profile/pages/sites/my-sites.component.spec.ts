@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ISite, Site } from "@models/Site";
 import { User } from "@models/User";
@@ -12,10 +13,7 @@ import {
   assertResolverErrorHandling,
   assertRoute,
 } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { MySitesComponent } from "./my-sites.component";
 
 describe("MySitesComponent", () => {
@@ -28,9 +26,8 @@ describe("MySitesComponent", () => {
   function configureTestingModule(model?: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       declarations: [MySitesComponent],
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(

@@ -1,20 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpHeaders } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
-import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
-import {
-  MockBawApiService,
-  MockModel,
-} from "@baw-api/mock/baseApiMock.service";
-import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { SecurityService } from "@baw-api/security/security.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -35,20 +27,6 @@ export const testFormImports = [
   HttpClientTestingModule,
   RouterTestingModule,
   LoadingModule,
-];
-
-/**
- * Mock classes for baw services
- */
-export const testBawServices = [
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: BawApiInterceptor,
-    multi: true,
-  },
-  { provide: STUB_MODEL_BUILDER, useValue: MockModel },
-  { provide: BawApiService, useClass: MockBawApiService },
-  { provide: SecurityService, useClass: MockSecurityService },
 ];
 
 /**

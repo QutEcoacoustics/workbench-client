@@ -4,12 +4,10 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { TheirProfileComponent } from "./their-profile.component";
 
 xdescribe("TheirProfileComponent", () => {
@@ -20,22 +18,19 @@ xdescribe("TheirProfileComponent", () => {
 
   function configureTestingModule(user: User, error: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [TheirProfileComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              account: accountResolvers.show,
-            },
-            {
-              account: {
-                model: user,
-                error,
-              },
-            }
+            { account: accountResolvers.show },
+            { account: { model: user, error } }
           ),
         },
       ],
