@@ -13,7 +13,7 @@ import {
 } from "src/app/test/helpers/api-common";
 import { ShallowSitesService } from "./sites.service";
 
-xdescribe("ShallowSitesService", function () {
+describe("ShallowSitesService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
@@ -45,4 +45,6 @@ xdescribe("ShallowSitesService", function () {
     5,
     new Site({ id: 5 })
   );
+
+  // TODO Add tests for filterByAccessLevel and Orphans
 });
