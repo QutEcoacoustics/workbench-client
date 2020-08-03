@@ -18,11 +18,8 @@ import {
   selector: "formly-timezone-input",
   template: `
     <div class="form-group">
-      <label *ngIf="field.templateOptions.label" [for]="field.id">
-        {{
-          field.templateOptions.label +
-            (field.templateOptions.required ? " *" : "")
-        }}
+      <label *ngIf="to.label" [for]="field.id">
+        {{ to.label + (to.required ? " *" : "") }}
       </label>
 
       <ng-template #resultTemplate let-r="result" let-t="term">
@@ -80,7 +77,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
     this.timezones = (await import("@vvo/tzdb")).getTimeZones();
     this.formControl.setValidators(() => {
       if (!isInstantiated(this.timezone)) {
-        if (this.field.templateOptions.required && this.formControl.dirty) {
+        if (this.to.required && this.formControl.dirty) {
           return { [this.field.key]: "You must select a timezone" };
         } else {
           return null;

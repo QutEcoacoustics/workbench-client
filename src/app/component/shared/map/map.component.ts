@@ -4,12 +4,10 @@ import {
   Input,
   OnChanges,
   QueryList,
-  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
@@ -55,10 +53,9 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
     super();
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges() {
     this.hasMarkers = false;
     this.filteredMarkers = [];
-
     // Calculate pin boundaries so that map can be auto-focused properly
     const bounds = new google.maps.LatLngBounds();
     this.markers?.forEach((marker) => {
@@ -69,11 +66,14 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
       }
     });
 
+    if (!this.hasMarkers) {
+      return;
+    }
+
     // Detect changes required so map loads
     this.ref.detectChanges();
     this.map.fitBounds(bounds);
     this.map.panToBounds(bounds);
-
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(

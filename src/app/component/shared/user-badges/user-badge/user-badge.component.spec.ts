@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
-import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -20,8 +20,8 @@ describe("UserBadgeComponent", () => {
       HttpClientTestingModule,
       AuthenticatedImageModule,
       LoadingModule,
+      MockBawApiModule,
     ],
-    providers: testBawServices,
   });
 
   const getLabels = (spec?: Spectator<any>) =>

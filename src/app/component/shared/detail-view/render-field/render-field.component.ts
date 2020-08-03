@@ -49,21 +49,14 @@ import {
 
     <!-- Display Image -->
     <dl *ngIf="styling === FieldStyling.Image">
-      <ngb-tabset>
-        <ngb-tab *ngFor="let image of display" [title]="image.size">
-          <ng-template ngbTabContent>
-            <img id="image" alt="model image alt" [src]="[image]" />
-            <small>{{ image.url }}</small>
-          </ng-template>
-        </ngb-tab>
-      </ngb-tabset>
+      <img id="image" alt="model image alt" [src]="display" />
     </dl>
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === FieldStyling.Image">
+    <ng-container *ngIf="styling === FieldStyling.Children">
       <baw-render-field
-        id="children"
         *ngFor="let child of children"
+        id="children"
         [value]="child"
       ></baw-render-field>
     </ng-container>
@@ -121,7 +114,6 @@ export class RenderFieldComponent extends WithUnsubscribe()
       this.humanizeAbstractModel(value);
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
-      // TODO Handle ImageUrl
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;
@@ -211,11 +203,7 @@ export class RenderFieldComponent extends WithUnsubscribe()
     this.setLoading();
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
-        if (!models) {
-          this.display = this.noValueText;
-        } else {
-          this.humanize(models);
-        }
+        this.humanize(models);
         this.ref.detectChanges();
       },
       () => {
@@ -264,6 +252,13 @@ export class RenderFieldComponent extends WithUnsubscribe()
     validCallback: () => void,
     invalidCallback: () => void
   ) {
+    // Url from https://urlregex.com/
+    const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+    if (!urlRegex.test(src)) {
+      invalidCallback();
+      return;
+    }
+
     const img = new Image();
     img.onload = validCallback;
     img.onerror = invalidCallback;
@@ -295,7 +290,6 @@ export type ModelView =
 enum FieldStyling {
   Checkbox,
   Code,
-  Link,
   Plain,
   Route,
   Model,

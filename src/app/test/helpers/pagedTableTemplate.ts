@@ -53,9 +53,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   };
 
   assignModelMetadata(models, paging);
-  spyOn(api as any, apiAction).and.callFake(
-    () => new BehaviorSubject<M[]>(models)
-  );
+  api[apiAction].and.callFake(() => new BehaviorSubject<M[]>(models));
 }
 
 /**
@@ -83,7 +81,7 @@ export function assertPagination<
       const paging = { page: 1, items: 25, total: 100, maxPage: 4 };
 
       assignModelMetadata(models, paging);
-      spyOn(api as any, apiAction).and.callFake((filter: Filters) => {
+      api[apiAction].and.callFake((filter: Filters) => {
         if (secondRequest) {
           expect(filter).toEqual(expectation);
           done();
@@ -95,7 +93,7 @@ export function assertPagination<
     }
 
     function apiErrorResponse(error: ApiErrorDetails) {
-      spyOn(api as any, apiAction).and.callFake(() => {
+      api[apiAction].and.callFake(() => {
         const subject = new Subject<M[]>();
         subject.error(error);
         return subject;

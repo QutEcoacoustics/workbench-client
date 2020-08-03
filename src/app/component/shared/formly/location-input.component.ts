@@ -5,15 +5,14 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 
 /**
  * Location Input
+ * ! Warning, test manually after changes
  */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-location-input",
   template: `
     <div class="form-group">
-      <label for="latitude">
-        Latitude {{ field.templateOptions.required ? " *" : "" }}
-      </label>
+      <label for="latitude"> Latitude {{ to.required ? " *" : "" }} </label>
       <input
         id="latitude"
         type="number"
@@ -34,9 +33,7 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
     </div>
 
     <div class="form-group">
-      <label for="longitude">
-        Longitude {{ field.templateOptions.required ? " *" : "" }}
-      </label>
+      <label for="longitude"> Longitude {{ to.required ? " *" : "" }} </label>
       <input
         id="longitude"
         type="number"

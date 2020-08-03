@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { assertRoute } from "@test/helpers/html";
@@ -10,7 +11,6 @@ import {
   getDatatableCells,
   getDatatableRows,
 } from "@test/helpers/pagedTableTemplate";
-import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminUserListComponent } from "./list.component";
 
@@ -23,8 +23,12 @@ describe("AdminUserListComponent", () => {
   beforeEach(async(function () {
     TestBed.configureTestingModule({
       declarations: [AdminUserListComponent],
-      imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
-      providers: [...testBawServices],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
     }).compileComponents();
   }));
 

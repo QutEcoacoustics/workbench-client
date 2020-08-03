@@ -1,6 +1,10 @@
 import { Component } from "@angular/core";
 import { FieldWrapper } from "@ngx-formly/core";
 
+/**
+ * Horizontal wrapper for formly components so they can be center aligned
+ * ! Warning, test manually after changes
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-horizontal-wrapper",

@@ -2,6 +2,10 @@ import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
+/**
+ * Checkbox input using bootstrap to style the component
+ * ! Warning, test manually after changes
+ */
 @Component({
   // tslint:disable-next-line: component-selector
   selector: "formly-checkbox-input",

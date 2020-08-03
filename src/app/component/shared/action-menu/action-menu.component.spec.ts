@@ -2,8 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { List } from "immutable";
-import { BehaviorSubject } from "rxjs";
 import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
 import {
   AnyMenuItem,
@@ -15,7 +15,7 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
-import { testBawServices } from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
@@ -54,19 +54,19 @@ describe("ActionMenuComponent", () => {
   }
 
   function createTestBed(params: any, data: PageInfoInterface) {
-    class MockActivatedRoute {
-      public data = new BehaviorSubject<PageInfoInterface>(data);
-      public snapshot = {
-        params,
-      };
-    }
-
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        SharedModule,
+        MockBawApiModule,
+      ],
       declarations: [ActionMenuComponent],
       providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(undefined, data, params),
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(ActionMenuComponent);

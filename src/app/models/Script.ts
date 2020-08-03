@@ -1,8 +1,9 @@
 import { Injector } from "@angular/core";
+import { SCRIPT } from "@baw-api/ServiceTokens";
 import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator } from "./AssociationDecorators";
+import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
@@ -53,9 +54,10 @@ export class Script extends AbstractModel implements IScript {
   public readonly analysisActionParams?: object;
 
   // Associations
-  // TODO Add Group associations
   @Creator<Script>()
   public creator?: User;
+  @HasOne<Script>(SCRIPT, "groupId")
+  public group?: Script;
 
   constructor(script: IScript, injector?: Injector) {
     super(script, injector);
