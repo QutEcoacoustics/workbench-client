@@ -2,19 +2,24 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { BawDateTime } from "@models/AttributeDecorators";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { User } from "src/app/models/User";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
@@ -39,7 +44,7 @@ export class MockModel extends AbstractModel {
 }
 
 describe("UserBadgesComponent Spec", () => {
-  let api: AccountsService;
+  let api: SpyObject<AccountsService>;
   let spectator: Spectator<UserBadgesComponent>;
   const createComponent = createComponentFactory({
     component: UserBadgesComponent,
@@ -49,8 +54,8 @@ describe("UserBadgesComponent Spec", () => {
       HttpClientTestingModule,
       LoadingModule,
       AuthenticatedImageModule,
+      MockBawApiModule,
     ],
-    providers: testBawServices,
   });
 
   function getUserBadges(): HTMLElement[] {
@@ -69,7 +74,7 @@ describe("UserBadgesComponent Spec", () => {
       () => (error ? error : user),
       !!error
     );
-    spyOn(api, "show").and.callFake(() => subject);
+    api.show.and.callFake(() => subject);
     return promise;
   }
 
@@ -124,9 +129,7 @@ describe("UserBadgesComponent Spec", () => {
     },
     {
       title: "Owned By",
-      keys: {
-        ownerId: modelData.id(),
-      },
+      keys: { ownerId: modelData.id() },
     },
   ].forEach((userType) => {
     describe(userType.title + " User Badge", () => {
@@ -148,6 +151,7 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display loading animation", async () => {
+        api.show.and.callFake(() => new Subject());
         spectator.component.ngOnChanges();
         assertSpinner(spectator.fixture, true);
       });
@@ -186,10 +190,10 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display badge title on api error", async () => {
-        const promise = interceptApiRequest(undefined, {
-          status: 404,
-          message: "Not Found",
-        });
+        const promise = interceptApiRequest(
+          undefined,
+          generateApiErrorDetails("Not Found")
+        );
         spectator.component.ngOnChanges();
         await promise;
 
@@ -197,10 +201,10 @@ describe("UserBadgesComponent Spec", () => {
       });
 
       it("should display ghost user on api error", async () => {
-        const promise = interceptApiRequest(undefined, {
-          status: 404,
-          message: "Not Found",
-        });
+        const promise = interceptApiRequest(
+          undefined,
+          generateApiErrorDetails("Not Found")
+        );
         spectator.component.ngOnChanges();
         await promise;
 
@@ -241,7 +245,7 @@ describe("UserBadgesComponent Spec", () => {
         )
       )
     );
-    spyOn(api, "show").and.callFake(() => subjects[count++]);
+    api.show.and.callFake(() => subjects[count++]);
 
     spectator.setInput(
       "model",

@@ -1,4 +1,5 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { XOR } from "@helpers/advancedTypes";
 import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
@@ -123,7 +124,7 @@ export function isConfiguration(
   return config.kind === "Configuration";
 }
 
-type Links = HeaderLink | HeaderDropDownLink;
+type Links = XOR<HeaderLink, HeaderDropDownLink>;
 
 /**
  * Determine if a variable is of the HeaderLink type

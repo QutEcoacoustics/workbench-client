@@ -11,62 +11,73 @@ import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { toRelative } from "src/app/interfaces/apiInterfaces";
+import {
+  ImageSizes,
+  ImageUrl,
+  isImageUrl,
+  toRelative,
+} from "src/app/interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-render-field",
   template: `
-    <ng-container *ngIf="!children; else hasChildren">
-      <!-- Display plain text -->
-      <dl *ngIf="styling === FieldStyling.Plain">
-        <p id="plain" class="m-0">{{ display }}</p>
-      </dl>
+    <!-- Display plain text -->
+    <dl *ngIf="styling === FieldStyling.Plain">
+      <p id="plain" class="m-0">{{ display }}</p>
+    </dl>
 
-      <!-- Display code/objects -->
-      <dl *ngIf="styling === FieldStyling.Code">
-        <pre id="code" class="m-0">{{ display }}</pre>
-      </dl>
+    <!-- Display code/objects -->
+    <dl *ngIf="styling === FieldStyling.Code">
+      <pre id="code" class="m-0">{{ display }}</pre>
+    </dl>
 
-      <!-- Display checkbox -->
-      <dl *ngIf="styling === FieldStyling.Checkbox">
-        <baw-checkbox
-          id="checkbox"
-          class="m-0"
-          [checked]="display"
-          [disabled]="true"
-          [isCentered]="false"
-        ></baw-checkbox>
-      </dl>
+    <!-- Display checkbox -->
+    <dl *ngIf="styling === FieldStyling.Checkbox">
+      <baw-checkbox
+        id="checkbox"
+        class="m-0"
+        [checked]="display"
+        [disabled]="true"
+        [isCentered]="false"
+      ></baw-checkbox>
+    </dl>
 
-      <!-- Display AbstractModel -->
-      <dl *ngIf="styling === FieldStyling.Model">
-        <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
-      </dl>
+    <!-- Display AbstractModel -->
+    <dl *ngIf="styling === FieldStyling.Model">
+      <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
+    </dl>
 
-      <!-- Display Image -->
-      <dl *ngIf="styling === FieldStyling.Image">
-        <img
-          id="image"
-          style="max-width: 400px; max-height: 400px"
-          [src]="display"
-          alt="model image alt"
-        />
-      </dl>
-    </ng-container>
-    <ng-template #hasChildren>
+    <!-- Display Image -->
+    <dl *ngIf="styling === FieldStyling.Image">
+      <img id="image" alt="model image alt" [src]="display" />
+    </dl>
+
+    <!-- Display nested fields -->
+    <ng-container *ngIf="styling === FieldStyling.Children">
       <baw-render-field
-        id="children"
         *ngFor="let child of children"
+        id="children"
         [value]="child"
       ></baw-render-field>
-    </ng-template>
+    </ng-container>
   `,
+  styles: [
+    `
+      img {
+        display: block;
+        max-width: 400px;
+        max-height: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    `,
+  ],
 })
 export class RenderFieldComponent extends WithUnsubscribe()
   implements OnInit, OnChanges {
   @Input() public value: ModelView;
   public children: ModelView[];
-  public display: string | number | boolean;
+  public display: string | number | boolean | ImageUrl[];
   public FieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.Plain;
@@ -103,7 +114,6 @@ export class RenderFieldComponent extends WithUnsubscribe()
       this.humanizeAbstractModel(value);
     } else if (typeof value === "object") {
       // TODO Implement optional treeview
-      // TODO Handle ImageUrl
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;
@@ -142,7 +152,7 @@ export class RenderFieldComponent extends WithUnsubscribe()
       () => {
         // String is image URL, display image
         this.styling = FieldStyling.Image;
-        this.display = value;
+        this.display = [{ url: value, size: ImageSizes.UNKNOWN }];
         this.ref.detectChanges();
       },
       () => {}
@@ -193,11 +203,7 @@ export class RenderFieldComponent extends WithUnsubscribe()
     this.setLoading();
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
-        if (!models) {
-          this.display = this.noValueText;
-        } else {
-          this.humanize(models);
-        }
+        this.humanize(models);
         this.ref.detectChanges();
       },
       () => {
@@ -208,12 +214,19 @@ export class RenderFieldComponent extends WithUnsubscribe()
   }
 
   /**
-   * Convert array to human readable output
+   * Convert array to human readable output. This also handles
+   * an array of image urls.
    * @param value Display input
    */
-  private humanizeArray(value: ModelView[]) {
+  private humanizeArray(value: ModelView[] | ImageUrl[]) {
     if (value.length > 0) {
-      this.children = value;
+      if (isImageUrl(value[0])) {
+        this.styling = FieldStyling.Image;
+        this.display = value as ImageUrl[];
+      } else {
+        this.styling = FieldStyling.Children;
+        this.children = value;
+      }
     } else {
       this.display = this.noValueText;
     }
@@ -239,6 +252,13 @@ export class RenderFieldComponent extends WithUnsubscribe()
     validCallback: () => void,
     invalidCallback: () => void
   ) {
+    // Url from https://urlregex.com/
+    const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+    if (!urlRegex.test(src)) {
+      invalidCallback();
+      return;
+    }
+
     const img = new Image();
     img.onload = validCallback;
     img.onerror = invalidCallback;
@@ -264,14 +284,15 @@ export type ModelView =
   | AbstractModel
   | Blob
   | object
+  | ImageUrl[]
   | ModelView[];
 
 enum FieldStyling {
   Checkbox,
   Code,
-  Link,
   Plain,
   Route,
   Model,
   Image,
+  Children,
 }

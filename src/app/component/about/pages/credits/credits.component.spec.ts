@@ -5,8 +5,8 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { CreditsComponent } from "./credits.component";
 
 describe("AboutCreditsComponent", () => {
@@ -17,9 +17,13 @@ describe("AboutCreditsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
+      ],
       declarations: [CreditsComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
   }));
 

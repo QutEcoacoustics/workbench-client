@@ -22,8 +22,9 @@ import { UserService } from "@baw-api/user/user.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { BehaviorSubject, Subject } from "rxjs";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { MockShowApiService } from "./mock/apiMocks.service";
 
 export const shouldNotSucceed = () => {
@@ -38,23 +39,22 @@ export const shouldNotComplete = () => {
   fail("Service should not complete");
 };
 
-export const apiErrorDetails = {
-  status: 401,
-  message: "Unauthorized",
-} as ApiErrorDetails;
+export const apiErrorDetails = generateApiErrorDetails("Unauthorized");
 
-export const apiErrorInfoDetails = {
-  status: 422,
-  message: "Record could not be saved",
-  info: {
-    name: ["has already been taken"],
-    image: [],
-    image_file_name: [],
-    image_file_size: [],
-    image_content_type: [],
-    image_updated_at: [],
-  },
-} as ApiErrorDetails;
+export const apiErrorInfoDetails = generateApiErrorDetails(
+  "Unprocessable Entity",
+  {
+    message: "Record could not be saved",
+    info: {
+      name: ["has already been taken"],
+      image: [],
+      imageFileName: [],
+      imageFileSize: [],
+      imageContentType: [],
+      imageUpdatedAt: [],
+    },
+  }
+);
 
 describe("BawApiService", () => {
   /**
@@ -124,10 +124,10 @@ describe("BawApiService", () => {
       info: {
         name: ["has already been taken"],
         image: [],
-        image_file_name: [],
-        image_file_size: [],
-        image_content_type: [],
-        image_updated_at: [],
+        imageFileName: [],
+        imageFileSize: [],
+        imageContentType: [],
+        imageUpdatedAt: [],
       },
     },
   } as Meta;
@@ -188,9 +188,8 @@ describe("BawApiService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [
-        ...testAppInitializer,
         BawApiService,
         { provide: SecurityService, useClass: MockSecurityService },
         { provide: UserService, useClass: MockShowApiService },

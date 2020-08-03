@@ -2,6 +2,7 @@ import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { WithFormCheck } from "@guards/form/form.guard";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
@@ -200,7 +201,7 @@ export function extendedErrorMsg(
 
   // Handle additional error details
   for (const key of Object.keys(err.info)) {
-    if (info[key]) {
+    if (isInstantiated(info[key])) {
       errMsg = errMsg + "<br />" + info[key](err.info[key]);
     }
   }

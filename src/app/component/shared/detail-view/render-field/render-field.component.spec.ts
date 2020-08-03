@@ -1,8 +1,12 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
-import { assertIcon, assertImage, assertRoute } from "@test/helpers/html";
+import { modelData } from "@test/helpers/faker";
+import { assertImage, assertRoute } from "@test/helpers/html";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
 import { RenderFieldComponent } from "./render-field.component";
@@ -46,7 +50,12 @@ describe("RenderFieldComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [RenderFieldComponent, CheckboxComponent],
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        AuthenticatedImageModule,
+        HttpClientTestingModule,
+        MockBawApiModule,
+      ],
     }).compileComponents();
   }));
 
@@ -522,9 +531,48 @@ describe("RenderFieldComponent", () => {
       assertImage(
         value,
         `http://${window.location.host}/assets/test/test.png`,
-        "model image alt",
-        true
+        "model image alt"
       );
+    });
+  });
+
+  describe("imageUrls input", () => {
+    it("should handle imageUrls array", () => {
+      const imageUrls = modelData.imageUrls();
+      component.value = imageUrls;
+      fixture.detectChanges();
+
+      expect(getValues().length).toBe(1);
+      expect(getImageValues().length).toBe(1);
+    });
+
+    it("should display imageUrls array", () => {
+      const imageUrls = modelData.imageUrls().slice(0, 1);
+      component.value = imageUrls;
+      fixture.detectChanges();
+
+      const value = getImageValues()[0];
+      assertImage(value, imageUrls[0].url, "model image alt");
+    });
+
+    it("should display multiple value imageUrls array", () => {
+      const imageUrls = modelData.imageUrls();
+      component.value = imageUrls;
+      fixture.detectChanges();
+
+      const value = getImageValues()[0];
+      assertImage(value, imageUrls[0].url, "model image alt");
+    });
+
+    it("should handle invalid imageUrl", () => {
+      const imageUrls = modelData.imageUrls();
+      component.value = imageUrls;
+      fixture.detectChanges();
+
+      const value = getImageValues()[0];
+      value.onerror("unit test");
+      fixture.detectChanges();
+      assertImage(value, imageUrls[1].url, "model image alt");
     });
   });
 });

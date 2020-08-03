@@ -98,9 +98,9 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       // Convert incoming data
-      map((resp) => {
-        if (resp instanceof HttpResponse) {
-          return resp.clone({ body: toCamelCase(resp.body) });
+      map((response) => {
+        if (response instanceof HttpResponse) {
+          return response.clone({ body: toCamelCase(response.body) });
         }
       }),
       catchError(this.handleError)
@@ -115,25 +115,23 @@ export class BawApiInterceptor implements HttpInterceptor {
   private handleError(
     response: HttpErrorResponse | ApiErrorResponse | ApiErrorDetails
   ): Observable<never> {
+    // Convert incoming data
+    response = toCamelCase(response);
+    let error: ApiErrorDetails;
+
     if (isErrorDetails(response)) {
-      return throwError(response);
+      error = response;
     } else if (isErrorResponse(response)) {
-      const error: ApiErrorDetails = {
+      error = {
         status: response.status,
         message: response.error.meta.error.details,
+        info: response.error.meta.error?.info,
       };
-
-      if (response.error.meta.error.info) {
-        error.info = response.error.meta.error.info;
-      }
-
-      return throwError(error);
     } else {
-      return throwError({
-        status: response.status,
-        message: response.message,
-      } as ApiErrorDetails);
+      error = { status: response.status, message: response.message };
     }
+
+    return throwError(error);
   }
 }
 
@@ -160,10 +158,9 @@ interface ApiErrorResponse extends HttpErrorResponse {
 function isErrorDetails(
   errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
 ): errorResponse is ApiErrorDetails {
+  const keys = Object.keys(errorResponse);
   return (
-    errorResponse["status"] &&
-    errorResponse["message"] &&
-    Object.keys(errorResponse).length <= 3
+    keys.length <= 3 && keys.includes("status") && keys.includes("message")
   );
 }
 
@@ -174,10 +171,5 @@ function isErrorDetails(
 function isErrorResponse(
   errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
 ): errorResponse is ApiErrorResponse {
-  return (
-    errorResponse["error"] &&
-    errorResponse["error"]["meta"] &&
-    errorResponse["error"]["meta"]["error"] &&
-    errorResponse["error"]["meta"]["error"]["details"]
-  );
+  return !!(errorResponse as ApiErrorResponse).error?.meta?.error?.details;
 }

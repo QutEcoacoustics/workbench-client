@@ -3,9 +3,9 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { HarvestComponent } from "./harvest.component";
 
 describe("SiteHarvestComponent", () => {
@@ -16,9 +16,8 @@ describe("SiteHarvestComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule],
+      imports: [SharedModule, HttpClientTestingModule, MockAppConfigModule],
       declarations: [HarvestComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
   }));
 

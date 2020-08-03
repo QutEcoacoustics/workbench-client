@@ -24,7 +24,6 @@ import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
 export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() public btnColor: ButtonClassTypes = "btn-success";
   @Input() public fields: FormlyFieldConfig[];
-  @Input() public fieldsUrl: string;
   @Input() public model: object = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
@@ -44,36 +43,6 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.form = new FormGroup({});
-
-    if (this.fieldsUrl) {
-      // TODO Retrieve Schema from url
-      // this.convertFunctions(this.fields);
-    } else {
-      this.fields = this.convertFunctions(this.fields);
-    }
-  }
-
-  /**
-   * Convert any validator functions to Function datatype.
-   * This allows us to follow the format given by formly whilst also staying
-   * within the limitations of JSON (eg. Cannot transmit functions).
-   * @param fields Form fields
-   */
-  public convertFunctions(fields: any) {
-    fields = fields ?? [];
-
-    fields.forEach((field: any) => {
-      const validator = field.validators;
-
-      if (typeof validator?.fieldMatch?.expression === "string") {
-        validator.fieldMatch.expression = new Function(
-          "control",
-          validator.fieldMatch.expression
-        );
-      }
-    });
-
-    return fields;
   }
 
   /**
@@ -82,31 +51,14 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
    */
   public submit(model: any) {
     if (this.form.status === "VALID") {
-      this.submitFunction.emit(this.flattenFields(model));
+      this.submitFunction.emit(model);
     } else {
       this.notifications.error("Please fill all required fields.");
     }
   }
-
-  /**
-   * Used to flatten formly model field groups into an object with 1 depth
-   * @param model Formly model output
-   */
-  public flattenFields(model: any): any {
-    let output = {};
-
-    for (const key of Object.keys(model ?? {})) {
-      if (typeof model[key] === "string" || typeof model[key] === "number") {
-        output[key] = model[key];
-      } else {
-        output = { ...output, ...this.flattenFields(model[key]) };
-      }
-    }
-
-    return output;
-  }
 }
 
+// TODO Remove btn- from type, this also be a generic bootstrap class type that is reusable
 type ButtonClassTypes =
   | "btn-danger"
   | "btn-success"

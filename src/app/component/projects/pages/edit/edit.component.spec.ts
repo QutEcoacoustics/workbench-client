@@ -1,52 +1,41 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { SharedModule } from "@shared/shared.module";
+import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { fields } from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: EditComponent;
-  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let fixture: ComponentFixture<EditComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [...testFormImports, MockBawApiModule],
       declarations: [EditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-            },
-            {
-              project: {
-                model: project,
-                error: projectError,
-              },
-            }
+            { project: projectResolvers.show },
+            { project: { model, error } }
           ),
         },
       ],
@@ -55,7 +44,7 @@ describe("ProjectsEditComponent", () => {
     fixture = TestBed.createComponent(EditComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService);
+    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     notifications = TestBed.inject(ToastrService);
 
     spyOn(notifications, "success").and.stub();
@@ -66,89 +55,68 @@ describe("ProjectsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project(generateProject());
   });
 
-  const formInputs = [
-    {
-      testGroup: "Project Name Input",
-      setup: undefined,
-      field: fields[0],
-      key: "name",
-      htmlType: "input",
-      required: true,
-      label: "Project Name",
-      type: "text",
-      description: undefined,
-    },
-    {
-      testGroup: "Project Description Input",
-      setup: undefined,
-      field: fields[1],
-      key: "description",
-      htmlType: "textarea",
-      required: false,
-      label: "Description",
-      type: undefined,
-      description: undefined,
-    },
-    {
-      testGroup: "Project Image Input",
-      setup: undefined,
-      field: fields[2],
-      key: "image",
-      htmlType: "image",
-      required: false,
-      label: "Image",
-      type: undefined,
-      description: undefined,
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Project Name Input",
+        field: fields[0],
+        key: "name",
+        label: "Project Name",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+      {
+        testGroup: "Project Description Input",
+        field: fields[1],
+        key: "description",
+        label: "Description",
+        type: "textarea",
+      },
+      {
+        testGroup: "Project Image Input",
+        field: fields[2],
+        key: "image",
+        label: "Image",
+        type: "image",
+      },
+    ]);
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject, undefined);
+      configureTestingModule(defaultProject);
       expect(component).toBeTruthy();
     });
 
     it("should handle project error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callThrough();
+      configureTestingModule(defaultProject);
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
 
     it("should handle general error", () => {
-      configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callFake(() => {
+      configureTestingModule(defaultProject);
+      api.update.and.callFake(() => {
         const subject = new Subject<Project>();
-
-        subject.error({
-          message: "Sign in to access this feature.",
-          info: 401,
-        } as ApiErrorDetails);
-
+        subject.error(
+          generateApiErrorDetails("Unauthorized", {
+            message: "Sign in to access this feature.",
+          })
+        );
         return subject;
       });
 
       component.submit(defaultProject);
-
       expect(notifications.error).toHaveBeenCalledWith(
         "Sign in to access this feature."
       );
@@ -156,21 +124,13 @@ describe("ProjectsEditComponent", () => {
 
     it("should handle duplicate project name", () => {
       configureTestingModule(defaultProject, undefined);
-      spyOn(api, "update").and.callFake(() => {
+      api.update.and.callFake(() => {
         const subject = new Subject<Project>();
-
-        subject.error({
-          message: "Record could not be saved",
-          status: 422,
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: [],
-          },
-        } as ApiErrorDetails);
+        subject.error(
+          generateApiErrorDetails("Unprocessable Entity", {
+            info: { name: ["has already been taken"] },
+          })
+        );
 
         return subject;
       });

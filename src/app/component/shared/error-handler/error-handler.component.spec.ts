@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
@@ -66,9 +68,8 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
       declarations: [ErrorHandlerComponent, MockComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
@@ -84,10 +85,9 @@ describe("ErrorHandlerComponent", () => {
   });
 
   it("should handle unauthorized code", () => {
-    component.error = {
-      status: 401,
+    component.error = generateApiErrorDetails("Unauthorized", {
       message: "You need to log in or register before continuing.",
-    } as ApiErrorDetails;
+    });
     fixture.detectChanges();
 
     assertTitle("Unauthorized Access");
@@ -95,10 +95,9 @@ describe("ErrorHandlerComponent", () => {
   });
 
   it("should handle not found code", () => {
-    component.error = {
-      status: 404,
+    component.error = generateApiErrorDetails("Not Found", {
       message: "Could not find the requested item.",
-    } as ApiErrorDetails;
+    });
     fixture.detectChanges();
 
     assertTitle("Not Found");
@@ -106,10 +105,10 @@ describe("ErrorHandlerComponent", () => {
   });
 
   it("should handle zero code", () => {
-    component.error = {
+    component.error = generateApiErrorDetails("Custom", {
       status: 0,
       message: "Unknown error has occurred.",
-    } as ApiErrorDetails;
+    });
     fixture.detectChanges();
 
     assertTitle("Unknown Error");
@@ -117,10 +116,10 @@ describe("ErrorHandlerComponent", () => {
   });
 
   it("should handle unknown code", () => {
-    component.error = {
-      status: -1,
+    component.error = generateApiErrorDetails("Custom", {
+      status: apiReturnCodes.unknown,
       message: "Unknown error has occurred.",
-    } as ApiErrorDetails;
+    });
     fixture.detectChanges();
 
     assertTitle("Unknown Error");
@@ -153,10 +152,11 @@ describe("ErrorHandlerComponent", () => {
       nativeElement
     );
 
-    mockComponent.setError({
-      status: 404,
-      message: "Could not find the requested item.",
-    });
+    mockComponent.setError(
+      generateApiErrorDetails("Not Found", {
+        message: "Could not find the requested item.",
+      })
+    );
     mockFixture.detectChanges();
 
     assertTitle("Not Found", nativeElement);

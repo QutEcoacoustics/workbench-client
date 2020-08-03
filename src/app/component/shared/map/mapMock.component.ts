@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Site } from "src/app/models/Site";
-import { createMarkers } from "./map.component";
+import { sanitizeMapMarkers } from "./map.component";
 
 @Component({
   selector: "baw-map",
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
       <div class="map-container">
-        <ng-container *ngFor="let site of sites">
-          <p>Lat: {{ site.customLatitude }} Long: {{ site.customLongitude }}</p>
+        <ng-container *ngFor="let marker of markers">
+          <p>Lat: {{ marker.position.lat }} Long: {{ marker.position.lng }}</p>
         </ng-container>
       </div>
     </ng-container>
@@ -19,13 +18,12 @@ import { createMarkers } from "./map.component";
   styleUrls: ["./map.component.scss"],
 })
 export class MockMapComponent implements OnInit {
-  @Input() public sites: Site[];
+  @Input() public markers: any;
   public hasMarkers = false;
 
   constructor() {}
 
   public ngOnInit() {
-    const markers = createMarkers(this.sites);
-    this.hasMarkers = markers.length > 0;
+    this.hasMarkers = sanitizeMapMarkers(this.markers)?.length > 0;
   }
 }

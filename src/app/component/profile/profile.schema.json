@@ -43,11 +43,10 @@
     },
     {
       "key": "imageUrls",
-      "type": "input",
+      "type": "image",
       "templateOptions": {
         "label": "Image",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {

@@ -32,13 +32,13 @@ describe("MapComponent new", () => {
   afterAll(() => destroyGoogleMaps());
 
   it("should create", () => {
-    spectator.setInput("sites", []);
+    spectator.setInput("markers", []);
     spectator.component.ngOnChanges();
     expect(spectator.component).toBeTruthy();
   });
 
   it("should display placeholder", () => {
-    spectator.setInput("sites", []);
+    spectator.setInput("markers", []);
     spectator.component.ngOnChanges();
     const label = spectator
       .query<HTMLDivElement>("div.map-placeholder")
@@ -47,29 +47,31 @@ describe("MapComponent new", () => {
   });
 
   it("should display map", () => {
-    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
     spectator.component.ngOnChanges();
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should have info window", () => {
-    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
     spectator.component.ngOnChanges();
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should display single site", () => {
-    spectator.setInput("sites", [new Site(generateSite())]);
+    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
     spectator.component.ngOnChanges();
 
     expect(getInfoWindow()).toBeTruthy();
   });
 
-  it("should display multiple sites", () => {
-    const sites = [1, 2, 3].map(() => new Site(generateSite()));
-    spectator.setInput("sites", sites);
+  it("should display multiple markers", () => {
+    const markers = [1, 2, 3].map(() =>
+      new Site(generateSite()).getMapMarker()
+    );
+    spectator.setInput("markers", markers);
     spectator.component.ngOnChanges();
 
     expect(getMarker().length).toBe(3);

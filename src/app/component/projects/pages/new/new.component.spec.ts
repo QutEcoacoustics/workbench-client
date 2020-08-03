@@ -1,72 +1,59 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { SharedModule } from "@shared/shared.module";
+import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { testFormlyFields } from "@test/helpers/formly";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { fields } from "../../project.schema.json";
 import { NewComponent } from "./new.component";
 
 describe("ProjectsNewComponent", () => {
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  const formInputs = [
-    {
-      testGroup: "Project Name Input",
-      setup: undefined,
-      field: fields[0],
-      key: "name",
-      htmlType: "input",
-      required: true,
-      label: "Project Name",
-      type: "text",
-      description: undefined,
-    },
-    {
-      testGroup: "Project Description Input",
-      setup: undefined,
-      field: fields[1],
-      key: "description",
-      htmlType: "textarea",
-      required: false,
-      label: "Description",
-      type: undefined,
-      description: undefined,
-    },
-    {
-      testGroup: "Project Image Input",
-      setup: undefined,
-      field: fields[2],
-      key: "image",
-      htmlType: "image",
-      required: false,
-      label: "Image",
-      type: undefined,
-      description: undefined,
-    },
-  ];
-
   describe("form", () => {
-    testFormlyFields(formInputs);
+    testFormlyFields([
+      {
+        testGroup: "Project Name Input",
+        field: fields[0],
+        key: "name",
+        label: "Project Name",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+      {
+        testGroup: "Project Description Input",
+        field: fields[1],
+        key: "description",
+        label: "Description",
+        type: "textarea",
+      },
+      {
+        testGroup: "Project Image Input",
+        field: fields[2],
+        key: "image",
+        label: "Image",
+        type: "image",
+      },
+    ]);
   });
 
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+        imports: [...testFormImports, MockBawApiModule],
         declarations: [NewComponent],
         providers: [
-          ...testBawServices,
           {
             provide: ActivatedRoute,
             useClass: mockActivatedRoute(),
@@ -75,7 +62,7 @@ describe("ProjectsNewComponent", () => {
       }).compileComponents();
 
       fixture = TestBed.createComponent(NewComponent);
-      api = TestBed.inject(ProjectsService);
+      api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
       router = TestBed.inject(Router);
       notifications = TestBed.inject(ToastrService);
       component = fixture.componentInstance;
@@ -92,13 +79,13 @@ describe("ProjectsNewComponent", () => {
     });
 
     it("should call api", () => {
-      spyOn(api, "create").and.callThrough();
+      api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();
     });
 
     it("should handle general error", () => {
-      spyOn(api, "create").and.callFake(() => {
+      api.create.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({
@@ -117,22 +104,13 @@ describe("ProjectsNewComponent", () => {
     });
 
     it("should handle duplicate project name", () => {
-      spyOn(api, "create").and.callFake(() => {
+      api.create.and.callFake(() => {
         const subject = new Subject<Project>();
-
-        subject.error({
-          message: "Record could not be saved",
-          status: 422,
-          info: {
-            name: ["has already been taken"],
-            image: [],
-            image_file_name: [],
-            image_file_size: [],
-            image_content_type: [],
-            image_updated_at: [],
-          },
-        } as ApiErrorDetails);
-
+        subject.error(
+          generateApiErrorDetails("Unprocessable Entity", {
+            info: { name: ["has already been taken"] },
+          })
+        );
         return subject;
       });
 

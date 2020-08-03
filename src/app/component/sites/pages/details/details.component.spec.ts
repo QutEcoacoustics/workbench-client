@@ -2,18 +2,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { MockMapComponent } from "@shared/map/mapMock.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
-import { MockMapComponent } from "src/app/component/shared/map/mapMock";
 import { SharedModule } from "src/app/component/shared/shared.module";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {
@@ -21,7 +22,6 @@ describe("SitesDetailsComponent", () => {
   let fixture: ComponentFixture<DetailsComponent>;
   let defaultProject: Project;
   let defaultSite: Site;
-  let defaultError: ApiErrorDetails;
 
   function configureTestingModule(
     project: Project,
@@ -30,10 +30,14 @@ describe("SitesDetailsComponent", () => {
     siteError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, GoogleMapsModule],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        GoogleMapsModule,
+        MockBawApiModule,
+      ],
       declarations: [DetailsComponent, MockMapComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
@@ -42,14 +46,8 @@ describe("SitesDetailsComponent", () => {
               site: siteResolvers.show,
             },
             {
-              project: {
-                model: project,
-                error: projectError,
-              },
-              site: {
-                model: site,
-                error: siteError,
-              },
+              project: { model: project, error: projectError },
+              site: { model: site, error: siteError },
             }
           ),
         },
@@ -61,18 +59,8 @@ describe("SitesDetailsComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project({
-      id: 1,
-      name: "Project",
-    });
-    defaultSite = new Site({
-      id: 1,
-      name: "Site",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultProject = new Project(generateProject());
+    defaultSite = new Site(generateSite());
   });
 
   it("should create", () => {
@@ -83,7 +71,12 @@ describe("SitesDetailsComponent", () => {
 
   describe("Error Handling", () => {
     it("should handle failed project model", () => {
-      configureTestingModule(undefined, defaultError, defaultSite, undefined);
+      configureTestingModule(
+        undefined,
+        generateApiErrorDetails(),
+        defaultSite,
+        undefined
+      );
       fixture.detectChanges();
 
       const body = fixture.nativeElement;
@@ -95,7 +88,7 @@ describe("SitesDetailsComponent", () => {
         defaultProject,
         undefined,
         undefined,
-        defaultError
+        generateApiErrorDetails()
       );
       fixture.detectChanges();
 

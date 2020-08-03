@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Response } from "@models/Response";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,20 +11,17 @@ import {
   validateApiShow,
   validateApiUpdate,
 } from "src/app/test/helpers/api-common";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { BawApiService } from "../baw-api.service";
-import { MockBawApiService } from "../mock/baseApiMock.service";
 import { ShallowResponsesService } from "./responses.service";
 
 describe("ShallowResponsesService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        ...testAppInitializer,
-        ShallowResponsesService,
-        { provide: BawApiService, useClass: MockBawApiService },
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
       ],
+      providers: [ShallowResponsesService],
     });
 
     this.service = TestBed.inject(ShallowResponsesService);
