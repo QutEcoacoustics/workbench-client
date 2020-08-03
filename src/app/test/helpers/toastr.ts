@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class MockToastr {
+export class MockToastrService {
   public show() {}
   public success() {}
   public info() {}

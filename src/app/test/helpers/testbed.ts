@@ -1,71 +1,32 @@
-import { HttpHeaders, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { CommonModule } from "@angular/common";
+import { HttpHeaders } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
-import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
-import { BawApiService, STUB_MODEL_BUILDER } from "@baw-api/baw-api.service";
-import {
-  MockBawApiService,
-  MockModel,
-} from "@baw-api/mock/baseApiMock.service";
-import { MockSecurityService } from "@baw-api/mock/securityMock.service";
+import { RouterTestingModule } from "@angular/router/testing";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { SecurityService } from "@baw-api/security/security.service";
-import { serviceMockProviders } from "@baw-api/ServiceProviders";
-import {
-  API_CONFIG,
-  API_ROOT,
-  ASSET_ROOT,
-  CMS_ROOT,
-  Configuration,
-} from "@helpers/app-initializer/app-initializer";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import {
-  AppConfigMockService,
-  testApiConfig,
-} from "@services/app-config/appConfigMock.service";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { LoadingModule } from "@shared/loading/loading.module";
+import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
+import { formlyRoot, toastrRoot } from "src/app/app.helper";
 
-/**
- * Create mock initializer values
- */
-export const testAppInitializer = [
-  {
-    provide: API_ROOT,
-    useValue: testApiConfig.environment.apiRoot,
-  },
-  {
-    provide: CMS_ROOT,
-    useValue: testApiConfig.environment.cmsRoot,
-  },
-  {
-    provide: ASSET_ROOT,
-    useValue: testApiConfig.environment.assetRoot,
-  },
-  {
-    provide: API_CONFIG,
-    useValue: new Promise<Configuration>((resolve) => {
-      resolve(testApiConfig);
-    }),
-  },
-  {
-    provide: AppConfigService,
-    useClass: AppConfigMockService,
-  },
-];
-
-/**
- * Mock classes for baw services
- */
-export const testBawServices = [
-  ...testAppInitializer,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: BawApiInterceptor,
-    multi: true,
-  },
-  { provide: STUB_MODEL_BUILDER, useValue: MockModel },
-  { provide: BawApiService, useClass: MockBawApiService },
-  { provide: SecurityService, useClass: MockSecurityService },
-  ...serviceMockProviders,
+export const testFormImports = [
+  CommonModule,
+  BrowserModule,
+  BrowserAnimationsModule,
+  NgbModule,
+  ReactiveFormsModule,
+  FormlyModule.forRoot(formlyRoot),
+  FormlyBootstrapModule,
+  ToastrModule.forRoot(toastrRoot),
+  HttpClientTestingModule,
+  RouterTestingModule,
+  LoadingModule,
 ];
 
 /**
@@ -96,9 +57,11 @@ export function mockActivatedRoute(
 export interface MockResolvers {
   [key: string]: string;
 }
+
 export interface MockData {
   [key: string]: ResolvedModel;
 }
+
 export interface MockParams {
   [key: string]: string | number;
 }
@@ -113,12 +76,9 @@ export type HttpClientBody =
   // tslint:disable-next-line: ban-types
   | (string | number | Object | null)[]
   | null;
+
 export interface HttpClientOpts {
-  headers?:
-    | HttpHeaders
-    | {
-        [name: string]: string | string[];
-      };
+  headers?: HttpHeaders | { [name: string]: string | string[] };
   status?: number;
   statusText?: string;
 }

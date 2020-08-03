@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
+import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
@@ -304,8 +305,7 @@ export class RangeInterval {
 type Range =
   | string[]
   | number[]
-  | RangeInterval
-  | { from: number; to: number; interval?: never };
+  | XOR<RangeInterval, { from: number; to: number }>;
 
 interface Subsets {
   range?: Range;

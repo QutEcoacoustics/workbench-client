@@ -1,13 +1,6 @@
 {
   "fields": [
     {
-      "key": "locationObfuscated",
-      "hide": true,
-      "templateOptions": {
-        "label": "Location Obfuscated"
-      }
-    },
-    {
       "key": "creator",
       "hide": true,
       "templateOptions": {

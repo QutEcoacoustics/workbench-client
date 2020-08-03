@@ -2,19 +2,23 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag, TagType } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {
-  let api: TagsService;
+  let api: SpyObject<TagsService>;
   let component: AdminTagsEditComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsEditComponent>;
@@ -28,10 +32,14 @@ describe("AdminTagsEditComponent", () => {
     tagTypesError: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminTagsEditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
@@ -40,14 +48,8 @@ describe("AdminTagsEditComponent", () => {
               typeOfTags: tagResolvers.tagTypes,
             },
             {
-              tag: {
-                model: tag,
-                error: tagError,
-              },
-              tagTypes: {
-                model: tagTypes,
-                error: tagTypesError,
-              },
+              tag: { model: tag, error: tagError },
+              tagTypes: { model: tagTypes, error: tagTypesError },
             }
           ),
         },
@@ -55,7 +57,7 @@ describe("AdminTagsEditComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsEditComponent);
-    api = TestBed.inject(TagsService);
+    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -68,19 +70,12 @@ describe("AdminTagsEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTag = new Tag({
-      id: 1,
-      text: "Tag",
-    });
+    defaultTag = new Tag(generateTag());
     defaultTagTypes = [
       new TagType({
         name: "common_name",
       }),
     ];
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   xdescribe("form", () => {});
@@ -94,7 +89,7 @@ describe("AdminTagsEditComponent", () => {
     it("should handle tag error", () => {
       configureTestingModule(
         undefined,
-        defaultError,
+        generateApiErrorDetails(),
         defaultTagTypes,
         undefined
       );
@@ -102,13 +97,18 @@ describe("AdminTagsEditComponent", () => {
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(defaultTag, undefined, undefined, defaultError);
+      configureTestingModule(
+        defaultTag,
+        undefined,
+        undefined,
+        generateApiErrorDetails()
+      );
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
       configureTestingModule(defaultTag, undefined, defaultTagTypes, undefined);
-      spyOn(api, "update").and.callThrough();
+      api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });

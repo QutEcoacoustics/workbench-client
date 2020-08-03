@@ -1,5 +1,4 @@
 import { Id } from "@interfaces/apiInterfaces";
-import {} from "@models/AnalysisJobItem";
 import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
 
@@ -35,6 +34,7 @@ export function generateAudioRecording(id?: Id): IAudioRecording {
     sampleRateHertz: modelData.random.arrayElement(
       modelData.defaults.sampleRateHertz
     ),
+    channels: modelData.random.arrayElement([1, 2, 4, 6]),
     bitRateBps,
     mediaType: modelData.random.arrayElement(mediaTypes),
     dataLengthBytes: durationSeconds * bitRateBps,

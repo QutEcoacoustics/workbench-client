@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import {
   createComponentFactory,
@@ -9,7 +10,6 @@ import {
   SpectatorOptions,
 } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import { testBawServices } from "@test/helpers/testbed";
 import { List } from "immutable";
 import { CardImageComponent } from "./card-image/card-image.component";
 import { CardImageMockModel } from "./card-image/card-image.component.spec";
@@ -26,8 +26,8 @@ describe("CardsComponent", () => {
       HttpClientTestingModule,
       RouterTestingModule,
       AuthenticatedImageModule,
+      MockBawApiModule,
     ],
-    providers: testBawServices,
   };
   const createComponent = createComponentFactory(options);
   const createHost = createHostFactory(options);

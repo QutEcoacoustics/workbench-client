@@ -6,21 +6,23 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
-import { BehaviorSubject, Subject } from "rxjs";
-import { testBawServices } from "src/app/test/helpers/testbed";
+import { Subject } from "rxjs";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let httpMock: HttpTestingController;
-  let projectApi: ProjectsService;
+  let projectApi: SpyObject<ProjectsService>;
   let securityApi: SecurityService;
   let component: HomeComponent;
   let env: AppConfigService;
@@ -30,14 +32,18 @@ describe("HomeComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent],
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
-      providers: testBawServices,
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
-    projectApi = TestBed.inject(ProjectsService);
+    projectApi = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     securityApi = TestBed.inject(SecurityService);
     env = TestBed.inject(AppConfigService);
 
@@ -56,10 +62,7 @@ describe("HomeComponent", () => {
   it("should load cms", async () => {
     const subject = new Subject<Project[]>();
     const promise = nStepObservable(subject, () => []);
-    spyOn(projectApi, "filter").and.callFake(() => subject);
-    spyOn(securityApi, "getAuthTrigger").and.callFake(
-      () => new BehaviorSubject(null)
-    );
+    projectApi.filter.and.callFake(() => subject);
 
     await promise;
     fixture.detectChanges();
@@ -86,10 +89,7 @@ describe("HomeComponent", () => {
         () => (projects ? projects : error),
         !projects
       );
-      spyOn(projectApi, "filter").and.callFake(() => subject);
-      spyOn(securityApi, "getAuthTrigger").and.callFake(
-        () => new BehaviorSubject(null)
-      );
+      projectApi.filter.and.callFake(() => subject);
 
       fixture.detectChanges();
       await promise;
@@ -126,7 +126,7 @@ describe("HomeComponent", () => {
     });
 
     it("should handle filter error", async () => {
-      await setupComponent(undefined, { status: 404, message: "Not Found" });
+      await setupComponent(undefined, generateApiErrorDetails());
       expect(getCardImages().length).toBe(0);
       expect(getButton()).toBeTruthy();
     });

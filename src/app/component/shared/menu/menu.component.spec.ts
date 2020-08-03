@@ -3,6 +3,7 @@ import { DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { List } from "immutable";
 import {
@@ -14,10 +15,7 @@ import {
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { SessionUser } from "src/app/models/User";
 import { assertIcon, assertTooltip, getText } from "src/app/test/helpers/html";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -62,6 +60,7 @@ describe("MenuComponent", () => {
         SharedModule,
         HttpClientModule,
         RouterTestingModule.withRoutes([]),
+        MockBawApiModule,
       ],
       declarations: [
         MenuComponent,
@@ -70,10 +69,9 @@ describe("MenuComponent", () => {
         MenuInternalLinkComponent,
       ],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute({}, data, { attribute: 10 }),
+          useClass: mockActivatedRoute(undefined, data, { attribute: 10 }),
         },
       ],
     }).compileComponents();

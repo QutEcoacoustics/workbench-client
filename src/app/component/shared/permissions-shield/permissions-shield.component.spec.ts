@@ -1,31 +1,25 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { AccountsService } from "@baw-api/account/accounts.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
+import { MockComponent } from "ng-mocks";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import {
-  MockData,
-  MockResolvers,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
-import { UserBadgeComponent } from "../user-badges/user-badge/user-badge.component";
+import { MockData, MockResolvers } from "src/app/test/helpers/testbed";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 describe("PermissionsShieldComponent", () => {
   let spectator: SpectatorRouting<PermissionsShieldComponent>;
-  let api: AccountsService;
   const createComponent = createRoutingFactory({
     component: PermissionsShieldComponent,
-    declarations: [UserBadgesComponent, UserBadgeComponent],
-    imports: [HttpClientTestingModule],
-    providers: testBawServices,
+    declarations: [MockComponent(UserBadgesComponent)],
+    imports: [HttpClientTestingModule, MockBawApiModule],
     stubsEnabled: true,
   });
 
@@ -34,10 +28,7 @@ describe("PermissionsShieldComponent", () => {
   }
 
   function setup(resolvers: MockResolvers, data: MockData) {
-    // TODO Simplify this by mocking UserBadgesComponent
     spectator = createComponent({ data: { resolvers, ...data } });
-    api = spectator.inject(AccountsService);
-    spyOn(api, "show").and.stub();
   }
 
   it("should handle project model", async () => {

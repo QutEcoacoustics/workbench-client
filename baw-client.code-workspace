@@ -10,7 +10,12 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": true
     },
-    "cSpell.words": ["Formly", "fontawesome", "fortawesome"],
+    "cSpell.words": [
+      "Formly",
+      "fontawesome",
+      "fortawesome",
+      "tzinfo"
+    ],
     "cSpell.ignorePaths": [
       "**/package-lock.json",
       "**/node_modules/**",

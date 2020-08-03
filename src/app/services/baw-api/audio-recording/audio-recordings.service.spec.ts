@@ -1,26 +1,24 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { MockBawApiService } from "@baw-api/mock/baseApiMock.service";
 import { AudioRecording } from "@models/AudioRecording";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
 } from "src/app/test/helpers/api-common";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { AudioRecordingsService } from "./audio-recordings.service";
 
 describe("AudioRecordingsService", function () {
   beforeEach(async(function () {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        ...testAppInitializer,
-        AudioRecordingsService,
-        { provide: BawApiService, useClass: MockBawApiService },
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
       ],
+      providers: [AudioRecordingsService],
     });
     this.service = TestBed.inject(AudioRecordingsService);
   }));

@@ -6,6 +6,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { ResolvedModel } from "@services/baw-api/resolver-common";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import {
   mockActivatedRoute,
   MockData,
@@ -93,7 +94,7 @@ describe("formTemplate", () => {
   }
 
   beforeEach(() => {
-    defaultError = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
+    defaultError = generateApiErrorDetails();
     defaultModel = new MockModel({ id: 1 });
     successResponse = (model) => {
       return new BehaviorSubject<MockModel>(new MockModel(model));
@@ -146,9 +147,7 @@ describe("formTemplate", () => {
     it("should handle single resolver failure", () => {
       configureTestingModule(
         { mockModel: "MockModelResolver" },
-        {
-          mockModel: makeResolvedModel(undefined, defaultError),
-        }
+        { mockModel: makeResolvedModel(undefined, defaultError) }
       );
       fixture.detectChanges();
 
@@ -466,10 +465,9 @@ describe("defaultSuccessMsg", () => {
 
 describe("defaultErrorMsg", () => {
   it("should return error message", () => {
-    const apiError: ApiErrorDetails = {
-      status: 400,
+    const apiError = generateApiErrorDetails("Bad Request", {
       message: "Custom Message",
-    } as ApiErrorDetails;
+    });
 
     expect(defaultErrorMsg(apiError)).toBe("Custom Message");
   });
@@ -477,22 +475,18 @@ describe("defaultErrorMsg", () => {
 
 describe("extendedErrorMsg", () => {
   it("should return error message", () => {
-    const apiError: ApiErrorDetails = {
-      status: 400,
+    const apiError = generateApiErrorDetails("Bad Request", {
       message: "Custom Message",
-    } as ApiErrorDetails;
+    });
 
     expect(extendedErrorMsg(apiError, {})).toBe("Custom Message");
   });
 
   it("should return error message with single info field", () => {
-    const apiError: ApiErrorDetails = {
-      status: 400,
+    const apiError = generateApiErrorDetails("Bad Request", {
       message: "Custom Message",
-      info: {
-        name: "this name already exists",
-      },
-    } as ApiErrorDetails;
+      info: { name: "this name already exists" },
+    });
 
     expect(
       extendedErrorMsg(apiError, {
@@ -502,14 +496,10 @@ describe("extendedErrorMsg", () => {
   });
 
   it("should return error message with multiple info fields", () => {
-    const apiError: ApiErrorDetails = {
-      status: 400,
+    const apiError = generateApiErrorDetails("Bad Request", {
       message: "Custom Message",
-      info: {
-        name: "this name already exists",
-        foo: "bar",
-      },
-    } as ApiErrorDetails;
+      info: { name: "this name already exists", foo: "bar" },
+    });
 
     expect(
       extendedErrorMsg(apiError, {

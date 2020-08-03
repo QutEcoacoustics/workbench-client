@@ -5,12 +5,12 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
 import { DataRequestComponent } from "./data-request.component";
 
-describe("DataRequestComponent", () => {
+xdescribe("DataRequestComponent", () => {
   let httpMock: HttpTestingController;
   let component: DataRequestComponent;
   let env: AppConfigService;
@@ -23,9 +23,9 @@ describe("DataRequestComponent", () => {
         SharedModule,
         HttpClientTestingModule,
         RouterTestingModule,
+        MockAppConfigModule,
       ],
       declarations: [DataRequestComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
   }));
 

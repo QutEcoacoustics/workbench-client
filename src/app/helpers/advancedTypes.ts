@@ -8,3 +8,16 @@ export type PartialWith<T, Keys extends keyof T = keyof T> = Pick<
   {
     [K in Keys]: T[K];
   };
+
+/**
+ * Remove type options from another type
+ */
+export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+
+/**
+ * Allow either type, but not both
+ * TODO Add support for infinite number of types using variadic tuple types
+ */
+export type XOR<T, U> = T | U extends object
+  ? (Without<T, U> & U) | (Without<U, T> & T)
+  : T | U;

@@ -1,6 +1,8 @@
 import { Injector } from "@angular/core";
 import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../component/sites/sites.menus";
 import {
   DateTimeTimezone,
@@ -36,8 +38,11 @@ export interface ISite {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   projectIds?: Ids | Id[];
+  latitude?: number;
   customLatitude?: number;
+  longitude?: number;
   customLongitude?: number;
+  tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
 }
 
@@ -58,7 +63,6 @@ export class Site extends AbstractModel implements ISite {
   public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
-  @BawPersistAttr
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -69,10 +73,13 @@ export class Site extends AbstractModel implements ISite {
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
   @BawPersistAttr
+  public readonly latitude?: number;
   public readonly customLatitude?: number;
   @BawPersistAttr
+  public readonly longitude?: number;
   public readonly customLongitude?: number;
   @BawPersistAttr
+  public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
 
   // Associations
@@ -86,7 +93,13 @@ export class Site extends AbstractModel implements ISite {
   constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
-    this.locationObfuscated = site.locationObfuscated ?? false;
+    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
+
+    // This only affects admins, owners, and if not coordinate is set
+    if (!this.locationObfuscated) {
+      this.latitude = this.latitude ?? this.customLatitude;
+      this.longitude = this.longitude ?? this.customLongitude;
+    }
   }
 
   public get viewUrl(): string {
@@ -106,5 +119,35 @@ export class Site extends AbstractModel implements ISite {
       projectId: typeof project === "number" ? project : project.id,
       siteId: this.id,
     });
+  }
+
+  /**
+   * Get site latitude
+   */
+  public getLatitude(): number {
+    return this.latitude ?? this.customLatitude;
+  }
+
+  /**
+   * Get site longitude
+   */
+  public getLongitude(): number {
+    return this.longitude ?? this.customLongitude;
+  }
+
+  /**
+   * Create google maps marker options
+   * ! When using map markers, you should always run the output through `sanitizeMapMarkers()`
+   */
+  public getMapMarker(): MapMarkerOption {
+    const hasCoordinates =
+      isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
+
+    return hasCoordinates
+      ? {
+          position: { lat: this.getLatitude(), lng: this.getLongitude() },
+          label: this.name,
+        }
+      : null;
   }
 }

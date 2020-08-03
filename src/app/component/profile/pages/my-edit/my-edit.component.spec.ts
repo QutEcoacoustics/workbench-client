@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { userResolvers, UserService } from "@baw-api/user/user.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { generateUser } from "@test/fakes/User";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { MyEditComponent } from "./my-edit.component";
 
@@ -13,27 +15,23 @@ describe("MyProfileEditComponent", () => {
   let api: UserService;
   let component: MyEditComponent;
   let fixture: ComponentFixture<MyEditComponent>;
-  let defaultError: ApiErrorDetails;
   let defaultUser: User;
 
-  function configureTestingModule(user: User, error: ApiErrorDetails) {
+  function configureTestingModule(model: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [MyEditComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              user: userResolvers.show,
-            },
-            {
-              user: {
-                model: user,
-                error,
-              },
-            }
+            { user: userResolvers.show },
+            { user: { model, error } }
           ),
         },
       ],
@@ -47,18 +45,12 @@ describe("MyProfileEditComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUser = new User({
-      id: 1,
-      userName: "Username",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    // TODO Handle image urls
+    defaultUser = new User({ ...generateUser(), imageUrls: undefined });
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser, undefined);
+    configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });
 });

@@ -2,6 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { mockActivatedRoute, MockParams } from "@test/helpers/testbed";
 import { fromJS, List } from "immutable";
 import { BehaviorSubject } from "rxjs";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
@@ -15,7 +17,6 @@ import {
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { homeCategory } from "../../home/home.menus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
@@ -56,19 +57,20 @@ describe("SecondaryMenuComponent", () => {
     return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
   }
 
-  function createTestBed(params: any, data: PageInfoInterface) {
-    class MockActivatedRoute {
-      public data = new BehaviorSubject<PageInfoInterface>(data);
-      public snapshot = {
-        params,
-      };
-    }
+  function createTestBed(params: MockParams, data: PageInfoInterface) {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule, SharedModule],
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        SharedModule,
+        MockBawApiModule,
+      ],
       declarations: [SecondaryMenuComponent],
       providers: [
-        ...testBawServices,
-        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useClass: mockActivatedRoute(undefined, data, params),
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(SecondaryMenuComponent);

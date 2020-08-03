@@ -20,6 +20,7 @@ import {
   sitesCategory,
 } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
+import { siteErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 const siteKey = "site";
@@ -43,17 +44,15 @@ const siteKey = "site";
 @Component({
   selector: "app-sites-edit",
   template: `
-    <!-- Move ngIf to baw-form when baw-wip removed -->
-    <baw-wip *ngIf="!failure">
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    </baw-wip>
+    <baw-form
+      *ngIf="!failure"
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
   `,
 })
 export class EditComponent extends FormTemplate<Site> implements OnInit {
@@ -66,8 +65,13 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, siteKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
+    super(
+      notifications,
+      route,
+      router,
+      siteKey,
+      (model) => defaultSuccessMsg("updated", model.name),
+      siteErrorMsg
     );
   }
 

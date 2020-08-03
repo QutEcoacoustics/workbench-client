@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Site } from "@models/Site";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -10,20 +11,17 @@ import {
   validateApiShow,
   validateApiUpdate,
 } from "src/app/test/helpers/api-common";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { BawApiService } from "../baw-api.service";
-import { MockBawApiService } from "../mock/baseApiMock.service";
 import { ShallowSitesService } from "./sites.service";
 
-xdescribe("ShallowSitesService", function () {
+describe("ShallowSitesService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        ...testAppInitializer,
-        ShallowSitesService,
-        { provide: BawApiService, useClass: MockBawApiService },
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
       ],
+      providers: [ShallowSitesService],
     });
 
     this.service = TestBed.inject(ShallowSitesService);
@@ -47,4 +45,6 @@ xdescribe("ShallowSitesService", function () {
     5,
     new Site({ id: 5 })
   );
+
+  // TODO Add tests for filterByAccessLevel and Orphans
 });

@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
+import { generateSite } from "@test/fakes/Site";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminOrphansComponent } from "./list.component";
 
@@ -17,8 +18,12 @@ describe("AdminOrphansComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AdminOrphansComponent],
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
-      providers: [...testBawServices],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
     }).compileComponents();
   }));
 
@@ -26,18 +31,10 @@ describe("AdminOrphansComponent", () => {
     fixture = TestBed.createComponent(AdminOrphansComponent);
     api = TestBed.inject(ShallowSitesService);
 
-    defaultModel = new Site({
-      id: 1,
-      name: "custom site",
-    });
+    defaultModel = new Site(generateSite());
     defaultModels = [];
     for (let i = 0; i < 25; i++) {
-      defaultModels.push(
-        new Site({
-          id: i,
-          name: "site " + i,
-        })
-      );
+      defaultModels.push(new Site(generateSite()));
     }
 
     this.defaultModels = defaultModels;
@@ -46,7 +43,7 @@ describe("AdminOrphansComponent", () => {
   });
 
   // TODO Write Tests
-  assertPagination<Site, ShallowSitesService>("orphans");
+  assertPagination<Site, ShallowSitesService>("orphanFilter");
 
   xdescribe("rows", () => {});
   xdescribe("actions", () => {});

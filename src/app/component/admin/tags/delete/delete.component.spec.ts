@@ -2,51 +2,51 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateTag } from "@test/fakes/Tag";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { adminTagsMenuItem } from "../tags.menus";
 import { AdminTagsDeleteComponent } from "./delete.component";
 
 describe("AdminTagsDeleteComponent", () => {
-  let api: TagsService;
+  let api: SpyObject<TagsService>;
   let component: AdminTagsDeleteComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTag: Tag;
   let fixture: ComponentFixture<AdminTagsDeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(tag: Tag, tagError: ApiErrorDetails) {
+  function configureTestingModule(model: Tag, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminTagsDeleteComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              tag: tagResolvers.show,
-            },
-            {
-              tag: {
-                model: tag,
-                error: tagError,
-              },
-            }
+            { tag: tagResolvers.show },
+            { tag: { model, error } }
           ),
         },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsDeleteComponent);
-    api = TestBed.inject(TagsService);
+    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -59,44 +59,37 @@ describe("AdminTagsDeleteComponent", () => {
   }
 
   beforeEach(() => {
-    defaultTag = new Tag({
-      id: 1,
-      text: "Tag",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultTag = new Tag(generateTag());
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       expect(component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTag, undefined);
+      configureTestingModule(defaultTag);
       expect(component).toBeTruthy();
     });
 
     it("should handle tag error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTag, undefined);
-      spyOn(api, "destroy").and.callThrough();
+      configureTestingModule(defaultTag);
+      api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to tag list", () => {
-      configureTestingModule(defaultTag, undefined);
-      spyOn(api, "destroy").and.callFake(() => new BehaviorSubject<void>(null));
+      configureTestingModule(defaultTag);
+      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(
