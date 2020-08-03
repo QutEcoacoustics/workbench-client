@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
+import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { merge, Observable, Subject } from "rxjs";
 import {
   debounceTime,
@@ -70,15 +71,15 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
   public defaultTime = "(no match)";
   public error: boolean;
   public offset: string = this.defaultTime;
-  public timezone: Timezone;
-  public timezones: Timezone[] = [];
+  public timezone: TimeZone;
+  public timezones: TimeZone[] = [];
 
   public async ngOnInit() {
-    this.timezones = (await import("@vvo/tzdb")).getTimeZones();
+    this.timezones = getTimeZones();
     this.formControl.setValidators(() => {
       if (!isInstantiated(this.timezone)) {
         if (this.to.required && this.formControl.dirty) {
-          return { [this.field.key]: "You must select a timezone" };
+          return { [this.field.key.toString()]: "You must select a timezone" };
         } else {
           return null;
         }
@@ -88,14 +89,14 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
         (timezone) => timezone === this.timezone
       );
       return this.error
-        ? { [this.field.key]: "Invalid timezone selected" }
+        ? { [this.field.key.toString()]: "Invalid timezone selected" }
         : null;
     });
     this.formControl.updateValueAndValidity();
   }
 
   public getError(): string {
-    return this.formControl.getError(this.field.key);
+    return this.formControl.getError(this.field.key.toString());
   }
 
   /**
@@ -109,13 +110,13 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
    * Format typeahead output to show current time format of timezone
    * @param selected Selected timezone
    */
-  public formatter = (selected: Timezone): string => selected.currentTimeFormat;
+  public formatter = (selected: TimeZone): string => selected.currentTimeFormat;
 
   /**
    * Update typeahead dropdown list whenever event is detected
    * @param text$ Search event
    */
-  public search = (text$: Observable<string>): Observable<Timezone[]> => {
+  public search = (text$: Observable<string>): Observable<TimeZone[]> => {
     const debouncedText$ = text$.pipe(
       debounceTime(200),
       distinctUntilChanged()
@@ -134,7 +135,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
    * Search timezones and select any which reference the input
    * @param term Term to search for
    */
-  private searchTimezones(term: string): Timezone[] {
+  private searchTimezones(term: string): TimeZone[] {
     let zones = this.timezones;
 
     if (term?.length > 0) {
@@ -147,16 +148,4 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
 
     return zones.slice(0, 10);
   }
-}
-
-interface Timezone {
-  name: string;
-  alternativeName: string;
-  group: string[];
-  countryName: string;
-  mainCities: string[];
-  rawOffsetInMinutes: number;
-  rawFormat: string;
-  currentTimeOffsetInMinute: number;
-  currentTimeFormat: string;
 }

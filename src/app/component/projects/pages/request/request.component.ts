@@ -63,12 +63,10 @@ export class RequestComponent extends WithFormCheck(PageComponent)
       .subscribe(
         (projects) => {
           this.projects = projects;
-          this.fields[0].templateOptions.options = projects.map((project) => {
-            return {
-              value: project.id,
-              label: project.name,
-            };
-          });
+          this.fields[0].templateOptions.options = projects.map((project) => ({
+            value: project.id,
+            label: project.name,
+          }));
         },
         (err: ApiErrorDetails) => {
           this.error = err;

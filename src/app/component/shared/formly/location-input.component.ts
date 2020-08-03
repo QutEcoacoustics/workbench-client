@@ -74,7 +74,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
     this.setMarker(this.latitude, this.longitude);
     this.formControl.setValidators(() => {
       const error = this.validateCoordinates();
-      return error ? { [this.field.key]: error } : null;
+      return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
   }
@@ -93,7 +93,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
   }
 
   public getError(): string {
-    return this.formControl.getError(this.field.key);
+    return this.formControl.getError(this.field.key.toString());
   }
 
   /**

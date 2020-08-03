@@ -66,7 +66,7 @@ export class FormlyPasswordConfirmationInput extends FieldType
   public ngOnInit() {
     this.formControl.setValidators(() => {
       const error = this.validatePassword();
-      return error ? { [this.field.key]: error } : null;
+      return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
   }
@@ -82,7 +82,7 @@ export class FormlyPasswordConfirmationInput extends FieldType
   }
 
   public getError(): string {
-    return this.formControl.getError(this.field.key);
+    return this.formControl.getError(this.field.key.toString());
   }
 
   /**
