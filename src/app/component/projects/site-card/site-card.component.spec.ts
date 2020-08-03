@@ -1,12 +1,12 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
-import { testBawServices } from "@test/helpers/testbed";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -15,9 +15,8 @@ describe("SiteCardComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [SiteCardComponent],
-      providers: testBawServices,
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteCardComponent);

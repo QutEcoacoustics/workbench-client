@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
+import { testFormImports } from "src/app/test/helpers/testbed";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { fields } from "./reset-password.schema.json";
 
@@ -28,9 +29,8 @@ describe("ResetPasswordComponent", () => {
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: testFormImports,
+        imports: [...testFormImports, MockBawApiModule],
         declarations: [ResetPasswordComponent, FormComponent],
-        providers: testBawServices,
       }).compileComponents();
     }));
 

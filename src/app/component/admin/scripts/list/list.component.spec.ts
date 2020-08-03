@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
 import { SharedModule } from "@shared/shared.module";
+import { generateScript } from "@test/fakes/Script";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsComponent } from "./list.component";
 
@@ -17,8 +18,12 @@ describe("AdminScriptsComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AdminScriptsComponent],
-      imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
-      providers: [...testBawServices],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        ...appLibraryImports,
+        MockBawApiModule,
+      ],
     }).compileComponents();
   }));
 
@@ -26,22 +31,10 @@ describe("AdminScriptsComponent", () => {
     fixture = TestBed.createComponent(AdminScriptsComponent);
     api = TestBed.inject(ScriptsService);
 
-    defaultModel = new Script({
-      id: 1,
-      name: "script",
-      version: 0.1,
-      executableCommand: "command",
-    });
+    defaultModel = new Script(generateScript());
     defaultModels = [];
     for (let i = 0; i < 25; i++) {
-      defaultModels.push(
-        new Script({
-          id: i,
-          name: "script " + i,
-          version: 0.1,
-          executableCommand: "command",
-        })
-      );
+      defaultModels.push(new Script(generateScript(i)));
     }
 
     this.defaultModels = defaultModels;

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { testAppInitializer } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { ReportProblemComponent } from "./report-problem.component";
 
@@ -10,9 +10,8 @@ describe("ReportProblemComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule],
+      imports: [...appLibraryImports, SharedModule, MockAppConfigModule],
       declarations: [ReportProblemComponent],
-      providers: [...testAppInitializer],
     }).compileComponents();
   }));
 

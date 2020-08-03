@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testBawServices, testFormImports } from "src/app/test/helpers/testbed";
+import { testFormImports } from "src/app/test/helpers/testbed";
 import { UnlockAccountComponent } from "./unlock-account.component";
 import { fields } from "./unlock-account.schema.json";
 
@@ -28,9 +29,8 @@ describe("UnlockAccountComponent", () => {
   describe("component", () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: testFormImports,
+        imports: [...testFormImports, MockBawApiModule],
         declarations: [UnlockAccountComponent, FormComponent],
-        providers: testBawServices,
       }).compileComponents();
     }));
 

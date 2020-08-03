@@ -4,38 +4,33 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
-import {
-  mockActivatedRoute,
-  testBawServices,
-} from "src/app/test/helpers/testbed";
+import { generateUser } from "@test/fakes/User";
+import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { TheirProfileComponent } from "./their-profile.component";
 
 xdescribe("TheirProfileComponent", () => {
   let component: TheirProfileComponent;
   let fixture: ComponentFixture<TheirProfileComponent>;
-  let defaultError: ApiErrorDetails;
   let defaultUser: User;
 
-  function configureTestingModule(user: User, error: ApiErrorDetails) {
+  function configureTestingModule(model: User, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [TheirProfileComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              account: accountResolvers.show,
-            },
-            {
-              account: {
-                model: user,
-                error,
-              },
-            }
+            { account: accountResolvers.show },
+            { account: { model, error } }
           ),
         },
       ],
@@ -47,18 +42,11 @@ xdescribe("TheirProfileComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUser = new User({
-      id: 1,
-      userName: "Username",
-    });
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
+    defaultUser = new User(generateUser());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser, undefined);
+    configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });
 });

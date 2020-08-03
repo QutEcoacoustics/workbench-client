@@ -6,6 +6,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import {
   TypeOption,
+  ValidationMessageOption,
   WrapperOption,
 } from "@ngx-formly/core/lib/services/formly.config";
 import { MapModule } from "@shared/map/map.module";
@@ -27,6 +28,30 @@ export const formlyInputTypes: TypeOption[] = [
 
 export const formlyWrappers: WrapperOption[] = [
   { name: "form-field-horizontal", component: FormlyHorizontalWrapper },
+];
+
+export const formlyValidationMessages: ValidationMessageOption[] = [
+  { name: "required", message: "This field is required" },
+  {
+    name: "minlength",
+    message: (_, field) =>
+      `Input should have at least ${field.templateOptions.minLength} characters`,
+  },
+  {
+    name: "maxlength",
+    message: (_, field) =>
+      `This value should be less than ${field.templateOptions.maxLength} characters`,
+  },
+  {
+    name: "min",
+    message: (_, field) =>
+      `This value should be more than ${field.templateOptions.min}`,
+  },
+  {
+    name: "max",
+    message: (_, field) =>
+      `This value should be less than ${field.templateOptions.max}`,
+  },
 ];
 
 const components = [

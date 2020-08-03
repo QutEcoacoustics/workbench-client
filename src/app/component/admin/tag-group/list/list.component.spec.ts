@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { SharedModule } from "@shared/shared.module";
+import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { testBawServices } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsComponent } from "./list.component";
 
@@ -17,8 +18,12 @@ describe("AdminTagGroupsComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AdminTagGroupsComponent],
-      imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
-      providers: [...testBawServices],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        ...appLibraryImports,
+        MockBawApiModule,
+      ],
     }).compileComponents();
   }));
 
@@ -26,20 +31,10 @@ describe("AdminTagGroupsComponent", () => {
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
     api = TestBed.inject(TagGroupsService);
 
-    defaultModel = new TagGroup({
-      id: 1,
-      tagId: 1,
-      groupIdentifier: "",
-    });
+    defaultModel = new TagGroup(generateTagGroup());
     defaultModels = [];
     for (let i = 0; i < 25; i++) {
-      defaultModels.push(
-        new TagGroup({
-          id: 1,
-          tagId: 1,
-          groupIdentifier: "",
-        })
-      );
+      defaultModels.push(new TagGroup(generateTagGroup()));
     }
 
     this.defaultModels = defaultModels;

@@ -2,18 +2,23 @@ import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import { AdminAudioRecordingComponent } from "@component/admin/audio-recordings/details/details.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminOrphanComponent } from "./details.component";
@@ -25,10 +30,14 @@ describe("AdminOrphanComponent", () => {
 
   function configureTestingModule(model: Site, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminAudioRecordingComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
@@ -41,8 +50,12 @@ describe("AdminOrphanComponent", () => {
 
     fixture = TestBed.createComponent(AdminOrphanComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token);
-    const projectsApi = TestBed.inject(PROJECT.token);
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
+      AccountsService
+    >;
+    const projectsApi = TestBed.inject(PROJECT.token) as SpyObject<
+      ProjectsService
+    >;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();
@@ -60,8 +73,8 @@ describe("AdminOrphanComponent", () => {
     ]);
 
     // Catch associated models
-    spyOn(accountsApi, "show").and.callFake(() => accountsSubject);
-    spyOn(projectsApi, "filter").and.callFake(() => projectsSubject);
+    accountsApi.show.and.callFake(() => accountsSubject);
+    projectsApi.filter.and.callFake(() => projectsSubject);
 
     // Update model to contain injector
     if (model) {
@@ -78,10 +91,7 @@ describe("AdminOrphanComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, {
-      status: 401,
-      message: "Unauthorized",
-    } as ApiErrorDetails);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

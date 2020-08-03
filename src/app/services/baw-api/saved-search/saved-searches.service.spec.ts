@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SavedSearch } from "@models/SavedSearch";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -9,20 +10,17 @@ import {
   validateApiList,
   validateApiShow,
 } from "src/app/test/helpers/api-common";
-import { testAppInitializer } from "src/app/test/helpers/testbed";
-import { BawApiService } from "../baw-api.service";
-import { MockBawApiService } from "../mock/baseApiMock.service";
 import { SavedSearchesService } from "./saved-searches.service";
 
 describe("SavedSearchesService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        ...testAppInitializer,
-        SavedSearchesService,
-        { provide: BawApiService, useClass: MockBawApiService },
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockAppConfigModule,
       ],
+      providers: [SavedSearchesService],
     });
 
     this.service = TestBed.inject(SavedSearchesService);

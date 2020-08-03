@@ -2,11 +2,12 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Component, Injector, Input } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
-import { testBawServices } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { HasMany, HasOne } from "./AssociationDecorators";
@@ -62,9 +63,8 @@ describe("Association Decorators Loading In Components", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ],
@@ -146,10 +146,10 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasOne error", async () => {
-    const promise = interceptSingleModel(undefined, {
-      status: 404,
-      message: "Not Found",
-    });
+    const promise = interceptSingleModel(
+      undefined,
+      generateApiErrorDetails("Not Found")
+    );
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
     await promise;
@@ -222,10 +222,9 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasMany error", async () => {
-    const promise = interceptMultipleModels({
-      status: 404,
-      message: "Not Found",
-    });
+    const promise = interceptMultipleModels(
+      generateApiErrorDetails("Not Found")
+    );
     component.model = new MockModel({ id: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel

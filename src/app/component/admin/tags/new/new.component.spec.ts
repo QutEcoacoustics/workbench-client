@@ -2,52 +2,49 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { TagType } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { assertResolverErrorHandling } from "@test/helpers/html";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsNewComponent } from "./new.component";
 
 describe("AdminTagsNewComponent", () => {
-  let api: TagsService;
+  let api: SpyObject<TagsService>;
   let component: AdminTagsNewComponent;
-  let defaultError: ApiErrorDetails;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsNewComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(
-    tagTypes: TagType[],
-    tagTypesError: ApiErrorDetails
-  ) {
+  function configureTestingModule(model: TagType[], error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminTagsNewComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
-            {
-              typeOfTags: tagResolvers.tagTypes,
-            },
-            {
-              tagTypes: {
-                model: tagTypes,
-                error: tagTypesError,
-              },
-            }
+            { typeOfTags: tagResolvers.tagTypes },
+            { tagTypes: { model, error } }
           ),
         },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsNewComponent);
-    api = TestBed.inject(TagsService);
+    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
@@ -65,28 +62,24 @@ describe("AdminTagsNewComponent", () => {
         name: "common_name",
       }),
     ];
-    defaultError = {
-      status: 401,
-      message: "Unauthorized",
-    };
   });
 
   xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTagTypes, undefined);
+      configureTestingModule(defaultTagTypes);
       expect(component).toBeTruthy();
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(undefined, defaultError);
+      configureTestingModule(undefined, generateApiErrorDetails());
       assertResolverErrorHandling(fixture);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTagTypes, undefined);
-      spyOn(api, "create").and.callThrough();
+      configureTestingModule(defaultTagTypes);
+      api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();
     });

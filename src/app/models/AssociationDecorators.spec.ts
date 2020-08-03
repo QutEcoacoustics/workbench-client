@@ -2,12 +2,13 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { async, TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
 import { Id, Ids } from "@interfaces/apiInterfaces";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
-import { testBawServices } from "../test/helpers/testbed";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { HasMany, HasOne } from "./AssociationDecorators";
 
@@ -32,9 +33,8 @@ describe("Association Decorators", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ],
@@ -182,10 +182,10 @@ describe("Association Decorators", () => {
         });
 
         it("should handle error", async () => {
-          const promise = interceptApiRequest(undefined, {
-            status: 401,
-            message: "Unauthorized",
-          });
+          const promise = interceptApiRequest(
+            undefined,
+            generateApiErrorDetails("Unauthorized")
+          );
           const model = createModel({ ids: idsType.empty }, injector);
           await assertModel(promise, model, "childModels", []);
         });
@@ -330,10 +330,10 @@ describe("Association Decorators", () => {
     });
 
     it("should handle error", async () => {
-      const promise = interceptApiRequest(undefined, {
-        status: 401,
-        message: "Unauthorized",
-      });
+      const promise = interceptApiRequest(
+        undefined,
+        generateApiErrorDetails("Unauthorized")
+      );
       const model = createModel({ id: 1 }, injector);
       await assertModel(promise, model, "childModel", null);
     });

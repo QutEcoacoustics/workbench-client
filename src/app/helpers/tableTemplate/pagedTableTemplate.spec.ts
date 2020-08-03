@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component } from "@angular/core";
 import {
   ComponentFixture,
   fakeAsync,
@@ -7,19 +7,19 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
 import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { SharedModule } from "@shared/shared.module";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-  testBawServices,
 } from "src/app/test/helpers/testbed";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
@@ -56,7 +56,7 @@ class MockComponent extends PagedTableTemplate<
 describe("PagedTableTemplate", () => {
   let component: MockComponent;
   let fixture: ComponentFixture<MockComponent>;
-  let api: ProjectsService;
+  let api: SpyObject<ProjectsService>;
 
   function configureTestingModule(
     resolvers: MockResolvers = {},
@@ -64,9 +64,8 @@ describe("PagedTableTemplate", () => {
   ) {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [SharedModule, RouterTestingModule],
+      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(resolvers, data),
@@ -75,12 +74,13 @@ describe("PagedTableTemplate", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
-    api = TestBed.inject(ProjectsService);
+    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     component = fixture.componentInstance;
   }
 
   it("should create", () => {
     configureTestingModule();
+    api.filter.and.callFake(() => new Subject());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -88,7 +88,7 @@ describe("PagedTableTemplate", () => {
   it("should handle error response", () => {
     configureTestingModule();
     const error = { status: 401, message: "Unauthorized" } as ApiErrorDetails;
-    spyOn(api, "filter").and.callFake(() => {
+    api.filter.and.callFake(() => {
       const subject = new Subject<Project[]>();
       subject.error(error);
       return subject;
@@ -100,7 +100,7 @@ describe("PagedTableTemplate", () => {
 
   describe("resolvers", () => {
     function setProject() {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
     }
@@ -161,7 +161,7 @@ describe("PagedTableTemplate", () => {
 
   describe("rows", () => {
     function setProjects(projects: Project[]) {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>(projects);
       });
     }
@@ -232,7 +232,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle zero models", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
@@ -242,7 +242,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle 0 offset", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
@@ -252,7 +252,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle 1 offset", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       component.setPage({ offset: 1, count: 26, limit: 25, pageSize: 25 });
@@ -268,7 +268,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle zero models", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       fixture.detectChanges();
@@ -289,7 +289,7 @@ describe("PagedTableTemplate", () => {
           total: 25,
         },
       });
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
       component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
@@ -311,7 +311,7 @@ describe("PagedTableTemplate", () => {
           total: 25,
         },
       });
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
       component.setPage({ offset: 2, count: 51, limit: 25, pageSize: 25 });
@@ -333,7 +333,7 @@ describe("PagedTableTemplate", () => {
           total: 25,
         },
       });
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new Subject<Project[]>();
       });
       component.setPage({ offset: 2, count: 51, limit: 25, pageSize: 25 });
@@ -346,7 +346,7 @@ describe("PagedTableTemplate", () => {
   describe("onFilter", () => {
     beforeEach(() => {
       configureTestingModule();
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
     });
@@ -437,7 +437,7 @@ describe("PagedTableTemplate", () => {
   describe("onSort", () => {
     beforeEach(() => {
       configureTestingModule();
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
     });
@@ -518,7 +518,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle zero models", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       fixture.detectChanges();
@@ -540,7 +540,7 @@ describe("PagedTableTemplate", () => {
         },
       });
 
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
       fixture.detectChanges();
@@ -562,7 +562,7 @@ describe("PagedTableTemplate", () => {
         },
       });
 
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([project]);
       });
       fixture.detectChanges();
@@ -581,7 +581,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should be true while awaiting api response", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new Subject<Project[]>();
       });
       fixture.detectChanges();
@@ -590,7 +590,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should be false after success api response", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         return new BehaviorSubject<Project[]>([]);
       });
       fixture.detectChanges();
@@ -599,7 +599,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should be false after error api response", () => {
-      spyOn(api, "filter").and.callFake(() => {
+      api.filter.and.callFake(() => {
         const subject = new Subject<Project[]>();
         subject.error({
           status: 401,

@@ -5,15 +5,14 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { SpyObject } from "@ngneat/spectator";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
-import { BehaviorSubject } from "rxjs";
 import { AppComponent } from "./app.component";
 import { appLibraryImports } from "./app.module";
 import { SharedModule } from "./component/shared/shared.module";
 import { AppConfigService } from "./services/app-config/app-config.service";
-import { SecurityService } from "./services/baw-api/security/security.service";
 import { UserService } from "./services/baw-api/user/user.service";
-import { testBawServices } from "./test/helpers/testbed";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -30,9 +29,9 @@ describe("AppComponent", () => {
         RouterTestingModule,
         HttpClientTestingModule,
         LoadingBarHttpClientModule,
+        MockBawApiModule,
       ],
       declarations: [AppComponent],
-      providers: [...testBawServices],
     }).compileComponents();
   }));
 
@@ -42,14 +41,9 @@ describe("AppComponent", () => {
     router = TestBed.inject(Router);
     env = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
-    const securityApi = TestBed.inject(SecurityService);
-    const userApi = TestBed.inject(UserService);
+    const userApi = TestBed.inject(UserService) as SpyObject<UserService>;
 
-    spyOn(userApi, "getLocalUser").and.callFake(() => null);
-    spyOn(securityApi, "isLoggedIn").and.callFake(() => false);
-    spyOn(securityApi, "getAuthTrigger").and.callFake(
-      () => new BehaviorSubject(null)
-    );
+    userApi.getLocalUser.and.callFake(() => null);
   });
 
   afterEach(() => {

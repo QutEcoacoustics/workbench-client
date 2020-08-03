@@ -4,11 +4,11 @@ import {
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { assertSpinner } from "@test/helpers/html";
 import { SessionUser } from "src/app/models/User";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { testBawServices } from "src/app/test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 
@@ -21,9 +21,13 @@ describe("CmsComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        SharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [CmsComponent],
-      providers: [...testBawServices],
     }).compileComponents();
   }));
 

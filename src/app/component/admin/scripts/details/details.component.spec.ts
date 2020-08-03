@@ -2,16 +2,20 @@ import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
-import { mockActivatedRoute, testBawServices } from "@test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptComponent } from "./details.component";
@@ -23,10 +27,14 @@ describe("ScriptComponent", () => {
 
   function configureTestingModule(model: Script, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [AdminScriptComponent],
       providers: [
-        ...testBawServices,
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
@@ -39,7 +47,9 @@ describe("ScriptComponent", () => {
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token);
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
+      AccountsService
+    >;
     component = fixture.componentInstance;
 
     const subject = new Subject<User>();
@@ -47,7 +57,7 @@ describe("ScriptComponent", () => {
       subject,
       () => new User({ id: 1, userName: "custom username" })
     );
-    spyOn(accountsApi, "show").and.callFake(() => subject);
+    accountsApi.show.and.callFake(() => subject);
 
     // Update model to contain injector
     if (model) {
@@ -64,10 +74,7 @@ describe("ScriptComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, {
-      status: 401,
-      message: "Unauthorized",
-    } as ApiErrorDetails);
+    configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
