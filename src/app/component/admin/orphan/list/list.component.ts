@@ -58,7 +58,7 @@ export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
   }
 
   protected apiAction(filters: Filters) {
-    return (this.api as ShallowSitesService).orphans(filters);
+    return (this.api as ShallowSitesService).orphanFilter(filters);
   }
 }
 
