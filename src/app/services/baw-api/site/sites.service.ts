@@ -14,23 +14,21 @@ import {
   IdOr,
   IdParam,
   IdParamOptional,
-  New,
   option,
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
-type Orphans = "orphans";
-const Orphans: Orphans = "orphans";
-function shallowOption(x?: New | Filter | Empty | Orphans) {
-  return x ? x : Empty;
+function orphanOption(x?: Filter | Empty) {
+  return option(x);
 }
 
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
-const endpointShallow = stringTemplate`/sites/${siteId}${shallowOption}`;
+const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
+const endpointOrphan = stringTemplate`/sites/orphans${orphanOption}`;
 
 /**
  * Sites Service.
@@ -113,12 +111,20 @@ export class ShallowSitesService extends StandardApi<Site> {
   public destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, Empty));
   }
+
+  /**
+   * Retrieve orphaned sites (sites which have no parent projects)
+   */
+  public orphanList(): Observable<Site[]> {
+    return this.apiList(endpointOrphan(Empty));
+  }
+
   /**
    * Retrieve orphaned sites (sites which have no parent projects)
    * @param filters Filters to apply
    */
-  public orphans(filters: Filters<ISite>): Observable<Site[]> {
-    return this.apiFilter(endpointShallow(Empty, Orphans), filters);
+  public orphanFilter(filters: Filters<ISite>): Observable<Site[]> {
+    return this.apiFilter(endpointOrphan(Filter), filters);
   }
 }
 
