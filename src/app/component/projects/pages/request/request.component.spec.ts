@@ -16,7 +16,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { RequestComponent } from "./request.component";
 
-xdescribe("ProjectsRequestComponent", () => {
+describe("ProjectsRequestComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: RequestComponent;
   let defaultProject: Project;
@@ -54,7 +54,7 @@ xdescribe("ProjectsRequestComponent", () => {
     defaultProject = new Project(generateProject());
   });
 
-  it("should create", () => {
+  xit("should create", () => {
     configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });
