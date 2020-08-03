@@ -16,7 +16,7 @@ import { appLibraryImports } from "src/app/app.module";
 import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { RequestComponent } from "./request.component";
 
-describe("ProjectsRequestComponent", () => {
+xdescribe("ProjectsRequestComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: RequestComponent;
   let defaultProject: Project;
@@ -45,7 +45,6 @@ describe("ProjectsRequestComponent", () => {
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;
     api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
-
     api.list.and.callFake(() => new Subject());
 
     fixture.detectChanges();
