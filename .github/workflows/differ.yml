@@ -3,7 +3,7 @@ name: Build Size Diff
 on: [pull_request]
 
 jobs:
-  build:
+  diff:
     runs-on: ubuntu-latest
 
     steps:
