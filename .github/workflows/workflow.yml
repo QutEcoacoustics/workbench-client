@@ -97,6 +97,8 @@ jobs:
     # needs: [test, e2e, build]
 
     steps:
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
       - name: Integration check
         uses: squalrus/merge-bot@v0.1.0
         with:
@@ -106,4 +108,4 @@ jobs:
           labels: automerge
           checks_enabled: false
           method: squash
-        # if: github.ref === refs/heads/fix-ci
+        if: github.ref === refs/heads/fix-ci
