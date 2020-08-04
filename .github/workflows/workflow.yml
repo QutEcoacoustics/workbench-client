@@ -107,4 +107,4 @@ jobs:
           labels: automerge
           checks_enabled: false
           method: squash
-        if: startsWith(github.head_ref, 'refs/heads/fix-ci')
+        if: startsWith(github.head_ref, 'fix-ci')
