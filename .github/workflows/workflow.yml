@@ -98,11 +98,7 @@ jobs:
 
     steps:
       - run: echo ${{github.head_ref}}
-      - name: Integration check
-        uses: squalrus/merge-bot@v0.1.0
+      - uses: maxkomarychev/merge-pal-action@v0.5.1
         with:
-          test: true
-          reviewers: false
-          labels: null
-          method: squash
+          token: ${{ secrets.GITHUB_TOKEN }}
         if: startsWith(github.head_ref, 'fix-ci')
