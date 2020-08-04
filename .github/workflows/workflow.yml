@@ -103,6 +103,6 @@ jobs:
         with:
           test: true
           reviewers: false
-          labels: []
+          labels: null
           method: squash
         if: startsWith(github.head_ref, 'fix-ci')
