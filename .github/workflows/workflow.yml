@@ -38,10 +38,6 @@ jobs:
         run: npm run test:pipeline -- --browsers EdgeHeadless
         if: matrix.os == 'windows-latest'
 
-      - name: Build the workbench client
-        run: npm run build
-        if: matrix.os == 'ubuntu-latest'
-
       - name: Lint project
         run: npm run lint
 
@@ -79,6 +75,9 @@ jobs:
 
       - name: NPM install
         run: npm install
+
+      - name: Build the workbench client
+        run: npm run build
 
       - #: 'Note: This is a third party action: https://github.com/marketplace/actions/create-zip-file'
         name: Zip workbench files
