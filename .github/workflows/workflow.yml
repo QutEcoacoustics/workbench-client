@@ -97,10 +97,7 @@ jobs:
     # needs: [test, e2e, build]
 
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF})"
-        id: extract_branch
+      - run: echo ${{github.ref}}
       - name: Integration check
         uses: squalrus/merge-bot@v0.1.0
         with:
@@ -110,4 +107,4 @@ jobs:
           labels: automerge
           checks_enabled: false
           method: squash
-        if: github.ref == 'refs/heads/fix-ci'
+        if: contains(github.ref, 'refs/heads/fix-ci')
