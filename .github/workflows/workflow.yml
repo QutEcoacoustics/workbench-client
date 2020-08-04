@@ -90,3 +90,20 @@ jobs:
         with:
           path: ./workbench-client.zip
           name: workbench-client
+
+  merge:
+    runs-on: ubuntu-latest
+    name: auto-merge
+    # needs: [test, e2e, build]
+
+    steps:
+      - name: Integration check
+        uses: squalrus/merge-bot@v0.1.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          test: true
+          reviewers: false
+          labels: automerge
+          checks_enabled: false
+          method: squash
+        # if: github.ref === refs/heads/fix-ci
