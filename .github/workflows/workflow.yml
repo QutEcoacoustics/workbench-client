@@ -108,4 +108,4 @@ jobs:
           labels: automerge
           checks_enabled: false
           method: squash
-        if: github.ref == "refs/heads/fix-ci"
+        if: github.ref == 'refs/heads/fix-ci'
