@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: ${{ matrix.os }}
+  test:
+    name: Unit Tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -25,25 +25,6 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: Linux Chrome install
-        run: |
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-          sudo apt-get update
-          sudo apt-get install google-chrome-stable
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: Mac Chrome install
-        run: |
-          brew update
-          brew cask reinstall google-chrome
-        if: matrix.os == 'macos-latest'
-
-      - name: Windows Chrome install
-        run: |
-          choco install googlechrome
-        if: matrix.os == 'windows-latest'
-
       - name: NPM install
         run: npm install
 
@@ -57,35 +38,67 @@ jobs:
         run: npm run test:pipeline -- --browsers EdgeHeadless
         if: matrix.os == 'windows-latest'
 
+      - name: Lint project
+        run: npm run lint
+
+  e2e:
+    name: E2E Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
       - name: Run e2e test suite
         run: npm run e2e
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
       - name: Build the workbench client
         run: npm run build
-        if: matrix.os == 'ubuntu-latest'
 
-      - #: 'Note: This is a third party action: https://github.com/marketplace/actions/create-zip-file'
-        name: Zip workbench files
+      # https://github.com/marketplace/actions/create-zip-file
+      - name: Zip workbench files
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./workbench-client.zip ./dist/workbench-client/
-        if: matrix.os == 'ubuntu-latest'
 
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
           path: ./workbench-client.zip
           name: workbench-client
-        if: matrix.os == 'ubuntu-latest'
 
-      - name: Lint project
-        run: npm run lint
-  automerge:
-    needs: build
+  merge:
     runs-on: ubuntu-latest
+    name: auto-merge
+    needs: [test, e2e, build]
+
     steps:
-      - name: automerge
-        uses: "pascalgn/automerge-action@4536e8847eb62fe2f0ee52c8fa92d17aa97f932f"
+      # https://github.com/managedkaos/merge-pull-request
+      - uses: managedkaos/merge-pull-request@v1.2
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: startsWith(github.head_ref, 'dependabot/')
