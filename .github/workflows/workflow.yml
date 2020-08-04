@@ -79,8 +79,8 @@ jobs:
       - name: Build the workbench client
         run: npm run build
 
-      - #: 'Note: This is a third party action: https://github.com/marketplace/actions/create-zip-file'
-        name: Zip workbench files
+      # https://github.com/marketplace/actions/create-zip-file
+      - name: Zip workbench files
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./workbench-client.zip ./dist/workbench-client/
@@ -94,11 +94,11 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     name: auto-merge
-    # needs: [test, e2e, build]
+    needs: [test, e2e, build]
 
     steps:
-      - run: echo ${{github.head_ref}}
+      # https://github.com/managedkaos/merge-pull-request
       - uses: managedkaos/merge-pull-request@v1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: startsWith(github.head_ref, 'fix-ci')
+        if: startsWith(github.head_ref, 'dependabot/')
