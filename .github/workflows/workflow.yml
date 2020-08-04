@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }} Unit Tests
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -46,7 +46,7 @@ jobs:
         run: npm run lint
 
   e2e:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }} E2E Tests
     runs-on: ${{ matrix.os }}
 
     strategy:
