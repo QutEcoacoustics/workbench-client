@@ -97,8 +97,10 @@ jobs:
     # needs: [test, e2e, build]
 
     steps:
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF})"
+        id: extract_branch
       - name: Integration check
         uses: squalrus/merge-bot@v0.1.0
         with:
