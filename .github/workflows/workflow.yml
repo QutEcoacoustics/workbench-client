@@ -104,7 +104,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           test: true
           reviewers: false
-          labels: automerge
+          labels:
           checks_enabled: false
           method: squash
         if: startsWith(github.head_ref, 'fix-ci')
