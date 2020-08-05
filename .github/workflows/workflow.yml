@@ -28,15 +28,15 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Run test suite on chrome
-        run: npm run test:pipeline -- --browsers ChromeHeadless
+      # - name: Run test suite on chrome
+      #   run: npm run test:pipeline -- --browsers ChromeHeadless
 
-      - name: Run test suite on firefox
-        run: npm run test:pipeline -- --browsers FirefoxHeadless
+      # - name: Run test suite on firefox
+      #   run: npm run test:pipeline -- --browsers FirefoxHeadless
 
-      - name: Run test suite on edge
-        run: npm run test:pipeline -- --browsers EdgeHeadless
-        if: matrix.os == 'windows-latest'
+      # - name: Run test suite on edge
+      #   run: npm run test:pipeline -- --browsers EdgeHeadless
+      #   if: matrix.os == 'windows-latest'
 
       - name: Lint project
         run: npm run lint
@@ -97,8 +97,14 @@ jobs:
     needs: [test, e2e, build]
 
     steps:
-      # https://github.com/managedkaos/merge-pull-request
-      - uses: managedkaos/merge-pull-request@v1.2
-        env:
+      # https://github.com/squalrus/merge-bot
+      - name: Integration check
+        uses: squalrus/merge-bot@v0.1.0
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          test: true
+          reviewers: false
+          labels: automerge
+          checks_enabled: false
+          method: squash
         if: startsWith(github.head_ref, 'dependabot/')
