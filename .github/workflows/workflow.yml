@@ -97,8 +97,13 @@ jobs:
     needs: [test, e2e, build]
 
     steps:
-      # https://github.com/managedkaos/merge-pull-request
-      - uses: managedkaos/merge-pull-request@v1.2
-        env:
+      # https://github.com/squalrus/merge-bot
+      - name: Integration check
+        uses: squalrus/merge-bot@v0.4.2
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          test: false
+          reviewers: false
+          labels: automerge
+          method: squash
         if: startsWith(github.head_ref, 'dependabot/')
