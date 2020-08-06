@@ -64,7 +64,7 @@
     "@angular-devkit/build-angular": "^0.1000.5",
     "@angular/cli": "^10.0.5",
     "@angular/compiler-cli": "^10.0.7",
-    "@angular/language-service": "^10.0.7",
+    "@angular/language-service": "^10.0.8",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
     "@ngneat/spectator": "^5.13.0",
     "@types/faker": "^4.1.12",
