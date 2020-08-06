@@ -92,18 +92,24 @@ jobs:
           name: workbench-client
 
   merge:
-    runs-on: ubuntu-latest
-    name: auto-merge
-    needs: [test, e2e, build]
+    name: "auto-merge"
+    runs-on: "ubuntu-latest"
+    needs: ["test", "e2e", "build"]
+
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
 
     steps:
-      # https://github.com/squalrus/merge-bot
-      - name: Integration check
-        uses: squalrus/merge-bot@v0.4.2
+      - name: "Merge pull request"
+        uses: "actions/github-script@v2"
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          test: false
-          reviewers: false
-          labels: automerge
-          method: squash
-        if: startsWith(github.head_ref, 'dependabot/')
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            const pullRequest = context.payload.pull_request
+            const repository = context.repo
+
+            await github.pulls.merge({
+              merge_method: "squash",
+              owner: repository.owner,
+              pull_number: pullRequest.number,
+              repo: repository.repo,
+            })
