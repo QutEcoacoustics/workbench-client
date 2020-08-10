@@ -77,16 +77,10 @@ jobs:
       - name: Build the workbench client
         run: npm run build
 
-      # https://github.com/marketplace/actions/create-zip-file
-      - name: Zip workbench files
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: zip -qq -r ./workbench-client.zip ./dist/workbench-client/
-
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
-          path: ./workbench-client.zip
+          path: ./dist/workbench-client/
           name: workbench-client
 
   merge:
