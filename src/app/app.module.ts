@@ -62,6 +62,7 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserModule.withServerTransition({ appId: "workbench-client" }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,

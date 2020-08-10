@@ -120,6 +120,41 @@ This will allow you to compare the bundle size impacts before and after the upda
 
 Check our Wiki pages for help with common problems and using systems custom to our application.
 
+## Production deploy
+
+Deploying to production can be as simple as copying the release assets to a
+statically served directory, setting up your routing, and adding an `environment.json` file.
+
+1. Copy and extract a release to a statically served directory like `public`
+2. Template your `environment.json` and place it in the `public/workbench-client/assets` directory
+3. Ensure whatever routing solution you have can route requests for SPA with a wildcard route, excepting the `assets` folder
+
+Note: this configuration is a fully static SPA and may suffer from slow loading
+times and poor SEO.
+
+### Docker
+
+Server side rendering allows a server to render the first page and send it to
+the browser while the rest of the application bundle downloads. To make this work
+you need to run our docker container which contains the web server.
+
+1. Template your `environment.json` file
+2. Run the following command (substituting in the path to your templated config file):
+```
+docker run -p 4000:4000 \
+  -v "$(pwd)/environment.json:/environment.json" \
+  qutecoacoustics/workbench-client
+```
+
+Done!
+
+
+To build the container locally for testing:
+
+```
+docker build -t qutecoacoustics/workbench-client .
+```
+
 ## Licence
 
 Apache License, Version 2.0

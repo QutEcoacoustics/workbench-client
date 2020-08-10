@@ -86,7 +86,7 @@ export class LoginComponent extends FormTemplate<LoginDetails>
 
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
-    const navigationId = (this.location.getState() as any).navigationId;
+    const navigationId = (this.location.getState() as any)?.navigationId ?? noHistory;
     const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home

@@ -28,6 +28,9 @@ const apiConfig = fetchRetry<Partial<Configuration>>(
     return new Configuration(undefined);
   });
 
-platformBrowserDynamic([{ provide: API_CONFIG, useValue: apiConfig }])
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+document.addEventListener("DOMContentLoaded", () => {
+    // this provider should mirror that in server.ts
+     platformBrowserDynamic([{ provide: API_CONFIG, useValue: apiConfig }])
+      .bootstrapModule(AppModule)
+      .catch((err) => console.error(err));
+  });

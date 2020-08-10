@@ -1,5 +1,6 @@
+import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
+import { Inject, Injectable, InjectionToken, Injector, PLATFORM_ID } from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
@@ -27,6 +28,8 @@ export let STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
  */
 @Injectable()
 export abstract class BawApiService<T extends AbstractModel> {
+  private platform: any;
+
   /*
   Paths:
     list -> GET
@@ -40,7 +43,7 @@ export abstract class BawApiService<T extends AbstractModel> {
   /**
    * User local storage location
    */
-  protected userLocalStorage = "baw.client.user";
+  protected userLocalStorageKey = "baw.client.user";
 
   /**
    * Handle API collection response
@@ -68,6 +71,8 @@ export abstract class BawApiService<T extends AbstractModel> {
     classBuilder: new (_: object, injector?: Injector) => T,
     protected injector: Injector
   ) {
+    this.platform = injector.get(PLATFORM_ID);
+
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
       if (response.data instanceof Array) {
@@ -108,8 +113,14 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Retrieve user details from session cookie. Null if no user exists.
    */
   public getLocalUser(): SessionUser | null {
+    // local storage does not exist on server
+    if (!isPlatformBrowser(this.platform)) {
+      return null;
+    }
+
     // Will return null if no item exists
-    const userData = localStorage.getItem(this.userLocalStorage);
+    // TODO: resolve via injectable - accessing a global like this is not compatible with SSR
+    const userData = localStorage.getItem(this.userLocalStorageKey);
 
     if (userData) {
       // Try create session user
@@ -129,14 +140,14 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param user User details
    */
   protected storeLocalUser(user: SessionUser): void {
-    localStorage.setItem(this.userLocalStorage, JSON.stringify(user));
+    localStorage.setItem(this.userLocalStorageKey, JSON.stringify(user));
   }
 
   /**
    * Clear session storage
    */
   protected clearSessionUser(): void {
-    localStorage.removeItem(this.userLocalStorage);
+    localStorage.removeItem(this.userLocalStorageKey);
   }
 
   /**

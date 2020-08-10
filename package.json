@@ -19,7 +19,11 @@
     "test:firefox": "ng test -- --code-coverage --browsers Firefox",
     "test:edge": "ng test -- --code-coverage --browsers Edge",
     "test:all": "ng test -- --code-coverage --browsers Firefox,Chrome,Edge",
-    "test:pipeline": "ng test -- --watch=false --code-coverage"
+    "test:pipeline": "ng test -- --watch=false --code-coverage",
+    "dev:ssr": "ng run workbench-client:serve-ssr",
+    "serve:ssr": "node dist/workbench-client/server/main.js",
+    "build:ssr": "ng build --prod && ng run workbench-client:server:production",
+    "prerender": "ng run workbench-client:prerender"
   },
   "private": true,
   "dependencies": {
@@ -70,6 +74,8 @@
     "@angular/language-service": "^10.0.8",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
     "@ngneat/spectator": "^5.13.0",
+    "@nguniversal/builders": "^10.0.1",
+    "@types/express": "^4.17.0",
     "@types/faker": "^4.1.12",
     "@types/jasmine": "^3.5.12",
     "@types/jasminewd2": "^2.0.8",
