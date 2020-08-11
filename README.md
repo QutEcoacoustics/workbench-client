@@ -155,6 +155,12 @@ To build the container locally for testing:
 docker build -t qutecoacoustics/workbench-client .
 ```
 
+And for debugging the express server:
+
+```
+ docker run -p 4000:4000 -v $(pwd)/environment.json:/environment.json -e DEBUG=express:* qutecoacoustics/workbench-client
+ ```
+
 ## Licence
 
 Apache License, Version 2.0

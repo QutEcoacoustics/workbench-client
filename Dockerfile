@@ -2,7 +2,7 @@ FROM node:current-alpine
 
 
 
-# deescalate
+# drop privileges
 USER node
 
 EXPOSE 4000
@@ -10,8 +10,8 @@ EXPOSE 4000
 RUN mkdir -p  /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
-# copy deps first
-COPY package*.json ./
+# copy deps specification first
+COPY --chown=node package*.json ./
 
 # install deps
 RUN npm install \
@@ -22,9 +22,9 @@ RUN npm install \
 # Doing it like this prevents the container from rebuilding when just the app
 # contents change - only when depenencies change are the lower layers invalidated.
 # Great for dev work.
-COPY ./ ./
+COPY --chown=node ./ ./
 
 RUN npm run build:ssr
-  # pre-rendering doesn't appear to work at the moment due to out config setup
+  # pre-rendering doesn't appear to work at the moment due to our config setup
   #&& npm run prerender
 CMD [ "npm", "run", "serve:ssr"]
