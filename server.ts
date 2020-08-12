@@ -17,14 +17,18 @@ import { environment } from "src/environments/environment";
 import { AppServerModule } from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function app(): express.Express {
+export function app(path): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), "dist/workbench-client/browser");
   const indexHtml = existsSync(join(distFolder, "index.original.html")) ? "index.original.html" : "index";
 
-  const configPath = environment.production
-    ? "/environment.json"
-    : join(distFolder, "assets", "environment.json");
+  const configPath =   [
+     path,
+    // default path for config in docker container
+     "/environment.json",
+     // development settings
+    join(distFolder, "assets", "environment.json")
+  ].find(x => existsSync(x));
   console.log("Using config file ", configPath);
   const rawConfig = readFileSync(configPath, "utf-8")
   const config = new Configuration(JSON.parse(rawConfig));
@@ -67,12 +71,12 @@ export function app(): express.Express {
   return server;
 }
 
-function run(): void {
+function run(configPath): void {
   const port = Number(process.env.PORT) || 4000;
 
   console.log("Is production?", environment.production);
   // Start up the Node server
-  const server = app();
+  const server = app(configPath);
   server.listen(port, "0.0.0.0", () => {
     console.log(`Node Express server listening on http://0.0.0.0:${port}`);
   });
@@ -85,7 +89,8 @@ declare const __non_webpack_require__: NodeRequire;
 const mainModule = __non_webpack_require__.main;
 const moduleFilename = mainModule && mainModule.filename || "";
 if (moduleFilename === __filename || moduleFilename.includes("iisnode")) {
-  run();
+  // first argument after this script's name
+  run(process.argv[2]);
 }
 
 export * from "./src/main.server";
