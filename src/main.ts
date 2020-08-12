@@ -14,7 +14,7 @@ if (environment.production) {
 }
 
 // Fetch API config from baw server and add it to the initial bootstrap
-const apiConfig = fetchRetry<Partial<Configuration>>(
+const apiConfigPromise = fetchRetry<Partial<Configuration>>(
   "assets/environment.json",
   1000,
   5
@@ -28,9 +28,20 @@ const apiConfig = fetchRetry<Partial<Configuration>>(
     return new Configuration(undefined);
   });
 
-document.addEventListener("DOMContentLoaded", () => {
-    // this provider should mirror that in server.ts
-     platformBrowserDynamic([{ provide: API_CONFIG, useValue: apiConfig }])
-      .bootstrapModule(AppModule)
-      .catch((err) => console.error(err));
-  });
+// Await page load
+const domContentLoadedPromise = new Promise((resolve) =>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.removeEventListener("DOMContentLoader", () => {});
+    resolve();
+  })
+);
+
+// Bootstrap Angular
+Promise.all([apiConfigPromise, domContentLoadedPromise]).then((result) => {
+  const apiConfig: Configuration = result[0];
+
+  // this provider should mirror that in server.ts
+  platformBrowserDynamic([{ provide: API_CONFIG, useValue: apiConfig }])
+    .bootstrapModule(AppModule)
+    .catch((err) => console.error(err));
+});
