@@ -6,6 +6,7 @@ import {
   Menus,
   ResolverList,
 } from "src/app/interfaces/menusInterfaces";
+import { PageComponent } from "./pageComponent";
 
 /**
  * Page info interface.
@@ -33,7 +34,7 @@ export class PageInfo implements IPageInfo {
   public fullscreen: boolean;
   public resolvers: ResolverList;
 
-  constructor(target: Type<any>, args: IPageInfo) {
+  constructor(target: Type<PageComponent>, args: IPageInfo) {
     if (!args.self) {
       throw new Error("A page info must be provided with an `self` MenuRoute");
     }

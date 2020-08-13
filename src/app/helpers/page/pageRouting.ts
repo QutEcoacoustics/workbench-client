@@ -5,7 +5,7 @@ import { ResolverHandlerComponent } from "src/app/component/error/resolver-handl
 import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
 import { FormTouchedGuard } from "src/app/guards/form/form.guard";
-import { getPageInfo } from "./pageComponent";
+import { getPageInfo, PageComponent } from "./pageComponent";
 
 /**
  * Dynamically create routes for an angular component
@@ -13,7 +13,7 @@ import { getPageInfo } from "./pageComponent";
  * @returns List of routes
  */
 export function GetRouteConfigForPage(
-  component: Type<any>,
+  component: Type<PageComponent>,
   config: Partial<Route>
 ) {
   const page = getPageInfo(component);
