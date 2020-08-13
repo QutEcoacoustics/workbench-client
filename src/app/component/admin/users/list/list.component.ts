@@ -10,29 +10,17 @@ import {
   theirEditMenuItem,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 
-@Page({
-  category: adminCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminMenuItemActions,
-    ]),
-    links: List(),
-  },
-  self: adminUserListMenuItem,
-})
 @Component({
   selector: "app-admin-users",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
+class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
   public columns = [
     { name: "Account" },
@@ -77,6 +65,19 @@ export class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
       .replace(":accountId", user.id.toString());
   }
 }
+
+AdminUserListComponent.WithInfo({
+  category: adminCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminDashboardMenuItem,
+      ...adminMenuItemActions,
+    ]),
+  },
+  self: adminUserListMenuItem,
+});
+
+export { AdminUserListComponent };
 
 interface TableRow {
   account: User;

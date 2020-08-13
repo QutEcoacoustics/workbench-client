@@ -8,7 +8,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -22,17 +21,6 @@ import { fields } from "../tag-group.schema.json";
 
 const tagGroupKey = "tagGroup";
 
-@Page({
-  category: adminTagGroupsCategory,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    links: List(),
-  },
-  resolvers: {
-    [tagGroupKey]: tagGroupResolvers.show,
-  },
-  self: adminEditTagGroupMenuItem,
-})
 @Component({
   selector: "app-admin-tag-groups-edit",
   template: `
@@ -47,7 +35,7 @@ const tagGroupKey = "tagGroup";
     ></baw-form>
   `,
 })
-export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
+class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
   implements OnInit {
   public fields = fields;
   public title: string;
@@ -75,3 +63,14 @@ export class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
     return this.api.update(new TagGroup(model));
   }
 }
+
+AdminTagGroupsEditComponent.WithInfo({
+  category: adminTagGroupsCategory,
+  menus: {
+    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+  },
+  resolvers: { [tagGroupKey]: tagGroupResolvers.show },
+  self: adminEditTagGroupMenuItem,
+});
+
+export { AdminTagGroupsEditComponent };

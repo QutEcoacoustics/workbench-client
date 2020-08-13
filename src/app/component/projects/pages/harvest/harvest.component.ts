@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { PageComponent } from "@helpers/page/pageComponent";
 import filesize from "filesize";
 import { List } from "immutable";
 import { MenuItem } from "primeng/api/menuitem";
@@ -8,7 +9,6 @@ import { Observable, Subscription, timer } from "rxjs";
 import { map, startWith, takeWhile } from "rxjs/operators";
 import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
@@ -20,18 +20,6 @@ import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
 
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: harvestProjectMenuItem,
-})
 @Component({
   selector: "app-harvest",
   templateUrl: "./harvest.component.html",
@@ -39,7 +27,7 @@ const projectKey = "project";
   // tslint:disable-next-line: use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
-export class HarvestComponent implements OnInit {
+class HarvestComponent extends PageComponent implements OnInit {
   public failure: boolean;
   public filesize = filesize;
   public progress: number;
@@ -111,7 +99,9 @@ export class HarvestComponent implements OnInit {
     takeWhile(() => this.progress < 100)
   );
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+    super();
+  }
 
   public ngOnInit(): void {
     const resolvedProject: ResolvedModel<Project> = this.route.snapshot.data[
@@ -155,3 +145,15 @@ export class HarvestComponent implements OnInit {
     }
   }
 }
+
+HarvestComponent.WithInfo({
+  category: projectCategory,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+  self: harvestProjectMenuItem,
+});
+
+export { HarvestComponent };

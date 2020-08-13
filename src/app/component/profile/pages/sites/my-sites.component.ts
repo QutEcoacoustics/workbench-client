@@ -8,7 +8,6 @@ import {
   mySitesMenuItem,
 } from "@component/profile/profile.menus";
 import { siteAnnotationsMenuItem } from "@component/sites/sites.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
@@ -18,22 +17,11 @@ import { myAccountActions } from "../profile/my-profile.component";
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: mySitesMenuItem,
-})
 @Component({
   selector: "app-my-sites",
   templateUrl: "./sites.component.html",
 })
-export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
+class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [
     { name: "Site" },
     { name: "Recent Audio Upload" },
@@ -62,6 +50,17 @@ export class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
     return this.models[userKey] as User;
   }
 }
+
+MySitesComponent.WithInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+  self: mySitesMenuItem,
+});
+
+export { MySitesComponent };
 
 interface TableRow {
   site: Site;

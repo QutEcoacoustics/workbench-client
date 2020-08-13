@@ -15,7 +15,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -27,19 +26,6 @@ const siteKey = "site";
 /**
  * Delete Site Component
  */
-@Page({
-  category: sitesCategory,
-  menus: {
-    actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-  self: deleteSiteMenuItem,
-})
 @Component({
   selector: "app-projects-delete",
   template: `
@@ -55,7 +41,7 @@ const siteKey = "site";
     ></baw-form>
   `,
 })
-export class DeleteComponent extends FormTemplate<Site> implements OnInit {
+class DeleteComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
 
   constructor(
@@ -89,3 +75,18 @@ export class DeleteComponent extends FormTemplate<Site> implements OnInit {
     return this.api.destroy(new Site(model), this.project);
   }
 }
+
+DeleteComponent.WithInfo({
+  category: sitesCategory,
+  menus: {
+    actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+  self: deleteSiteMenuItem,
+});
+
+export { DeleteComponent };

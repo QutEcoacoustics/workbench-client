@@ -5,15 +5,14 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { mockActivatedRoute, MockParams } from "@test/helpers/testbed";
 import { fromJS, List } from "immutable";
-import { BehaviorSubject } from "rxjs";
 import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
-import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { IPageInfo } from "src/app/helpers/page/pageInfo";
 import {
   AnyMenuItem,
   Category,
   MenuLink,
   MenuRoute,
-  NavigableMenuItem,
+  NavigableMenuItem
 } from "src/app/interfaces/menusInterfaces";
 import { StrongRoute } from "src/app/interfaces/strongRoute";
 import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
@@ -57,7 +56,7 @@ describe("SecondaryMenuComponent", () => {
     return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
   }
 
-  function createTestBed(params: MockParams, data: PageInfoInterface) {
+  function createTestBed(params: MockParams, data: IPageInfo) {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -104,7 +103,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -119,7 +118,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -137,7 +136,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: undefined,
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -153,7 +152,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -182,7 +181,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -206,7 +205,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -242,7 +241,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -291,7 +290,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -337,7 +336,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -369,7 +368,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -406,7 +405,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -443,7 +442,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -479,7 +478,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -519,7 +518,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -560,7 +559,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -607,7 +606,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 

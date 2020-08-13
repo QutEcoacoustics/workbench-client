@@ -12,7 +12,6 @@ import {
   projectMenuItem,
 } from "@component/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { Page } from "@helpers/page/pageDecorator";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
@@ -24,25 +23,12 @@ import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
 
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: editProjectPermissionsMenuItem,
-})
 @Component({
   selector: "app-project-permissions",
   templateUrl: "permissions.component.html",
   styleUrls: ["permissions.component.scss"],
 })
-export class PermissionsComponent extends TableTemplate<TableRow>
-  implements OnInit {
+class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   public project: Project;
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public users: User[];
@@ -124,6 +110,18 @@ export class PermissionsComponent extends TableTemplate<TableRow>
     ];
   }
 }
+
+PermissionsComponent.WithInfo({
+  category: projectCategory,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+  self: editProjectPermissionsMenuItem,
+});
+
+export { PermissionsComponent };
 
 interface TableRow {
   user: string;

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import {
@@ -27,14 +26,6 @@ export const adminMenuItemActions = [
   adminJobStatusMenuItem,
 ];
 
-@Page({
-  category: adminCategory,
-  menus: {
-    actions: List<AnyMenuItem>(adminMenuItemActions),
-    links: List(),
-  },
-  self: adminDashboardMenuItem,
-})
 @Component({
   selector: "app-dashboard",
   template: `
@@ -43,4 +34,12 @@ export const adminMenuItemActions = [
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminDashboardComponent extends PageComponent {}
+class AdminDashboardComponent extends PageComponent {}
+
+AdminDashboardComponent.WithInfo({
+  category: adminCategory,
+  menus: { actions: List<AnyMenuItem>(adminMenuItemActions) },
+  self: adminDashboardMenuItem,
+});
+
+export { AdminDashboardComponent };

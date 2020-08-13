@@ -1,21 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AppConfigService } from "@services/app-config/app-config.service";
-import { List } from "immutable";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as requestFields } from "./data-request.schema.json";
 import { fields as annotationFields } from "./download-annotations.schema.json";
 
-@Page({
-  category: dataRequestCategory,
-  menus: {
-    actions: List(),
-    links: List(),
-  },
-  self: dataRequestMenuItem,
-})
 @Component({
   selector: "app-data-request",
   template: `
@@ -43,7 +33,7 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     </baw-wip>
   `,
 })
-export class DataRequestComponent extends WithFormCheck(PageComponent)
+class DataRequestComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public annotationLoading: boolean;
   public annotationModel = {};
@@ -81,3 +71,10 @@ export class DataRequestComponent extends WithFormCheck(PageComponent)
     this.requestLoading = false;
   }
 }
+
+DataRequestComponent.WithInfo({
+  category: dataRequestCategory,
+  self: dataRequestMenuItem,
+});
+
+export { DataRequestComponent };

@@ -18,24 +18,11 @@ import {
   defaultErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";
 
-@Page({
-  category: securityCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-    links: List(),
-  },
-  self: loginMenuItem,
-})
 @Component({
   selector: "app-authentication-login",
   template: `
@@ -51,8 +38,7 @@ import { fields } from "./login.schema.json";
     ></baw-form>
   `,
 })
-export class LoginComponent extends FormTemplate<LoginDetails>
-  implements OnInit {
+class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = fields;
   private redirectBack: boolean;
   private redirectUrl: string;
@@ -86,7 +72,8 @@ export class LoginComponent extends FormTemplate<LoginDetails>
 
     this.redirectUrl = homeMenuItem.route.toString();
     const noHistory = 1;
-    const navigationId = (this.location.getState() as any)?.navigationId ?? noHistory;
+    const navigationId =
+      (this.location.getState() as any)?.navigationId ?? noHistory;
     const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
@@ -140,3 +127,17 @@ export class LoginComponent extends FormTemplate<LoginDetails>
     this.document.location.href = redirect;
   }
 }
+
+LoginComponent.WithInfo({
+  category: securityCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      confirmAccountMenuItem,
+      resetPasswordMenuItem,
+      unlockAccountMenuItem,
+    ]),
+  },
+  self: loginMenuItem,
+});
+
+export { LoginComponent };

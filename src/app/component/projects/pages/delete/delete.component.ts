@@ -14,7 +14,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
@@ -28,18 +27,6 @@ const projectKey = "project";
 /**
  * Delete Project Component
  */
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: deleteProjectMenuItem,
-})
 @Component({
   selector: "app-projects-delete",
   template: `
@@ -55,7 +42,7 @@ const projectKey = "project";
     ></baw-form>
   `,
 })
-export class DeleteComponent extends FormTemplate<Project> implements OnInit {
+class DeleteComponent extends FormTemplate<Project> implements OnInit {
   public title: string;
 
   constructor(
@@ -85,3 +72,15 @@ export class DeleteComponent extends FormTemplate<Project> implements OnInit {
     return this.api.destroy(new Project(model));
   }
 }
+
+DeleteComponent.WithInfo({
+  category: projectCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+  self: deleteProjectMenuItem,
+});
+
+export { DeleteComponent };

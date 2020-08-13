@@ -15,7 +15,6 @@ import {
   extendedErrorMsg,
   FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
@@ -27,17 +26,6 @@ const projectKey = "project";
 /**
  * New Site Component
  */
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: newSiteMenuItem,
-})
 @Component({
   selector: "app-sites-new",
   template: `
@@ -52,7 +40,7 @@ const projectKey = "project";
     ></baw-form>
   `,
 })
-export class NewComponent extends FormTemplate<Site> {
+class NewComponent extends FormTemplate<Site> {
   public fields = fields;
 
   constructor(
@@ -83,6 +71,17 @@ export class NewComponent extends FormTemplate<Site> {
     return this.api.create(new Site(model), this.project);
   }
 }
+
+NewComponent.WithInfo({
+  category: projectCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+  self: newSiteMenuItem,
+});
+
+export { NewComponent };
 
 export function siteErrorMsg(err: ApiErrorDetails) {
   return extendedErrorMsg(err, {

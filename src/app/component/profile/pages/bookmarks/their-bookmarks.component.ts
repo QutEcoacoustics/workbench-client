@@ -7,7 +7,6 @@ import {
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Bookmark } from "@models/Bookmark";
@@ -17,25 +16,11 @@ import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
-@Page({
-  category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-    links: List(),
-  },
-  resolvers: {
-    [accountKey]: accountResolvers.show,
-  },
-  self: theirBookmarksMenuItem,
-})
 @Component({
   selector: "app-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
 })
-export class TheirBookmarksComponent extends PagedTableTemplate<
-  TableRow,
-  Bookmark
-> {
+class TheirBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public sortKeys = { category: "category" };
 
   constructor(api: BookmarksService, route: ActivatedRoute) {
@@ -56,6 +41,17 @@ export class TheirBookmarksComponent extends PagedTableTemplate<
     return this.models[accountKey] as User;
   }
 }
+
+TheirBookmarksComponent.WithInfo({
+  category: theirProfileCategory,
+  menus: {
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
+  },
+  resolvers: { [accountKey]: accountResolvers.show },
+  self: theirBookmarksMenuItem,
+});
+
+export { TheirBookmarksComponent };
 
 interface TableRow {
   bookmark: Bookmark;

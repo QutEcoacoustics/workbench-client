@@ -12,29 +12,28 @@ import {
  * This stores information required to generate the various menus of the page.
  * Also stores metadata about the page, like the icon to use, and the route
  * for that page.
- * @extends MenuItem
  * @extends Data
  */
-export interface PageInfoInterface extends Data {
-  self: MenuRoute;
+export interface IPageInfo extends Data {
+  self: MenuRoute & { pageComponent?: Type<any> };
   category: Category;
-  menus: Menus;
   fullscreen?: boolean;
   resolvers?: ResolverList;
+  menus?: Menus;
 }
 
 /**
  * Page info class
  */
-export class PageInfo implements PageInfoInterface {
-  public self: MenuRoute;
+export class PageInfo implements IPageInfo {
+  public self: MenuRoute & { pageComponent: Type<any> };
   public component: Type<any>;
   public category: Category;
   public menus: Menus;
   public fullscreen: boolean;
   public resolvers: ResolverList;
 
-  constructor(target: Type<any>, args: PageInfoInterface) {
+  constructor(target: Type<any>, args: IPageInfo) {
     if (!args.self) {
       throw new Error("A page info must be provided with an `self` MenuRoute");
     }

@@ -18,7 +18,6 @@ import {
 import { projectsMenuItem } from "@component/projects/projects.menus";
 import { siteMenuItem } from "@component/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -37,23 +36,12 @@ export const myAccountActions = [
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>(myAccountActions),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: myAccountMenuItem,
-})
 @Component({
   selector: "app-my-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })
-export class MyProfileComponent extends WithUnsubscribe(PageComponent)
+class MyProfileComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public lastSeenAt: string;
   public tags: Tag[];
@@ -130,3 +118,14 @@ export class MyProfileComponent extends WithUnsubscribe(PageComponent)
     }));
   }
 }
+
+MyProfileComponent.WithInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>(myAccountActions),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+  self: myAccountMenuItem,
+});
+
+export { MyProfileComponent };

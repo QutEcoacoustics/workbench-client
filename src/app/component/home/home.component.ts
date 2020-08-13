@@ -3,7 +3,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@component/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { Project } from "@models/Project";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
@@ -11,12 +10,6 @@ import { List } from "immutable";
 import { map, mergeMap, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
-@Page({
-  category: homeCategory,
-  fullscreen: true,
-  menus: null,
-  self: homeMenuItem,
-})
 @Component({
   selector: "app-home",
   template: `
@@ -45,7 +38,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
     </div>
   `,
 })
-export class HomeComponent extends PageComponent implements OnInit {
+class HomeComponent extends PageComponent implements OnInit {
   public page: string;
   public projectsLink = projectsMenuItem.route.toString();
   public projectList: List<Card> = List([]);
@@ -76,3 +69,11 @@ export class HomeComponent extends PageComponent implements OnInit {
       );
   }
 }
+
+HomeComponent.WithInfo({
+  category: homeCategory,
+  fullscreen: true,
+  self: homeMenuItem,
+});
+
+export { HomeComponent };

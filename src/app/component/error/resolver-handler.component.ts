@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { apiReturnCodes } from "@baw-api/baw-api.service";
-import { PageInfoInterface } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ResolverList } from "@interfaces/menusInterfaces";
 import { takeUntil } from "rxjs/operators";
@@ -21,7 +21,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
   public ngOnInit() {
     // Detect any page errors
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (data: PageInfoInterface) => {
+      (data: IPageInfo) => {
         this.handleResolvers(data);
       },
       (err) => {
@@ -34,7 +34,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
     );
   }
 
-  private handleResolvers(data: PageInfoInterface) {
+  private handleResolvers(data: IPageInfo) {
     // Find page resolvers
     const resolvers: ResolverList = {};
     if (data.resolvers) {

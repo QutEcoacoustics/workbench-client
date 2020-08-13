@@ -5,15 +5,9 @@ import {
   securityCategory,
 } from "@component/security/security.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./register.schema.json";
 
-@Page({
-  category: securityCategory,
-  menus: null,
-  self: registerMenuItem,
-})
 @Component({
   selector: "app-authentication-register",
   template: `
@@ -30,7 +24,7 @@ import { fields } from "./register.schema.json";
     </baw-wip>
   `,
 })
-export class RegisterComponent extends PageComponent implements OnInit {
+class RegisterComponent extends PageComponent implements OnInit {
   public model = {};
   public fields = fields;
   public loading: boolean;
@@ -56,3 +50,10 @@ export class RegisterComponent extends PageComponent implements OnInit {
     this.loading = false;
   }
 }
+
+RegisterComponent.WithInfo({
+  category: securityCategory,
+  self: registerMenuItem,
+});
+
+export { RegisterComponent };

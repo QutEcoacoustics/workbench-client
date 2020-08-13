@@ -7,7 +7,6 @@ import {
   myAccountMenuItem,
   myProjectsMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
@@ -17,22 +16,11 @@ import { myAccountActions } from "../profile/my-profile.component";
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: myProjectsMenuItem,
-})
 @Component({
   selector: "app-my-projects",
   templateUrl: "./projects.component.html",
 })
-export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
+class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   public columns = [
     { name: "Project" },
     { name: "Sites" },
@@ -56,6 +44,17 @@ export class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
     return this.models[userKey] as User;
   }
 }
+
+MyProjectsComponent.WithInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+  self: myProjectsMenuItem,
+});
+
+export { MyProjectsComponent };
 
 interface TableRow {
   project: Project;

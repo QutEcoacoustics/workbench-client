@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Tag } from "@models/Tag";
@@ -16,23 +15,12 @@ import {
 
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
-@Page({
-  category: adminTagsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminTagsMenuItemActions,
-    ]),
-    links: List(),
-  },
-  self: adminTagsMenuItem,
-})
 @Component({
   selector: "app-admin-tags",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
+class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [
     { name: "Text" },
     { name: "Taxanomic" },
@@ -73,6 +61,19 @@ export class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
       .replace(":tagId", tag.id.toString());
   }
 }
+
+AdminTagsComponent.WithInfo({
+  category: adminTagsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminDashboardMenuItem,
+      ...adminTagsMenuItemActions,
+    ]),
+  },
+  self: adminTagsMenuItem,
+});
+
+export { AdminTagsComponent };
 
 interface TableRow {
   text: string;

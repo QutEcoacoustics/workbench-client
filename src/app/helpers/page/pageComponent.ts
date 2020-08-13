@@ -1,29 +1,26 @@
 import { Type } from "@angular/core";
 import { WithUnsubscribe } from "../unsubscribe/unsubscribe";
-import { PageInfo } from "./pageInfo";
+import { IPageInfo, PageInfo } from "./pageInfo";
 
-export interface PageComponentStatic
-  extends Type<PageComponentInterface>,
-    Type<any> {
+export interface PageComponentInterface extends Type<PageComponentInterface> {
   readonly pageInfo: PageInfo;
 }
 
-export interface PageComponentInterface {
-  readonly pageInfo: PageInfo;
-}
+export class PageComponent extends WithUnsubscribe() {
+  public static WithInfo(info: IPageInfo) {
+    const pageInfo = new PageInfo(this, info);
 
-// this mixin is needed because typescript decorators
-// do not mutate the type signature they are applied to.
-// See https://github.com/Microsoft/TypeScript/issues/4881
-// If they did, then we wouldn't need this shim, which
-// currently needs to be extended from in every component!
-export class PageComponent extends WithUnsubscribe()
-  implements PageComponentInterface {
-  static get pageInfo(): PageInfo {
-    return null;
-  }
-  get pageInfo(): PageInfo {
-    return null;
+    // Define pageInfo property
+    Object.defineProperty(this, "pageInfo", {
+      configurable: false,
+      get: () => pageInfo,
+    });
+
+    // Define static pageInfo property
+    Object.defineProperty(this["prototype"], "pageInfo", {
+      configurable: false,
+      get: () => pageInfo,
+    });
   }
 }
 
@@ -32,6 +29,6 @@ export class PageComponent extends WithUnsubscribe()
  * @param component Angular component
  */
 export function getPageInfo(component: Type<any>): PageInfo | null {
-  const pageComponent = component as PageComponentStatic;
+  const pageComponent = component as PageComponentInterface;
   return pageComponent ? pageComponent.pageInfo : null;
 }

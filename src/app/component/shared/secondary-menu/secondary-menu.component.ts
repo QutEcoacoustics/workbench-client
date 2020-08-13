@@ -50,7 +50,7 @@ export class SecondaryMenuComponent extends WithUnsubscribe()
 
         // and parent pages
         const parentMenuRoutes: MenuRoute[] = [];
-        let menuRoute = current;
+        let menuRoute: MenuRoute = current;
         while (menuRoute.parent) {
           menuRoute = menuRoute.parent;
           menuRoute.active = true; // Ignore predicate

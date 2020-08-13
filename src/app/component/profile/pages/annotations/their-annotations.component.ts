@@ -7,7 +7,6 @@ import {
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
@@ -19,22 +18,11 @@ import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "user";
 
-@Page({
-  category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-    links: List(),
-  },
-  resolvers: {
-    [accountKey]: accountResolvers.show,
-  },
-  self: theirAnnotationsMenuItem,
-})
 @Component({
   selector: "app-their-annotations",
   templateUrl: "./annotations.component.html",
 })
-export class TheirAnnotationsComponent extends PagedTableTemplate<
+class TheirAnnotationsComponent extends PagedTableTemplate<
   TableRow,
   AudioEvent
 > {
@@ -53,6 +41,17 @@ export class TheirAnnotationsComponent extends PagedTableTemplate<
     return this.models[accountKey] as User;
   }
 }
+
+TheirAnnotationsComponent.WithInfo({
+  category: theirProfileCategory,
+  menus: {
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
+  },
+  resolvers: { [accountKey]: accountResolvers.show },
+  self: theirAnnotationsMenuItem,
+});
+
+export { TheirAnnotationsComponent };
 
 interface TableRow {
   site: Site;

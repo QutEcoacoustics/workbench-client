@@ -8,7 +8,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -22,17 +21,6 @@ import {
 
 const scriptKey = "script";
 
-@Page({
-  category: adminScriptsCategory,
-  menus: {
-    actions: List([adminScriptMenuItem, ...adminScriptActions]),
-    links: List(),
-  },
-  resolvers: {
-    [scriptKey]: scriptResolvers.show,
-  },
-  self: adminEditScriptMenuItem,
-})
 @Component({
   selector: "app-admin-scripts-edit",
   template: `
@@ -47,8 +35,7 @@ const scriptKey = "script";
     ></baw-form>
   `,
 })
-export class AdminScriptsEditComponent extends FormTemplate<Script>
-  implements OnInit {
+class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -75,3 +62,14 @@ export class AdminScriptsEditComponent extends FormTemplate<Script>
     return this.api.update(new Script(model));
   }
 }
+
+AdminScriptsEditComponent.WithInfo({
+  category: adminScriptsCategory,
+  menus: {
+    actions: List([adminScriptMenuItem, ...adminScriptActions]),
+  },
+  resolvers: { [scriptKey]: scriptResolvers.show },
+  self: adminEditScriptMenuItem,
+});
+
+export { AdminScriptsEditComponent };
