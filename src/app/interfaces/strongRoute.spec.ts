@@ -1,5 +1,7 @@
 import { Type } from "@angular/core";
 import { Route, Routes } from "@angular/router";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { inherits } from "util";
 import { StrongRoute } from "./strongRoute";
 
 describe("StrongRoute", () => {
@@ -102,7 +104,7 @@ describe("StrongRoute", () => {
       },
     ];
 
-    class MockComponent {}
+    class MockComponent extends PageComponent {}
 
     function callback(component: Type<any>, config: Partial<Route>) {
       return {
