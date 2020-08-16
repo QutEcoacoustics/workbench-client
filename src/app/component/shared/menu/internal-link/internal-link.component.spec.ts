@@ -1,18 +1,21 @@
+import { Location } from "@angular/common";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import {
+  assertAttribute,
   assertIcon,
   assertRoute,
   assertTooltip,
-} from "src/app/test/helpers/html";
+} from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
 
 describe("MenuInternalLinkComponent", () => {
   let component: MenuInternalLinkComponent;
   let fixture: ComponentFixture<MenuInternalLinkComponent>;
+  let location: Location;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,52 +24,43 @@ describe("MenuInternalLinkComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuInternalLinkComponent);
+    location = TestBed.inject(Location);
     component = fixture.componentInstance;
   });
 
-  it("should create", () => {
+  function createLink() {
     component.id = "id";
+    component.tooltip = "tooltip";
+    component.route = "/home";
+    component.placement = "left";
     component.link = MenuRoute({
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip",
     });
-    component.tooltip = "custom tooltip";
-    component.route = "/home";
-    component.placement = "left";
-    fixture.detectChanges();
+  }
 
+  function retrieveLink() {
+    return fixture.nativeElement.querySelector("a");
+  }
+
+  it("should create", () => {
+    createLink();
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should have icon", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/home";
-    component.placement = "left";
+    createLink();
+    component.link.icon = ["fas", "exclamation-triangle"];
     fixture.detectChanges();
-
-    assertIcon(fixture.nativeElement, "fas,home");
+    assertIcon(fixture.nativeElement, "fas,exclamation-triangle");
   });
 
   it("should have label", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "custom label",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/home";
-    component.placement = "left";
+    createLink();
+    component.link.label = "custom label";
     fixture.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -76,128 +70,62 @@ describe("MenuInternalLinkComponent", () => {
   });
 
   it("should have tooltip", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "custom tooltip",
-    });
+    createLink();
+    component.link.tooltip = () => "custom tooltip";
     component.tooltip = "custom tooltip";
-    component.route = "/home";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertTooltip(link, "custom tooltip");
+    assertTooltip(retrieveLink(), "custom tooltip");
   });
 
   it("should not use link tooltip", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
+    createLink();
+    component.link.tooltip = () => "wrong tooltip";
     component.tooltip = "custom tooltip";
-    component.route = "/home";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertTooltip(link, "custom tooltip");
+    assertTooltip(retrieveLink(), "custom tooltip");
   });
 
   it("should handle left placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/home";
+    createLink();
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Anchor should have [placement] directive"
-    );
-    expect(link.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "left"
-    );
+    assertAttribute(retrieveLink(), "placement", "left");
   });
 
   it("should handle right placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/home";
+    createLink();
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Anchor should have [placement] directive"
-    );
-    expect(link.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "right"
-    );
+    assertAttribute(retrieveLink(), "placement", "right");
   });
 
   it("should create routerLink", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("brokenlink"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    createLink();
+    component.link.route = StrongRoute.Base.add("brokenlink");
     component.route = "/brokenlink";
-    component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertRoute(link, "/brokenlink");
+    assertRoute(retrieveLink(), "/brokenlink");
   });
 
   it("should not use link route", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("home"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/house";
-    component.placement = "left";
+    createLink();
+    component.link.route = StrongRoute.Base.add("wronglink");
+    component.route = "/brokenlink";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertRoute(link, "/house");
+    assertRoute(retrieveLink(), "/brokenlink");
   });
 
   it("should not highlight link when not active", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("brokenlink"),
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    spyOn(location, "path").and.callFake(() => "/customRoute");
+
+    createLink();
     component.route = "/brokenlink";
-    component.placement = "right";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a.active");
@@ -205,16 +133,10 @@ describe("MenuInternalLinkComponent", () => {
   });
 
   it("should highlight link when active", () => {
-    component.id = "id";
-    component.link = MenuRoute({
-      icon: ["fas", "home"],
-      label: "home",
-      route: StrongRoute.Base.add("context.html"), // This is the window.location.pathname of unit tests
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.route = "/context.html";
-    component.placement = "right";
+    spyOn(location, "path").and.callFake(() => "/customRoute");
+
+    createLink();
+    component.route = "/customRoute";
     fixture.detectChanges();
 
     const link = fixture.nativeElement.querySelector("a.active");

@@ -5,17 +5,24 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
-import { List } from "immutable";
 import {
   AnyMenuItem,
   MenuAction,
   MenuLink,
   MenuRoute,
-} from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { SessionUser } from "src/app/models/User";
-import { assertIcon, assertTooltip, getText } from "src/app/test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+} from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
+import { SessionUser } from "@models/User";
+import { generateSessionUser } from "@test/fakes/User";
+import {
+  assertHref,
+  assertIcon,
+  assertRoute,
+  assertTooltip,
+  getText,
+} from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { List } from "immutable";
 import { SharedModule } from "../shared.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -28,10 +35,7 @@ describe("MenuComponent", () => {
   let fixture: ComponentFixture<MenuComponent>;
   let api: SecurityService;
   let componentElement: DebugElement;
-  const sessionUser = new SessionUser({
-    userName: "username",
-    authToken: "xxxxxxxxxxxxxxx",
-  });
+  let sessionUser: SessionUser;
 
   function assertTitle(target: HTMLElement, header: string) {
     expect(target).toBeTruthy();
@@ -51,6 +55,7 @@ describe("MenuComponent", () => {
   }
 
   function setLoggedInState() {
+    sessionUser = new SessionUser(generateSessionUser());
     spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
   }
 
@@ -213,17 +218,6 @@ describe("MenuComponent", () => {
     const linkSelector = "internal-link";
     let defaultLink: MenuRoute;
 
-    function assertRoute(target: HTMLElement, route: string) {
-      const anchor: HTMLElement = target.querySelector("a");
-      expect(anchor).toBeTruthy();
-      expect(
-        anchor.attributes.getNamedItem("ng-reflect-router-link")
-      ).toBeTruthy();
-      expect(
-        anchor.attributes.getNamedItem("ng-reflect-router-link").value.trim()
-      ).toBe(route);
-    }
-
     beforeEach(() => {
       configureTestingModule();
 
@@ -341,7 +335,7 @@ describe("MenuComponent", () => {
       ]);
       fixture.detectChanges();
 
-      const link = findLinks(linkSelector)[0];
+      const link = findLinks(linkSelector)[0].querySelector("a");
       assertRoute(link, "/custom_route");
     });
 
@@ -355,7 +349,7 @@ describe("MenuComponent", () => {
       ]);
       fixture.detectChanges();
 
-      const link = findLinks(linkSelector)[0];
+      const link = findLinks(linkSelector)[0].querySelector("a");
       assertRoute(link, "/home/10");
     });
 
@@ -408,12 +402,6 @@ describe("MenuComponent", () => {
   describe("external links", () => {
     const linkSelector = "external-link";
     let defaultLink: MenuLink;
-
-    function assertHref(target: HTMLElement, href: string) {
-      const anchor: HTMLAnchorElement = target.querySelector("a");
-      expect(anchor).toBeTruthy();
-      expect(anchor.href).toBe(href);
-    }
 
     beforeEach(() => {
       configureTestingModule();
@@ -531,7 +519,7 @@ describe("MenuComponent", () => {
       ]);
       fixture.detectChanges();
 
-      const link = findLinks(linkSelector)[0];
+      const link = findLinks(linkSelector)[0].querySelector("a");
       assertHref(link, "http://brokenlink/");
     });
 
@@ -545,7 +533,7 @@ describe("MenuComponent", () => {
       ]);
       fixture.detectChanges();
 
-      const link = findLinks(linkSelector)[0];
+      const link = findLinks(linkSelector)[0].querySelector("a");
       assertHref(link, "http://brokenlink/10");
     });
 

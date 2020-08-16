@@ -63,7 +63,7 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
   expect(attr).toBeTruthy();
   expect(attr.value.trim()).toBe(tooltip);
 
-  // TODO Add accessability expectations
+  // TODO Add accessability expectations (id, visible on highlight, etc.)
 }
 
 export function assertHref(target: HTMLAnchorElement, href: string) {
@@ -79,10 +79,22 @@ export function assertHref(target: HTMLAnchorElement, href: string) {
  */
 export function assertRoute(target: HTMLElement, route: string) {
   expect(target).toBeTruthy("No route detected");
-  expect(target.attributes.getNamedItem("ng-reflect-router-link")).toBeTruthy();
-  expect(
-    target.attributes.getNamedItem("ng-reflect-router-link").value.trim()
-  ).toBe(route);
+  assertAttribute(target, "router-link", route);
+}
+
+/**
+ * Assert html angular attribute
+ * @param target Target element
+ * @param key Attribute key (minus ng-reflect-)
+ * @param value Expected value of attribute
+ */
+export function assertAttribute(target: HTMLElement, key: string, value: any) {
+  const attribute = target.attributes.getNamedItem("ng-reflect-" + key);
+  expect(attribute).toBeTruthy(`HTML element should have ${key} attribute`);
+  expect(attribute.value.trim()).toBe(
+    value,
+    `HTML element ${key} attribute should be ${value}`
+  );
 }
 
 /**

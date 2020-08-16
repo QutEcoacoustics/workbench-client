@@ -1,4 +1,4 @@
-import { Location } from "@angular/common"
+import { Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -28,6 +28,7 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
     </a>
   `,
   styleUrls: ["./internal-link.component.scss"],
+  // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuInternalLinkComponent implements OnInit {
