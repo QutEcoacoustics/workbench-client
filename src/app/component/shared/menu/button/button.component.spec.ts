@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MenuAction } from "@interfaces/menusInterfaces";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { MenuAction } from "src/app/interfaces/menusInterfaces";
+import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuButtonComponent } from "./button.component";
 
@@ -18,210 +19,92 @@ describe("MenuButtonComponent", () => {
     component = fixture.componentInstance;
   });
 
-  it("should create", () => {
+  function createButton() {
     component.id = "id";
     component.link = MenuAction({
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
+      tooltip: () => "tooltip",
     });
-    component.tooltip = "custom tooltip";
+    component.tooltip = "tooltip";
     component.placement = "left";
-    fixture.detectChanges();
+  }
 
+  function retrieveButton() {
+    return fixture.nativeElement.querySelector("button");
+  }
+
+  it("should create", () => {
+    createButton();
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should have icon", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "left";
+    createButton();
+    component.link.icon = ["fas", "exclamation-triangle"];
     fixture.detectChanges();
-
-    const icon = fixture.nativeElement.querySelector("fa-icon");
-
-    expect(icon).toBeTruthy("Should contain <fa-icon> element");
-    expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
-    expect(icon.attributes.getNamedItem("ng-reflect-icon").value).toBe(
-      "fas,home"
-    );
+    assertIcon(fixture.nativeElement, "fas,exclamation-triangle");
   });
 
   it("should have label", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "custom label",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "left";
+    createButton();
+    component.link.label = "custom label";
     fixture.detectChanges();
 
-    // Expects label to be above disabled user tooltip
+    // Expects label to be declared before disabled user tooltip
     const label = fixture.nativeElement.querySelector("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
 
   it("should have tooltip", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
+    createButton();
+    component.link.tooltip = () => "custom tooltip";
     component.tooltip = "custom tooltip";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(button).toBeTruthy("Button should have [ngbTooltip] directive");
-    expect(
-      button.attributes.getNamedItem("ng-reflect-ngb-tooltip")
-    ).toBeTruthy();
-    expect(button.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
-      "custom tooltip"
-    );
+    assertTooltip(retrieveButton(), "custom tooltip");
   });
 
   it("should not use link tooltip", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-    });
+    createButton();
+    component.link.tooltip = () => "wrong tooltip";
     component.tooltip = "custom tooltip";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector("button");
-
-    expect(button).toBeTruthy("Button should have [ngbTooltip] directive");
-    expect(
-      button.attributes.getNamedItem("ng-reflect-ngb-tooltip")
-    ).toBeTruthy();
-    expect(button.attributes.getNamedItem("ng-reflect-ngb-tooltip").value).toBe(
-      "custom tooltip"
-    );
-  });
-
-  it("should have id for disabled access tooltip", () => {
-    component.id = "id1000";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "left";
-    fixture.detectChanges();
-
-    const tooltip = fixture.nativeElement.querySelector("span.d-none");
-    expect(tooltip).toBeTruthy("Tooltip should exist");
-    expect(tooltip.id).toBe("id1000");
-  });
-
-  it("should have disabled access tooltip", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "left";
-    fixture.detectChanges();
-
-    const tooltip = fixture.nativeElement.querySelector("span.d-none");
-
-    expect(tooltip).toBeTruthy("Tooltip should exist");
-    expect(tooltip.innerText.trim()).toBe("custom tooltip");
+    assertTooltip(retrieveButton(), "custom tooltip");
   });
 
   it("should handle left placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    createButton();
     component.placement = "left";
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector("button");
-    expect(button.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Button should have [placement] directive"
-    );
-    expect(button.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "left"
-    );
+    assertAttribute(retrieveButton(), "placement", "left");
   });
 
   it("should handle right placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    createButton();
     component.placement = "right";
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector("button");
-    expect(button.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Button should have [placement] directive"
-    );
-    expect(button.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "right"
-    );
+    assertAttribute(retrieveButton(), "placement", "right");
   });
 
   it("should execute action", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: jasmine.createSpy(),
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "right";
+    createButton();
+    component.link.action = jasmine.createSpy();
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector("button");
-    button.click();
+    retrieveButton().click();
     expect(component.link.action).toHaveBeenCalled();
   });
 
   it("should not execute action without button press", () => {
-    component.id = "id";
-    component.link = MenuAction({
-      action: jasmine.createSpy(),
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.placement = "right";
+    createButton();
+    component.link.action = jasmine.createSpy();
     fixture.detectChanges();
 
     expect(component.link.action).not.toHaveBeenCalled();

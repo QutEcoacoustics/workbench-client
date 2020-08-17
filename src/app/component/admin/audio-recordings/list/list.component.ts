@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, toRelative } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
@@ -14,22 +13,11 @@ import {
   adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
 
-@Page({
-  category: adminAudioRecordingsCategory,
-  menus: {
-    links: List(),
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminMenuItemActions,
-    ]),
-  },
-  self: adminAudioRecordingsMenuItem,
-})
 @Component({
   selector: "app-admin-audio-recordings",
   templateUrl: "./list.component.html",
 })
-export class AdminAudioRecordingsComponent
+class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit {
   constructor(api: AudioRecordingsService) {
@@ -74,6 +62,18 @@ export class AdminAudioRecordingsComponent
     });
   }
 }
+
+AdminAudioRecordingsComponent.LinkComponentToPageInfo({
+  category: adminAudioRecordingsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminDashboardMenuItem,
+      ...adminMenuItemActions,
+    ]),
+  },
+}).AndMenuRoute(adminAudioRecordingsMenuItem);
+
+export { AdminAudioRecordingsComponent };
 
 interface TableRow {
   id: Id;

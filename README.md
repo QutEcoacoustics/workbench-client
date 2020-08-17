@@ -60,7 +60,7 @@ $ npm run e2e
 
 #### Unit tests
 
-This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge.
+This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge. When attempting to test a specific file/component/service, either use the Test Explorer plugin for VSCode, or modify the `src/test.ts` file so that its regex will find the file you wish to test.
 
 Development Testing:
 
@@ -119,6 +119,47 @@ This will allow you to compare the bundle size impacts before and after the upda
 ## Common Problems
 
 Check our Wiki pages for help with common problems and using systems custom to our application.
+
+## Production deploy
+
+Deploying to production can be as simple as copying the release assets to a
+statically served directory, setting up your routing, and adding an `environment.json` file.
+
+1. Copy and extract a release to a statically served directory like `public`
+2. Template your `environment.json` and place it in the `public/workbench-client/assets` directory
+3. Ensure whatever routing solution you have can route requests for SPA with a wildcard route, excepting the `assets` folder
+
+Note: this configuration is a fully static SPA and may suffer from slow loading
+times and poor SEO.
+
+### Docker
+
+Server side rendering allows a server to render the first page and send it to
+the browser while the rest of the application bundle downloads. To make this work
+you need to run our docker container which contains the web server.
+
+1. Template your `environment.json` file
+2. Run the following command (substituting in the path to your templated config file):
+
+```
+docker run -p 4000:4000 \
+  -v "$(pwd)/environment.json:/environment.json" \
+  qutecoacoustics/workbench-client
+```
+
+Done!
+
+To build the container locally for testing:
+
+```
+docker build -t qutecoacoustics/workbench-client .
+```
+
+And for debugging the express server:
+
+```
+ docker run -p 4000:4000 -v $(pwd)/environment.json:/environment.json -e DEBUG=express:* qutecoacoustics/workbench-client
+```
 
 ## Licence
 

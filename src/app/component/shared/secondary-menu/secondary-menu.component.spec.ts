@@ -3,20 +3,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { mockActivatedRoute, MockParams } from "@test/helpers/testbed";
-import { fromJS, List } from "immutable";
-import { BehaviorSubject } from "rxjs";
-import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
-import { PageInfoInterface } from "src/app/helpers/page/pageInfo";
+import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
   Category,
   MenuLink,
   MenuRoute,
   NavigableMenuItem,
-} from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
+} from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
+import { assertIcon, assertTooltip } from "@test/helpers/html";
+import { mockActivatedRoute, MockParams } from "@test/helpers/testbed";
+import { fromJS, List } from "immutable";
 import { homeCategory } from "../../home/home.menus";
 import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
@@ -27,7 +26,7 @@ describe("SecondaryMenuComponent", () => {
   let storedDefaultMenu: any;
   const defaultRoute = StrongRoute.Base.add("/");
   const selfLinkCount = 1;
-  const defaultSelfLink = MenuRoute({
+  const defaultPageRouteLink = MenuRoute({
     label: "Self Label",
     icon: ["fas", "question-circle"],
     tooltip: () => "Self Tooltip",
@@ -57,7 +56,7 @@ describe("SecondaryMenuComponent", () => {
     return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
   }
 
-  function createTestBed(params: MockParams, data: PageInfoInterface) {
+  function createTestBed(params: MockParams, data: IPageInfo) {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -98,13 +97,13 @@ describe("SecondaryMenuComponent", () => {
   describe("title", () => {
     it("should display menu title", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -113,13 +112,13 @@ describe("SecondaryMenuComponent", () => {
 
     it("should not display menu icon", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -131,13 +130,13 @@ describe("SecondaryMenuComponent", () => {
   describe("links", () => {
     it("should handle undefined links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: undefined,
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -147,13 +146,13 @@ describe("SecondaryMenuComponent", () => {
 
     it("should create self link", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -163,7 +162,7 @@ describe("SecondaryMenuComponent", () => {
 
     it("should handle mixed links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
@@ -182,7 +181,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -194,7 +193,7 @@ describe("SecondaryMenuComponent", () => {
   describe("self link", () => {
     it("should handle self link", () => {
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip",
@@ -206,7 +205,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -229,7 +228,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 2",
@@ -242,7 +241,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -278,7 +277,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 3",
@@ -291,7 +290,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -323,7 +322,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 2",
@@ -337,7 +336,7 @@ describe("SecondaryMenuComponent", () => {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -356,7 +355,7 @@ describe("SecondaryMenuComponent", () => {
   describe("internal links", () => {
     it("should handle single link", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
@@ -369,7 +368,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -387,7 +386,7 @@ describe("SecondaryMenuComponent", () => {
 
     it("should handle multiple links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
@@ -406,7 +405,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -430,7 +429,7 @@ describe("SecondaryMenuComponent", () => {
   describe("external links", () => {
     it("should handle single link", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
@@ -443,7 +442,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -460,7 +459,7 @@ describe("SecondaryMenuComponent", () => {
 
     it("should handle multiple links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([]),
@@ -479,7 +478,7 @@ describe("SecondaryMenuComponent", () => {
             }),
           ]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -514,12 +513,12 @@ describe("SecondaryMenuComponent", () => {
       ]);
 
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -555,12 +554,12 @@ describe("SecondaryMenuComponent", () => {
       ]);
 
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultPageRouteLink,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 
@@ -602,12 +601,12 @@ describe("SecondaryMenuComponent", () => {
       ]);
 
       createTestBed({}, {
-        self: selfRoute,
+        pageRoute: selfRoute,
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([]),
         },
-      } as PageInfoInterface);
+      } as IPageInfo);
 
       fixture.detectChanges();
 

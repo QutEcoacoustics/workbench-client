@@ -3,7 +3,6 @@ import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Script } from "@models/Script";
 import { List } from "immutable";
@@ -23,17 +22,6 @@ export const adminScriptActions = [
 ];
 const scriptKey = "script";
 
-@Page({
-  category: adminScriptsCategory,
-  menus: {
-    links: List(),
-    actions: List([adminScriptsMenuItem, ...adminScriptActions]),
-  },
-  resolvers: {
-    [scriptKey]: scriptResolvers.show,
-  },
-  self: adminScriptMenuItem,
-})
 @Component({
   selector: "app-admin-script",
   template: `
@@ -43,7 +31,7 @@ const scriptKey = "script";
     </div>
   `,
 })
-export class AdminScriptComponent extends WithUnsubscribe(PageComponent)
+class AdminScriptComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public script: Script;
   public failure: boolean;
@@ -65,3 +53,13 @@ export class AdminScriptComponent extends WithUnsubscribe(PageComponent)
     this.script = models[scriptKey] as Script;
   }
 }
+
+AdminScriptComponent.LinkComponentToPageInfo({
+  category: adminScriptsCategory,
+  menus: {
+    actions: List([adminScriptsMenuItem, ...adminScriptActions]),
+  },
+  resolvers: { [scriptKey]: scriptResolvers.show },
+}).AndMenuRoute(adminScriptMenuItem);
+
+export { AdminScriptComponent };

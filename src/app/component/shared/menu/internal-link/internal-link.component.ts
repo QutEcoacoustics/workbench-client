@@ -1,3 +1,4 @@
+import { Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,6 +28,7 @@ import { MenuRoute } from "src/app/interfaces/menusInterfaces";
     </a>
   `,
   styleUrls: ["./internal-link.component.scss"],
+  // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuInternalLinkComponent implements OnInit {
@@ -37,9 +39,9 @@ export class MenuInternalLinkComponent implements OnInit {
   @Input() public tooltip: string;
   public active: boolean;
 
-  constructor() {}
+  constructor(private location: Location) {}
 
   public ngOnInit() {
-    this.active = this.route === window.location.pathname;
+    this.active = this.route === this.location.path();
   }
 }

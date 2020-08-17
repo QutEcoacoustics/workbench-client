@@ -5,7 +5,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -17,14 +16,6 @@ import {
 } from "../tag-group.menus";
 import { fields } from "../tag-group.schema.json";
 
-@Page({
-  category: adminTagGroupsCategory,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
-    links: List(),
-  },
-  self: adminNewTagGroupMenuItem,
-})
 @Component({
   selector: "app-admin-tag-groups-new",
   template: `
@@ -39,7 +30,7 @@ import { fields } from "../tag-group.schema.json";
     ></baw-form>
   `,
 })
-export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
+class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = fields;
 
   constructor(
@@ -57,3 +48,12 @@ export class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     return this.api.create(new TagGroup(model));
   }
 }
+
+AdminTagGroupsNewComponent.LinkComponentToPageInfo({
+  category: adminTagGroupsCategory,
+  menus: {
+    actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
+  },
+}).AndMenuRoute(adminNewTagGroupMenuItem);
+
+export { AdminTagGroupsNewComponent };

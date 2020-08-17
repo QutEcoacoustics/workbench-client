@@ -5,7 +5,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -21,23 +20,6 @@ import {
 const tagKey = "tag";
 const tagTypesKey = "tagTypes";
 
-@Page({
-  category: adminTagsCategory,
-  menus: {
-    actions: List([
-      adminTagsMenuItem,
-      ...adminTagsMenuItemActions,
-      adminEditTagMenuItem,
-      adminDeleteTagMenuItem,
-    ]),
-    links: List(),
-  },
-  resolvers: {
-    [tagKey]: tagResolvers.show,
-    [tagTypesKey]: tagResolvers.tagTypes,
-  },
-  self: adminEditTagMenuItem,
-})
 @Component({
   selector: "app-admin-tags-edit",
   template: `
@@ -52,8 +34,7 @@ const tagTypesKey = "tagTypes";
     ></baw-form>
   `,
 })
-export class AdminTagsEditComponent extends FormTemplate<Tag>
-  implements OnInit {
+class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -92,3 +73,21 @@ export class AdminTagsEditComponent extends FormTemplate<Tag>
     return this.api.update(new Tag(model));
   }
 }
+
+AdminTagsEditComponent.LinkComponentToPageInfo({
+  category: adminTagsCategory,
+  menus: {
+    actions: List([
+      adminTagsMenuItem,
+      ...adminTagsMenuItemActions,
+      adminEditTagMenuItem,
+      adminDeleteTagMenuItem,
+    ]),
+  },
+  resolvers: {
+    [tagKey]: tagResolvers.show,
+    [tagTypesKey]: tagResolvers.tagTypes,
+  },
+}).AndMenuRoute(adminEditTagMenuItem);
+
+export { AdminTagsEditComponent };

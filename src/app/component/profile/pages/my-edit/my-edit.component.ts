@@ -9,7 +9,6 @@ import {
 } from "@component/profile/profile.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -18,17 +17,6 @@ import { fields } from "./my-edit.schema.json";
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: myEditMenuItem,
-})
 @Component({
   selector: "app-my-edit",
   template: `
@@ -59,8 +47,7 @@ const userKey = "user";
     </baw-wip>
   `,
 })
-export class MyEditComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
+class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
   public loading: boolean;
   public model: User;
   public fields = fields;
@@ -96,3 +83,13 @@ export class MyEditComponent extends WithFormCheck(PageComponent)
     console.log("Delete Submission", $event);
   }
 }
+
+MyEditComponent.LinkComponentToPageInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+}).AndMenuRoute(myEditMenuItem);
+
+export { MyEditComponent };

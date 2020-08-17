@@ -5,7 +5,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { Tag } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -19,22 +18,6 @@ import {
 
 const tagKey = "tag";
 
-@Page({
-  category: adminTagsCategory,
-  menus: {
-    actions: List([
-      adminTagsMenuItem,
-      ...adminTagsMenuItemActions,
-      adminEditTagMenuItem,
-      adminDeleteTagMenuItem,
-    ]),
-    links: List(),
-  },
-  resolvers: {
-    [tagKey]: tagResolvers.show,
-  },
-  self: adminDeleteTagMenuItem,
-})
 @Component({
   selector: "app-delete",
   template: `
@@ -50,8 +33,7 @@ const tagKey = "tag";
     ></baw-form>
   `,
 })
-export class AdminTagsDeleteComponent extends FormTemplate<Tag>
-  implements OnInit {
+class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
   public title: string;
 
   constructor(
@@ -81,3 +63,18 @@ export class AdminTagsDeleteComponent extends FormTemplate<Tag>
     return this.api.destroy(new Tag(model));
   }
 }
+
+AdminTagsDeleteComponent.LinkComponentToPageInfo({
+  category: adminTagsCategory,
+  menus: {
+    actions: List([
+      adminTagsMenuItem,
+      ...adminTagsMenuItemActions,
+      adminEditTagMenuItem,
+      adminDeleteTagMenuItem,
+    ]),
+  },
+  resolvers: { [tagKey]: tagResolvers.show },
+}).AndMenuRoute(adminDeleteTagMenuItem);
+
+export { AdminTagsDeleteComponent };

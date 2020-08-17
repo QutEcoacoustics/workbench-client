@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
@@ -16,25 +15,11 @@ import {
 
 export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 
-@Page({
-  category: adminScriptsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminScriptsMenuItemActions,
-    ]),
-    links: List(),
-  },
-  self: adminScriptsMenuItem,
-})
 @Component({
   selector: "app-admin-scripts",
   templateUrl: "./list.component.html",
 })
-export class AdminScriptsComponent extends PagedTableTemplate<
-  TableRow,
-  Script
-> {
+class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
   public columns = [
     { name: "Name" },
     { name: "Version" },
@@ -67,6 +52,18 @@ export class AdminScriptsComponent extends PagedTableTemplate<
     return adminEditScriptMenuItem.route.format({ scriptId: model.id });
   }
 }
+
+AdminScriptsComponent.LinkComponentToPageInfo({
+  category: adminScriptsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminDashboardMenuItem,
+      ...adminScriptsMenuItemActions,
+    ]),
+  },
+}).AndMenuRoute(adminScriptsMenuItem);
+
+export { AdminScriptsComponent };
 
 interface TableRow {
   name: string;

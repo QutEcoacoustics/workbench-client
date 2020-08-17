@@ -3,7 +3,6 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { Site } from "src/app/models/Site";
 import { User } from "src/app/models/User";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
@@ -11,22 +10,22 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 /**
  * Statistics Component
  */
-@Page({
-  category: statisticsCategory,
-  menus: {
-    actions: List(),
-    links: List(),
-  },
-  self: statisticsMenuItem,
-})
 @Component({
   selector: "app-data-request",
   templateUrl: "./statistics.component.html",
   styleUrls: ["./statistics.component.scss"],
 })
-export class StatisticsComponent extends PageComponent implements OnInit {
-  public groupOne: List<{ icon: IconProp; name: string; value: string | number }>;
-  public groupTwo: List<{ icon: IconProp; name: string; value: string | number }>;
+class StatisticsComponent extends PageComponent implements OnInit {
+  public groupOne: List<{
+    icon: IconProp;
+    name: string;
+    value: string | number;
+  }>;
+  public groupTwo: List<{
+    icon: IconProp;
+    name: string;
+    value: string | number;
+  }>;
   public recentAnnotations: Annotation[] | AnnotationExpanded[];
   public recentRecordings: Recording[] | RecordingExpanded[];
 
@@ -126,6 +125,12 @@ export class StatisticsComponent extends PageComponent implements OnInit {
     return Object.values(group[0]).indexOf("site") > -1;
   }
 }
+
+StatisticsComponent.LinkComponentToPageInfo({
+  category: statisticsCategory,
+}).AndMenuRoute(statisticsMenuItem);
+
+export { StatisticsComponent };
 
 interface Annotation {
   tag?: string;

@@ -13,7 +13,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { Project } from "@models/Project";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
@@ -25,18 +24,6 @@ import { projectErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: editProjectMenuItem,
-})
 @Component({
   selector: "app-project-edit",
   template: `
@@ -53,7 +40,7 @@ const projectKey = "project";
     </baw-wip>
   `,
 })
-export class EditComponent extends FormTemplate<Project> implements OnInit {
+class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -85,3 +72,14 @@ export class EditComponent extends FormTemplate<Project> implements OnInit {
     return this.api.update(new Project(model));
   }
 }
+
+EditComponent.LinkComponentToPageInfo({
+  category: projectCategory,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+}).AndMenuRoute(editProjectMenuItem);
+
+export { EditComponent };

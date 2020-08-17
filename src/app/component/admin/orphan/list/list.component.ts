@@ -4,7 +4,6 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { adminDashboardMenuItem } from "@component/admin/admin.menus";
 import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
 import { assignSiteMenuItem } from "@component/projects/projects.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
@@ -16,22 +15,11 @@ import {
   adminOrphansMenuItem,
 } from "../orphans.menus";
 
-@Page({
-  category: adminOrphansCategory,
-  menus: {
-    links: List(),
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminMenuItemActions,
-    ]),
-  },
-  self: adminOrphansMenuItem,
-})
 @Component({
   selector: "app-admin-orphans",
   templateUrl: "./list.component.html",
 })
-export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
+class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
   public assignSitesLabel = assignSiteMenuItem.label;
 
@@ -61,6 +49,18 @@ export class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
     return (this.api as ShallowSitesService).orphanFilter(filters);
   }
 }
+
+AdminOrphansComponent.LinkComponentToPageInfo({
+  category: adminOrphansCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminDashboardMenuItem,
+      ...adminMenuItemActions,
+    ]),
+  },
+}).AndMenuRoute(adminOrphansMenuItem);
+
+export { AdminOrphansComponent };
 
 interface TableRow {
   id: Id;

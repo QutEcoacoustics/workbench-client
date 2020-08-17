@@ -15,7 +15,6 @@ import {
 import { newSiteMenuItem } from "@component/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
@@ -36,25 +35,12 @@ export const projectMenuItemActions = [
 const projectKey = "project";
 const sitesKey = "sites";
 
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [sitesKey]: siteResolvers.list,
-  },
-  self: projectMenuItem,
-})
 @Component({
   selector: "app-projects-details",
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
-export class DetailsComponent extends PageComponent implements OnInit {
+class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
   public sites: Site[];
   public markers: MapMarkerOption[];
@@ -75,3 +61,17 @@ export class DetailsComponent extends PageComponent implements OnInit {
     );
   }
 }
+
+DetailsComponent.LinkComponentToPageInfo({
+  category: projectCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [sitesKey]: siteResolvers.list,
+  },
+}).AndMenuRoute(projectMenuItem);
+
+export { DetailsComponent };

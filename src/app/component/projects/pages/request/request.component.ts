@@ -8,7 +8,6 @@ import {
 } from "@component/projects/projects.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -16,14 +15,6 @@ import { takeUntil } from "rxjs/operators";
 import { projectsMenuItemActions } from "../list/list.component";
 import { fields } from "./request.schema.json";
 
-@Page({
-  category: projectsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
-    links: List(),
-  },
-  self: requestProjectMenuItem,
-})
 @Component({
   selector: "app-projects-request",
   template: `
@@ -41,8 +32,7 @@ import { fields } from "./request.schema.json";
     </baw-wip>
   `,
 })
-export class RequestComponent extends WithFormCheck(PageComponent)
-  implements OnInit {
+class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
   public error: ApiErrorDetails;
   public fields = fields;
   public loading: boolean;
@@ -84,3 +74,12 @@ export class RequestComponent extends WithFormCheck(PageComponent)
     this.loading = false;
   }
 }
+
+RequestComponent.LinkComponentToPageInfo({
+  category: projectsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
+  },
+}).AndMenuRoute(requestProjectMenuItem);
+
+export { RequestComponent };

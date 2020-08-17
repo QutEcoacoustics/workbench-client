@@ -7,7 +7,6 @@ import {
   myAccountMenuItem,
   myBookmarksMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Bookmark } from "@models/Bookmark";
@@ -17,25 +16,11 @@ import { myAccountActions } from "../profile/my-profile.component";
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: myBookmarksMenuItem,
-})
 @Component({
   selector: "app-my-bookmarks",
   templateUrl: "./bookmarks.component.html",
 })
-export class MyBookmarksComponent extends PagedTableTemplate<
-  TableRow,
-  Bookmark
-> {
+class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public columns = [
     { name: "Bookmark" },
     { name: "Category" },
@@ -59,6 +44,16 @@ export class MyBookmarksComponent extends PagedTableTemplate<
     return this.models[userKey] as User;
   }
 }
+
+MyBookmarksComponent.LinkComponentToPageInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+}).AndMenuRoute(myBookmarksMenuItem);
+
+export { MyBookmarksComponent };
 
 interface TableRow {
   bookmark: Bookmark;

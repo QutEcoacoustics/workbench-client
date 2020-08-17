@@ -9,7 +9,6 @@ import {
   requestProjectMenuItem,
 } from "@component/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
@@ -22,17 +21,6 @@ export const projectsMenuItemActions = [
 
 const projectsKey = "projects";
 
-@Page({
-  category: projectsCategory,
-  menus: {
-    actions: List<AnyMenuItem>(projectsMenuItemActions),
-    links: List(),
-  },
-  resolvers: {
-    [projectsKey]: projectResolvers.list,
-  },
-  self: projectsMenuItem,
-})
 @Component({
   selector: "app-projects-list",
   template: `
@@ -47,7 +35,7 @@ const projectsKey = "projects";
     </ng-container>
   `,
 })
-export class ListComponent extends PageComponent implements OnInit {
+class ListComponent extends PageComponent implements OnInit {
   public cardList: List<Card>;
 
   constructor(private route: ActivatedRoute) {
@@ -66,3 +54,11 @@ export class ListComponent extends PageComponent implements OnInit {
     this.cardList = List(projects.model.map((project) => project.getCard()));
   }
 }
+
+ListComponent.LinkComponentToPageInfo({
+  category: projectsCategory,
+  menus: { actions: List<AnyMenuItem>(projectsMenuItemActions) },
+  resolvers: { [projectsKey]: projectResolvers.list },
+}).AndMenuRoute(projectsMenuItem);
+
+export { ListComponent };

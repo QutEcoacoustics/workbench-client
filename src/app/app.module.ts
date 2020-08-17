@@ -1,5 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
+import { DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -62,6 +62,7 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserModule.withServerTransition({ appId: "workbench-client" }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,
@@ -70,8 +71,13 @@ export const appImports = [
     ...appLibraryImports,
     ...appImports,
   ],
-  bootstrap: [AppComponent],
-  entryComponents: [PermissionsShieldComponent],
+  entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],
 })
-export class AppModule {}
+export class AppModule implements DoBootstrap {
+  constructor() {}
+
+  public ngDoBootstrap(app: any): void {
+    app.bootstrap(AppComponent);
+  }
+}

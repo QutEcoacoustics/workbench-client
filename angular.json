@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/workbench-client",
+            "outputPath": "dist/workbench-client/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -113,7 +113,8 @@
             "tsConfig": [
               "tsconfig.app.json",
               "tsconfig.spec.json",
-              "tsconfig.e2e.json"
+              "tsconfig.e2e.json",
+              "tsconfig.server.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -128,6 +129,53 @@
             "production": {
               "devServerTarget": "workbench-client:serve:production"
             }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/workbench-client/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "workbench-client:build",
+            "serverTarget": "workbench-client:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "workbench-client:build:production",
+              "serverTarget": "workbench-client:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "workbench-client:build:production",
+            "serverTarget": "workbench-client:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }

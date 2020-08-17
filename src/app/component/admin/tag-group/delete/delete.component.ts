@@ -8,7 +8,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -21,17 +20,6 @@ import {
 
 const tagGroupKey = "tagGroup";
 
-@Page({
-  category: adminTagGroupsCategory,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    links: List(),
-  },
-  resolvers: {
-    [tagGroupKey]: tagGroupResolvers.show,
-  },
-  self: adminDeleteTagGroupMenuItem,
-})
 @Component({
   selector: "app-admin-tag-groups-delete",
   template: `
@@ -47,7 +35,7 @@ const tagGroupKey = "tagGroup";
     ></baw-form>
   `,
 })
-export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
+class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
   implements OnInit {
   public title: string;
 
@@ -77,3 +65,13 @@ export class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
     return this.api.destroy(new TagGroup(model));
   }
 }
+
+AdminTagGroupsDeleteComponent.LinkComponentToPageInfo({
+  category: adminTagGroupsCategory,
+  menus: {
+    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+  },
+  resolvers: { [tagGroupKey]: tagGroupResolvers.show },
+}).AndMenuRoute(adminDeleteTagGroupMenuItem);
+
+export { AdminTagGroupsDeleteComponent };

@@ -1,9 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MenuLink } from "@interfaces/menusInterfaces";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
-import { MenuLink } from "src/app/interfaces/menusInterfaces";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
+import {
+  assertAttribute,
+  assertHref,
+  assertIcon,
+  assertTooltip,
+} from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuExternalLinkComponent } from "./external-link.component";
 
@@ -23,49 +28,39 @@ describe("MenuExternalLinkComponent", () => {
     component = fixture.componentInstance;
   });
 
-  it("should create", () => {
+  function createLink() {
     component.id = "id";
     component.link = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
+      tooltip: () => "tooltip",
     });
-    component.tooltip = "custom tooltip";
+    component.tooltip = "tooltip";
     component.uri = "http://link/";
     component.placement = "left";
-    fixture.detectChanges();
+  }
 
+  function retrieveLink() {
+    return fixture.nativeElement.querySelector("a");
+  }
+
+  it("should create", () => {
+    createLink();
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should have icon", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
-    component.placement = "left";
+    createLink();
+    component.link.icon = ["fas", "exclamation-triangle"];
     fixture.detectChanges();
-
-    assertIcon(fixture.nativeElement, "fas,home");
+    assertIcon(fixture.nativeElement, "fas,exclamation-triangle");
   });
 
   it("should have label", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "custom label",
-      uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
-    component.placement = "left";
+    createLink();
+    component.link.label = "custom label";
     fixture.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -75,134 +70,63 @@ describe("MenuExternalLinkComponent", () => {
   });
 
   it("should have tooltip", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
-    });
+    createLink();
+    component.link.tooltip = () => "custom tooltip";
     component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertTooltip(link, "custom tooltip");
+    assertTooltip(retrieveLink(), "custom tooltip");
   });
 
   it("should not use link tooltip", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://link/",
-      tooltip: () => "tooltip",
-    });
+    createLink();
+    component.link.tooltip = () => "wrong tooltip";
     component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    assertTooltip(link, "custom tooltip");
+    assertTooltip(retrieveLink(), "custom tooltip");
   });
 
   it("should handle left placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
+    createLink();
     component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Anchor should have [placement] directive"
-    );
-    expect(link.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "left"
-    );
+    assertAttribute(retrieveLink(), "placement", "left");
   });
 
   it("should handle right placement of tooltip", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://link/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.uri = "http://link/";
+    createLink();
     component.placement = "right";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link.attributes.getNamedItem("ng-reflect-placement")).toBeTruthy(
-      "Anchor should have [placement] directive"
-    );
-    expect(link.attributes.getNamedItem("ng-reflect-placement").value).toBe(
-      "right"
-    );
+    assertAttribute(retrieveLink(), "placement", "right");
   });
 
   it("should not use link uri", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://brokenlink/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
-    component.uri = "http://differentlink/";
-    component.placement = "left";
+    createLink();
+    component.link.uri = () => "http://wronglink/";
+    component.uri = "http://brokenlink/";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link).toBeTruthy();
-    expect(link.href).toBe("http://differentlink/");
+    assertHref(retrieveLink(), "http://brokenlink/");
   });
 
   it("should link to external website", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "http://brokenlink/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    createLink();
+    component.link.uri = () => "http://brokenlink/";
     component.uri = "http://brokenlink/";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link).toBeTruthy();
-    expect(link.href).toBe("http://brokenlink/");
+    assertHref(retrieveLink(), "http://brokenlink/");
   });
 
   it("should convert links to AngularJS server", () => {
-    component.id = "id";
-    component.link = MenuLink({
-      icon: ["fas", "home"],
-      label: "home",
-      uri: () => "/brokenlink/",
-      tooltip: () => "custom tooltip",
-    });
-    component.tooltip = "custom tooltip";
+    createLink();
+    component.link.uri = () => "/brokenlink/";
     component.uri = "/brokenlink/";
-    component.placement = "left";
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector("a");
-    expect(link).toBeTruthy();
-    expect(link.href).toBe(env.environment.apiRoot + "/brokenlink/");
+    assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
   });
 });

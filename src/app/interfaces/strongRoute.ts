@@ -1,8 +1,9 @@
 import { Type } from "@angular/core";
 import { Route, Routes } from "@angular/router";
+import { PageComponent } from "@helpers/page/pageComponent";
 
 export type RouteConfigCallback = (
-  component: Type<any> | null,
+  component: Type<PageComponent> | null,
   config: Partial<Route>
 ) => Route;
 
@@ -12,7 +13,7 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
-  public pageComponent: Type<any> | null;
+  public pageComponent: Type<PageComponent> | null;
   public readonly root: any;
   public readonly parent: StrongRoute;
   public readonly name: string;

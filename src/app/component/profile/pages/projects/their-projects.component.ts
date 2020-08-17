@@ -8,7 +8,6 @@ import {
   theirProfileMenuItem,
   theirProjectsMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
@@ -18,25 +17,11 @@ import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
-@Page({
-  category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-    links: List(),
-  },
-  resolvers: {
-    [accountKey]: accountResolvers.show,
-  },
-  self: theirProjectsMenuItem,
-})
 @Component({
   selector: "app-their-projects",
   templateUrl: "./projects.component.html",
 })
-export class TheirProjectsComponent extends PagedTableTemplate<
-  TableRow,
-  Project
-> {
+class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   public columns = [
     { name: "Project" },
     { name: "Sites" },
@@ -67,6 +52,16 @@ export class TheirProjectsComponent extends PagedTableTemplate<
     );
   }
 }
+
+TheirProjectsComponent.LinkComponentToPageInfo({
+  category: theirProfileCategory,
+  menus: {
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
+  },
+  resolvers: { [accountKey]: accountResolvers.show },
+}).AndMenuRoute(theirProjectsMenuItem);
+
+export { TheirProjectsComponent };
 
 interface TableRow {
   project: Project;

@@ -10,7 +10,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "src/app/helpers/formTemplate/formTemplate";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { Project } from "src/app/models/Project";
 import { Site } from "src/app/models/Site";
 import { fields } from "../../site.base.json";
@@ -28,19 +27,6 @@ const siteKey = "site";
 /**
  * Edit Site Component
  */
-@Page({
-  category: sitesCategory,
-  menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-  self: editSiteMenuItem,
-})
 @Component({
   selector: "app-sites-edit",
   template: `
@@ -55,7 +41,7 @@ const siteKey = "site";
     ></baw-form>
   `,
 })
-export class EditComponent extends FormTemplate<Site> implements OnInit {
+class EditComponent extends FormTemplate<Site> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -95,3 +81,17 @@ export class EditComponent extends FormTemplate<Site> implements OnInit {
     return this.api.update(new Site(model), this.project);
   }
 }
+
+EditComponent.LinkComponentToPageInfo({
+  category: sitesCategory,
+  menus: {
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).AndMenuRoute(editSiteMenuItem);
+
+export { EditComponent };

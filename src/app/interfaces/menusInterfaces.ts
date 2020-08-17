@@ -229,8 +229,8 @@ export function isNavigableMenuItem(
  * @param links List of secondary links
  */
 export interface Menus {
-  actions: List<AnyMenuItem>;
+  actions?: List<AnyMenuItem>;
   actionsWidget?: WidgetMenuItem;
-  links: List<NavigableMenuItem>;
+  links?: List<NavigableMenuItem>;
   linksWidget?: WidgetMenuItem;
 }

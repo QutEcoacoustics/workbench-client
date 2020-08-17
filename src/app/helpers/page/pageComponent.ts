@@ -1,37 +1,55 @@
 import { Type } from "@angular/core";
+import { MenuRoute } from "@interfaces/menusInterfaces";
 import { WithUnsubscribe } from "../unsubscribe/unsubscribe";
-import { PageInfo } from "./pageInfo";
+import { IPageInfo, PageInfo } from "./pageInfo";
 
-export interface PageComponentStatic
-  extends Type<PageComponentInterface>,
-    Type<any> {
+export interface IPageComponent {
   readonly pageInfo: PageInfo;
 }
 
-export interface PageComponentInterface {
+export interface IPageComponentStatic extends Type<IPageComponent> {
   readonly pageInfo: PageInfo;
 }
 
-// this mixin is needed because typescript decorators
-// do not mutate the type signature they are applied to.
-// See https://github.com/Microsoft/TypeScript/issues/4881
-// If they did, then we wouldn't need this shim, which
-// currently needs to be extended from in every component!
-export class PageComponent extends WithUnsubscribe()
-  implements PageComponentInterface {
-  static get pageInfo(): PageInfo {
-    return null;
+export class PageComponent extends WithUnsubscribe() implements IPageComponent {
+  private static _pageInfo: PageInfo;
+
+  public static get pageInfo(): PageInfo {
+    return this._pageInfo as PageInfo;
   }
-  get pageInfo(): PageInfo {
-    return null;
+
+  public get pageInfo() {
+    return PageComponent.pageInfo;
+  }
+
+  /**
+   * Creates and links the page info for the page component
+   */
+  public static LinkComponentToPageInfo(info: IPageInfo): typeof PageComponent {
+    this._pageInfo = new PageInfo(info);
+    return this;
+  }
+
+  /**
+   * Sets the menu route for the page component, and updates it to link to the
+   * page info
+   */
+  public static AndMenuRoute(menu: MenuRoute): typeof PageComponent {
+    if (!this._pageInfo) {
+      throw new Error(
+        "AndMenuRoute must be called after LinkComponentToPageInfo"
+      );
+    }
+
+    this._pageInfo.setMenuRoute(this, menu);
+    return this;
   }
 }
 
 /**
  * Get the page info interface of an angular component
- * @param component Angular component
+ * @param component Angular component or null if not exists
  */
-export function getPageInfo(component: Type<any>): PageInfo | null {
-  const pageComponent = component as PageComponentStatic;
-  return pageComponent ? pageComponent.pageInfo : null;
+export function getPageInfo(component: Type<IPageComponent>): PageInfo {
+  return (component as IPageComponentStatic)?.pageInfo ?? null;
 }

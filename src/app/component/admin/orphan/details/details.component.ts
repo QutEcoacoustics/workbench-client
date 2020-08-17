@@ -5,7 +5,6 @@ import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import { fields as baseFields } from "@component/sites/site.base.json";
 import { fields as extendedFields } from "@component/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Site } from "@models/Site";
 import { List } from "immutable";
@@ -17,17 +16,6 @@ import {
 
 const siteKey = "site";
 
-@Page({
-  category: adminOrphansCategory,
-  menus: {
-    links: List(),
-    actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
-  },
-  resolvers: {
-    [siteKey]: shallowSiteResolvers.show,
-  },
-  self: adminOrphanMenuItem,
-})
 @Component({
   selector: "app-admin-orphan",
   template: `
@@ -37,7 +25,7 @@ const siteKey = "site";
     </div>
   `,
 })
-export class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
+class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public site: Site;
   public failure: boolean;
@@ -59,3 +47,13 @@ export class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
     this.site = models[siteKey] as Site;
   }
 }
+
+AdminOrphanComponent.LinkComponentToPageInfo({
+  category: adminOrphansCategory,
+  menus: {
+    actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
+  },
+  resolvers: { [siteKey]: shallowSiteResolvers.show },
+}).AndMenuRoute(adminOrphanMenuItem);
+
+export { AdminOrphanComponent };

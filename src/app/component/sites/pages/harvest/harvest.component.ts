@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { harvestMenuItem, sitesCategory } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
@@ -9,14 +8,6 @@ import { siteMenuItemActions } from "../details/details.component";
 /**
  * Site Harvest Component
  */
-@Page({
-  category: sitesCategory,
-  menus: {
-    actions: List(siteMenuItemActions),
-    links: List(),
-  },
-  self: harvestMenuItem,
-})
 @Component({
   selector: "app-sites-harvest",
   template: `
@@ -25,7 +16,7 @@ import { siteMenuItemActions } from "../details/details.component";
     </baw-wip>
   `,
 })
-export class HarvestComponent extends PageComponent implements OnInit {
+class HarvestComponent extends PageComponent implements OnInit {
   public page: string;
 
   constructor(private env: AppConfigService) {
@@ -36,3 +27,10 @@ export class HarvestComponent extends PageComponent implements OnInit {
     this.page = this.env.values.cms.harvest;
   }
 }
+
+HarvestComponent.LinkComponentToPageInfo({
+  category: sitesCategory,
+  menus: { actions: List(siteMenuItemActions) },
+}).AndMenuRoute(harvestMenuItem);
+
+export { HarvestComponent };

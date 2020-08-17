@@ -3,7 +3,6 @@ import { ActivatedRoute } from "@angular/router";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
@@ -16,17 +15,6 @@ import {
 
 const audioRecordingKey = "audioRecording";
 
-@Page({
-  category: adminAudioRecordingsCategory,
-  menus: {
-    links: List(),
-    actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
-  },
-  resolvers: {
-    [audioRecordingKey]: audioRecordingResolvers.show,
-  },
-  self: adminAudioRecordingMenuItem,
-})
 @Component({
   selector: "app-admin-audio-recording",
   template: `
@@ -39,7 +27,7 @@ const audioRecordingKey = "audioRecording";
     </div>
   `,
 })
-export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
+class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public audioRecording: AudioRecording;
   public failure: boolean;
@@ -61,3 +49,13 @@ export class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
     this.audioRecording = models[audioRecordingKey] as AudioRecording;
   }
 }
+
+AdminAudioRecordingComponent.LinkComponentToPageInfo({
+  category: adminAudioRecordingsCategory,
+  menus: {
+    actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
+  },
+  resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
+}).AndMenuRoute(adminAudioRecordingMenuItem);
+
+export { AdminAudioRecordingComponent };

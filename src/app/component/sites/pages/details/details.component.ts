@@ -9,7 +9,6 @@ import { PermissionsShieldComponent } from "src/app/component/shared/permissions
 import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
 import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Page } from "src/app/helpers/page/pageDecorator";
 import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
 import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
 import { AudioRecording } from "src/app/models/AudioRecording";
@@ -39,25 +38,12 @@ const siteKey = "site";
 /**
  * Site Details Component
  */
-@Page({
-  category: sitesCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-  self: siteMenuItem,
-})
 @Component({
   selector: "app-sites-details",
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
-export class DetailsComponent extends PageComponent implements OnInit {
+class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
   public recordings: AudioRecording[];
   public recordingsEnd: DateTimeTimezone;
@@ -123,3 +109,17 @@ export class DetailsComponent extends PageComponent implements OnInit {
     this.recordingsEnd = endDate;
   }
 }
+
+DetailsComponent.LinkComponentToPageInfo({
+  category: sitesCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).AndMenuRoute(siteMenuItem);
+
+export { DetailsComponent };

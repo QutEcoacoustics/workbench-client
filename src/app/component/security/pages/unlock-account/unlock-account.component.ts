@@ -8,24 +8,10 @@ import {
 } from "@component/security/security.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { fields } from "./unlock-account.schema.json";
 
-@Page({
-  category: securityCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      loginMenuItem,
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-    links: List(),
-  },
-  self: unlockAccountMenuItem,
-})
 @Component({
   selector: "app-confirm-account",
   template: `
@@ -41,7 +27,7 @@ import { fields } from "./unlock-account.schema.json";
     </baw-wip>
   `,
 })
-export class UnlockAccountComponent extends WithFormCheck(PageComponent)
+class UnlockAccountComponent extends WithFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;
@@ -61,3 +47,17 @@ export class UnlockAccountComponent extends WithFormCheck(PageComponent)
     this.loading = false;
   }
 }
+
+UnlockAccountComponent.LinkComponentToPageInfo({
+  category: securityCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      loginMenuItem,
+      confirmAccountMenuItem,
+      resetPasswordMenuItem,
+      unlockAccountMenuItem,
+    ]),
+  },
+}).AndMenuRoute(unlockAccountMenuItem);
+
+export { UnlockAccountComponent };

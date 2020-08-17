@@ -12,7 +12,6 @@ import {
   extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -20,14 +19,6 @@ import { ToastrService } from "ngx-toastr";
 import { fields } from "../../project.schema.json";
 import { projectsMenuItemActions } from "../list/list.component";
 
-@Page({
-  category: projectsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
-    links: List(),
-  },
-  self: newProjectMenuItem,
-})
 @Component({
   selector: "app-projects-new",
   template: `
@@ -42,7 +33,7 @@ import { projectsMenuItemActions } from "../list/list.component";
     ></baw-form>
   `,
 })
-export class NewComponent extends FormTemplate<Project> {
+class NewComponent extends FormTemplate<Project> {
   public fields = fields;
 
   constructor(
@@ -65,6 +56,15 @@ export class NewComponent extends FormTemplate<Project> {
     return this.api.create(new Project(model));
   }
 }
+
+NewComponent.LinkComponentToPageInfo({
+  category: projectsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
+  },
+}).AndMenuRoute(newProjectMenuItem);
+
+export { NewComponent };
 
 /**
  * Handle project form error messages

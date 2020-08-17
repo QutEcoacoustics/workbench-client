@@ -18,7 +18,6 @@ import {
 import { projectsMenuItem } from "@component/projects/projects.menus";
 import { siteMenuItem } from "@component/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
@@ -36,23 +35,12 @@ export const theirProfileActions = [
 
 const accountKey = "account";
 
-@Page({
-  category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>(theirProfileActions),
-    links: List(),
-  },
-  resolvers: {
-    [accountKey]: accountResolvers.show,
-  },
-  self: theirProfileMenuItem,
-})
 @Component({
   selector: "app-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })
-export class TheirProfileComponent extends PageComponent implements OnInit {
+class TheirProfileComponent extends PageComponent implements OnInit {
   public lastSeenAt: string;
   public tags: Tag[];
   public thirdPerson = true;
@@ -130,3 +118,11 @@ export class TheirProfileComponent extends PageComponent implements OnInit {
     }));
   }
 }
+
+TheirProfileComponent.LinkComponentToPageInfo({
+  category: theirProfileCategory,
+  menus: { actions: List<AnyMenuItem>(theirProfileActions) },
+  resolvers: { [accountKey]: accountResolvers.show },
+}).AndMenuRoute(theirProfileMenuItem);
+
+export { TheirProfileComponent };

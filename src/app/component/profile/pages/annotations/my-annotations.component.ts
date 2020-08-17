@@ -7,7 +7,6 @@ import {
   myAccountMenuItem,
   myAnnotationsMenuItem,
 } from "@component/profile/profile.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
@@ -19,25 +18,11 @@ import { myAccountActions } from "../profile/my-profile.component";
 
 const userKey = "user";
 
-@Page({
-  category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-    links: List(),
-  },
-  resolvers: {
-    [userKey]: userResolvers.show,
-  },
-  self: myAnnotationsMenuItem,
-})
 @Component({
   selector: "app-my-annotations",
   templateUrl: "./annotations.component.html",
 })
-export class MyAnnotationsComponent extends PagedTableTemplate<
-  TableRow,
-  AudioEvent
-> {
+class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   constructor(api: AudioEventsService, route: ActivatedRoute) {
     super(
       api,
@@ -53,6 +38,16 @@ export class MyAnnotationsComponent extends PagedTableTemplate<
     return this.models[userKey] as User;
   }
 }
+
+MyAnnotationsComponent.LinkComponentToPageInfo({
+  category: myAccountCategory,
+  menus: {
+    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
+  },
+  resolvers: { [userKey]: userResolvers.show },
+}).AndMenuRoute(myAnnotationsMenuItem);
+
+export { MyAnnotationsComponent };
 
 interface TableRow {
   site: Site;

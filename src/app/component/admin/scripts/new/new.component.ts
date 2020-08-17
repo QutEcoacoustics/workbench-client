@@ -5,7 +5,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Script } from "@models/Script";
 import { List } from "immutable";
@@ -21,17 +20,6 @@ import {
 /**
  * New Scripts Component
  */
-@Page({
-  category: adminScriptsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      adminScriptsMenuItem,
-      ...adminScriptsMenuItemActions,
-    ]),
-    links: List(),
-  },
-  self: adminNewScriptsMenuItem,
-})
 @Component({
   selector: "app-admin-scripts-new",
   template: `
@@ -47,7 +35,7 @@ import {
     </baw-form>
   `,
 })
-export class AdminScriptsNewComponent extends FormTemplate<Script> {
+class AdminScriptsNewComponent extends FormTemplate<Script> {
   public fields = fields;
 
   constructor(
@@ -65,3 +53,15 @@ export class AdminScriptsNewComponent extends FormTemplate<Script> {
     return this.api.create(new Script(model));
   }
 }
+
+AdminScriptsNewComponent.LinkComponentToPageInfo({
+  category: adminScriptsCategory,
+  menus: {
+    actions: List<AnyMenuItem>([
+      adminScriptsMenuItem,
+      ...adminScriptsMenuItemActions,
+    ]),
+  },
+}).AndMenuRoute(adminNewScriptsMenuItem);
+
+export { AdminScriptsNewComponent };

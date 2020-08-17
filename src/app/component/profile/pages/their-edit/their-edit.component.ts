@@ -13,7 +13,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Page } from "@helpers/page/pageDecorator";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -23,17 +22,6 @@ import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
 
-@Page({
-  category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-    links: List(),
-  },
-  resolvers: {
-    [accountKey]: accountResolvers.show,
-  },
-  self: theirEditMenuItem,
-})
 @Component({
   selector: "app-their-edit",
   template: `
@@ -54,7 +42,7 @@ const accountKey = "account";
     </baw-wip>
   `,
 })
-export class TheirEditComponent extends FormTemplate<User> implements OnInit {
+class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -81,3 +69,13 @@ export class TheirEditComponent extends FormTemplate<User> implements OnInit {
     return this.api.update(new User(model));
   }
 }
+
+TheirEditComponent.LinkComponentToPageInfo({
+  category: theirProfileCategory,
+  menus: {
+    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
+  },
+  resolvers: { [accountKey]: accountResolvers.show },
+}).AndMenuRoute(theirEditMenuItem);
+
+export { TheirEditComponent };

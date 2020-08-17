@@ -7,7 +7,6 @@ import {
   projectCategory,
   projectMenuItem,
 } from "@component/projects/projects.menus";
-import { Page } from "@helpers/page/pageDecorator";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
@@ -19,24 +18,12 @@ import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
 
-@Page({
-  category: projectCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-    links: List(),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-  self: assignSiteMenuItem,
-})
 @Component({
   selector: "app-assign",
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"],
 })
-export class AssignComponent extends PagedTableTemplate<TableRow, Site> {
+class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   // TODO Move this back into the admin dashboard
   public columns = [
     { name: "Site Id" },
@@ -72,6 +59,17 @@ export class AssignComponent extends PagedTableTemplate<TableRow, Site> {
     console.log("Select: ", event);
   }
 }
+
+AssignComponent.LinkComponentToPageInfo({
+  category: projectCategory,
+  menus: {
+    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: { [projectKey]: projectResolvers.show },
+}).AndMenuRoute(assignSiteMenuItem);
+
+export { AssignComponent };
 
 interface TableRow {
   siteId: number;
