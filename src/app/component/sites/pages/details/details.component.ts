@@ -110,7 +110,7 @@ class DetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-DetailsComponent.WithInfo({
+DetailsComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
@@ -120,7 +120,6 @@ DetailsComponent.WithInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-  self: siteMenuItem,
-});
+}).AndMenuRoute(siteMenuItem);
 
 export { DetailsComponent };

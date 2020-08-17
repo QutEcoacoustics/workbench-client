@@ -70,13 +70,12 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
   }
 }
 
-TheirEditComponent.WithInfo({
+TheirEditComponent.LinkComponentToPageInfo({
   category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
   },
   resolvers: { [accountKey]: accountResolvers.show },
-  self: theirEditMenuItem,
-});
+}).AndMenuRoute(theirEditMenuItem);
 
 export { TheirEditComponent };

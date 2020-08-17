@@ -48,7 +48,7 @@ class ConfirmPasswordComponent extends WithFormCheck(PageComponent)
   }
 }
 
-ConfirmPasswordComponent.WithInfo({
+ConfirmPasswordComponent.LinkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -58,7 +58,6 @@ ConfirmPasswordComponent.WithInfo({
       unlockAccountMenuItem,
     ]),
   },
-  self: confirmAccountMenuItem,
-});
+}).AndMenuRoute(confirmAccountMenuItem);
 
 export { ConfirmPasswordComponent };

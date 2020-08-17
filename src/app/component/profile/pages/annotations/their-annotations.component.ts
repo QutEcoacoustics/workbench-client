@@ -42,14 +42,13 @@ class TheirAnnotationsComponent extends PagedTableTemplate<
   }
 }
 
-TheirAnnotationsComponent.WithInfo({
+TheirAnnotationsComponent.LinkComponentToPageInfo({
   category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
   },
   resolvers: { [accountKey]: accountResolvers.show },
-  self: theirAnnotationsMenuItem,
-});
+}).AndMenuRoute(theirAnnotationsMenuItem);
 
 export { TheirAnnotationsComponent };
 

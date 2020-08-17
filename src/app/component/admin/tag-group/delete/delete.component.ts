@@ -66,13 +66,12 @@ class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
   }
 }
 
-AdminTagGroupsDeleteComponent.WithInfo({
+AdminTagGroupsDeleteComponent.LinkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-  self: adminDeleteTagGroupMenuItem,
-});
+}).AndMenuRoute(adminDeleteTagGroupMenuItem);
 
 export { AdminTagGroupsDeleteComponent };

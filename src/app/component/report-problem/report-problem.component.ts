@@ -50,9 +50,8 @@ class ReportProblemComponent extends WithFormCheck(PageComponent)
   }
 }
 
-ReportProblemComponent.WithInfo({
+ReportProblemComponent.LinkComponentToPageInfo({
   category: reportProblemsCategory,
-  self: reportProblemMenuItem,
-});
+}).AndMenuRoute(reportProblemMenuItem);
 
 export { ReportProblemComponent };

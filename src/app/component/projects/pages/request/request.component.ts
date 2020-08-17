@@ -75,12 +75,11 @@ class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
   }
 }
 
-RequestComponent.WithInfo({
+RequestComponent.LinkComponentToPageInfo({
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
   },
-  self: requestProjectMenuItem,
-});
+}).AndMenuRoute(requestProjectMenuItem);
 
 export { RequestComponent };

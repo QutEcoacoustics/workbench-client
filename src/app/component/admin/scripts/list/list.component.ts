@@ -53,7 +53,7 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
   }
 }
 
-AdminScriptsComponent.WithInfo({
+AdminScriptsComponent.LinkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -61,8 +61,7 @@ AdminScriptsComponent.WithInfo({
       ...adminScriptsMenuItemActions,
     ]),
   },
-  self: adminScriptsMenuItem,
-});
+}).AndMenuRoute(adminScriptsMenuItem);
 
 export { AdminScriptsComponent };
 

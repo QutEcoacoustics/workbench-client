@@ -48,7 +48,7 @@ class ResetPasswordComponent extends WithFormCheck(PageComponent)
   }
 }
 
-ResetPasswordComponent.WithInfo({
+ResetPasswordComponent.LinkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -58,7 +58,6 @@ ResetPasswordComponent.WithInfo({
       unlockAccountMenuItem,
     ]),
   },
-  self: resetPasswordMenuItem,
-});
+}).AndMenuRoute(resetPasswordMenuItem);
 
 export { ResetPasswordComponent };

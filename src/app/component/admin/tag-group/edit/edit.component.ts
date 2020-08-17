@@ -64,13 +64,12 @@ class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
   }
 }
 
-AdminTagGroupsEditComponent.WithInfo({
+AdminTagGroupsEditComponent.LinkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-  self: adminEditTagGroupMenuItem,
-});
+}).AndMenuRoute(adminEditTagGroupMenuItem);
 
 export { AdminTagGroupsEditComponent };

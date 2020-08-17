@@ -73,14 +73,13 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   }
 }
 
-EditComponent.WithInfo({
+EditComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-  self: editProjectMenuItem,
-});
+}).AndMenuRoute(editProjectMenuItem);
 
 export { EditComponent };

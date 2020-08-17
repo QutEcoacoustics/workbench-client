@@ -39,14 +39,13 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   }
 }
 
-MyAnnotationsComponent.WithInfo({
+MyAnnotationsComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
   menus: {
     actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
   },
   resolvers: { [userKey]: userResolvers.show },
-  self: myAnnotationsMenuItem,
-});
+}).AndMenuRoute(myAnnotationsMenuItem);
 
 export { MyAnnotationsComponent };
 

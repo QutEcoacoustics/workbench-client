@@ -111,15 +111,14 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   }
 }
 
-PermissionsComponent.WithInfo({
+PermissionsComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-  self: editProjectPermissionsMenuItem,
-});
+}).AndMenuRoute(editProjectPermissionsMenuItem);
 
 export { PermissionsComponent };
 

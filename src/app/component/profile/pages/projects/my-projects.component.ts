@@ -45,14 +45,13 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   }
 }
 
-MyProjectsComponent.WithInfo({
+MyProjectsComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
   menus: {
     actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
   },
   resolvers: { [userKey]: userResolvers.show },
-  self: myProjectsMenuItem,
-});
+}).AndMenuRoute(myProjectsMenuItem);
 
 export { MyProjectsComponent };
 

@@ -42,9 +42,8 @@ class ContactUsComponent extends WithFormCheck(PageComponent)
   }
 }
 
-ContactUsComponent.WithInfo({
+ContactUsComponent.LinkComponentToPageInfo({
   category: aboutCategory,
-  self: contactUsMenuItem,
-});
+}).AndMenuRoute(contactUsMenuItem);
 
 export { ContactUsComponent };

@@ -54,13 +54,12 @@ class AdminScriptComponent extends WithUnsubscribe(PageComponent)
   }
 }
 
-AdminScriptComponent.WithInfo({
+AdminScriptComponent.LinkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
-  self: adminScriptMenuItem,
-});
+}).AndMenuRoute(adminScriptMenuItem);
 
 export { AdminScriptComponent };

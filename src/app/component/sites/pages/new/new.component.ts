@@ -72,14 +72,13 @@ class NewComponent extends FormTemplate<Site> {
   }
 }
 
-NewComponent.WithInfo({
+NewComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-  self: newSiteMenuItem,
-});
+}).AndMenuRoute(newSiteMenuItem);
 
 export { NewComponent };
 

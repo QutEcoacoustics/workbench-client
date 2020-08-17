@@ -24,9 +24,8 @@ class SendAudioComponent extends PageComponent implements OnInit {
   }
 }
 
-SendAudioComponent.WithInfo({
+SendAudioComponent.LinkComponentToPageInfo({
   category: sendAudioCategory,
-  self: sendAudioMenuItem,
-});
+}).AndMenuRoute(sendAudioMenuItem);
 
 export { SendAudioComponent };

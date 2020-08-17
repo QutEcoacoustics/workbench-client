@@ -126,10 +126,9 @@ class StatisticsComponent extends PageComponent implements OnInit {
   }
 }
 
-StatisticsComponent.WithInfo({
+StatisticsComponent.LinkComponentToPageInfo({
   category: statisticsCategory,
-  self: statisticsMenuItem,
-});
+}).AndMenuRoute(statisticsMenuItem);
 
 export { StatisticsComponent };
 

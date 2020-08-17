@@ -20,9 +20,8 @@ class EthicsComponent extends PageComponent implements OnInit {
   }
 }
 
-EthicsComponent.WithInfo({
+EthicsComponent.LinkComponentToPageInfo({
   category: aboutCategory,
-  self: ethicsMenuItem,
-});
+}).AndMenuRoute(ethicsMenuItem);
 
 export { EthicsComponent };

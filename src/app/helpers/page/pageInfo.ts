@@ -16,8 +16,8 @@ import { PageComponent } from "./pageComponent";
  * @extends Data
  */
 export interface IPageInfo extends Data {
-  self: MenuRoute & { pageComponent?: Type<any> };
   category: Category;
+  self?: MenuRoute & { pageComponent?: Type<PageComponent> };
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
@@ -27,24 +27,29 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public self: MenuRoute & { pageComponent: Type<any> };
-  public component: Type<any>;
+  public self: MenuRoute & { pageComponent?: Type<PageComponent> };
+  public component: Type<PageComponent>;
   public category: Category;
   public menus: Menus;
   public fullscreen: boolean;
   public resolvers: ResolverList;
 
-  constructor(target: Type<PageComponent>, args: IPageInfo) {
-    if (!args.self) {
-      throw new Error("A page info must be provided with an `self` MenuRoute");
-    }
+  constructor(args: IPageInfo) {
     Object.assign(this, args);
-    this.component = target;
-    this.route.pageComponent = target;
-    this.resolvers = args.resolvers ? args.resolvers : {};
+    this.resolvers = args.resolvers ?? {};
   }
 
-  get route() {
+  /**
+   * Set Menu Route for PageInfo. This also modifies the menu route to include
+   * the associated target component.
+   */
+  public setMenuRoute(target: Type<PageComponent>, menu: MenuRoute) {
+    this.self = menu;
+    this.component = target;
+    this.route.pageComponent = target;
+  }
+
+  public get route() {
     return this.self.route;
   }
 }

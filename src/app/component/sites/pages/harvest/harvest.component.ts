@@ -28,10 +28,9 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-HarvestComponent.WithInfo({
+HarvestComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: { actions: List(siteMenuItemActions) },
-  self: harvestMenuItem,
-});
+}).AndMenuRoute(harvestMenuItem);
 
 export { HarvestComponent };

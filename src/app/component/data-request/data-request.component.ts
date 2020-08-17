@@ -72,9 +72,8 @@ class DataRequestComponent extends WithFormCheck(PageComponent)
   }
 }
 
-DataRequestComponent.WithInfo({
+DataRequestComponent.LinkComponentToPageInfo({
   category: dataRequestCategory,
-  self: dataRequestMenuItem,
-});
+}).AndMenuRoute(dataRequestMenuItem);
 
 export { DataRequestComponent };

@@ -69,13 +69,12 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsNewComponent.WithInfo({
+AdminTagsNewComponent.LinkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
     actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
   },
   resolvers: { [typeOfTagsKey]: tagResolvers.tagTypes },
-  self: adminNewTagMenuItem,
-});
+}).AndMenuRoute(adminNewTagMenuItem);
 
 export { AdminTagsNewComponent };

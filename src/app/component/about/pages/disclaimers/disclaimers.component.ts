@@ -23,9 +23,8 @@ class DisclaimersComponent extends PageComponent implements OnInit {
   }
 }
 
-DisclaimersComponent.WithInfo({
+DisclaimersComponent.LinkComponentToPageInfo({
   category: aboutCategory,
-  self: disclaimersMenuItem,
-});
+}).AndMenuRoute(disclaimersMenuItem);
 
 export { DisclaimersComponent };

@@ -55,11 +55,10 @@ class ListComponent extends PageComponent implements OnInit {
   }
 }
 
-ListComponent.WithInfo({
+ListComponent.LinkComponentToPageInfo({
   category: projectsCategory,
   menus: { actions: List<AnyMenuItem>(projectsMenuItemActions) },
   resolvers: { [projectsKey]: projectResolvers.list },
-  self: projectsMenuItem,
-});
+}).AndMenuRoute(projectsMenuItem);
 
 export { ListComponent };

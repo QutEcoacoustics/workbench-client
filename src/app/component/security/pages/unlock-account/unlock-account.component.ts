@@ -48,7 +48,7 @@ class UnlockAccountComponent extends WithFormCheck(PageComponent)
   }
 }
 
-UnlockAccountComponent.WithInfo({
+UnlockAccountComponent.LinkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -58,7 +58,6 @@ UnlockAccountComponent.WithInfo({
       unlockAccountMenuItem,
     ]),
   },
-  self: unlockAccountMenuItem,
-});
+}).AndMenuRoute(unlockAccountMenuItem);
 
 export { UnlockAccountComponent };

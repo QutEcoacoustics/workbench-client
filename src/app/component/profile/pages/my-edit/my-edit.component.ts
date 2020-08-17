@@ -84,13 +84,12 @@ class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
   }
 }
 
-MyEditComponent.WithInfo({
+MyEditComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
   menus: {
     actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
   },
   resolvers: { [userKey]: userResolvers.show },
-  self: myEditMenuItem,
-});
+}).AndMenuRoute(myEditMenuItem);
 
 export { MyEditComponent };

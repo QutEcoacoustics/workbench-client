@@ -119,13 +119,10 @@ class MyProfileComponent extends WithUnsubscribe(PageComponent)
   }
 }
 
-MyProfileComponent.WithInfo({
+MyProfileComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>(myAccountActions),
-  },
+  menus: { actions: List<AnyMenuItem>(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
-  self: myAccountMenuItem,
-});
+}).AndMenuRoute(myAccountMenuItem);
 
 export { MyProfileComponent };

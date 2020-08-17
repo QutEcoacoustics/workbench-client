@@ -50,7 +50,7 @@ class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
   }
 }
 
-AdminOrphansComponent.WithInfo({
+AdminOrphansComponent.LinkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -58,8 +58,7 @@ AdminOrphansComponent.WithInfo({
       ...adminMenuItemActions,
     ]),
   },
-  self: adminOrphansMenuItem,
-});
+}).AndMenuRoute(adminOrphansMenuItem);
 
 export { AdminOrphansComponent };
 

@@ -42,14 +42,13 @@ class TheirBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   }
 }
 
-TheirBookmarksComponent.WithInfo({
+TheirBookmarksComponent.LinkComponentToPageInfo({
   category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
   },
   resolvers: { [accountKey]: accountResolvers.show },
-  self: theirBookmarksMenuItem,
-});
+}).AndMenuRoute(theirBookmarksMenuItem);
 
 export { TheirBookmarksComponent };
 

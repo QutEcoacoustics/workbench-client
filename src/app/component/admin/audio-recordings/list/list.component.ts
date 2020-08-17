@@ -63,7 +63,7 @@ class AdminAudioRecordingsComponent
   }
 }
 
-AdminAudioRecordingsComponent.WithInfo({
+AdminAudioRecordingsComponent.LinkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -71,8 +71,7 @@ AdminAudioRecordingsComponent.WithInfo({
       ...adminMenuItemActions,
     ]),
   },
-  self: adminAudioRecordingsMenuItem,
-});
+}).AndMenuRoute(adminAudioRecordingsMenuItem);
 
 export { AdminAudioRecordingsComponent };
 

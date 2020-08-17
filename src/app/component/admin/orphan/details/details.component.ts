@@ -48,13 +48,12 @@ class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
   }
 }
 
-AdminOrphanComponent.WithInfo({
+AdminOrphanComponent.LinkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
-  self: adminOrphanMenuItem,
-});
+}).AndMenuRoute(adminOrphanMenuItem);
 
 export { AdminOrphanComponent };

@@ -70,10 +70,9 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 }
 
-HomeComponent.WithInfo({
+HomeComponent.LinkComponentToPageInfo({
   category: homeCategory,
   fullscreen: true,
-  self: homeMenuItem,
-});
+}).AndMenuRoute(homeMenuItem);
 
 export { HomeComponent };

@@ -74,7 +74,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsEditComponent.WithInfo({
+AdminTagsEditComponent.LinkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
     actions: List([
@@ -88,7 +88,6 @@ AdminTagsEditComponent.WithInfo({
     [tagKey]: tagResolvers.show,
     [tagTypesKey]: tagResolvers.tagTypes,
   },
-  self: adminEditTagMenuItem,
-});
+}).AndMenuRoute(adminEditTagMenuItem);
 
 export { AdminTagsEditComponent };

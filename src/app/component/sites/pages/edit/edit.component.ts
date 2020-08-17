@@ -82,7 +82,7 @@ class EditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-EditComponent.WithInfo({
+EditComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
@@ -92,7 +92,6 @@ EditComponent.WithInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-  self: editSiteMenuItem,
-});
+}).AndMenuRoute(editSiteMenuItem);
 
 export { EditComponent };

@@ -128,7 +128,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   }
 }
 
-LoginComponent.WithInfo({
+LoginComponent.LinkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -137,7 +137,6 @@ LoginComponent.WithInfo({
       unlockAccountMenuItem,
     ]),
   },
-  self: loginMenuItem,
-});
+}).AndMenuRoute(loginMenuItem);
 
 export { LoginComponent };

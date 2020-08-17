@@ -146,14 +146,13 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-HarvestComponent.WithInfo({
+HarvestComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-  self: harvestProjectMenuItem,
-});
+}).AndMenuRoute(harvestProjectMenuItem);
 
 export { HarvestComponent };

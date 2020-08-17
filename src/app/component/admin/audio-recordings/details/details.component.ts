@@ -50,13 +50,12 @@ class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
   }
 }
 
-AdminAudioRecordingComponent.WithInfo({
+AdminAudioRecordingComponent.LinkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
-  self: adminAudioRecordingMenuItem,
-});
+}).AndMenuRoute(adminAudioRecordingMenuItem);
 
 export { AdminAudioRecordingComponent };

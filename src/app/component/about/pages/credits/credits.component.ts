@@ -20,9 +20,8 @@ class CreditsComponent extends PageComponent implements OnInit {
   }
 }
 
-CreditsComponent.WithInfo({
+CreditsComponent.LinkComponentToPageInfo({
   category: aboutCategory,
-  self: creditsMenuItem,
-});
+}).AndMenuRoute(creditsMenuItem);
 
 export { CreditsComponent };
