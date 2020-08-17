@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { List } from "immutable";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
@@ -16,6 +15,7 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 import { assertIcon, assertTooltip } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
+import { List } from "immutable";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 

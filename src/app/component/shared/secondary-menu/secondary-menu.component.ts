@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
 import { DefaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
+import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 /**
