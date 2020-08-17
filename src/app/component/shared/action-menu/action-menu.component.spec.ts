@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { List } from "immutable";
-import { IPageInfo } from "src/app/helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
   Category,
@@ -12,10 +12,10 @@ import {
   MenuLink,
   MenuRoute,
   NavigableMenuItem,
-} from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
-import { assertIcon, assertTooltip } from "src/app/test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+} from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
+import { assertIcon, assertTooltip } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { SharedModule } from "../shared.module";
 import { ActionMenuComponent } from "./action-menu.component";
 
@@ -78,7 +78,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -104,7 +104,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -130,7 +130,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -151,7 +151,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -174,7 +174,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -202,7 +202,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -230,7 +230,7 @@ describe("ActionMenuComponent", () => {
       const route = StrongRoute.Base.add("/");
 
       createTestBed({}, {
-        self: MenuRoute({
+        pageRoute: MenuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -277,7 +277,7 @@ describe("ActionMenuComponent", () => {
   describe("internal links", () => {
     it("should handle single link", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
@@ -307,7 +307,7 @@ describe("ActionMenuComponent", () => {
 
     it("should handle multiple links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
@@ -349,7 +349,7 @@ describe("ActionMenuComponent", () => {
   describe("external links", () => {
     it("should handle single link", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
@@ -379,7 +379,7 @@ describe("ActionMenuComponent", () => {
 
     it("should handle multiple links", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
@@ -421,7 +421,7 @@ describe("ActionMenuComponent", () => {
   describe("action buttons", () => {
     it("should handle single action button", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
@@ -451,7 +451,7 @@ describe("ActionMenuComponent", () => {
 
     it("should handle multiple action button", () => {
       createTestBed({}, {
-        self: defaultSelfLink,
+        pageRoute: defaultSelfLink,
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([

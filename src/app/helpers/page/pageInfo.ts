@@ -17,7 +17,8 @@ import { PageComponent } from "./pageComponent";
  */
 export interface IPageInfo extends Data {
   category: Category;
-  self?: MenuRoute & { pageComponent?: Type<PageComponent> };
+  /** Stores modified menuroute */
+  pageRoute?: MenuRoute & { pageComponent?: Type<PageComponent> };
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
@@ -27,7 +28,7 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public self: MenuRoute & { pageComponent?: Type<PageComponent> };
+  public pageRoute: MenuRoute & { pageComponent?: Type<PageComponent> };
   public component: Type<PageComponent>;
   public category: Category;
   public menus: Menus;
@@ -44,12 +45,12 @@ export class PageInfo implements IPageInfo {
    * the associated target component.
    */
   public setMenuRoute(target: Type<PageComponent>, menu: MenuRoute) {
-    this.self = menu;
+    this.pageRoute = menu;
     this.component = target;
     this.route.pageComponent = target;
   }
 
   public get route() {
-    return this.self.route;
+    return this.pageRoute.route;
   }
 }

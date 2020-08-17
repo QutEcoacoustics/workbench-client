@@ -2,13 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
-import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
-import { PageInfo } from "src/app/helpers/page/pageInfo";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import {
-  MenuRoute,
-  NavigableMenuItem,
-} from "src/app/interfaces/menusInterfaces";
+import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 /**
@@ -45,7 +42,7 @@ export class SecondaryMenuComponent extends WithUnsubscribe()
         const defaultLinks = DefaultMenu.contextLinks;
 
         // and current page
-        const current = page.self;
+        const current = page.pageRoute;
         current.active = true; // Ignore predicate
 
         // and parent pages
