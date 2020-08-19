@@ -29,9 +29,6 @@
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": [
               "src/styles.scss",
-              "node_modules/primeng/resources/themes/nova-light/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
             "scripts": [],
@@ -99,9 +96,6 @@
             "assets": ["src/assets", "src/manifest.json"],
             "styles": [
               "src/styles.scss",
-              "node_modules/primeng/resources/themes/nova-light/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
               "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
             "scripts": []
@@ -170,9 +164,7 @@
           "options": {
             "browserTarget": "workbench-client:build:production",
             "serverTarget": "workbench-client:server:production",
-            "routes": [
-              "/"
-            ]
+            "routes": ["/"]
           },
           "configurations": {
             "production": {}
