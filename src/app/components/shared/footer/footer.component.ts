@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import {
   contactUsMenuItem,
   creditsMenuItem,

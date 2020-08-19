@@ -1,15 +1,15 @@
 import { TestBed } from "@angular/core/testing";
-import { fromJS } from "immutable";
-import { ToastrModule, ToastrService } from "ngx-toastr";
-import { toastrRoot } from "src/app/app.helper";
-import { SharedModule } from "src/app/component/shared/shared.module";
 import {
   API_CONFIG,
   API_ROOT,
   ASSET_ROOT,
   CMS_ROOT,
   Configuration,
-} from "src/app/helpers/app-initializer/app-initializer";
+} from "@helpers/app-initializer/app-initializer";
+import { SharedModule } from "@shared/shared.module";
+import { fromJS } from "immutable";
+import { ToastrModule, ToastrService } from "ngx-toastr";
+import { toastrRoot } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 import { AppConfigService } from "./app-config.service";
 import { testApiConfig } from "./appConfigMock.service";

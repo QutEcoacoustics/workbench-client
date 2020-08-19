@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Site } from "@models/Site";
+import { User } from "@models/User";
 import { List } from "immutable";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { Site } from "src/app/models/Site";
-import { User } from "src/app/models/User";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
 /**

@@ -1,5 +1,5 @@
-import { Category, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { homeCategory } from "../home/home.menus";
 
 export const statisticsRoute = StrongRoute.Base.add("website_statistics");

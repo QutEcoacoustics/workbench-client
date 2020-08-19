@@ -1,3 +1,4 @@
+import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
@@ -6,11 +7,6 @@ import {
   isLoggedInPredicate,
   isProjectOwnerPredicate,
 } from "src/app/app.menus";
-import {
-  Category,
-  MenuLink,
-  MenuRoute,
-} from "src/app/interfaces/menusInterfaces";
 import { projectMenuItem } from "../projects/projects.menus";
 
 export const sitesRoute = projectMenuItem.route.addFeatureModule("sites");

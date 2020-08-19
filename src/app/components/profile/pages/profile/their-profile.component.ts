@@ -14,9 +14,9 @@ import {
   theirProfileMenuItem,
   theirProjectsMenuItem,
   theirSitesMenuItem,
-} from "@component/profile/profile.menus";
-import { projectsMenuItem } from "@component/projects/projects.menus";
-import { siteMenuItem } from "@component/sites/sites.menus";
+} from "@components/profile/profile.menus";
+import { projectsMenuItem } from "@components/projects/projects.menus";
+import { siteMenuItem } from "@components/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";

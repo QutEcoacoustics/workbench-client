@@ -6,8 +6,8 @@ import {
   myAccountCategory,
   myAccountMenuItem,
   mySitesMenuItem,
-} from "@component/profile/profile.menus";
-import { siteAnnotationsMenuItem } from "@component/sites/sites.menus";
+} from "@components/profile/profile.menus";
+import { siteAnnotationsMenuItem } from "@components/sites/sites.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";

@@ -5,7 +5,7 @@ import {
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem,
-} from "@component/security/security.menus";
+} from "@components/security/security.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

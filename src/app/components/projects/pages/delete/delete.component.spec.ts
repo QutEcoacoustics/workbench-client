@@ -7,17 +7,17 @@ import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
-import { projectsMenuItem } from "@component/projects/projects.menus";
+import { projectsMenuItem } from "@components/projects/projects.menus";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("ProjectsDeleteComponent", () => {

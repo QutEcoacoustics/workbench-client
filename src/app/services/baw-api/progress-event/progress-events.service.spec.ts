@@ -8,7 +8,7 @@ import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 import { ProgressEventsService } from "./progress-events.service";
 
 describe("ProgressEventsService", function () {

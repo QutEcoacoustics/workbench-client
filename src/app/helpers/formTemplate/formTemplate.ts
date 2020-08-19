@@ -1,11 +1,11 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";

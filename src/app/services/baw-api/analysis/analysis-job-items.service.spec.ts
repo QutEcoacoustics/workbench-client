@@ -7,7 +7,7 @@ import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 import { AnalysisJobItemsService } from "./analysis-job-items.service";
 
 describe("AnalysisJobItemsService", function () {

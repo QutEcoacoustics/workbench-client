@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
-import { NavigableMenuItem } from "src/app/interfaces/menusInterfaces";
+import { NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
 export let API_CONFIG = new InjectionToken<Promise<Configuration>>(

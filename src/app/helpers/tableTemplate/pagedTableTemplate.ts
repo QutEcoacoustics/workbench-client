@@ -1,6 +1,10 @@
-import { Directive, Injectable, OnInit, ViewChild } from "@angular/core";
+import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ApiFilter } from "@baw-api/api-common";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { AbstractModel } from "@models/AbstractModel";
 import {
   ColumnMode,
   DatatableComponent,
@@ -10,10 +14,6 @@ import {
 } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { ApiFilter } from "src/app/services/baw-api/api-common";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { Filters } from "src/app/services/baw-api/baw-api.service";
 import { PageComponent } from "../page/pageComponent";
 
 /**

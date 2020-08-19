@@ -6,7 +6,7 @@ import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,

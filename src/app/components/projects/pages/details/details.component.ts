@@ -11,8 +11,8 @@ import {
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
-} from "@component/projects/projects.menus";
-import { newSiteMenuItem } from "@component/sites/sites.menus";
+} from "@components/projects/projects.menus";
+import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

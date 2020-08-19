@@ -1,20 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { PermissionsShieldComponent } from "@components/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
+import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { DateTimeTimezone } from "@interfaces/apiInterfaces";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { AudioRecording } from "@models/AudioRecording";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
-import { projectMenuItem } from "src/app/component/projects/projects.menus";
-import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { exploreAudioMenuItem } from "src/app/helpers/page/externalMenus";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { AudioRecording } from "src/app/models/AudioRecording";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,

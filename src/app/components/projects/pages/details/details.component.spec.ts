@@ -5,7 +5,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { SiteCardComponent } from "@component/projects/site-card/site-card.component";
+import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock.component";
@@ -14,7 +14,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("ProjectDetailsComponent", () => {

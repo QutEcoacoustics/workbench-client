@@ -5,7 +5,7 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import { MenuRoute } from "src/app/interfaces/menusInterfaces";
+import { MenuRoute } from "@interfaces/menusInterfaces";
 
 /**
  * Internal Menu Link Component

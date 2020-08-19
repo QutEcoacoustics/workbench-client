@@ -3,12 +3,12 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { ImageSizes } from "@interfaces/apiInterfaces";
+import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
 import { List } from "immutable";
-import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {

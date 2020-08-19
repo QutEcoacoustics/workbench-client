@@ -6,7 +6,7 @@ import {
   myAccountCategory,
   myAccountMenuItem,
   myProjectsMenuItem,
-} from "@component/profile/profile.menus";
+} from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";

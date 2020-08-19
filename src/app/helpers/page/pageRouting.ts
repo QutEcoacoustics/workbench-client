@@ -1,10 +1,10 @@
 import { Type } from "@angular/core";
 import { Route } from "@angular/router";
+import { ResolverHandlerComponent } from "@components/error/resolver-handler.component";
+import { FormTouchedGuard } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { ResolverHandlerComponent } from "src/app/component/error/resolver-handler.component";
-import { ActionMenuComponent } from "src/app/component/shared/action-menu/action-menu.component";
-import { SecondaryMenuComponent } from "src/app/component/shared/secondary-menu/secondary-menu.component";
-import { FormTouchedGuard } from "src/app/guards/form/form.guard";
+import { ActionMenuComponent } from "@shared/action-menu/action-menu.component";
+import { SecondaryMenuComponent } from "@shared/secondary-menu/secondary-menu.component";
 import { getPageInfo, PageComponent } from "./pageComponent";
 
 /**

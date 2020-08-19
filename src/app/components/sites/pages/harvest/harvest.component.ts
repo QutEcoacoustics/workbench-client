@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import { List } from "immutable";
-import { PageComponent } from "src/app/helpers/page/pageComponent";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { harvestMenuItem, sitesCategory } from "../../sites.menus";
 import { siteMenuItemActions } from "../details/details.component";
 

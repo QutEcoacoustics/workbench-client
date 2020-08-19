@@ -1,5 +1,5 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { SharedModule } from "src/app/component/shared/shared.module";
+import { SharedModule } from "@shared/shared.module";
 import { DatatableDirective } from "./datatable.directive";
 
 describe("DatatableDirective", () => {

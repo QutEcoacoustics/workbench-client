@@ -3,9 +3,9 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { FormComponent } from "@shared/form/form.component";
 import { WIPComponent } from "@shared/wip/wip.component";
+import { testFormlyFields } from "@test/helpers/formly";
+import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testFormImports } from "src/app/test/helpers/testbed";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
 

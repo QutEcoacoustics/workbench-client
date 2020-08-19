@@ -9,7 +9,7 @@ import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 
 describe("ScriptsService", function () {
   beforeEach(async(function () {

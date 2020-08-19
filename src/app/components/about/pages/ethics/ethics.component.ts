@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { aboutCategory, ethicsMenuItem } from "@component/about/about.menus";
+import { aboutCategory, ethicsMenuItem } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AppConfigService } from "@services/app-config/app-config.service";
 

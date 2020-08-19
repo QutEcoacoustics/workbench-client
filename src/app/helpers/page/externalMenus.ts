@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
+import { MenuLink } from "@interfaces/menusInterfaces";
 import { isLoggedInPredicate } from "src/app/app.menus";
-import { MenuLink } from "src/app/interfaces/menusInterfaces";
 import { stringTemplate } from "../stringTemplate/stringTemplate";
 
 export const annotationsMenuItem = MenuLink({

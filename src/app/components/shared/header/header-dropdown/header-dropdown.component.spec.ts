@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuLink, MenuRoute } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
 describe("HeaderDropdownComponent", () => {

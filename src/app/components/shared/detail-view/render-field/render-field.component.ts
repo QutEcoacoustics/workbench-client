@@ -7,16 +7,16 @@ import {
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
-import { DateTime, Duration } from "luxon";
-import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 import {
   ImageSizes,
   ImageUrl,
   isImageUrl,
   toRelative,
-} from "src/app/interfaces/apiInterfaces";
+} from "@interfaces/apiInterfaces";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import { DateTime, Duration } from "luxon";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "baw-render-field",

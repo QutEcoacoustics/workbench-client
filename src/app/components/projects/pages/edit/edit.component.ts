@@ -8,7 +8,7 @@ import {
   editProjectMenuItem,
   projectCategory,
   projectMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,

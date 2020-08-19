@@ -8,7 +8,7 @@ import {
   theirEditMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
-} from "@component/profile/profile.menus";
+} from "@components/profile/profile.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,

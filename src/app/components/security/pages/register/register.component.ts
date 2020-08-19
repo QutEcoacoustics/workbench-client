@@ -3,7 +3,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import {
   registerMenuItem,
   securityCategory,
-} from "@component/security/security.menus";
+} from "@components/security/security.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./register.schema.json";

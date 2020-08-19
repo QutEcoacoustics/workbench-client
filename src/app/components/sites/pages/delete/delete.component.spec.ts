@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { SharedModule } from "@components/shared/shared.module";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { SpyObject } from "@ngneat/spectator";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
+import { assertResolverErrorHandling } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { assertResolverErrorHandling } from "src/app/test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { DeleteComponent } from "./delete.component";
 
 describe("SitesDeleteComponent", () => {

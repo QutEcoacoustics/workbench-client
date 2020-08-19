@@ -1,23 +1,23 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { ImageSizes } from "@interfaces/apiInterfaces";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
-} from "src/app/helpers/app-initializer/app-initializer";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+} from "@helpers/app-initializer/app-initializer";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
   MenuLink,
   NavigableMenuItem,
-} from "src/app/interfaces/menusInterfaces";
-import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
+} from "@interfaces/menusInterfaces";
+import { SessionUser } from "@models/User";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";

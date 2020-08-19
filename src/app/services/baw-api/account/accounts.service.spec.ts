@@ -11,7 +11,7 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 
 describe("AccountsService", () => {
   beforeEach(function () {

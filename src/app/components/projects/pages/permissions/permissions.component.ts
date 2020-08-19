@@ -5,12 +5,12 @@ import {
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { theirProfileMenuItem } from "@component/profile/profile.menus";
+import { theirProfileMenuItem } from "@components/profile/profile.menus";
 import {
   editProjectPermissionsMenuItem,
   projectCategory,
   projectMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
 import { Project } from "@models/Project";

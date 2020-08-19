@@ -13,23 +13,23 @@ import { ToastrModule } from "ngx-toastr";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { formlyRoot, toastrRoot } from "./app.helper";
-import { AboutModule } from "./component/about/about.module";
-import { AdminModule } from "./component/admin/admin.module";
-import { DataRequestModule } from "./component/data-request/data-request.module";
-import { ErrorModule } from "./component/error/error.module";
-import { HomeModule } from "./component/home/home.module";
+import { AboutModule } from "./components/about/about.module";
+import { AdminModule } from "./components/admin/admin.module";
+import { DataRequestModule } from "./components/data-request/data-request.module";
+import { ErrorModule } from "./components/error/error.module";
+import { HomeModule } from "./components/home/home.module";
 import {
   MyAccountModule,
   ProfileModule,
-} from "./component/profile/profile.module";
-import { ProjectsModule } from "./component/projects/projects.module";
-import { ReportProblemsModule } from "./component/report-problem/report-problem.module";
-import { SecurityModule } from "./component/security/security.module";
-import { SendAudioModule } from "./component/send-audio/send-audio.module";
-import { PermissionsShieldComponent } from "./component/shared/permissions-shield/permissions-shield.component";
-import { SharedModule } from "./component/shared/shared.module";
-import { SitesModule } from "./component/sites/sites.module";
-import { StatisticsModule } from "./component/statistics/statistics.module";
+} from "./components/profile/profile.module";
+import { ProjectsModule } from "./components/projects/projects.module";
+import { ReportProblemsModule } from "./components/report-problem/report-problem.module";
+import { SecurityModule } from "./components/security/security.module";
+import { SendAudioModule } from "./components/send-audio/send-audio.module";
+import { PermissionsShieldComponent } from "./components/shared/permissions-shield/permissions-shield.component";
+import { SharedModule } from "./components/shared/shared.module";
+import { SitesModule } from "./components/sites/sites.module";
+import { StatisticsModule } from "./components/statistics/statistics.module";
 
 export const appLibraryImports = [
   BrowserModule,

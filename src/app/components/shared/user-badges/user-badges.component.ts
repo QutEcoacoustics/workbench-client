@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { DateTimeTimezone } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
+import { User } from "@models/User";
 import { List } from "immutable";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { DateTimeTimezone } from "src/app/interfaces/apiInterfaces";
-import { User } from "src/app/models/User";
 import { Badge } from "./user-badge/user-badge.component";
 
 /**

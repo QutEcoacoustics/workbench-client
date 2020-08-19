@@ -9,7 +9,7 @@ import {
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,

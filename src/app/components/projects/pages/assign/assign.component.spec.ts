@@ -9,9 +9,9 @@ import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { AssignComponent } from "./assign.component";
 
 describe("AssignComponent", () => {

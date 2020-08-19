@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
-import { DefaultMenu } from "src/app/helpers/page/defaultMenus";
-import { PageInfo } from "src/app/helpers/page/pageInfo";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { AnyMenuItem, LabelAndIcon } from "src/app/interfaces/menusInterfaces";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 import { WidgetMenuItem } from "../widget/widgetItem";
 
 /**

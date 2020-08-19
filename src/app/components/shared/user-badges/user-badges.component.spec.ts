@@ -7,6 +7,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { BawDateTime } from "@models/AttributeDecorators";
+import { User } from "@models/User";
 import {
   createComponentFactory,
   Spectator,
@@ -19,7 +20,6 @@ import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
-import { User } from "src/app/models/User";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 

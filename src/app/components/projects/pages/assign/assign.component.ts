@@ -6,7 +6,7 @@ import {
   assignSiteMenuItem,
   projectCategory,
   projectMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";

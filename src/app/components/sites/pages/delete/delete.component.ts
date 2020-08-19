@@ -2,22 +2,22 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
 import {
   deleteSiteMenuItem,
   siteMenuItem,
   sitesCategory,
-} from "src/app/component/sites/sites.menus";
+} from "@components/sites/sites.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "src/app/helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
+} from "@helpers/formTemplate/formTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "@shared/widget/widgetItem";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { siteMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";

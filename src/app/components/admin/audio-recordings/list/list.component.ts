@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { adminDashboardMenuItem } from "@component/admin/admin.menus";
-import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
+import { adminDashboardMenuItem } from "@components/admin/admin.menus";
+import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, toRelative } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

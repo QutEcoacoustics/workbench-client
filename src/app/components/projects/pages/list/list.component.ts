@@ -7,7 +7,7 @@ import {
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";

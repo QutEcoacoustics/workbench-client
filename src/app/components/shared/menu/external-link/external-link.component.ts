@@ -5,8 +5,8 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import { API_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { MenuLink } from "src/app/interfaces/menusInterfaces";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { MenuLink } from "@interfaces/menusInterfaces";
 
 /**
  * External Menu Link Component

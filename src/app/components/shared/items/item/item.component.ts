@@ -6,8 +6,8 @@ import {
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { Href } from "src/app/interfaces/menusInterfaces";
-import { StrongRoute } from "src/app/interfaces/strongRoute";
+import { Href } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 
 /**
  * Item Component

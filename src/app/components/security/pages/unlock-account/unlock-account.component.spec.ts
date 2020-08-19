@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
+import { testFormlyFields } from "@test/helpers/formly";
+import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { testFormlyFields } from "src/app/test/helpers/formly";
-import { testFormImports } from "src/app/test/helpers/testbed";
 import { UnlockAccountComponent } from "./unlock-account.component";
 import { fields } from "./unlock-account.schema.json";
 

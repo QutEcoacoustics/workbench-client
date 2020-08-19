@@ -6,9 +6,9 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { SessionUser } from "@models/User";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import { assertSpinner } from "@test/helpers/html";
-import { SessionUser } from "src/app/models/User";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 

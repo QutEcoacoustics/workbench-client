@@ -7,20 +7,20 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
-import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
 import { SharedModule } from "@shared/shared.module";
-import { BehaviorSubject, Subject } from "rxjs";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-} from "src/app/test/helpers/testbed";
+} from "@test/helpers/testbed";
+import { BehaviorSubject, Subject } from "rxjs";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
 class MockModel extends AbstractModel {

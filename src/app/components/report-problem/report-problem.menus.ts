@@ -1,4 +1,4 @@
-import { homeCategory } from "@component/home/home.menus";
+import { homeCategory } from "@components/home/home.menus";
 import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 

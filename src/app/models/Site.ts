@@ -3,7 +3,7 @@ import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { MapMarkerOption } from "@shared/map/map.component";
-import { siteMenuItem } from "../component/sites/sites.menus";
+import { siteMenuItem } from "../components/sites/sites.menus";
 import {
   DateTimeTimezone,
   Description,

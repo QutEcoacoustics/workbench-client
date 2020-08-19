@@ -1,6 +1,6 @@
+import { AbstractModel } from "@models/AbstractModel";
 import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
-import { AbstractModel } from "src/app/models/AbstractModel";
 import { id, IdOr } from "../api-common";
 import { Filters, Meta } from "../baw-api.service";
 

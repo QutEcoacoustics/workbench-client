@@ -5,7 +5,7 @@ import {
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem,
-} from "@component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

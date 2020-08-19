@@ -8,7 +8,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
-import { AdminAudioRecordingComponent } from "@component/admin/audio-recordings/details/details.component";
+import { AdminAudioRecordingComponent } from "@components/admin/audio-recordings/details/details.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";

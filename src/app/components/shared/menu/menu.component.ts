@@ -9,16 +9,16 @@ import {
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { List } from "immutable";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   AnyMenuItem,
   isButton,
   isExternalLink,
   isInternalRoute,
   LabelAndIcon,
-} from "src/app/interfaces/menusInterfaces";
-import { SessionUser } from "src/app/models/User";
+} from "@interfaces/menusInterfaces";
+import { SessionUser } from "@models/User";
+import { List } from "immutable";
 import { WidgetComponent } from "../widget/widget.component";
 import { WidgetDirective } from "../widget/widget.directive";
 import { WidgetMenuItem } from "../widget/widgetItem";
@@ -38,7 +38,8 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   @Input() public links: List<AnyMenuItem>;
   @Input() public menuType: "action" | "secondary";
   @Input() public widget?: WidgetMenuItem;
-  @ViewChild(WidgetDirective, { static: true }) public menuWidget: WidgetDirective;
+  @ViewChild(WidgetDirective, { static: true })
+  public menuWidget: WidgetDirective;
 
   public filteredLinks: Set<AnyMenuItem>;
   public placement: "left" | "right";

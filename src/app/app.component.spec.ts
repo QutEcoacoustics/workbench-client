@@ -10,7 +10,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { AppComponent } from "./app.component";
 import { appLibraryImports } from "./app.module";
-import { SharedModule } from "./component/shared/shared.module";
+import { SharedModule } from "./components/shared/shared.module";
 import { AppConfigService } from "./services/app-config/app-config.service";
 import { UserService } from "./services/baw-api/user/user.service";
 

@@ -7,10 +7,10 @@ import {
   OnInit,
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { CMS_ROOT } from "@helpers/app-initializer/app-initializer";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
-import { CMS_ROOT } from "src/app/helpers/app-initializer/app-initializer";
-import { WithUnsubscribe } from "src/app/helpers/unsubscribe/unsubscribe";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
 
 /**
  * CMS Wrapper

@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { projectMenuItem } from "@component/projects/projects.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   DateTimeTimezone,
   Description,

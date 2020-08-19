@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { TreeNode } from "primeng/api/treenode";
-import { AbstractModel } from "src/app/models/AbstractModel";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
 import { Status } from "../../shared/indicator/indicator.component";
 
 @Component({

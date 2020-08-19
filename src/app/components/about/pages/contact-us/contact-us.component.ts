@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { aboutCategory, contactUsMenuItem } from "@component/about/about.menus";
+import {
+  aboutCategory,
+  contactUsMenuItem,
+} from "@components/about/about.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { fields } from "./contact-us.schema.json";

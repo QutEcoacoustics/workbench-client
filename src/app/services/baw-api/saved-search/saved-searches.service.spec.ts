@@ -9,7 +9,7 @@ import {
   validateApiFilter,
   validateApiList,
   validateApiShow,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 import { SavedSearchesService } from "./saved-searches.service";
 
 describe("SavedSearchesService", function () {

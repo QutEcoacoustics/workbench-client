@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { adminDashboardMenuItem } from "@component/admin/admin.menus";
+import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Tag } from "@models/Tag";

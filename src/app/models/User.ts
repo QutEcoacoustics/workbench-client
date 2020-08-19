@@ -1,7 +1,7 @@
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
-} from "../component/profile/profile.menus";
+} from "../components/profile/profile.menus";
 import {
   AuthToken,
   DateTimeTimezone,

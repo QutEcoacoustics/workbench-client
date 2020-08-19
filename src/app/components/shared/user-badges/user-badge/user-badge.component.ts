@@ -5,9 +5,9 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
+import { ImageSizes } from "@interfaces/apiInterfaces";
+import { User } from "@models/User";
 import { List } from "immutable";
-import { ImageSizes } from "src/app/interfaces/apiInterfaces";
-import { User } from "src/app/models/User";
 
 /**
  * App User Badge Component.

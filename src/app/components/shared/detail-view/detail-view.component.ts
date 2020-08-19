@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { AbstractModel } from "src/app/models/AbstractModel";
 
 @Component({
   selector: "baw-detail-view",

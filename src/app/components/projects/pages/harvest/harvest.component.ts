@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { PermissionsShieldComponent } from "@components/shared/permissions-shield/permissions-shield.component";
+import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { Project } from "@models/Project";
+import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";
 import { List } from "immutable";
 import { MenuItem } from "primeng/api/menuitem";
 import { Observable, Subscription, timer } from "rxjs";
 import { map, startWith, takeWhile } from "rxjs/operators";
-import { PermissionsShieldComponent } from "src/app/component/shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "src/app/component/shared/widget/widgetItem";
-import { Project } from "src/app/models/Project";
-import { ResolvedModel } from "src/app/services/baw-api/resolver-common";
 import {
   harvestProjectMenuItem,
   projectCategory,

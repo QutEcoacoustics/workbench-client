@@ -2,19 +2,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { SharedModule } from "@components/shared/shared.module";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { MockMapComponent } from "@shared/map/mapMock.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {

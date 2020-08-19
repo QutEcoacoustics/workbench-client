@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { retrieveResolvers } from "src/app/services/baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { WidgetComponent } from "../widget/widget.component";
 
 /**

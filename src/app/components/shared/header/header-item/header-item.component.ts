@@ -10,7 +10,7 @@ import {
   isExternalLink,
   isInternalRoute,
   NavigableMenuItem,
-} from "src/app/interfaces/menusInterfaces";
+} from "@interfaces/menusInterfaces";
 
 /**
  * Header Item Component.

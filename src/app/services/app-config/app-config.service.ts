@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
 import {
   Configuration,
   Environment,
   isConfiguration,
   Values,
-} from "src/app/helpers/app-initializer/app-initializer";
+} from "@helpers/app-initializer/app-initializer";
+import { ToastrService } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 
 /**

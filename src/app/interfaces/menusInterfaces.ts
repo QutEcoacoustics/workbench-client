@@ -1,7 +1,7 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
-import { WidgetMenuItem } from "../component/shared/widget/widgetItem";
+import { WidgetMenuItem } from "../components/shared/widget/widgetItem";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
 

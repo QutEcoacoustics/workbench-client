@@ -3,9 +3,9 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
-import { SharedModule } from "src/app/component/shared/shared.module";
-import { AppConfigService } from "src/app/services/app-config/app-config.service";
+import { SharedModule } from "@shared/shared.module";
 import { HarvestComponent } from "./harvest.component";
 
 describe("SiteHarvestComponent", () => {

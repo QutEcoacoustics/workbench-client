@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import {
   aboutCategory,
   disclaimersMenuItem,
-} from "@component/about/about.menus";
+} from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AppConfigService } from "@services/app-config/app-config.service";
 

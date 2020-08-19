@@ -12,12 +12,9 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
+import { assertResolverErrorHandling, assertRoute } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
-import {
-  assertResolverErrorHandling,
-  assertRoute,
-} from "src/app/test/helpers/html";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { MySitesComponent } from "./my-sites.component";
 
 describe("MySitesComponent", () => {

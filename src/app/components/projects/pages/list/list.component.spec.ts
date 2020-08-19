@@ -9,7 +9,7 @@ import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {

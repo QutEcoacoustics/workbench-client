@@ -1,16 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { AbstractModel } from "@models/AbstractModel";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
+import { MockData, MockResolvers } from "@test/helpers/testbed";
 import { MockComponent } from "ng-mocks";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
-import { ApiErrorDetails } from "src/app/services/baw-api/api.interceptor.service";
-import { MockData, MockResolvers } from "src/app/test/helpers/testbed";
 import { UserBadgesComponent } from "../user-badges/user-badges.component";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 

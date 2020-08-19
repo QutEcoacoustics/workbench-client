@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { SCRIPT } from "@baw-api/ServiceTokens";
-import { adminScriptMenuItem } from "@component/admin/scripts/scripts.menus";
+import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
 import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";

@@ -10,7 +10,7 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 import { DatasetsService } from "./datasets.service";
 
 describe("DatasetsService", function () {

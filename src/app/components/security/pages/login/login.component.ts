@@ -5,14 +5,14 @@ import {
   LoginDetails,
   SecurityService,
 } from "@baw-api/security/security.service";
-import { homeMenuItem } from "@component/home/home.menus";
+import { homeMenuItem } from "@components/home/home.menus";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem,
-} from "@component/security/security.menus";
+} from "@components/security/security.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   defaultErrorMsg,

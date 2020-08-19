@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
-import { adminTagGroupsMenuItem } from "@component/admin/tag-group/tag-group.menus";
+import { adminTagGroupsMenuItem } from "@components/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";

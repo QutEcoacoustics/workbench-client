@@ -6,7 +6,7 @@ import {
   myAccountCategory,
   myAccountMenuItem,
   myEditMenuItem,
-} from "@component/profile/profile.menus";
+} from "@components/profile/profile.menus";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

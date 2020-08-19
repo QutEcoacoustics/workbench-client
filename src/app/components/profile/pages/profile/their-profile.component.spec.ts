@@ -8,7 +8,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { TheirProfileComponent } from "./their-profile.component";
 
 xdescribe("TheirProfileComponent", () => {

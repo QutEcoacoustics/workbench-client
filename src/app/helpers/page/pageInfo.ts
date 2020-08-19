@@ -5,7 +5,7 @@ import {
   MenuRoute,
   Menus,
   ResolverList,
-} from "src/app/interfaces/menusInterfaces";
+} from "@interfaces/menusInterfaces";
 import { PageComponent } from "./pageComponent";
 
 /**

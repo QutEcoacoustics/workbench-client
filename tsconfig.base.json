@@ -14,8 +14,8 @@
     "outDir": "./dist/out-tsc",
     "paths": {
       "@assets/*": ["./src/assets/*"],
-      "@shared/*": ["./src/app/component/shared/*"],
-      "@component/*": ["./src/app/component/*"],
+      "@shared/*": ["./src/app/components/shared/*"],
+      "@components/*": ["./src/app/components/*"],
       "@directives/*": ["./src/app/directives/*"],
       "@guards/*": ["./src/app/guards/*"],
       "@helpers/*": ["./src/app/helpers/*"],

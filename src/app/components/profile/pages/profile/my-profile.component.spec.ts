@@ -13,8 +13,8 @@ import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {

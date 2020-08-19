@@ -10,7 +10,7 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from "src/app/test/helpers/api-common";
+} from "@test/helpers/api-common";
 import { ShallowQuestionsService } from "./questions.service";
 
 describe("ShallowQuestionsService", function () {

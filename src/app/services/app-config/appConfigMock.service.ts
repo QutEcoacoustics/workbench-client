@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { version } from "package.json";
 import {
   Configuration,
   Environment,
   Values,
-} from "src/app/helpers/app-initializer/app-initializer";
+} from "@helpers/app-initializer/app-initializer";
+import { version } from "package.json";
 
 @Injectable()
 export class AppConfigMockService {

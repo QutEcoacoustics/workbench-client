@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import { AbstractModel } from "@models/AbstractModel";
-import { ApiErrorDetails } from "@services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "@services/baw-api/resolver-common";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import {

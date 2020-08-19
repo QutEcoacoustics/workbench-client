@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { adminDashboardMenuItem } from "@component/admin/admin.menus";
-import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
-import { assignSiteMenuItem } from "@component/projects/projects.menus";
+import { adminDashboardMenuItem } from "@components/admin/admin.menus";
+import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
+import { assignSiteMenuItem } from "@components/projects/projects.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";

@@ -10,8 +10,8 @@ import {
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { PermissionsComponent } from "./permissions.component";
 
 describe("PermissionsComponent", () => {

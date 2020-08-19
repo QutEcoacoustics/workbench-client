@@ -4,12 +4,12 @@ import {
   adminCategory,
   adminDashboardMenuItem,
   adminUserListMenuItem,
-} from "@component/admin/admin.menus";
-import { adminMenuItemActions } from "@component/admin/dashboard/dashboard.component";
+} from "@components/admin/admin.menus";
+import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import {
   theirEditMenuItem,
   theirProfileMenuItem,
-} from "@component/profile/profile.menus";
+} from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";

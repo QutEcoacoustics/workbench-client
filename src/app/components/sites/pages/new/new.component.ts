@@ -3,21 +3,21 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { projectMenuItemActions } from "src/app/component/projects/pages/details/details.component";
+import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem,
-} from "src/app/component/projects/projects.menus";
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
-} from "src/app/helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "src/app/interfaces/menusInterfaces";
-import { Project } from "src/app/models/Project";
-import { Site } from "src/app/models/Site";
+} from "@helpers/formTemplate/formTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { fields } from "../../site.base.json";
 import { newSiteMenuItem } from "../../sites.menus";
 

@@ -6,8 +6,8 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
+import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
-import { mockActivatedRoute } from "src/app/test/helpers/testbed";
 import { TheirEditComponent } from "./their-edit.component";
 
 describe("TheirProfileEditComponent", () => {
