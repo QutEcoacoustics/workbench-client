@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { SecurityService } from "@baw-api/security/security.service";
-import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { OrderedSet } from "immutable";
 
@@ -43,7 +43,6 @@ export class AuthenticatedImageDirective implements OnChanges {
 
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    @Inject(ASSET_ROOT) private assetRoot: string,
     private securityApi: SecurityService,
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
@@ -133,8 +132,8 @@ export class AuthenticatedImageDirective implements OnChanges {
    * @param url Url to potentially format
    */
   private formatIfLocalUrl(url: string): string {
-    if (url.startsWith("/") && !url.startsWith(this.assetRoot)) {
-      return this.assetRoot + url;
+    if (url.startsWith("/") && !url.startsWith("/assets")) {
+      return "/assets" + url;
     }
     return url;
   }

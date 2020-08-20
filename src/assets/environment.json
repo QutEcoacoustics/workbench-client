@@ -2,10 +2,6 @@
   "environment": {
     "environment": "development",
     "apiRoot": "https://staging.ecosounds.org",
-    "siteRoot": "http://localhost:4200",
-    "siteDir": "/build/",
-    "cmsRoot": "/assets/content",
-    "assetRoot": "/assets",
     "ga": {
       "trackingId": ""
     }
@@ -50,13 +46,13 @@
       }
     ],
     "cms": {
-      "credits": "/credits.html",
-      "disclaimers": "/disclaimers.html",
-      "downloadAnnotations": "/downloadAnnotations.html",
-      "ethics": "/ethics.html",
-      "harvest": "/harvest.html",
-      "home": "/home.html",
-      "sendAudio": "/sendAudio.html"
+      "credits": "/assets/content/credits.html",
+      "disclaimers": "/assets/content/disclaimers.html",
+      "downloadAnnotations": "/assets/content/downloadAnnotations.html",
+      "ethics": "/assets/content/ethics.html",
+      "harvest": "/assets/content/harvest.html",
+      "home": "/assets/content/home.html",
+      "sendAudio": "/assets/content/sendAudio.html"
     }
   }
 }

@@ -114,9 +114,7 @@ describe("ImageDirective", () => {
 
   describe("internal links", () => {
     function getAssetRoot() {
-      // Use test config instead of spectator.inject because this is used
-      // before DI is initialized
-      return testApiConfig.environment.assetRoot;
+      return "/assets";
     }
 
     it("should prepend asset root path to url", () => {

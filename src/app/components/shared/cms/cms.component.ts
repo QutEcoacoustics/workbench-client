@@ -1,14 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { CMS_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
@@ -32,7 +25,6 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public loading: boolean;
 
   constructor(
-    @Inject(CMS_ROOT) private cmsRoot: string,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
@@ -43,8 +35,9 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.loading = true;
 
+    // TODO Re-implement when CMS file have been extracted
     this.http
-      .get(this.cmsRoot + this.page, { responseType: "text" })
+      .get(this.page, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (data) => {
