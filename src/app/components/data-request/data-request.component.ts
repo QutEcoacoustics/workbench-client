@@ -48,7 +48,7 @@ class DataRequestComponent extends WithFormCheck(PageComponent)
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.downloadAnnotations;
+    this.page = this.env.getCms("downloadAnnotations");
   }
 
   /**

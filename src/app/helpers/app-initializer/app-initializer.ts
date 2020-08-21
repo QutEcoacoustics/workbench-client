@@ -106,7 +106,12 @@ export class Configuration implements Configuration {
 export function isConfiguration(
   config: Configuration
 ): config is Configuration {
-  return config.kind === "Configuration";
+  const hasKind = config?.kind === "Configuration";
+  const hasEnvironment = !!config?.environment;
+  const hasValues = !!config?.values;
+  const hasApiRoot = !!config?.environment?.apiRoot;
+
+  return hasKind && hasEnvironment && hasValues && hasApiRoot;
 }
 
 type Links = XOR<HeaderLink, HeaderDropDownLink>;

@@ -52,7 +52,7 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.home;
+    this.page = this.env.getCms("home");
 
     this.securityApi
       .getAuthTrigger()

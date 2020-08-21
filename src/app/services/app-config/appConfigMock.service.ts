@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
+  CMS,
   Configuration,
   Environment,
   Values,
@@ -8,16 +9,22 @@ import { version } from "package.json";
 
 @Injectable()
 export class AppConfigMockService {
-  get config(): Configuration {
+  public get config(): Configuration {
     return new Proxy(testApiConfig, {});
   }
 
-  get environment(): Environment {
+  public get environment(): Environment {
     return new Proxy(testApiConfig.environment, {});
   }
 
-  get values(): Values {
+  public get values(): Values {
     return new Proxy(testApiConfig.values, {});
+  }
+
+  public getCms(cms: keyof CMS): string {
+    return this.values.cms?.[cms]
+      ? this.values.cms[cms]
+      : "/assets/content/error.html";
   }
 }
 

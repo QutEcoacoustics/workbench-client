@@ -105,4 +105,24 @@ describe("AppConfigService", () => {
       }
     );
   });
+
+  describe("CMS", () => {
+    it("should get cms", () => {
+      const config: any = {
+        ...testApiConfig,
+        values: { cms: { test: "/test.html" } },
+      };
+
+      configureTestingModule(undefined, config);
+      expect(service.getCms("test" as any)).toEqual("/test.html");
+    });
+
+    it("should return error page if cms does not exist", () => {
+      const config: any = { ...testApiConfig, values: { cms: {} } };
+      configureTestingModule(undefined, config);
+      expect(service.getCms("test" as any)).toEqual(
+        "/assets/content/error.html"
+      );
+    });
+  });
 });
