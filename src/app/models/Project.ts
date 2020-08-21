@@ -28,6 +28,7 @@ export interface IProject {
   id?: Id;
   name?: Param;
   description?: Description;
+  descriptionHtml?: Description;
   imageUrl?: string;
   creatorId?: Id;
   createdAt?: DateTimeTimezone | string;
@@ -48,6 +49,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   public readonly imageUrl?: string;
   @BawImage<Project>("/assets/images/project/project_span4.png", {
     key: "imageUrl",
@@ -84,7 +86,7 @@ export class Project extends AbstractModel implements IProject {
   public getCard(): Card {
     return {
       title: this.name,
-      description: this.description,
+      description: this.descriptionHtml,
       model: this,
       route: this.viewUrl,
     };
