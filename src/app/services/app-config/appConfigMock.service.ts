@@ -28,6 +28,7 @@ export const testApiConfig = new Configuration({
     environment: "testing",
     apiRoot: "https://www.testing.com/api",
     ga: {
+      domain: "<< domain >>",
       trackingId: "<< googleAnalytics >>",
     },
   },

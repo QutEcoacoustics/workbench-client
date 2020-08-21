@@ -67,6 +67,7 @@ export interface Environment {
   environment: string;
   apiRoot: string;
   ga: {
+    domain: string;
     trackingId: string;
   };
 }
