@@ -8,6 +8,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { generateSessionUser } from "@test/fakes/User";
 import { assertSpinner } from "@test/helpers/html";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
@@ -47,7 +48,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
 
     expect(req).toBeTruthy();
     expect(req.request.method).toBe("GET");
@@ -59,7 +60,7 @@ describe("CmsComponent", () => {
     component.page = "/new.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/new.html");
+    const req = httpMock.expectOne("/new.html");
 
     expect(req).toBeTruthy();
     expect(req.request.method).toBe("GET");
@@ -71,7 +72,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    httpMock.expectOne("/testing.html");
     assertSpinner(fixture, true);
   });
 
@@ -81,7 +82,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
 
     fixture.detectChanges();
@@ -94,7 +95,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     req.flush("", { status: 404, statusText: "Not Found" });
 
     fixture.detectChanges();
@@ -107,7 +108,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
 
     expect(req.request.responseType).toBeTruthy();
     expect(req.request.responseType).toBe("text");
@@ -119,7 +120,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     expect(req.request.headers.has("Accept")).toBeFalsy();
   });
 
@@ -129,7 +130,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     expect(req.request.headers.has("Content-Type")).toBeFalsy();
   });
 
@@ -139,24 +140,23 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     expect(req.request.headers.has("Authorization")).toBeFalsy();
   });
 
-  it("should request page from api with 'Authorization' header when logged in", () => {
+  // TODO Re-implement when CMS request are performed by API
+  xit("should request page from api with 'Authorization' header when logged in", () => {
+    const sessionUser = new SessionUser(generateSessionUser());
     spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getLocalUser").and.callFake(
-      () =>
-        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
-    );
+    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
 
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     expect(req.request.headers.has("Authorization")).toBeTruthy();
     expect(req.request.headers.get("Authorization")).toBe(
-      'Token token="xxxxxxxxxxxxxxx"'
+      `Token token="${sessionUser.authToken}"`
     );
   });
 
@@ -166,7 +166,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
 
     fixture.detectChanges();
@@ -186,7 +186,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     req.flush("", { status: 404, statusText: "Not Found" });
 
     const header = fixture.nativeElement.querySelector("h1");
@@ -200,7 +200,7 @@ describe("CmsComponent", () => {
     component.page = "/testing.html";
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/testing.html");
+    const req = httpMock.expectOne("/testing.html");
     req.flush("", { status: 401, statusText: "Unauthorized" });
 
     const header = fixture.nativeElement.querySelector("h1");

@@ -47,7 +47,7 @@ describe("HomeComponent", () => {
     securityApi = TestBed.inject(SecurityService);
     env = TestBed.inject(AppConfigService);
 
-    cmsUrl = env.environment.cmsRoot + "/home.html";
+    cmsUrl = "/home.html";
   });
 
   afterEach(() => {

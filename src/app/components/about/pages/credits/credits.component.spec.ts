@@ -40,12 +40,12 @@ describe("AboutCreditsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
+    httpMock.expectOne("/credits.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
+    const req = httpMock.expectOne("/credits.html");
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
     fixture.detectChanges();

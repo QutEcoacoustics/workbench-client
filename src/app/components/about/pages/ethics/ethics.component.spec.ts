@@ -40,12 +40,12 @@ describe("AboutEthicsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/ethics.html");
+    httpMock.expectOne("/ethics.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/ethics.html");
+    const req = httpMock.expectOne("/ethics.html");
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
     fixture.detectChanges();

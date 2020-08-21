@@ -40,14 +40,12 @@ describe("AboutDisclaimersComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/disclaimers.html");
+    httpMock.expectOne("/disclaimers.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(
-      env.environment.cmsRoot + "/disclaimers.html"
-    );
+    const req = httpMock.expectOne("/disclaimers.html");
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
     fixture.detectChanges();

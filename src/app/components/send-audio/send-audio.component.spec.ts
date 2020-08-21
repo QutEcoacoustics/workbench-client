@@ -34,7 +34,7 @@ describe("SendAudioComponent", () => {
     env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
 
-    cmsUrl = env.environment.cmsRoot + "/sendAudio.html";
+    cmsUrl = "/sendAudio.html";
 
     fixture.detectChanges();
   });

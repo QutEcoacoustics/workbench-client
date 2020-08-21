@@ -8,6 +8,7 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { List } from "immutable";
 import { UserBadgeComponent } from "./user-badge.component";
 
@@ -118,7 +119,7 @@ describe("UserBadgeComponent", () => {
       detectChanges();
       assertImage(
         getImages()[0],
-        `http://${window.location.host}/assets/images/user/user_span4.png`,
+        `${websiteHttpUrl}/assets/images/user/user_span4.png`,
         "custom username profile picture"
       );
     });

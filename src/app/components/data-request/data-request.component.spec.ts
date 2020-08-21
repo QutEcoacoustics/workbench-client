@@ -38,7 +38,7 @@ xdescribe("DataRequestComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/downloadAnnotations.html");
+    httpMock.expectOne("/downloadAnnotations.html");
     expect(component).toBeTruthy();
   });
 });

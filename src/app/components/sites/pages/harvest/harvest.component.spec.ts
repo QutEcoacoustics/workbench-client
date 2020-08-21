@@ -6,6 +6,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { HarvestComponent } from "./harvest.component";
 
 describe("SiteHarvestComponent", () => {
@@ -34,12 +35,12 @@ describe("SiteHarvestComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/harvest.html");
+    httpMock.expectOne("/harvest.html");
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/harvest.html");
+    const req = httpMock.expectOne("/harvest.html");
 
     req.flush(
       "<h1>Test Header</h1><p class='description'>Test Description</p>"

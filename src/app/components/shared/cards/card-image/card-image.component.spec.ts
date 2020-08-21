@@ -7,6 +7,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
 import { assertHref, assertImage, assertRoute } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
 
@@ -69,7 +70,7 @@ describe("CardImageComponent", () => {
     const image = spectator.query<HTMLImageElement>("img");
     assertImage(
       image,
-      `http://${window.location.host}${baseUrl}/300/300`,
+      `${websiteHttpUrl}${baseUrl}/300/300`,
       "custom title image"
     );
   });

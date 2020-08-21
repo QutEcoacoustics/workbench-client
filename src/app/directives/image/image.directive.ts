@@ -124,7 +124,10 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.displayThumbnail = false;
     }
 
-    this.setImageSrc();
+    // Continue searching, unless backup image404 has already been tried and failed
+    if (!this.usedUrls.contains(image404RelativeSrc)) {
+      this.setImageSrc();
+    }
   }
 
   /**

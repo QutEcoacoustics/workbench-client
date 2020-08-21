@@ -9,6 +9,7 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import {
   AuthenticatedImageDirective,
   image404RelativeSrc,
@@ -16,7 +17,7 @@ import {
 
 describe("ImageDirective", () => {
   let spectator: SpectatorDirective<AuthenticatedImageDirective>;
-  const image404Src = `http://${window.location.host}${image404RelativeSrc}`;
+  const image404Src = `${websiteHttpUrl}${image404RelativeSrc}`;
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
     imports: [HttpClientTestingModule, MockBawApiModule],
@@ -85,6 +86,21 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(undefined);
       assertImage(getImage(), image404Src, "alt");
     });
+
+    it("given bad 404 image, it stops attempting to load images", () => {
+      const imageUrls = [modelData.imageUrls()[0]];
+      spectator = createDefaultDirective(imageUrls);
+      const spy = spyOn<any>(
+        spectator.directive,
+        "setImageSrc"
+      ).and.callThrough();
+
+      const image = getImage();
+      // Spam errors
+      [1, 2, 3, 4].forEach(() => createImgErrorEvent(image));
+      // Image url should have only been set once
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("thumbnail", () => {
@@ -124,7 +140,7 @@ describe("ImageDirective", () => {
 
       assertImage(
         getImage(),
-        `http://${window.location.host}${getAssetRoot()}/image.png`,
+        `${websiteHttpUrl}${getAssetRoot()}/image.png`,
         "alt"
       );
     });
@@ -136,7 +152,7 @@ describe("ImageDirective", () => {
 
       assertImage(
         getImage(),
-        `http://${window.location.host}${getAssetRoot()}/image.png`,
+        `${websiteHttpUrl}${getAssetRoot()}/image.png`,
         "alt"
       );
     });
