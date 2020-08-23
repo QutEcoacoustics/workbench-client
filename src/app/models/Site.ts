@@ -32,6 +32,7 @@ export interface ISite {
   name?: Param;
   imageUrl?: string;
   description?: Description;
+  descriptionHtml?: Description;
   locationObfuscated?: boolean;
   creatorId?: Id;
   updaterId?: Id;
@@ -63,6 +64,7 @@ export class Site extends AbstractModel implements ISite {
   public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

@@ -16,6 +16,7 @@ export interface IDataset {
   updaterId?: Id;
   name?: Param;
   description?: Description;
+  descriptionHtml?: Description;
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
 }
@@ -30,6 +31,7 @@ export class Dataset extends AbstractModel implements IDataset {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()

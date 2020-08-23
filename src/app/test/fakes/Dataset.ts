@@ -7,6 +7,7 @@ export function generateDataset(id?: Id): IDataset {
     id: modelData.id(id),
     name: modelData.param(),
     description: modelData.description(),
+    descriptionHtml: modelData.descriptionHtml(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),
     createdAt: modelData.timestamp(),

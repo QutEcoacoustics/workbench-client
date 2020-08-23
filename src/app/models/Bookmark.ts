@@ -25,6 +25,7 @@ export interface IBookmark {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   description?: Description;
+  descriptionHtml?: Description;
   category?: string;
 }
 
@@ -46,6 +47,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public readonly updatedAt?: DateTimeTimezone;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   @BawPersistAttr
   public readonly category?: string;
 

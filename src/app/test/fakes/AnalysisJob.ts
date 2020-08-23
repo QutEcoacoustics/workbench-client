@@ -19,6 +19,7 @@ export function generateAnalysisJob(id?: Id): IAnalysisJob {
     name: modelData.param(),
     annotationName: modelData.param(),
     description: modelData.description(),
+    descriptionHtml: modelData.descriptionHtml(),
     scriptId: modelData.id(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),

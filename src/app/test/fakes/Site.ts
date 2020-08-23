@@ -8,6 +8,7 @@ export function generateSite(id?: Id): ISite {
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
     description: modelData.description(),
+    descriptionHtml: modelData.descriptionHtml(),
     locationObfuscated: modelData.boolean(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),

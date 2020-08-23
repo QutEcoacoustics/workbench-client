@@ -13,6 +13,7 @@ export function generateBookmark(id?: Id): IBookmark {
     createdAt: modelData.timestamp(),
     updatedAt: modelData.timestamp(),
     description: modelData.description(),
+    descriptionHtml: modelData.descriptionHtml(),
     category: "<< application >>", // TODO Replace with list of possibilities
   };
 }

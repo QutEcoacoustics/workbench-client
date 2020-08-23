@@ -34,6 +34,7 @@ export interface IAnalysisJob {
   updatedAt?: DateTimeTimezone | string;
   deletedAt?: DateTimeTimezone | string;
   description?: Description;
+  descriptionHtml?: Description;
   savedSearchId?: Id;
   startedAt?: DateTimeTimezone | string;
   overallStatus?: AnalysisJobStatus;
@@ -57,6 +58,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly customSettings?: Blob;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   public readonly scriptId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

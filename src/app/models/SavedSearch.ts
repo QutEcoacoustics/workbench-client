@@ -16,6 +16,7 @@ export interface ISavedSearch {
   id?: Id;
   name?: Param;
   description?: Description;
+  descriptionHtml?: Description;
   storedQuery?: InnerFilter<AudioRecording>;
   creatorId?: Id;
   deleterId?: Id;
@@ -31,6 +32,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
   @BawPersistAttr
   public readonly storedQuery?: InnerFilter<AudioRecording>;
   public readonly creatorId?: Id;

@@ -7,6 +7,7 @@ export function generateProject(id?: Id): IProject {
     id: modelData.id(id),
     name: modelData.param(),
     description: modelData.description(),
+    descriptionHtml: modelData.descriptionHtml(),
     imageUrl: modelData.imageUrl(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),
