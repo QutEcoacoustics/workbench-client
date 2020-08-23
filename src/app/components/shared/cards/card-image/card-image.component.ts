@@ -56,8 +56,8 @@ import { Card } from "../cards.component";
         <!-- Card Description -->
         <p
           class="card-text"
-          [ngClass]="{ 'font-italic': !card.description }"
           [line-truncation]="4"
+          [style.font-italic]="!card.description"
         >
           {{ description }}
         </p>
@@ -71,7 +71,8 @@ export class CardImageComponent implements OnChanges {
   public description: string;
 
   public ngOnChanges() {
-    this.description =
-      stripHtml(this.card.description) || "No description given";
+    this.description = this.card.description
+      ? stripHtml(this.card.description)
+      : "No description given";
   }
 }
