@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { ISessionUser, IUser } from "@models/User";
 import { modelData } from "@test/helpers/faker";
 
-export function generateUser(id?: Id, isAdmin?: boolean): IUser {
+export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
   return {
     id: modelData.id(id),
     email: modelData.internet.email(),
@@ -29,6 +29,7 @@ export function generateUser(id?: Id, isAdmin?: boolean): IUser {
       { rolesMask: 1, rolesMaskNames: ["Admin"] },
       { rolesMask: 2, rolesMaskNames: ["User"] },
     ]),
+    tzinfoTz: modelData.tzInfoTz(),
   };
 }
 

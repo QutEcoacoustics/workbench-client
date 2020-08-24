@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { ITagGroup } from "@models/TagGroup";
 import { modelData } from "@test/helpers/faker";
 
-export function generateTagGroup(id?: Id): ITagGroup {
+export function generateTagGroup(id?: Id): Required<ITagGroup> {
   return {
     id: modelData.id(id),
     groupIdentifier: modelData.param(),

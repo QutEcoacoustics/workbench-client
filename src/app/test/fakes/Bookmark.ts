@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { IBookmark } from "@models/Bookmark";
 import { modelData } from "@test/helpers/faker";
 
-export function generateBookmark(id?: Id): IBookmark {
+export function generateBookmark(id?: Id): Required<IBookmark> {
   return {
     id: modelData.id(id),
     audioRecordingId: modelData.id(),

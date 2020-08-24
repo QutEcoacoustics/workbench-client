@@ -2,8 +2,8 @@ import { Id } from "@interfaces/apiInterfaces";
 import { ISite } from "@models/Site";
 import { modelData } from "@test/helpers/faker";
 
-export function generateSite(id?: Id): ISite {
-  const site: ISite = {
+export function generateSite(id?: Id): Required<ISite> {
+  return {
     id: modelData.id(id),
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
@@ -20,8 +20,6 @@ export function generateSite(id?: Id): ISite {
     longitude: modelData.longitude(),
     customLongitude: modelData.longitude(),
     timezoneInformation: modelData.timezone(),
+    tzinfoTz: modelData.tzInfoTz(),
   };
-  site.tzinfoTz = site.timezoneInformation.identifier;
-
-  return site;
 }

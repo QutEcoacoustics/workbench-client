@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { IDatasetItem } from "@models/DatasetItem";
 import { modelData } from "@test/helpers/faker";
 
-export function generateDatasetItem(id?: Id): IDatasetItem {
+export function generateDatasetItem(id?: Id): Required<IDatasetItem> {
   const [startTimeSeconds, endTimeSeconds] = modelData.startEndSeconds();
 
   return {

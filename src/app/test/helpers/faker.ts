@@ -58,6 +58,12 @@ export const modelData = {
     return [arr[min], arr[min + inc]];
   },
   timestamp: () => faker.date.past().toISOString(),
+  tzInfoTz: () =>
+    faker.random.arrayElement([
+      "America/Costa_Rica",
+      "Australia/Brisbane",
+      "Asia/Makassar",
+    ]),
   uuid: () => faker.random.uuid(),
   hexaDecimal,
   randomArray,

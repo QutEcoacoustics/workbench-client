@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { IAudioEvent } from "@models/AudioEvent";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioEvent(id?: Id): IAudioEvent {
+export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
   const [startTimeSeconds, endTimeSeconds] = modelData.startEndSeconds();
   const [lowFrequencyHertz, highFrequencyHertz] = modelData.startEndArray(
     modelData.defaults.sampleRateHertz

@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { IScript } from "@models/Script";
 import { modelData } from "@test/helpers/faker";
 
-export function generateScript(id?: Id): IScript {
+export function generateScript(id?: Id): Required<IScript> {
   return {
     id: modelData.id(id),
     name: modelData.param(),

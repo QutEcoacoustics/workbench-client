@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioRecording(id?: Id): IAudioRecording {
+export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
   const bitRateBps = modelData.random.arrayElement(
     modelData.defaults.bitRateBps
   );
