@@ -48,6 +48,8 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (data) => {
+          // TODO Validate if this is needed?
+          // https://www.intricatecloud.io/2019/10/using-angular-innerhtml-to-display-user-generated-content-without-sacrificing-security/
           // This is a bit dangerous, however CMS should only load from trusted sources.
           // May need to revise this in future.
           this.blob = this.sanitizer.bypassSecurityTrustHtml(data);

@@ -34,8 +34,8 @@ import { Card } from "../cards.component";
       <div class="card-body">
         <p
           class="card-text"
+          [ngClass]="{ 'font-italic': !card.description }"
           [line-truncation]="4"
-          [style.font-italic]="!card.description"
         >
           {{ description }}
         </p>

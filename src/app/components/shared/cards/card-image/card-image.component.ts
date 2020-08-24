@@ -57,8 +57,8 @@ import { Card } from "../cards.component";
         <!-- Card Description -->
         <p
           class="card-text"
+          [ngClass]="{ 'font-italic': !card.description }"
           [line-truncation]="4"
-          [style.font-italic]="!card.description"
         >
           {{ description }}
         </p>
