@@ -47,7 +47,7 @@ describe("ProjectsListComponent", () => {
   }
 
   function assertCardDescription(card: any, description: string) {
-    expect(card.querySelector(".card-text").innerText.trim()).toBe(description);
+    expect(card.querySelector(".card-text").innerHTML.trim()).toBe(description);
   }
 
   it("should handle zero projects", () => {
@@ -82,7 +82,11 @@ describe("ProjectsListComponent", () => {
 
   it("should display single project card with default description", () => {
     const projects = [
-      new Project({ ...generateProject(), description: undefined }),
+      new Project({
+        ...generateProject(),
+        description: undefined,
+        descriptionHtml: undefined,
+      }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
@@ -92,12 +96,17 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should display single project card with custom description", () => {
-    const projects = [new Project(generateProject())];
+    const projects = [
+      new Project({
+        ...generateProject(),
+        descriptionHtml: "<b>Custom</b> Description",
+      }),
+    ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
 
     const cards = getCards();
-    assertCardDescription(cards[0], projects[0].description);
+    assertCardDescription(cards[0], "Custom Description");
   });
 
   it("should display multiple project cards", () => {
