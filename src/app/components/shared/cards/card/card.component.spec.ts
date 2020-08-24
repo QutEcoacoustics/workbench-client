@@ -1,10 +1,15 @@
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { assertHref, assertRoute } from "@test/helpers/html";
+import { modelData } from "@test/helpers/faker";
+import { assertHref, assertRoute, assertTruncation } from "@test/helpers/html";
+import { LineTruncationLibModule } from "ngx-line-truncation";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
   let spectator: SpectatorRouting<CardComponent>;
-  const createComponent = createRoutingFactory(CardComponent);
+  const createComponent = createRoutingFactory({
+    component: CardComponent,
+    imports: [LineTruncationLibModule],
+  });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
@@ -29,6 +34,7 @@ describe("CardComponent", () => {
 
   it("should have default description when none provided", () => {
     spectator.setInput("card", { title: "title" });
+    spectator.component.ngOnChanges();
 
     const description = spectator.query<HTMLParagraphElement>("p");
     expect(description.textContent).toContain("No description given");
@@ -36,9 +42,21 @@ describe("CardComponent", () => {
 
   it("should have description when provided", () => {
     spectator.setInput("card", { title: "title", description: "description" });
+    spectator.component.ngOnChanges();
 
     const description = spectator.query<HTMLParagraphElement>("p");
     expect(description.textContent).toContain("description");
+  });
+
+  it("should shorten description when description is long", () => {
+    spectator.setInput("card", {
+      title: "title",
+      description: modelData.descriptionLong(),
+    });
+    spectator.component.ngOnChanges();
+
+    const description = spectator.query<HTMLParagraphElement>("p");
+    assertTruncation(description, 4);
   });
 
   it("should create href link", () => {

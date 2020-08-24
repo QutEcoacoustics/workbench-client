@@ -9,8 +9,10 @@ import faker from "faker";
 export const modelData = {
   boolean: () => faker.random.boolean(),
   description: () => faker.lorem.sentence(),
+  descriptionLong: () =>
+    [0, 1, 2, 3, 4].map(() => faker.lorem.sentences()).join(" "),
   descriptionHtml: () =>
-    `<b>${modelData.commerce.productName()}</b><br /><p>${modelData.description()}<p>`,
+    `<b>${faker.commerce.productName()}</b><br /><p>${modelData.description()}<p>`,
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
     bitRateBps: [

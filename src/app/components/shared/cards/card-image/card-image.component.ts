@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -70,9 +71,12 @@ export class CardImageComponent implements OnChanges {
   @Input() public card: Card;
   public description: string;
 
+  constructor(private ref: ChangeDetectorRef) {}
+
   public ngOnChanges() {
     this.description = this.card.description
       ? stripHtml(this.card.description)
       : "No description given";
+    this.ref.detectChanges();
   }
 }
