@@ -1,29 +1,31 @@
 <style>
   .landing-image {
-    background-image: url("/assets/images/landing/landing-image-640x360.jpg");
-    background: no-repeat center center scroll;
+    background-image: url("/assets/images/landing/IMG_0894.JPG");
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-attachment: scroll;
     background-size: cover;
     height: 50vh;
   }
 
-  @media screen and (max-height: 360px) {
+  @media screen and (max-width: 360px) {
     .landing-image {
-      background-image: url("/assets/images/landing/landing-image-640x360.jpg");
+      background-image: url("/assets/images/landing/IMG_1316.JPG");
     }
   }
-  @media screen and (max-height: 720px) and (min-height: 361px) {
+  @media screen and (max-width: 720px) and (min-width: 361px) {
     .landing-image {
-      background-image: url("/assets/images/landing/landing-image-1280x720.jpg");
+      background-image: url("/assets/images/landing/IMG_0894.JPG");
     }
   }
-  @media screen and (max-height: 1080px) and (min-height: 721px) {
+  @media screen and (max-width: 1080px) and (min-width: 721px) {
     .landing-image {
-      background-image: url("/assets/images/landing/landing-image-1920x1080.jpg");
+      background-image: url("/assets/images/landing/IMG_20180710_081824508_HDR.jpg");
     }
   }
-  @media screen and (min-height: 1081px) {
+  @media screen and (min-width: 1081px) {
     .landing-image {
-      background-image: url("/assets/images/landing/landing-image-3840x2160.jpg");
+      background-image: url("/assets/images/landing/IMG_1318.JPG");
     }
   }
 </style>
@@ -32,11 +34,9 @@
   <div class="landing-image"></div>
 </header>
 
-<div class="container-fluid" style="background-color: #e9ecef;">
+<div class="container-fluid" style="background-color: #e9ecef">
   <section class="container">
-    <h1>
-      Ecosounds | Acoustic Workbench
-    </h1>
+    <h1>Ecosounds | Acoustic Workbench</h1>
     <p class="lead">
       Welcome! Ecosounds is a repository of environmental audio recordings.
     </p>
@@ -55,16 +55,12 @@
 
 <div class="container-fluid">
   <section class="container">
-    <h2>
-      Our Process
-    </h2>
+    <h2>Our Process</h2>
 
     <div class="justify-content-center row">
       <div class="col-lg-4 col-sm-6 mb-4">
         <div class="card h-100">
-          <h4 class="card-header text-center">
-            Environment
-          </h4>
+          <h4 class="card-header text-center">Environment</h4>
           <div class="card-body">
             <p class="card-text" ng-reflect-ng-class="[object Object]">
               Faunal vocalisations and other human-audible environmental sounds
@@ -75,9 +71,7 @@
 
       <div class="col-lg-4 col-sm-6 mb-4">
         <div class="card h-100">
-          <h4 class="card-header text-center">
-            Acoustic Sensors
-          </h4>
+          <h4 class="card-header text-center">Acoustic Sensors</h4>
           <div class="card-body">
             <p class="card-text">
               Acoustic sensors record sound in a wide range of environments
@@ -88,9 +82,7 @@
 
       <div class="col-lg-4 col-sm-6 mb-4">
         <div class="card h-100">
-          <h4 class="card-header text-center">
-            Annotated Spectrogram
-          </h4>
+          <h4 class="card-header text-center">Annotated Spectrogram</h4>
           <div class="card-body">
             <p class="card-text">
               Practical identification of animal sounds by people and automated

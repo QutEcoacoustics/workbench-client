@@ -16,9 +16,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
     <baw-cms [page]="page"></baw-cms>
     <div class="container-fluid" style="background-color: #e9ecef;">
       <section class="container">
-        <h2>
-          Some of the projects you can access
-        </h2>
+        <h2>Some of the projects you can access</h2>
         <p>
           You can browse some public projects and audio recordings without
           logging in. To participate in the analysis work you will need to Log
