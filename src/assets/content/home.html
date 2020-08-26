@@ -1,11 +1,17 @@
 <style>
   .landing-image {
-    background-image: url("/assets/images/landing/IMG_0894.JPG");
     background-repeat: no-repeat;
     background-position: bottom;
     background-attachment: scroll;
     background-size: cover;
     height: 50vh;
+  }
+
+  .credits {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    height: 100%;
   }
 
   @media screen and (max-width: 360px) {
@@ -31,7 +37,11 @@
 </style>
 
 <header>
-  <div class="landing-image"></div>
+  <div class="landing-image">
+    <section class="credits">
+      <p class="m-0 p-1 alert alert-light">Credits to QUT Ecoacoustics Staff</p>
+    </section>
+  </div>
 </header>
 
 <div class="container-fluid" style="background-color: #e9ecef">
