@@ -1,49 +1,45 @@
 <style>
   .landing-image {
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-attachment: scroll;
-    background-size: cover;
-    height: 50vh;
+    bottom: 0;
+    object-fit: cover;
+    width: 100vw;
+    max-width: 100%;
+    max-height: 50vh;
   }
-
   .credits {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    height: 100%;
+    margin-top: -2.5rem;
+    margin-left: 0.5rem;
   }
-
-  @media screen and (max-width: 360px) {
-    .landing-image {
-      background-image: url("/assets/images/landing/IMG_1316.JPG");
-    }
-  }
-  @media screen and (max-width: 720px) and (min-width: 361px) {
-    .landing-image {
-      background-image: url("/assets/images/landing/IMG_0894.JPG");
-    }
-  }
-  @media screen and (max-width: 1080px) and (min-width: 721px) {
-    .landing-image {
-      background-image: url("/assets/images/landing/IMG_20180710_081824508_HDR.jpg");
-    }
-  }
-  @media screen and (min-width: 1081px) {
-    .landing-image {
-      background-image: url("/assets/images/landing/IMG_1318.JPG");
-    }
+  .credits span {
+    padding: 0.5rem 1rem;
   }
 </style>
 
 <header>
-  <div class="landing-image">
-    <section class="credits">
-      <p class="m-0 p-1 pl-2 pr-2 alert alert-light">
-        Credits to QUT Ecoacoustics Staff
-      </p>
-    </section>
-  </div>
+  <figure>
+    <picture>
+      <source
+        media="(min-width: 1081px)"
+        srcset="/assets/images/landing/IMG_1318.JPG"
+      />
+      <source
+        media="(min-width: 721px)"
+        srcset="/assets/images/landing/IMG_20180710_081824508_HDR.jpg"
+      />
+      <source
+        media="(min-width: 361px)"
+        srcset="/assets/images/landing/IMG_0894.JPG"
+      />
+      <img
+        class="landing-image"
+        src="/assets/images/landing/IMG_1316.JPG"
+        alt="Landing page image"
+      />
+    </picture>
+    <figcaption class="credits">
+      <span class="alert alert-light">Credits to QUT Ecoacoustics Staff</span>
+    </figcaption>
+  </figure>
 </header>
 
 <div class="container-fluid" style="background-color: #e9ecef">
