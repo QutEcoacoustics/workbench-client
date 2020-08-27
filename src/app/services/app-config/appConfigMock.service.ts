@@ -30,7 +30,6 @@ export const testApiConfig = new Configuration({
     siteRoot: "https://www.testing.com/site",
     siteDir: "<< siteDir >>",
     cmsRoot: "https://www.testing.com/cms",
-    assetRoot: "/assets",
     ga: {
       trackingId: "<< googleAnalytics >>",
     },

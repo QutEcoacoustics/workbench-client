@@ -5,7 +5,6 @@
     "siteRoot": "http://localhost:4200",
     "siteDir": "/build/",
     "cmsRoot": "/assets/content",
-    "assetRoot": "/assets",
     "ga": {
       "trackingId": ""
     }

@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing";
 import {
   API_CONFIG,
   API_ROOT,
-  ASSET_ROOT,
   CMS_ROOT,
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
@@ -48,7 +47,6 @@ describe("AppConfigService", () => {
   function configureTestingModule(
     apiRoot: string = testApiConfig.environment.apiRoot,
     cmsRoot: string = testApiConfig.environment.cmsRoot,
-    assetRoot: string = testApiConfig.environment.assetRoot,
     apiConfig: Partial<Configuration> = testApiConfig
   ) {
     TestBed.configureTestingModule({
@@ -61,10 +59,6 @@ describe("AppConfigService", () => {
         {
           provide: CMS_ROOT,
           useValue: cmsRoot,
-        },
-        {
-          provide: ASSET_ROOT,
-          useValue: assetRoot,
         },
         {
           provide: API_CONFIG,
@@ -104,7 +98,7 @@ describe("AppConfigService", () => {
   });
 
   it("should create warning message on failed config", () => {
-    configureTestingModule("", "", "", {});
+    configureTestingModule("", "", {});
 
     expect(toastr.error).toHaveBeenCalledWith(
       "The website is not configured correctly. Try coming back at another time.",
