@@ -23,9 +23,7 @@ export class AppConfigMockService {
   }
 
   public getCms(cms: keyof CMS): string {
-    return this.values.cms?.[cms]
-      ? this.values.cms[cms]
-      : `${assetRoot}/content/error.html`;
+    return this.values.cms?.[cms] ? this.values.cms[cms] : "/error.html";
   }
 }
 

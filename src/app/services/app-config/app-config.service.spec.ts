@@ -125,7 +125,7 @@ describe("AppConfigService", () => {
     it("should return error page if cms does not exist", () => {
       const config: any = { ...testApiConfig, values: { cms: {} } };
       configureTestingModule(undefined, config);
-      expect(service.getCms("test" as any)).toEqual(`${cmsRoot}/error.html`);
+      expect(service.getCms("test" as any)).toEqual("/error.html");
     });
   });
 });
