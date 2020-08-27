@@ -9,6 +9,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { cmsRoot } from "@services/app-config/app-config.service.spec";
+import { generateSessionUser } from "@test/fakes/User";
 import { assertSpinner } from "@test/helpers/html";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
@@ -146,11 +147,9 @@ describe("CmsComponent", () => {
 
   // TODO Re-implement when CMS requests are performed by API
   xit("should request page from api with 'Authorization' header when logged in", () => {
+    const sessionUser = new SessionUser(generateSessionUser());
     spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getLocalUser").and.callFake(
-      () =>
-        new SessionUser({ authToken: "xxxxxxxxxxxxxxx", userName: "username" })
-    );
+    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
 
     component.page = "/testing.html";
     fixture.detectChanges();
@@ -158,7 +157,7 @@ describe("CmsComponent", () => {
     const req = httpMock.expectOne(`${cmsRoot}/testing.html`);
     expect(req.request.headers.has("Authorization")).toBeTruthy();
     expect(req.request.headers.get("Authorization")).toBe(
-      'Token token="xxxxxxxxxxxxxxx"'
+      `Token token="${sessionUser.authToken}"`
     );
   });
 
