@@ -7,6 +7,7 @@ import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
 import { RenderFieldComponent } from "./render-field.component";
@@ -530,7 +531,7 @@ describe("RenderFieldComponent", () => {
       const value = getImageValues()[0];
       assertImage(
         value,
-        `http://${window.location.host}/assets/test/test.png`,
+        `${websiteHttpUrl}/assets/test/test.png`,
         "model image alt"
       );
     });
