@@ -71,6 +71,7 @@ export interface Environment {
   siteRoot: string;
   siteDir: string;
   ga: {
+    domain: string;
     trackingId: string;
   };
 }

@@ -38,6 +38,7 @@ export const testApiConfig = new Configuration({
     siteRoot: "https://www.testing.com/site",
     siteDir: "/website",
     ga: {
+      domain: "<< domain >>",
       trackingId: "<< googleAnalytics >>",
     },
   },
