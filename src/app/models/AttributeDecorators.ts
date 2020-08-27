@@ -20,6 +20,7 @@ export function BawImage<T extends AbstractModel>(
   defaultUrl: string,
   opts?: BawDecoratorOptions<T>
 ) {
+  // Retrieve default image and prepend site url if required
   const defaultImage: ImageUrl = { size: ImageSizes.DEFAULT, url: defaultUrl };
 
   function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
@@ -35,7 +36,7 @@ export function BawImage<T extends AbstractModel>(
     return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
   }
 
-  function hasDefault(images: ImageUrl[]): boolean {
+  function missingDefault(images: ImageUrl[]): boolean {
     return !images.find((image) => image.size === ImageSizes.DEFAULT);
   }
 
@@ -54,9 +55,10 @@ export function BawImage<T extends AbstractModel>(
         output.sort((a, b) => sortImageUrls(a, b));
 
         // Append default image
-        if (hasDefault(output)) {
+        if (missingDefault(output)) {
           output.push(defaultImage);
         }
+
         model[key] = output;
       } else {
         model[key] = [defaultImage];

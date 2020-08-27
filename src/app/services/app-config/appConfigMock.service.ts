@@ -28,7 +28,7 @@ export const testApiConfig = new Configuration({
     environment: "testing",
     apiRoot: "https://www.testing.com/api",
     siteRoot: "https://www.testing.com/site",
-    siteDir: "<< siteDir >>",
+    siteDir: "/website",
     cmsRoot: "https://www.testing.com/cms",
     ga: {
       trackingId: "<< googleAnalytics >>",

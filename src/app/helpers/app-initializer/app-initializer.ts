@@ -28,12 +28,16 @@ export class AppInitializer {
     };
   }
 
+  private static getEnvironmentValue(key: keyof Environment) {
+    return isConfiguration(environment) ? environment?.environment?.[key] : "";
+  }
+
   public static apiRootFactory() {
-    return isConfiguration(environment) ? environment.environment.apiRoot : "";
+    return this.getEnvironmentValue("apiRoot");
   }
 
   public static cmsRootFactory() {
-    return isConfiguration(environment) ? environment.environment.cmsRoot : "";
+    return this.getEnvironmentValue("cmsRoot");
   }
 }
 
