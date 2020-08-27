@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { SecurityService } from "@baw-api/security/security.service";
-import { API_ROOT, ASSET_ROOT } from "@helpers/app-initializer/app-initializer";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { OrderedSet } from "immutable";
 
@@ -43,7 +43,6 @@ export class AuthenticatedImageDirective implements OnChanges {
 
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    @Inject(ASSET_ROOT) private assetRoot: string,
     private securityApi: SecurityService,
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
@@ -108,7 +107,6 @@ export class AuthenticatedImageDirective implements OnChanges {
     }
 
     this.usedUrls = this.usedUrls.add(url);
-    url = this.formatIfLocalUrl(url);
     url = this.appendAuthToken(url);
     this.imageRef.nativeElement.src = url;
   }
@@ -125,18 +123,10 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.displayThumbnail = false;
     }
 
-    this.setImageSrc();
-  }
-
-  /**
-   * Prepend the asset root to any local urls
-   * @param url Url to potentially format
-   */
-  private formatIfLocalUrl(url: string): string {
-    if (url.startsWith("/") && !url.startsWith(this.assetRoot)) {
-      return this.assetRoot + url;
+    // Continue searching, unless backup image404 has already been tried and failed
+    if (!this.usedUrls.contains(image404RelativeSrc)) {
+      this.setImageSrc();
     }
-    return url;
   }
 
   /**
