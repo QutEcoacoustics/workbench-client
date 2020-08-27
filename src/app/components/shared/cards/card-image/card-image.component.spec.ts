@@ -5,6 +5,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { modelData } from "@test/helpers/faker";
 import { assertHref, assertImage, assertRoute } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -61,7 +62,7 @@ describe("CardImageComponent", () => {
   });
 
   it("should handle local image", () => {
-    const baseUrl = "/assets/broken_link";
+    const baseUrl = `${assetRoot}/broken_link`;
     spectator.setInput("card", {
       title: "custom title",
       model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),

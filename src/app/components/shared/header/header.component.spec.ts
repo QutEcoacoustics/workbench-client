@@ -10,7 +10,10 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import {
+  AppConfigService,
+  assetRoot,
+} from "@services/app-config/app-config.service";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
@@ -229,7 +232,7 @@ describe("HeaderComponent", () => {
             const image = profile.querySelector("img");
             assertImage(
               image,
-              `${websiteHttpUrl}/assets/images/user/user_span4.png`,
+              `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
               "Profile Icon"
             );
           }));

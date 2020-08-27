@@ -8,6 +8,8 @@ import {
 import { ToastrService } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 
+export const assetRoot = "/assets";
+
 /**
  * App Config Service.
  * Handles access to the deployment environment.

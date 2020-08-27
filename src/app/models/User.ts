@@ -1,3 +1,4 @@
+import { assetRoot } from "@services/app-config/app-config.service";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
@@ -56,7 +57,9 @@ export class User extends AbstractModel implements IUser {
   public readonly failedAttempts?: number;
   @BawPersistAttr
   public readonly imageUrls?: ImageUrl[];
-  @BawImage<User>("/assets/images/user/user_span4.png", { key: "imageUrls" })
+  @BawImage<User>(`${assetRoot}/images/user/user_span4.png`, {
+    key: "imageUrls",
+  })
   public readonly image: ImageUrl[];
   @BawPersistAttr
   public readonly preferences?: any;
