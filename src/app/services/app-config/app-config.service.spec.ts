@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing";
 import {
   API_CONFIG,
   API_ROOT,
-  CMS_ROOT,
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
 import { SharedModule } from "@shared/shared.module";
@@ -10,8 +9,13 @@ import { fromJS } from "immutable";
 import { ToastrModule, ToastrService } from "ngx-toastr";
 import { toastrRoot } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { AppConfigService } from "./app-config.service";
+import { AppConfigService, assetRoot } from "./app-config.service";
 import { testApiConfig } from "./appConfigMock.service";
+
+/**
+ * CMS root for resources. This should only be used by tests
+ */
+export const cmsRoot = `${assetRoot}/content`;
 
 describe("AppConfigService", () => {
   let service: AppConfigService;
@@ -46,7 +50,6 @@ describe("AppConfigService", () => {
 
   function configureTestingModule(
     apiRoot: string = testApiConfig.environment.apiRoot,
-    cmsRoot: string = testApiConfig.environment.cmsRoot,
     apiConfig: Partial<Configuration> = testApiConfig
   ) {
     TestBed.configureTestingModule({
@@ -55,10 +58,6 @@ describe("AppConfigService", () => {
         {
           provide: API_ROOT,
           useValue: apiRoot,
-        },
-        {
-          provide: CMS_ROOT,
-          useValue: cmsRoot,
         },
         {
           provide: API_CONFIG,
@@ -98,7 +97,7 @@ describe("AppConfigService", () => {
   });
 
   it("should create warning message on failed config", () => {
-    configureTestingModule("", "", {});
+    configureTestingModule("", {});
 
     expect(toastr.error).toHaveBeenCalledWith(
       "The website is not configured correctly. Try coming back at another time.",

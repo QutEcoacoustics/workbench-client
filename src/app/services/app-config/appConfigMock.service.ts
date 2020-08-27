@@ -1,23 +1,31 @@
 import { Injectable } from "@angular/core";
 import {
+  CMS,
   Configuration,
   Environment,
   Values,
 } from "@helpers/app-initializer/app-initializer";
 import { version } from "package.json";
+import { assetRoot } from "./app-config.service";
 
 @Injectable()
 export class AppConfigMockService {
-  get config(): Configuration {
+  public get config(): Configuration {
     return new Proxy(testApiConfig, {});
   }
 
-  get environment(): Environment {
+  public get environment(): Environment {
     return new Proxy(testApiConfig.environment, {});
   }
 
-  get values(): Values {
+  public get values(): Values {
     return new Proxy(testApiConfig.values, {});
+  }
+
+  public getCms(cms: keyof CMS): string {
+    return this.values.cms?.[cms]
+      ? this.values.cms[cms]
+      : `${assetRoot}/content/error.html`;
   }
 }
 
@@ -29,7 +37,6 @@ export const testApiConfig = new Configuration({
     apiRoot: "https://www.testing.com/api",
     siteRoot: "https://www.testing.com/site",
     siteDir: "/website",
-    cmsRoot: "https://www.testing.com/cms",
     ga: {
       trackingId: "<< googleAnalytics >>",
     },

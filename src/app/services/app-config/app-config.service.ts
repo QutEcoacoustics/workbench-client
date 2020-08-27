@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
+  CMS,
   Configuration,
   Environment,
   isConfiguration,
@@ -40,21 +41,33 @@ export class AppConfigService {
   /**
    * Get config data
    */
-  get config(): Configuration {
+  public get config(): Configuration {
     return this._config;
   }
 
   /**
    * Get environment values
    */
-  get environment(): Environment {
+  public get environment(): Environment {
     return this._config.environment;
   }
 
   /**
    * Get config values
    */
-  get values(): Values {
+  public get values(): Values {
     return this._config.values;
+  }
+
+  /**
+   * Retrieve cms url path.
+   * ! This is only a temporary function to handle retrieving
+   * cms paths. It will eventually be replaced by an API call.
+   * @param cms CMS page to retrieve
+   */
+  public getCms(cms: keyof CMS): string {
+    return this.values.cms?.[cms]
+      ? this.values.cms[cms]
+      : `${assetRoot}/content/error.html`;
   }
 }

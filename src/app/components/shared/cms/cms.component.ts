@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { CMS_ROOT } from "@helpers/app-initializer/app-initializer";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
@@ -32,7 +32,7 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public loading: boolean;
 
   constructor(
-    @Inject(CMS_ROOT) private cmsRoot: string,
+    @Inject(API_ROOT) private apiRoot: string,
     private http: HttpClient,
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer
@@ -43,8 +43,10 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.loading = true;
 
+    // TODO Replace with API request
     this.http
-      .get(this.cmsRoot + this.page, { responseType: "text" })
+      // .get(this.apiRoot + this.page, { responseType: "text" })
+      .get(`/assets/content${this.page}`, { responseType: "text" })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (data) => {

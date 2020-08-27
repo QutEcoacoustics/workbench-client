@@ -3,7 +3,6 @@ import {
   API_CONFIG,
   API_ROOT,
   AppInitializer,
-  CMS_ROOT,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrModule } from "ngx-toastr";
 import { AppConfigService } from "./app-config.service";
@@ -20,10 +19,6 @@ import { AppConfigService } from "./app-config.service";
     {
       provide: API_ROOT,
       useFactory: AppInitializer.apiRootFactory,
-    },
-    {
-      provide: CMS_ROOT,
-      useFactory: AppInitializer.cmsRootFactory,
     },
     AppConfigService,
   ],
