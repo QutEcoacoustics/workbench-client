@@ -33,10 +33,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
     <div id="hero-image">
       <baw-cms [page]="page"></baw-cms>
       <div class="container-fluid" style="padding-bottom: 3rem;">
-        <section
-          class="container"
-          style="background-color: #fff; filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));"
-        >
+        <section class="container">
           <h2>Some of the projects you can access</h2>
           <p>
             You can browse some public projects and audio recordings without
@@ -80,7 +77,7 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.home;
+    this.page = this.env.getCms("home");
 
     this.securityApi
       .getAuthTrigger()

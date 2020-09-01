@@ -1,5 +1,6 @@
 <div class="pb-3">
-  <p-treeTable [value]="files">
+  <div>
+    Placeholder for tree table component
     <ng-template pTemplate="header">
       <tr>
         <th>Name</th>
@@ -13,10 +14,7 @@
       <tr>
         <td>
           <div class="clearfix">
-            <p-treeTableToggler
-              *ngIf="rowNode.node.children"
-              [rowNode]="rowNode"
-            ></p-treeTableToggler>
+            <div>Placeholder for tree table element</div>
             {{ rowData.name }}
           </div>
         </td>
@@ -43,5 +41,5 @@
         </td>
       </tr>
     </ng-template>
-  </p-treeTable>
+  </div>
 </div>

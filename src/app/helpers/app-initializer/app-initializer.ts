@@ -7,8 +7,6 @@ export let API_CONFIG = new InjectionToken<Promise<Configuration>>(
   "baw.api.config"
 );
 export let API_ROOT = new InjectionToken<string>("baw.api.root");
-export let CMS_ROOT = new InjectionToken<string>("baw.cms.root");
-export let ASSET_ROOT = new InjectionToken<string>("baw.asset.root");
 
 /**
  * App Initializer class.
@@ -30,16 +28,8 @@ export class AppInitializer {
   }
 
   public static apiRootFactory() {
-    return isConfiguration(environment) ? environment.environment.apiRoot : "";
-  }
-
-  public static cmsRootFactory() {
-    return isConfiguration(environment) ? environment.environment.cmsRoot : "";
-  }
-
-  public static assetRootFactory() {
     return isConfiguration(environment)
-      ? environment.environment.assetRoot
+      ? environment?.environment?.apiRoot
       : "";
   }
 }
@@ -80,9 +70,8 @@ export interface Environment {
   apiRoot: string;
   siteRoot: string;
   siteDir: string;
-  cmsRoot: string;
-  assetRoot: string;
   ga: {
+    domain: string;
     trackingId: string;
   };
 }
@@ -121,7 +110,12 @@ export class Configuration implements Configuration {
 export function isConfiguration(
   config: Configuration
 ): config is Configuration {
-  return config.kind === "Configuration";
+  const hasKind = config?.kind === "Configuration";
+  const hasEnvironment = !!config?.environment;
+  const hasValues = !!config?.values;
+  const hasApiRoot = !!config?.environment?.apiRoot;
+
+  return hasKind && hasEnvironment && hasValues && hasApiRoot;
 }
 
 type Links = XOR<HeaderLink, HeaderDropDownLink>;

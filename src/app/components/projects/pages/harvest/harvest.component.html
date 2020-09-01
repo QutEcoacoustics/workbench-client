@@ -5,7 +5,11 @@
     Harvest
   </h1>
 
-  <p-steps [model]="harvestSteps" [activeIndex]="stage"></p-steps>
+  <div>
+    Placeholder for Steps Component
+    (https://primefaces.org/primeng/showcase/#/steps). Currently on step:
+    {{ stage }}
+  </div>
 
   <div [ngSwitch]="stage">
     <!-- Details about harvesting files -->
@@ -21,19 +25,13 @@
       </p>
 
       <ul>
-        <li>
-          Converting audio files to formats compatible with our website
-        </li>
-        <li>
-          Basic integrity checks on the data harvested
-        </li>
+        <li>Converting audio files to formats compatible with our website</li>
+        <li>Basic integrity checks on the data harvested</li>
         <li>
           Gathering metadata about the audio (format, channels, bitrate, sample
           rate, duration, etc.)
         </li>
-        <li>
-          Assigning audio to sites and projects
-        </li>
+        <li>Assigning audio to sites and projects</li>
       </ul>
 
       <p>
@@ -224,9 +222,7 @@
       </p>
 
       <div class="clearfix">
-        <button class="btn btn-primary float-right">
-          Download Report
-        </button>
+        <button class="btn btn-primary float-right">Download Report</button>
       </div>
 
       <app-project-harvest-complete [project]="project">

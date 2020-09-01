@@ -21,6 +21,7 @@ export const toastrRoot: Partial<GlobalConfig> = {
  * Formly types and validation messages
  */
 export const formlyRoot: ConfigOption = {
+  extras: { lazyRender: true },
   types: formlyInputTypes,
   wrappers: formlyWrappers,
   validationMessages: formlyValidationMessages,
