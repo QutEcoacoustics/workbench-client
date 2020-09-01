@@ -33,7 +33,8 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     </baw-wip>
   `,
 })
-class DataRequestComponent extends WithFormCheck(PageComponent)
+class DataRequestComponent
+  extends WithFormCheck(PageComponent)
   implements OnInit {
   public annotationLoading: boolean;
   public annotationModel = {};
@@ -48,7 +49,7 @@ class DataRequestComponent extends WithFormCheck(PageComponent)
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.downloadAnnotations;
+    this.page = this.env.getCms("downloadAnnotations");
   }
 
   /**

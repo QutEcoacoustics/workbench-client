@@ -9,9 +9,10 @@ import {
 import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { OrderedSet } from "immutable";
 
-export const image404RelativeSrc = "/assets/images/404.png";
+export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 
 @Directive({
   // Directive applies directly to all image tags instead of being

@@ -5,6 +5,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
@@ -119,7 +120,7 @@ describe("UserBadgeComponent", () => {
       detectChanges();
       assertImage(
         getImages()[0],
-        `${websiteHttpUrl}/assets/images/user/user_span4.png`,
+        `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
         "custom username profile picture"
       );
     });

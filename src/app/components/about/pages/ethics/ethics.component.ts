@@ -16,7 +16,7 @@ class EthicsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.ethics;
+    this.page = this.env.getCms("ethics");
   }
 }
 
