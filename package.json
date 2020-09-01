@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1000.7",
-    "@angular/cli": "^10.0.7",
+    "@angular/cli": "^10.0.8",
     "@angular/compiler-cli": "^10.0.9",
     "@angular/language-service": "^10.0.12",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
