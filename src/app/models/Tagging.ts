@@ -1,6 +1,10 @@
 import { Injector } from "@angular/core";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Id,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -8,14 +12,10 @@ import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 
-export interface ITagging {
+export interface ITagging extends HasCreatorAndUpdater {
   id?: Id;
   audioEventId?: Id;
   tagId?: Id;
-  creatorId?: Id;
-  updaterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
 }
 
 export class Tagging extends AbstractModel implements ITagging {

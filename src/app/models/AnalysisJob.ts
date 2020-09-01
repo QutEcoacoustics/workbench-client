@@ -4,6 +4,8 @@ import { Duration } from "luxon";
 import {
   DateTimeTimezone,
   Description,
+  HasAllUsers,
+  HasDescription,
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
@@ -21,20 +23,12 @@ import type { User } from "./User";
 /**
  * An analysis job model.
  */
-export interface IAnalysisJob {
+export interface IAnalysisJob extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   annotationName?: string;
   customSettings?: Blob | object;
   scriptId?: Id;
-  creatorId?: Id;
-  updaterId?: Id;
-  deleterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
-  deletedAt?: DateTimeTimezone | string;
-  description?: Description;
-  descriptionHtml?: Description;
   savedSearchId?: Id;
   startedAt?: DateTimeTimezone | string;
   overallStatus?: AnalysisJobStatus;
@@ -59,6 +53,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @BawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   public readonly scriptId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

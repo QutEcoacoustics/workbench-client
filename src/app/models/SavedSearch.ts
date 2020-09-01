@@ -3,6 +3,8 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
   Description,
+  HasCreatorAndDeleter,
+  HasDescription,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
@@ -12,16 +14,10 @@ import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
-export interface ISavedSearch {
+export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
   id?: Id;
   name?: Param;
-  description?: Description;
-  descriptionHtml?: Description;
   storedQuery?: InnerFilter<AudioRecording>;
-  creatorId?: Id;
-  deleterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  deletedAt?: DateTimeTimezone | string;
 }
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
@@ -33,6 +29,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @BawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   @BawPersistAttr
   public readonly storedQuery?: InnerFilter<AudioRecording>;
   public readonly creatorId?: Id;

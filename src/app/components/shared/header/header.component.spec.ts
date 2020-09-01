@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { ImageSizes } from "@interfaces/apiInterfaces";
 import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
@@ -239,19 +240,19 @@ describe("HeaderComponent", () => {
               ...user,
               imageUrls: [
                 {
-                  size: "medium",
+                  size: ImageSizes.MEDIUM,
                   url: modelData.image.imageUrl(140, 140),
                   width: 140,
                   height: 140,
                 },
                 {
-                  size: "small",
+                  size: ImageSizes.SMALL,
                   url,
                   width: 60,
                   height: 60,
                 },
                 {
-                  size: "tiny",
+                  size: ImageSizes.TINY,
                   url: modelData.image.imageUrl(30, 30),
                   width: 30,
                   height: 30,

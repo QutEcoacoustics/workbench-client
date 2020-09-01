@@ -8,6 +8,7 @@ export function generateScript(id?: Id): Required<IScript> {
     name: modelData.param(),
     description: modelData.description(),
     descriptionHtml: modelData.descriptionHtml(),
+    descriptionHtmlTagline: modelData.descriptionHtml(),
     analysisIdentifier: "script machine identifier", // TODO Implement with random values
     version: parseFloat(modelData.system.semver()),
     verified: modelData.boolean(),

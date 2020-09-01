@@ -32,6 +32,11 @@ export type UserName = string;
 export type AuthToken = string;
 
 /**
+ * BAW API Access Levels
+ */
+export type AccessLevel = "Reader" | "Writer" | "Owner";
+
+/**
  * BAW API Item Description
  */
 export type Description = string;
@@ -88,14 +93,7 @@ export interface TimezoneInformation {
  * BAW API Image Details
  */
 export interface ImageUrl {
-  size:
-    | "extralarge"
-    | "large"
-    | "medium"
-    | "small"
-    | "tiny"
-    | "default"
-    | "unknown";
+  size: ImageSizes;
   url: string;
   height?: number;
   width?: number;
@@ -124,3 +122,28 @@ export function isImageUrl(value: any): value is ImageUrl {
     keys.includes("url")
   );
 }
+
+export interface HasCreator {
+  creatorId?: Id;
+  createdAt?: DateTimeTimezone | string;
+}
+
+export interface HasUpdater {
+  updaterId?: Id;
+  updatedAt?: DateTimeTimezone | string;
+}
+
+export interface HasDeleter {
+  deleterId?: Id;
+  deletedAt?: DateTimeTimezone | string;
+}
+
+export interface HasDescription {
+  description?: Description;
+  descriptionHtml?: Description;
+  descriptionHtmlTagline?: Description;
+}
+
+export type HasAllUsers = HasCreator & HasUpdater & HasDeleter;
+export type HasCreatorAndUpdater = HasCreator & HasUpdater;
+export type HasCreatorAndDeleter = HasCreator & HasDeleter;

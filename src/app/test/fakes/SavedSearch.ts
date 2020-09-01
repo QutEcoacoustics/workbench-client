@@ -8,6 +8,7 @@ export function generateSavedSearch(id?: Id): Required<ISavedSearch> {
     name: modelData.param(),
     description: modelData.description(),
     descriptionHtml: modelData.descriptionHtml(),
+    descriptionHtmlTagline: modelData.descriptionHtml(),
     storedQuery: { uuid: { eq: "blah blah" } }, // TODO Implement with random values
     creatorId: modelData.id(),
     deleterId: modelData.id(),

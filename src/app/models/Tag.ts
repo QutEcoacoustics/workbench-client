@@ -1,5 +1,9 @@
 import { Injector } from "@angular/core";
-import { DateTimeTimezone, Id } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Id,
+} from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Updater } from "./AssociationDecorators";
@@ -9,17 +13,13 @@ import type { User } from "./User";
 /**
  * Tag model interface
  */
-export interface ITag {
+export interface ITag extends HasCreatorAndUpdater {
   id?: Id;
   text?: string;
   isTaxanomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
   notes?: Blob | object;
-  creatorId?: Id;
-  updaterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
 }
 
 /**

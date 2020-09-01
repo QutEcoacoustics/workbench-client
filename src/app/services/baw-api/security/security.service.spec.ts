@@ -9,6 +9,7 @@ import {
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
+import { ImageSizes } from "@interfaces/apiInterfaces";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -185,7 +186,12 @@ describe("SecurityService", () => {
           preferences: {},
           rolesMask: 1,
           imageUrls: [
-            { size: "extralarge", url: "path.png", width: 300, height: 300 },
+            {
+              size: ImageSizes.EXTRA_LARGE,
+              url: "path.png",
+              width: 300,
+              height: 300,
+            },
           ],
         })
       );
@@ -234,7 +240,12 @@ describe("SecurityService", () => {
           preferences: {},
           authToken: "xxxxxxxxxxxxxxxx",
           imageUrls: [
-            { size: "extralarge", url: "path.png", width: 300, height: 300 },
+            {
+              size: ImageSizes.EXTRA_LARGE,
+              url: "path.png",
+              width: 300,
+              height: 300,
+            },
           ],
         })
       );

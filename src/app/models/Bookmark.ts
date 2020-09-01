@@ -3,6 +3,8 @@ import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   Description,
+  HasCreatorAndUpdater,
+  HasDescription,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
@@ -15,17 +17,11 @@ import type { User } from "./User";
 /**
  * A bookmark model.
  */
-export interface IBookmark {
+export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
   id?: Id;
   audioRecordingId?: Id;
   offsetSeconds?: number;
   name?: Param;
-  creatorId?: Id;
-  updaterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
-  description?: Description;
-  descriptionHtml?: Description;
   category?: string;
 }
 
@@ -48,6 +44,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   @BawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   @BawPersistAttr
   public readonly category?: string;
 

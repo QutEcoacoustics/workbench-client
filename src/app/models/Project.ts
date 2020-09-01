@@ -2,8 +2,11 @@ import { Injector } from "@angular/core";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
+  AccessLevel,
   DateTimeTimezone,
   Description,
+  HasAllUsers,
+  HasDescription,
   Id,
   Ids,
   ImageUrl,
@@ -24,16 +27,11 @@ import type { User } from "./User";
 /**
  * A project model.
  */
-export interface IProject {
+export interface IProject extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  description?: Description;
-  descriptionHtml?: Description;
   imageUrl?: string;
-  creatorId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updaterId?: Id;
-  updatedAt?: DateTimeTimezone | string;
+  accessLevel?: AccessLevel;
   ownerId?: Id;
   siteIds?: Ids | Id[];
 }
@@ -50,17 +48,22 @@ export class Project extends AbstractModel implements IProject {
   @BawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   public readonly imageUrl?: string;
   @BawImage<Project>("/assets/images/project/project_span4.png", {
     key: "imageUrl",
   })
   public readonly image: ImageUrl[];
+  public readonly accessLevel?: AccessLevel;
   public readonly creatorId?: Id;
+  public readonly updaterId?: Id;
+  public readonly deleterId?: Id;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  public readonly updaterId?: Id;
   @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime()
+  public readonly deletedAt?: DateTimeTimezone;
   public readonly ownerId?: Id;
   @BawCollection({ persist: true })
   public readonly siteIds?: Ids;

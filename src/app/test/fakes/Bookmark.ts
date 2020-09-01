@@ -14,6 +14,7 @@ export function generateBookmark(id?: Id): Required<IBookmark> {
     updatedAt: modelData.timestamp(),
     description: modelData.description(),
     descriptionHtml: modelData.descriptionHtml(),
+    descriptionHtmlTagline: modelData.descriptionHtml(),
     category: "<< application >>", // TODO Replace with list of possibilities
   };
 }

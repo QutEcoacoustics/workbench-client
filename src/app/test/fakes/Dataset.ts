@@ -8,6 +8,7 @@ export function generateDataset(id?: Id): Required<IDataset> {
     name: modelData.param(),
     description: modelData.description(),
     descriptionHtml: modelData.descriptionHtml(),
+    descriptionHtmlTagline: modelData.descriptionHtml(),
     creatorId: modelData.id(),
     updaterId: modelData.id(),
     createdAt: modelData.timestamp(),
