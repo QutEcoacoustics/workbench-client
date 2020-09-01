@@ -8,7 +8,6 @@ import { Project } from "@models/Project";
 import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";
 import { List } from "immutable";
-import { MenuItem } from "primeng/api/menuitem";
 import { Observable, Subscription, timer } from "rxjs";
 import { map, startWith, takeWhile } from "rxjs/operators";
 import {
@@ -79,7 +78,7 @@ class HarvestComponent extends PageComponent implements OnInit {
     harvest: 4,
     summary: 5,
   };
-  public harvestSteps: MenuItem[] = [
+  public harvestSteps = [
     { label: "Start" },
     { label: "Credentials" },
     { label: "Check" },
