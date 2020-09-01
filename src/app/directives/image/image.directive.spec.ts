@@ -9,6 +9,7 @@ import { testApiConfig } from "@services/app-config/appConfigMock.service";
 import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import {
   AuthenticatedImageDirective,
   image404RelativeSrc,
@@ -16,7 +17,7 @@ import {
 
 describe("ImageDirective", () => {
   let spectator: SpectatorDirective<AuthenticatedImageDirective>;
-  const image404Src = `http://${window.location.host}${image404RelativeSrc}`;
+  const image404Src = `${websiteHttpUrl}${image404RelativeSrc}`;
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
     imports: [HttpClientTestingModule, MockBawApiModule],
@@ -85,6 +86,21 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(undefined);
       assertImage(getImage(), image404Src, "alt");
     });
+
+    it("given bad 404 image, it stops attempting to load images", () => {
+      const imageUrls = [modelData.imageUrls()[0]];
+      spectator = createDefaultDirective(imageUrls);
+      const spy = spyOn<any>(
+        spectator.directive,
+        "setImageSrc"
+      ).and.callThrough();
+
+      const image = getImage();
+      // Spam errors
+      [1, 2, 3, 4].forEach(() => createImgErrorEvent(image));
+      // Image url should have only been set once
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("thumbnail", () => {
@@ -113,34 +129,12 @@ describe("ImageDirective", () => {
   });
 
   describe("internal links", () => {
-    function getAssetRoot() {
-      // Use test config instead of spectator.inject because this is used
-      // before DI is initialized
-      return testApiConfig.environment.assetRoot;
-    }
-
-    it("should prepend asset root path to url", () => {
+    it("should not modify url", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = "/image.png";
       spectator = createDefaultDirective(imageUrls);
 
-      assertImage(
-        getImage(),
-        `http://${window.location.host}${getAssetRoot()}/image.png`,
-        "alt"
-      );
-    });
-
-    it("should not double prepend asset root path to url", () => {
-      const imageUrls = modelData.imageUrls().slice(0, 1);
-      imageUrls[0].url = getAssetRoot() + "/image.png";
-      spectator = createDefaultDirective(imageUrls);
-
-      assertImage(
-        getImage(),
-        `http://${window.location.host}${getAssetRoot()}/image.png`,
-        "alt"
-      );
+      assertImage(getImage(), `${websiteHttpUrl}/image.png`, "alt");
     });
   });
 

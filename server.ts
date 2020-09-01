@@ -12,6 +12,7 @@ import {
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
 import { ngExpressEngine } from "@nguniversal/express-engine";
+import { assetRoot } from "@services/app-config/app-config.service";
 import express from "express";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
@@ -52,7 +53,7 @@ export function app(path: string): express.Express {
   server.set("views", distFolder);
 
   // special case rendering our settings file - we already have it loaded
-  server.get("/assets/environment.json", (request, response) => {
+  server.get(`${assetRoot}/environment.json`, (request, response) => {
     response.type("application/json");
     response.send(rawConfig);
   });

@@ -5,6 +5,7 @@ import {
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { cmsRoot } from "@services/app-config/app-config.service.spec";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { CreditsComponent } from "./credits.component";
@@ -40,12 +41,12 @@ describe("AboutCreditsComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
+    httpMock.expectOne(`${cmsRoot}/credits.html`);
     expect(component).toBeTruthy();
   });
 
   it("should load cms", () => {
-    const req = httpMock.expectOne(env.environment.cmsRoot + "/credits.html");
+    const req = httpMock.expectOne(`${cmsRoot}/credits.html`);
 
     req.flush("<h1>Test Header</h1><p>Test Description</p>");
     fixture.detectChanges();

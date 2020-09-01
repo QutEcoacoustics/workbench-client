@@ -16,7 +16,7 @@ class CreditsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.credits;
+    this.page = this.env.getCms("credits");
   }
 }
 
