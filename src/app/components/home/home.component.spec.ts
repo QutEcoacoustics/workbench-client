@@ -12,6 +12,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
+import { cmsRoot } from "@services/app-config/app-config.service.spec";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
@@ -47,7 +48,7 @@ describe("HomeComponent", () => {
     securityApi = TestBed.inject(SecurityService);
     env = TestBed.inject(AppConfigService);
 
-    cmsUrl = env.environment.cmsRoot + "/home.html";
+    cmsUrl = `${cmsRoot}/home.html`;
   });
 
   afterEach(() => {

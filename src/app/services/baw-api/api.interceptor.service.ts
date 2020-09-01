@@ -8,7 +8,7 @@ import {
   HttpResponse,
 } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { API_ROOT, CMS_ROOT } from "@helpers/app-initializer/app-initializer";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   toCamelCase,
   toSnakeCase,
@@ -27,7 +27,6 @@ import { SecurityService } from "./security/security.service";
 export class BawApiInterceptor implements HttpInterceptor {
   constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    @Inject(CMS_ROOT) private cmsRoot: string,
     public api: SecurityService
   ) {}
 
@@ -42,10 +41,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (
-      !request.url.includes(this.apiRoot) &&
-      !request.url.includes(this.cmsRoot)
-    ) {
+    if (!request.url.includes(this.apiRoot)) {
       return next.handle(request);
     }
 

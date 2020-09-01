@@ -4,9 +4,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
 import { RenderFieldComponent } from "./render-field.component";
@@ -491,11 +493,11 @@ describe("RenderFieldComponent", () => {
       component["isImage"] = jasmine
         .createSpy()
         .and.callFake((src: string, onload: () => void, __: () => void) => {
-          expect(src).toBe("/assets/test/test.png");
+          expect(src).toBe(`${assetRoot}/test/test.png`);
           onload();
         });
 
-      component.value = "/assets/test/test.png";
+      component.value = `${assetRoot}/test/test.png`;
       fixture.detectChanges();
 
       expect(getValues().length).toBe(1);
@@ -524,13 +526,13 @@ describe("RenderFieldComponent", () => {
           onload();
         });
 
-      component.value = "/assets/test/test.png";
+      component.value = `${assetRoot}/test/test.png`;
       fixture.detectChanges();
 
       const value = getImageValues()[0];
       assertImage(
         value,
-        `http://${window.location.host}/assets/test/test.png`,
+        `${websiteHttpUrl}${assetRoot}/test/test.png`,
         "model image alt"
       );
     });

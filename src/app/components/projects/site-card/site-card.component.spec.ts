@@ -3,10 +3,12 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -63,7 +65,7 @@ describe("SiteCardComponent", () => {
     const image = fixture.nativeElement.querySelector("img#image");
     assertImage(
       image,
-      `http://${window.location.host}/assets/images/site/site_span4.png`,
+      `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
       "Test Site alt"
     );
   });
