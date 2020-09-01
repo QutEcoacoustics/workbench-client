@@ -1,11 +1,4 @@
 <style>
-  .landing-image {
-    max-height: 50vh;
-    max-width: 100%;
-    object-fit: cover;
-    object-position: 100% 100%;
-    width: 100vw;
-  }
   .credits {
     margin-left: 0.5rem;
     margin-top: -2.5rem;
@@ -13,38 +6,18 @@
   .credits span {
     padding: 0.5rem 1rem;
   }
+
+  #hero-image {
+    background-image: url("/assets/images/landing/IMG_1318.JPG");
+  }
 </style>
 
-<header>
-  <figure>
-    <picture>
-      <source
-        media="(min-width: 1081px)"
-        srcset="/assets/images/landing/IMG_1318.JPG"
-      />
-      <source
-        media="(min-width: 721px)"
-        srcset="/assets/images/landing/IMG_20180710_081824508_HDR.jpg"
-      />
-      <source
-        media="(min-width: 361px)"
-        srcset="/assets/images/landing/IMG_0894.JPG"
-      />
-      <img
-        class="landing-image"
-        src="/assets/images/landing/IMG_1316.JPG"
-        alt="Landing page image"
-      />
-    </picture>
-    <figcaption class="credits">
-      <span class="alert alert-light">Credits to QUT Ecoacoustics Staff</span>
-    </figcaption>
-  </figure>
-</header>
+<div class="container">
+  <h1 id="website-title">Ecosounds</h1>
+</div>
 
-<div class="container-fluid" style="background-color: #e9ecef">
+<div class="container-fluid" style="padding-bottom: 3rem">
   <section class="container">
-    <h1>Ecosounds | Acoustic Workbench</h1>
     <p class="lead">
       Welcome! Ecosounds is a repository of environmental audio recordings.
     </p>
@@ -61,7 +34,7 @@
   </section>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" style="padding-bottom: 3rem">
   <section class="container">
     <h2>Our Process</h2>
 
