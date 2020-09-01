@@ -1,4 +1,5 @@
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
@@ -61,7 +62,7 @@ describe("Attribute Decorators", () => {
     beforeEach(() => {
       defaultImageUrls = modelData.imageUrls();
       defaultImageUrl = {
-        url: "/assets/broken_link.png",
+        url: `${assetRoot}/broken_link.png`,
         size: ImageSizes.DEFAULT,
       };
     });

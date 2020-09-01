@@ -1,11 +1,11 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Directive, Input, Output } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { modelData } from "@test/helpers/faker";
 import {
   assertHref,
@@ -13,6 +13,7 @@ import {
   assertRoute,
   assertTruncation,
 } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
@@ -67,8 +68,8 @@ describe("CardImageComponent", () => {
     expect(title.textContent).toContain("custom title");
   });
 
-  it("should display local image", () => {
-    const baseUrl = "/assets/broken_link";
+  it("should handle local image", () => {
+    const baseUrl = `${assetRoot}/broken_link`;
     spectator.setInput("card", {
       title: "custom title",
       model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
@@ -77,7 +78,7 @@ describe("CardImageComponent", () => {
     const image = spectator.query<HTMLImageElement>("img");
     assertImage(
       image,
-      `http://${window.location.host}${baseUrl}/300/300`,
+      `${websiteHttpUrl}${baseUrl}/300/300`,
       "custom title image"
     );
   });

@@ -8,6 +8,7 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { MockMapComponent } from "@shared/map/mapMock.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -15,6 +16,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { DetailsComponent } from "./details.component";
 
 describe("ProjectDetailsComponent", () => {
@@ -120,7 +122,7 @@ describe("ProjectDetailsComponent", () => {
       const image = fixture.nativeElement.querySelector("img");
       assertImage(
         image,
-        `http://${window.location.host}/assets/images/project/project_span4.png`,
+        `${websiteHttpUrl}${assetRoot}/images/project/project_span4.png`,
         "Test Project image"
       );
     });

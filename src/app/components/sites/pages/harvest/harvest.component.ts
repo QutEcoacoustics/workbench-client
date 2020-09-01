@@ -24,7 +24,7 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.values.cms.harvest;
+    this.page = this.env.getCms("harvest");
   }
 }
 

@@ -9,12 +9,14 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { SharedModule } from "@components/shared/shared.module";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { MockMapComponent } from "@shared/map/mapMock.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { DetailsComponent } from "./details.component";
 
 describe("SitesDetailsComponent", () => {
@@ -138,7 +140,7 @@ describe("SitesDetailsComponent", () => {
       const image = fixture.nativeElement.querySelector("img");
       assertImage(
         image,
-        `http://${window.location.host}/assets/images/site/site_span4.png`,
+        `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
         "Site image"
       );
     });

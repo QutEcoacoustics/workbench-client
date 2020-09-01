@@ -3,10 +3,9 @@
     "environment": "development",
     "apiRoot": "https://staging.ecosounds.org",
     "siteRoot": "http://localhost:4200",
-    "siteDir": "/build/",
-    "cmsRoot": "/assets/content",
-    "assetRoot": "/assets",
+    "siteDir": "/",
     "ga": {
+      "domain": "",
       "trackingId": ""
     }
   },

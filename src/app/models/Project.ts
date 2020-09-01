@@ -12,6 +12,7 @@ import {
   ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
@@ -50,7 +51,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
   public readonly imageUrl?: string;
-  @BawImage<Project>("/assets/images/project/project_span4.png", {
+  @BawImage<Project>(`${assetRoot}/images/project/project_span4.png`, {
     key: "imageUrl",
   })
   public readonly image: ImageUrl[];

@@ -2,6 +2,7 @@ import { Injector } from "@angular/core";
 import { IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {
@@ -54,7 +55,7 @@ export class Site extends AbstractModel implements ISite {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly imageUrl?: string;
-  @BawImage<Site>("/assets/images/site/site_span4.png", {
+  @BawImage<Site>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
