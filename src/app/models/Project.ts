@@ -89,7 +89,7 @@ export class Project extends AbstractModel implements IProject {
   public getCard(): Card {
     return {
       title: this.name,
-      description: this.descriptionHtml,
+      description: this.descriptionHtmlTagline,
       model: this,
       route: this.viewUrl,
     };

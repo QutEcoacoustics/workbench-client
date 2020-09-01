@@ -142,7 +142,6 @@ describe("ProjectDetailsComponent", () => {
     it("should display description with html markup", () => {
       const project = new Project({
         ...generateProject(),
-        description: "A test project",
         descriptionHtml: "<b>A test project</b>",
       });
 

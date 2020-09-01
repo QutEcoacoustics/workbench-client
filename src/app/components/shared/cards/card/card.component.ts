@@ -5,7 +5,6 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { stripHtml } from "@helpers/stripHtml/stripHtml";
 import { Card } from "../cards.component";
 
 /**
@@ -36,9 +35,8 @@ import { Card } from "../cards.component";
           class="card-text"
           [ngClass]="{ 'font-italic': !card.description }"
           [line-truncation]="4"
-        >
-          {{ description }}
-        </p>
+          [innerHTML]="description"
+        ></p>
       </div>
     </div>
   `,
@@ -52,7 +50,7 @@ export class CardComponent implements OnChanges {
 
   public ngOnChanges() {
     this.description = this.card.description
-      ? stripHtml(this.card.description)
+      ? this.card.description
       : "No description given";
     this.ref.detectChanges();
   }

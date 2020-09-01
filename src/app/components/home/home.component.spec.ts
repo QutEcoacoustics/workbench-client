@@ -118,8 +118,7 @@ describe("HomeComponent", () => {
     await interceptProjects([
       new Project({
         ...generateProject(),
-        description: "Description",
-        descriptionHtml: "Description",
+        descriptionHtmlTagline: "Description",
       }),
     ]);
 
@@ -131,8 +130,7 @@ describe("HomeComponent", () => {
     await interceptProjects([
       new Project({
         ...generateProject(),
-        description: undefined,
-        descriptionHtml: undefined,
+        descriptionHtmlTagline: undefined,
       }),
     ]);
 
@@ -150,8 +148,7 @@ describe("HomeComponent", () => {
           new Project({
             ...generateProject(id),
             name: names[index],
-            description: descriptions[index],
-            descriptionHtml: descriptions[index],
+            descriptionHtmlTagline: descriptions[index],
           })
       )
     );

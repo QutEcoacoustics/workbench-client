@@ -84,8 +84,7 @@ describe("ProjectsListComponent", () => {
     const projects = [
       new Project({
         ...generateProject(),
-        description: undefined,
-        descriptionHtml: undefined,
+        descriptionHtmlTagline: undefined,
       }),
     ];
     configureTestingModule(projects, undefined);
@@ -99,14 +98,14 @@ describe("ProjectsListComponent", () => {
     const projects = [
       new Project({
         ...generateProject(),
-        descriptionHtml: "<b>Custom</b> Description",
+        descriptionHtmlTagline: "<b>Custom</b> Description",
       }),
     ];
     configureTestingModule(projects, undefined);
     fixture.detectChanges();
 
     const cards = getCards();
-    assertCardDescription(cards[0], "Custom Description");
+    assertCardDescription(cards[0], "<b>Custom</b> Description");
   });
 
   it("should display multiple project cards", () => {

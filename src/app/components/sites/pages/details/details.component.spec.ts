@@ -159,7 +159,6 @@ describe("SitesDetailsComponent", () => {
     it("should display site description with html markup", () => {
       const site = new Site({
         ...generateSite(),
-        description: "Custom Description",
         descriptionHtml: "<b>Custom Description<b>",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
