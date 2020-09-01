@@ -54,8 +54,13 @@ import { homeCategory, homeMenuItem } from "./home.menus";
             </ng-container>
           </baw-cards>
         </section>
+
+        <div class="float-right">
+          <small class="alert alert-secondary m-0">
+            Photo Credit: QUT Ecoacoustic Staff
+          </small>
+        </div>
       </div>
-      <div></div>
     </div>
   `,
   // tslint:disable-next-line: use-component-view-encapsulation
