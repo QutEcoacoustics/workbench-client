@@ -73,6 +73,38 @@ export const modelData = {
   randomObject,
   shuffleArray,
   timezone,
+  model: {
+    generateDescription: () => ({
+      description: modelData.description(),
+      descriptionHtml: modelData.descriptionHtml(),
+      descriptionHtmlTagline: modelData.descriptionHtml(),
+    }),
+    generateCreator: () => ({
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
+    }),
+    generateUpdater: () => ({
+      updaterId: modelData.id(),
+      updatedAt: modelData.timestamp(),
+    }),
+    generateDeleter: () => ({
+      deleterId: modelData.id(),
+      deletedAt: modelData.timestamp(),
+    }),
+    generateCreatorAndUpdater: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateUpdater(),
+    }),
+    generateCreatorAndDeleter: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateDeleter(),
+    }),
+    generateAllUsers: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateUpdater(),
+      ...modelData.model.generateDeleter(),
+    }),
+  },
   ...faker,
 };
 

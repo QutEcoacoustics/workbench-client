@@ -7,9 +7,6 @@ export function generateTagging(id?: Id): Required<ITagging> {
     id: modelData.id(id),
     audioEventId: modelData.id(),
     tagId: modelData.id(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
+    ...modelData.model.generateCreatorAndUpdater(),
   };
 }

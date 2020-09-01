@@ -6,10 +6,7 @@ export function generateStudy(id?: Id): Required<IStudy> {
   return {
     id: modelData.id(id),
     name: modelData.param(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
     datasetId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
+    ...modelData.model.generateCreatorAndUpdater(),
   };
 }

@@ -8,13 +8,8 @@ export function generateBookmark(id?: Id): Required<IBookmark> {
     audioRecordingId: modelData.id(),
     offsetSeconds: modelData.seconds(),
     name: modelData.param(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
-    description: modelData.description(),
-    descriptionHtml: modelData.descriptionHtml(),
-    descriptionHtmlTagline: modelData.descriptionHtml(),
     category: "<< application >>", // TODO Replace with list of possibilities
+    ...modelData.model.generateDescription(),
+    ...modelData.model.generateCreatorAndUpdater(),
   };
 }

@@ -7,9 +7,6 @@ export function generateQuestion(id?: Id): Required<IQuestion> {
     id: modelData.id(id),
     text: modelData.html(),
     data: modelData.notes(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
+    ...modelData.model.generateCreatorAndUpdater(),
   };
 }

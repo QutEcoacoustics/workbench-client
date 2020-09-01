@@ -9,7 +9,6 @@ export function generateResponse(id?: Id): Required<IResponse> {
     datasetItemId: modelData.id(),
     questionId: modelData.id(),
     studyId: modelData.id(),
-    creatorId: modelData.id(),
-    createdAt: modelData.timestamp(),
+    ...modelData.model.generateCreator(),
   };
 }

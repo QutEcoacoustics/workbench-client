@@ -16,11 +16,6 @@ export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
     lowFrequencyHertz,
     highFrequencyHertz,
     isReference: modelData.boolean(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    deleterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
-    deletedAt: modelData.timestamp(),
+    ...modelData.model.generateAllUsers(),
   };
 }

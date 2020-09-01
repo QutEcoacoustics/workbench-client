@@ -7,7 +7,6 @@ export function generateTagGroup(id?: Id): Required<ITagGroup> {
     id: modelData.id(id),
     groupIdentifier: modelData.param(),
     tagId: modelData.id(),
-    creatorId: modelData.id(),
-    createdAt: modelData.timestamp(),
+    ...modelData.model.generateCreator(),
   };
 }

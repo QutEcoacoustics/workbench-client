@@ -9,10 +9,9 @@ export function generateDatasetItem(id?: Id): Required<IDatasetItem> {
     id: modelData.id(id),
     datasetId: modelData.id(),
     audioRecordingId: modelData.id(),
-    creatorId: modelData.id(),
-    createdAt: modelData.timestamp(),
     startTimeSeconds,
     endTimeSeconds,
     order: modelData.random.number(100),
+    ...modelData.model.generateCreator(),
   };
 }
