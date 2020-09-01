@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { TreeNode } from "primeng/api/treenode";
 import { Status } from "../../shared/indicator/indicator.component";
 
 @Component({
@@ -18,7 +17,7 @@ import { Status } from "../../shared/indicator/indicator.component";
   ],
 })
 export class HarvestReviewComponent implements OnInit {
-  public files: TreeNode[] = [];
+  public files = [];
   public columns = 4;
 
   constructor() {}
