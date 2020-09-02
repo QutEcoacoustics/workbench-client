@@ -74,7 +74,7 @@
     "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
     "@ngneat/spectator": "^5.13.1",
     "@nguniversal/builders": "^10.0.2",
-    "@types/express": "^4.17.7",
+    "@types/express": "^4.17.8",
     "@types/faker": "^4.1.12",
     "@types/jasmine": "^3.5.14",
     "@types/jasminewd2": "^2.0.8",
