@@ -1,13 +1,13 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, HasAllUsers, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
-export interface IAudioEvent {
+export interface IAudioEvent extends HasAllUsers {
   id?: Id;
   audioRecordingId?: Id;
   startTimeSeconds?: number;
@@ -15,12 +15,6 @@ export interface IAudioEvent {
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
   isReference?: boolean;
-  creatorId?: Id;
-  updaterId?: Id;
-  deleterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
-  deletedAt?: DateTimeTimezone | string;
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {

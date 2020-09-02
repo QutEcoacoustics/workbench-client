@@ -5,7 +5,7 @@ import {
 } from "@models/AnalysisJobItem";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJobItem(id?: Id): IAnalysisJobItem {
+export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
   const statuses: AnalysisJobItemStatus[] = [
     "successful",
     "new",

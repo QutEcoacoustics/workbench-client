@@ -1,7 +1,7 @@
 import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@components/admin/tag-group/tag-group.menus";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -11,12 +11,10 @@ import type { User } from "./User";
 /**
  * A tag group model
  */
-export interface ITagGroup {
+export interface ITagGroup extends HasCreator {
   id?: Id;
   groupIdentifier?: string;
   tagId?: Id;
-  creatorId?: Id;
-  createdAt?: DateTimeTimezone | string;
 }
 
 /**

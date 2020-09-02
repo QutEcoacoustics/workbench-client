@@ -1,7 +1,12 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Duration } from "luxon";
-import { DateTimeTimezone, Id, Uuid } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Uuid,
+} from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawDuration } from "./AttributeDecorators";
@@ -11,7 +16,7 @@ import type { User } from "./User";
 /**
  * An audio recording model
  */
-export interface IAudioRecording {
+export interface IAudioRecording extends HasAllUsers {
   id?: Id;
   uuid?: Uuid;
   uploaderId?: Id;
@@ -26,12 +31,6 @@ export interface IAudioRecording {
   fileHash?: string;
   status?: AudioRecordingStatus;
   notes?: Blob | any;
-  creatorId?: Id;
-  updaterId?: Id;
-  deleterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
-  deletedAt?: DateTimeTimezone | string;
   originalFileName?: string;
   recordedUtcOffset?: string;
 }

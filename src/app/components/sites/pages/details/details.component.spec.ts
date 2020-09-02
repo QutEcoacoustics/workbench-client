@@ -102,7 +102,7 @@ describe("SitesDetailsComponent", () => {
   describe("Project", () => {
     it("should display project name", () => {
       const project = new Project({
-        id: 1,
+        ...generateSite(),
         name: "Custom Project",
       });
       configureTestingModule(project, undefined, defaultSite, undefined);
@@ -117,7 +117,7 @@ describe("SitesDetailsComponent", () => {
   describe("Site", () => {
     it("should display site name", () => {
       const site = new Site({
-        id: 1,
+        ...generateSite(),
         name: "Custom Site",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
@@ -130,8 +130,9 @@ describe("SitesDetailsComponent", () => {
 
     it("should display default site image", () => {
       const site = new Site({
-        id: 1,
+        ...generateSite(),
         name: "Site",
+        imageUrl: undefined,
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -146,7 +147,7 @@ describe("SitesDetailsComponent", () => {
 
     it("should display custom site image", () => {
       const site = new Site({
-        id: 1,
+        ...generateSite(),
         name: "Site",
         imageUrl: "http://brokenlink/",
       });
@@ -157,11 +158,10 @@ describe("SitesDetailsComponent", () => {
       assertImage(image, "http://brokenlink/", "Site image");
     });
 
-    it("should display site description", () => {
+    it("should display site description with html markup", () => {
       const site = new Site({
-        id: 1,
-        name: "Site",
-        description: "Custom Description",
+        ...generateSite(),
+        descriptionHtml: "<b>Custom Description<b>",
       });
       configureTestingModule(defaultProject, undefined, site, undefined);
       fixture.detectChanges();
@@ -170,7 +170,7 @@ describe("SitesDetailsComponent", () => {
         "p#site_description"
       );
       expect(description).toBeTruthy();
-      expect(description.innerText).toContain("Custom Description");
+      expect(description.innerHTML).toContain("<b>Custom Description<b>");
     });
   });
 

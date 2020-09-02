@@ -7,8 +7,14 @@ import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { modelData } from "@test/helpers/faker";
-import { assertHref, assertImage, assertRoute } from "@test/helpers/html";
+import {
+  assertHref,
+  assertImage,
+  assertRoute,
+  assertTruncation,
+} from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { LineTruncationLibModule } from "ngx-line-truncation";
 import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
 
@@ -33,8 +39,9 @@ describe("CardImageComponent", () => {
     imports: [
       HttpClientTestingModule,
       RouterTestingModule,
-      AuthenticatedImageModule,
       MockBawApiModule,
+      AuthenticatedImageModule,
+      LineTruncationLibModule,
     ],
   });
 
@@ -76,7 +83,7 @@ describe("CardImageComponent", () => {
     );
   });
 
-  it("should handle remote image", () => {
+  it("should display remote image", () => {
     const baseUrl = "https://broken_link/broken_link";
     spectator.setInput("card", {
       title: "custom title",
@@ -87,21 +94,41 @@ describe("CardImageComponent", () => {
     assertImage(image, baseUrl + "/300/300", "custom title image");
   });
 
-  it("should handle description", () => {
+  it("should have default description when none provided", () => {
+    spectator.setInput("card", { ...defaultCard, description: undefined });
+    spectator.component.ngOnChanges();
+
+    const description = spectator.query(".card-text");
+    expect(description.textContent).toContain("No description given");
+  });
+
+  it("should have description when provided", () => {
     spectator.setInput("card", { ...defaultCard, description: "description" });
+    spectator.component.ngOnChanges();
 
     const description = spectator.query(".card-text");
     expect(description.textContent).toContain("description");
   });
 
-  it("should have image href", () => {
+  it("should shorten description when description is long", () => {
+    spectator.setInput("card", {
+      ...defaultCard,
+      description: modelData.descriptionLong(),
+    });
+    spectator.component.ngOnChanges();
+
+    const description = spectator.query<HTMLParagraphElement>(".card-text");
+    assertTruncation(description, 4);
+  });
+
+  it("should have image href when link provided", () => {
     spectator.setInput("card", { ...defaultCard, link: "https://link/" });
 
     const link = spectator.query("a img").parentElement as HTMLAnchorElement;
     assertHref(link, "https://link/");
   });
 
-  it("should have title href", () => {
+  it("should have title href when link provided", () => {
     spectator.setInput("card", {
       ...defaultCard,
       title: "title",
@@ -112,14 +139,14 @@ describe("CardImageComponent", () => {
     assertHref(link, "https://link/");
   });
 
-  it("should have image route", () => {
+  it("should have image route when route provided", () => {
     spectator.setInput("card", { ...defaultCard, route: "/broken_link" });
 
     const route = spectator.query("a img").parentElement as HTMLAnchorElement;
     assertRoute(route, "/broken_link");
   });
 
-  it("should have title route", () => {
+  it("should have title route when route provided", () => {
     spectator.setInput("card", {
       ...defaultCard,
       title: "title",

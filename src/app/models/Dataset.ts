@@ -2,6 +2,8 @@ import { Injector } from "@angular/core";
 import {
   DateTimeTimezone,
   Description,
+  HasCreatorAndUpdater,
+  HasDescription,
   Id,
   Param,
 } from "@interfaces/apiInterfaces";
@@ -10,14 +12,9 @@ import { Creator, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
-export interface IDataset {
+export interface IDataset extends HasCreatorAndUpdater, HasDescription {
   id?: Id;
-  creatorId?: Id;
-  updaterId?: Id;
   name?: Param;
-  description?: Description;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
 }
 
 export class Dataset extends AbstractModel implements IDataset {
@@ -30,6 +27,8 @@ export class Dataset extends AbstractModel implements IDataset {
   public readonly name?: Param;
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()

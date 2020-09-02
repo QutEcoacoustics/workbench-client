@@ -1,18 +1,16 @@
 import { Injector } from "@angular/core";
 import { DATASET_ITEM } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { DatasetItem } from "./DatasetItem";
 import type { User } from "./User";
 
-export interface IProgressEvent {
+export interface IProgressEvent extends HasCreator {
   id?: Id;
-  creatorId?: Id;
   datasetItemId?: Id;
   activity?: string;
-  createdAt?: DateTimeTimezone | string;
 }
 
 export class ProgressEvent extends AbstractModel implements IProgressEvent {

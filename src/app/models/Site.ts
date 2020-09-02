@@ -8,6 +8,8 @@ import { siteMenuItem } from "../components/sites/sites.menus";
 import {
   DateTimeTimezone,
   Description,
+  HasAllUsers,
+  HasDescription,
   Id,
   Ids,
   ImageUrl,
@@ -28,16 +30,11 @@ import type { User } from "./User";
 /**
  * A site model.
  */
-export interface ISite {
+export interface ISite extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   imageUrl?: string;
-  description?: Description;
   locationObfuscated?: boolean;
-  creatorId?: Id;
-  updaterId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
   projectIds?: Ids | Id[];
   latitude?: number;
   customLatitude?: number;
@@ -64,13 +61,18 @@ export class Site extends AbstractModel implements ISite {
   public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   public readonly locationObfuscated?: boolean;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
+  public readonly deleterId?: Id;
   @BawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @BawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
+  @BawDateTime()
+  public readonly deletedAt?: DateTimeTimezone;
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
   @BawPersistAttr

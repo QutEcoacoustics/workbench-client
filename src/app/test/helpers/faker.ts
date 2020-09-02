@@ -1,4 +1,5 @@
 import {
+  AccessLevel,
   Id,
   ImageSizes,
   ImageUrl,
@@ -7,8 +8,14 @@ import {
 import faker from "faker";
 
 export const modelData = {
+  accessLevel: () =>
+    faker.random.arrayElement<AccessLevel>(["Reader", "Writer", "Owner"]),
   boolean: () => faker.random.boolean(),
   description: () => faker.lorem.sentence(),
+  descriptionLong: () =>
+    [0, 1, 2, 3, 4].map(() => faker.lorem.sentences()).join(" "),
+  descriptionHtml: () =>
+    `<b>${faker.commerce.productName()}</b><br /><p>${modelData.description()}<p>`,
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
     bitRateBps: [
@@ -54,12 +61,50 @@ export const modelData = {
     return [arr[min], arr[min + inc]];
   },
   timestamp: () => faker.date.past().toISOString(),
+  tzInfoTz: () =>
+    faker.random.arrayElement([
+      "America/Costa_Rica",
+      "Australia/Brisbane",
+      "Asia/Makassar",
+    ]),
   uuid: () => faker.random.uuid(),
   hexaDecimal,
   randomArray,
   randomObject,
   shuffleArray,
   timezone,
+  model: {
+    generateDescription: () => ({
+      description: modelData.description(),
+      descriptionHtml: modelData.descriptionHtml(),
+      descriptionHtmlTagline: modelData.descriptionHtml(),
+    }),
+    generateCreator: () => ({
+      creatorId: modelData.id(),
+      createdAt: modelData.timestamp(),
+    }),
+    generateUpdater: () => ({
+      updaterId: modelData.id(),
+      updatedAt: modelData.timestamp(),
+    }),
+    generateDeleter: () => ({
+      deleterId: modelData.id(),
+      deletedAt: modelData.timestamp(),
+    }),
+    generateCreatorAndUpdater: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateUpdater(),
+    }),
+    generateCreatorAndDeleter: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateDeleter(),
+    }),
+    generateAllUsers: () => ({
+      ...modelData.model.generateCreator(),
+      ...modelData.model.generateUpdater(),
+      ...modelData.model.generateDeleter(),
+    }),
+  },
   ...faker,
 };
 
@@ -92,38 +137,18 @@ function shuffleArray<T>(array: T[]): T[] {
  * @param url Base url for image urls. Do not end url with '/' ie /broken_links/.
  */
 function imageUrls(url?: string): ImageUrl[] {
-  return new Array<ImageUrl>(
-    {
-      size: ImageSizes.EXTRA_LARGE,
-      url: url ? url + "/300/300" : faker.image.imageUrl(300, 300),
-      width: 300,
-      height: 300,
-    },
-    {
-      size: ImageSizes.LARGE,
-      url: url ? url + "/220/220" : faker.image.imageUrl(220, 220),
-      width: 220,
-      height: 220,
-    },
-    {
-      size: ImageSizes.MEDIUM,
-      url: url ? url + "/140/140" : faker.image.imageUrl(140, 140),
-      width: 140,
-      height: 140,
-    },
-    {
-      size: ImageSizes.SMALL,
-      url: url ? url + "/60/60" : faker.image.imageUrl(60, 60),
-      width: 60,
-      height: 60,
-    },
-    {
-      size: ImageSizes.TINY,
-      url: url ? url + "/30/30" : faker.image.imageUrl(30, 30),
-      width: 30,
-      height: 30,
-    }
-  );
+  return [
+    { image: ImageSizes.EXTRA_LARGE, size: 300 },
+    { image: ImageSizes.LARGE, size: 220 },
+    { image: ImageSizes.MEDIUM, size: 140 },
+    { image: ImageSizes.SMALL, size: 60 },
+    { image: ImageSizes.TINY, size: 30 },
+  ].map(({ image, size }) => ({
+    size: image,
+    url: url ? url + "/300/300" : faker.image.imageUrl(size, size),
+    width: size,
+    height: size,
+  }));
 }
 
 /**

@@ -1,20 +1,21 @@
 import { Injector } from "@angular/core";
 import { DATASET } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Id,
+  Param,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { Dataset } from "./Dataset";
 import type { User } from "./User";
 
-export interface IStudy {
+export interface IStudy extends HasCreatorAndUpdater {
   id?: Id;
   name?: Param;
-  creatorId?: Id;
-  updaterId?: Id;
   datasetId?: Id;
-  createdAt?: DateTimeTimezone | string;
-  updatedAt?: DateTimeTimezone | string;
 }
 
 export class Study extends AbstractModel implements IStudy {

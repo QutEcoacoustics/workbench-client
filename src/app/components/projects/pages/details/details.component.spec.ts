@@ -141,10 +141,10 @@ describe("ProjectDetailsComponent", () => {
       assertImage(image, "http://brokenlink/", "Test Project image");
     });
 
-    it("should display description", () => {
+    it("should display description with html markup", () => {
       const project = new Project({
         ...generateProject(),
-        description: "A test project",
+        descriptionHtml: "<b>A test project</b>",
       });
 
       configureTestingModule(project, undefined, defaultSites, undefined);
@@ -154,7 +154,7 @@ describe("ProjectDetailsComponent", () => {
         "p#project_description"
       );
       expect(description).toBeTruthy();
-      expect(description.innerText).toBe("A test project");
+      expect(description.innerHTML).toBe("<b>A test project</b>");
     });
   });
 

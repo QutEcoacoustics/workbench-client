@@ -2,17 +2,15 @@ import { Id } from "@interfaces/apiInterfaces";
 import { IProject } from "@models/Project";
 import { modelData } from "@test/helpers/faker";
 
-export function generateProject(id?: Id): IProject {
+export function generateProject(id?: Id): Required<IProject> {
   return {
     id: modelData.id(id),
     name: modelData.param(),
-    description: modelData.description(),
     imageUrl: modelData.imageUrl(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
+    accessLevel: modelData.accessLevel(),
     ownerId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
     siteIds: modelData.ids(),
+    ...modelData.model.generateDescription(),
+    ...modelData.model.generateAllUsers(),
   };
 }

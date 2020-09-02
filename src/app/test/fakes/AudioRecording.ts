@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioRecording(id?: Id): IAudioRecording {
+export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
   const bitRateBps = modelData.random.arrayElement(
     modelData.defaults.bitRateBps
   );
@@ -41,13 +41,8 @@ export function generateAudioRecording(id?: Id): IAudioRecording {
     fileHash: modelData.hash(),
     status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    deleterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
-    deletedAt: modelData.timestamp(),
     originalFileName: modelData.system.fileName(".mpg", "audio"),
     recordedUtcOffset: modelData.offset(),
+    ...modelData.model.generateAllUsers(),
   };
 }

@@ -33,7 +33,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   public sortKeys = {
     siteId: "id",
     name: "name",
-    description: "description",
+    description: "descriptionHtmlTagline",
   };
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
@@ -43,7 +43,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
         sites.map((site) => ({
           siteId: site.id,
           name: site.name,
-          description: site.description,
+          description: site.descriptionHtmlTagline,
         })),
       route
     );

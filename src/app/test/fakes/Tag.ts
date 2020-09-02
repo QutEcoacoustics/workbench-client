@@ -2,7 +2,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { ITag } from "@models/Tag";
 import { modelData } from "@test/helpers/faker";
 
-export function generateTag(id?: Id): ITag {
+export function generateTag(id?: Id): Required<ITag> {
   const tagTypes = [
     "general",
     "common_name",
@@ -18,9 +18,6 @@ export function generateTag(id?: Id): ITag {
     typeOfTag: modelData.random.arrayElement(tagTypes),
     retired: modelData.boolean(),
     notes: modelData.notes(),
-    creatorId: modelData.id(),
-    updaterId: modelData.id(),
-    createdAt: modelData.timestamp(),
-    updatedAt: modelData.timestamp(),
+    ...modelData.model.generateCreatorAndUpdater(),
   };
 }

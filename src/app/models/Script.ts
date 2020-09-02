@@ -1,7 +1,14 @@
 import { Injector } from "@angular/core";
 import { SCRIPT } from "@baw-api/ServiceTokens";
 import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
-import { DateTimeTimezone, Id, Param } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  Description,
+  HasCreator,
+  HasDescription,
+  Id,
+  Param,
+} from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
@@ -10,16 +17,13 @@ import type { User } from "./User";
 /**
  * A script model
  */
-export interface IScript {
+export interface IScript extends HasCreator, HasDescription {
   id?: Id;
   name?: Param;
-  description?: string;
   analysisIdentifier?: string;
   version?: number;
   verified?: boolean;
   groupId?: Id;
-  creatorId?: Id;
-  createdAt?: DateTimeTimezone | string;
   executableCommand?: string;
   executableSettings?: string;
   executableSettingsMediaType?: string;
@@ -33,7 +37,9 @@ export class Script extends AbstractModel implements IScript {
   @BawPersistAttr
   public readonly name?: Param;
   @BawPersistAttr
-  public readonly description?: string;
+  public readonly description?: Description;
+  public readonly descriptionHtml?: Description;
+  public readonly descriptionHtmlTagline?: Description;
   @BawPersistAttr
   public readonly analysisIdentifier?: string;
   @BawPersistAttr
