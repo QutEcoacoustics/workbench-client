@@ -3,6 +3,7 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { HarvestCompleteComponent } from "./harvest-complete/harvest-complete.component";
 import { HarvestReviewComponent } from "./harvest-review/harvest-review.component";
 import { AssignComponent } from "./pages/assign/assign.component";
@@ -39,7 +40,12 @@ const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: components,
-  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
+  imports: [
+    MapModule,
+    SharedModule,
+    InfiniteScrollModule,
+    RouterModule.forChild(routes),
+  ],
   exports: [RouterModule, ...components],
 })
 export class ProjectsModule {}

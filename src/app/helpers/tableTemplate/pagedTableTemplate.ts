@@ -70,9 +70,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        () => {
-          this.getPageData();
-        },
+        () => this.getPageData(),
         // Filter event doesn't have an error output
         (err) => {}
       );
@@ -109,9 +107,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     } else {
       this.filters.filter = {
         // TODO Figure out how to get this typing working
-        [this.filterKey as any]: {
-          contains: filterText,
-        },
+        [this.filterKey as any]: { contains: filterText },
       };
     }
 

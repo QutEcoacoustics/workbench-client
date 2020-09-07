@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { InnerFilter } from "@baw-api/baw-api.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
@@ -9,56 +8,131 @@ import {
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
+import { IProject } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
+import { Subject } from "rxjs";
+import { debounceTime, map, mergeMap, takeUntil } from "rxjs/operators";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
 ];
 
-const projectsKey = "projects";
-
 @Component({
   selector: "app-projects-list",
   template: `
+    <!-- Project Filter -->
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Filter</span>
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter Projects"
+        (keyup)="onFilter($event)"
+      />
+    </div>
+
     <!-- Display project cards -->
-    <ng-container *ngIf="cardList">
-      <ng-container *ngIf="cardList.size > 0; else noProjects">
+    <div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="50"
+      (scrolled)="onScroll()"
+    >
+      <!-- Projects Exist -->
+      <ng-container *ngIf="cardList.size > 0">
         <baw-cards [cards]="cardList"></baw-cards>
       </ng-container>
-      <ng-template #noProjects>
+
+      <!-- Projects Don't Exist -->
+      <ng-template *ngIf="cardList.size === 0 && !loading">
         <h4 class="text-center">Your list of projects is empty</h4>
       </ng-template>
-    </ng-container>
+    </div>
+
+    <!-- Loading Projects -->
+    <baw-loading [display]="loading"></baw-loading>
   `,
 })
 class ListComponent extends PageComponent implements OnInit {
-  public cardList: List<Card>;
+  public cardList: List<Card> = List([]);
+  public loading: boolean;
+  private page = 1;
+  private filter: InnerFilter<IProject>;
+  private projects$ = new Subject<void>();
+  private filter$ = new Subject<void>();
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
     super();
   }
 
   public ngOnInit() {
-    const projects: ResolvedModel<Project[]> = this.route.snapshot.data[
-      projectsKey
-    ];
+    const noop = () => {};
+    const errorHandler = (error) => {
+      console.error(error);
+      this.loading = false;
+      this.ref.detectChanges();
+    };
 
-    if (projects.error) {
-      return;
-    }
+    this.projects$
+      .pipe(
+        mergeMap(() => this.getProjects()),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(noop, errorHandler);
 
-    this.cardList = List(projects.model.map((project) => project.getCard()));
+    this.filter$
+      .pipe(
+        debounceTime(500),
+        map(() => {
+          this.cardList = List([]);
+          this.page = 1;
+        }),
+        mergeMap(() => this.getProjects()),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(noop, errorHandler);
+
+    this.projects$.next();
+  }
+
+  public onScroll() {
+    this.page++;
+    this.projects$.next();
+  }
+
+  public onFilter(filter: KeyboardEvent) {
+    const name = (filter.target as HTMLInputElement).value;
+    this.page = 1;
+    this.filter = name ? { name: { contains: name } } : undefined;
+    this.filter$.next();
+  }
+
+  private getProjects() {
+    this.loading = true;
+    return this.api
+      .filter({
+        paging: { page: this.page },
+        filter: this.filter,
+      })
+      .pipe(
+        map((projects) => {
+          this.cardList = this.cardList.push(
+            ...projects.map((project) => project.getCard())
+          );
+          this.loading = false;
+          this.ref.detectChanges();
+        })
+      );
   }
 }
 
 ListComponent.LinkComponentToPageInfo({
   category: projectsCategory,
-  menus: { actions: List<AnyMenuItem>(projectsMenuItemActions) },
-  resolvers: { [projectsKey]: projectResolvers.list },
 }).AndMenuRoute(projectsMenuItem);
 
 export { ListComponent };
