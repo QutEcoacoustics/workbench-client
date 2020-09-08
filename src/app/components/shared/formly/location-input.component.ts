@@ -55,7 +55,7 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
       <input type="hidden" [id]="field.id" [formControl]="formControl" />
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" style="height: 400px">
       <baw-map [markers]="marker"></baw-map>
     </div>
   `,
