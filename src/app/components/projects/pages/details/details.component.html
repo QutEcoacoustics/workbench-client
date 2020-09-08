@@ -20,7 +20,12 @@
     (filter)="onFilter($event)"
   ></baw-filter>
 
-  <div class="search-results" infiniteScroll (scrolled)="onScroll()">
+  <div
+    class="search-results"
+    infiniteScroll
+    [infiniteScrollDisabled]="disableScroll"
+    (scrolled)="onScroll()"
+  >
     <div id="sites">
       <!-- Google Maps -->
       <div class="item map">

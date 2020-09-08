@@ -47,6 +47,7 @@ class DetailsComponent extends PageComponent implements OnInit {
   public sites: List<Site> = List([]);
   public markers: MapMarkerOption[];
   public loading: boolean;
+  public disableScroll: boolean;
   private page = 1;
   private sites$ = new Subject<void>();
   private filter: InnerFilter<ISite>;
@@ -104,6 +105,9 @@ class DetailsComponent extends PageComponent implements OnInit {
             this.sites.toArray().map((site) => site.getMapMarker())
           );
           this.loading = false;
+          this.disableScroll =
+            sites.length === 0 ||
+            sites[0].getMetadata().paging.maxPage === this.page;
         })
       );
   }

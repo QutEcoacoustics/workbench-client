@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
@@ -29,7 +28,12 @@ export const projectsMenuItemActions = [
     ></baw-filter>
 
     <!-- Display project cards -->
-    <div class="search-results" infiniteScroll (scrolled)="onScroll()">
+    <div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDisabled]="disableScroll"
+      (scrolled)="onScroll()"
+    >
       <!-- Projects Exist -->
       <ng-container *ngIf="cardList.size > 0">
         <baw-cards [cards]="cardList"></baw-cards>
@@ -48,6 +52,7 @@ export const projectsMenuItemActions = [
 class ListComponent extends PageComponent implements OnInit {
   public cardList: List<Card> = List([]);
   public loading: boolean;
+  public disableScroll: boolean;
   private page = 1;
   private filter: InnerFilter<IProject>;
   private projects$ = new Subject<void>();
@@ -95,6 +100,9 @@ class ListComponent extends PageComponent implements OnInit {
             ...projects.map((project) => project.getCard())
           );
           this.loading = false;
+          this.disableScroll =
+            projects.length === 0 ||
+            projects[0].getMetadata().paging.maxPage === this.page;
         })
       );
   }
@@ -102,6 +110,7 @@ class ListComponent extends PageComponent implements OnInit {
 
 ListComponent.LinkComponentToPageInfo({
   category: projectsCategory,
+  menus: { actions: List(projectsMenuItemActions) },
 }).AndMenuRoute(projectsMenuItem);
 
 export { ListComponent };
