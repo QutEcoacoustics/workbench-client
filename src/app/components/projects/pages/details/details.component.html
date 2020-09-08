@@ -14,24 +14,34 @@
 
   <!-- Sites -->
   <h2>Sites</h2>
+
   <baw-filter
     placeholder="Filter Sites"
     (filter)="onFilter($event)"
   ></baw-filter>
+
   <div class="row">
     <!-- Left aligned list of sites -->
     <div class="col-sm-6">
       <ul class="list-group">
-        <ng-container *ngIf="sites && sites.length > 0; else placeholderSite">
-          <app-site-card
-            *ngFor="let site of sites"
-            [project]="project"
-            [site]="site"
-          ></app-site-card>
-        </ng-container>
-        <ng-template #placeholderSite>
-          <p id="site_placeholder">No sites associated with this project</p>
-        </ng-template>
+        <div class="search-results" infiniteScroll (scrolled)="onScroll()">
+          <!-- Sites Exist -->
+          <ng-container *ngIf="sites.size > 0">
+            <app-site-card
+              *ngFor="let site of sites"
+              [project]="project"
+              [site]="site"
+            ></app-site-card>
+          </ng-container>
+
+          <!-- Sites Don't Exist-->
+          <ng-container *ngIf="sites.size === 0 && !loading">
+            <p id="site_placeholder">No sites associated with this project</p>
+          </ng-container>
+
+          <!-- Loading Sites -->
+          <baw-loading [display]="loading"></baw-loading>
+        </div>
       </ul>
     </div>
 

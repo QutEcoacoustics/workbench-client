@@ -44,7 +44,7 @@ const projectKey = "project";
 })
 class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
-  public sites: Site[];
+  public sites: List<Site> = List([]);
   public markers: MapMarkerOption[];
   public loading: boolean;
   private page = 1;
@@ -113,7 +113,7 @@ class DetailsComponent extends PageComponent implements OnInit {
       )
       .pipe(
         map((sites) => {
-          this.sites = sites;
+          this.sites = this.sites.push(...sites);
           this.markers = sanitizeMapMarkers(
             sites.map((site) => site.getMapMarker())
           );

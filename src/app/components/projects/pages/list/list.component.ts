@@ -28,22 +28,16 @@ export const projectsMenuItemActions = [
     ></baw-filter>
 
     <!-- Display project cards -->
-    <div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
-    >
+    <div class="search-results" infiniteScroll (scrolled)="onScroll()">
       <!-- Projects Exist -->
       <ng-container *ngIf="cardList.size > 0">
         <baw-cards [cards]="cardList"></baw-cards>
       </ng-container>
 
       <!-- Projects Don't Exist -->
-      <ng-template *ngIf="cardList.size === 0 && !loading">
+      <ng-container *ngIf="cardList.size === 0 && !loading">
         <h4 class="text-center">Your list of projects is empty</h4>
-      </ng-template>
+      </ng-container>
     </div>
 
     <!-- Loading Projects -->
