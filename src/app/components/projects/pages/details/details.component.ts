@@ -101,7 +101,7 @@ class DetailsComponent extends PageComponent implements OnInit {
         map((sites) => {
           this.sites = this.sites.push(...sites);
           this.markers = sanitizeMapMarkers(
-            sites.map((site) => site.getMapMarker())
+            this.sites.toArray().map((site) => site.getMapMarker())
           );
           this.loading = false;
         })

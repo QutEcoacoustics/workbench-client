@@ -20,34 +20,27 @@
     (filter)="onFilter($event)"
   ></baw-filter>
 
-  <div class="row">
-    <!-- Left aligned list of sites -->
-    <div class="col-sm-6">
-      <ul class="list-group">
-        <div class="search-results" infiniteScroll (scrolled)="onScroll()">
-          <!-- Sites Exist -->
-          <ng-container *ngIf="sites.size > 0">
-            <app-site-card
-              *ngFor="let site of sites"
-              [project]="project"
-              [site]="site"
-            ></app-site-card>
-          </ng-container>
+  <div class="search-results" infiniteScroll (scrolled)="onScroll()">
+    <div id="sites">
+      <!-- Google Maps -->
+      <div class="item map">
+        <baw-map [markers]="markers"></baw-map>
+      </div>
 
-          <!-- Sites Don't Exist-->
-          <ng-container *ngIf="sites.size === 0 && !loading">
-            <p id="site_placeholder">No sites associated with this project</p>
-          </ng-container>
-
-          <!-- Loading Sites -->
-          <baw-loading [display]="loading"></baw-loading>
+      <!-- Sites Exist -->
+      <ng-container *ngIf="sites.size > 0">
+        <div *ngFor="let site of sites" class="item">
+          <app-site-card [project]="project" [site]="site"></app-site-card>
         </div>
-      </ul>
-    </div>
+      </ng-container>
 
-    <!-- Right aligned map -->
-    <div class="col-sm-6">
-      <baw-map [markers]="markers"></baw-map>
+      <!-- Sites Don't Exist-->
+      <ng-container *ngIf="sites.size === 0 && !loading">
+        <p id="site_placeholder">No sites associated with this project</p>
+      </ng-container>
     </div>
   </div>
+
+  <!-- Loading Sites -->
+  <baw-loading [display]="loading"></baw-loading>
 </ng-container>

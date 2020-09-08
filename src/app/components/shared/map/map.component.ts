@@ -19,7 +19,7 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-map",
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
-      <google-map height="400px" width="100%" [options]="mapOptions">
+      <google-map height="100%" width="100%" [options]="mapOptions">
         <map-marker
           *ngFor="let marker of filteredMarkers"
           [options]="markerOptions"
@@ -30,7 +30,7 @@ import { takeUntil } from "rxjs/operators";
       </google-map>
     </ng-container>
     <ng-template #placeholderMap>
-      <div class="map-placeholder"><span>No locations specified</span></div>
+      <div class="map-placeholder"><p>No locations specified</p></div>
     </ng-template>
   `,
   styleUrls: ["./map.component.scss"],
