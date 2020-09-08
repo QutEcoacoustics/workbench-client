@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { noop, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "baw-filter",
@@ -16,12 +18,20 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
     </div>
   `,
 })
-export class FilterComponent {
+export class FilterComponent implements OnInit {
   @Input() public label = "Filter";
-  @Input() public placeholder: string;
+  @Input() public placeholder = "";
   @Output() public filter = new EventEmitter<string>();
 
+  private input$ = new Subject<string>();
+
+  public ngOnInit() {
+    this.input$
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((input) => this.filter.next(input), noop);
+  }
+
   public onFilter(event: KeyboardEvent) {
-    this.filter.next((event.target as HTMLInputElement).value);
+    this.input$.next((event.target as HTMLInputElement).value);
   }
 }

@@ -24,7 +24,7 @@ import { PermissionsShieldComponent } from "@shared/permissions-shield/permissio
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { noop, Subject } from "rxjs";
-import { debounceTime, map, mergeMap, takeUntil } from "rxjs/operators";
+import { map, mergeMap, takeUntil } from "rxjs/operators";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -49,7 +49,6 @@ class DetailsComponent extends PageComponent implements OnInit {
   public loading: boolean;
   private page = 1;
   private sites$ = new Subject<void>();
-  private filter$ = new Subject<void>();
   private filter: InnerFilter<ISite>;
 
   constructor(private route: ActivatedRoute, private api: SitesService) {
@@ -63,46 +62,33 @@ class DetailsComponent extends PageComponent implements OnInit {
     }
     this.project = resolvedModels[projectKey] as Project;
 
-    const errorHandler = (error) => {
-      console.error(error);
-      this.loading = false;
-    };
-
     this.sites$
       .pipe(
         mergeMap(() => this.getSites()),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(noop, errorHandler);
-
-    this.filter$
-      .pipe(
-        debounceTime(500),
-        map(() => {
-          this.markers = [];
-          this.page = 1;
-        }),
-        mergeMap(() => this.getSites()),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(noop, errorHandler);
-
+      .subscribe(noop, (error) => {
+        console.error(error);
+        this.loading = false;
+      });
     this.sites$.next();
   }
 
   public onScroll() {
     this.page++;
+    this.loading = true;
     this.sites$.next();
   }
 
   public onFilter(input: string) {
     this.page = 1;
+    this.sites = List([]);
+    this.loading = true;
     this.filter = input ? { name: { contains: input } } : undefined;
-    this.filter$.next();
+    this.sites$.next();
   }
 
   private getSites() {
-    this.loading = true;
     return this.api
       .filter(
         {
