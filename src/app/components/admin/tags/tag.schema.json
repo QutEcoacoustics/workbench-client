@@ -37,11 +37,11 @@
       }
     },
     {
-      "key": "isTaxanomic",
+      "key": "isTaxonomic",
       "type": "checkbox",
       "wrappers": ["form-field-horizontal"],
       "templateOptions": {
-        "label": "Is Taxanomic",
+        "label": "Is Taxonomic",
         "required": false
       }
     }

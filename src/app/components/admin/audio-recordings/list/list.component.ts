@@ -20,6 +20,20 @@ import {
 class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit {
+  public columns = [
+    { name: "Id" },
+    { name: "Site" },
+    { name: "Duration" },
+    { name: "Recorded" },
+    { name: "Model" },
+  ];
+  public sortKeys = {
+    id: "id",
+    site: "siteId",
+    duration: "durationSeconds",
+    recorded: "recordedDate",
+  };
+
   constructor(api: AudioRecordingsService) {
     super(api, (audioRecordings) =>
       audioRecordings.map((audioRecording) => ({
@@ -36,19 +50,6 @@ class AdminAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
-    this.columns = [
-      { name: "Id" },
-      { name: "Site" },
-      { name: "Duration" },
-      { name: "Recorded" },
-      { name: "Model" },
-    ];
-    this.sortKeys = {
-      id: "id",
-      site: "siteId",
-      duration: "durationSeconds",
-      recorded: "recordedDate",
-    };
     this.getPageData();
   }
 

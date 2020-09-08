@@ -14,7 +14,7 @@ export function generateTag(id?: Id): Required<ITag> {
   return {
     id: modelData.id(id),
     text: modelData.param(),
-    isTaxanomic: modelData.boolean(),
+    isTaxonomic: modelData.boolean(),
     typeOfTag: modelData.random.arrayElement(tagTypes),
     retired: modelData.boolean(),
     notes: modelData.notes(),
