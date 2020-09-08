@@ -11,7 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { IProject } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { Subject } from "rxjs";
+import { noop, Subject } from "rxjs";
 import { debounceTime, map, mergeMap, takeUntil } from "rxjs/operators";
 
 export const projectsMenuItemActions = [
@@ -22,18 +22,10 @@ export const projectsMenuItemActions = [
 @Component({
   selector: "app-projects-list",
   template: `
-    <!-- Project Filter -->
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Filter</span>
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Filter Projects"
-        (keyup)="onFilter($event)"
-      />
-    </div>
+    <baw-filter
+      placeholder="Filter Projects"
+      (filter)="onFilter($event)"
+    ></baw-filter>
 
     <!-- Display project cards -->
     <div
@@ -66,16 +58,14 @@ class ListComponent extends PageComponent implements OnInit {
   private projects$ = new Subject<void>();
   private filter$ = new Subject<void>();
 
-  constructor(private api: ProjectsService, private ref: ChangeDetectorRef) {
+  constructor(private api: ProjectsService) {
     super();
   }
 
   public ngOnInit() {
-    const noop = () => {};
     const errorHandler = (error) => {
       console.error(error);
       this.loading = false;
-      this.ref.detectChanges();
     };
 
     this.projects$
@@ -105,10 +95,9 @@ class ListComponent extends PageComponent implements OnInit {
     this.projects$.next();
   }
 
-  public onFilter(filter: KeyboardEvent) {
-    const name = (filter.target as HTMLInputElement).value;
+  public onFilter(input: string) {
     this.page = 1;
-    this.filter = name ? { name: { contains: name } } : undefined;
+    this.filter = input ? { name: { contains: input } } : undefined;
     this.filter$.next();
   }
 
@@ -125,7 +114,6 @@ class ListComponent extends PageComponent implements OnInit {
             ...projects.map((project) => project.getCard())
           );
           this.loading = false;
-          this.ref.detectChanges();
         })
       );
   }

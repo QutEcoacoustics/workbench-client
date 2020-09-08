@@ -18,6 +18,7 @@ import { CmsComponent } from "./cms/cms.component";
 import { DetailViewComponent } from "./detail-view/detail-view.component";
 import { RenderFieldComponent } from "./detail-view/render-field/render-field.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
+import { FilterComponent } from "./filter/filter.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
@@ -35,6 +36,7 @@ export const sharedComponents = [
   CmsComponent,
   DetailViewComponent,
   ErrorHandlerComponent,
+  FilterComponent,
   FooterComponent,
   FormComponent,
   SecondaryMenuComponent,

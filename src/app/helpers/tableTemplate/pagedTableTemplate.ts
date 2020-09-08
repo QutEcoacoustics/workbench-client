@@ -99,19 +99,17 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.getPageData();
   }
 
-  public onFilter(filter: KeyboardEvent) {
-    const filterText = (filter.target as HTMLInputElement).value;
-
-    if (!filterText) {
+  public onFilter(filter: string) {
+    if (!filter) {
       this.filters.filter = undefined;
     } else {
       this.filters.filter = {
         // TODO Figure out how to get this typing working
-        [this.filterKey as any]: { contains: filterText },
+        [this.filterKey as any]: { contains: filter },
       };
     }
 
-    this.filterEvent$.next(filterText);
+    this.filterEvent$.next(filter);
   }
 
   public onSort(event: SortEvent) {

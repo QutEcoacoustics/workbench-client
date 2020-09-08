@@ -10,28 +10,20 @@
     </p>
     <ul>
       <li>
-        <strong>
-          No access (none)
-        </strong>
+        <strong> No access (none) </strong>
         prevents users from viewing anything in this project.
       </li>
       <li>
-        <strong>
-          Reader
-        </strong>
+        <strong> Reader </strong>
         allows users to view anything in this project.
       </li>
       <li>
-        <strong>
-          Writer
-        </strong>
+        <strong> Writer </strong>
         allows users to add and change annotations, in addition to reader
         permission.
       </li>
       <li>
-        <strong>
-          Owner
-        </strong>
+        <strong> Owner </strong>
         allows users to modify and delete this project and its sites, in
         addition to writer permission.
       </li>
@@ -70,17 +62,10 @@
       </strong>
     </p>
 
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Filter</span>
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Filter users"
-        (keyup)="updateFilter($event)"
-      />
-    </div>
+    <baw-filter
+      placeholder="Filter Users"
+      (filter)="updateFilter($event)"
+    ></baw-filter>
 
     <ngx-datatable
       #table

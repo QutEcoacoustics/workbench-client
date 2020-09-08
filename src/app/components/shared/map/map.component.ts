@@ -40,6 +40,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
+  // TODO Change to List<MapMarkerOption>
   @Input() public markers: MapMarkerOption[];
   public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
