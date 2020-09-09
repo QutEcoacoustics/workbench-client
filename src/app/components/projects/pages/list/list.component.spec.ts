@@ -73,24 +73,19 @@ describe("ProjectsListComponent", () => {
     numResponses: number,
     assertFilters?: ((filters: Filters<IProject>) => void)[]
   ) {
-    const requests: { projects: Project[]; subject: Subject<Project[]> }[] = [];
+    const requests: { models: Project[]; subject: Subject<Project[]> }[] = [];
     const promises: Promise<any>[] = [];
     const projects: Project[] = [];
 
     for (let i = 0; i < numResponses; i++) {
       requests.push({
-        projects: generateProjects(25, numResponses),
+        models: generateProjects(25, numResponses),
         subject: new Subject(),
       });
       promises.push(
-        nStepObservable(
-          requests[i].subject,
-          () => requests[i].projects,
-          false,
-          i
-        )
+        nStepObservable(requests[i].subject, () => requests[i].models, false, i)
       );
-      projects.push(...requests[i].projects);
+      projects.push(...requests[i].models);
     }
 
     let count = -1;
@@ -127,6 +122,11 @@ describe("ProjectsListComponent", () => {
     );
   });
 
+  it("should handle failed projects model", async () => {
+    await handleApiRequest(undefined, generateApiErrorDetails());
+    assertErrorHandler(spectator.fixture, true);
+  });
+
   it("should display loading animation during request", async () => {
     handleApiRequest([]);
     assertSpinner(spectator.fixture, true);
@@ -137,68 +137,65 @@ describe("ProjectsListComponent", () => {
     assertSpinner(spectator.fixture, false);
   });
 
-  it("should handle zero projects", async () => {
-    await handleApiRequest([]);
+  describe("projects", () => {
+    it("should handle zero projects", async () => {
+      await handleApiRequest([]);
 
-    const title = spectator.query<HTMLHeadingElement>("h4");
-    expect(title).toBeTruthy();
-    expect(title.innerText.trim()).toBe("Your list of projects is empty");
-    expect(getCards().length).toBe(0);
-  });
-
-  it("should display single project card", async () => {
-    await handleApiRequest(generateProjects(1, 1));
-    const cards = getCards();
-    expect(cards.length).toBe(1);
-  });
-
-  it("should display single project card with title", async () => {
-    const projects = generateProjects(1, 1);
-    await handleApiRequest(projects);
-    const cards = getCards();
-    assertCardTitle(cards[0], projects[0].name);
-  });
-
-  it("should display single project card with default description", async () => {
-    const projects = generateProjects(1, 1, {
-      descriptionHtmlTagline: undefined,
+      const title = spectator.query<HTMLHeadingElement>("h4");
+      expect(title).toBeTruthy();
+      expect(title.innerText.trim()).toBe("Your list of projects is empty");
+      expect(getCards().length).toBe(0);
     });
-    await handleApiRequest(projects);
 
-    const cards = getCards();
-    assertCardDescription(cards[0], "No description given");
-  });
-
-  it("should display single project card with custom description", async () => {
-    const projects = generateProjects(1, 1, {
-      descriptionHtmlTagline: "<b>Custom</b> Description",
+    it("should display single project card", async () => {
+      await handleApiRequest(generateProjects(1, 1));
+      const cards = getCards();
+      expect(cards.length).toBe(1);
     });
-    await handleApiRequest(projects);
 
-    const cards = getCards();
-    assertCardDescription(cards[0], "<b>Custom</b> Description");
-  });
+    it("should display single project card with title", async () => {
+      const projects = generateProjects(1, 1);
+      await handleApiRequest(projects);
+      const cards = getCards();
+      assertCardTitle(cards[0], projects[0].name);
+    });
 
-  it("should display multiple project cards", async () => {
-    const projects = generateProjects(3, 1);
-    await handleApiRequest(projects);
-    const cards = getCards();
-    expect(cards.length).toBe(3);
-  });
+    it("should display single project card with default description", async () => {
+      const projects = generateProjects(1, 1, {
+        descriptionHtmlTagline: undefined,
+      });
+      await handleApiRequest(projects);
 
-  it("should display multiple project cards in order", async () => {
-    const projects = generateProjects(3, 1);
-    await handleApiRequest(projects);
+      const cards = getCards();
+      assertCardDescription(cards[0], "No description given");
+    });
 
-    const cards = getCards();
-    projects.forEach((project, index) =>
-      assertCardTitle(cards[index], project.name)
-    );
-  });
+    it("should display single project card with custom description", async () => {
+      const projects = generateProjects(1, 1, {
+        descriptionHtmlTagline: "<b>Custom</b> Description",
+      });
+      await handleApiRequest(projects);
 
-  it("should handle failed projects model", async () => {
-    await handleApiRequest(undefined, generateApiErrorDetails());
-    assertErrorHandler(spectator.fixture, true);
+      const cards = getCards();
+      assertCardDescription(cards[0], "<b>Custom</b> Description");
+    });
+
+    it("should display multiple project cards", async () => {
+      const projects = generateProjects(3, 1);
+      await handleApiRequest(projects);
+      const cards = getCards();
+      expect(cards.length).toBe(3);
+    });
+
+    it("should display multiple project cards in order", async () => {
+      const projects = generateProjects(3, 1);
+      await handleApiRequest(projects);
+
+      const cards = getCards();
+      projects.forEach((project, index) =>
+        assertCardTitle(cards[index], project.name)
+      );
+    });
   });
 
   describe("scrolling", () => {
@@ -346,7 +343,7 @@ describe("ProjectsListComponent", () => {
       spectator.detectChanges();
 
       expect(spectator.component.cardList.toArray()).toEqual(
-        List(requests[1].projects.map((project) => project.getCard())).toArray()
+        List(requests[1].models.map((project) => project.getCard())).toArray()
       );
     });
   });

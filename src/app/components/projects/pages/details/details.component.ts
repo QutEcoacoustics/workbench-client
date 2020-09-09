@@ -65,6 +65,7 @@ class DetailsComponent extends PageComponent implements OnInit {
     }
     this.project = resolvedModels[projectKey] as Project;
 
+    this.loading = true;
     this.sites$
       .pipe(
         mergeMap(() => this.getSites()),

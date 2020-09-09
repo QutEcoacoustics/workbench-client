@@ -13,16 +13,24 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
-import { MapComponent } from "@shared/map/map.component";
+import { FilterComponent } from "@shared/filter/filter.component";
+import { MapComponent, sanitizeMapMarkers } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertImage } from "@test/helpers/html";
+import {
+  assertErrorHandler,
+  assertImage,
+  assertSpinner,
+} from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import {
+  InfiniteScrollDirective,
+  InfiniteScrollModule,
+} from "ngx-infinite-scroll";
 import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
@@ -86,11 +94,58 @@ describe("ProjectDetailsComponent", () => {
     spectator.detectChanges();
   }
 
+  function promiseMultipleRequests(
+    numResponses: number,
+    assertFilters?: ((filters: Filters<ISite>) => void)[]
+  ) {
+    const requests: { models: Site[]; subject: Subject<Site[]> }[] = [];
+    const promises: Promise<any>[] = [];
+    const sites: Site[] = [];
+
+    for (let i = 0; i < numResponses; i++) {
+      requests.push({
+        models: generateSites(25, numResponses),
+        subject: new Subject(),
+      });
+      promises.push(
+        nStepObservable(requests[i].subject, () => requests[i].models, false, i)
+      );
+      sites.push(...requests[i].models);
+    }
+
+    let count = -1;
+    api.filter.and.callFake((filters: Filters<ISite>) => {
+      count++;
+      assertFilters?.[count]?.(filters);
+      return requests?.[count]?.subject ?? 1;
+    });
+    return { promises, sites, requests };
+  }
+
   it("should create", async () => {
     setup(new Project(generateProject()));
     await handleApiRequest([]);
     spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
+  });
+
+  it("should initially request page 1", async () => {
+    setup(new Project(generateProject()));
+    await handleApiRequest([], undefined, (filter) =>
+      expect(filter.paging.page).toBe(1)
+    );
+  });
+
+  it("should display loading animation during request", async () => {
+    setup(new Project(generateProject()));
+    handleApiRequest([]);
+    assertSpinner(spectator.fixture, true);
+  });
+
+  it("should clear loading animation on response", async () => {
+    setup(new Project(generateProject()));
+    await handleApiRequest([]);
+    assertSpinner(spectator.fixture, false);
   });
 
   describe("Error Handling", () => {
@@ -268,6 +323,164 @@ describe("ProjectDetailsComponent", () => {
       spectator.detectChanges();
       expect(getGoogleMap().markers).toEqual(
         sitesWithMarker.map((site) => site.getMapMarker())
+      );
+    });
+  });
+
+  describe("scrolling", () => {
+    function getScrollDirective() {
+      return spectator.query(InfiniteScrollDirective);
+    }
+
+    function scrollPage() {
+      const directive = getScrollDirective();
+      directive.scrolled.next();
+      spectator.detectChanges();
+    }
+
+    beforeEach(() => setup(new Project(generateProject())));
+
+    it("should detect scrolling", async () => {
+      const spy = jasmine.createSpy();
+      spectator.component.onScroll = spy;
+
+      await handleApiRequest(generateSites(25, 2));
+      expect(spy).not.toHaveBeenCalled();
+      scrollPage();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should request page 2 on scroll", async (done) => {
+      const { promises } = promiseMultipleRequests(2, [
+        (filter) => expect(filter.paging.page).toBe(1),
+        (filter) => {
+          expect(filter.paging.page).toBe(2);
+          done();
+        },
+      ]);
+
+      await promises[0];
+      spectator.detectChanges();
+      scrollPage();
+      await promises[1];
+    });
+
+    it("should disable infinite scroll after maxPage", async () => {
+      const { promises } = promiseMultipleRequests(2);
+      await promises[0];
+      spectator.detectChanges();
+      expect(getScrollDirective().infiniteScrollDisabled).toBeFalsy();
+      scrollPage();
+      await promises[1];
+      spectator.detectChanges();
+      expect(getScrollDirective().infiniteScrollDisabled).toBeTruthy();
+    });
+
+    it("should append new project cards", async () => {
+      const { promises, sites } = promiseMultipleRequests(2);
+      spectator.detectChanges();
+      await promises[0];
+      spectator.detectChanges();
+      scrollPage();
+      await promises[1];
+      spectator.detectChanges();
+
+      expect(spectator.component.sites.toArray()).toEqual(sites);
+      expect(spectator.component.markers).toEqual(
+        sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
+      );
+    });
+  });
+
+  describe("filtering", () => {
+    function filterSites(name: string) {
+      const filter = spectator.query(FilterComponent);
+      filter.filter.next(name);
+      spectator.detectChanges();
+    }
+
+    beforeEach(() => setup(new Project(generateProject())));
+
+    it("should detect filter", async () => {
+      const spy = jasmine.createSpy();
+      spectator.component.onFilter = spy.and.callThrough();
+
+      await handleApiRequest(generateSites(25, 2));
+      expect(spy).not.toHaveBeenCalled();
+      filterSites("project");
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should add project name to filter", async (done) => {
+      const { promises } = promiseMultipleRequests(2, [
+        (filters) => expect(filters.filter).toBe(undefined),
+        (filters) => {
+          expect(filters.filter).toEqual({ name: { contains: "project" } });
+          done();
+        },
+      ]);
+
+      await promises[0];
+      spectator.detectChanges();
+      filterSites("project");
+      await promises[1];
+      spectator.detectChanges();
+    });
+
+    it("should handle clearing filter", async (done) => {
+      const { promises } = promiseMultipleRequests(3, [
+        (filters) => expect(filters.filter).toBe(undefined),
+        (filters) =>
+          expect(filters.filter).toEqual({ name: { contains: "project" } }),
+        (filters) => {
+          expect(filters.filter).toBe(undefined);
+          done();
+        },
+      ]);
+
+      await promises[0];
+      spectator.detectChanges();
+      filterSites("project");
+      await promises[1];
+      spectator.detectChanges();
+      filterSites("");
+      await promises[2];
+      spectator.detectChanges();
+    });
+
+    it("should reset current page number", async (done) => {
+      spectator.component["page"] = 5;
+
+      const { promises } = promiseMultipleRequests(2, [
+        (filters) => expect(filters.paging.page).toBe(5),
+        (filters) => {
+          expect(filters.paging.page).toBe(1);
+          done();
+        },
+      ]);
+
+      await promises[0];
+      spectator.detectChanges();
+      filterSites("project");
+      await promises[1];
+      spectator.detectChanges();
+    });
+
+    it("should override project cards", async () => {
+      spectator.component["page"] = 5;
+      const { promises, requests } = promiseMultipleRequests(2);
+
+      await promises[0];
+      spectator.detectChanges();
+      filterSites("project");
+      await promises[1];
+      spectator.detectChanges();
+
+      expect(spectator.component.sites.toArray()).toEqual(requests[1].models);
+      expect(spectator.component.markers).toEqual(
+        sanitizeMapMarkers(
+          requests[1].models.map((site) => site.getMapMarker())
+        )
       );
     });
   });
