@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
@@ -22,35 +23,39 @@ export const projectsMenuItemActions = [
 @Component({
   selector: "app-projects-list",
   template: `
-    <baw-filter
-      placeholder="Filter Projects"
-      (filter)="onFilter($event)"
-    ></baw-filter>
+    <ng-container *ngIf="!error">
+      <baw-filter
+        placeholder="Filter Projects"
+        (filter)="onFilter($event)"
+      ></baw-filter>
 
-    <!-- Display project cards -->
-    <div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDisabled]="disableScroll"
-      (scrolled)="onScroll()"
-    >
-      <!-- Projects Exist -->
-      <ng-container *ngIf="cardList.size > 0">
-        <baw-cards [cards]="cardList"></baw-cards>
-      </ng-container>
+      <!-- Display project cards -->
+      <div
+        class="search-results"
+        infiniteScroll
+        [infiniteScrollDisabled]="disableScroll"
+        (scrolled)="onScroll()"
+      >
+        <!-- Projects Exist -->
+        <ng-container *ngIf="cardList.size > 0">
+          <baw-cards [cards]="cardList"></baw-cards>
+        </ng-container>
 
-      <!-- Projects Don't Exist -->
-      <ng-container *ngIf="cardList.size === 0 && !loading">
-        <h4 class="text-center">Your list of projects is empty</h4>
-      </ng-container>
-    </div>
+        <!-- Projects Don't Exist -->
+        <ng-container *ngIf="cardList.size === 0 && !loading">
+          <h4 class="text-center">Your list of projects is empty</h4>
+        </ng-container>
+      </div>
 
-    <!-- Loading Projects -->
-    <baw-loading [display]="loading"></baw-loading>
+      <!-- Loading Projects -->
+      <baw-loading [display]="loading"></baw-loading>
+    </ng-container>
+    <baw-error-handler [error]="error"></baw-error-handler>
   `,
 })
 class ListComponent extends PageComponent implements OnInit {
   public cardList: List<Card> = List([]);
+  public error: ApiErrorDetails;
   public loading: boolean;
   public disableScroll: boolean;
   private page = 1;
@@ -62,13 +67,14 @@ class ListComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.loading = true;
     this.projects$
       .pipe(
         mergeMap(() => this.getProjects()),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(noop, (error) => {
-        console.error(error);
+      .subscribe(noop, (error: ApiErrorDetails) => {
+        this.error = error;
         this.loading = false;
       });
     this.projects$.next();

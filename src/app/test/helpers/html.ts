@@ -177,9 +177,9 @@ export function assertSpinner(
   );
 
   if (visible) {
-    expectation.toBeTruthy();
+    expectation.toBeTruthy("Expected Spinner to Exist");
   } else {
-    expectation.toBeFalsy();
+    expectation.toBeFalsy("Expected Spinner not to Exist");
   }
 }
 
