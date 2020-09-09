@@ -36,4 +36,7 @@
   </ngx-datatable>
 </div>
 
-<baw-error-handler *ngIf="!failure" [error]="error"></baw-error-handler>
+<baw-error-handler
+  *ngIf="!failure && error"
+  [error]="error"
+></baw-error-handler>

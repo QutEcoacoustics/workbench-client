@@ -48,4 +48,4 @@
   </ngx-datatable>
 </ng-container>
 
-<baw-error-handler [error]="error"></baw-error-handler>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

@@ -157,10 +157,19 @@ export function assertValidationMessage(wrapper: any, message: string) {
 /**
  * Assert form component handles pre-loading model failure
  * @param fixture Component fixture
+ * @param internal Is the baw-error-handler inside the component
  */
-export function assertResolverErrorHandling(fixture: ComponentFixture<any>) {
-  const body = fixture.nativeElement;
-  expect(body.childElementCount).toBe(0);
+export function assertErrorHandler(
+  fixture: ComponentFixture<any>,
+  internal?: boolean
+) {
+  if (internal) {
+    expect(
+      fixture.nativeElement.querySelector("baw-error-handler h1")
+    ).toBeTruthy();
+  } else {
+    expect(fixture.nativeElement.childElementCount).toBe(0);
+  }
 }
 
 /**

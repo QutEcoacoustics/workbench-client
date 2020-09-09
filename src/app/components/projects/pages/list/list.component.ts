@@ -50,7 +50,7 @@ export const projectsMenuItemActions = [
       <!-- Loading Projects -->
       <baw-loading [display]="loading"></baw-loading>
     </ng-container>
-    <baw-error-handler [error]="error"></baw-error-handler>
+    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
 class ListComponent extends PageComponent implements OnInit {

@@ -1,5 +1,5 @@
 <!-- Project Details -->
-<ng-container *ngIf="project">
+<ng-container *ngIf="project && !error">
   <h1>{{ project.name }}</h1>
   <div class="row">
     <div class="col-sm-4">
@@ -49,3 +49,4 @@
   <!-- Loading Sites -->
   <baw-loading [display]="loading"></baw-loading>
 </ng-container>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

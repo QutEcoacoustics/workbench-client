@@ -12,7 +12,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateScript } from "@test/fakes/Script";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -74,7 +74,7 @@ describe("AdminScriptsEditComponent", () => {
 
     it("should handle script error", () => {
       configureTestingModule(undefined, generateApiErrorDetails());
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should call api", () => {

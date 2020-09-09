@@ -49,6 +49,6 @@
       <ngx-datatable-column name="Description"></ngx-datatable-column>
     </ngx-datatable>
 
-    <baw-error-handler [error]="error"></baw-error-handler>
+    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   </ng-container>
 </baw-wip>

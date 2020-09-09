@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
@@ -43,11 +44,12 @@ const projectKey = "project";
   styleUrls: ["./details.component.scss"],
 })
 class DetailsComponent extends PageComponent implements OnInit {
+  public error: ApiErrorDetails;
+  public disableScroll: boolean;
+  public loading: boolean;
+  public markers: MapMarkerOption[];
   public project: Project;
   public sites: List<Site> = List([]);
-  public markers: MapMarkerOption[];
-  public loading: boolean;
-  public disableScroll: boolean;
   private page = 1;
   private sites$ = new Subject<void>();
   private filter: InnerFilter<ISite>;
@@ -68,9 +70,10 @@ class DetailsComponent extends PageComponent implements OnInit {
         mergeMap(() => this.getSites()),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(noop, (error) => {
+      .subscribe(noop, (error: ApiErrorDetails) => {
         console.error(error);
         this.loading = false;
+        this.error = error;
       });
     this.sites$.next();
   }

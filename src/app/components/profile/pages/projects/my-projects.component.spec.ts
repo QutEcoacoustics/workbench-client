@@ -12,7 +12,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
-import { assertResolverErrorHandling, assertRoute } from "@test/helpers/html";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
 import { MyProjectsComponent } from "./my-projects.component";
@@ -98,7 +98,7 @@ describe("MyProjectsComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
 
-    assertResolverErrorHandling(fixture);
+    assertErrorHandler(fixture);
   });
 
   describe("table", () => {

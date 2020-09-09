@@ -15,7 +15,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
-import { assertSpinner } from "@test/helpers/html";
+import { assertErrorHandler, assertSpinner } from "@test/helpers/html";
 import { List } from "immutable";
 import {
   InfiniteScrollDirective,
@@ -198,7 +198,7 @@ describe("ProjectsListComponent", () => {
 
   it("should handle failed projects model", async () => {
     await handleApiRequest(undefined, generateApiErrorDetails());
-    expect(spectator.query("baw-error-handler h1")).toBeTruthy();
+    assertErrorHandler(spectator.fixture, true);
   });
 
   describe("scrolling", () => {

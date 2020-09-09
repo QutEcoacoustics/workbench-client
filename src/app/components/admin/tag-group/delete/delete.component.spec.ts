@@ -12,7 +12,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateTagGroup } from "@test/fakes/TagGroup";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -80,7 +80,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
     it("should handle tag group error", () => {
       configureTestingModule(undefined, generateApiErrorDetails());
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should call api", () => {
