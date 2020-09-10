@@ -59,8 +59,11 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Chrome Expected Path
-        run: dir "C:/Program Files (x86)/Google/Chrome/Application/"
+      - name: Install Chrome
+        run: |
+          $Path = $env:TEMP;
+          $Installer = “chrome_installer.exe”;
+          Invoke-WebRequest “http://dl.google.com/chrome/chrome_installer.exe" -OutFile $Path\$Installer; Start-Process -FilePath $Path\$Installer -Args “/silent /install” -Verb RunAs -Wait; Remove-Item $Path\$Installer
         if: matrix.os == 'windows-latest'
 
       - name: Run e2e test suite
