@@ -14,7 +14,7 @@ const chromeOptions = {
   ],
 };
 
-// Windows specific binary
+// Windows specific binary (issue #448)
 if (process.platform === "win32") {
   chromeOptions["binary"] =
     "C:/Program Files/Google/Chrome/Application/chrome.exe";

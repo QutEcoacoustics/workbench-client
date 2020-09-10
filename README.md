@@ -58,7 +58,7 @@ To run the application end to end test suite:
 $ npm run e2e
 ```
 
-Note: Make sure you are running the 64 bit version of chrome
+Note: Make sure you are running the 64 bit version of chrome installed to the following folder: `C:/Program Files/Google/Chrome/Application/chrome.exe`. Otherwise the e2e tests will fail with the following error: `E/launcher - WebDriverError: unknown error: cannot find Chrome binary`
 
 #### Unit tests
 
