@@ -62,10 +62,11 @@
       </strong>
     </p>
 
-    <baw-filter
+    <baw-debounce-input
+      label="Filter"
       placeholder="Filter Users"
       (filter)="updateFilter($event)"
-    ></baw-filter>
+    ></baw-debounce-input>
 
     <ngx-datatable
       #table

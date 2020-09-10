@@ -5,10 +5,11 @@
     Displaying <strong>all {{ totalModels }}</strong> user/s
   </p>
 
-  <baw-filter
+  <baw-debounce-input
+    label="Filter"
     placeholder="Filter Users"
     (filter)="onFilter($event)"
-  ></baw-filter>
+  ></baw-debounce-input>
 
   <ngx-datatable
     #table

@@ -3,10 +3,10 @@ import { noop, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Component({
-  selector: "baw-filter",
+  selector: "baw-debounce-input",
   template: `
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
+      <div *ngIf="label" class="input-group-prepend">
         <span class="input-group-text">{{ label }}</span>
       </div>
       <input
@@ -18,8 +18,8 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
     </div>
   `,
 })
-export class FilterComponent implements OnInit {
-  @Input() public label = "Filter";
+export class DebounceInputComponent implements OnInit {
+  @Input() public label: string;
   @Input() public placeholder = "";
   @Output() public filter = new EventEmitter<string>();
 

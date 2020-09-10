@@ -10,7 +10,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { FilterComponent } from "@shared/filter/filter.component";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
@@ -262,7 +262,7 @@ describe("ProjectsListComponent", () => {
 
   describe("filtering", () => {
     function filterProjects(name: string) {
-      const filter = spectator.query(FilterComponent);
+      const filter = spectator.query(DebounceInputComponent);
       filter.filter.next(name);
       spectator.detectChanges();
     }

@@ -13,7 +13,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
-import { FilterComponent } from "@shared/filter/filter.component";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { MapComponent, sanitizeMapMarkers } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -394,7 +394,7 @@ describe("ProjectDetailsComponent", () => {
 
   describe("filtering", () => {
     function filterSites(name: string) {
-      const filter = spectator.query(FilterComponent);
+      const filter = spectator.query(DebounceInputComponent);
       filter.filter.next(name);
       spectator.detectChanges();
     }

@@ -24,10 +24,11 @@ export const projectsMenuItemActions = [
   selector: "app-projects-list",
   template: `
     <ng-container *ngIf="!error">
-      <baw-filter
+      <baw-debounce-input
+        label="Filter"
         placeholder="Filter Projects"
         (filter)="onFilter($event)"
-      ></baw-filter>
+      ></baw-debounce-input>
 
       <!-- Display project cards -->
       <div

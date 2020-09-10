@@ -10,10 +10,11 @@
     </p>
     <p>Only the selected sites will be part of this project.</p>
 
-    <baw-filter
+    <baw-debounce-input
+      label="Filter"
       placeholder="Filter Sites"
       (filter)="onFilter($event)"
-    ></baw-filter>
+    ></baw-debounce-input>
 
     <ngx-datatable
       #table

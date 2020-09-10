@@ -1,10 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Tag Groups</h1>
 
-  <baw-filter
+  <baw-debounce-input
+    label="Filter"
     placeholder="Filter Tag Groups"
     (filter)="onFilter($event)"
-  ></baw-filter>
+  ></baw-debounce-input>
 
   <ngx-datatable
     #table

@@ -15,10 +15,11 @@
   <!-- Sites -->
   <h2>Sites</h2>
 
-  <baw-filter
+  <baw-debounce-input
+    label="Filter"
     placeholder="Filter Sites"
     (filter)="onFilter($event)"
-  ></baw-filter>
+  ></baw-debounce-input>
 
   <div
     class="search-results"

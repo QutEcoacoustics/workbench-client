@@ -1,41 +1,41 @@
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { FilterComponent } from "./filter.component";
+import { DebounceInputComponent } from "./debounce-input.component";
 
-describe("FilterComponent", () => {
-  let spectator: SpectatorHost<FilterComponent>;
-  const createHost = createHostFactory(FilterComponent);
+describe("DebounceInputComponent", () => {
+  let spectator: SpectatorHost<DebounceInputComponent>;
+  const createHost = createHostFactory(DebounceInputComponent);
 
   function setup(
     label?: string,
     placeholder?: string,
     onFilter?: (input: string) => any
   ) {
-    // Conditionally add inputs so that baw-filter defaults aren't overridden
+    // Conditionally add inputs so that baw-debounce-input defaults aren't overridden
     spectator = createHost(
       `
-      <baw-filter
+      <baw-debounce-input
         ${label ? '[label]="label"' : ""}
         ${placeholder ? '[placeholder]="placeholder"' : ""}
         (filter)="onFilter($event)"
-      ></baw-filter>
+      ></baw-debounce-input>
       `,
       { hostProps: { label, placeholder, onFilter } }
     );
   }
 
   describe("label", () => {
-    function assertLabel(label: string) {
-      expect(spectator.query("span.input-group-text").textContent).toBe(label);
+    function getLabel() {
+      return spectator.query("span.input-group-text");
     }
 
-    it("should display default label", () => {
+    it("should hide label when none provided", () => {
       setup();
-      assertLabel("Filter");
+      expect(getLabel()).toBeFalsy();
     });
 
     it("should display custom label", () => {
       setup("Custom Filter");
-      assertLabel("Custom Filter");
+      expect(getLabel().textContent).toBe("Custom Filter");
     });
   });
 
