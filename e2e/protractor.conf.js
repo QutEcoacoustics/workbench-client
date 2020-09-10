@@ -5,6 +5,21 @@
 const { SpecReporter, StacktraceOption } = require("jasmine-spec-reporter");
 const reporters = require("jasmine-reporters");
 
+const chromeOptions = {
+  args: [
+    "--headless",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--window-size=1200,900", //Window size is bootstrap extra-large
+  ],
+};
+
+// Windows specific binary (issue #448)
+if (process.platform === "win32") {
+  chromeOptions["binary"] =
+    "C:/Program Files/Google/Chrome/Application/chrome.exe";
+}
+
 /**
  * @type { import("protractor").Config }
  */
@@ -13,14 +28,7 @@ exports.config = {
   specs: ["./src/**/*.e2e-spec.ts"],
   capabilities: {
     browserName: "chrome",
-    chromeOptions: {
-      args: [
-        "--headless",
-        "--no-sandbox",
-        "--disable-dev-shm-usage",
-        "--window-size=1200,900", //Window size is bootstrap extra-large
-      ],
-    },
+    chromeOptions,
   },
   directConnect: true,
   baseUrl: "http://localhost:4200/",
