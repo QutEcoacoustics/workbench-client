@@ -7,15 +7,23 @@ import {
 } from "@interfaces/apiInterfaces";
 import faker from "faker";
 
+const specialCharRegex = /[^\w\s]/gi;
+
 export const modelData = {
   accessLevel: () =>
     faker.random.arrayElement<AccessLevel>(["Reader", "Writer", "Owner"]),
   boolean: () => faker.random.boolean(),
-  description: () => faker.lorem.sentence(),
+  description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
-    [0, 1, 2, 3, 4].map(() => faker.lorem.sentences()).join(" "),
+    [0, 1, 2, 3, 4]
+      .map(() => faker.lorem.sentences())
+      .join(" ")
+      .replace(specialCharRegex, ""),
   descriptionHtml: () =>
-    `<b>${faker.commerce.productName()}</b><br /><p>${modelData.description()}<p>`,
+    `<b>${faker.commerce.productName()}</b><br /><p>${modelData.description()}<p>`.replace(
+      specialCharRegex,
+      ""
+    ),
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
     bitRateBps: [
@@ -241,7 +249,9 @@ function randomObject(min: number, max: number): object {
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
-    obj[faker.random.word()] = faker.random.words();
+    obj[
+      faker.random.word().replace(specialCharRegex, "")
+    ] = faker.random.words().replace(specialCharRegex, "");
   }
 
   return obj;
