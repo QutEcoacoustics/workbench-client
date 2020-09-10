@@ -4,9 +4,6 @@
   "newProjectRoot": "projects",
   "projects": {
     "workbench-client": {
-      "i18n": {
-        "locales": {}
-      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -77,12 +74,6 @@
             "production": {
               "browserTarget": "workbench-client:build:production"
             }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "workbench-client:build"
           }
         },
         "test": {
