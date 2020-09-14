@@ -54,7 +54,10 @@ class DetailsComponent extends PageComponent implements OnInit {
   private sites$ = new Subject<void>();
   private filter: InnerFilter<ISite>;
 
-  constructor(private route: ActivatedRoute, private api: SitesService) {
+  constructor(
+    private route: ActivatedRoute,
+    private sitesService: SitesService
+  ) {
     super();
   }
 
@@ -94,7 +97,7 @@ class DetailsComponent extends PageComponent implements OnInit {
   }
 
   private getSites() {
-    return this.api
+    return this.sitesService
       .filter(
         {
           paging: { page: this.page },
