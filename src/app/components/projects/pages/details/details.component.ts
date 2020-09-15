@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -43,8 +43,14 @@ class DetailsComponent extends ScrollTemplate<ISite, Site> implements OnInit {
   public project: Project;
   public sites: List<Site> = List([]);
 
-  constructor(private route: ActivatedRoute, sitesService: SitesService) {
+  constructor(
+    route: ActivatedRoute,
+    router: Router,
+    sitesService: SitesService
+  ) {
     super(
+      router,
+      route,
       sitesService,
       "name",
       () => [this.project.id],

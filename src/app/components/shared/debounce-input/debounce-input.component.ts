@@ -13,6 +13,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       <input
         type="text"
         class="form-control"
+        [value]="default ? default : ''"
         [placeholder]="placeholder"
         (keyup)="onFilter($event)"
       />
@@ -22,6 +23,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
 export class DebounceInputComponent implements OnInit {
   @Input() public label: string;
   @Input() public placeholder = "";
+  @Input() public default = "";
   @Output() public filter = new EventEmitter<string>();
 
   private input$ = new Subject<string>();

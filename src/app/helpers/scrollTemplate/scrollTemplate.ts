@@ -1,16 +1,45 @@
 import { Directive, OnInit } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { InnerFilter, Subsets } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { noop, Observable, Subject } from "rxjs";
-import { map, mergeMap, takeUntil } from "rxjs/operators";
+import { filter, map, mergeMap, takeUntil } from "rxjs/operators";
+
+const queryKey = "query";
 
 /**
  * Scroll Template Class
  * Handles creating all the generic logic required for an infinite scrolling
- * component which retrieves "pages" seamlessly from the API.
+ * component which retrieves "pages" seamlessly from the API. This template
+ * makes some assumptions about how you have setup the various components. How
+ * they should be setup is shown below:
+ *
+ * Filter Input (Optional)
+ * ```html
+ * <baw-debounce-input
+ *   [default]="filter"
+ *   (filter)="onFilter($event)"
+ * ></baw-debounce-input>
+ * ```
+ *
+ * Infinite Scroll Container
+ * ```html
+ * <div
+ *   infiniteScroll
+ *   [infiniteScrollDisabled]="disableScroll"
+ *   (scrolled)="onScroll()"
+ * ></div>
+ * ```
+ *
+ * Error Handler
+ * ```html
+ * <baw-error-handler
+ *   [error]="error"
+ * ></baw-error-handler>
+ * ```
  */
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
@@ -22,7 +51,7 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    */
   public apiRequest$ = new Subject<void>();
   /**
-   * Tracks whether the infinite scrolling has been disabled
+   * Tracks whether the infinite scrolling has been disabled.
    */
   public disableScroll: boolean;
   /**
@@ -36,17 +65,19 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
   /**
    * Tracks additional filter constraints
    */
-  private filter: InnerFilter<I>;
+  public filter: string;
   /**
    * Tracks the current filter page
    */
   private page: number;
 
   constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
     /**
      * API Service which will create filter requests
      */
-    private api: ApiFilter<M, any>,
+    protected api: ApiFilter<M, any>,
     /**
      * Key to match filter inputs against
      */
@@ -68,8 +99,6 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
   }
 
   public ngOnInit() {
-    this.page = 1;
-    this.loading = true;
     this.apiRequest$
       .pipe(
         mergeMap(() => this.getModels()),
@@ -80,40 +109,58 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
         this.error = error;
         this.loading = false;
       });
-    this.apiRequest$.next();
+
+    const getFilterFromUrl = () =>
+      this.route.snapshot.queryParamMap.get(queryKey);
+
+    this.onFilter(getFilterFromUrl());
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const query = getFilterFromUrl();
+        if (this.filter !== query) {
+          this.onFilter(query);
+        }
+      }, noop);
   }
 
   /**
-   * Handle scroll events, this should be attached to the scrolling
-   * container similar to the following:
-   * ```
-   * <div infiniteScroll (scrolled)="onScroll">
-   * </div>
-   * ```
+   * Handle scroll events
    */
   public onScroll() {
     this.page++;
     this.loading = true;
     this.apiRequest$.next();
+    this.updateQueryParams(this.page);
   }
 
   /**
-   * Handle filter events, this should be attached to the debounce input
-   * element similar to the following:
-   * ```
-   * <baw-debounce-input (filter)="onFilter($event)">
-   * </baw-debounce-input>
-   * ```
+   * Handle filter events
    */
   public onFilter(input: string) {
     this.page = 1;
+    this.filter = input;
     this.loading = true;
-    this.filter = input
-      ? ({ [this.filterKey]: { contains: input } } as {
-          [P in keyof I]?: Subsets;
-        })
-      : undefined;
     this.apiRequest$.next();
+    this.updateQueryParams(this.page, input);
+  }
+
+  /**
+   * Update the url query parameters to contain the current page
+   * and filter query.
+   */
+  protected updateQueryParams(page: number, query?: string) {
+    const queryParams = { page };
+    if (query) {
+      queryParams[queryKey] = query;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: "merge",
+    });
   }
 
   /**
@@ -122,12 +169,16 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    * once the models have been retrieved.
    */
   protected getModels(): Observable<void> {
+    const innerFilter = {
+      [this.filterKey]: { contains: this.filter },
+    } as { [P in keyof I]?: Subsets };
+
     return this.api
       .filter(
         {
           ...this.defaultFilter,
           paging: { page: this.page },
-          filter: this.filter,
+          filter: this.filter ? (innerFilter as any) : undefined,
         },
         ...this.apiParams()
       )

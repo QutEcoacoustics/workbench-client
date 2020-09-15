@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
@@ -23,6 +24,7 @@ export const projectsMenuItemActions = [
       <baw-debounce-input
         label="Filter"
         placeholder="Filter Projects"
+        [default]="filter"
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
@@ -53,8 +55,14 @@ export const projectsMenuItemActions = [
 class ListComponent extends ScrollTemplate<IProject, Project> {
   public cardList: List<Card> = List([]);
 
-  constructor(projectsService: ProjectsService) {
+  constructor(
+    router: Router,
+    route: ActivatedRoute,
+    projectsService: ProjectsService
+  ) {
     super(
+      router,
+      route,
       projectsService,
       "name",
       () => [],
