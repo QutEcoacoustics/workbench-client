@@ -9,6 +9,7 @@ import { noop, Observable, Subject } from "rxjs";
 import { filter, map, mergeMap, takeUntil } from "rxjs/operators";
 
 const queryKey = "query";
+const pageKey = "page";
 
 /**
  * Scroll Template Class
@@ -51,7 +52,7 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    */
   public apiRequest$ = new Subject<void>();
   /**
-   * Tracks whether the infinite scrolling has been disabled.
+   * Tracks whether the infinite scrolling has been disabled
    */
   public disableScroll: boolean;
   /**
@@ -110,19 +111,24 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
         this.loading = false;
       });
 
-    const getFilterFromUrl = () =>
-      this.route.snapshot.queryParamMap.get(queryKey);
-
-    this.onFilter(getFilterFromUrl());
+    this.updateFromUrl();
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        const query = getFilterFromUrl();
-        if (this.filter !== query) {
-          this.onFilter(query);
-        }
+        this.updateFromUrl();
       }, noop);
+  }
+
+  /**
+   * Read the previous filter query and page number from the url,
+   * and update the page to match
+   */
+  private updateFromUrl() {
+    const queryParams = this.route.snapshot.queryParamMap;
+    this.filter = queryParams.get(queryKey) ?? "";
+    this.page = parseInt(queryParams.get(pageKey), 10) ?? 1;
+    this.onFilter(this.filter, this.page);
   }
 
   /**
@@ -138,8 +144,8 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
   /**
    * Handle filter events
    */
-  public onFilter(input: string) {
-    this.page = 1;
+  public onFilter(input: string, _page: number = 1) {
+    this.page = _page;
     this.filter = input;
     this.loading = true;
     this.apiRequest$.next();
@@ -151,10 +157,9 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    * and filter query.
    */
   protected updateQueryParams(page: number, query?: string) {
-    const queryParams = { page };
-    if (query) {
-      queryParams[queryKey] = query;
-    }
+    const queryParams = query
+      ? { [pageKey]: page, [queryKey]: query }
+      : { [pageKey]: page };
 
     this.router.navigate([], {
       relativeTo: this.route,

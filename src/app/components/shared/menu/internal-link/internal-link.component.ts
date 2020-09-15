@@ -42,6 +42,6 @@ export class MenuInternalLinkComponent implements OnInit {
   constructor(private location: Location) {}
 
   public ngOnInit() {
-    this.active = this.route === this.location.path();
+    this.active = this.route === this.location.path().split("?")[0];
   }
 }

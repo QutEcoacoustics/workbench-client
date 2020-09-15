@@ -58,7 +58,6 @@
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.1.0",
     "luxon": "^1.25.0",
-    "ngx-infinite-scroll": "^9.0.0",
     "ngx-line-truncation": "^1.6.6",
     "ngx-toastr": "^13.0.0",
     "rxjs": "^6.6.3",
