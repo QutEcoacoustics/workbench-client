@@ -1,6 +1,12 @@
 import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken, Injector, PLATFORM_ID } from "@angular/core";
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  Injector,
+  PLATFORM_ID,
+} from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
@@ -267,13 +273,13 @@ export interface Paging {
   next?: string;
 }
 
-interface Combinations<T> {
+export interface Combinations<T> {
   and?: InnerFilter<T>;
   or?: InnerFilter<T>;
   not?: InnerFilter<T>;
 }
 
-interface Comparisons {
+export interface Comparisons {
   eq?: string | number;
   equal?: string | number;
   notEq?: string | number;
@@ -318,7 +324,7 @@ type Range =
   | number[]
   | XOR<RangeInterval, { from: number; to: number }>;
 
-interface Subsets {
+export interface Subsets {
   range?: Range;
   inRange?: Range;
   notRange?: Range;

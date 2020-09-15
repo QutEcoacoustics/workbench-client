@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { noop, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
   selector: "baw-debounce-input",
@@ -27,7 +28,7 @@ export class DebounceInputComponent implements OnInit {
 
   public ngOnInit() {
     this.input$
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged())
       .subscribe((input) => this.filter.next(input), noop);
   }
 

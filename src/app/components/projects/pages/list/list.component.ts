@@ -1,6 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { InnerFilter } from "@baw-api/baw-api.service";
+import { Component } from "@angular/core";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
@@ -8,12 +6,10 @@ import {
   projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { IProject } from "@models/Project";
+import { ScrollTemplate } from "@helpers/scrollTemplate/scrollTemplate";
+import { IProject, Project } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { noop, Subject } from "rxjs";
-import { map, mergeMap, takeUntil } from "rxjs/operators";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -54,64 +50,21 @@ export const projectsMenuItemActions = [
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
-class ListComponent extends PageComponent implements OnInit {
+class ListComponent extends ScrollTemplate<IProject, Project> {
   public cardList: List<Card> = List([]);
-  public error: ApiErrorDetails;
-  public loading: boolean;
-  public disableScroll: boolean;
-  private page = 1;
-  private filter: InnerFilter<IProject>;
-  private projects$ = new Subject<void>();
 
-  constructor(private api: ProjectsService) {
-    super();
-  }
-
-  public ngOnInit() {
-    this.loading = true;
-    this.projects$
-      .pipe(
-        mergeMap(() => this.getProjects()),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(noop, (error: ApiErrorDetails) => {
-        this.error = error;
-        this.loading = false;
-      });
-    this.projects$.next();
-  }
-
-  public onScroll() {
-    this.page++;
-    this.loading = true;
-    this.projects$.next();
-  }
-
-  public onFilter(input: string) {
-    this.page = 1;
-    this.loading = true;
-    this.cardList = List([]);
-    this.filter = input ? { name: { contains: input } } : undefined;
-    this.projects$.next();
-  }
-
-  private getProjects() {
-    return this.api
-      .filter({
-        paging: { page: this.page },
-        filter: this.filter,
-      })
-      .pipe(
-        map((projects) => {
-          this.cardList = this.cardList.push(
-            ...projects.map((project) => project.getCard())
-          );
-          this.loading = false;
-          this.disableScroll =
-            projects.length === 0 ||
-            projects[0].getMetadata().paging.maxPage === this.page;
-        })
-      );
+  constructor(projectsService: ProjectsService) {
+    super(
+      projectsService,
+      "name",
+      () => [],
+      (projects, hasResetPage) => {
+        const cards = projects.map((project) => project.getCard());
+        this.cardList = hasResetPage
+          ? List(cards)
+          : this.cardList.push(...cards);
+      }
+    );
   }
 }
 
