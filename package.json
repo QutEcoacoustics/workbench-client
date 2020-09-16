@@ -10,7 +10,7 @@
     "build": "ng build --prod",
     "e2e": "ng e2e",
     "lint": "ng lint",
-    "ng": "ng",
+    "ng": "nx",
     "start": "ng serve",
     "stats": "ng build --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
     "test": "npm run test:chrome",
@@ -22,7 +22,8 @@
     "dev:ssr": "ng run workbench-client:serve-ssr",
     "serve:ssr": "node dist/workbench-client/server/main.js",
     "build:ssr": "ng build --prod && ng run workbench-client:server:production",
-    "prerender": "ng run workbench-client:prerender"
+    "prerender": "ng run workbench-client:prerender",
+    "postinstall": "node ./decorate-angular-cli.js"
   },
   "private": true,
   "dependencies": {
@@ -73,6 +74,8 @@
     "@chiragrupani/karma-chromium-edge-launcher": "^2.0.0",
     "@ngneat/spectator": "^5.13.3",
     "@nguniversal/builders": "^10.1.0",
+    "@nrwl/nx-cloud": "^10.1.1",
+    "@nrwl/workspace": "^10.0.0",
     "@types/express": "^4.17.8",
     "@types/faker": "^5.1.0",
     "@types/jasmine": "^3.5.14",
