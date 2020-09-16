@@ -2,8 +2,6 @@
 
 The Angular client for an acoustic workbench application.
 
-Temp
-
 ![Build, Test, and Publish](https://github.com/QutEcoacoustics/workbench-client/workflows/Build,%20Test,%20and%20Publish/badge.svg)
 
 ## Install instructions
