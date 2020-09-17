@@ -48,7 +48,7 @@
     "@ngx-formly/core": "^5.10.1",
     "@ngx-loading-bar/core": "^5.1.0",
     "@ngx-loading-bar/http-client": "^5.1.0",
-    "@swimlane/ngx-datatable": "^17.1.0",
+    "@swimlane/ngx-datatable": "^18.0.0",
     "@vvo/tzdb": "^5.5.2",
     "bootstrap": "^4.5.2",
     "express": "^4.17.1",
