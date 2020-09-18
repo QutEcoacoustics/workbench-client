@@ -91,8 +91,10 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Run e2e test suite
-        run: npm run e2e
+
+      # Temporarily disabled
+      # - name: Run e2e test suite
+      #   run: npm run e2e
 
   build:
     runs-on: ubuntu-latest
