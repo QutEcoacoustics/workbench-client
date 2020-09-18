@@ -7,7 +7,7 @@ import {
   projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
-import { ScrollTemplate } from "@helpers/scrollTemplate/scrollTemplate";
+import { PaginationTemplate } from "@helpers/scrollTemplate/paginationTemplate";
 import { IProject, Project } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
@@ -28,31 +28,31 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <!-- Display project cards -->
-      <div
-        class="search-results"
-        infiniteScroll
-        [infiniteScrollDisabled]="disableScroll"
-        (scrolled)="onScroll()"
-      >
-        <!-- Projects Exist -->
-        <ng-container *ngIf="cardList.size > 0">
-          <baw-cards [cards]="cardList"></baw-cards>
-        </ng-container>
+      <!-- Projects Exist -->
+      <ng-container *ngIf="cardList.size > 0 && !loading">
+        <baw-cards [cards]="cardList"></baw-cards>
+      </ng-container>
 
-        <!-- Projects Don't Exist -->
-        <ng-container *ngIf="cardList.size === 0 && !loading">
-          <h4 class="text-center">Your list of projects is empty</h4>
-        </ng-container>
-      </div>
+      <!-- Projects Don't Exist -->
+      <ng-container *ngIf="cardList.size === 0 && !loading">
+        <h4 class="text-center">Your list of projects is empty</h4>
+      </ng-container>
 
-      <!-- Loading Projects -->
       <baw-loading [display]="loading"></baw-loading>
+      <ngb-pagination
+        aria-label="Default pagination"
+        class="mt-2 d-flex justify-content-end"
+        [maxSize]="3"
+        [rotate]="true"
+        [pageSize]="pageSize"
+        [collectionSize]="collectionSize"
+        [(page)]="page"
+      ></ngb-pagination>
     </ng-container>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
-class ListComponent extends ScrollTemplate<IProject, Project> {
+class ListComponent extends PaginationTemplate<IProject, Project> {
   public cardList: List<Card> = List([]);
 
   constructor(
@@ -66,11 +66,9 @@ class ListComponent extends ScrollTemplate<IProject, Project> {
       projectsService,
       "name",
       () => [],
-      (projects, hasResetPage) => {
+      (projects) => {
         const cards = projects.map((project) => project.getCard());
-        this.cardList = hasResetPage
-          ? List(cards)
-          : this.cardList.push(...cards);
+        this.cardList = List(cards);
       }
     );
   }
