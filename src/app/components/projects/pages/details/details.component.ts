@@ -14,6 +14,7 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { PaginationTemplate } from "@helpers/scrollTemplate/paginationTemplate";
 import { ScrollTemplate } from "@helpers/scrollTemplate/scrollTemplate";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
@@ -38,7 +39,9 @@ const projectKey = "project";
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
-class DetailsComponent extends ScrollTemplate<ISite, Site> implements OnInit {
+class DetailsComponent
+  extends PaginationTemplate<ISite, Site>
+  implements OnInit {
   public markers: MapMarkerOption[];
   public project: Project;
   public sites: List<Site> = List([]);
@@ -54,10 +57,10 @@ class DetailsComponent extends ScrollTemplate<ISite, Site> implements OnInit {
       sitesService,
       "name",
       () => [this.project.id],
-      (sites, hasResetPage) => {
-        this.sites = hasResetPage ? List(sites) : this.sites.push(...sites);
+      (sites) => {
+        this.sites = List(sites);
         this.markers = sanitizeMapMarkers(
-          this.sites.toArray().map((site) => site.getMapMarker())
+          sites.map((site) => site.getMapMarker())
         );
       }
     );

@@ -91,7 +91,10 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     this.updateFromUrl();
 
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(() => {
         this.updateFromUrl();
       }, noop);
@@ -102,7 +105,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
    * and update the page to match
    */
   private updateFromUrl() {
-    const params = this.route.snapshot.params;
+    const params = this.route.snapshot.queryParams;
     this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;
     this.onFilter(this.filter, this._page);
@@ -119,7 +122,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     this._page = page;
     this.loading = true;
     this.apiRequest$.next();
-    this.updateMatrixParams(this._page);
+    this.updateMatrixParams(this._page, this.filter);
   }
 
   /**
@@ -143,11 +146,12 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
       params[pageKey] = page;
     }
     if (query) {
-      params[queryKey] = queryKey;
+      params[queryKey] = query;
     }
 
-    this.router.navigate([params], {
+    this.router.navigate([], {
       relativeTo: this.route,
+      queryParams: params,
     });
   }
 

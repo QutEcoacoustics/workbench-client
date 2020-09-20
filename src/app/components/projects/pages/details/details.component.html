@@ -18,6 +18,7 @@
   <baw-debounce-input
     label="Filter"
     placeholder="Filter Sites"
+    [default]="filter"
     (filter)="onFilter($event)"
   ></baw-debounce-input>
 
@@ -28,7 +29,7 @@
     </div>
 
     <!-- Sites Exist -->
-    <ng-container *ngIf="sites.size > 0">
+    <ng-container *ngIf="sites.size > 0 && !loading">
       <div *ngFor="let site of sites" class="item">
         <app-site-card [project]="project" [site]="site"></app-site-card>
       </div>
@@ -40,7 +41,15 @@
     </ng-container>
   </div>
 
-  <!-- Loading Sites -->
   <baw-loading [display]="loading"></baw-loading>
+  <ngb-pagination
+    aria-label="Default pagination"
+    class="mt-2 d-flex justify-content-end"
+    [maxSize]="3"
+    [rotate]="true"
+    [pageSize]="pageSize"
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+  ></ngb-pagination>
 </ng-container>
 <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

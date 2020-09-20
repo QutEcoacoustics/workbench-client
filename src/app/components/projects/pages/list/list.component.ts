@@ -28,18 +28,22 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <!-- Projects Exist -->
-      <ng-container *ngIf="cardList.size > 0 && !loading">
-        <baw-cards [cards]="cardList"></baw-cards>
-      </ng-container>
+      <ng-container *ngIf="!loading">
+        <!-- Projects Exist -->
+        <ng-container *ngIf="cardList.size > 0; else empty">
+          <baw-cards [cards]="cardList"></baw-cards>
+        </ng-container>
 
-      <!-- Projects Don't Exist -->
-      <ng-container *ngIf="cardList.size === 0 && !loading">
-        <h4 class="text-center">Your list of projects is empty</h4>
+        <!-- Projects Don't Exist -->
+        <ng-template #empty>
+          <h4 class="text-center">Your list of projects is empty</h4>
+        </ng-template>
       </ng-container>
 
       <baw-loading [display]="loading"></baw-loading>
+
       <ngb-pagination
+        *ngIf="collectionSize > 0"
         aria-label="Default pagination"
         class="mt-2 d-flex justify-content-end"
         [maxSize]="3"
