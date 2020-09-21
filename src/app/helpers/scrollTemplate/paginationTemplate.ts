@@ -1,13 +1,8 @@
-import { Directive, OnDestroy, OnInit } from "@angular/core";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  NavigationStart,
-  Router,
-} from "@angular/router";
+import { Directive, OnInit } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { InnerFilter, Meta, Subsets } from "@baw-api/baw-api.service";
+import { InnerFilter, Subsets } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { noop, Observable, Subject } from "rxjs";
@@ -54,7 +49,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     /**
      * API Service which will create filter requests
      */
-    protected api: ApiFilter<M, any>,
+    protected api: ApiFilter<M, any[]>,
     /**
      * Key to match filter inputs against
      */

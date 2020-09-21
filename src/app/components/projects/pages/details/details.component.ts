@@ -15,7 +15,6 @@ import {
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PaginationTemplate } from "@helpers/scrollTemplate/paginationTemplate";
-import { ScrollTemplate } from "@helpers/scrollTemplate/scrollTemplate";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";

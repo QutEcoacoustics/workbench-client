@@ -28,6 +28,8 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
+      <baw-loading [display]="loading"></baw-loading>
+
       <ng-container *ngIf="!loading">
         <!-- Projects Exist -->
         <ng-container *ngIf="cardList.size > 0; else empty">
@@ -40,10 +42,8 @@ export const projectsMenuItemActions = [
         </ng-template>
       </ng-container>
 
-      <baw-loading [display]="loading"></baw-loading>
-
       <ngb-pagination
-        *ngIf="collectionSize > 0"
+        *ngIf="collectionSize >= pageSize"
         aria-label="Default pagination"
         class="mt-2 d-flex justify-content-end"
         [maxSize]="3"

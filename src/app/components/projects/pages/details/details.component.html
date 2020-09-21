@@ -22,27 +22,31 @@
     (filter)="onFilter($event)"
   ></baw-debounce-input>
 
+  <baw-loading [display]="loading"></baw-loading>
+
   <div id="sites">
     <!-- Google Maps -->
     <div class="item map">
       <baw-map [markers]="markers"></baw-map>
     </div>
 
-    <!-- Sites Exist -->
-    <ng-container *ngIf="sites.size > 0 && !loading">
-      <div *ngFor="let site of sites" class="item">
-        <app-site-card [project]="project" [site]="site"></app-site-card>
-      </div>
-    </ng-container>
+    <ng-container *ngIf="!loading">
+      <!-- Sites Exist -->
+      <ng-container *ngIf="sites.size > 0; else empty">
+        <div *ngFor="let site of sites" class="item">
+          <app-site-card [project]="project" [site]="site"></app-site-card>
+        </div>
+      </ng-container>
 
-    <!-- Sites Don't Exist-->
-    <ng-container *ngIf="sites.size === 0 && !loading">
-      <p id="site_placeholder">No sites associated with this project</p>
+      <!-- Sites Don't Exist-->
+      <ng-template #empty>
+        <p id="site_placeholder">No sites associated with this project</p>
+      </ng-template>
     </ng-container>
   </div>
 
-  <baw-loading [display]="loading"></baw-loading>
   <ngb-pagination
+    *ngIf="collectionSize >= pageSize"
     aria-label="Default pagination"
     class="mt-2 d-flex justify-content-end"
     [maxSize]="3"
