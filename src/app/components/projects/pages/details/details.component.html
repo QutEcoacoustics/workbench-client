@@ -46,12 +46,9 @@
   </div>
 
   <ngb-pagination
-    *ngIf="collectionSize >= pageSize"
-    aria-label="Default pagination"
+    *ngIf="displayPagination"
+    aria-label="Pagination Buttons"
     class="mt-2 d-flex justify-content-end"
-    [maxSize]="3"
-    [rotate]="true"
-    [pageSize]="pageSize"
     [collectionSize]="collectionSize"
     [(page)]="page"
   ></ngb-pagination>

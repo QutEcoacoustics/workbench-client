@@ -14,6 +14,8 @@ import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
+export const defaultApiPageSize = 25;
+
 export const apiReturnCodes = {
   unknown: -1,
   success: 200,
@@ -264,12 +266,19 @@ export abstract class BawApiService<T extends AbstractModel> {
  * Filter paging metadata from api response
  */
 export interface Paging {
+  /** Current page number */
   page?: number;
+  /** Maximum number of items per page */
   items?: number;
+  /** Total number of items for filter request */
   total?: number;
+  /** Maximum page number */
   maxPage?: number;
+  /** @deprecated */
   current?: string;
+  /** @deprecated */
   previous?: string;
+  /** @deprecated */
   next?: string;
 }
 
@@ -366,15 +375,23 @@ export type InnerFilter<T = {}> = Combinations<T> &
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
 export interface Filters<T = {}, K extends keyof T = keyof T> {
+  /** Filter settings */
   filter?: InnerFilter<T>;
+  /** Include or exclude keys from response */
   projection?: {
+    /** Whitelist keys */
     include?: K[];
+    /** Blacklist keys */
     exclude?: K[];
   };
+  /** Current sorting options */
   sorting?: {
+    /** Which key to sort by */
     orderBy: string;
+    /** Sorting direction */
     direction: "desc" | "asc";
   };
+  /** Current page data */
   paging?: Paging;
 }
 
@@ -382,11 +399,16 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
  * Metadata from api response
  */
 export interface Meta extends Filters {
+  /** Response status */
   status: number;
+  /** Human readable response status */
   message: string;
+  /** Optional error metadata */
   error?: {
+    /** Error message */
     details: string;
-    info?: any;
+    /** Additional info */
+    info?: { [key: string]: string };
   };
 }
 
@@ -394,6 +416,8 @@ export interface Meta extends Filters {
  * API response
  */
 export interface ApiResponse<T> {
+  /** Response metadata */
   meta: Meta;
+  /** Response data */
   data: T[] | T;
 }

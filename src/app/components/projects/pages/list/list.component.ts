@@ -7,8 +7,9 @@ import {
   projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
-import { PaginationTemplate } from "@helpers/scrollTemplate/paginationTemplate";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { IProject, Project } from "@models/Project";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 
@@ -43,12 +44,9 @@ export const projectsMenuItemActions = [
       </ng-container>
 
       <ngb-pagination
-        *ngIf="collectionSize >= pageSize"
-        aria-label="Default pagination"
+        *ngIf="displayPagination"
+        aria-label="Pagination Buttons"
         class="mt-2 d-flex justify-content-end"
-        [maxSize]="3"
-        [rotate]="true"
-        [pageSize]="pageSize"
         [collectionSize]="collectionSize"
         [(page)]="page"
       ></ngb-pagination>
@@ -62,11 +60,13 @@ class ListComponent extends PaginationTemplate<IProject, Project> {
   constructor(
     router: Router,
     route: ActivatedRoute,
+    config: NgbPaginationConfig,
     projectsService: ProjectsService
   ) {
     super(
       router,
       route,
+      config,
       projectsService,
       "name",
       () => [],

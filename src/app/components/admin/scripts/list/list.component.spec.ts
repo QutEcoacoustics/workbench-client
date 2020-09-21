@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
@@ -33,7 +34,7 @@ describe("AdminScriptsComponent", () => {
 
     defaultModel = new Script(generateScript());
     defaultModels = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new Script(generateScript(i)));
     }
 

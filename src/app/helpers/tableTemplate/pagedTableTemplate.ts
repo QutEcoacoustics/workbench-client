@@ -157,6 +157,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   }
 }
 
+// TODO Update keys to match API standards
 export interface TablePage {
   count: number;
   pageSize: number;

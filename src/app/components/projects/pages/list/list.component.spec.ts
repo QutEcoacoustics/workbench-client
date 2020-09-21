@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { IProject, Project } from "@models/Project";
@@ -79,7 +79,7 @@ describe("ProjectsListComponent", () => {
 
     for (let i = 0; i < numResponses; i++) {
       requests.push({
-        models: generateProjects(25, numResponses),
+        models: generateProjects(defaultApiPageSize, numResponses),
         subject: new Subject(),
       });
       promises.push(
@@ -213,7 +213,7 @@ describe("ProjectsListComponent", () => {
       const spy = jasmine.createSpy();
       spectator.component.onScroll = spy;
 
-      await handleApiRequest(generateProjects(25, 2));
+      await handleApiRequest(generateProjects(defaultApiPageSize, 2));
       expect(spy).not.toHaveBeenCalled();
       scrollPage();
       expect(spy).toHaveBeenCalled();
@@ -271,7 +271,7 @@ describe("ProjectsListComponent", () => {
       const spy = jasmine.createSpy();
       spectator.component.onFilter = spy.and.callThrough();
 
-      await handleApiRequest(generateProjects(25, 2));
+      await handleApiRequest(generateProjects(defaultApiPageSize, 2));
       expect(spy).not.toHaveBeenCalled();
       filterProjects("project");
       expect(spy).toHaveBeenCalled();

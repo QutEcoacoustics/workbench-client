@@ -14,9 +14,10 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PaginationTemplate } from "@helpers/scrollTemplate/paginationTemplate";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
@@ -48,11 +49,13 @@ class DetailsComponent
   constructor(
     route: ActivatedRoute,
     router: Router,
+    config: NgbPaginationConfig,
     sitesService: SitesService
   ) {
     super(
       router,
       route,
+      config,
       sitesService,
       "name",
       () => [this.project.id],

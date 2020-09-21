@@ -2,49 +2,23 @@ import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { InnerFilter, Subsets } from "@baw-api/baw-api.service";
+import {
+  defaultApiPageSize,
+  InnerFilter,
+  Subsets,
+} from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { noop, Observable, Subject } from "rxjs";
 import { filter, map, mergeMap, takeUntil } from "rxjs/operators";
 
 const queryKey = "query";
 const pageKey = "page";
 
-/**
- * Scroll Template Class
- * Handles creating all the generic logic required for an infinite scrolling
- * component which retrieves "pages" seamlessly from the API. This template
- * makes some assumptions about how you have setup the various components. How
- * they should be setup is shown below:
- *
- * Filter Input (Optional)
- * ```html
- * <baw-debounce-input
- *   [default]="filter"
- *   (filter)="onFilter($event)"
- * ></baw-debounce-input>
- * ```
- *
- * Infinite Scroll Container
- * ```html
- * <div
- *   infiniteScroll
- *   [infiniteScrollDisabled]="disableScroll"
- *   (scrolled)="onScroll()"
- * ></div>
- * ```
- *
- * Error Handler
- * ```html
- * <baw-error-handler
- *   [error]="error"
- * ></baw-error-handler>
- * ```
- */
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
-export abstract class ScrollTemplate<I, M extends AbstractModel>
+export abstract class PaginationTemplate<I, M extends AbstractModel>
   extends PageComponent
   implements OnInit {
   /**
@@ -55,6 +29,10 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    * Tracks whether the infinite scrolling has been disabled
    */
   public disableScroll: boolean;
+  /**
+   * Tracks whether to display the pagination buttons
+   */
+  public displayPagination: boolean;
   /**
    * Tracks whether an error has occurred
    */
@@ -68,17 +46,25 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    */
   public filter: string;
   /**
+   * Maximum number of elements for current filter
+   */
+  public collectionSize: number;
+  /**
    * Tracks the current filter page
    */
-  public page: number;
+  private _page: number;
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     /**
+     * Config for pagination defaults
+     */
+    protected config: NgbPaginationConfig,
+    /**
      * API Service which will create filter requests
      */
-    protected api: ApiFilter<M, any>,
+    protected api: ApiFilter<M, any[]>,
     /**
      * Key to match filter inputs against
      */
@@ -100,6 +86,14 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
   }
 
   public ngOnInit() {
+    // Set pagination defaults
+    this.config.maxSize = 3;
+    this.config.pageSize = defaultApiPageSize;
+    this.config.rotate = true;
+
+    this._page = 1;
+    this.displayPagination = false;
+
     this.apiRequest$
       .pipe(
         mergeMap(() => this.getModels()),
@@ -114,7 +108,10 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
     this.updateFromUrl();
 
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe(() => {
         this.updateFromUrl();
       }, noop);
@@ -125,46 +122,53 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
    * and update the page to match
    */
   private updateFromUrl() {
-    const queryParams = this.route.snapshot.queryParamMap;
-    this.filter = queryParams.get(queryKey) ?? "";
-    this.page = parseInt(queryParams.get(pageKey), 10) ?? 1;
-    this.onFilter(this.filter, this.page);
+    const params = this.route.snapshot.queryParams;
+    this.filter = params[queryKey] ?? "";
+    this._page = parseInt(params[pageKey], 10) || 1;
+    this.onFilter(this.filter, this._page);
+  }
+
+  public get page() {
+    return this._page;
   }
 
   /**
-   * Handle scroll events
+   * Handle pagination events
    */
-  public onScroll() {
-    this.page++;
+  public set page(page: number) {
+    this._page = page;
     this.loading = true;
     this.apiRequest$.next();
-    this.updateQueryParams(this.page);
+    this.updateMatrixParams(this._page, this.filter);
   }
 
   /**
    * Handle filter events
    */
-  public onFilter(input: string, _page: number = 1) {
-    this.page = _page;
+  public onFilter(input: string, page: number = 1) {
+    this._page = page;
     this.filter = input;
     this.loading = true;
     this.apiRequest$.next();
-    this.updateQueryParams(this.page, input);
+    this.updateMatrixParams(this._page, input);
   }
 
   /**
    * Update the url query parameters to contain the current page
    * and filter query.
    */
-  protected updateQueryParams(page: number, query?: string) {
-    const queryParams = query
-      ? { [pageKey]: page, [queryKey]: query }
-      : { [pageKey]: page };
+  protected updateMatrixParams(page: number, query?: string) {
+    const params = {};
+    if (page > 1) {
+      params[pageKey] = page;
+    }
+    if (query) {
+      params[queryKey] = query;
+    }
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: "merge",
+      queryParams: params,
     });
   }
 
@@ -182,7 +186,7 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
       .filter(
         {
           ...this.defaultFilter,
-          paging: { page: this.page },
+          paging: { page: this._page },
           filter: this.filter ? (innerFilter as any) : undefined,
         },
         ...this.apiParams()
@@ -190,21 +194,20 @@ export abstract class ScrollTemplate<I, M extends AbstractModel>
       .pipe(
         map((models: M[]) => {
           this.loading = false;
-          this.disableScroll = this.isScrollDisabled(models);
-          this.apiUpdate(models, this.page === 1);
+
+          const meta = models?.[0]?.getMetadata();
+          if (meta) {
+            this.collectionSize = meta.paging.total;
+            this.disableScroll = meta.paging.maxPage === 1;
+          } else {
+            this.collectionSize = 0;
+            this.disableScroll = true;
+          }
+
+          this.displayPagination = this.collectionSize <= defaultApiPageSize;
+          this.apiUpdate(models, this._page === 1);
         }),
         takeUntil(this.unsubscribe)
       );
-  }
-
-  /**
-   * Determine if the scroll container should be disabled
-   * @param models Models
-   */
-  protected isScrollDisabled(models: M[]) {
-    return (
-      models.length === 0 ||
-      models[0].getMetadata().paging.maxPage === this.page
-    );
   }
 }

@@ -7,6 +7,7 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -214,7 +215,12 @@ describe("PagedTableTemplate", () => {
 
     it("should handle zero models", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
-      component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 0,
+        count: 1,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(0);
@@ -222,7 +228,12 @@ describe("PagedTableTemplate", () => {
 
     it("should handle 0 offset", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
-      component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 0,
+        count: 1,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
@@ -230,7 +241,12 @@ describe("PagedTableTemplate", () => {
 
     it("should handle 1 offset", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
-      component.setPage({ offset: 1, count: 26, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 1,
+        count: 26,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(api.filter).toHaveBeenCalledWith({ paging: { page: 2 } });
@@ -254,7 +270,12 @@ describe("PagedTableTemplate", () => {
       api.filter.and.callFake(
         () => new BehaviorSubject<Project[]>([project])
       );
-      component.setPage({ offset: 0, count: 1, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 0,
+        count: 1,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(0);
@@ -266,7 +287,12 @@ describe("PagedTableTemplate", () => {
       api.filter.and.callFake(
         () => new BehaviorSubject<Project[]>([project])
       );
-      component.setPage({ offset: 2, count: 51, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 2,
+        count: 51,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(2);
@@ -276,7 +302,12 @@ describe("PagedTableTemplate", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(3, 25));
       api.filter.and.callFake(() => new Subject<Project[]>());
-      component.setPage({ offset: 2, count: 51, limit: 25, pageSize: 25 });
+      component.setPage({
+        offset: 2,
+        count: 51,
+        limit: 25,
+        pageSize: defaultApiPageSize,
+      });
       fixture.detectChanges();
 
       expect(component.pageNumber).toBe(2);
