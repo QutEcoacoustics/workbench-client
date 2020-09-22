@@ -189,7 +189,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
         map((models: M[]) => {
           this.loading = false;
           this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
-          this.displayPagination = this.collectionSize <= defaultApiPageSize;
+          this.displayPagination = this.collectionSize > defaultApiPageSize;
           this.apiUpdate(models);
         }),
         takeUntil(this.unsubscribe)
