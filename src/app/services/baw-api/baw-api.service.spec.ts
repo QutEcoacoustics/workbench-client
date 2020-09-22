@@ -103,20 +103,17 @@ describe("BawApiService", () => {
   let multiMeta: Meta;
 
   // Single response metadata
-  const singleMeta = {
-    status: 200,
-    message: "OK",
-  } as Meta;
+  const singleMeta: Meta = { status: 200, message: "OK" };
 
   // Api error metadata
-  const errorMeta = {
+  const errorMeta: Meta = {
     status: apiErrorDetails.status,
     message: "Unauthorized",
     error: { details: apiErrorDetails.message },
-  } as Meta;
+  };
 
   // Api error metadata with info
-  const errorInfoMeta = {
+  const errorInfoMeta: Meta = {
     status: apiErrorInfoDetails.status,
     message: "Unprocessable Entity",
     error: {
@@ -130,15 +127,13 @@ describe("BawApiService", () => {
         imageUpdatedAt: [],
       },
     },
-  } as Meta;
+  };
 
   // Single model response
   const singleResponse = {
     id: 1,
     name: "name",
-    caseConversion: {
-      testConvert: "converted",
-    },
+    caseConversion: { testConvert: "converted" },
   };
 
   // Multi model response

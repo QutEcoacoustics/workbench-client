@@ -27,10 +27,6 @@ import {
 } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
-import {
-  InfiniteScrollDirective,
-  InfiniteScrollModule,
-} from "ngx-infinite-scroll";
 import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
@@ -43,12 +39,7 @@ describe("ProjectDetailsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DetailsComponent,
     declarations: [MockMapComponent, MockSiteCardComponent],
-    imports: [
-      SharedModule,
-      RouterTestingModule,
-      MockBawApiModule,
-      InfiniteScrollModule,
-    ],
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
   function setup(model: Project, error?: ApiErrorDetails) {
@@ -327,7 +318,7 @@ describe("ProjectDetailsComponent", () => {
     });
   });
 
-  describe("scrolling", () => {
+  /* describe("scrolling", () => {
     function getScrollDirective() {
       return spectator.query(InfiniteScrollDirective);
     }
@@ -483,5 +474,5 @@ describe("ProjectDetailsComponent", () => {
         )
       );
     });
-  });
+  }); */
 });

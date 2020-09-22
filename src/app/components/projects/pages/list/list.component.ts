@@ -51,7 +51,7 @@ export const projectsMenuItemActions = [
         [(page)]="page"
       ></ngb-pagination>
     </ng-container>
-    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+    <baw-error-handler [error]="error"></baw-error-handler>
   `,
 })
 class ListComponent extends PaginationTemplate<IProject, Project> {

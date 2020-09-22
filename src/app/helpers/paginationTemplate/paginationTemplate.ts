@@ -26,10 +26,6 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
    */
   public apiRequest$ = new Subject<void>();
   /**
-   * Tracks whether the infinite scrolling has been disabled
-   */
-  public disableScroll: boolean;
-  /**
    * Tracks whether to display the pagination buttons
    */
   public displayPagination: boolean;
@@ -76,7 +72,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     /**
      * Function which will run after each api update (ie. scroll/filter)
      */
-    private apiUpdate: (models: M[], hasResetPage: boolean) => void,
+    private apiUpdate: (models: M[]) => void,
     /**
      * Default filter values, may be overridden by later requests
      */
@@ -90,9 +86,9 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     this.config.maxSize = 3;
     this.config.pageSize = defaultApiPageSize;
     this.config.rotate = true;
+    this.displayPagination = false;
 
     this._page = 1;
-    this.displayPagination = false;
 
     this.apiRequest$
       .pipe(
@@ -112,9 +108,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
         filter((event) => event instanceof NavigationEnd),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(() => {
-        this.updateFromUrl();
-      }, noop);
+      .subscribe(() => this.updateFromUrl(), noop);
   }
 
   /**
@@ -139,7 +133,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     this._page = page;
     this.loading = true;
     this.apiRequest$.next();
-    this.updateMatrixParams(this._page, this.filter);
+    this.updateQueryParams(this._page, this.filter);
   }
 
   /**
@@ -150,14 +144,14 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     this.filter = input;
     this.loading = true;
     this.apiRequest$.next();
-    this.updateMatrixParams(this._page, input);
+    this.updateQueryParams(this._page, input);
   }
 
   /**
    * Update the url query parameters to contain the current page
    * and filter query.
    */
-  protected updateMatrixParams(page: number, query?: string) {
+  protected updateQueryParams(page: number, query?: string) {
     const params = {};
     if (page > 1) {
       params[pageKey] = page;
@@ -194,18 +188,9 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
       .pipe(
         map((models: M[]) => {
           this.loading = false;
-
-          const meta = models?.[0]?.getMetadata();
-          if (meta) {
-            this.collectionSize = meta.paging.total;
-            this.disableScroll = meta.paging.maxPage === 1;
-          } else {
-            this.collectionSize = 0;
-            this.disableScroll = true;
-          }
-
+          this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
           this.displayPagination = this.collectionSize <= defaultApiPageSize;
-          this.apiUpdate(models, this._page === 1);
+          this.apiUpdate(models);
         }),
         takeUntil(this.unsubscribe)
       );

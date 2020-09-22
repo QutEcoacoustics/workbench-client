@@ -408,7 +408,7 @@ export interface Meta extends Filters {
     /** Error message */
     details: string;
     /** Additional info */
-    info?: { [key: string]: string };
+    info?: { [key: string]: string[] };
   };
 }
 
