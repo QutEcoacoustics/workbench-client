@@ -64,19 +64,19 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     /**
      * Key to match filter inputs against
      */
-    private filterKey: keyof I,
+    protected filterKey: keyof I,
     /**
      * API Service parameters required to make a filter request
      */
-    private apiParams: () => any[],
+    protected apiParams: () => any[],
     /**
      * Function which will run after each api update (ie. scroll/filter)
      */
-    private apiUpdate: (models: M[]) => void,
+    protected apiUpdate: (models: M[]) => void,
     /**
      * Default filter values, may be overridden by later requests
      */
-    private defaultFilter: InnerFilter<I> = {}
+    protected defaultFilter: InnerFilter<I> = {}
   ) {
     super();
   }
@@ -171,17 +171,13 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
    * options. This will make a callback to the apiUpdate construction value
    * once the models have been retrieved.
    */
-  protected getModels(): Observable<void> {
-    const innerFilter = {
-      [this.filterKey]: { contains: this.filter },
-    } as { [P in keyof I]?: Subsets };
-
+  protected getModels(): Observable<M[]> {
     return this.api
       .filter(
         {
           ...this.defaultFilter,
           paging: { page: this._page },
-          filter: this.filter ? (innerFilter as any) : undefined,
+          filter: this.generateInnerFilter(),
         },
         ...this.apiParams()
       )
@@ -191,8 +187,20 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
           this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
           this.displayPagination = this.collectionSize > defaultApiPageSize;
           this.apiUpdate(models);
+          return models;
         }),
         takeUntil(this.unsubscribe)
       );
+  }
+
+  /**
+   * Generate the inner filter for the api request
+   */
+  protected generateInnerFilter(): any {
+    return this.filter
+      ? ({
+          [this.filterKey]: { contains: this.filter },
+        } as { [P in keyof I]?: Subsets })
+      : undefined;
   }
 }

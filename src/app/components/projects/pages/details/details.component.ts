@@ -22,6 +22,8 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
+import { noop, Observable, combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -61,8 +63,8 @@ class DetailsComponent
       () => [this.project.id],
       (sites) => {
         this.sites = List(sites);
-        this.markers = sanitizeMapMarkers(
-          sites.map((site) => site.getMapMarker())
+        this.markers = this.markers.concat(
+          sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
         );
       }
     );
@@ -75,6 +77,42 @@ class DetailsComponent
     }
     this.project = resolvedModels[projectKey] as Project;
     super.ngOnInit();
+  }
+
+  protected getModels() {
+    this.markers = [];
+    return super.getModels().pipe(
+      map((models) => {
+        this.getMarkers(models);
+        return models;
+      })
+    );
+  }
+
+  private getMarkers(models: Site[]) {
+    const numPages = models?.[0]?.getMetadata()?.paging.maxPage || 1;
+    const observables: Observable<Site[]>[] = [];
+
+    for (let page = 2; page <= numPages; page++) {
+      observables.push(
+        this.api.filter(
+          {
+            ...this.defaultFilter,
+            paging: { page },
+            filter: this.generateInnerFilter(),
+          },
+          ...this.apiParams()
+        )
+      );
+    }
+
+    return combineLatest(observables).subscribe((responses) => {
+      const markers: google.maps.ReadonlyMarkerOptions[] = [];
+      responses.forEach((sites) => {
+        markers.push(...sites.map((site) => site.getMapMarker()));
+      });
+      this.markers = this.markers.concat(sanitizeMapMarkers(markers));
+    }, noop);
   }
 }
 
