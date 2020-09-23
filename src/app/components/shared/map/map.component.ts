@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
 /**
@@ -41,7 +42,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
   // TODO Change to List<MapMarkerOption>
-  @Input() public markers: MapMarkerOption[];
+  @Input() public markers: List<MapMarkerOption>;
   public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
   public infoContent = "";
@@ -104,7 +105,7 @@ function isMarkerValid(marker: MapMarkerOption): boolean {
  */
 export function sanitizeMapMarkers(
   markers: MapMarkerOption | MapMarkerOption[]
-): MapMarkerOption[] {
+): List<MapMarkerOption> {
   const output: MapMarkerOption[] = [];
 
   if (markers instanceof Array) {
@@ -119,7 +120,7 @@ export function sanitizeMapMarkers(
     }
   }
 
-  return output;
+  return List(output);
 }
 
 export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;

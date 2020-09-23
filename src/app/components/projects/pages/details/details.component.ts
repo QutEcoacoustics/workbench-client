@@ -44,7 +44,7 @@ const projectKey = "project";
 class DetailsComponent
   extends PaginationTemplate<ISite, Site>
   implements OnInit {
-  public markers: MapMarkerOption[];
+  public markers: List<MapMarkerOption>;
   public project: Project;
   public sites: List<Site> = List([]);
 
@@ -80,7 +80,7 @@ class DetailsComponent
   }
 
   protected getModels() {
-    this.markers = [];
+    this.markers = List([]);
     return super.getModels().pipe(
       map((models) => {
         this.getMarkers(models);
@@ -91,9 +91,15 @@ class DetailsComponent
 
   private getMarkers(models: Site[]) {
     const numPages = models?.[0]?.getMetadata()?.paging.maxPage || 1;
+    const currentPage = models?.[0]?.getMetadata()?.paging.page || 1;
     const observables: Observable<Site[]>[] = [];
 
-    for (let page = 2; page <= numPages; page++) {
+    for (let page = 1; page <= numPages; page++) {
+      // Skip current page
+      if (page === currentPage) {
+        continue;
+      }
+
       observables.push(
         this.api.filter(
           {
