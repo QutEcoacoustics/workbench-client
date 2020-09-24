@@ -41,15 +41,14 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  // TODO Change to List<MapMarkerOption>
   @Input() public markers: List<MapMarkerOption>;
   public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
   public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions = { mapTypeId: "satellite" };
-  public markerOptions = { draggable: false };
+  public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
+  public markerOptions: google.maps.MarkerOptions = {};
 
   constructor(private ref: ChangeDetectorRef) {
     super();

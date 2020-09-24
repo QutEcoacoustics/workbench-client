@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Filters } from "@baw-api/baw-api.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -17,14 +17,14 @@ import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
-import { ISite, Site } from "@models/Site";
+import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
-import { combineLatest, noop, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { combineLatest, Observable } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -43,7 +43,7 @@ const projectKey = "project";
   styleUrls: ["./details.component.scss"],
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
-  public markers: List<MapMarkerOption>;
+  public markers: List<MapMarkerOption> = List([]);
   public project: Project;
   public sites: List<Site> = List([]);
   protected api: SitesService;
@@ -63,9 +63,6 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       () => [this.project.id],
       (sites) => {
         this.sites = List(sites);
-        this.markers = this.markers.concat(
-          sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
-        );
       }
     );
   }
@@ -77,41 +74,40 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     }
     this.project = resolvedModels[projectKey] as Project;
     super.ngOnInit();
+
+    this.api
+      .filter({}, this.project)
+      .pipe(
+        switchMap((models) => this.getMarkers(models)),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        (markers) =>
+          (this.markers = this.markers.concat(sanitizeMapMarkers(markers))),
+        (error: ApiErrorDetails) => {
+          this.error = error;
+          this.loading = false;
+        }
+      );
   }
 
-  protected getModels() {
-    this.markers = List([]);
-    return super.getModels().pipe(
-      map((models) => {
-        this.getMarkers(models);
-        return models;
-      })
-    );
-  }
-
-  private getMarkers(models: Site[]) {
-    const numPages = models?.[0]?.getMetadata()?.paging.maxPage || 1;
-    const currentPage = models?.[0]?.getMetadata()?.paging.page || 1;
+  private getMarkers(sites: Site[]) {
+    const numPages = sites?.[0]?.getMetadata()?.paging?.maxPage || 1;
     const observables: Observable<Site[]>[] = [];
 
-    for (let page = 1; page <= numPages; page++) {
-      // Skip current page
-      if (page === currentPage) {
-        continue;
-      }
-
-      observables.push(
-        this.api.filter(this.generateFilter() as Filters<ISite>, this.project)
-      );
+    for (let page = 2; page <= numPages; page++) {
+      observables.push(this.api.filter({ paging: { page } }, this.project));
     }
 
-    return combineLatest(observables).subscribe((responses) => {
-      const markers: google.maps.ReadonlyMarkerOptions[] = [];
-      responses.forEach((sites) => {
-        markers.push(...sites.map((site) => site.getMapMarker()));
-      });
-      this.markers = this.markers.concat(sanitizeMapMarkers(markers));
-    }, noop);
+    return combineLatest(observables).pipe(
+      map((responses) => {
+        const markers = sites.map((site) => site.getMapMarker());
+        responses.forEach((response) => {
+          markers.push(...response.map((site) => site.getMapMarker()));
+        });
+        return markers;
+      })
+    );
   }
 }
 
