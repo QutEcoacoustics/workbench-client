@@ -23,8 +23,8 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
-import { combineLatest, Observable } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { merge, Observable } from "rxjs";
+import { switchMap, takeUntil } from "rxjs/operators";
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -76,14 +76,13 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     super.ngOnInit();
 
     this.api
-      .filter({}, this.project)
+      .list(this.project)
       .pipe(
         switchMap((models) => this.getMarkers(models)),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        (markers) =>
-          (this.markers = this.markers.concat(sanitizeMapMarkers(markers))),
+        (sites) => this.pushMarkers(sites),
         (error: ApiErrorDetails) => {
           this.error = error;
           this.loading = false;
@@ -91,22 +90,28 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       );
   }
 
+  /**
+   * Retrieve map markers from api
+   */
   private getMarkers(sites: Site[]) {
     const numPages = sites?.[0]?.getMetadata()?.paging?.maxPage || 1;
     const observables: Observable<Site[]>[] = [];
 
+    // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
       observables.push(this.api.filter({ paging: { page } }, this.project));
     }
 
-    return combineLatest(observables).pipe(
-      map((responses) => {
-        const markers = sites.map((site) => site.getMapMarker());
-        responses.forEach((response) => {
-          markers.push(...response.map((site) => site.getMapMarker()));
-        });
-        return markers;
-      })
+    this.pushMarkers(sites);
+    return merge(...observables);
+  }
+
+  /**
+   * Push new sites to markers list
+   */
+  private pushMarkers(sites: Site[]) {
+    this.markers = this.markers.concat(
+      sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
     );
   }
 }
