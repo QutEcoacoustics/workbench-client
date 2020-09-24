@@ -54,7 +54,7 @@ export const projectsMenuItemActions = [
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
 })
-class ListComponent extends PaginationTemplate<IProject, Project> {
+class ListComponent extends PaginationTemplate<Project> {
   public cardList: List<Card> = List([]);
 
   constructor(

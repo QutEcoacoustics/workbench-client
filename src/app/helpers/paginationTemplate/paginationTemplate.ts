@@ -22,9 +22,13 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   extends PageComponent
   implements OnInit {
   /**
-   * Observable which updates scroll elements
+   * Observable to wrap api request behavior
    */
   public apiRequest$ = new Subject<{ page: number; filterText: string }>();
+  /**
+   * Maximum number of elements for current filter
+   */
+  public collectionSize: number;
   /**
    * Tracks whether to display the pagination buttons
    */
@@ -38,13 +42,9 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public loading: boolean;
   /**
-   * Tracks additional filter constraints
+   * Tracks the current user filter input
    */
   public filter: string;
-  /**
-   * Maximum number of elements for current filter
-   */
-  public collectionSize: number;
   /**
    * Tracks the current filter page
    */

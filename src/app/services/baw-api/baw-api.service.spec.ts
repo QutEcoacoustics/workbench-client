@@ -212,11 +212,6 @@ describe("BawApiService", () => {
         items: 1,
         total: 1,
         maxPage: 1,
-        current:
-          env.environment.apiRoot +
-          "/projects?direction=asc&items=25&order_by=name&page=1",
-        previous: null,
-        next: null,
       },
     };
   });

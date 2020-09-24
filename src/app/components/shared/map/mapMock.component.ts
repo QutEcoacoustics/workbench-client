@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { sanitizeMapMarkers } from "./map.component";
+import { List } from "immutable";
+import { MapMarkerOption, sanitizeMapMarkers } from "./map.component";
 
 @Component({
   selector: "baw-map",
@@ -18,12 +19,12 @@ import { sanitizeMapMarkers } from "./map.component";
   styleUrls: ["./map.component.scss"],
 })
 export class MockMapComponent implements OnInit {
-  @Input() public markers: any;
+  @Input() public markers: List<MapMarkerOption>;
   public hasMarkers = false;
 
   constructor() {}
 
   public ngOnInit() {
-    this.hasMarkers = sanitizeMapMarkers(this.markers)?.length > 0;
+    this.hasMarkers = sanitizeMapMarkers(this.markers.toArray())?.size > 0;
   }
 }

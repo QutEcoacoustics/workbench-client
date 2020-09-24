@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -45,6 +46,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public markers: List<MapMarkerOption>;
   public project: Project;
   public sites: List<Site> = List([]);
+  protected api: SitesService;
 
   constructor(
     route: ActivatedRoute,
@@ -98,7 +100,9 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
         continue;
       }
 
-      observables.push(this.api.filter(this.generateFilter(), this.project));
+      observables.push(
+        this.api.filter(this.generateFilter() as Filters<ISite>, this.project)
+      );
     }
 
     return combineLatest(observables).subscribe((responses) => {

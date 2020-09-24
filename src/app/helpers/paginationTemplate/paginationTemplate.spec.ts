@@ -19,7 +19,7 @@ import { PaginationTemplate } from "./paginationTemplate";
   selector: "app-test",
   template: ``,
 })
-class MockComponent extends PaginationTemplate<IProject, Project> {
+class MockComponent extends PaginationTemplate<Project> {
   constructor(
     router: Router,
     route: ActivatedRoute,

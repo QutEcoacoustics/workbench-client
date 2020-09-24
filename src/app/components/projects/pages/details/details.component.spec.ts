@@ -27,6 +27,7 @@ import {
   assertSpinner,
 } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
@@ -248,7 +249,7 @@ describe("ProjectDetailsComponent", () => {
       setup(new Project(generateProject()));
       await handleApiRequest([]);
       spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual([]);
+      expect(getGoogleMap().markers).toEqual(List([]));
     });
 
     it("should display google maps with pin for single site", async () => {
@@ -256,7 +257,7 @@ describe("ProjectDetailsComponent", () => {
       setup(new Project(generateProject()));
       await handleApiRequest(sites);
       spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual([sites[0].getMapMarker()]);
+      expect(getGoogleMap().markers).toEqual(List([sites[0].getMapMarker()]));
     });
 
     it("should display google maps with pins for multiple sites", async () => {
@@ -265,7 +266,7 @@ describe("ProjectDetailsComponent", () => {
       await handleApiRequest(sites);
       spectator.detectChanges();
       expect(getGoogleMap().markers).toEqual(
-        sites.map((site) => site.getMapMarker())
+        List(sites.map((site) => site.getMapMarker()))
       );
     });
 
@@ -282,7 +283,7 @@ describe("ProjectDetailsComponent", () => {
       await handleApiRequest([...sitesWithMarker, ...sitesNoMarker]);
       spectator.detectChanges();
       expect(getGoogleMap().markers).toEqual(
-        sitesWithMarker.map((site) => site.getMapMarker())
+        List(sitesWithMarker.map((site) => site.getMapMarker()))
       );
     });
   });
