@@ -22,7 +22,7 @@ import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
-import { noop, Observable, combineLatest } from "rxjs";
+import { combineLatest, noop, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export const projectMenuItemActions = [
@@ -41,9 +41,7 @@ const projectKey = "project";
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
-class DetailsComponent
-  extends PaginationTemplate<ISite, Site>
-  implements OnInit {
+class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public markers: List<MapMarkerOption>;
   public project: Project;
   public sites: List<Site> = List([]);
@@ -100,16 +98,7 @@ class DetailsComponent
         continue;
       }
 
-      observables.push(
-        this.api.filter(
-          {
-            ...this.defaultFilter,
-            paging: { page },
-            filter: this.generateInnerFilter(),
-          },
-          ...this.apiParams()
-        )
-      );
+      observables.push(this.api.filter(this.generateFilter(), this.project));
     }
 
     return combineLatest(observables).subscribe((responses) => {

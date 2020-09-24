@@ -274,12 +274,6 @@ export interface Paging {
   total?: number;
   /** Maximum page number */
   maxPage?: number;
-  /** @deprecated */
-  current?: string;
-  /** @deprecated */
-  previous?: string;
-  /** @deprecated */
-  next?: string;
 }
 
 export interface Combinations<T> {
@@ -379,9 +373,9 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
   filter?: InnerFilter<T>;
   /** Include or exclude keys from response */
   projection?: {
-    /** Whitelist keys */
+    /** Include keys in response */
     include?: K[];
-    /** Blacklist keys */
+    /** Exclude keys from response */
     exclude?: K[];
   };
   /** Current sorting options */

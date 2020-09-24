@@ -4,27 +4,27 @@ import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   defaultApiPageSize,
+  Filters,
   InnerFilter,
-  Subsets,
 } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { noop, Observable, Subject } from "rxjs";
-import { filter, map, mergeMap, takeUntil } from "rxjs/operators";
+import { filter, switchMap, takeUntil, tap } from "rxjs/operators";
 
 const queryKey = "query";
 const pageKey = "page";
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
-export abstract class PaginationTemplate<I, M extends AbstractModel>
+export abstract class PaginationTemplate<M extends AbstractModel>
   extends PageComponent
   implements OnInit {
   /**
    * Observable which updates scroll elements
    */
-  public apiRequest$ = new Subject<void>();
+  public apiRequest$ = new Subject<{ page: number; filterText: string }>();
   /**
    * Tracks whether to display the pagination buttons
    */
@@ -64,7 +64,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     /**
      * Key to match filter inputs against
      */
-    protected filterKey: keyof I,
+    protected filterKey: keyof M,
     /**
      * API Service parameters required to make a filter request
      */
@@ -76,7 +76,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     /**
      * Default filter values, may be overridden by later requests
      */
-    protected defaultFilter: InnerFilter<I> = {}
+    protected defaultFilter: InnerFilter<M> = {}
   ) {
     super();
   }
@@ -92,14 +92,28 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
 
     this.apiRequest$
       .pipe(
-        mergeMap(() => this.getModels()),
+        tap(({ page, filterText }) => {
+          this.loading = true;
+          this._page = page;
+          this.filter = filterText;
+          this.updateQueryParams(this.page, this.filter);
+        }),
+        switchMap(() => this.getModels()),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(noop, (error: ApiErrorDetails) => {
-        console.error("Scroll Template Failure: ", error);
-        this.error = error;
-        this.loading = false;
-      });
+      .subscribe(
+        (models: M[]) => {
+          this.loading = false;
+          this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
+          this.displayPagination = this.collectionSize > defaultApiPageSize;
+          this.apiUpdate(models);
+        },
+        (error: ApiErrorDetails) => {
+          console.error("Scroll Template Failure: ", error);
+          this.error = error;
+          this.loading = false;
+        }
+      );
 
     this.updateFromUrl();
 
@@ -119,7 +133,7 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
     const params = this.route.snapshot.queryParams;
     this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;
-    this.onFilter(this.filter, this._page);
+    this.apiRequest$.next({ page: this.page, filterText: this.filter });
   }
 
   public get page() {
@@ -130,21 +144,14 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
    * Handle pagination events
    */
   public set page(page: number) {
-    this._page = page;
-    this.loading = true;
-    this.apiRequest$.next();
-    this.updateQueryParams(this._page, this.filter);
+    this.apiRequest$.next({ page, filterText: this.filter });
   }
 
   /**
    * Handle filter events
    */
-  public onFilter(input: string, page: number = 1) {
-    this._page = page;
-    this.filter = input;
-    this.loading = true;
-    this.apiRequest$.next();
-    this.updateQueryParams(this._page, input);
+  public onFilter(filterText: string, page: number = 1) {
+    this.apiRequest$.next({ page, filterText });
   }
 
   /**
@@ -160,47 +167,29 @@ export abstract class PaginationTemplate<I, M extends AbstractModel>
       params[queryKey] = query;
     }
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: params,
-    });
+    this.router.navigate([], { relativeTo: this.route, queryParams: params });
   }
 
   /**
    * Retrieve the newest batch of models using the latest page and filter
-   * options. This will make a callback to the apiUpdate construction value
-   * once the models have been retrieved.
+   * options.
    */
   protected getModels(): Observable<M[]> {
-    return this.api
-      .filter(
-        {
-          ...this.defaultFilter,
-          paging: { page: this._page },
-          filter: this.generateInnerFilter(),
-        },
-        ...this.apiParams()
-      )
-      .pipe(
-        map((models: M[]) => {
-          this.loading = false;
-          this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
-          this.displayPagination = this.collectionSize > defaultApiPageSize;
-          this.apiUpdate(models);
-          return models;
-        }),
-        takeUntil(this.unsubscribe)
-      );
+    return this.api.filter(this.generateFilter(), ...this.apiParams());
   }
 
   /**
-   * Generate the inner filter for the api request
+   * Generate the filter for the api request
    */
-  protected generateInnerFilter(): any {
-    return this.filter
-      ? ({
-          [this.filterKey]: { contains: this.filter },
-        } as { [P in keyof I]?: Subsets })
+  protected generateFilter(): Filters<M> {
+    const innerFilter = this.filter
+      ? ({ [this.filterKey]: { contains: this.filter } } as InnerFilter<M>)
       : undefined;
+
+    return {
+      ...this.defaultFilter,
+      paging: { page: this.page },
+      filter: innerFilter,
+    };
   }
 }
