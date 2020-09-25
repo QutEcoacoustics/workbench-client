@@ -394,9 +394,9 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
  */
 export interface Meta extends Filters {
   /** Response status */
-  status: number;
+  status?: number;
   /** Human readable response status */
-  message: string;
+  message?: string;
   /** Optional error metadata */
   error?: {
     /** Error message */

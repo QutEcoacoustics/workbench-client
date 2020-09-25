@@ -5,6 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
+import { SiteMapComponent } from "@components/projects/site-map/site-map.component";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
@@ -15,7 +16,6 @@ import {
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
-import { MapComponent } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
@@ -27,20 +27,21 @@ import {
   assertSpinner,
 } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
-const MockMapComponent = MockComponent(MapComponent);
-const MockSiteCardComponent = MockComponent(SiteCardComponent);
+const mockComponents = {
+  SiteMap: MockComponent(SiteMapComponent),
+  SiteCard: MockComponent(SiteCardComponent),
+};
 
 describe("ProjectDetailsComponent", () => {
   let api: SpyObject<SitesService>;
   let spectator: SpectatorRouting<DetailsComponent>;
   const createComponent = createRoutingFactory({
     component: DetailsComponent,
-    declarations: [MockMapComponent, MockSiteCardComponent],
+    declarations: [mockComponents.SiteCard, mockComponents.SiteMap],
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
@@ -184,7 +185,7 @@ describe("ProjectDetailsComponent", () => {
 
   describe("Sites", () => {
     function getSiteCards() {
-      return spectator.queryAll(MockSiteCardComponent);
+      return spectator.queryAll(mockComponents.SiteCard);
     }
 
     function assertCard(card: SiteCardComponent, project: Project, site: Site) {
@@ -240,51 +241,16 @@ describe("ProjectDetailsComponent", () => {
     });
   });
 
-  describe("Google Maps", () => {
+  describe("sites map", () => {
     function getGoogleMap() {
-      return spectator.query(MockMapComponent);
+      return spectator.query(mockComponents.SiteMap);
     }
 
-    it("should display google maps placeholder box when no sites found", async () => {
+    it("should display site map component", async () => {
       setup(new Project(generateProject()));
       await handleApiRequest([]);
       spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual(List([]));
-    });
-
-    it("should display google maps with pin for single site", async () => {
-      const sites = generateSites(1);
-      setup(new Project(generateProject()));
-      await handleApiRequest(sites);
-      spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual(List([sites[0].getMapMarker()]));
-    });
-
-    it("should display google maps with pins for multiple sites", async () => {
-      const sites = generateSites(3);
-      setup(new Project(generateProject()));
-      await handleApiRequest(sites);
-      spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual(
-        List(sites.map((site) => site.getMapMarker()))
-      );
-    });
-
-    it("should display google maps with pins for multiple sites where some don't have location", async () => {
-      const sitesWithMarker = generateSites(3);
-      const sitesNoMarker = generateSites(3, {
-        latitude: undefined,
-        customLatitude: undefined,
-        longitude: undefined,
-        customLongitude: undefined,
-      });
-
-      setup(new Project(generateProject()));
-      await handleApiRequest([...sitesWithMarker, ...sitesNoMarker]);
-      spectator.detectChanges();
-      expect(getGoogleMap().markers).toEqual(
-        List(sitesWithMarker.map((site) => site.getMapMarker()))
-      );
+      expect(getGoogleMap()).toBeTruthy();
     });
   });
 

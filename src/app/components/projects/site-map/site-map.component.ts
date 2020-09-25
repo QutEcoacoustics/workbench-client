@@ -10,10 +10,10 @@ import { switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-site-map",
-  templateUrl: "./site-map.component.html",
-  styleUrls: ["./site-map.component.scss"],
+  template: `<baw-map [markers]="markers"></baw-map>`,
 })
 export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
+  // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   public markers: List<MapMarkerOption> = List([]);
@@ -24,7 +24,7 @@ export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
 
   public ngOnInit(): void {
     this.sitesApi
-      .filter({}, this.project)
+      .filter({ paging: { page: 1 } }, this.project)
       .pipe(
         switchMap((models) => this.getMarkers(models)),
         takeUntil(this.unsubscribe)
