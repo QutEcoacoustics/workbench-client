@@ -1,7 +1,5 @@
 FROM node:current-alpine
 
-
-
 # drop privileges
 USER node
 
@@ -11,7 +9,7 @@ RUN mkdir -p  /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 # copy deps specification first
-COPY --chown=node package*.json ./
+COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
 
 # install deps
 RUN npm install \
@@ -25,6 +23,6 @@ RUN npm install \
 COPY --chown=node ./ ./
 
 RUN npm run build:ssr
-  # pre-rendering doesn't appear to work at the moment due to our config setup
-  #&& npm run prerender
+#   pre-rendering doesn't appear to work at the moment due to our config setup
+#   && npm run prerender
 CMD [ "npm", "run", "serve:ssr"]
