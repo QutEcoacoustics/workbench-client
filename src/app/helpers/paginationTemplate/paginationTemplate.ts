@@ -1,5 +1,5 @@
 import { Directive, OnInit } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
@@ -11,7 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { noop, Observable, Subject } from "rxjs";
-import { filter, switchMap, takeUntil, tap } from "rxjs/operators";
+import { switchMap, takeUntil, tap } from "rxjs/operators";
 
 const queryKey = "query";
 const pageKey = "page";
@@ -76,7 +76,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     /**
      * Default filter values, may be overridden by later requests
      */
-    protected defaultFilter: InnerFilter<M> = {}
+    protected defaultFilter: Filters<M> = {}
   ) {
     super();
   }
@@ -115,13 +115,8 @@ export abstract class PaginationTemplate<M extends AbstractModel>
         }
       );
 
-    this.updateFromUrl();
-
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.unsubscribe)
-      )
+    this.route.queryParams
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(() => this.updateFromUrl(), noop);
   }
 
@@ -182,14 +177,12 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Generate the filter for the api request
    */
   protected generateFilter(): Filters<M> {
-    const innerFilter = this.filter
-      ? ({ [this.filterKey]: { contains: this.filter } } as InnerFilter<M>)
-      : undefined;
-
     return {
       ...this.defaultFilter,
       paging: { page: this.page },
-      filter: innerFilter,
+      filter: this.filter
+        ? ({ [this.filterKey]: { contains: this.filter } } as InnerFilter<M>)
+        : undefined,
     };
   }
 }
