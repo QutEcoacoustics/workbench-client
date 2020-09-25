@@ -1,146 +1,227 @@
 import { HttpClientModule } from "@angular/common/http";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { Project } from "@models/Project";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { IProject, Project } from "@models/Project";
+import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
-import { mockActivatedRoute } from "@test/helpers/testbed";
+import { nStepObservable } from "@test/helpers/general";
+import { assertErrorHandler, assertSpinner } from "@test/helpers/html";
+import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
-  let fixture: ComponentFixture<ListComponent>;
+  let api: SpyObject<ProjectsService>;
+  let spectator: Spectator<ListComponent>;
+  const createComponent = createComponentFactory({
+    component: ListComponent,
+    imports: [
+      SharedModule,
+      HttpClientModule,
+      RouterTestingModule,
+      MockBawApiModule,
+    ],
+  });
 
-  function configureTestingModule(model: Project[], error: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [ListComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { projects: projectResolvers.list },
-            { projects: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
+  function generateProjects(
+    numProjects: number,
+    overrides: IProject = {}
+  ): Project[] {
+    const projects = [];
+    for (let i = 0; i < Math.min(numProjects, defaultApiPageSize); i++) {
+      const project = new Project({ ...generateProject(), ...overrides });
+      project.addMetadata({
+        status: 200,
+        message: "OK",
+        paging: { total: numProjects },
+      });
+      projects.push(project);
+    }
+    return projects;
+  }
 
-    fixture = TestBed.createComponent(ListComponent);
+  async function handleApiRequest(
+    models: Project[],
+    error?: ApiErrorDetails,
+    assertFilter: (filters: Filters<IProject>) => void = () => {}
+  ) {
+    const subject = new Subject<Project[]>();
+    const promise = nStepObservable(subject, () => models ?? error, !models);
+    api.filter.and.callFake((filters) => {
+      assertFilter(filters);
+      return subject;
+    });
+
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
   }
 
   function getCards() {
-    return fixture.nativeElement.querySelectorAll("baw-card-image");
+    return spectator.queryAll<HTMLElement>("baw-card-image");
   }
 
-  function assertCardTitle(card: any, title: string) {
-    expect(card.querySelector(".card-title").innerText.trim()).toBe(title);
+  function assertCardTitle(card: HTMLElement, title: string) {
+    expect(
+      card.querySelector<HTMLElement>(".card-title").innerText.trim()
+    ).toBe(title);
   }
 
-  function assertCardDescription(card: any, description: string) {
+  function assertCardDescription(card: HTMLElement, description: string) {
     expect(card.querySelector(".card-text").innerHTML.trim()).toBe(description);
   }
 
-  it("should handle zero projects", () => {
-    const projects = [];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("h4");
-    expect(title).toBeTruthy();
-    expect(title.innerText.trim()).toBe("Your list of projects is empty");
-
-    expect(getCards().length).toBe(0);
+  beforeEach(() => {
+    spectator = createComponent({ detectChanges: false });
+    api = spectator.inject(ProjectsService);
   });
 
-  it("should display single project card", () => {
-    const projects = [new Project(generateProject())];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
-
-    const cards = getCards();
-    expect(cards.length).toBe(1);
+  it("should initially request page 1", async () => {
+    await handleApiRequest([], undefined, (filter) =>
+      expect(filter.paging.page).toBe(1)
+    );
   });
 
-  it("should display single project card with title", () => {
-    const projects = [new Project(generateProject())];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
-
-    const cards = getCards();
-    assertCardTitle(cards[0], projects[0].name);
+  it("should handle failed projects model", async () => {
+    await handleApiRequest(undefined, generateApiErrorDetails());
+    assertErrorHandler(spectator.fixture, true);
   });
 
-  it("should display single project card with default description", () => {
-    const projects = [
-      new Project({
-        ...generateProject(),
+  it("should display loading animation during request", async () => {
+    handleApiRequest([]);
+    assertSpinner(spectator.fixture, true);
+  });
+
+  it("should clear loading animation on response", async () => {
+    await handleApiRequest([]);
+    assertSpinner(spectator.fixture, false);
+  });
+
+  describe("projects", () => {
+    it("should handle zero projects", async () => {
+      await handleApiRequest([]);
+
+      const title = spectator.query<HTMLHeadingElement>("h4");
+      expect(title).toBeTruthy();
+      expect(title.innerText.trim()).toBe("Your list of projects is empty");
+      expect(getCards().length).toBe(0);
+    });
+
+    it("should display single project card", async () => {
+      await handleApiRequest(generateProjects(1));
+      const cards = getCards();
+      expect(cards.length).toBe(1);
+    });
+
+    it("should display single project card with title", async () => {
+      const projects = generateProjects(1);
+      await handleApiRequest(projects);
+      const cards = getCards();
+      assertCardTitle(cards[0], projects[0].name);
+    });
+
+    it("should display single project card with default description", async () => {
+      const projects = generateProjects(1, {
         descriptionHtmlTagline: undefined,
-      }),
-    ];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
+      });
+      await handleApiRequest(projects);
 
-    const cards = getCards();
-    assertCardDescription(cards[0], "No description given");
-  });
+      const cards = getCards();
+      assertCardDescription(cards[0], "No description given");
+    });
 
-  it("should display single project card with custom description", () => {
-    const projects = [
-      new Project({
-        ...generateProject(),
+    it("should display single project card with custom description", async () => {
+      const projects = generateProjects(1, {
         descriptionHtmlTagline: "<b>Custom</b> Description",
-      }),
-    ];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
+      });
+      await handleApiRequest(projects);
 
-    const cards = getCards();
-    assertCardDescription(cards[0], "<b>Custom</b> Description");
+      const cards = getCards();
+      assertCardDescription(cards[0], "<b>Custom</b> Description");
+    });
+
+    it("should display multiple project cards", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      const cards = getCards();
+      expect(cards.length).toBe(3);
+    });
+
+    it("should display multiple project cards in order", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+
+      const cards = getCards();
+      projects.forEach((project, index) =>
+        assertCardTitle(cards[index], project.name)
+      );
+    });
   });
 
-  it("should display multiple project cards", () => {
-    const projects = [
-      new Project(generateProject()),
-      new Project(generateProject()),
-      new Project(generateProject()),
-    ];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
+  describe("scrolling", () => {
+    function getPagination() {
+      return spectator.query(NgbPagination);
+    }
 
-    const cards = getCards();
-    expect(cards.length).toBe(3);
+    function getPaginationLinks() {
+      return spectator.queryAll("ngb-pagination a");
+    }
+
+    it("should hide pagination if less than one page of models", async () => {
+      const projects = generateProjects(5);
+      await handleApiRequest(projects);
+      expect(getPagination()).toBeFalsy();
+    });
+
+    it("should display pagination if more than one page of models", async () => {
+      const projects = generateProjects(defaultApiPageSize * 2);
+      await handleApiRequest(projects);
+      expect(getPagination()).toBeTruthy();
+    });
+
+    it("should display correct number of pages", async () => {
+      const projects = generateProjects(defaultApiPageSize * 3);
+      await handleApiRequest(projects);
+      // 3 Pages, 2 additional options to select forwards and back
+      expect(getPaginationLinks().length).toBe(3 + 2);
+    });
   });
 
-  it("should display multiple project cards in order", () => {
-    const projects = [
-      new Project({ ...generateProject(), name: "Project 1" }),
-      new Project({ ...generateProject(), name: "Project 2" }),
-      new Project({ ...generateProject(), name: "Project 3" }),
-    ];
-    configureTestingModule(projects, undefined);
-    fixture.detectChanges();
+  describe("filtering", () => {
+    function getFilter() {
+      return spectator.query(DebounceInputComponent);
+    }
 
-    const cards = getCards();
-    assertCardTitle(cards[0], "Project 1");
-    assertCardTitle(cards[1], "Project 2");
-    assertCardTitle(cards[2], "Project 3");
-  });
+    it("should have filtering option", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      expect(getFilter()).toBeTruthy();
+    });
 
-  it("should handle failed projects model", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
-    fixture.detectChanges();
+    it("should have default value attached", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      spectator.component.filter = "custom value";
+      spectator.detectChanges();
+      expect(getFilter().default).toBe("custom value");
+    });
 
-    const body = fixture.nativeElement;
-    expect(body.childElementCount).toBe(0);
+    it("should call onFilter when event detected", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      spyOn(spectator.component, "onFilter").and.stub();
+      getFilter().filter.next("custom value");
+      expect(spectator.component.onFilter).toHaveBeenCalled();
+    });
   });
 });

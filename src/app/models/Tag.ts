@@ -16,7 +16,7 @@ import type { User } from "./User";
 export interface ITag extends HasCreatorAndUpdater {
   id?: Id;
   text?: string;
-  isTaxanomic?: boolean;
+  isTaxonomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
   notes?: Blob | object;
@@ -32,7 +32,7 @@ export class Tag extends AbstractModel implements ITag {
   @BawPersistAttr
   public readonly text?: string;
   @BawPersistAttr
-  public readonly isTaxanomic?: boolean;
+  public readonly isTaxonomic?: boolean;
   @BawPersistAttr
   public readonly typeOfTag?: string;
   @BawPersistAttr

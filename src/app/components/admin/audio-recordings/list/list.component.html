@@ -14,12 +14,7 @@
   >
     <ngx-datatable-column name="Id" width="50" maxWidth="50">
     </ngx-datatable-column>
-    <ngx-datatable-column
-      name="Site"
-      width="50"
-      maxWidth="50"
-      [sortable]="false"
-    >
+    <ngx-datatable-column name="Site" width="50" maxWidth="50">
     </ngx-datatable-column>
     <ngx-datatable-column name="Duration"></ngx-datatable-column>
     <ngx-datatable-column name="Recorded"></ngx-datatable-column>
@@ -46,4 +41,4 @@
   </ngx-datatable>
 </ng-container>
 
-<baw-error-handler [error]="error"></baw-error-handler>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

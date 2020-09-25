@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
@@ -42,7 +43,7 @@ describe("AdminUserListComponent", () => {
       isConfirmed: false,
     });
     defaultUsers = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < defaultApiPageSize; i++) {
       defaultUsers.push(
         new User({
           id: i,

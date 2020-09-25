@@ -17,6 +17,7 @@ import { RequestComponent } from "./pages/request/request.component";
 import { PillListComponent } from "./pill-list/pill-list.component";
 import { projectsRoute } from "./projects.menus";
 import { SiteCardComponent } from "./site-card/site-card.component";
+import { SiteMapComponent } from "./site-map/site-map.component";
 
 const components = [
   AssignComponent,
@@ -29,10 +30,10 @@ const components = [
   ListComponent,
   NewComponent,
   PermissionsComponent,
+  PillListComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent,
-  PillListComponent,
+  SiteMapComponent,
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);

@@ -14,6 +14,7 @@ import {
 } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { defaultDebounceTime } from "src/app/app.helper";
 import { PageComponent } from "../page/pageComponent";
 
 /**
@@ -65,14 +66,12 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
 
     this.filterEvent$
       .pipe(
-        debounceTime(500),
+        debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        () => {
-          this.getPageData();
-        },
+        () => this.getPageData(),
         // Filter event doesn't have an error output
         (err) => {}
       );
@@ -101,21 +100,17 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.getPageData();
   }
 
-  public onFilter(filter: KeyboardEvent) {
-    const filterText = (filter.target as HTMLInputElement).value;
-
-    if (!filterText) {
+  public onFilter(filter: string) {
+    if (!filter) {
       this.filters.filter = undefined;
     } else {
       this.filters.filter = {
         // TODO Figure out how to get this typing working
-        [this.filterKey as any]: {
-          contains: filterText,
-        },
+        [this.filterKey as any]: { contains: filter },
       };
     }
 
-    this.filterEvent$.next(filterText);
+    this.filterEvent$.next(filter);
   }
 
   public onSort(event: SortEvent) {
@@ -162,6 +157,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   }
 }
 
+// TODO Update keys to match API standards
 export interface TablePage {
   count: number;
   pageSize: number;

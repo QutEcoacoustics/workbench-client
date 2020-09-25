@@ -9,17 +9,11 @@
     click on '{{ assignSitesLabel }}' in the list of actions on the right.
   </p>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Filter</span>
-    </div>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Filter Sites"
-      (keyup)="onFilter($event)"
-    />
-  </div>
+  <baw-debounce-input
+    label="Filter"
+    placeholder="Filter Sites"
+    (filter)="onFilter($event)"
+  ></baw-debounce-input>
 
   <ngx-datatable
     #table
@@ -55,4 +49,4 @@
   </ngx-datatable>
 </ng-container>
 
-<baw-error-handler [error]="error"></baw-error-handler>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

@@ -9,7 +9,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateTag } from "@test/fakes/Tag";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -93,7 +93,7 @@ describe("AdminTagsEditComponent", () => {
         defaultTagTypes,
         undefined
       );
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should handle tag types error", () => {
@@ -103,7 +103,7 @@ describe("AdminTagsEditComponent", () => {
         undefined,
         generateApiErrorDetails()
       );
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should call api", () => {

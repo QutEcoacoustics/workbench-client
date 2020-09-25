@@ -2,7 +2,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
 import { id, IdOr } from "../api-common";
-import { Filters, Meta } from "../baw-api.service";
+import { defaultApiPageSize, Filters, Meta } from "../baw-api.service";
 
 const delayPeriod = 1000;
 
@@ -11,7 +11,7 @@ export function listMock<M extends AbstractModel>(
 ): Observable<M[]> {
   const models: M[] = [];
 
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < defaultApiPageSize; i++) {
     models.push(classBuilder(i));
   }
 
@@ -35,14 +35,16 @@ export function filterMock<M extends AbstractModel>(
         },
     paging: {
       page: filters?.paging?.page ? filters.paging.page : 1,
-      items: filters?.paging?.items ? filters?.paging?.items : 25,
+      items: filters?.paging?.items
+        ? filters?.paging?.items
+        : defaultApiPageSize,
       total: filters?.paging?.total ? filters?.paging?.total : 100,
       maxPage: 4,
     },
   };
 
-  const startIndex = (meta.paging.page - 1) * 25;
-  const endIndex = meta.paging.page * 25;
+  const startIndex = (meta.paging.page - 1) * defaultApiPageSize;
+  const endIndex = meta.paging.page * defaultApiPageSize;
 
   for (let i = startIndex; i < endIndex; i++) {
     const model = classBuilder(i);

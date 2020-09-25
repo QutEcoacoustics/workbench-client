@@ -1,3 +1,5 @@
+import { defaultDebounceTime } from "src/app/app.helper";
+
 declare var google: any;
 
 export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
@@ -27,12 +29,12 @@ export async function embedGoogleMaps(key?: string) {
     function mapLoaded() {
       if (typeof google !== "undefined") {
         resolve();
-      } else if (count > 5) {
+      } else if (count > 10) {
         console.error("Failed to load google maps.");
-        reject();
+        reject("Google Maps API Bundle took too long to download.");
       } else {
         count++;
-        setTimeout(() => mapLoaded(), 500);
+        setTimeout(() => mapLoaded(), defaultDebounceTime);
       }
     }
 

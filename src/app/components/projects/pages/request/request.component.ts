@@ -28,7 +28,7 @@ import { fields } from "./request.schema.json";
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></baw-form>
-      <baw-error-handler [error]="error"></baw-error-handler>
+      <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
     </baw-wip>
   `,
 })

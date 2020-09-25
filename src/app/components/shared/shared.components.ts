@@ -15,6 +15,7 @@ import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxComponent } from "./checkbox/checkbox.component";
 import { CmsComponent } from "./cms/cms.component";
+import { DebounceInputComponent } from "./debounce-input/debounce-input.component";
 import { DetailViewComponent } from "./detail-view/detail-view.component";
 import { RenderFieldComponent } from "./detail-view/render-field/render-field.component";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
@@ -33,6 +34,7 @@ export const sharedComponents = [
   ActionMenuComponent,
   CheckboxComponent,
   CmsComponent,
+  DebounceInputComponent,
   DetailViewComponent,
   ErrorHandlerComponent,
   FooterComponent,

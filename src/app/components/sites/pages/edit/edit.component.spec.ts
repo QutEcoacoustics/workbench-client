@@ -18,7 +18,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -109,12 +109,12 @@ describe("SitesEditComponent", () => {
 
     it("should handle site error", () => {
       setup(undefined, generateApiErrorDetails());
-      assertResolverErrorHandling(spectator.fixture);
+      assertErrorHandler(spectator.fixture);
     });
 
     it("should handle project error", () => {
       setup(generateApiErrorDetails());
-      assertResolverErrorHandling(spectator.fixture);
+      assertErrorHandler(spectator.fixture);
     });
 
     it("should call api", () => {

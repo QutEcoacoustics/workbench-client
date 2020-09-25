@@ -19,7 +19,8 @@ import {
   selector: "app-admin-orphans",
   templateUrl: "./list.component.html",
 })
-class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
+class AdminOrphansComponent
+  extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
   public assignSitesLabel = assignSiteMenuItem.label;
 
@@ -37,7 +38,7 @@ class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site>
 
   public ngOnInit(): void {
     this.columns = [{ name: "Id" }, { name: "Site" }, { name: "Model" }];
-    this.sortKeys = { id: "id", site: "siteId" };
+    this.sortKeys = { id: "id", site: "name" };
     this.getPageData();
   }
 

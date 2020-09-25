@@ -22,7 +22,7 @@ import { takeUntil } from "rxjs/operators";
       <div [innerHtml]="blob"></div>
     </ng-container>
     <baw-loading title="Loading" [display]="loading"></baw-loading>
-    <baw-error-handler [error]="error"></baw-error-handler>
+    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
 export class CmsComponent extends WithUnsubscribe() implements OnInit {

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -12,7 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
-import { assertResolverErrorHandling, assertRoute } from "@test/helpers/html";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
 import { MyProjectsComponent } from "./my-projects.component";
@@ -57,7 +58,7 @@ describe("MyProjectsComponent", () => {
       message: "OK",
       paging: {
         page: 1,
-        items: 25,
+        items: defaultApiPageSize,
         total: 1,
         maxPage: 1,
       },
@@ -98,7 +99,7 @@ describe("MyProjectsComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
 
-    assertResolverErrorHandling(fixture);
+    assertErrorHandler(fixture);
   });
 
   describe("table", () => {

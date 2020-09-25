@@ -49,7 +49,7 @@ class DetailsComponent extends PageComponent implements OnInit {
   public recordingsEnd: DateTimeTimezone;
   public recordingsStart: DateTimeTimezone;
   public site: Site;
-  public marker: MapMarkerOption[];
+  public marker: List<MapMarkerOption>;
 
   constructor(private route: ActivatedRoute) {
     super();

@@ -23,14 +23,14 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [
     { name: "Text" },
-    { name: "Taxanomic" },
+    { name: "Taxonomic" },
     { name: "Retired" },
     { name: "type" },
     { name: "Tag" },
   ];
   public sortKeys = {
     text: "text",
-    taxanomic: "isTaxanomic",
+    taxonomic: "isTaxonomic",
     retired: "retired",
     type: "typeOfTag",
   };
@@ -39,7 +39,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     super(api, (tags) =>
       tags.map((tag) => ({
         text: tag.text,
-        taxanomic: tag.isTaxanomic ? "Taxanomic" : "Folksonomic",
+        taxonomic: tag.isTaxonomic ? "Taxonomic" : "Folksonomic",
         retired: tag.retired,
         type: tag.typeOfTag,
         tag,
@@ -76,7 +76,7 @@ export { AdminTagsComponent };
 
 interface TableRow {
   text: string;
-  taxanomic: "Taxanomic" | "Folksonomic";
+  taxonomic: "Taxonomic" | "Folksonomic";
   retired: boolean;
   type: string;
   tag: Tag;

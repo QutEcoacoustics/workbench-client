@@ -12,7 +12,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -97,7 +97,7 @@ describe("SitesDeleteComponent", () => {
         defaultSite,
         undefined
       );
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should handle site error", () => {
@@ -107,7 +107,7 @@ describe("SitesDeleteComponent", () => {
         undefined,
         generateApiErrorDetails()
       );
-      assertResolverErrorHandling(fixture);
+      assertErrorHandler(fixture);
     });
 
     it("should call api", () => {

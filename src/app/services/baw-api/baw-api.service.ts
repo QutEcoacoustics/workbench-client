@@ -1,12 +1,20 @@
 import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken, Injector, PLATFORM_ID } from "@angular/core";
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  Injector,
+  PLATFORM_ID,
+} from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
+export const defaultApiPageSize = 25;
 
 export const apiReturnCodes = {
   unknown: -1,
@@ -258,22 +266,23 @@ export abstract class BawApiService<T extends AbstractModel> {
  * Filter paging metadata from api response
  */
 export interface Paging {
+  /** Current page number */
   page?: number;
+  /** Maximum number of items per page */
   items?: number;
+  /** Total number of items for filter request */
   total?: number;
+  /** Maximum page number */
   maxPage?: number;
-  current?: string;
-  previous?: string;
-  next?: string;
 }
 
-interface Combinations<T> {
+export interface Combinations<T> {
   and?: InnerFilter<T>;
   or?: InnerFilter<T>;
   not?: InnerFilter<T>;
 }
 
-interface Comparisons {
+export interface Comparisons {
   eq?: string | number;
   equal?: string | number;
   notEq?: string | number;
@@ -318,7 +327,7 @@ type Range =
   | number[]
   | XOR<RangeInterval, { from: number; to: number }>;
 
-interface Subsets {
+export interface Subsets {
   range?: Range;
   inRange?: Range;
   notRange?: Range;
@@ -360,15 +369,23 @@ export type InnerFilter<T = {}> = Combinations<T> &
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
 export interface Filters<T = {}, K extends keyof T = keyof T> {
+  /** Filter settings */
   filter?: InnerFilter<T>;
+  /** Include or exclude keys from response */
   projection?: {
+    /** Include keys in response */
     include?: K[];
+    /** Exclude keys from response */
     exclude?: K[];
   };
+  /** Current sorting options */
   sorting?: {
+    /** Which key to sort by */
     orderBy: string;
+    /** Sorting direction */
     direction: "desc" | "asc";
   };
+  /** Current page data */
   paging?: Paging;
 }
 
@@ -376,11 +393,16 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
  * Metadata from api response
  */
 export interface Meta extends Filters {
-  status: number;
-  message: string;
+  /** Response status */
+  status?: number;
+  /** Human readable response status */
+  message?: string;
+  /** Optional error metadata */
   error?: {
+    /** Error message */
     details: string;
-    info?: any;
+    /** Additional info */
+    info?: { [key: string]: string[] };
   };
 }
 
@@ -388,6 +410,8 @@ export interface Meta extends Filters {
  * API response
  */
 export interface ApiResponse<T> {
+  /** Response metadata */
   meta: Meta;
+  /** Response data */
   data: T[] | T;
 }

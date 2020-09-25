@@ -5,17 +5,11 @@
     Displaying <strong>all {{ totalModels }}</strong> user/s
   </p>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Filter</span>
-    </div>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Filter Users"
-      (keyup)="onFilter($event)"
-    />
-  </div>
+  <baw-debounce-input
+    label="Filter"
+    placeholder="Filter Users"
+    (filter)="onFilter($event)"
+  ></baw-debounce-input>
 
   <ngx-datatable
     #table
@@ -41,7 +35,7 @@
       [sortable]="false"
     >
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <div class="mx-auto" style="width: 24px;">
+        <div class="mx-auto" style="width: 24px">
           <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
@@ -75,4 +69,4 @@
   </ngx-datatable>
 </ng-container>
 
-<baw-error-handler [error]="error"></baw-error-handler>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ISite, Site } from "@models/Site";
@@ -12,7 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
-import { assertResolverErrorHandling, assertRoute } from "@test/helpers/html";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
 import { MySitesComponent } from "./my-sites.component";
@@ -57,7 +58,7 @@ describe("MySitesComponent", () => {
       message: "OK",
       paging: {
         page: 1,
-        items: 25,
+        items: defaultApiPageSize,
         total: 1,
         maxPage: 1,
       },
@@ -98,7 +99,7 @@ describe("MySitesComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
 
-    assertResolverErrorHandling(fixture);
+    assertErrorHandler(fixture);
   });
 
   describe("table", () => {

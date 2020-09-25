@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 
 /**
@@ -13,7 +14,7 @@ export class DatatableDirective implements OnInit {
   @Input() public externalSorting = true;
   @Input() public footerHeight = 50;
   @Input() public headerHeight = 50;
-  @Input() public limit = 25;
+  @Input() public limit = defaultApiPageSize;
   @Input() public reorderable = false;
   @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
   @Input() public scrollbarH = true;

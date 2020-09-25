@@ -42,6 +42,13 @@ export type AccessLevel = "Reader" | "Writer" | "Owner";
 export type Description = string;
 
 /**
+ * BAW API Notes
+ */
+export interface Notes {
+  [key: string]: any;
+}
+
+/**
  * BAW API DateTime
  */
 export type DateTimeTimezone = DateTime;

@@ -1,17 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Tags</h1>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Filter</span>
-    </div>
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Filter Tags"
-      (keyup)="onFilter($event)"
-    />
-  </div>
+  <baw-debounce-input
+    label="Filter"
+    placeholder="Filter Tags"
+    (filter)="onFilter($event)"
+  ></baw-debounce-input>
 
   <ngx-datatable
     #table
@@ -25,7 +19,7 @@
     (sort)="onSort($event)"
   >
     <ngx-datatable-column name="Text"> </ngx-datatable-column>
-    <ngx-datatable-column name="Taxanomic" width="100" maxWidth="100">
+    <ngx-datatable-column name="Taxonomic" width="100" maxWidth="100">
     </ngx-datatable-column>
     <ngx-datatable-column name="Retired" width="90" maxWidth="90">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
@@ -57,4 +51,4 @@
   </ngx-datatable>
 </ng-container>
 
-<baw-error-handler [error]="error"></baw-error-handler>
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

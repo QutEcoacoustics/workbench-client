@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
 /**
@@ -19,7 +20,7 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-map",
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
-      <google-map height="400px" width="100%" [options]="mapOptions">
+      <google-map height="100%" width="100%" [options]="mapOptions">
         <map-marker
           *ngFor="let marker of filteredMarkers"
           [options]="markerOptions"
@@ -30,7 +31,7 @@ import { takeUntil } from "rxjs/operators";
       </google-map>
     </ng-container>
     <ng-template #placeholderMap>
-      <div class="map-placeholder"><span>No locations specified</span></div>
+      <div class="map-placeholder"><p>No locations specified</p></div>
     </ng-template>
   `,
   styleUrls: ["./map.component.scss"],
@@ -40,14 +41,14 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() public markers: MapMarkerOption[];
+  @Input() public markers: List<MapMarkerOption>;
   public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
   public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions = { mapTypeId: "satellite" };
-  public markerOptions = { draggable: false };
+  public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
+  public markerOptions: google.maps.MarkerOptions = {};
 
   constructor(private ref: ChangeDetectorRef) {
     super();
@@ -103,7 +104,7 @@ function isMarkerValid(marker: MapMarkerOption): boolean {
  */
 export function sanitizeMapMarkers(
   markers: MapMarkerOption | MapMarkerOption[]
-): MapMarkerOption[] {
+): List<MapMarkerOption> {
   const output: MapMarkerOption[] = [];
 
   if (markers instanceof Array) {
@@ -118,7 +119,7 @@ export function sanitizeMapMarkers(
     }
   }
 
-  return output;
+  return List(output);
 }
 
 export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;

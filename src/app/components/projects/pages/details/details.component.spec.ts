@@ -1,268 +1,313 @@
-import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
+import { SiteMapComponent } from "@components/projects/site-map/site-map.component";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { ISite, Site } from "@models/Site";
+import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
-import { MockMapComponent } from "@shared/map/mapMock.component";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { assertImage } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
+import { nStepObservable } from "@test/helpers/general";
+import {
+  assertErrorHandler,
+  assertImage,
+  assertSpinner,
+} from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { MockComponent } from "ng-mocks";
+import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
+const mockComponents = {
+  SiteMap: MockComponent(SiteMapComponent),
+  SiteCard: MockComponent(SiteCardComponent),
+};
+
 describe("ProjectDetailsComponent", () => {
-  let component: DetailsComponent;
-  let fixture: ComponentFixture<DetailsComponent>;
-  let defaultProject: Project;
-  let defaultSites: Site[];
-
-  function configureTestingModule(
-    project: Project,
-    projectError: ApiErrorDetails,
-    sites: Site[],
-    sitesError: ApiErrorDetails
-  ) {
-    TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
-      declarations: [MockMapComponent, SiteCardComponent, DetailsComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            {
-              project: projectResolvers.show,
-              sites: siteResolvers.list,
-            },
-            {
-              project: { model: project, error: projectError },
-              sites: { model: sites, error: sitesError },
-            }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DetailsComponent);
-    component = fixture.componentInstance;
-  }
-
-  beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultSites = [];
+  let api: SpyObject<SitesService>;
+  let spectator: SpectatorRouting<DetailsComponent>;
+  const createComponent = createRoutingFactory({
+    component: DetailsComponent,
+    declarations: [mockComponents.SiteCard, mockComponents.SiteMap],
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
-  it("should create", () => {
-    configureTestingModule(defaultProject, undefined, defaultSites, undefined);
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+  function setup(model: Project, error?: ApiErrorDetails) {
+    spectator = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: { project: projectResolvers.show },
+        project: { model, error },
+      },
+    });
+
+    api = spectator.inject(SitesService);
+  }
+
+  function generateSites(numSites: number, overrides: ISite = {}): Site[] {
+    const sites = [];
+    for (let i = 0; i < Math.min(numSites, defaultApiPageSize); i++) {
+      const site = new Site({ ...generateSite(), ...overrides });
+      site.addMetadata({ paging: { total: numSites } } as any);
+      sites.push(site);
+    }
+    return sites;
+  }
+
+  async function handleApiRequest(
+    models: Site[],
+    error?: ApiErrorDetails,
+    assertFilter: (filters: Filters<ISite>) => void = () => {}
+  ) {
+    const subject = new Subject<Site[]>();
+    const promise = nStepObservable(subject, () => models ?? error, !models);
+    api.filter.and.callFake((filters) => {
+      assertFilter(filters);
+      return subject;
+    });
+
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
+  }
+
+  it("should create", async () => {
+    setup(new Project(generateProject()));
+    await handleApiRequest([]);
+    spectator.detectChanges();
+    expect(spectator.component).toBeTruthy();
+  });
+
+  it("should initially request page 1", async () => {
+    setup(new Project(generateProject()));
+    await handleApiRequest([], undefined, (filter) =>
+      expect(filter.paging.page).toBe(1)
+    );
+  });
+
+  it("should display loading animation during request", async () => {
+    setup(new Project(generateProject()));
+    handleApiRequest([]);
+    assertSpinner(spectator.fixture, true);
+  });
+
+  it("should clear loading animation on response", async () => {
+    setup(new Project(generateProject()));
+    await handleApiRequest([]);
+    assertSpinner(spectator.fixture, false);
   });
 
   describe("Error Handling", () => {
-    it("should handle failed project model", () => {
-      configureTestingModule(
-        undefined,
-        generateApiErrorDetails(),
-        defaultSites,
-        undefined
-      );
-      fixture.detectChanges();
-
-      const body = fixture.nativeElement;
-      expect(body.childElementCount).toBe(0);
+    it("should handle failed project model", async () => {
+      setup(undefined, generateApiErrorDetails());
+      await handleApiRequest([]);
+      spectator.detectChanges();
+      assertErrorHandler(spectator.fixture);
     });
 
-    it("should handle failed site model", () => {
-      configureTestingModule(
-        defaultProject,
-        undefined,
-        undefined,
-        generateApiErrorDetails()
-      );
-      fixture.detectChanges();
-
-      const body = fixture.nativeElement;
-      expect(body.childElementCount).toBe(0);
+    it("should handle failed site model", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(undefined, generateApiErrorDetails());
+      spectator.detectChanges();
+      assertErrorHandler(spectator.fixture, true);
     });
   });
 
   describe("Project", () => {
-    it("should display project name", () => {
-      const project = new Project({
-        ...generateProject(),
-        name: "Test Project",
-      });
+    it("should display project name", async () => {
+      const project = new Project(generateProject());
+      setup(project);
+      await handleApiRequest([]);
+      spectator.detectChanges();
 
-      configureTestingModule(project, undefined, defaultSites, undefined);
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h1");
+      const title = spectator.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
-      expect(title.innerText).toBe("Test Project");
+      expect(title.innerText).toBe(project.name);
     });
 
-    it("should display default project image", () => {
+    it("should display default project image", async () => {
       const project = new Project({
         ...generateProject(),
-        name: "Test Project",
         imageUrl: undefined,
       });
+      setup(project);
+      await handleApiRequest([]);
+      spectator.detectChanges();
 
-      configureTestingModule(project, undefined, defaultSites, undefined);
-      fixture.detectChanges();
-
-      const image = fixture.nativeElement.querySelector("img");
+      const image = spectator.query<HTMLImageElement>("img");
       assertImage(
         image,
         `${websiteHttpUrl}${assetRoot}/images/project/project_span4.png`,
-        "Test Project image"
+        project.name + " image"
       );
     });
 
-    it("should display custom project image", () => {
+    it("should display custom project image", async () => {
       const project = new Project({
         ...generateProject(),
-        name: "Test Project",
         imageUrl: "http://brokenlink/",
       });
+      setup(project);
+      await handleApiRequest([]);
+      spectator.detectChanges();
 
-      configureTestingModule(project, undefined, defaultSites, undefined);
-      fixture.detectChanges();
-
-      const image = fixture.nativeElement.querySelector("img");
-      assertImage(image, "http://brokenlink/", "Test Project image");
+      const image = spectator.query<HTMLImageElement>("img");
+      assertImage(image, "http://brokenlink/", project.name + " image");
     });
 
-    it("should display description with html markup", () => {
+    it("should display description with html markup", async () => {
       const project = new Project({
         ...generateProject(),
         descriptionHtml: "<b>A test project</b>",
       });
+      setup(project);
+      await handleApiRequest([]);
+      spectator.detectChanges();
 
-      configureTestingModule(project, undefined, defaultSites, undefined);
-      fixture.detectChanges();
-
-      const description = fixture.nativeElement.querySelector(
-        "p#project_description"
-      );
+      const description = spectator.query("p#project_description");
       expect(description).toBeTruthy();
       expect(description.innerHTML).toBe("<b>A test project</b>");
     });
   });
 
   describe("Sites", () => {
-    it("should display no sites found message", () => {
-      configureTestingModule(defaultProject, undefined, [], undefined);
-      fixture.detectChanges();
+    function getSiteCards() {
+      return spectator.queryAll(mockComponents.SiteCard);
+    }
 
-      const sitePlaceholder = fixture.nativeElement.querySelector(
-        "p#site_placeholder"
-      );
-      expect(sitePlaceholder).toBeTruthy();
-      expect(sitePlaceholder.innerText).toBe(
+    function assertCard(card: SiteCardComponent, project: Project, site: Site) {
+      expect(card.project).toEqual(project);
+      expect(card.site).toEqual(site);
+    }
+
+    it("should display no sites found message", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest([]);
+      spectator.detectChanges();
+
+      const placeholder = spectator.query<HTMLElement>("p#site_placeholder");
+      expect(placeholder).toBeTruthy();
+      expect(placeholder.innerText).toBe(
         "No sites associated with this project"
       );
     });
 
-    it("should display single site", fakeAsync(() => {
-      const site = new Site(generateSite());
+    it("should handle single site", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(1));
+      spectator.detectChanges();
+      expect(getSiteCards().length).toBe(1);
+    });
 
-      configureTestingModule(defaultProject, undefined, [site], undefined);
-      fixture.detectChanges();
+    it("should display single site card", async () => {
+      const sites = generateSites(1, { name: "Custom Site" });
+      const project = new Project(generateProject());
+      setup(project);
+      await handleApiRequest(sites);
+      spectator.detectChanges();
+      assertCard(getSiteCards()[0], project, sites[0]);
+    });
 
-      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
-      expect(siteEls.length).toBe(1);
-    }));
+    it("should handle multiple sites", async () => {
+      const sites = generateSites(2);
+      const project = new Project(generateProject());
+      setup(project);
+      await handleApiRequest(sites);
+      spectator.detectChanges();
+      expect(getSiteCards().length).toBe(2);
+    });
 
-    it("should display single site with name", fakeAsync(() => {
-      const site = new Site({ ...generateSite(), name: "Custom Site" });
-
-      configureTestingModule(defaultProject, undefined, [site], undefined);
-      fixture.detectChanges();
-
-      const siteEl = fixture.nativeElement.querySelectorAll("app-site-card")[0];
-      const el = siteEl.querySelector("h5");
-      expect(el.innerText.trim()).toBe("Custom Site");
-    }));
-
-    it("should display multiple sites", fakeAsync(() => {
-      const sites = [new Site(generateSite()), new Site(generateSite())];
-
-      configureTestingModule(defaultProject, undefined, sites, undefined);
-      fixture.detectChanges();
-
-      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
-      expect(siteEls.length).toBe(2);
-    }));
-
-    it("should display multiple sites in order", fakeAsync(() => {
-      const sites = [
-        new Site({ ...generateSite(1), name: "Site 1" }),
-        new Site({ ...generateSite(2), name: "Site 2" }),
-      ];
-
-      configureTestingModule(defaultProject, undefined, sites, undefined);
-      fixture.detectChanges();
-
-      const siteEls = fixture.nativeElement.querySelectorAll("app-site-card");
-
-      let el = siteEls[0].querySelector("h5");
-      expect(el.innerText.trim()).toBe("Site 1");
-
-      el = siteEls[1].querySelector("h5");
-      expect(el.innerText.trim()).toBe("Site 2");
-    }));
+    it("should display multiple sites cards in order", async () => {
+      const sites = generateSites(2);
+      const project = new Project(generateProject());
+      setup(project);
+      await handleApiRequest(sites);
+      spectator.detectChanges();
+      assertCard(getSiteCards()[0], project, sites[0]);
+      assertCard(getSiteCards()[1], project, sites[1]);
+    });
   });
 
-  describe("Google Maps", () => {
-    it("should display google maps placeholder box when no sites found", () => {
-      configureTestingModule(defaultProject, undefined, [], undefined);
-      fixture.detectChanges();
+  describe("sites map", () => {
+    function getGoogleMap() {
+      return spectator.query(mockComponents.SiteMap);
+    }
 
-      const googleMaps = fixture.nativeElement.querySelector("baw-map");
-      expect(googleMaps).toBeTruthy();
-      expect(googleMaps.querySelector("span").innerText).toBe(
-        "No locations specified"
-      );
+    it("should display site map component", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest([]);
+      spectator.detectChanges();
+      expect(getGoogleMap()).toBeTruthy();
+    });
+  });
+
+  describe("scrolling", () => {
+    function getPagination() {
+      return spectator.query(NgbPagination);
+    }
+
+    function getPaginationLinks() {
+      return spectator.queryAll("ngb-pagination a");
+    }
+
+    it("should hide pagination if less than one page of models", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(5));
+      expect(getPagination()).toBeFalsy();
     });
 
-    it("should display google maps with pin for single site", () => {
-      const site = new Site(generateSite());
-
-      configureTestingModule(defaultProject, undefined, [site], undefined);
-      fixture.detectChanges();
-
-      const googleMaps = fixture.nativeElement.querySelector("baw-map");
-      expect(googleMaps).toBeTruthy();
-      expect(googleMaps.querySelector("p").innerText).toBe(
-        `Lat: ${site.getLatitude()} Long: ${site.getLongitude()}`
-      );
+    it("should display pagination if more than one page of models", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(defaultApiPageSize * 2));
+      expect(getPagination()).toBeTruthy();
     });
 
-    it("should display google maps with pins for multiple sites", () => {
-      const sites = [new Site(generateSite()), new Site(generateSite())];
+    it("should display correct number of pages", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(defaultApiPageSize * 3));
+      // 3 Pages, 2 additional options to select forwards and back
+      expect(getPaginationLinks().length).toBe(3 + 2);
+    });
+  });
 
-      configureTestingModule(defaultProject, undefined, sites, undefined);
-      fixture.detectChanges();
+  describe("filtering", () => {
+    function getFilter() {
+      return spectator.query(DebounceInputComponent);
+    }
 
-      const googleMaps = fixture.nativeElement.querySelector("baw-map");
-      const output = googleMaps.querySelectorAll("p");
-      expect(googleMaps).toBeTruthy();
-      expect(output.length).toBe(2);
-      expect(output[0].innerText).toBe(
-        `Lat: ${sites[0].getLatitude()} Long: ${sites[0].getLongitude()}`
-      );
-      expect(output[1].innerText).toBe(
-        `Lat: ${sites[1].getLatitude()} Long: ${sites[1].getLongitude()}`
-      );
+    it("should have filtering option", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(3));
+      expect(getFilter()).toBeTruthy();
+    });
+
+    it("should have default value attached", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(3));
+      spectator.component.filter = "custom value";
+      spectator.detectChanges();
+      expect(getFilter().default).toBe("custom value");
+    });
+
+    it("should call onFilter when event detected", async () => {
+      setup(new Project(generateProject()));
+      await handleApiRequest(generateSites(3));
+      spyOn(spectator.component, "onFilter").and.stub();
+      getFilter().filter.next("custom value");
+      expect(spectator.component.onFilter).toHaveBeenCalled();
     });
   });
 });

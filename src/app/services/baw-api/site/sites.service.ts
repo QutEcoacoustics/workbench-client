@@ -28,7 +28,7 @@ const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
-const endpointOrphan = stringTemplate`/sites/orphans${orphanOption}`;
+const endpointOrphan = stringTemplate`/sites/orphans/${orphanOption}`;
 
 /**
  * Sites Service.

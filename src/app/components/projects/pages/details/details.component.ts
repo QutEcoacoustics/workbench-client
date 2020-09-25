@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -14,11 +14,11 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { MapMarkerOption } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
@@ -33,20 +33,33 @@ export const projectMenuItemActions = [
 ];
 
 const projectKey = "project";
-const sitesKey = "sites";
 
 @Component({
   selector: "app-projects-details",
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
-class DetailsComponent extends PageComponent implements OnInit {
+class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
+  public markers: List<MapMarkerOption> = List([]);
   public project: Project;
-  public sites: Site[];
-  public markers: MapMarkerOption[];
+  public sites: List<Site> = List([]);
+  protected api: SitesService;
 
-  constructor(private route: ActivatedRoute) {
-    super();
+  constructor(
+    route: ActivatedRoute,
+    router: Router,
+    config: NgbPaginationConfig,
+    sitesService: SitesService
+  ) {
+    super(
+      router,
+      route,
+      config,
+      sitesService,
+      "name",
+      () => [this.project.id],
+      (sites) => (this.sites = List(sites))
+    );
   }
 
   public ngOnInit() {
@@ -55,23 +68,17 @@ class DetailsComponent extends PageComponent implements OnInit {
       return;
     }
     this.project = resolvedModels[projectKey] as Project;
-    this.sites = resolvedModels[sitesKey] as Site[];
-    this.markers = sanitizeMapMarkers(
-      this.sites?.map((site) => site.getMapMarker())
-    );
+    super.ngOnInit();
   }
 }
 
 DetailsComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectMenuItemActions]),
+    actions: List([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [sitesKey]: siteResolvers.list,
-  },
+  resolvers: { [projectKey]: projectResolvers.show },
 }).AndMenuRoute(projectMenuItem);
 
 export { DetailsComponent };

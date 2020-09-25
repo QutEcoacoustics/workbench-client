@@ -10,6 +10,7 @@ export function generateProject(id?: Id): Required<IProject> {
     accessLevel: modelData.accessLevel(),
     ownerId: modelData.id(),
     siteIds: modelData.ids(),
+    notes: modelData.notes(),
     ...modelData.model.generateDescription(),
     ...modelData.model.generateAllUsers(),
   };

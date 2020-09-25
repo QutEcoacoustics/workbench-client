@@ -10,7 +10,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateUser } from "@test/fakes/User";
-import { assertResolverErrorHandling } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { MyProjectsComponent } from "../projects/my-projects.component";
@@ -69,7 +69,7 @@ describe("MyBookmarksComponent", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
 
-    assertResolverErrorHandling(fixture);
+    assertErrorHandler(fixture);
   });
 
   // TODO Write Tests

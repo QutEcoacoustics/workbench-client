@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
@@ -33,7 +34,7 @@ describe("AdminTagGroupsComponent", () => {
 
     defaultModel = new TagGroup(generateTagGroup());
     defaultModels = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new TagGroup(generateTagGroup()));
     }
 
