@@ -2,7 +2,7 @@ import { ComponentFixture } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters, Paging } from "@baw-api/baw-api.service";
+import { defaultApiPageSize, Filters, Paging } from "@baw-api/baw-api.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -46,7 +46,7 @@ export function datatableApiResponse<M extends AbstractModel>(
 ) {
   paging = {
     page: 1,
-    items: 25,
+    items: defaultApiPageSize,
     total: models.length,
     maxPage: 1,
     ...paging,
@@ -78,7 +78,12 @@ export function assertPagination<
       models: M[]
     ) {
       let secondRequest = false;
-      const paging = { page: 1, items: 25, total: 100, maxPage: 4 };
+      const paging = {
+        page: 1,
+        items: defaultApiPageSize,
+        total: 100,
+        maxPage: 4,
+      };
 
       assignModelMetadata(models, paging);
       api[apiAction].and.callFake((filter: Filters) => {
@@ -126,7 +131,7 @@ export function assertPagination<
       defaultModels = this.defaultModels;
       defaultPaging = {
         page: 1,
-        items: 25,
+        items: defaultApiPageSize,
         total: 1,
         maxPage: 1,
       };
@@ -203,12 +208,17 @@ export function assertPagination<
       expect(hasPager()).toBeFalse();
     });
 
-    it("should handle 25 rows", () => {
-      datatableApiResponse(api, defaultModels, { total: 25 }, apiAction);
+    it("should handle full api page response", () => {
+      datatableApiResponse(
+        api,
+        defaultModels,
+        { total: defaultApiPageSize },
+        apiAction
+      );
       fixture.detectChanges();
 
       const rows = getDatatableRows(fixture);
-      expect(rows.length).toBe(25);
+      expect(rows.length).toBe(defaultApiPageSize);
       expect(hasPager()).toBeFalse();
     });
 

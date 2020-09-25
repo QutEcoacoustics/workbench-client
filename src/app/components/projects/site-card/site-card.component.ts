@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 
@@ -20,9 +15,7 @@ import { Site } from "@models/Site";
         <div class="body">
           <div class="heading">
             <a id="nameLink" [routerLink]="site.getViewUrl(project)">
-              <h5 id="name">
-                {{ site.name }}
-              </h5>
+              <h5 id="name">{{ site.name }}</h5>
             </a>
           </div>
 
@@ -57,11 +50,7 @@ import { Site } from "@models/Site";
   styleUrls: ["./site-card.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SiteCardComponent implements OnInit {
+export class SiteCardComponent {
   @Input() public project: Project;
   @Input() public site: Site;
-
-  constructor() {}
-
-  public ngOnInit() {}
 }

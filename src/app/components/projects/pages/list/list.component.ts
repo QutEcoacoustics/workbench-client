@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { InnerFilter } from "@baw-api/baw-api.service";
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
@@ -8,12 +7,11 @@ import {
   projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { IProject } from "@models/Project";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { IProject, Project } from "@models/Project";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { noop, Subject } from "rxjs";
-import { map, mergeMap, takeUntil } from "rxjs/operators";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -27,91 +25,56 @@ export const projectsMenuItemActions = [
       <baw-debounce-input
         label="Filter"
         placeholder="Filter Projects"
+        [default]="filter"
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <!-- Display project cards -->
-      <div
-        class="search-results"
-        infiniteScroll
-        [infiniteScrollDisabled]="disableScroll"
-        (scrolled)="onScroll()"
-      >
+      <baw-loading [display]="loading"></baw-loading>
+
+      <ng-container *ngIf="!loading">
         <!-- Projects Exist -->
-        <ng-container *ngIf="cardList.size > 0">
+        <ng-container *ngIf="cardList.size > 0; else empty">
           <baw-cards [cards]="cardList"></baw-cards>
         </ng-container>
 
         <!-- Projects Don't Exist -->
-        <ng-container *ngIf="cardList.size === 0 && !loading">
+        <ng-template #empty>
           <h4 class="text-center">Your list of projects is empty</h4>
-        </ng-container>
-      </div>
+        </ng-template>
+      </ng-container>
 
-      <!-- Loading Projects -->
-      <baw-loading [display]="loading"></baw-loading>
+      <ngb-pagination
+        *ngIf="displayPagination"
+        aria-label="Pagination Buttons"
+        class="mt-2 d-flex justify-content-end"
+        [collectionSize]="collectionSize"
+        [(page)]="page"
+      ></ngb-pagination>
     </ng-container>
-    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+    <baw-error-handler [error]="error"></baw-error-handler>
   `,
 })
-class ListComponent extends PageComponent implements OnInit {
+class ListComponent extends PaginationTemplate<Project> {
   public cardList: List<Card> = List([]);
-  public error: ApiErrorDetails;
-  public loading: boolean;
-  public disableScroll: boolean;
-  private page = 1;
-  private filter: InnerFilter<IProject>;
-  private projects$ = new Subject<void>();
 
-  constructor(private api: ProjectsService) {
-    super();
-  }
-
-  public ngOnInit() {
-    this.loading = true;
-    this.projects$
-      .pipe(
-        mergeMap(() => this.getProjects()),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe(noop, (error: ApiErrorDetails) => {
-        this.error = error;
-        this.loading = false;
-      });
-    this.projects$.next();
-  }
-
-  public onScroll() {
-    this.page++;
-    this.loading = true;
-    this.projects$.next();
-  }
-
-  public onFilter(input: string) {
-    this.page = 1;
-    this.loading = true;
-    this.cardList = List([]);
-    this.filter = input ? { name: { contains: input } } : undefined;
-    this.projects$.next();
-  }
-
-  private getProjects() {
-    return this.api
-      .filter({
-        paging: { page: this.page },
-        filter: this.filter,
-      })
-      .pipe(
-        map((projects) => {
-          this.cardList = this.cardList.push(
-            ...projects.map((project) => project.getCard())
-          );
-          this.loading = false;
-          this.disableScroll =
-            projects.length === 0 ||
-            projects[0].getMetadata().paging.maxPage === this.page;
-        })
-      );
+  constructor(
+    router: Router,
+    route: ActivatedRoute,
+    config: NgbPaginationConfig,
+    projectsService: ProjectsService
+  ) {
+    super(
+      router,
+      route,
+      config,
+      projectsService,
+      "name",
+      () => [],
+      (projects) => {
+        const cards = projects.map((project) => project.getCard());
+        this.cardList = List(cards);
+      }
+    );
   }
 }
 

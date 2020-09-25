@@ -3,7 +3,6 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { HarvestCompleteComponent } from "./harvest-complete/harvest-complete.component";
 import { HarvestReviewComponent } from "./harvest-review/harvest-review.component";
 import { AssignComponent } from "./pages/assign/assign.component";
@@ -18,6 +17,7 @@ import { RequestComponent } from "./pages/request/request.component";
 import { PillListComponent } from "./pill-list/pill-list.component";
 import { projectsRoute } from "./projects.menus";
 import { SiteCardComponent } from "./site-card/site-card.component";
+import { SiteMapComponent } from "./site-map/site-map.component";
 
 const components = [
   AssignComponent,
@@ -30,22 +30,17 @@ const components = [
   ListComponent,
   NewComponent,
   PermissionsComponent,
+  PillListComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardComponent,
-  PillListComponent,
+  SiteMapComponent,
 ];
 
 const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({
   declarations: components,
-  imports: [
-    MapModule,
-    SharedModule,
-    InfiniteScrollModule,
-    RouterModule.forChild(routes),
-  ],
+  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
 })
 export class ProjectsModule {}

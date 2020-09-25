@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AudioRecording } from "@models/AudioRecording";
 import { SharedModule } from "@shared/shared.module";
@@ -33,7 +34,7 @@ describe("AdminAudioRecordingsComponent", () => {
 
     defaultModel = new AudioRecording(generateAudioRecording());
     defaultModels = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new AudioRecording(generateAudioRecording()));
     }
 

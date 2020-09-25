@@ -10,6 +10,7 @@ import {
   Id,
   Ids,
   ImageUrl,
+  Notes,
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/app-config/app-config.service";
@@ -35,6 +36,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   accessLevel?: AccessLevel;
   ownerId?: Id;
   siteIds?: Ids | Id[];
+  notes?: Notes;
 }
 
 /**
@@ -68,6 +70,8 @@ export class Project extends AbstractModel implements IProject {
   public readonly ownerId?: Id;
   @BawCollection({ persist: true })
   public readonly siteIds?: Ids;
+  @BawPersistAttr
+  public readonly notes?: Notes;
 
   // Associations
   @HasMany<Project>(SHALLOW_SITE, "siteIds")

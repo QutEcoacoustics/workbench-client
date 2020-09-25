@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ISite, Site } from "@models/Site";
@@ -57,7 +58,7 @@ describe("MySitesComponent", () => {
       message: "OK",
       paging: {
         page: 1,
-        items: 25,
+        items: defaultApiPageSize,
         total: 1,
         maxPage: 1,
       },

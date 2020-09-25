@@ -18,36 +18,39 @@
   <baw-debounce-input
     label="Filter"
     placeholder="Filter Sites"
+    [default]="filter"
     (filter)="onFilter($event)"
   ></baw-debounce-input>
 
-  <div
-    class="search-results"
-    infiniteScroll
-    [infiniteScrollDisabled]="disableScroll"
-    (scrolled)="onScroll()"
-  >
-    <div id="sites">
-      <!-- Google Maps -->
-      <div class="item map">
-        <baw-map [markers]="markers"></baw-map>
-      </div>
+  <baw-loading [display]="loading"></baw-loading>
 
+  <div id="sites">
+    <!-- Google Maps -->
+    <div class="item map">
+      <app-site-map [project]="project"></app-site-map>
+    </div>
+
+    <ng-container *ngIf="!loading">
       <!-- Sites Exist -->
-      <ng-container *ngIf="sites.size > 0">
+      <ng-container *ngIf="sites.size > 0; else empty">
         <div *ngFor="let site of sites" class="item">
           <app-site-card [project]="project" [site]="site"></app-site-card>
         </div>
       </ng-container>
 
       <!-- Sites Don't Exist-->
-      <ng-container *ngIf="sites.size === 0 && !loading">
+      <ng-template #empty>
         <p id="site_placeholder">No sites associated with this project</p>
-      </ng-container>
-    </div>
+      </ng-template>
+    </ng-container>
   </div>
 
-  <!-- Loading Sites -->
-  <baw-loading [display]="loading"></baw-loading>
+  <ngb-pagination
+    *ngIf="displayPagination"
+    aria-label="Pagination Buttons"
+    class="mt-2 d-flex justify-content-end"
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+  ></ngb-pagination>
 </ng-container>
 <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

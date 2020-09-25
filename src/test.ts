@@ -2,7 +2,7 @@
 /// <reference types="karma-viewport" />
 
 import "zone.js/dist/zone-testing";
-// tslint:disable-next-line: ordered-imports
+
 import { getTestBed } from "@angular/core/testing";
 import {
   BrowserDynamicTestingModule,

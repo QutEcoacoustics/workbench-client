@@ -6,9 +6,10 @@ import {
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
+import { List } from "immutable";
 import { MapComponent } from "./map.component";
 
-describe("MapComponent new", () => {
+describe("MapComponent", () => {
   let spectator: Spectator<MapComponent>;
   const createComponent = createComponentFactory({
     component: MapComponent,
@@ -32,13 +33,13 @@ describe("MapComponent new", () => {
   afterAll(() => destroyGoogleMaps());
 
   it("should create", () => {
-    spectator.setInput("markers", []);
+    spectator.setInput("markers", List([]));
     spectator.component.ngOnChanges();
     expect(spectator.component).toBeTruthy();
   });
 
   it("should display placeholder", () => {
-    spectator.setInput("markers", []);
+    spectator.setInput("markers", List([]));
     spectator.component.ngOnChanges();
     const label = spectator
       .query<HTMLDivElement>("div.map-placeholder")
@@ -47,29 +48,38 @@ describe("MapComponent new", () => {
   });
 
   it("should display map", () => {
-    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
+    spectator.setInput(
+      "markers",
+      List([new Site(generateSite()).getMapMarker()])
+    );
     spectator.component.ngOnChanges();
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should have info window", () => {
-    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
+    spectator.setInput(
+      "markers",
+      List([new Site(generateSite()).getMapMarker()])
+    );
     spectator.component.ngOnChanges();
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should display single site", () => {
-    spectator.setInput("markers", [new Site(generateSite()).getMapMarker()]);
+    spectator.setInput(
+      "markers",
+      List([new Site(generateSite()).getMapMarker()])
+    );
     spectator.component.ngOnChanges();
 
     expect(getInfoWindow()).toBeTruthy();
   });
 
   it("should display multiple markers", () => {
-    const markers = [1, 2, 3].map(() =>
-      new Site(generateSite()).getMapMarker()
+    const markers = List(
+      [1, 2, 3].map(() => new Site(generateSite()).getMapMarker())
     );
     spectator.setInput("markers", markers);
     spectator.component.ngOnChanges();

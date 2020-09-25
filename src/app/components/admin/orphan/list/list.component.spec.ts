@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
@@ -33,7 +34,7 @@ describe("AdminOrphansComponent", () => {
 
     defaultModel = new Site(generateSite());
     defaultModels = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new Site(generateSite()));
     }
 

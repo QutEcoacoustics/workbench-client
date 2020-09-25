@@ -14,6 +14,7 @@ import {
 } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { defaultDebounceTime } from "src/app/app.helper";
 import { PageComponent } from "../page/pageComponent";
 
 /**
@@ -65,7 +66,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
 
     this.filterEvent$
       .pipe(
-        debounceTime(500),
+        debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
@@ -156,6 +157,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   }
 }
 
+// TODO Update keys to match API standards
 export interface TablePage {
   count: number;
   pageSize: number;

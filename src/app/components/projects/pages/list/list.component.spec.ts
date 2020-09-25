@@ -1,10 +1,11 @@
 import { HttpClientModule } from "@angular/common/http";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { IProject, Project } from "@models/Project";
+import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
   createComponentFactory,
   Spectator,
@@ -16,11 +17,6 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler, assertSpinner } from "@test/helpers/html";
-import { List } from "immutable";
-import {
-  InfiniteScrollDirective,
-  InfiniteScrollModule,
-} from "ngx-infinite-scroll";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
@@ -34,19 +30,21 @@ describe("ProjectsListComponent", () => {
       HttpClientModule,
       RouterTestingModule,
       MockBawApiModule,
-      InfiniteScrollModule,
     ],
   });
 
   function generateProjects(
     numProjects: number,
-    maxPage: number,
     overrides: IProject = {}
   ): Project[] {
     const projects = [];
-    for (let i = 0; i < numProjects; i++) {
+    for (let i = 0; i < Math.min(numProjects, defaultApiPageSize); i++) {
       const project = new Project({ ...generateProject(), ...overrides });
-      project.addMetadata({ paging: { maxPage } } as any);
+      project.addMetadata({
+        status: 200,
+        message: "OK",
+        paging: { total: numProjects },
+      });
       projects.push(project);
     }
     return projects;
@@ -67,34 +65,6 @@ describe("ProjectsListComponent", () => {
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
-  }
-
-  function promiseMultipleRequests(
-    numResponses: number,
-    assertFilters?: ((filters: Filters<IProject>) => void)[]
-  ) {
-    const requests: { models: Project[]; subject: Subject<Project[]> }[] = [];
-    const promises: Promise<any>[] = [];
-    const projects: Project[] = [];
-
-    for (let i = 0; i < numResponses; i++) {
-      requests.push({
-        models: generateProjects(25, numResponses),
-        subject: new Subject(),
-      });
-      promises.push(
-        nStepObservable(requests[i].subject, () => requests[i].models, false, i)
-      );
-      projects.push(...requests[i].models);
-    }
-
-    let count = -1;
-    api.filter.and.callFake((filters: Filters<IProject>) => {
-      count++;
-      assertFilters?.[count]?.(filters);
-      return requests?.[count]?.subject ?? 1;
-    });
-    return { promises, projects, requests };
   }
 
   function getCards() {
@@ -148,20 +118,20 @@ describe("ProjectsListComponent", () => {
     });
 
     it("should display single project card", async () => {
-      await handleApiRequest(generateProjects(1, 1));
+      await handleApiRequest(generateProjects(1));
       const cards = getCards();
       expect(cards.length).toBe(1);
     });
 
     it("should display single project card with title", async () => {
-      const projects = generateProjects(1, 1);
+      const projects = generateProjects(1);
       await handleApiRequest(projects);
       const cards = getCards();
       assertCardTitle(cards[0], projects[0].name);
     });
 
     it("should display single project card with default description", async () => {
-      const projects = generateProjects(1, 1, {
+      const projects = generateProjects(1, {
         descriptionHtmlTagline: undefined,
       });
       await handleApiRequest(projects);
@@ -171,7 +141,7 @@ describe("ProjectsListComponent", () => {
     });
 
     it("should display single project card with custom description", async () => {
-      const projects = generateProjects(1, 1, {
+      const projects = generateProjects(1, {
         descriptionHtmlTagline: "<b>Custom</b> Description",
       });
       await handleApiRequest(projects);
@@ -181,14 +151,14 @@ describe("ProjectsListComponent", () => {
     });
 
     it("should display multiple project cards", async () => {
-      const projects = generateProjects(3, 1);
+      const projects = generateProjects(3);
       await handleApiRequest(projects);
       const cards = getCards();
       expect(cards.length).toBe(3);
     });
 
     it("should display multiple project cards in order", async () => {
-      const projects = generateProjects(3, 1);
+      const projects = generateProjects(3);
       await handleApiRequest(projects);
 
       const cards = getCards();
@@ -199,152 +169,59 @@ describe("ProjectsListComponent", () => {
   });
 
   describe("scrolling", () => {
-    function getScrollDirective() {
-      return spectator.query(InfiniteScrollDirective);
+    function getPagination() {
+      return spectator.query(NgbPagination);
     }
 
-    function scrollPage() {
-      const directive = getScrollDirective();
-      directive.scrolled.next();
-      spectator.detectChanges();
+    function getPaginationLinks() {
+      return spectator.queryAll("ngb-pagination a");
     }
 
-    it("should detect scrolling", async () => {
-      const spy = jasmine.createSpy();
-      spectator.component.onScroll = spy;
-
-      await handleApiRequest(generateProjects(25, 2));
-      expect(spy).not.toHaveBeenCalled();
-      scrollPage();
-      expect(spy).toHaveBeenCalled();
+    it("should hide pagination if less than one page of models", async () => {
+      const projects = generateProjects(5);
+      await handleApiRequest(projects);
+      expect(getPagination()).toBeFalsy();
     });
 
-    it("should request page 2 on scroll", async (done) => {
-      const { promises } = promiseMultipleRequests(2, [
-        (filter) => expect(filter.paging.page).toBe(1),
-        (filter) => {
-          expect(filter.paging.page).toBe(2);
-          done();
-        },
-      ]);
-
-      await promises[0];
-      spectator.detectChanges();
-      scrollPage();
-      await promises[1];
+    it("should display pagination if more than one page of models", async () => {
+      const projects = generateProjects(defaultApiPageSize * 2);
+      await handleApiRequest(projects);
+      expect(getPagination()).toBeTruthy();
     });
 
-    it("should disable infinite scroll after maxPage", async () => {
-      const { promises } = promiseMultipleRequests(2);
-      await promises[0];
-      spectator.detectChanges();
-      expect(getScrollDirective().infiniteScrollDisabled).toBeFalsy();
-      scrollPage();
-      await promises[1];
-      spectator.detectChanges();
-      expect(getScrollDirective().infiniteScrollDisabled).toBeTruthy();
-    });
-
-    it("should append new project cards", async () => {
-      const { promises, projects } = promiseMultipleRequests(2);
-      spectator.detectChanges();
-      await promises[0];
-      spectator.detectChanges();
-      scrollPage();
-      await promises[1];
-      spectator.detectChanges();
-
-      expect(spectator.component.cardList.toArray()).toEqual(
-        List(projects.map((project) => project.getCard())).toArray()
-      );
+    it("should display correct number of pages", async () => {
+      const projects = generateProjects(defaultApiPageSize * 3);
+      await handleApiRequest(projects);
+      // 3 Pages, 2 additional options to select forwards and back
+      expect(getPaginationLinks().length).toBe(3 + 2);
     });
   });
 
   describe("filtering", () => {
-    function filterProjects(name: string) {
-      const filter = spectator.query(DebounceInputComponent);
-      filter.filter.next(name);
-      spectator.detectChanges();
+    function getFilter() {
+      return spectator.query(DebounceInputComponent);
     }
 
-    it("should detect filter", async () => {
-      const spy = jasmine.createSpy();
-      spectator.component.onFilter = spy.and.callThrough();
-
-      await handleApiRequest(generateProjects(25, 2));
-      expect(spy).not.toHaveBeenCalled();
-      filterProjects("project");
-      expect(spy).toHaveBeenCalled();
+    it("should have filtering option", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      expect(getFilter()).toBeTruthy();
     });
 
-    it("should add project name to filter", async (done) => {
-      const { promises } = promiseMultipleRequests(2, [
-        (filters) => expect(filters.filter).toBe(undefined),
-        (filters) => {
-          expect(filters.filter).toEqual({ name: { contains: "project" } });
-          done();
-        },
-      ]);
-
-      await promises[0];
+    it("should have default value attached", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      spectator.component.filter = "custom value";
       spectator.detectChanges();
-      filterProjects("project");
-      await promises[1];
-      spectator.detectChanges();
+      expect(getFilter().default).toBe("custom value");
     });
 
-    it("should handle clearing filter", async (done) => {
-      const { promises } = promiseMultipleRequests(3, [
-        (filters) => expect(filters.filter).toBe(undefined),
-        (filters) =>
-          expect(filters.filter).toEqual({ name: { contains: "project" } }),
-        (filters) => {
-          expect(filters.filter).toBe(undefined);
-          done();
-        },
-      ]);
-
-      await promises[0];
-      spectator.detectChanges();
-      filterProjects("project");
-      await promises[1];
-      spectator.detectChanges();
-      filterProjects("");
-      await promises[2];
-      spectator.detectChanges();
-    });
-
-    it("should reset current page number", async (done) => {
-      spectator.component["page"] = 5;
-
-      const { promises } = promiseMultipleRequests(2, [
-        (filters) => expect(filters.paging.page).toBe(5),
-        (filters) => {
-          expect(filters.paging.page).toBe(1);
-          done();
-        },
-      ]);
-
-      await promises[0];
-      spectator.detectChanges();
-      filterProjects("project");
-      await promises[1];
-      spectator.detectChanges();
-    });
-
-    it("should override project cards", async () => {
-      spectator.component["page"] = 5;
-      const { promises, requests } = promiseMultipleRequests(2);
-
-      await promises[0];
-      spectator.detectChanges();
-      filterProjects("project");
-      await promises[1];
-      spectator.detectChanges();
-
-      expect(spectator.component.cardList.toArray()).toEqual(
-        List(requests[1].models.map((project) => project.getCard())).toArray()
-      );
+    it("should call onFilter when event detected", async () => {
+      const projects = generateProjects(3);
+      await handleApiRequest(projects);
+      spyOn(spectator.component, "onFilter").and.stub();
+      getFilter().filter.next("custom value");
+      expect(spectator.component.onFilter).toHaveBeenCalled();
     });
   });
 });

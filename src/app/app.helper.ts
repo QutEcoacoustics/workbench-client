@@ -34,3 +34,8 @@ export const formlyRoot: ConfigOption = {
 export function fontAwesomeLibraries(library: FaIconLibrary) {
   library.addIconPacks(fas);
 }
+
+/**
+ * Default number of milliseconds to wait when de-bouncing an input
+ */
+export const defaultDebounceTime = 500;

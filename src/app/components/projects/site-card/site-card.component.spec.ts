@@ -7,7 +7,7 @@ import { assetRoot } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { assertImage } from "@test/helpers/html";
+import { assertImage, assertRoute } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { SiteCardComponent } from "./site-card.component";
 
@@ -23,38 +23,30 @@ describe("SiteCardComponent", () => {
 
     fixture = TestBed.createComponent(SiteCardComponent);
     component = fixture.componentInstance;
+    component.project = new Project(generateProject());
+    component.site = new Site(generateSite());
   });
 
   it("should create", () => {
-    component.project = new Project(generateProject());
-    component.site = new Site(generateSite());
-
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should display site name", () => {
-    component.project = new Project(generateProject());
     component.site = new Site({ ...generateSite(), name: "Test Site" });
     fixture.detectChanges();
-
     const name = fixture.nativeElement.querySelector("h5#name");
     expect(name).toBeTruthy();
     expect(name.innerText).toContain("Test Site");
   });
 
-  it("should navigate user to site when clicking site name", fakeAsync(() => {
-    component.project = new Project({ ...generateProject(), id: 2 });
-    component.site = new Site({ ...generateSite(), id: 5 });
+  it("should navigate user to site when clicking site name", () => {
     fixture.detectChanges();
-
-    const nameHyperlink = fixture.nativeElement.querySelector("#imageLink");
-    expect(nameHyperlink).toBeTruthy();
-    expect(nameHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
-  }));
+    const name = fixture.nativeElement.querySelector("#nameLink");
+    assertRoute(name, component.site.getViewUrl(component.project));
+  });
 
   it("should display site image", () => {
-    component.project = new Project(generateProject());
     component.site = new Site({
       ...generateSite(),
       name: "Test Site",
@@ -71,17 +63,12 @@ describe("SiteCardComponent", () => {
   });
 
   it("should navigate user to site when clicking site image", () => {
-    component.project = new Project({ ...generateProject(), id: 2 });
-    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
-
-    const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
-    expect(imgHyperlink).toBeTruthy();
-    expect(imgHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
+    const image = fixture.nativeElement.querySelector("#imageLink");
+    assertRoute(image, component.site.getViewUrl(component.project));
   });
 
   it("should display custom site image", () => {
-    component.project = new Project(generateProject());
     component.site = new Site({
       ...generateSite(),
       name: "Test Site",
@@ -94,55 +81,38 @@ describe("SiteCardComponent", () => {
   });
 
   it("should navigate user to site when clicking custom site image", () => {
-    component.project = new Project({ ...generateProject(), id: 2 });
-    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
-
-    const imgHyperlink = fixture.nativeElement.querySelector("#imageLink");
-    expect(imgHyperlink).toBeTruthy();
-    expect(imgHyperlink.getAttribute("href")).toBe("/projects/2/sites/5");
+    const image = fixture.nativeElement.querySelector("#imageLink");
+    assertRoute(image, component.site.getViewUrl(component.project));
   });
 
   it("should display details button", () => {
-    component.project = new Project(generateProject());
-    component.site = new Site(generateSite());
     fixture.detectChanges();
-
-    const displayButton = fixture.nativeElement.querySelector("a#details");
-    expect(displayButton).toBeTruthy();
-    expect(displayButton.innerText.trim()).toBe("Details");
+    const button = fixture.nativeElement.querySelector("a#details");
+    expect(button).toBeTruthy();
+    expect(button.innerText.trim()).toBe("Details");
   });
 
   it("should navigate user to site when clicking details button", () => {
-    component.project = new Project({ ...generateProject(), id: 2 });
-    component.site = new Site({ ...generateSite(), id: 5 });
     fixture.detectChanges();
-
-    const displayButton = fixture.nativeElement.querySelector("a#details");
-    expect(displayButton).toBeTruthy();
-    expect(displayButton.getAttribute("href")).toBe("/projects/2/sites/5");
+    const button = fixture.nativeElement.querySelector("a#details");
+    assertRoute(button, component.site.getViewUrl(component.project));
   });
 
   it("should display play button", () => {
-    component.project = new Project(generateProject());
-    component.site = new Site(generateSite());
     fixture.detectChanges();
-
-    const playButton = fixture.nativeElement.querySelector("a#play");
-    expect(playButton).toBeTruthy();
-    expect(playButton.innerText.trim()).toBe("Play");
+    const button = fixture.nativeElement.querySelector("a#play");
+    expect(button).toBeTruthy();
+    expect(button.innerText.trim()).toBe("Play");
   });
 
   xit("should navigate user to listen page when clicking play button", () => {});
 
   it("should display visualise button", () => {
-    component.project = new Project(generateProject());
-    component.site = new Site(generateSite());
     fixture.detectChanges();
-
-    const visualizeButton = fixture.nativeElement.querySelector("a#visualize");
-    expect(visualizeButton).toBeTruthy();
-    expect(visualizeButton.innerText.trim()).toBe("Visualise");
+    const button = fixture.nativeElement.querySelector("a#visualize");
+    expect(button).toBeTruthy();
+    expect(button.innerText.trim()).toBe("Visualise");
   });
 
   xit("should navigate user to visualizer page when clicking play button", () => {});

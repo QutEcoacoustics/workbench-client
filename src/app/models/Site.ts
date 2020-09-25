@@ -13,6 +13,7 @@ import {
   Id,
   Ids,
   ImageUrl,
+  Notes,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
@@ -36,12 +37,14 @@ export interface ISite extends HasAllUsers, HasDescription {
   imageUrl?: string;
   locationObfuscated?: boolean;
   projectIds?: Ids | Id[];
+  regionId?: Id;
   latitude?: number;
   customLatitude?: number;
   longitude?: number;
   customLongitude?: number;
   tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
+  notes?: Notes;
 }
 
 /**
@@ -75,6 +78,7 @@ export class Site extends AbstractModel implements ISite {
   public readonly deletedAt?: DateTimeTimezone;
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
+  public readonly regionId?: Id;
   @BawPersistAttr
   public readonly latitude?: number;
   public readonly customLatitude?: number;
@@ -84,6 +88,8 @@ export class Site extends AbstractModel implements ISite {
   @BawPersistAttr
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
+  @BawPersistAttr
+  public readonly notes?: Notes;
 
   // Associations
   @Creator<Site>()

@@ -1,3 +1,4 @@
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { DatatableDirective } from "./datatable.directive";
@@ -54,7 +55,11 @@ describe("DatatableDirective", () => {
     });
 
     it("should set limit", () => {
-      assertAttribute("datatable-body", "page-size", "25");
+      assertAttribute(
+        "datatable-body",
+        "page-size",
+        defaultApiPageSize.toString()
+      );
     });
 
     it("should set row height", () => {
