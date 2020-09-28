@@ -1,0 +1,42 @@
+<h2>
+  Sites
+  <small class="text-muted">found {{ collectionSize || 0 }} sites</small>
+</h2>
+
+<baw-debounce-input
+  label="Filter"
+  placeholder="Filter Sites"
+  [default]="filter"
+  (filter)="onFilter($event)"
+></baw-debounce-input>
+
+<baw-loading [display]="loading"></baw-loading>
+
+<div id="sites">
+  <!-- Google Maps -->
+  <div class="item map">
+    <app-site-map [project]="project"></app-site-map>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <!-- Sites Exist -->
+    <ng-container *ngIf="sites.size > 0; else empty">
+      <div *ngFor="let site of sites" class="item">
+        <app-site-card [project]="project" [site]="site"></app-site-card>
+      </div>
+    </ng-container>
+
+    <!-- Sites Don't Exist-->
+    <ng-template #empty>
+      <p id="site_placeholder">No sites associated with this project</p>
+    </ng-template>
+  </ng-container>
+</div>
+
+<ngb-pagination
+  *ngIf="displayPagination"
+  aria-label="Pagination Buttons"
+  class="mt-2 d-flex justify-content-end"
+  [collectionSize]="collectionSize"
+  [(page)]="page"
+></ngb-pagination>

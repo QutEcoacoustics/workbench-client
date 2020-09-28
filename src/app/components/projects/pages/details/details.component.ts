@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { SitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -14,11 +13,8 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { MapMarkerOption } from "@shared/map/map.component";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
@@ -36,30 +32,41 @@ const projectKey = "project";
 
 @Component({
   selector: "app-projects-details",
-  templateUrl: "./details.component.html",
+  template: `
+    <ng-container *ngIf="project">
+      <h1>{{ project.name }}</h1>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="thumbnail">
+            <img [src]="project.image" [alt]="project.name + ' image'" />
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <p id="project_description" [innerHTML]="project.descriptionHtml"></p>
+        </div>
+      </div>
+
+      <p class="lead" *ngIf="!hasSites && !hasRegions">
+        No additional data to display here, try adding sites or regions to the
+        project
+      </p>
+
+      <app-site-cards *ngIf="hasSites" [project]="project"></app-site-cards>
+      <app-region-cards
+        *ngIf="hasRegions"
+        [project]="project"
+      ></app-region-cards>
+    </ng-container>
+  `,
   styleUrls: ["./details.component.scss"],
 })
-class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
-  public markers: List<MapMarkerOption> = List([]);
+class DetailsComponent extends PageComponent implements OnInit {
   public project: Project;
-  public sites: List<Site> = List([]);
-  protected api: SitesService;
+  public hasRegions: boolean;
+  public hasSites: boolean;
 
-  constructor(
-    route: ActivatedRoute,
-    router: Router,
-    config: NgbPaginationConfig,
-    sitesService: SitesService
-  ) {
-    super(
-      router,
-      route,
-      config,
-      sitesService,
-      "name",
-      () => [this.project.id],
-      (sites) => (this.sites = List(sites))
-    );
+  constructor(private route: ActivatedRoute) {
+    super();
   }
 
   public ngOnInit() {
@@ -68,7 +75,8 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       return;
     }
     this.project = resolvedModels[projectKey] as Project;
-    super.ngOnInit();
+    this.hasRegions = this.project.regionIds.size > 0;
+    this.hasSites = this.project.siteIds.size > 0;
   }
 }
 

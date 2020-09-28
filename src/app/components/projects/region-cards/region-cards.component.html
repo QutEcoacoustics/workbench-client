@@ -1,0 +1,44 @@
+<h2>
+  Regions
+  <small class="text-muted">found {{ collectionSize || 0 }} regions</small>
+</h2>
+
+<baw-debounce-input
+  label="Filter"
+  placeholder="Filter Regions"
+  [default]="filter"
+  (filter)="onFilter($event)"
+></baw-debounce-input>
+
+<baw-loading [display]="loading"></baw-loading>
+
+<div id="regions">
+  <ng-container *ngIf="!loading">
+    <!-- Regions Exist -->
+    <ng-container *ngIf="regions.size > 0; else empty">
+      <div *ngFor="let region of regions" class="item">
+        <li class="list-group-item">
+          <div class="body">
+            <a [routerLink]="region.getViewUrl(project)">
+              <h5>{{ region.name }}</h5>
+            </a>
+            <p>Number of Points: {{ numSites(region) }}</p>
+          </div>
+        </li>
+      </div>
+    </ng-container>
+
+    <!-- Regions Don't Exist-->
+    <ng-template #empty>
+      <p id="site_placeholder">No regions associated with this project</p>
+    </ng-template>
+  </ng-container>
+</div>
+
+<ngb-pagination
+  *ngIf="displayPagination"
+  aria-label="Pagination Buttons"
+  class="mt-2 d-flex justify-content-end"
+  [collectionSize]="collectionSize"
+  [(page)]="page"
+></ngb-pagination>

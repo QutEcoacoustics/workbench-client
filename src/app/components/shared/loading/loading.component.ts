@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   template: `
     <ng-container *ngIf="display">
       <h4 *ngIf="title" class="text-center">{{ title }}</h4>
-      <div id="baw-spinner" class="d-flex justify-content-center">
+      <div id="baw-spinner" class="d-flex justify-content-center m-3">
         <div class="spinner-border" [ngClass]="'text-' + type" role="status">
           <span class="sr-only">Loading...</span>
         </div>
