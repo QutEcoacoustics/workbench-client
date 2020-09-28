@@ -16,6 +16,10 @@ import { MockBawApiService, MockModel } from "./mock/baseApiMock.service";
 import { MockSecurityService } from "./mock/securityMock.service";
 import { ProgressEventsService } from "./progress-event/progress-events.service";
 import { ProjectsService } from "./project/projects.service";
+import {
+  RegionsService,
+  ShallowRegionsService,
+} from "./region/regions.service";
 import { SavedSearchesService } from "./saved-search/saved-searches.service";
 import { ScriptsService } from "./script/scripts.service";
 import { SecurityService } from "./security/security.service";
@@ -49,6 +53,8 @@ const mockProviders: Provider[] = [
   mockProvider(ProjectsService),
   mockProvider(QuestionsService),
   mockProvider(ShallowQuestionsService),
+  mockProvider(RegionsService),
+  mockProvider(ShallowRegionsService),
   mockProvider(ResponsesService),
   mockProvider(ShallowResponsesService),
   mockProvider(SavedSearchesService),

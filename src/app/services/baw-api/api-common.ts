@@ -55,7 +55,7 @@ export function option(x?: New | Filter | Empty) {
 export function filterByForeignKey<T extends AbstractModel>(
   filters: Filters<T>,
   key: keyof T,
-  model: IdOr<AbstractModel>
+  model: AbstractModel | string | number
 ): Filters<T> {
   const { filter, ...meta } = filters;
 
@@ -183,9 +183,10 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
  * Api Class without the ability to update a model
  */
 export abstract class ImmutableApi<
-  M extends AbstractModel,
-  P extends any[] = []
-> extends BawApiService<M>
+    M extends AbstractModel,
+    P extends any[] = []
+  >
+  extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,
@@ -223,9 +224,10 @@ export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
  * Api Class with only the ability to Read and Create models
  */
 export abstract class ReadAndCreateApi<
-  M extends AbstractModel,
-  P extends any[] = []
-> extends BawApiService<M>
+    M extends AbstractModel,
+    P extends any[] = []
+  >
+  extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P> {
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
@@ -240,9 +242,10 @@ export abstract class ReadAndCreateApi<
  * Api Class with only the ability to Read and Update models
  */
 export abstract class ReadAndUpdateApi<
-  M extends AbstractModel,
-  P extends any[] = []
-> extends BawApiService<M>
+    M extends AbstractModel,
+    P extends any[] = []
+  >
+  extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P> {
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
@@ -260,9 +263,10 @@ export abstract class ReadAndUpdateApi<
  * Api Class without the ability to destroy a model
  */
 export abstract class NonDestructibleApi<
-  M extends AbstractModel,
-  P extends any[] = []
-> extends BawApiService<M>
+    M extends AbstractModel,
+    P extends any[] = []
+  >
+  extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,

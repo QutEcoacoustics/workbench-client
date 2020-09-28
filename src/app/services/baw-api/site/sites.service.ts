@@ -90,7 +90,7 @@ export class ShallowSitesService extends StandardApi<Site> {
   public filter(filters: Filters<ISite>): Observable<Site[]> {
     return this.apiFilter(endpointShallow(Empty, Filter), filters);
   }
-  public filterByAccessLevel(
+  public filterByCreator(
     filters: Filters<ISite>,
     user?: IdOr<User>
   ): Observable<Site[]> {

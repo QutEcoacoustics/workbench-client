@@ -78,7 +78,7 @@ class TheirProfileComponent extends PageComponent implements OnInit {
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
 
-    this.projectsApi.filterByAccessLevel({}, this.user).subscribe(
+    this.projectsApi.filterByCreator({}, this.user).subscribe(
       (models) => this.extractTotal(0, models),
       () => this.handleError(0)
     );
@@ -97,7 +97,7 @@ class TheirProfileComponent extends PageComponent implements OnInit {
       () => this.handleError(0)
     );
 
-    this.sitesApi.filterByAccessLevel({}, this.user).subscribe(
+    this.sitesApi.filterByCreator({}, this.user).subscribe(
       (models) => this.extractTotal(3, models),
       () => this.handleError(3)
     );

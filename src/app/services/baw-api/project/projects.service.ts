@@ -41,11 +41,10 @@ export class ProjectsService extends StandardApi<Project> {
   public filter(filters: Filters<IProject>): Observable<Project[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
-  public filterByAccessLevel(
+  public filterByCreator(
     filters: Filters<IProject>,
     user?: IdOr<User>
   ): Observable<Project[]> {
-    // TODO https://github.com/QutEcoacoustics/baw-server/issues/425
     return this.apiFilter(
       endpoint(Empty, Filter),
       user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters

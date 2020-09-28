@@ -29,6 +29,12 @@ import {
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
+import {
+  regionResolvers,
+  RegionsService,
+  shallowRegionResolvers,
+  ShallowRegionsService,
+} from "./region/regions.service";
 import { BawProvider } from "./resolver-common";
 import {
   SavedSearchesService,
@@ -120,6 +126,16 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_QUESTION,
     service: ShallowQuestionsService,
     resolvers: shallowQuestionResolvers,
+  },
+  {
+    serviceToken: Tokens.REGION,
+    service: RegionsService,
+    resolvers: regionResolvers,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_REGION,
+    service: ShallowRegionsService,
+    resolvers: shallowRegionResolvers,
   },
   {
     serviceToken: Tokens.RESPONSE,

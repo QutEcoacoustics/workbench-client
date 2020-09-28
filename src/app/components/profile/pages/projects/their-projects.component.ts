@@ -27,6 +27,7 @@ class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
     { name: "Sites" },
     { name: "Permission" },
   ];
+  protected api: ProjectsService;
 
   constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
@@ -46,10 +47,7 @@ class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   }
 
   protected apiAction(filters: Filters) {
-    return (this.api as ProjectsService).filterByAccessLevel(
-      filters,
-      this.account
-    );
+    return this.api.filterByCreator(filters, this.account);
   }
 }
 
