@@ -9,7 +9,6 @@ import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { DateTimeTimezone } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
@@ -39,7 +38,7 @@ const siteKey = "site";
  * Site Details Component
  */
 @Component({
-  selector: "app-sites-details",
+  selector: "app-site",
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
@@ -113,7 +112,7 @@ class DetailsComponent extends PageComponent implements OnInit {
 DetailsComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...siteMenuItemActions]),
+    actions: List([projectMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: {

@@ -26,6 +26,7 @@ import {
   BawPersistAttr,
 } from "./AttributeDecorators";
 import type { Project } from "./Project";
+import { Region } from "./Region";
 import type { User } from "./User";
 
 /**
@@ -123,11 +124,17 @@ export class Site extends AbstractModel implements ISite {
     });
   }
 
-  public getViewUrl(project: IdOr<Project>): string {
-    return siteMenuItem.route.format({
+  public getViewUrl(project: IdOr<Project>, region?: IdOr<Region>): string {
+    const routeIds = {
       projectId: typeof project === "number" ? project : project.id,
       siteId: this.id,
-    });
+    };
+
+    if (region) {
+      routeIds["regionId"] = typeof region === "number" ? region : region.id;
+    }
+
+    return siteMenuItem.route.format(routeIds);
   }
 
   /**

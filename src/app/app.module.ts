@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
+import { RegionsModule } from "@components/regions/regions.module";
 import { GuardModule } from "@guards/guards.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -50,6 +51,7 @@ export const appImports = [
   ProfileModule,
   ProjectsModule,
   ReportProblemsModule,
+  RegionsModule,
   SecurityModule,
   SendAudioModule,
   SitesModule,

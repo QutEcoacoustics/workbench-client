@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
-import { IdOr } from "@baw-api/api-common";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { siteMenuItem } from "@components/sites/sites.menus";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -85,15 +84,10 @@ export class Region extends AbstractModel implements IRegion {
     super(region, injector);
   }
 
-  // TODO Implement region page
   public get viewUrl(): string {
-    return "not_implemented";
-  }
-
-  public getViewUrl(site: IdOr<Site>): string {
-    return siteMenuItem.route.format({
+    return regionMenuItem.route.format({
       projectId: this.projectId,
-      siteId: typeof site === "number" ? site : site.id,
+      regionId: this.id,
     });
   }
 }

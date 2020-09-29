@@ -17,6 +17,14 @@ export const sitesCategory: Category = {
   route: sitesRoute.add(":siteId"),
 };
 
+export const siteMenuItem = MenuRoute({
+  icon: ["fas", "map-marker-alt"],
+  label: "Site",
+  parent: projectMenuItem,
+  route: sitesCategory.route,
+  tooltip: () => "The current site",
+});
+
 export const newSiteMenuItem = MenuRoute({
   icon: defaultNewIcon,
   label: "New site",
@@ -24,14 +32,6 @@ export const newSiteMenuItem = MenuRoute({
   predicate: isProjectOwnerPredicate,
   route: sitesRoute.add("new"),
   tooltip: () => "Create a new site",
-});
-
-export const siteMenuItem = MenuRoute({
-  icon: ["fas", "map-marker-alt"],
-  label: "Site",
-  parent: projectMenuItem,
-  route: sitesCategory.route,
-  tooltip: () => "The current site",
 });
 
 export const siteAnnotationsMenuItem = MenuLink({
@@ -62,7 +62,7 @@ export const harvestMenuItem = MenuRoute({
 
 export const deleteSiteMenuItem = MenuRoute({
   icon: defaultDeleteIcon,
-  label: "Delete Site",
+  label: "Delete site",
   parent: siteMenuItem,
   predicate: isProjectOwnerPredicate,
   route: siteMenuItem.route.add("delete"),

@@ -1,37 +1,34 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { SitesService } from "@baw-api/site/sites.service";
+import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
+import { newRegionMenuItem } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
-  extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../site.base.json";
-import { newSiteMenuItem } from "../../sites.menus";
+import { fields } from "../../region.base.json";
 
 const projectKey = "project";
 
 /**
- * New Site Component
+ * New Region Component
  */
 @Component({
-  selector: "app-sites-new",
+  selector: "app-regions-new",
   template: `
     <baw-form
       *ngIf="!failure"
-      title="New Site"
+      title="New Region"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -40,22 +37,17 @@ const projectKey = "project";
     ></baw-form>
   `,
 })
-class NewComponent extends FormTemplate<Site> {
+class NewComponent extends FormTemplate<Region> {
   public fields = fields;
 
   constructor(
-    private api: SitesService,
+    private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      (model) => defaultSuccessMsg("created", model.name),
-      siteErrorMsg
+    super(notifications, route, router, undefined, (model) =>
+      defaultSuccessMsg("created", model.name)
     );
   }
 
@@ -63,12 +55,8 @@ class NewComponent extends FormTemplate<Site> {
     return this.models.project as Project;
   }
 
-  protected redirectionPath(model: Site) {
-    return model.getViewUrl(this.project);
-  }
-
-  protected apiAction(model: Partial<Site>) {
-    return this.api.create(new Site(model), this.project);
+  protected apiAction(model: Partial<Region>) {
+    return this.api.create(new Region(model), this.project);
   }
 }
 
@@ -76,12 +64,6 @@ NewComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(newSiteMenuItem);
+}).AndMenuRoute(newRegionMenuItem);
 
 export { NewComponent };
-
-export function siteErrorMsg(err: ApiErrorDetails) {
-  return extendedErrorMsg(err, {
-    tzinfoTz: (value) => `timezone identifier ${value[0]}`,
-  });
-}

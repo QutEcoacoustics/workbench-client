@@ -12,7 +12,7 @@ import {
 } from "src/app/app.menus";
 
 /*
- Projects Category
+  Projects Category
 */
 export const projectsRoute = StrongRoute.Base.add("projects");
 export const projectsCategory: Category = {
