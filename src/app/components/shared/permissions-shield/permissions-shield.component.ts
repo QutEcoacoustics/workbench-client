@@ -5,7 +5,6 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { resolve } from "path";
 import { WidgetComponent } from "../widget/widget.component";
 
 /**

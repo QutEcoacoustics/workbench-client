@@ -1,25 +1,112 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
+import {
+  destroyGoogleMaps,
+  embedGoogleMaps,
+} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertErrorHandler } from "@test/helpers/html";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { fields } from "../../region.base.json";
+import { NewComponent } from "./new.component";
 
-import { NewComponent } from './new.component';
-
-describe('NewComponent', () => {
-  let component: NewComponent;
-  let fixture: ComponentFixture<NewComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ NewComponent ]
-    })
-    .compileComponents();
+describe("RegionsNewComponent", () => {
+  let spectator: SpectatorRouting<NewComponent>;
+  const createComponent = createRoutingFactory({
+    component: NewComponent,
+    imports: [...testFormImports, MockBawApiModule],
+    declarations: [FormComponent],
+    mocks: [ToastrService],
+    stubsEnabled: true,
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  describe("form", () => {
+    testFormlyFields([
+      {
+        testGroup: "Region Name Input",
+        field: fields[1],
+        key: "name",
+        type: "input",
+        required: true,
+        label: "Region Name",
+        inputType: "text",
+      },
+      {
+        testGroup: "Region Description Input",
+        field: fields[2],
+        key: "description",
+        type: "textarea",
+        label: "Description",
+      },
+    ]);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe("component", () => {
+    let api: SpyObject<RegionsService>;
+    let defaultProject: Project;
+
+    function setup(error?: ApiErrorDetails) {
+      spectator = createComponent({
+        detectChanges: false,
+        params: { projectId: defaultProject?.id },
+        data: {
+          resolvers: { project: projectResolvers.show },
+          project: { model: defaultProject, error },
+        },
+      });
+
+      api = spectator.inject(RegionsService);
+      spectator.detectChanges();
+    }
+
+    beforeAll(async () => await embedGoogleMaps());
+    afterAll(() => destroyGoogleMaps());
+    beforeEach(() => {
+      defaultProject = new Project(generateProject());
+    });
+
+    it("should create", () => {
+      setup();
+      expect(spectator.component).toBeTruthy();
+    });
+
+    it("should handle project error", () => {
+      setup(generateApiErrorDetails());
+      assertErrorHandler(spectator.fixture);
+    });
+
+    it("should call api", () => {
+      setup();
+      api.create.and.callFake(() => new Subject());
+
+      spectator.component.submit({});
+      expect(api.create).toHaveBeenCalled();
+    });
+
+    it("should redirect to region", () => {
+      setup();
+      const region = new Region(generateRegion());
+      api.create.and.callFake(() => new BehaviorSubject<Region>(region));
+
+      spectator.component.submit({});
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+        region.getViewUrl(defaultProject)
+      );
+    });
   });
 });

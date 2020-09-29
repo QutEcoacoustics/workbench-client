@@ -35,7 +35,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   projectId?: Id;
-  siteIds?: Ids;
+  siteIds?: Id[] | Ids;
   notes?: Notes;
 }
 

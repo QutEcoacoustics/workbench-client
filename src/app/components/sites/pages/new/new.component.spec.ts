@@ -114,11 +114,12 @@ describe("SitesNewComponent", () => {
     it("should redirect to site", () => {
       setup();
       const site = new Site(generateSite());
-      spyOn(site, "getViewUrl").and.stub();
       api.create.and.callFake(() => new BehaviorSubject<Site>(site));
 
       spectator.component.submit({});
-      expect(site.getViewUrl).toHaveBeenCalledWith(defaultProject);
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+        site.getViewUrl(defaultProject)
+      );
     });
   });
 });
