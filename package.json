@@ -40,7 +40,7 @@
     "@angular/platform-server": "^10.1.2",
     "@angular/router": "^10.1.2",
     "@fortawesome/angular-fontawesome": "^0.7.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/fontawesome-svg-core": "^1.2.31",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
     "@nguniversal/express-engine": "^10.1.0",
