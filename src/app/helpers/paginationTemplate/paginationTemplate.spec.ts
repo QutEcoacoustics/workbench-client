@@ -86,7 +86,7 @@ describe("PaginationTemplate", () => {
       paging: { page },
       filter: filterText
         ? { [component["filterKey"]]: { contains: filterText } }
-        : undefined,
+        : {},
     };
   }
 
@@ -122,27 +122,26 @@ describe("PaginationTemplate", () => {
       expect(api.filter).toHaveBeenCalledWith(generateFilter(1), 1, 2, 3);
     });
 
-    // TODO
     it("should create api filter request with default inner filter values", () => {
-      expect(false).toBeTruthy();
-      const defaultFilter: InnerFilter<Project> = {
-        name: { eq: "custom name" },
-      };
+      const defaultFilter = { name: { eq: "custom name" } };
+      component["_page"] = 1;
       component["defaultInnerFilter"] = () => defaultFilter;
-      spectator.detectChanges();
-      expect(api.filter).toHaveBeenCalledWith({
-        ...generateFilter(1),
-        ...defaultFilter,
+      component.filter = "filter";
+      expect(component["generateFilter"]()).toEqual({
+        paging: { page: 1 },
+        filter: { id: { contains: "filter" }, name: { eq: "custom name" } },
       });
     });
 
-    // TODO
     it("should override default filter values if required", () => {
-      expect(false).toBeTruthy();
-      const defaultFilter = generateFilter(5, "custom filter");
+      const defaultFilter = { id: { eq: "custom id" } };
+      component["_page"] = 1;
       component["defaultInnerFilter"] = () => defaultFilter;
-      spectator.detectChanges();
-      expect(api.filter).toHaveBeenCalledWith(generateFilter(1));
+      component.filter = "filter";
+      expect(component["generateFilter"]()).toEqual({
+        paging: { page: 1 },
+        filter: { id: { contains: "filter" } },
+      });
     });
   });
 

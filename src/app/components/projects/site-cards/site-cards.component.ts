@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
