@@ -44,7 +44,10 @@ const projectKey = "project";
           </div>
         </div>
         <div class="col-sm-8">
-          <p id="project_description" [innerHTML]="project.descriptionHtml"></p>
+          <p
+            id="project_description"
+            [innerHTML]="project.descriptionHtml || defaultDescription"
+          ></p>
         </div>
       </div>
 
@@ -63,6 +66,7 @@ const projectKey = "project";
   styleUrls: ["./details.component.scss"],
 })
 class DetailsComponent extends PageComponent implements OnInit {
+  public defaultDescription = "<i>No description found</i>";
   public project: Project;
   public hasRegions: boolean;
   public hasSites: boolean;

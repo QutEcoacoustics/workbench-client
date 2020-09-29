@@ -10,6 +10,7 @@ import {
   projectMenuItem,
 } from "@components/projects/projects.menus";
 import { regionMenuItemActions } from "@components/regions/pages/details/details.component";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   newPointMenuItem,
   pointMenuItem,
@@ -92,7 +93,7 @@ SiteNewComponent.LinkComponentToPageInfo({
 
 PointNewComponent.LinkComponentToPageInfo({
   category: pointsCategory,
-  menus: { actions: List([pointMenuItem, ...regionMenuItemActions]) },
+  menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,

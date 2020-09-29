@@ -104,8 +104,6 @@ export class StrongRoute {
     }
 
     if (Object.keys(args).length < this.parameters.length) {
-      console.log(args, this, this.parameters);
-
       const msg = `Got ${
         Object.keys(args).length
       } route arguments but expected ${this.parameters.length}`;

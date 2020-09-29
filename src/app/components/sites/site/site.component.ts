@@ -7,6 +7,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
+
 /**
  * Site Details Component
  */
@@ -19,6 +20,7 @@ class SiteComponent extends PageComponent implements OnInit {
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
+  public defaultDescription = "<i>No description found</i>";
   public recordings: AudioRecording[];
   public recordingsEnd: DateTimeTimezone;
   public recordingsStart: DateTimeTimezone;

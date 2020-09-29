@@ -1,9 +1,7 @@
 <!-- Site Details -->
-<h1>
-  <small class="text-muted"> Project: {{ project.name }} </small>
-  <br />
-  {{ site.name }}
-</h1>
+<h2 class="text-muted">Project: {{ project.name }}</h2>
+<h3 *ngIf="region" class="text-muted">Region: {{ region.name }}</h3>
+<h1>{{ site.name }}</h1>
 
 <div class="row">
   <div class="col-sm-4">
@@ -12,7 +10,10 @@
     </div>
   </div>
   <div class="col-sm-8">
-    <p id="site_description" [innerHtml]="site.descriptionHtml"></p>
+    <p
+      id="site_description"
+      [innerHtml]="site.descriptionHtml || defaultDescription"
+    ></p>
   </div>
 </div>
 

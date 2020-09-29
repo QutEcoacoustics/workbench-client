@@ -80,6 +80,7 @@ export class Site extends AbstractModel implements ISite {
   public readonly deletedAt?: DateTimeTimezone;
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
+  @BawPersistAttr
   public readonly regionId?: Id;
   @BawPersistAttr
   public readonly latitude?: number;
