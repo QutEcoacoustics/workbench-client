@@ -33,7 +33,7 @@ export const projectMenuItemActions = [
 const projectKey = "project";
 
 @Component({
-  selector: "app-projects-details",
+  selector: "app-project",
   template: `
     <ng-container *ngIf="project">
       <h1>{{ project.name }}</h1>

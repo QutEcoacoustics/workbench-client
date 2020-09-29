@@ -18,6 +18,7 @@ export const regionsCategory: Category = {
 export const regionMenuItem = MenuRoute({
   icon: ["fas", "map-signs"],
   label: "Regions",
+  parent: projectMenuItem,
   route: regionsCategory.route,
   tooltip: () => "The current region",
 });

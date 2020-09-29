@@ -5,19 +5,15 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { RegionCardsComponent } from "@components/projects/region-cards/region-cards.component";
-import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
 import { SiteCardsComponent } from "@components/projects/site-cards/site-cards.component";
-import { SiteMapComponent } from "@components/projects/site-map/site-map.component";
 import { Project } from "@models/Project";
 import { ISite, Site } from "@models/Site";
-import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";

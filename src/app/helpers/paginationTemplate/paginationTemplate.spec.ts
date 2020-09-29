@@ -1,7 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
+import {
+  defaultApiPageSize,
+  Filters,
+  InnerFilter,
+} from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
@@ -118,11 +122,13 @@ describe("PaginationTemplate", () => {
       expect(api.filter).toHaveBeenCalledWith(generateFilter(1), 1, 2, 3);
     });
 
-    it("should create api filter request with default filter values", () => {
-      const defaultFilter: Filters = {
-        sorting: { orderBy: "id", direction: "desc" },
+    // TODO
+    it("should create api filter request with default inner filter values", () => {
+      expect(false).toBeTruthy();
+      const defaultFilter: InnerFilter<Project> = {
+        name: { eq: "custom name" },
       };
-      component["defaultFilter"] = defaultFilter;
+      component["defaultInnerFilter"] = () => defaultFilter;
       spectator.detectChanges();
       expect(api.filter).toHaveBeenCalledWith({
         ...generateFilter(1),
@@ -130,9 +136,11 @@ describe("PaginationTemplate", () => {
       });
     });
 
+    // TODO
     it("should override default filter values if required", () => {
+      expect(false).toBeTruthy();
       const defaultFilter = generateFilter(5, "custom filter");
-      component["defaultFilter"] = defaultFilter;
+      component["defaultInnerFilter"] = () => defaultFilter;
       spectator.detectChanges();
       expect(api.filter).toHaveBeenCalledWith(generateFilter(1));
     });

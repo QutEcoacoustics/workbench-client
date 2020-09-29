@@ -28,7 +28,9 @@
 
     <!-- Sites Don't Exist-->
     <ng-template #empty>
-      <p id="site_placeholder">No sites associated with this project</p>
+      <p id="site_placeholder">
+        No sites associated with this {{ region ? "region" : "project" }}
+      </p>
     </ng-template>
   </ng-container>
 </div>
