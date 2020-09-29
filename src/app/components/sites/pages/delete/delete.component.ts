@@ -1,7 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  deletePointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
 import {
   deleteSiteMenuItem,
   siteMenuItem,
@@ -12,35 +18,26 @@ import {
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { siteMenuItemActions } from "../details/details.component";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/details.component";
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
-/**
- * Delete Site Component
- */
 @Component({
-  selector: "app-projects-delete",
-  template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      btnColor="btn-danger"
-      submitLabel="Delete"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-  `,
+  selector: "app-sites-delete",
+  templateUrl: "./delete.component.html",
 })
-class DeleteComponent extends FormTemplate<Site> implements OnInit {
+class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
 
   constructor(
@@ -75,7 +72,21 @@ class DeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-DeleteComponent.LinkComponentToPageInfo({
+@Component({
+  selector: "app-points-delete",
+  templateUrl: "./delete.component.html",
+})
+class PointDeleteComponent extends SiteDeleteComponent {
+  public get region(): Region {
+    return this.models.region as Region;
+  }
+
+  protected redirectionPath() {
+    return this.region.viewUrl;
+  }
+}
+
+SiteDeleteComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
@@ -87,4 +98,17 @@ DeleteComponent.LinkComponentToPageInfo({
   },
 }).AndMenuRoute(deleteSiteMenuItem);
 
-export { DeleteComponent };
+PointDeleteComponent.LinkComponentToPageInfo({
+  category: pointsCategory,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).AndMenuRoute(deletePointMenuItem);
+
+export { SiteDeleteComponent, PointDeleteComponent };

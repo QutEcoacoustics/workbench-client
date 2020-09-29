@@ -1,12 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  editPointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
@@ -18,30 +25,21 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
-import { siteMenuItemActions } from "../details/details.component";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/details.component";
 import { siteErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
-/**
- * Edit Site Component
- */
 @Component({
   selector: "app-sites-edit",
-  template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-  `,
+  templateUrl: "./edit.component.html",
 })
-class EditComponent extends FormTemplate<Site> implements OnInit {
+class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public fields = fields;
   public title: string;
 
@@ -82,7 +80,13 @@ class EditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-EditComponent.LinkComponentToPageInfo({
+@Component({
+  selector: "app-points-edit",
+  templateUrl: "./edit.component.html",
+})
+class PointEditComponent extends SiteEditComponent {}
+
+SiteEditComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
@@ -94,4 +98,17 @@ EditComponent.LinkComponentToPageInfo({
   },
 }).AndMenuRoute(editSiteMenuItem);
 
-export { EditComponent };
+PointEditComponent.LinkComponentToPageInfo({
+  category: pointsCategory,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).AndMenuRoute(editPointMenuItem);
+
+export { SiteEditComponent, PointEditComponent };

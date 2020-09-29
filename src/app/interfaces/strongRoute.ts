@@ -104,11 +104,13 @@ export class StrongRoute {
     }
 
     if (Object.keys(args).length < this.parameters.length) {
-      throw new Error(
-        `Got ${Object.keys(args).length} route arguments but expected ${
-          this.parameters.length
-        }`
-      );
+      console.log(args, this, this.parameters);
+
+      const msg = `Got ${
+        Object.keys(args).length
+      } route arguments but expected ${this.parameters.length}`;
+      console.error(msg);
+      throw new Error(msg);
     }
 
     const prepareParam = (x: StrongRoute) => {
@@ -118,9 +120,9 @@ export class StrongRoute {
         if (args.hasOwnProperty(key)) {
           return args[key];
         } else {
-          throw new Error(
-            `Parameter named ${x.name} was not supplied a value and a default value was not given`
-          );
+          const msg = `Parameter named ${x.name} was not supplied a value and a default value was not given`;
+          console.error(msg);
+          throw new Error(msg);
         }
       } else {
         return x.name;

@@ -2,19 +2,26 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
+import { regionMenuItemActions } from "@components/regions/pages/details/details.component";
+import {
+  newPointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -22,29 +29,17 @@ import { fields } from "../../site.base.json";
 import { newSiteMenuItem } from "../../sites.menus";
 
 const projectKey = "project";
+const regionKey = "region";
 
-/**
- * New Site Component
- */
 @Component({
   selector: "app-sites-new",
-  template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Site"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-  `,
+  templateUrl: "./new.component.html",
 })
-class NewComponent extends FormTemplate<Site> {
+class SiteNewComponent extends FormTemplate<Site> {
   public fields = fields;
 
   constructor(
-    private api: SitesService,
+    protected api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -60,7 +55,7 @@ class NewComponent extends FormTemplate<Site> {
   }
 
   public get project(): Project {
-    return this.models.project as Project;
+    return this.models[projectKey] as Project;
   }
 
   protected redirectionPath(model: Site) {
@@ -72,13 +67,39 @@ class NewComponent extends FormTemplate<Site> {
   }
 }
 
-NewComponent.LinkComponentToPageInfo({
+@Component({
+  selector: "app-points-new",
+  templateUrl: "./new.component.html",
+})
+class PointNewComponent extends SiteNewComponent {
+  public get region(): Region {
+    return this.models[regionKey] as Region;
+  }
+
+  protected apiAction(model: Partial<Site>) {
+    return this.api.create(
+      new Site({ ...model, regionId: this.region.id }),
+      this.project
+    );
+  }
+}
+
+SiteNewComponent.LinkComponentToPageInfo({
   category: projectCategory,
   menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
   resolvers: { [projectKey]: projectResolvers.show },
 }).AndMenuRoute(newSiteMenuItem);
 
-export { NewComponent };
+PointNewComponent.LinkComponentToPageInfo({
+  category: pointsCategory,
+  menus: { actions: List([pointMenuItem, ...regionMenuItemActions]) },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+  },
+}).AndMenuRoute(newPointMenuItem);
+
+export { SiteNewComponent, PointNewComponent };
 
 export function siteErrorMsg(err: ApiErrorDetails) {
   return extendedErrorMsg(err, {

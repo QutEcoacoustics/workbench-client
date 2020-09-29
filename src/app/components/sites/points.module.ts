@@ -1,0 +1,26 @@
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { SitesModule } from "@components/sites/sites.module";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { SharedModule } from "@shared/shared.module";
+import { PointDeleteComponent } from "./pages/delete/delete.component";
+import { PointDetailsComponent } from "./pages/details/details.component";
+import { PointEditComponent } from "./pages/edit/edit.component";
+import { PointNewComponent } from "./pages/new/new.component";
+import { pointsRoute } from "./points.menus";
+
+const components = [
+  PointDeleteComponent,
+  PointDetailsComponent,
+  PointEditComponent,
+  PointNewComponent,
+];
+
+const routes = pointsRoute.compileRoutes(GetRouteConfigForPage);
+
+@NgModule({
+  declarations: components,
+  imports: [SharedModule, SitesModule, RouterModule.forChild(routes)],
+  exports: [RouterModule, ...components],
+})
+export class PointsModule {}

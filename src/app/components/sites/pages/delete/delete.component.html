@@ -1,0 +1,10 @@
+<baw-form
+  *ngIf="!failure"
+  [title]="title"
+  [model]="model"
+  [fields]="fields"
+  btnColor="btn-danger"
+  submitLabel="Delete"
+  [submitLoading]="loading"
+  (onSubmit)="submit($event)"
+></baw-form>

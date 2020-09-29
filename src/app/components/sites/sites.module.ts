@@ -3,19 +3,21 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
-import { DeleteComponent } from "./pages/delete/delete.component";
-import { DetailsComponent } from "./pages/details/details.component";
-import { EditComponent } from "./pages/edit/edit.component";
+import { SiteDeleteComponent } from "./pages/delete/delete.component";
+import { SiteDetailsComponent } from "./pages/details/details.component";
+import { SiteEditComponent } from "./pages/edit/edit.component";
 import { HarvestComponent } from "./pages/harvest/harvest.component";
-import { NewComponent } from "./pages/new/new.component";
+import { SiteNewComponent } from "./pages/new/new.component";
+import { SiteComponent } from "./site/site.component";
 import { sitesRoute } from "./sites.menus";
 
 const components = [
-  DeleteComponent,
-  DetailsComponent,
-  EditComponent,
   HarvestComponent,
-  NewComponent,
+  SiteComponent,
+  SiteDeleteComponent,
+  SiteDetailsComponent,
+  SiteEditComponent,
+  SiteNewComponent,
 ];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);

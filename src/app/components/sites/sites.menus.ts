@@ -51,7 +51,7 @@ export const editSiteMenuItem = MenuRoute({
   tooltip: () => "Change the details for this site",
 });
 
-export const harvestMenuItem = MenuRoute({
+export const siteHarvestMenuItem = MenuRoute({
   icon: defaultAudioIcon,
   label: "Harvesting",
   parent: siteMenuItem,

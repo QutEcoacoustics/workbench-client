@@ -10,6 +10,7 @@ import {
   regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
+import { newPointMenuItem } from "@components/sites/points.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -17,7 +18,11 @@ import { PermissionsShieldComponent } from "@shared/permissions-shield/permissio
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 
-export const regionMenuItemActions = [editRegionMenuItem, deleteRegionMenuItem];
+export const regionMenuItemActions = [
+  newPointMenuItem,
+  editRegionMenuItem,
+  deleteRegionMenuItem,
+];
 
 const projectKey = "project";
 const regionKey = "region";

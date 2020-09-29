@@ -1,5 +1,5 @@
 <h2>
-  Sites
+  {{ region ? "Points" : "Sites" }}
   <small class="text-muted">found {{ collectionSize || 0 }} sites</small>
 </h2>
 
@@ -29,7 +29,8 @@
     <!-- Sites Don't Exist-->
     <ng-template #empty>
       <p id="site_placeholder">
-        No sites associated with this {{ region ? "region" : "project" }}
+        No {{ region ? "points" : "sites" }} associated with this
+        {{ region ? "region" : "project" }}
       </p>
     </ng-template>
   </ng-container>

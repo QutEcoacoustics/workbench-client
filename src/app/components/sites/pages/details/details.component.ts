@@ -1,24 +1,32 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import { PermissionsShieldComponent } from "@components/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { DateTimeTimezone } from "@interfaces/apiInterfaces";
-import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
+import {
+  deletePointMenuItem,
+  editPointMenuItem,
+  pointAnnotationsMenuItem,
+  pointHarvestMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "../../points.menus";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
-  harvestMenuItem,
   siteAnnotationsMenuItem,
+  siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
@@ -27,89 +35,80 @@ export const siteMenuItemActions = [
   exploreAudioMenuItem,
   siteAnnotationsMenuItem,
   editSiteMenuItem,
-  harvestMenuItem,
+  siteHarvestMenuItem,
   deleteSiteMenuItem,
+];
+export const pointMenuItemActions = [
+  exploreAudioMenuItem,
+  pointAnnotationsMenuItem,
+  editPointMenuItem,
+  pointHarvestMenuItem,
+  deletePointMenuItem,
 ];
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
 /**
  * Site Details Component
  */
 @Component({
-  selector: "app-site",
-  templateUrl: "./details.component.html",
-  styleUrls: ["./details.component.scss"],
+  selector: "app-site-details",
+  template: `<app-site
+    *ngIf="project && site"
+    [project]="project"
+    [site]="site"
+  ></app-site>`,
 })
-class DetailsComponent extends PageComponent implements OnInit {
+class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;
-  public recordings: AudioRecording[];
-  public recordingsEnd: DateTimeTimezone;
-  public recordingsStart: DateTimeTimezone;
   public site: Site;
-  public marker: List<MapMarkerOption>;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(protected route: ActivatedRoute) {
     super();
   }
 
   public ngOnInit() {
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
-    const siteModel: ResolvedModel<Site> = this.route.snapshot.data[siteKey];
+    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
 
-    if (projectModel.error || siteModel.error) {
+    if (!resolvedModels) {
       return;
     }
 
-    this.project = projectModel.model;
-    this.site = siteModel.model;
-    this.recordings = [];
-    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
-
-    // Retrieve audio recording details
-    // this.route.params
-    //   .pipe(
-    //     flatMap(params => {
-    //       return this.audioRecordingApi.getAudioRecordings(params.siteId, {
-    //         items: 100
-    //       });
-    //     }),
-    //     takeUntil(this.unsubscribe)
-    //   )
-    //   .subscribe(
-    //     recordings => {
-    //       this.recordings = recordings;
-    //       this.extremityDates(recordings);
-    //     },
-    //     () => {
-    //       // Doesn't break things if audio recordings don't load
-    //       this.recordings = [];
-    //     }
-    //   );
-  }
-
-  public extremityDates(recordings: AudioRecording[]) {
-    let startDate: DateTimeTimezone = null;
-    let endDate: DateTimeTimezone = null;
-
-    recordings.map((recording) => {
-      if (!startDate || recording.recordedDate < startDate) {
-        startDate = recording.recordedDate;
-      }
-      if (!endDate || recording.recordedDate > endDate) {
-        endDate = recording.recordedDate;
-      }
-    });
-
-    this.recordingsStart = startDate;
-    this.recordingsEnd = endDate;
+    this.project = resolvedModels[projectKey] as Project;
+    this.site = resolvedModels[siteKey] as Site;
   }
 }
 
-DetailsComponent.LinkComponentToPageInfo({
+@Component({
+  selector: "app-point-details",
+  template: `
+    <app-site
+      *ngIf="project && region && site"
+      [project]="project"
+      [region]="region"
+      [site]="site"
+    ></app-site>
+  `,
+})
+class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
+  public region: Region;
+
+  public ngOnInit() {
+    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
+
+    if (!resolvedModels) {
+      return;
+    }
+
+    this.project = resolvedModels[projectKey] as Project;
+    this.region = resolvedModels[regionKey] as Region;
+    this.site = resolvedModels[siteKey] as Site;
+  }
+}
+
+SiteDetailsComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([projectMenuItem, ...siteMenuItemActions]),
@@ -121,4 +120,17 @@ DetailsComponent.LinkComponentToPageInfo({
   },
 }).AndMenuRoute(siteMenuItem);
 
-export { DetailsComponent };
+PointDetailsComponent.LinkComponentToPageInfo({
+  category: pointsCategory,
+  menus: {
+    actions: List([regionMenuItem, ...pointMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).AndMenuRoute(pointMenuItem);
+
+export { SiteDetailsComponent, PointDetailsComponent };

@@ -29,6 +29,7 @@ import { SecurityModule } from "./components/security/security.module";
 import { SendAudioModule } from "./components/send-audio/send-audio.module";
 import { PermissionsShieldComponent } from "./components/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./components/shared/shared.module";
+import { PointsModule } from "./components/sites/points.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
@@ -48,10 +49,11 @@ export const appImports = [
   AdminModule,
   DataRequestModule,
   MyAccountModule,
+  PointsModule,
   ProfileModule,
   ProjectsModule,
-  ReportProblemsModule,
   RegionsModule,
+  ReportProblemsModule,
   SecurityModule,
   SendAudioModule,
   SitesModule,
