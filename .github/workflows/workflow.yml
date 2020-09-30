@@ -30,14 +30,14 @@ jobs:
         id: npm-cache
         run: echo "::set-output name=dir::$(npm config get cache)"
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ steps.npm-cache.outputs.dir }}
-            **/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      # - name: Cache node modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ${{ steps.npm-cache.outputs.dir }}
+      #       **/node_modules
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: ${{ runner.os }}-node-
 
       - name: NPM install
         run: npm install
@@ -79,18 +79,17 @@ jobs:
         id: npm-cache
         run: echo "::set-output name=dir::$(npm config get cache)"
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ steps.npm-cache.outputs.dir }}
-            **/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      # - name: Cache node modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ${{ steps.npm-cache.outputs.dir }}
+      #       **/node_modules
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: ${{ runner.os }}-node-
 
       - name: NPM install
         run: npm install
-
 
       # Temporarily disabled
       # - name: Run e2e test suite
@@ -112,14 +111,14 @@ jobs:
         id: npm-cache
         run: echo "::set-output name=dir::$(npm config get cache)"
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ steps.npm-cache.outputs.dir }}
-            **/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      # - name: Cache node modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ${{ steps.npm-cache.outputs.dir }}
+      #       **/node_modules
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: ${{ runner.os }}-node-
 
       - name: NPM install
         run: npm install
