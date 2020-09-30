@@ -24,21 +24,6 @@ jobs:
         with:
           node-version: 12.x
 
-      # https://github.com/actions/cache/blob/main/examples.md#node---npm
-      # Note: Reset cache when changing node versions as it can crash
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      # - name: Cache node modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: |
-      #       ${{ steps.npm-cache.outputs.dir }}
-      #       **/node_modules
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: ${{ runner.os }}-node-
-
       - name: NPM install
         run: npm install
 
@@ -73,21 +58,6 @@ jobs:
         with:
           node-version: 12.x
 
-      # https://github.com/actions/cache/blob/main/examples.md#node---npm
-      # Note: Reset cache when changing node versions as it can crash
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      # - name: Cache node modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: |
-      #       ${{ steps.npm-cache.outputs.dir }}
-      #       **/node_modules
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: ${{ runner.os }}-node-
-
       - name: NPM install
         run: npm install
 
@@ -104,21 +74,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-
-      # https://github.com/actions/cache/blob/main/examples.md#node---npm
-      # Note: Reset cache when changing node versions as it can crash
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      # - name: Cache node modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: |
-      #       ${{ steps.npm-cache.outputs.dir }}
-      #       **/node_modules
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: ${{ runner.os }}-node-
 
       - name: NPM install
         run: npm install
