@@ -8,9 +8,11 @@ import {
   HasDescription,
   Id,
   Ids,
+  ImageUrl,
   Notes,
   Param,
 } from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
   Creator,
@@ -22,6 +24,7 @@ import {
 import {
   BawCollection,
   BawDateTime,
+  BawImage,
   BawPersistAttr,
 } from "./AttributeDecorators";
 import { Project } from "./Project";
@@ -48,6 +51,12 @@ export class Region extends AbstractModel implements IRegion {
   public readonly id?: Id;
   @BawPersistAttr
   public readonly name?: Param;
+  @BawPersistAttr
+  public readonly imageUrl?: string;
+  @BawImage<Region>(`${assetRoot}/images/site/site_span4.png`, {
+    key: "imageUrl",
+  })
+  public readonly image?: ImageUrl[];
   @BawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;

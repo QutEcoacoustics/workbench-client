@@ -5,13 +5,6 @@
   </div>
 
   <div *ngFor="let region of regions" class="item">
-    <li class="list-group-item">
-      <div class="body">
-        <a [routerLink]="region.getViewUrl(project)">
-          <h5>{{ region.name }}</h5>
-        </a>
-        <p>Number of Points: {{ numSites(region) }}</p>
-      </div>
-    </li>
+    <app-site-card [project]="project" [region]="region"></app-site-card>
   </div>
 </div>

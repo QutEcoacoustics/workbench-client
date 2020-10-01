@@ -1,5 +1,6 @@
-.site {
+li > div {
   display: flex;
+  min-height: 100px;
 
   .image img {
     max-width: 60px;
@@ -27,4 +28,9 @@
       }
     }
   }
+}
+
+#points {
+  padding-top: 5px;
+  padding-bottom: 8px;
 }
