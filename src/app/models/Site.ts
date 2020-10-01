@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { IdOr } from "@baw-api/api-common";
+import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -27,7 +27,6 @@ import {
   BawPersistAttr,
 } from "./AttributeDecorators";
 import type { Project } from "./Project";
-import { Region } from "./Region";
 import type { User } from "./User";
 
 /**
@@ -124,18 +123,25 @@ export class Site extends AbstractModel implements ISite {
   }
 
   public getViewUrl(project: IdOr<Project>): string {
-    if (this.regionId) {
+    if (isInstantiated(this.regionId)) {
       return pointMenuItem.route.format({
-        projectId: typeof project === "number" ? project : project.id,
+        projectId: id(project),
         regionId: this.regionId,
         siteId: this.id,
       });
     } else {
       return siteMenuItem.route.format({
-        projectId: typeof project === "number" ? project : project.id,
+        projectId: id(project),
         siteId: this.id,
       });
     }
+  }
+
+  /**
+   * Returns true if site should display as a point
+   */
+  public get isPoint() {
+    return isInstantiated(this.regionId);
   }
 
   /**

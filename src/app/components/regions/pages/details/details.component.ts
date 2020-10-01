@@ -43,7 +43,7 @@ const regionKey = "region";
 
       <p id="region_description" [innerHtml]="region.descriptionHtml"></p>
 
-      <app-site-cards [project]="project" [region]="region"></app-site-cards>
+      <app-site-cards [project]="project"></app-site-cards>
     </ng-container>
   `,
 })
