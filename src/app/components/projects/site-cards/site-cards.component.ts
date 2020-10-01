@@ -11,4 +11,6 @@ import { List } from "immutable";
 export class SiteCardsComponent {
   @Input() public project: Project;
   @Input() public sites: List<Site>;
+  @Input() public showMap: boolean;
+  @Input() public isRegion: boolean;
 }

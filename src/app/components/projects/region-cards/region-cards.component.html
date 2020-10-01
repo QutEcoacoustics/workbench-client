@@ -1,4 +1,9 @@
 <div id="regions">
+  <!-- Google Maps -->
+  <div *ngIf="showMap" class="item map">
+    <app-site-map [project]="project"></app-site-map>
+  </div>
+
   <div *ngFor="let region of regions" class="item">
     <li class="list-group-item">
       <div class="body">

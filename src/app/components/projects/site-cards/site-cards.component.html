@@ -1,7 +1,7 @@
 <div id="sites">
   <!-- Google Maps -->
-  <div class="item map">
-    <app-site-map [project]="project"></app-site-map>
+  <div *ngIf="showMap" class="item map">
+    <app-site-map [project]="project" [isRegion]="isRegion"></app-site-map>
   </div>
 
   <!-- Sites Exist -->

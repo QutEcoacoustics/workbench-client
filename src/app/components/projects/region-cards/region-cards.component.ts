@@ -11,6 +11,7 @@ import { List } from "immutable";
 export class RegionCardsComponent {
   @Input() public project: Project;
   @Input() public regions: List<Region>;
+  @Input() public showMap: boolean;
 
   public numSites(region: Region) {
     return region.siteIds?.size || 0;
