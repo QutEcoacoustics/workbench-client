@@ -5,6 +5,10 @@
 @import "~@swimlane/ngx-datatable/themes/bootstrap.scss";
 @import "~@swimlane/ngx-datatable/assets/icons.css";
 
+:root {
+  --highlight: #6c757d;
+}
+
 /* Overwrite bootstrap maximum window size */
 
 /* You can add global styles to this file, and also import other style files */

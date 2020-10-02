@@ -35,6 +35,7 @@ const regionKey = "region";
  */
 @Component({
   selector: "app-region",
+  styleUrls: ["./details.component.scss"],
   template: `
     <ng-container *ngIf="region">
       <!-- Region Details -->
@@ -55,12 +56,21 @@ const regionKey = "region";
 
       <baw-loading [display]="loading"></baw-loading>
 
-      <app-site-cards
-        [showMap]="true"
-        [project]="project"
-        [region]="region"
-        [sites]="sites"
-      ></app-site-cards>
+      <p *ngIf="!hasSites() && !loading" class="lead">
+        No additional data to display here, try adding points to the site
+      </p>
+
+      <div id="model-grid">
+        <!-- Google Maps -->
+        <div *ngIf="hasSites()" class="item map">
+          <app-site-map [project]="project" [region]="region"></app-site-map>
+        </div>
+
+        <!-- Sites -->
+        <div *ngFor="let site of sites" class="item">
+          <app-site-card [project]="project" [site]="site"></app-site-card>
+        </div>
+      </div>
 
       <ngb-pagination
         *ngIf="displayPagination"
@@ -103,6 +113,10 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     this.project = resolvedModels[projectKey] as Project;
     this.region = resolvedModels[regionKey] as Region;
     super.ngOnInit();
+  }
+
+  public hasSites() {
+    return this.sites.size > 0;
   }
 }
 

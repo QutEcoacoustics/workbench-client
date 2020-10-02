@@ -61,6 +61,7 @@ const projectKey = "project";
       <h2>
         Sites
         <small class="text-muted">
+          <!-- TODO This calculation is inaccurate -->
           found {{ collectionSizes.sites + collectionSizes.regions }} sites
         </small>
       </h2>
@@ -74,24 +75,26 @@ const projectKey = "project";
 
       <baw-loading [display]="loading"></baw-loading>
 
-      <ng-container *ngIf="!loading">
-        <p class="lead" *ngIf="!hasSites && !hasRegions">
-          No additional data to display here, try adding sites to the project
-        </p>
+      <p *ngIf="!hasSites && !hasRegions && !loading" class="lead">
+        No additional data to display here, try adding sites to the project
+      </p>
 
-        <app-region-cards
-          *ngIf="hasRegions"
-          [showMap]="true"
-          [project]="project"
-          [regions]="regions"
-        ></app-region-cards>
-        <app-site-cards
-          *ngIf="hasSites"
-          [showMap]="!hasRegions"
-          [project]="project"
-          [sites]="sites"
-        ></app-site-cards>
-      </ng-container>
+      <div id="model-grid">
+        <!-- Google Maps -->
+        <div *ngIf="hasSites || hasRegions" class="item map">
+          <app-site-map [project]="project"></app-site-map>
+        </div>
+
+        <!-- Regions -->
+        <div *ngFor="let region of regions" class="item">
+          <app-site-card [project]="project" [region]="region"></app-site-card>
+        </div>
+
+        <!-- Sites -->
+        <div *ngFor="let site of sites" class="item">
+          <app-site-card [project]="project" [site]="site"></app-site-card>
+        </div>
+      </div>
 
       <ngb-pagination
         *ngIf="displayPagination"

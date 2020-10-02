@@ -16,9 +16,7 @@ import { PermissionsComponent } from "./pages/permissions/permissions.component"
 import { RequestComponent } from "./pages/request/request.component";
 import { PillListComponent } from "./pill-list/pill-list.component";
 import { projectsRoute } from "./projects.menus";
-import { RegionCardsComponent } from "./region-cards/region-cards.component";
 import { SiteCardComponent } from "./site-card/site-card.component";
-import { SiteCardsComponent } from "./site-cards/site-cards.component";
 import { SiteMapComponent } from "./site-map/site-map.component";
 
 const components = [
@@ -33,10 +31,8 @@ const components = [
   NewComponent,
   PermissionsComponent,
   PillListComponent,
-  RegionCardsComponent,
   RequestComponent,
   SiteCardComponent,
-  SiteCardsComponent,
   SiteMapComponent,
 ];
 
