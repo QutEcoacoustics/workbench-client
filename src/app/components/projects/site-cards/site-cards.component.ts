@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 
@@ -10,7 +11,7 @@ import { List } from "immutable";
 })
 export class SiteCardsComponent {
   @Input() public project: Project;
+  @Input() public region: Region;
   @Input() public sites: List<Site>;
   @Input() public showMap: boolean;
-  @Input() public isRegion: boolean;
 }

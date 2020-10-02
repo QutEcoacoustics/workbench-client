@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
+import { SitesService } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   deleteRegionMenuItem,
@@ -11,9 +12,11 @@ import {
   regionsCategory,
 } from "@components/regions/regions.menus";
 import { newPointMenuItem } from "@components/sites/points.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
@@ -43,16 +46,53 @@ const regionKey = "region";
 
       <p id="region_description" [innerHtml]="region.descriptionHtml"></p>
 
-      <app-site-cards [project]="project"></app-site-cards>
+      <baw-debounce-input
+        label="Filter"
+        placeholder="Filter Points"
+        [default]="filter"
+        (filter)="onFilter($event)"
+      ></baw-debounce-input>
+
+      <baw-loading [display]="loading"></baw-loading>
+
+      <app-site-cards
+        [showMap]="true"
+        [project]="project"
+        [region]="region"
+        [sites]="sites"
+      ></app-site-cards>
+
+      <ngb-pagination
+        *ngIf="displayPagination"
+        aria-label="Pagination Buttons"
+        class="mt-2 d-flex justify-content-end"
+        [collectionSize]="collectionSize"
+        [(page)]="page"
+      ></ngb-pagination>
     </ng-container>
   `,
 })
-class DetailsComponent extends PageComponent implements OnInit {
+class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public project: Project;
   public region: Region;
+  public sites: List<Site> = List([]);
 
-  constructor(private route: ActivatedRoute) {
-    super();
+  constructor(
+    router: Router,
+    route: ActivatedRoute,
+    config: NgbPaginationConfig,
+    sitesApi: SitesService
+  ) {
+    super(
+      router,
+      route,
+      config,
+      sitesApi,
+      "name",
+      () => [this.project.id],
+      (sites) => (this.sites = List(sites)),
+      () => ({ regionId: { eq: this.region.id } })
+    );
   }
 
   public ngOnInit(): void {
@@ -62,6 +102,7 @@ class DetailsComponent extends PageComponent implements OnInit {
     }
     this.project = resolvedModels[projectKey] as Project;
     this.region = resolvedModels[regionKey] as Region;
+    super.ngOnInit();
   }
 }
 
