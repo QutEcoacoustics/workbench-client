@@ -60,7 +60,7 @@
     "just-snake-case": "^1.1.0",
     "luxon": "^1.25.0",
     "ngx-line-truncation": "^1.6.6",
-    "ngx-toastr": "^13.0.0",
+    "ngx-toastr": "^13.0.1",
     "rxjs": "^6.6.3",
     "snazzy-info-window": "^1.1.1",
     "tslib": "^2.0.1",
