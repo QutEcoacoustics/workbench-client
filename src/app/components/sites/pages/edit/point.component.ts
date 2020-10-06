@@ -10,6 +10,7 @@ import {
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
+import { fields } from "../../point.base.json";
 import { pointMenuItemActions } from "../details/point.component";
 import { SiteEditComponent } from "./site.component";
 
@@ -21,7 +22,9 @@ const siteKey = "site";
   selector: "app-points-edit",
   templateUrl: "./edit.component.html",
 })
-class PointEditComponent extends SiteEditComponent {}
+class PointEditComponent extends SiteEditComponent {
+  public fields = fields;
+}
 
 PointEditComponent.LinkComponentToPageInfo({
   category: pointsCategory,

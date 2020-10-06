@@ -4,14 +4,14 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Region Id"
+        "label": "Site Id"
       }
     },
     {
       "key": "name",
       "type": "input",
       "templateOptions": {
-        "label": "Region Name",
+        "label": "Site Name",
         "type": "text",
         "required": true
       }

@@ -10,6 +10,7 @@ import {
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { fields } from "../../point.base.json";
 import { SiteNewComponent } from "./site.component";
 
 const projectKey = "project";
@@ -20,6 +21,7 @@ const regionKey = "region";
   templateUrl: "./new.component.html",
 })
 class PointNewComponent extends SiteNewComponent {
+  public fields = fields;
   public title = "New Point";
 
   public get region(): Region {
