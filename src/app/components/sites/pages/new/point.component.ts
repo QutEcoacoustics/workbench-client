@@ -20,7 +20,7 @@ const regionKey = "region";
   templateUrl: "./new.component.html",
 })
 class PointNewComponent extends SiteNewComponent {
-  public hideTitle = false;
+  public title = "New Point";
 
   public get region(): Region {
     return this.models[regionKey] as Region;

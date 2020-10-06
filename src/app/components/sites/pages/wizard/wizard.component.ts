@@ -53,7 +53,7 @@ const projectKey = "project";
       <app-sites-new *ngIf="isCreating.site"></app-sites-new>
       <app-regions-new
         *ngIf="isCreating.region"
-        [hideTitle]=""
+        [hideTitle]="true"
       ></app-regions-new>
     </ng-container>
   `,

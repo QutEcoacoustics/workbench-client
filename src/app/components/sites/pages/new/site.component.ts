@@ -20,7 +20,7 @@ const projectKey = "project";
 })
 export class SiteNewComponent extends FormTemplate<Site> {
   public fields = fields;
-  public hideTitle = true;
+  public title = "";
 
   constructor(
     protected api: SitesService,
