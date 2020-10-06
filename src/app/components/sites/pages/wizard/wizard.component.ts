@@ -1,11 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { Project } from "@models/Project";
 import { List } from "immutable";
 import { newSiteMenuItem } from "../../sites.menus";
 
@@ -16,47 +19,70 @@ const projectKey = "project";
   styles: [
     `
       button {
-        width: 125px;
+        width: 100px;
+      }
+
+      #title {
+        display: none;
       }
     `,
   ],
   template: `
-    <h1>New Site</h1>
+    <ng-container *ngIf="!error">
+      <h2 class="text-center">New Site</h2>
 
-    <p class="lead">Do you have more than one sensor at this site?</p>
+      <p class="lead">Do you have more than one sensor at this site?</p>
 
-    <div class="float-right">
-      <button
-        type="button"
-        class="btn btn-outline-dark mr-3"
-        [ngClass]="{ active: isCreating.region }"
-        (click)="submit(false)"
-      >
-        No
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-dark"
-        [ngClass]="{ active: isCreating.site }"
-        (click)="submit(true)"
-      >
-        Yes
-      </button>
-    </div>
+      <div class="clearfix">
+        <div class="float-right">
+          <button
+            type="button"
+            class="btn btn-outline-dark mr-3"
+            [ngClass]="{ active: isCreating.site }"
+            (click)="submit(false)"
+          >
+            No
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            [ngClass]="{ active: isCreating.region }"
+            (click)="submit(true)"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+
+      <app-sites-new *ngIf="isCreating.site"></app-sites-new>
+      <app-regions-new *ngIf="isCreating.region"></app-regions-new>
+    </ng-container>
   `,
+  // Remove view encapsulation so that child titles can be removed
+  // tslint:disable-next-line: use-component-view-encapsulation
+  encapsulation: ViewEncapsulation.None,
 })
 class WizardComponent extends PageComponent implements OnInit {
+  public error: boolean;
   public isCreating = { site: false, region: false };
+  public project: Project;
 
-  constructor() {
+  constructor(private route: ActivatedRoute) {
     super();
   }
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    const models = retrieveResolvers(this.route.snapshot.data);
+    if (!models) {
+      this.error = true;
+      return;
+    }
 
-  public submit(response: boolean) {
-    console.log("Submitted: ", response);
-    this.isCreating = { site: response, region: !response };
+    this.project = models[projectKey] as Project;
+  }
+
+  public submit(isRegion: boolean) {
+    this.isCreating = { site: !isRegion, region: isRegion };
   }
 }
 

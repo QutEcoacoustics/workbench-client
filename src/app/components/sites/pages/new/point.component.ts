@@ -40,4 +40,5 @@ PointNewComponent.LinkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
   },
 }).AndMenuRoute(newPointMenuItem);
+
 export { PointNewComponent };

@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { RegionsModule } from "@components/regions/regions.module";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
@@ -29,7 +30,12 @@ const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
  */
 @NgModule({
   declarations: components,
-  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
+  imports: [
+    MapModule,
+    RegionsModule,
+    SharedModule,
+    RouterModule.forChild(routes),
+  ],
   exports: [RouterModule, ...components],
 })
 export class SitesModule {}
