@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -28,7 +28,7 @@ const projectKey = "project";
   template: `
     <baw-form
       *ngIf="!failure"
-      title="New Region"
+      [title]="hideTitle ? '' : 'New Region'"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -38,6 +38,7 @@ const projectKey = "project";
   `,
 })
 class NewComponent extends FormTemplate<Region> {
+  @Input() public hideTitle: boolean;
   public fields = fields;
 
   constructor(

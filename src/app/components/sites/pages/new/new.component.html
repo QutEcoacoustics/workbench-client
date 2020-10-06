@@ -1,6 +1,6 @@
 <baw-form
   *ngIf="!failure"
-  title="New Site"
+  [title]="hideTitle ? '' : 'New Site'"
   [model]="model"
   [fields]="fields"
   [submitLoading]="loading"

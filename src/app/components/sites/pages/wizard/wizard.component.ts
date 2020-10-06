@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
@@ -20,10 +20,6 @@ const projectKey = "project";
     `
       button {
         width: 100px;
-      }
-
-      #title {
-        display: none;
       }
     `,
   ],
@@ -55,12 +51,12 @@ const projectKey = "project";
       </div>
 
       <app-sites-new *ngIf="isCreating.site"></app-sites-new>
-      <app-regions-new *ngIf="isCreating.region"></app-regions-new>
+      <app-regions-new
+        *ngIf="isCreating.region"
+        [hideTitle]=""
+      ></app-regions-new>
     </ng-container>
   `,
-  // Remove view encapsulation so that child titles can be removed
-  // tslint:disable-next-line: use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None,
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;
