@@ -3,7 +3,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { List } from "immutable";
 import { siteHarvestMenuItem, sitesCategory } from "../../sites.menus";
-import { siteMenuItemActions } from "../details/details.component";
+import { siteMenuItemActions } from "../details/site.component";
 
 /**
  * Site Harvest Component

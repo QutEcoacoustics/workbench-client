@@ -1,19 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
-import {
-  editPointMenuItem,
-  pointMenuItem,
-  pointsCategory,
-} from "@components/sites/points.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
-import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
@@ -25,14 +18,10 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
-import {
-  pointMenuItemActions,
-  siteMenuItemActions,
-} from "../details/details.component";
-import { siteErrorMsg } from "../new/new.component";
+import { siteMenuItemActions } from "../details/site.component";
+import { siteErrorMsg } from "../new/site.component";
 
 const projectKey = "project";
-const regionKey = "region";
 const siteKey = "site";
 
 @Component({
@@ -80,12 +69,6 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-@Component({
-  selector: "app-points-edit",
-  templateUrl: "./edit.component.html",
-})
-class PointEditComponent extends SiteEditComponent {}
-
 SiteEditComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
@@ -98,17 +81,4 @@ SiteEditComponent.LinkComponentToPageInfo({
   },
 }).AndMenuRoute(editSiteMenuItem);
 
-PointEditComponent.LinkComponentToPageInfo({
-  category: pointsCategory,
-  menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
-  },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-}).AndMenuRoute(editPointMenuItem);
-
-export { SiteEditComponent, PointEditComponent };
+export { SiteEditComponent };

@@ -17,14 +17,14 @@ import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { DeleteComponent } from "./delete.component";
+import { SiteDeleteComponent } from "./site.component";
 
-describe("SitesDeleteComponent", () => {
+describe("SiteDeleteComponent", () => {
   let api: SpyObject<SitesService>;
-  let component: DeleteComponent;
+  let component: SiteDeleteComponent;
   let defaultSite: Site;
   let defaultProject: Project;
-  let fixture: ComponentFixture<DeleteComponent>;
+  let fixture: ComponentFixture<SiteDeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
@@ -41,7 +41,7 @@ describe("SitesDeleteComponent", () => {
         RouterTestingModule,
         MockBawApiModule,
       ],
-      declarations: [DeleteComponent],
+      declarations: [SiteDeleteComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -59,7 +59,7 @@ describe("SitesDeleteComponent", () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteComponent);
+    fixture = TestBed.createComponent(SiteDeleteComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     api = TestBed.inject(SitesService) as SpyObject<SitesService>;

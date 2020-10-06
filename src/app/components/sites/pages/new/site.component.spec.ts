@@ -23,12 +23,12 @@ import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { fields } from "../../site.base.json";
-import { NewComponent } from "./new.component";
+import { SiteNewComponent } from "./site.component";
 
 describe("SitesNewComponent", () => {
-  let spectator: SpectatorRouting<NewComponent>;
+  let spectator: SpectatorRouting<SiteNewComponent>;
   const createComponent = createRoutingFactory({
-    component: NewComponent,
+    component: SiteNewComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],

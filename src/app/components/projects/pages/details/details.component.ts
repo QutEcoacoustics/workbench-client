@@ -14,7 +14,6 @@ import {
   projectMenuItem,
   projectsMenuItem,
 } from "@components/projects/projects.menus";
-import { newRegionMenuItem } from "@components/regions/regions.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
@@ -32,7 +31,6 @@ export const projectMenuItemActions = [
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   newSiteMenuItem,
-  newRegionMenuItem,
   assignSiteMenuItem,
   deleteProjectMenuItem,
 ];
