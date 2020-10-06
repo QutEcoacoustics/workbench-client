@@ -7,23 +7,23 @@ import { AppConfigService } from "@services/app-config/app-config.service";
 import { cmsRoot } from "@services/app-config/app-config.service.spec";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { HarvestComponent } from "./harvest.component";
+import { SiteHarvestComponent } from "./site.component";
 
 describe("SiteHarvestComponent", () => {
   let httpMock: HttpTestingController;
-  let component: HarvestComponent;
+  let component: SiteHarvestComponent;
   let env: AppConfigService;
-  let fixture: ComponentFixture<HarvestComponent>;
+  let fixture: ComponentFixture<SiteHarvestComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, HttpClientTestingModule, MockAppConfigModule],
-      declarations: [HarvestComponent],
+      declarations: [SiteHarvestComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HarvestComponent);
+    fixture = TestBed.createComponent(SiteHarvestComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
     env = TestBed.inject(AppConfigService);

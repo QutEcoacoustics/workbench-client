@@ -20,7 +20,6 @@ import { ToastrService } from "ngx-toastr";
 import { siteMenuItemActions } from "../details/site.component";
 
 const projectKey = "project";
-const regionKey = "region";
 const siteKey = "site";
 
 @Component({

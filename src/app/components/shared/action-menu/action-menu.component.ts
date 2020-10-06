@@ -22,8 +22,7 @@ import { WidgetMenuItem } from "../widget/widgetItem";
       [links]="actionLinks"
       [widget]="actionWidget"
       [menuType]="'action'"
-    >
-    </baw-menu>
+    ></baw-menu>
   `,
 })
 export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {

@@ -36,11 +36,13 @@ const siteKey = "site";
  */
 @Component({
   selector: "app-site-details",
-  template: `<app-site
-    *ngIf="project && site"
-    [project]="project"
-    [site]="site"
-  ></app-site>`,
+  template: `
+    <app-site
+      *ngIf="project && site"
+      [project]="project"
+      [site]="site"
+    ></app-site>
+  `,
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;

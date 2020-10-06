@@ -7,18 +7,18 @@ import { SharedModule } from "@shared/shared.module";
 import { SiteDeleteComponent } from "./pages/delete/site.component";
 import { SiteDetailsComponent } from "./pages/details/site.component";
 import { SiteEditComponent } from "./pages/edit/site.component";
-import { HarvestComponent } from "./pages/harvest/harvest.component";
+import { SiteHarvestComponent } from "./pages/harvest/site.component";
 import { SiteNewComponent } from "./pages/new/site.component";
 import { WizardComponent } from "./pages/wizard/wizard.component";
 import { SiteComponent } from "./site/site.component";
 import { sitesRoute } from "./sites.menus";
 
 const components = [
-  HarvestComponent,
   SiteComponent,
   SiteDeleteComponent,
   SiteDetailsComponent,
   SiteEditComponent,
+  SiteHarvestComponent,
   SiteNewComponent,
   WizardComponent,
 ];

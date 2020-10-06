@@ -10,13 +10,9 @@ import { siteMenuItemActions } from "../details/site.component";
  */
 @Component({
   selector: "app-sites-harvest",
-  template: `
-    <baw-wip>
-      <baw-cms [page]="page"></baw-cms>
-    </baw-wip>
-  `,
+  templateUrl: "./harvest.component.html",
 })
-class HarvestComponent extends PageComponent implements OnInit {
+class SiteHarvestComponent extends PageComponent implements OnInit {
   public page: string;
 
   constructor(private env: AppConfigService) {
@@ -28,9 +24,9 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-HarvestComponent.LinkComponentToPageInfo({
+SiteHarvestComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: { actions: List(siteMenuItemActions) },
 }).AndMenuRoute(siteHarvestMenuItem);
 
-export { HarvestComponent };
+export { SiteHarvestComponent };
