@@ -5,8 +5,10 @@
 @import "~@swimlane/ngx-datatable/themes/bootstrap.scss";
 @import "~@swimlane/ngx-datatable/assets/icons.css";
 
+/* Global css variables */
 :root {
-  --highlight: #6c757d;
+  /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
+  --theme-highlight: #6c757d;
 }
 
 /* Overwrite bootstrap maximum window size */

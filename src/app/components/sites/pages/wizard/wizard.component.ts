@@ -29,25 +29,23 @@ const projectKey = "project";
 
       <p class="lead">Do you have more than one sensor at this site?</p>
 
-      <div class="clearfix">
-        <div class="float-right">
-          <button
-            type="button"
-            class="btn btn-outline-dark mr-3"
-            [ngClass]="{ active: isCreating.site }"
-            (click)="submit(false)"
-          >
-            No
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-dark"
-            [ngClass]="{ active: isCreating.region }"
-            (click)="submit(true)"
-          >
-            Yes
-          </button>
-        </div>
+      <div class="d-flex flex-row-reverse">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          [ngClass]="{ active: isCreating.region }"
+          (click)="submit(true)"
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-dark mr-3"
+          [ngClass]="{ active: isCreating.site }"
+          (click)="submit(false)"
+        >
+          No
+        </button>
       </div>
 
       <app-sites-new *ngIf="isCreating.site"></app-sites-new>
