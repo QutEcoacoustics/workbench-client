@@ -1,159 +1,137 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { GoogleMapsModule } from "@angular/google-maps";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@components/shared/shared.module";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
-import { MockMapComponent } from "@shared/map/mapMock.component";
+import { MapComponent } from "@shared/map/map.component";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { MockComponent } from "ng-mocks";
 import { SiteComponent } from "./site.component";
 
-describe("SitesDetailsComponent", () => {
-  let component: SiteComponent;
-  let fixture: ComponentFixture<SiteComponent>;
+const mockMapComponent = MockComponent(MapComponent);
+
+describe("SiteComponent", () => {
   let defaultProject: Project;
+  let defaultRegion: Region;
   let defaultSite: Site;
+  let spectator: Spectator<SiteComponent>;
+  const createComponent = createComponentFactory({
+    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    declarations: [mockMapComponent],
+    component: SiteComponent,
+  });
 
-  function configureTestingModule(project: Project, site: Site) {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        GoogleMapsModule,
-        MockBawApiModule,
-      ],
-      declarations: [SiteComponent, MockMapComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(SiteComponent);
-    component = fixture.componentInstance;
-    component.project = project;
-    component.site = site;
+  function setup(project: Project, site: Site, region?: Region) {
+    spectator = createComponent({
+      detectChanges: false,
+      props: { project, site, region },
+    });
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
+    defaultRegion = new Region(generateRegion());
     defaultSite = new Site(generateSite());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultProject, defaultSite);
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    setup(defaultProject, defaultSite);
+    spectator.detectChanges();
+    expect(spectator.component).toBeTruthy();
   });
 
   describe("Project", () => {
     it("should display project name", () => {
-      const project = new Project({
-        ...generateSite(),
-        name: "Custom Project",
-      });
-      configureTestingModule(project, defaultSite);
-      fixture.detectChanges();
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
 
-      const title = fixture.nativeElement.querySelector("h1");
+      const title = spectator.query<HTMLHeadingElement>("h2");
       expect(title).toBeTruthy();
-      expect(title.innerText).toContain("Project: Custom Project");
+      expect(title.innerText).toContain(`Project: ${defaultProject.name}`);
+    });
+  });
+
+  describe("Region", () => {
+    it("should not display region name if doesn't exist", () => {
+      setup(defaultProject, defaultSite, undefined);
+      spectator.detectChanges();
+
+      const title = spectator.query<HTMLHeadingElement>("h3");
+      expect(title).toBeFalsy();
+    });
+
+    it("should display region name if exists", () => {
+      setup(defaultProject, defaultSite, defaultRegion);
+      spectator.detectChanges();
+
+      const title = spectator.query<HTMLHeadingElement>("h3");
+      expect(title).toBeTruthy();
+      expect(title.innerText).toContain(`Site: ${defaultRegion.name}`);
     });
   });
 
   describe("Site", () => {
     it("should display site name", () => {
-      const site = new Site({
-        ...generateSite(),
-        name: "Custom Site",
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
 
-      const title = fixture.nativeElement.querySelector("h1");
+      const title = spectator.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
-      expect(title.innerText).toContain("Custom Site");
+      expect(title.innerText).toContain(defaultSite.name);
     });
 
     it("should display default site image", () => {
-      const site = new Site({
-        ...generateSite(),
-        name: "Site",
-        imageUrl: undefined,
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
+      const site = new Site({ ...generateSite(), imageUrl: undefined });
+      setup(defaultProject, site);
+      spectator.detectChanges();
 
-      const image = fixture.nativeElement.querySelector("img");
+      const image = spectator.query<HTMLImageElement>("img");
       assertImage(
         image,
         `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
-        "Site image"
+        `${site.name} image`
       );
     });
 
     it("should display custom site image", () => {
-      const site = new Site({
-        ...generateSite(),
-        name: "Site",
-        imageUrl: "http://brokenlink/",
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
 
-      const image = fixture.nativeElement.querySelector("img");
-      assertImage(image, "http://brokenlink/", "Site image");
+      const image = spectator.query<HTMLImageElement>("img");
+      assertImage(image, defaultSite.imageUrl, `${defaultSite.name} image`);
     });
 
     it("should display site description with html markup", () => {
-      const site = new Site({
-        ...generateSite(),
-        descriptionHtml: "<b>Custom Description<b>",
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
 
-      const description = fixture.nativeElement.querySelector(
-        "p#site_description"
-      );
+      const description = spectator.query("#site_description");
       expect(description).toBeTruthy();
-      expect(description.innerHTML).toContain("<b>Custom Description<b>");
+      expect(description.innerHTML).toContain(defaultSite.descriptionHtml);
     });
   });
 
   describe("Google Maps", () => {
-    it("should display google maps placeholder box when no location found", () => {
-      const site = new Site({
-        id: 1,
-        name: "Site",
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
-
-      const googleMaps = fixture.nativeElement.querySelector("baw-map");
-      expect(googleMaps).toBeTruthy();
-      expect(googleMaps.querySelector("span").innerText).toContain(
-        "No locations specified"
-      );
+    it("should create google maps component", () => {
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
+      expect(spectator.query(mockMapComponent)).toBeTruthy();
     });
 
-    it("should display google maps with pin when location found", () => {
-      const site = new Site({
-        id: 1,
-        name: "Site",
-        locationObfuscated: true,
-        customLatitude: 0,
-        customLongitude: 1,
-      });
-      configureTestingModule(defaultProject, site);
-      fixture.detectChanges();
-
-      const googleMaps = fixture.nativeElement.querySelector("baw-map");
-      expect(googleMaps).toBeTruthy();
-      expect(googleMaps.querySelector("p").innerText).toContain(
-        "Lat: 0 Long: 1"
-      );
+    it("should create site marker", () => {
+      setup(defaultProject, defaultSite);
+      spectator.detectChanges();
+      const maps = spectator.query(mockMapComponent);
+      expect(maps.markers.toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });
+
+  // TODO Implement tests for audio recordings
 });

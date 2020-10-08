@@ -2,7 +2,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { cmsRoot } from "@services/app-config/app-config.service.spec";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -15,14 +15,12 @@ describe("SiteHarvestComponent", () => {
   let env: AppConfigService;
   let fixture: ComponentFixture<SiteHarvestComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, HttpClientTestingModule, MockAppConfigModule],
       declarations: [SiteHarvestComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(SiteHarvestComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
