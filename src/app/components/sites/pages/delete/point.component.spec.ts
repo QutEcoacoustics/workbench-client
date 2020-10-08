@@ -4,35 +4,41 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { SharedModule } from "@components/shared/shared.module";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SpyObject } from "@ngneat/spectator";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import { SiteDeleteComponent } from "./site.component";
+import { PointDeleteComponent } from "./point.component";
 
-describe("SiteDeleteComponent", () => {
+describe("PointDeleteComponent", () => {
   let api: SpyObject<SitesService>;
-  let component: SiteDeleteComponent;
-  let defaultSite: Site;
+  let component: PointDeleteComponent;
   let defaultProject: Project;
-  let fixture: ComponentFixture<SiteDeleteComponent>;
+  let defaultRegion: Region;
+  let defaultSite: Site;
+  let fixture: ComponentFixture<PointDeleteComponent>;
   let notifications: ToastrService;
   let router: Router;
 
   function configureTestingModule(
     project: Project,
-    projectError: ApiErrorDetails,
+    region: Region,
     site: Site,
-    siteError: ApiErrorDetails
+    projectError?: ApiErrorDetails,
+    regionError?: ApiErrorDetails,
+    siteError?: ApiErrorDetails
   ) {
     TestBed.configureTestingModule({
       imports: [
@@ -41,17 +47,19 @@ describe("SiteDeleteComponent", () => {
         RouterTestingModule,
         MockBawApiModule,
       ],
-      declarations: [SiteDeleteComponent],
+      declarations: [PointDeleteComponent],
       providers: [
         {
           provide: ActivatedRoute,
           useClass: mockActivatedRoute(
             {
               project: projectResolvers.show,
+              region: regionResolvers.show,
               site: siteResolvers.show,
             },
             {
               project: { model: project, error: projectError },
+              region: { model: region, error: regionError },
               site: { model: site, error: siteError },
             }
           ),
@@ -59,7 +67,7 @@ describe("SiteDeleteComponent", () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SiteDeleteComponent);
+    fixture = TestBed.createComponent(PointDeleteComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     api = TestBed.inject(SitesService) as SpyObject<SitesService>;
@@ -74,28 +82,41 @@ describe("SiteDeleteComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultSite = new Site(generateSite());
+    defaultRegion = new Region(generateRegion());
+    defaultSite = new Site(generateSite(undefined, true));
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      configureTestingModule(defaultProject, defaultRegion, defaultSite);
       expect(component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      configureTestingModule(defaultProject, defaultRegion, defaultSite);
       expect(component).toBeTruthy();
     });
 
     it("should handle project error", () => {
       configureTestingModule(
         undefined,
-        generateApiErrorDetails(),
+        defaultRegion,
         defaultSite,
-        undefined
+        generateApiErrorDetails()
+      );
+      assertErrorHandler(fixture);
+    });
+
+    it("should handle region error", () => {
+      configureTestingModule(
+        defaultProject,
+        undefined,
+        defaultSite,
+        undefined,
+        undefined,
+        generateApiErrorDetails()
       );
       assertErrorHandler(fixture);
     });
@@ -103,6 +124,8 @@ describe("SiteDeleteComponent", () => {
     it("should handle site error", () => {
       configureTestingModule(
         defaultProject,
+        defaultRegion,
+        undefined,
         undefined,
         undefined,
         generateApiErrorDetails()
@@ -111,7 +134,7 @@ describe("SiteDeleteComponent", () => {
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      configureTestingModule(defaultProject, defaultRegion, defaultSite);
       api.destroy.and.callFake(() => new Subject());
       component.submit({ ...defaultSite });
       expect(api.destroy).toHaveBeenCalledWith(
@@ -121,8 +144,8 @@ describe("SiteDeleteComponent", () => {
     });
 
     it("should redirect to projects", () => {
-      const spy = spyOnProperty(defaultProject, "viewUrl");
-      configureTestingModule(defaultProject, undefined, defaultSite, undefined);
+      const spy = spyOnProperty(defaultRegion, "viewUrl");
+      configureTestingModule(defaultProject, defaultRegion, defaultSite);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
       component.submit({});

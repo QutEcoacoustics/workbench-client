@@ -25,7 +25,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { fields } from "../../site.base.json";
 import { SiteNewComponent } from "./site.component";
 
-describe("SitesNewComponent", () => {
+describe("SiteNewComponent", () => {
   let spectator: SpectatorRouting<SiteNewComponent>;
   const createComponent = createRoutingFactory({
     component: SiteNewComponent,
@@ -105,10 +105,14 @@ describe("SitesNewComponent", () => {
 
     it("should call api", () => {
       setup();
+      const site = new Site(generateSite());
       api.create.and.callFake(() => new Subject());
 
-      spectator.component.submit({});
-      expect(api.create).toHaveBeenCalled();
+      spectator.component.submit({ ...site });
+      expect(api.create).toHaveBeenCalledWith(
+        new Site({ ...site }),
+        defaultProject
+      );
     });
 
     it("should redirect to site", () => {

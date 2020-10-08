@@ -43,7 +43,7 @@ describe("RegionsNewComponent", () => {
         key: "name",
         type: "input",
         required: true,
-        label: "Region Name",
+        label: "Site Name",
         inputType: "text",
       },
       {

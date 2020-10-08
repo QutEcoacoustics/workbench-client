@@ -1,7 +1,8 @@
 import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   editPointMenuItem,
   pointMenuItem,
@@ -10,6 +11,7 @@ import {
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { fields } from "../../point.base.json";
 import { pointMenuItemActions } from "../details/point.component";
 import { SiteEditComponent } from "./site.component";
@@ -24,6 +26,15 @@ const siteKey = "site";
 })
 class PointEditComponent extends SiteEditComponent {
   public fields = fields;
+
+  constructor(
+    api: SitesService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(api, notifications, route, router);
+  }
 }
 
 PointEditComponent.LinkComponentToPageInfo({

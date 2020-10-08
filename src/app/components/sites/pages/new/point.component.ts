@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import { regionMenuItemActions } from "@components/regions/pages/details/details.component";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import {
@@ -10,6 +12,7 @@ import {
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { fields } from "../../point.base.json";
 import { SiteNewComponent } from "./site.component";
 
@@ -23,6 +26,15 @@ const regionKey = "region";
 class PointNewComponent extends SiteNewComponent {
   public fields = fields;
   public title = "New Point";
+
+  constructor(
+    api: SitesService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(api, notifications, route, router);
+  }
 
   public get region(): Region {
     return this.models[regionKey] as Region;

@@ -1,12 +1,14 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
 } from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
   createRoutingFactory,
@@ -16,19 +18,20 @@ import {
 import { FormComponent } from "@shared/form/form.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { fields } from "../../site.base.json";
-import { SiteEditComponent } from "./site.component";
+import { fields } from "../../point.base.json";
+import { PointEditComponent } from "./point.component";
 
-describe("SiteEditComponent", () => {
-  let spectator: SpectatorRouting<SiteEditComponent>;
+describe("PointEditComponent", () => {
+  let spectator: SpectatorRouting<PointEditComponent>;
   const createComponent = createRoutingFactory({
-    component: SiteEditComponent,
+    component: PointEditComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
@@ -38,29 +41,29 @@ describe("SiteEditComponent", () => {
   describe("form", () => {
     testFormlyFields([
       {
-        testGroup: "Site Name Input",
+        testGroup: "Point Name Input",
         field: fields[1],
         key: "name",
         type: "input",
         required: true,
-        label: "Site Name",
+        label: "Point Name",
         inputType: "text",
       },
       {
-        testGroup: "Site Description Input",
+        testGroup: "Point Description Input",
         field: fields[2],
         key: "description",
         type: "textarea",
         label: "Description",
       },
       {
-        testGroup: "Site Location Input",
+        testGroup: "Point Location Input",
         field: fields[4],
         key: "location",
         label: "Location",
       },
       {
-        testGroup: "Site Image Input",
+        testGroup: "Point Image Input",
         field: fields[9],
         key: "imageUrl",
         type: "image",
@@ -72,21 +75,29 @@ describe("SiteEditComponent", () => {
   describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
+    let defaultRegion: Region;
     let defaultSite: Site;
 
     function setup(
       projectError?: ApiErrorDetails,
+      regionError?: ApiErrorDetails,
       siteError?: ApiErrorDetails
     ) {
       spectator = createComponent({
         detectChanges: false,
-        params: { projectId: defaultProject?.id, siteId: defaultSite?.id },
+        params: {
+          projectId: defaultProject?.id,
+          regionId: defaultRegion?.id,
+          siteId: defaultSite?.id,
+        },
         data: {
           resolvers: {
             project: projectResolvers.show,
+            region: regionResolvers.show,
             site: siteResolvers.show,
           },
           project: { model: defaultProject, error: projectError },
+          region: { model: defaultRegion, error: regionError },
           site: { model: defaultSite, error: siteError },
         },
       });
@@ -99,7 +110,8 @@ describe("SiteEditComponent", () => {
     afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
-      defaultSite = new Site(generateSite());
+      defaultRegion = new Region(generateRegion());
+      defaultSite = new Site(generateSite(undefined, true));
     });
 
     it("should create", () => {
@@ -107,13 +119,18 @@ describe("SiteEditComponent", () => {
       expect(spectator.component).toBeTruthy();
     });
 
-    it("should handle site error", () => {
+    it("should handle project error", () => {
+      setup(generateApiErrorDetails());
+      assertErrorHandler(spectator.fixture);
+    });
+
+    it("should handle region error", () => {
       setup(undefined, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it("should handle project error", () => {
-      setup(generateApiErrorDetails());
+    it("should handle site error", () => {
+      setup(undefined, undefined, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
@@ -123,19 +140,18 @@ describe("SiteEditComponent", () => {
 
       spectator.component.submit({ ...defaultSite });
       expect(api.update).toHaveBeenCalledWith(
-        new Site({ ...defaultSite }),
+        new Site(defaultSite),
         defaultProject
       );
     });
 
     it("should redirect to site", () => {
       setup();
-      const site = new Site(generateSite());
-      api.update.and.callFake(() => new BehaviorSubject<Site>(site));
+      api.update.and.callFake(() => new BehaviorSubject<Site>(defaultSite));
 
       spectator.component.submit({});
       expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
-        site.getViewUrl(defaultProject)
+        defaultSite.getViewUrl(defaultProject)
       );
     });
   });
