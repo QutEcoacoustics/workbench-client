@@ -38,7 +38,7 @@ describe("RegionsNewComponent", () => {
   describe("form", () => {
     testFormlyFields([
       {
-        testGroup: "Region Name Input",
+        testGroup: "Site Name Input",
         field: fields[1],
         key: "name",
         type: "input",
@@ -47,7 +47,7 @@ describe("RegionsNewComponent", () => {
         inputType: "text",
       },
       {
-        testGroup: "Region Description Input",
+        testGroup: "Site Description Input",
         field: fields[2],
         key: "description",
         type: "textarea",
