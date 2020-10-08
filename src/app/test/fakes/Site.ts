@@ -2,14 +2,15 @@ import { Id } from "@interfaces/apiInterfaces";
 import { ISite } from "@models/Site";
 import { modelData } from "@test/helpers/faker";
 
-export function generateSite(id?: Id): Required<ISite> {
+export function generateSite(id?: Id, hasRegion?: boolean): Required<ISite> {
   return {
     id: modelData.id(id),
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
     locationObfuscated: modelData.boolean(),
     projectIds: modelData.ids(),
-    regionId: modelData.id(),
+    // This is purposefully disabled by default as it changes the behavior of the model
+    regionId: hasRegion ? modelData.id() : undefined,
     latitude: modelData.latitude(),
     customLatitude: modelData.latitude(),
     longitude: modelData.longitude(),

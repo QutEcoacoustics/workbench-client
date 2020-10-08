@@ -20,15 +20,13 @@ import { Site } from "@models/Site";
       <div class="body">
         <div class="heading">
           <a id="nameLink" [routerLink]="model.getViewUrl(project)">
-            <h5 id="name">
-              {{ model.name }}
-            </h5>
+            <h5 id="name">{{ model.name }}</h5>
           </a>
         </div>
 
         <ul class="nav nav-pills">
-          <li class="nav-item" id="points">
-            <span *ngIf="region" class="badge badge-pill badge-dark">
+          <li *ngIf="region" class="nav-item" id="points">
+            <span class="badge badge-pill badge-dark">
               {{ numPoints() }} Points
             </span>
           </li>
