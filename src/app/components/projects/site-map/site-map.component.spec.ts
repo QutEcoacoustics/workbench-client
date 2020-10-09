@@ -16,7 +16,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { nStepObservable } from "@test/helpers/general";
+import { interceptApiRequests, nStepObservable } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { SiteMapComponent } from "./site-map.component";
@@ -83,25 +83,11 @@ describe("SiteMapComponent", () => {
     responses: (Site[] | ApiErrorDetails)[],
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[]
   ): Promise<void>[] {
-    const subjects: Subject<Site[]>[] = [];
-    const promises: Promise<void>[] = [];
-
-    responses.forEach((response) => {
-      const subject = new Subject<Site[]>();
-      subjects.push(subject);
-      promises.push(
-        nStepObservable(subject, () => response, !(response instanceof Array))
-      );
-    });
-
-    let count = -1;
-    api.filter.andCallFake((filters: Filters<ISite>, project: Project) => {
-      count++;
-      expectations?.[count]?.(filters, project);
-      return subjects[count];
-    });
-
-    return promises;
+    return interceptApiRequests<ISite, Site[]>(
+      api.filter,
+      responses,
+      expectations
+    );
   }
 
   async function assertMapMarkers(promise: Promise<any>, allSites: Site[][]) {
