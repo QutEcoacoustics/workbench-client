@@ -1,36 +1,92 @@
-import { RouterTestingModule } from "@angular/router/testing";
+import { componentFactoryName } from "@angular/compiler";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
+import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
+import { SiteMapComponent } from "@components/projects/site-map/site-map.component";
+import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
+import { IRegion, Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { assetRoot } from "@services/app-config/app-config.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
-import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertImage } from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
+import { generateRegion } from "@test/fakes/Region";
+import { generateSite } from "@test/fakes/Site";
+import {
+  FilterExpectations,
+  interceptApiRequests,
+} from "@test/helpers/general";
+import { assertErrorHandler } from "@test/helpers/html";
+import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
-/* TODO
+const mock = {
+  map: MockComponent(SiteMapComponent),
+  card: MockComponent(SiteCardComponent),
+};
+
 describe("ProjectDetailsComponent", () => {
-  let api: SpyObject<SitesService>;
+  let siteApi: SpyObject<SitesService>;
+  let regionApi: SpyObject<RegionsService>;
+  let defaultProject: Project;
   let spectator: SpectatorRouting<DetailsComponent>;
+  let component: DetailsComponent;
   const createComponent = createRoutingFactory({
+    imports: [SharedModule, MockBawApiModule],
+    declarations: [mock.map, mock.card],
     component: DetailsComponent,
-    declarations: [mockComponents.SiteCards, mockComponents.RegionCards],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
+  const emptyResponse = [[]];
+
+  function createModelWithMeta<M extends AbstractModel>(
+    construct: (id: number) => M,
+    numModels: number
+  ) {
+    const models: M[][] = [];
+    const maxPages = Math.ceil(numModels / defaultApiPageSize);
+    const getMinModelIdInPage = (page: number) => page * defaultApiPageSize;
+    const getMaxModelIdInPage = (page: number) =>
+      numModels - page * defaultApiPageSize;
+
+    for (let page = 0; page < maxPages; page++) {
+      models.push([]);
+      for (
+        let itemNo = getMinModelIdInPage(page);
+        itemNo < getMaxModelIdInPage(page);
+        itemNo++
+      ) {
+        const model = construct(itemNo);
+        model.addMetadata({ paging: { total: numModels } });
+        models[page].push(model);
+      }
+    }
+
+    return models;
+  }
+
+  function createSitesWithMeta(numSites: number) {
+    return createModelWithMeta<Site>(
+      (id) => new Site(generateSite(id)),
+      numSites
+    );
+  }
+
+  function createRegionsWithMeta(numRegions: number) {
+    return createModelWithMeta<Region>(
+      (id) => new Region(generateRegion(id)),
+      numRegions
+    );
+  }
 
   function setup(model: Project, error?: ApiErrorDetails) {
     spectator = createComponent({
@@ -41,90 +97,406 @@ describe("ProjectDetailsComponent", () => {
       },
     });
 
-    api = spectator.inject(SitesService);
+    component = spectator.component;
+    siteApi = spectator.inject(SitesService);
+    regionApi = spectator.inject(RegionsService);
   }
 
-  async function handleApiRequest(
-    models: Site[],
-    error?: ApiErrorDetails,
-    assertFilter: (filters: Filters<ISite>) => void = () => {}
+  function interceptApiRequest(
+    siteResponses: (Site[] | ApiErrorDetails)[],
+    regionResponses: (Region[] | ApiErrorDetails)[],
+    siteExpectations?: FilterExpectations<ISite>[],
+    regionExpectations?: FilterExpectations<IRegion>[]
   ) {
-    const subject = new Subject<Site[]>();
-    const promise = nStepObservable(subject, () => models ?? error, !models);
-    api.filter.and.callFake((filters) => {
-      assertFilter(filters);
-      return subject;
-    });
+    const sitePromises = interceptApiRequests<ISite, Site[]>(
+      siteApi.filter,
+      siteResponses,
+      siteExpectations
+    );
+    const regionPromises = interceptApiRequests<IRegion, Region[]>(
+      regionApi.filter,
+      regionResponses,
+      regionExpectations
+    );
 
-    spectator.detectChanges();
+    return { sites: sitePromises, regions: regionPromises };
+  }
+
+  async function awaitChanges(promises: {
+    sites: Promise<void>[];
+    regions: Promise<void>[];
+  }) {
+    const promise = Promise.all([...promises.sites, ...promises.regions]);
     await promise;
     spectator.detectChanges();
   }
 
-  describe("Error Handling", () => {
-    it("should handle failed project model", async () => {
+  beforeEach(() => {
+    defaultProject = new Project(generateProject());
+  });
+
+  it("should create", () => {
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    spectator.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  it("should display project names in title", () => {
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    spectator.detectChanges();
+    const title = spectator.query<HTMLHeadingElement>("h1");
+    expect(title.innerText.trim()).toBe(defaultProject.name);
+  });
+
+  it("should display default description if model has none", () => {
+    const project = new Project({
+      ...generateProject(),
+      descriptionHtml: undefined,
+    });
+    setup(project);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    spectator.detectChanges();
+    const description = spectator.query<HTMLParagraphElement>(
+      "#project_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      "<i>No description found</i>"
+    );
+  });
+
+  it("should display project description", () => {
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    spectator.detectChanges();
+    const description = spectator.query<HTMLParagraphElement>(
+      "#project_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      defaultProject.descriptionHtml
+    );
+  });
+
+  describe("error handling", () => {
+    it("should handle failure to retrieve project", () => {
       setup(undefined, generateApiErrorDetails());
-      await handleApiRequest([]);
+      interceptApiRequest(emptyResponse, emptyResponse);
       spectator.detectChanges();
       assertErrorHandler(spectator.fixture);
     });
   });
 
-  describe("Project", () => {
-    it("should display project name", async () => {
-      const project = new Project(generateProject());
-      setup(project);
-      await handleApiRequest([]);
-      spectator.detectChanges();
+  assertPaginationTemplate<any, DetailsComponent>(() => {
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    spectator.detectChanges();
+    return spectator;
+  });
 
-      const title = spectator.query<HTMLHeadingElement>("h1");
-      expect(title).toBeTruthy();
-      expect(title.innerText).toBe(project.name);
+  describe("maps", () => {
+    function getMap() {
+      return spectator.query(mock.map);
+    }
+
+    it("should hide maps component when no sites exist", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(emptyResponse, emptyResponse);
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getMap()).toBeFalsy();
     });
 
-    it("should display default project image", async () => {
-      const project = new Project({
-        ...generateProject(),
-        imageUrl: undefined,
-      });
-      setup(project);
-      await handleApiRequest([]);
+    it("should display maps component when sites exist", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        emptyResponse
+      );
       spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getMap()).toBeTruthy();
+    });
 
-      const image = spectator.query<HTMLImageElement>("img");
-      assertImage(
-        image,
-        `${websiteHttpUrl}${assetRoot}/images/project/project_span4.png`,
-        project.name + " image"
+    it("should display maps component when regions exist", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getMap()).toBeTruthy();
+    });
+
+    it("should display maps component when sites and regions exist", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        createRegionsWithMeta(1)
+      );
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getMap()).toBeTruthy();
+    });
+
+    it("should provide project to maps component", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getMap().project).toEqual(defaultProject);
+    });
+  });
+
+  describe("models", () => {
+    function getPlaceholder() {
+      return spectator.query("p.lead");
+    }
+
+    function getCards() {
+      return spectator.queryAll(mock.card);
+    }
+
+    function assertSiteCard(
+      card: SiteCardComponent,
+      project: Project,
+      site: Site
+    ) {
+      expect(card).toBeTruthy();
+      expect(card.project).toEqual(project);
+      expect(card.site).toEqual(site);
+    }
+
+    function assertRegionCard(
+      card: SiteCardComponent,
+      project: Project,
+      region: Region
+    ) {
+      expect(card).toBeTruthy();
+      expect(card.project).toEqual(project);
+      expect(card.region).toEqual(region);
+    }
+
+    it("should display placeholder when no models found", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(emptyResponse, emptyResponse);
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getPlaceholder()).toBeTruthy();
+      expect(getCards().length).toBe(0);
+    });
+
+    it("should hide placeholder when sites found", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        emptyResponse
+      );
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getPlaceholder()).toBeFalsy();
+    });
+
+    it("should hide placeholder when regions found", async () => {
+      setup(defaultProject);
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      expect(getPlaceholder()).toBeFalsy();
+    });
+
+    it("should display single site card", async () => {
+      const sites = createSitesWithMeta(1);
+      setup(defaultProject);
+      const promise = interceptApiRequest(sites, emptyResponse);
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      const cards = getCards();
+      expect(cards.length).toBe(1);
+      assertSiteCard(cards[0], defaultProject, sites[0][0]);
+    });
+
+    it("should display single region card", async () => {
+      const regions = createRegionsWithMeta(1);
+      setup(defaultProject);
+      const promise = interceptApiRequest(emptyResponse, regions);
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      const cards = getCards();
+      expect(cards.length).toBe(1);
+      assertRegionCard(cards[0], defaultProject, regions[0][0]);
+    });
+
+    it("should display mixed cards", async () => {
+      const sites = createSitesWithMeta(3);
+      const regions = createRegionsWithMeta(3);
+      setup(defaultProject);
+      const promise = interceptApiRequest(sites, regions);
+      spectator.detectChanges();
+      await awaitChanges(promise);
+      const cards = getCards();
+      expect(cards.length).toBe(6);
+      regions[0].forEach((region, index) => {
+        assertRegionCard(cards[index], defaultProject, region);
+      });
+      sites[0].forEach((site, index) => {
+        assertSiteCard(cards[index + 3], defaultProject, site);
+      });
+    });
+  });
+
+  describe("api", () => {
+    function causeApiRequest(page: number) {
+      component["apiRequest$"].next({ page, filterText: "" });
+    }
+
+    const initialResponse = [];
+    const initialExpectation = () => {};
+
+    describe("filters", () => {
+      [
+        {
+          test: "sites",
+          isSite: true,
+          filter: { regionId: { equal: null } },
+          list: "sites",
+          stateTracker: "hasSites",
+          createModels: (numModels: number) => createSitesWithMeta(numModels),
+        },
+        {
+          test: "regions",
+          isSite: false,
+          filter: {},
+          list: "regions",
+          stateTracker: "hasRegions",
+          createModels: (numModels: number) => createRegionsWithMeta(numModels),
+        },
+      ].forEach(
+        ({ test, isSite, filter, list, stateTracker, createModels }) => {
+          describe(test, () => {
+            it(`should create initial ${test} api filter request`, async (done) => {
+              setup(defaultProject);
+              const expectation = (filters, project) => {
+                expect(project).toEqual(defaultProject.id);
+                expect(filters).toEqual(
+                  filter
+                    ? { paging: { page: 1 }, filter }
+                    : { paging: { page: 1 } }
+                );
+                done();
+              };
+              // ngOnInit will initially call api
+              const promise = interceptApiRequest(
+                emptyResponse,
+                emptyResponse,
+                isSite ? [expectation] : undefined,
+                !isSite ? [expectation] : undefined
+              );
+              await awaitChanges(promise);
+            });
+
+            it(`should create paged ${test} api filter request`, async (done) => {
+              setup(defaultProject);
+              const expectation = (filters, project) => {
+                expect(project).toEqual(defaultProject.id);
+                expect(filters).toEqual(
+                  filter
+                    ? { paging: { page: 5 }, filter }
+                    : { paging: { page: 5 } }
+                );
+                done();
+              };
+              // ngOnInit will initially call api
+              const promise = interceptApiRequest(
+                [initialResponse, []],
+                [initialResponse, []],
+                isSite ? [initialExpectation, expectation] : undefined,
+                !isSite ? [initialExpectation, expectation] : undefined
+              );
+              await awaitChanges(promise);
+              causeApiRequest(5);
+            });
+
+            it("should set empty model list", () => {
+              setup(defaultProject);
+              interceptApiRequest(emptyResponse, emptyResponse);
+              spectator.detectChanges();
+              component["getModels"]();
+              component["apiUpdate"]([]);
+              expect(component[list].toArray()).toEqual([]);
+            });
+
+            it("should set multiple models in list", () => {
+              const models = createModels(3);
+              setup(defaultProject);
+              interceptApiRequest(emptyResponse, emptyResponse);
+              spectator.detectChanges();
+              component["getModels"]();
+              component["apiUpdate"](models[0]);
+              expect(component[list].toArray()).toEqual(models[0]);
+            });
+
+            it(`should set ${stateTracker} to false if no sites`, () => {
+              setup(defaultProject);
+              interceptApiRequest(emptyResponse, emptyResponse);
+              spectator.detectChanges();
+              component["getModels"]();
+              component["apiUpdate"]([]);
+              expect(component[stateTracker]).toBeFalsy();
+            });
+
+            it(`should set ${stateTracker} to true if sites exist`, () => {
+              const models = createModels(3);
+              setup(defaultProject);
+              interceptApiRequest(emptyResponse, emptyResponse);
+              spectator.detectChanges();
+              component["getModels"]();
+              component["apiUpdate"](models[0]);
+              expect(component[stateTracker]).toBeTruthy();
+            });
+          });
+        }
       );
     });
 
-    it("should display custom project image", async () => {
-      const project = new Project({
-        ...generateProject(),
-        imageUrl: "http://brokenlink/",
+    describe("collectionSize", () => {
+      beforeEach(() => {
+        setup(defaultProject);
+        interceptApiRequest(emptyResponse, emptyResponse);
+        spectator.detectChanges();
       });
-      setup(project);
-      await handleApiRequest([]);
-      spectator.detectChanges();
 
-      const image = spectator.query<HTMLImageElement>("img");
-      assertImage(image, "http://brokenlink/", project.name + " image");
-    });
-
-    it("should display description with html markup", async () => {
-      const project = new Project({
-        ...generateProject(),
-        descriptionHtml: "<b>A test project</b>",
+      it("should set collectionSize to 0", () => {
+        component["getModels"]();
+        component["apiUpdate"]([]);
+        component["apiUpdate"]([]);
+        expect(component.collectionSize).toBe(0);
       });
-      setup(project);
-      await handleApiRequest([]);
-      spectator.detectChanges();
 
-      const description = spectator.query("p#project_description");
-      expect(description).toBeTruthy();
-      expect(description.innerHTML).toBe("<b>A test project</b>");
+      it("should set collection size to region length when it has more values", () => {
+        const sites = createSitesWithMeta(3);
+        const regions = createRegionsWithMeta(1);
+        component["getModels"]();
+        component["apiUpdate"](sites[0]);
+        component["apiUpdate"](regions[0]);
+        expect(component.collectionSize).toBe(3);
+      });
+
+      it("should set collection size to site length when it has more values", () => {
+        const sites = createSitesWithMeta(1);
+        const regions = createRegionsWithMeta(3);
+        component["getModels"]();
+        component["apiUpdate"](sites[0]);
+        component["apiUpdate"](regions[0]);
+        expect(component.collectionSize).toBe(3);
+      });
     });
   });
 });
-*/

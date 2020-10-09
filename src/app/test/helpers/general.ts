@@ -46,7 +46,7 @@ export function interceptApiRequests<
 >(
   apiRequestType: any,
   responses: (M | ApiErrorDetails)[],
-  expectations?: ((filter: Filters<T>, ...params: any[]) => void)[]
+  expectations?: FilterExpectations<T>[]
 ): Promise<void>[] {
   const subjects: Subject<M>[] = [];
   const promises: Promise<void>[] = [];
@@ -68,3 +68,8 @@ export function interceptApiRequests<
 
   return promises;
 }
+
+export type FilterExpectations<T> = (
+  filter: Filters<T>,
+  ...params: any[]
+) => void;

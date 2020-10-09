@@ -19,7 +19,7 @@ import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { Site } from "@models/Site";
+import { ISite, Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
@@ -79,7 +79,7 @@ const projectKey = "project";
 
       <div id="model-grid">
         <!-- Google Maps -->
-        <div *ngIf="hasSites || hasRegions" class="item map">
+        <div *ngIf="hasSites || hasRegions || loading" class="item map">
           <app-site-map [project]="project"></app-site-map>
         </div>
 
@@ -177,9 +177,16 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
     this.hasSites = false;
     this.collectionSizes = { sites: 0, regions: 0 };
     this.apiReturnCount = 0;
+
+    // Filter sites to those which don't have region ids
+    const siteFilter = this.generateFilter() as Filters<ISite>;
+    siteFilter.filter = siteFilter.filter
+      ? { ...siteFilter.filter, regionId: { equal: null } }
+      : { regionId: { equal: null } };
+
     return merge(
       this.regionsApi.filter(this.generateFilter() as Filters, this.project.id),
-      this.sitesApi.filter(this.generateFilter() as Filters, this.project.id)
+      this.sitesApi.filter(siteFilter, this.project.id)
     );
   }
 }

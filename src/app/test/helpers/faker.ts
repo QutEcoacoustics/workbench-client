@@ -20,10 +20,7 @@ export const modelData = {
       .join(" ")
       .replace(specialCharRegex, ""),
   descriptionHtml: () =>
-    `<b>${faker.commerce.productName()}</b><br /><p>${modelData.description()}<p>`.replace(
-      specialCharRegex,
-      ""
-    ),
+    `<b>${modelData.param()}</b><br><p>${modelData.description()}</p>`,
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
     bitRateBps: [
@@ -56,7 +53,7 @@ export const modelData = {
     faker.random.number(11) +
     ":" +
     faker.random.arrayElement(["00", "30"]),
-  param: () => faker.name.title(),
+  param: () => faker.name.title().replace(specialCharRegex, ""),
   seconds: () => faker.random.number(86400 - 30) + 30,
   startEndSeconds: () => {
     const min = faker.random.number(86400 - 30) + 30;

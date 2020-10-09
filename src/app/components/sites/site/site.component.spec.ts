@@ -108,6 +108,16 @@ describe("SiteComponent", () => {
       assertImage(image, defaultSite.imageUrl, `${defaultSite.name} image`);
     });
 
+    it("should display default description if model has none", () => {
+      const site = new Site({ ...generateSite(), descriptionHtml: undefined });
+      setup(defaultProject, site);
+      spectator.detectChanges();
+
+      const description = spectator.query("#site_description");
+      expect(description).toBeTruthy();
+      expect(description.innerHTML).toContain("<i>No description found</i>");
+    });
+
     it("should display site description with html markup", () => {
       setup(defaultProject, defaultSite);
       spectator.detectChanges();

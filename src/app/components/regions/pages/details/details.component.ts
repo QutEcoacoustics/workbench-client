@@ -45,7 +45,10 @@ const regionKey = "region";
         {{ region.name }}
       </h1>
 
-      <p id="region_description" [innerHtml]="region.descriptionHtml"></p>
+      <p
+        id="region_description"
+        [innerHtml]="region.descriptionHtml || defaultDescription"
+      ></p>
 
       <baw-debounce-input
         label="Filter"
@@ -83,6 +86,7 @@ const regionKey = "region";
   `,
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
+  public defaultDescription = "<i>No description found</i>";
   public project: Project;
   public region: Region;
   public sites: List<Site> = List([]);

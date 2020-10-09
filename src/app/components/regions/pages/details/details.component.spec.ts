@@ -1,5 +1,4 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -18,7 +17,6 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
-import { generateScript } from "@test/fakes/Script";
 import { generateSite } from "@test/fakes/Site";
 import { interceptApiRequests } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -89,6 +87,22 @@ describe("RegionDetailsComponent", () => {
     );
   });
 
+  it("should display default description if model has none", () => {
+    const region = new Region({
+      ...generateRegion(),
+      descriptionHtml: undefined,
+    });
+    setup(defaultProject, region);
+    interceptApiRequest([]);
+    spectator.detectChanges();
+    const description = spectator.query<HTMLParagraphElement>(
+      "#region_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      "<i>No description found</i>"
+    );
+  });
+
   it("should display region description", () => {
     setup(defaultProject, defaultRegion);
     interceptApiRequest([]);
@@ -96,7 +110,9 @@ describe("RegionDetailsComponent", () => {
     const description = spectator.query<HTMLParagraphElement>(
       "#region_description"
     );
-    expect(description.innerText.trim()).toBe(defaultRegion.descriptionHtml);
+    expect(description.innerHTML.trim()).toContain(
+      defaultRegion.descriptionHtml
+    );
   });
 
   describe("error handling", () => {
