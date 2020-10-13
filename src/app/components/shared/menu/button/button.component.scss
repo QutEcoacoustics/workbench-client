@@ -6,11 +6,11 @@ button {
   border: 0px;
 
   span {
-    color: $primary;
+    color: var(--theme-highlight);
   }
 
   &:hover span {
-    color: darken($primary, 15%);
+    filter: brightness(0.85);
   }
 }
 
