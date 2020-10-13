@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -27,14 +27,12 @@ describe("UnlockAccountComponent", () => {
   });
 
   describe("component", () => {
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [...testFormImports, MockBawApiModule],
         declarations: [UnlockAccountComponent, FormComponent],
       }).compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(UnlockAccountComponent);
       component = fixture.componentInstance;
       notifications = TestBed.inject(ToastrService);

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "@shared/shared.module";
 import { TableTemplate } from "./tableTemplate";
 
@@ -41,7 +41,7 @@ describe("TableTemplate", () => {
     );
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
       imports: [SharedModule],
@@ -49,7 +49,7 @@ describe("TableTemplate", () => {
 
     fixture = TestBed.createComponent(MockComponent);
     component = fixture.componentInstance;
-  }));
+  });
 
   it("should create", () => {
     fixture.detectChanges();

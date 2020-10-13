@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
@@ -49,7 +49,7 @@ describe("RenderFieldComponent", () => {
     ).map((el) => el.firstElementChild as HTMLElement);
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [RenderFieldComponent, CheckboxComponent],
       imports: [
@@ -59,9 +59,7 @@ describe("RenderFieldComponent", () => {
         MockBawApiModule,
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(RenderFieldComponent);
     component = fixture.componentInstance;
   });

@@ -22,7 +22,7 @@ import { ToastrService } from "ngx-toastr";
   encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
-  @Input() public btnColor: ButtonClassTypes = "btn-success";
+  @Input() public btnColor: ButtonClassTypes = "btn-primary";
   @Input() public fields: FormlyFieldConfig[];
   @Input() public model: object = {};
   @Input() public size: "small" | "default" = "default";

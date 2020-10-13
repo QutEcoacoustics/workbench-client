@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
@@ -16,7 +16,7 @@ describe("AdminAudioRecordingsComponent", () => {
   let defaultModels: AudioRecording[];
   let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -26,9 +26,7 @@ describe("AdminAudioRecordingsComponent", () => {
       ],
       declarations: [AdminAudioRecordingsComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(function () {
     fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
     api = TestBed.inject(AudioRecordingsService);
 

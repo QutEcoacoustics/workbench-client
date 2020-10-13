@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -9,14 +9,12 @@ describe("HeaderItemComponent", () => {
   let component: HeaderItemComponent;
   let fixture: ComponentFixture<HeaderItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderItemComponent],
       imports: [RouterTestingModule],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HeaderItemComponent);
     component = fixture.componentInstance;
   });

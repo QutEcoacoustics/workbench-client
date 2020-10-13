@@ -2,7 +2,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { cmsRoot } from "@services/app-config/app-config.service.spec";
@@ -16,7 +16,7 @@ describe("AboutCreditsComponent", () => {
   let env: AppConfigService;
   let fixture: ComponentFixture<CreditsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -26,9 +26,7 @@ describe("AboutCreditsComponent", () => {
       ],
       declarations: [CreditsComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CreditsComponent);
     httpMock = TestBed.inject(HttpTestingController);
     env = TestBed.inject(AppConfigService);

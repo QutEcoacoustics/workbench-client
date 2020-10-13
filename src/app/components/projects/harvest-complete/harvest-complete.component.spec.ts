@@ -1,17 +1,15 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HarvestCompleteComponent } from "./harvest-complete.component";
 
 xdescribe("HarvestCompleteComponent", () => {
   let component: HarvestCompleteComponent;
   let fixture: ComponentFixture<HarvestCompleteComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HarvestCompleteComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HarvestCompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

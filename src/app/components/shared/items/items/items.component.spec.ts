@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { List } from "immutable";
@@ -34,17 +34,14 @@ describe("ItemsComponent", () => {
     expect(label.innerText.trim()).toBe(name);
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
       declarations: [ItemsComponent, ItemComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ItemsComponent);
     component = fixture.componentInstance;
-
     defaultIcon = ["fas", "home"];
   });
 

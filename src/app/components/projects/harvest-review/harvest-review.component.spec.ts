@@ -1,17 +1,15 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HarvestReviewComponent } from "./harvest-review.component";
 
 xdescribe("HarvestReviewComponent", () => {
   let component: HarvestReviewComponent;
   let fixture: ComponentFixture<HarvestReviewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HarvestReviewComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HarvestReviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

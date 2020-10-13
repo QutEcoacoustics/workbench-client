@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
@@ -49,7 +49,7 @@ describe("DetailViewComponent", () => {
     return (fixture.nativeElement as HTMLElement).querySelectorAll("dl");
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [DetailViewComponent, RenderFieldComponent],
       imports: [HttpClientTestingModule, MockBawApiModule],
@@ -58,9 +58,7 @@ describe("DetailViewComponent", () => {
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(DetailViewComponent);
     api = TestBed.inject(MockStandardApiService);
     injector = TestBed.inject(Injector);

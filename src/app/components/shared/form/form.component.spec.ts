@@ -1,6 +1,6 @@
 import { HttpTestingController } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -52,14 +52,12 @@ describe("FormComponent", () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: testFormImports,
       declarations: [FormComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
@@ -152,7 +150,7 @@ describe("FormComponent", () => {
 
     it("should create form with default submit button", () => {
       fixture.detectChanges();
-      assertSubmit("btn-success");
+      assertSubmit("btn-primary");
     });
 
     it("should create form with danger submit button", () => {

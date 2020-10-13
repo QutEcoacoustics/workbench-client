@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -16,7 +16,7 @@ describe("AdminTagGroupsComponent", () => {
   let defaultModels: TagGroup[];
   let fixture: ComponentFixture<AdminTagGroupsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       declarations: [AdminTagGroupsComponent],
       imports: [
@@ -26,9 +26,7 @@ describe("AdminTagGroupsComponent", () => {
         MockBawApiModule,
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(function () {
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
     api = TestBed.inject(TagGroupsService);
 

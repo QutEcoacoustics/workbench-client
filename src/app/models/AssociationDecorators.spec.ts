@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -31,7 +31,7 @@ describe("Association Decorators", () => {
     expect(model[key]).toEqual(output);
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, MockBawApiModule],
       providers: [
@@ -42,7 +42,7 @@ describe("Association Decorators", () => {
 
     api = TestBed.inject(MockStandardApiService);
     injector = TestBed.inject(Injector);
-  }));
+  });
 
   describe("HasMany", () => {
     function createModel(
