@@ -74,9 +74,10 @@ export abstract class PaginationTemplate<M extends AbstractModel>
      */
     protected apiUpdate: (models: M[]) => void,
     /**
-     * Default filter values, may be overridden by later requests
+     * Default inner filter values
      */
-    protected defaultFilter: Filters<M> = {}
+    protected defaultInnerFilter: () => InnerFilter<M> = () =>
+      ({} as InnerFilter<M>)
   ) {
     super();
   }
@@ -178,11 +179,13 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   protected generateFilter(): Filters<M> {
     return {
-      ...this.defaultFilter,
       paging: { page: this.page },
       filter: this.filter
-        ? ({ [this.filterKey]: { contains: this.filter } } as InnerFilter<M>)
-        : undefined,
+        ? ({
+            ...this.defaultInnerFilter(),
+            [this.filterKey]: { contains: this.filter },
+          } as InnerFilter<M>)
+        : this.defaultInnerFilter(),
     };
   }
 }

@@ -1,0 +1,9 @@
+<baw-form
+  *ngIf="!failure"
+  [title]="title"
+  [model]="model"
+  [fields]="fields"
+  [submitLoading]="loading"
+  submitLabel="Submit"
+  (onSubmit)="submit($event)"
+></baw-form>

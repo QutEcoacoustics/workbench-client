@@ -1,50 +1,29 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
-import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
-import {
-  projectCategory,
-  projectMenuItem,
-} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "../../site.base.json";
-import { newSiteMenuItem } from "../../sites.menus";
 
 const projectKey = "project";
 
-/**
- * New Site Component
- */
 @Component({
   selector: "app-sites-new",
-  template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Site"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-  `,
+  templateUrl: "./new.component.html",
 })
-class NewComponent extends FormTemplate<Site> {
+export class SiteNewComponent extends FormTemplate<Site> {
   public fields = fields;
+  public title = "";
 
   constructor(
-    private api: SitesService,
+    protected api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -60,7 +39,7 @@ class NewComponent extends FormTemplate<Site> {
   }
 
   public get project(): Project {
-    return this.models.project as Project;
+    return this.models[projectKey] as Project;
   }
 
   protected redirectionPath(model: Site) {
@@ -71,16 +50,6 @@ class NewComponent extends FormTemplate<Site> {
     return this.api.create(new Site(model), this.project);
   }
 }
-
-NewComponent.LinkComponentToPageInfo({
-  category: projectCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
-  },
-  resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(newSiteMenuItem);
-
-export { NewComponent };
 
 export function siteErrorMsg(err: ApiErrorDetails) {
   return extendedErrorMsg(err, {

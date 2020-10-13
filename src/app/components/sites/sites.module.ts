@@ -1,21 +1,26 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { RegionsModule } from "@components/regions/regions.module";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
-import { DeleteComponent } from "./pages/delete/delete.component";
-import { DetailsComponent } from "./pages/details/details.component";
-import { EditComponent } from "./pages/edit/edit.component";
-import { HarvestComponent } from "./pages/harvest/harvest.component";
-import { NewComponent } from "./pages/new/new.component";
+import { SiteDeleteComponent } from "./pages/delete/site.component";
+import { SiteDetailsComponent } from "./pages/details/site.component";
+import { SiteEditComponent } from "./pages/edit/site.component";
+import { SiteHarvestComponent } from "./pages/harvest/site.component";
+import { SiteNewComponent } from "./pages/new/site.component";
+import { WizardComponent } from "./pages/wizard/wizard.component";
+import { SiteComponent } from "./site/site.component";
 import { sitesRoute } from "./sites.menus";
 
 const components = [
-  DeleteComponent,
-  DetailsComponent,
-  EditComponent,
-  HarvestComponent,
-  NewComponent,
+  SiteComponent,
+  SiteDeleteComponent,
+  SiteDetailsComponent,
+  SiteEditComponent,
+  SiteHarvestComponent,
+  SiteNewComponent,
+  WizardComponent,
 ];
 
 const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
@@ -25,7 +30,12 @@ const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
  */
 @NgModule({
   declarations: components,
-  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
+  imports: [
+    MapModule,
+    RegionsModule,
+    SharedModule,
+    RouterModule.forChild(routes),
+  ],
   exports: [RouterModule, ...components],
 })
 export class SitesModule {}

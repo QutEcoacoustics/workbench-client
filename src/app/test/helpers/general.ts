@@ -1,4 +1,6 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { AbstractModel } from "@models/AbstractModel";
 import { Subject } from "rxjs";
 
 /**
@@ -37,3 +39,37 @@ export function nStepObservable<T>(
     waitOne();
   });
 }
+
+export function interceptApiRequests<
+  T,
+  M extends AbstractModel | AbstractModel[]
+>(
+  apiRequestType: any,
+  responses: (M | ApiErrorDetails)[],
+  expectations?: FilterExpectations<T>[]
+): Promise<void>[] {
+  const subjects: Subject<M>[] = [];
+  const promises: Promise<void>[] = [];
+
+  responses.forEach((response) => {
+    const subject = new Subject<M>();
+    subjects.push(subject);
+    promises.push(
+      nStepObservable(subject, () => response, !(response instanceof Array))
+    );
+  });
+
+  let count = -1;
+  apiRequestType.andCallFake((filters: Filters<T>, ...params: any[]) => {
+    count++;
+    expectations?.[count]?.(filters, ...params);
+    return subjects[count];
+  });
+
+  return promises;
+}
+
+export type FilterExpectations<T> = (
+  filter: Filters<T>,
+  ...params: any[]
+) => void;

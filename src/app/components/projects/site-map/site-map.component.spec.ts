@@ -3,6 +3,7 @@ import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import {
   createComponentFactory,
@@ -13,8 +14,9 @@ import { MapComponent } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { nStepObservable } from "@test/helpers/general";
+import { interceptApiRequests, nStepObservable } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { SiteMapComponent } from "./site-map.component";
@@ -81,25 +83,11 @@ describe("SiteMapComponent", () => {
     responses: (Site[] | ApiErrorDetails)[],
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[]
   ): Promise<void>[] {
-    const subjects: Subject<Site[]>[] = [];
-    const promises: Promise<void>[] = [];
-
-    responses.forEach((response) => {
-      const subject = new Subject<Site[]>();
-      subjects.push(subject);
-      promises.push(
-        nStepObservable(subject, () => response, !(response instanceof Array))
-      );
-    });
-
-    let count = -1;
-    api.filter.andCallFake((filters: Filters<ISite>, project: Project) => {
-      count++;
-      expectations?.[count]?.(filters, project);
-      return subjects[count];
-    });
-
-    return promises;
+    return interceptApiRequests<ISite, Site[]>(
+      api.filter,
+      responses,
+      expectations
+    );
   }
 
   async function assertMapMarkers(promise: Promise<any>, allSites: Site[][]) {
@@ -169,9 +157,16 @@ describe("SiteMapComponent", () => {
   });
 
   describe("api", () => {
-    function assertFilter(page: number, project: Project) {
+    function assertFilter(page: number, project: Project, region?: Region) {
       return (filters: Filters<ISite>, model: Project) => {
-        expect(filters).toEqual({ paging: { page } });
+        expect(filters).toEqual(
+          region
+            ? {
+                paging: { page },
+                filter: { regionId: { equal: region.id } },
+              }
+            : { paging: { page } }
+        );
         expect(model).toEqual(project);
       };
     }
@@ -197,6 +192,24 @@ describe("SiteMapComponent", () => {
           assertFilter(2, spectator.component.project),
           assertFilter(3, spectator.component.project),
           assertFilter(4, spectator.component.project),
+        ])
+      );
+
+      spectator.detectChanges();
+      await promise;
+      spectator.detectChanges();
+    });
+
+    it("should generate filter commands with region id", async () => {
+      spectator.setInput("region", new Region(generateRegion()));
+      const sites = generatePagedSites(1);
+      const promise = Promise.all(
+        interceptApiRequest(sites, [
+          assertFilter(
+            1,
+            spectator.component.project,
+            spectator.component.region
+          ),
         ])
       );
 

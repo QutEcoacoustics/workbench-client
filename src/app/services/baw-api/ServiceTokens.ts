@@ -16,6 +16,10 @@ import type { DatasetItemsService } from "./dataset/dataset-items.service";
 import type { DatasetsService } from "./dataset/datasets.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
 import type { ProjectsService } from "./project/projects.service";
+import type {
+  RegionsService,
+  ShallowRegionsService,
+} from "./region/regions.service";
 import type { SavedSearchesService } from "./saved-search/saved-searches.service";
 import type { ScriptsService } from "./script/scripts.service";
 import type { ShallowSitesService, SitesService } from "./site/sites.service";
@@ -71,6 +75,10 @@ export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
 export const QUESTION = new ServiceToken<QuestionsService>("QUESTIONS_SERVICE");
 export const SHALLOW_QUESTION = new ServiceToken<ShallowQuestionsService>(
   "SHALLOW_QUESTIONS_SERVICE"
+);
+export const REGION = new ServiceToken<RegionsService>("REGIONS_SERVICE");
+export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService>(
+  "SHALLOW_REGIONS_SERVICE"
 );
 export const RESPONSE = new ServiceToken<ResponsesService>("RESPONSES_SERVICE");
 export const SHALLOW_RESPONSE = new ServiceToken<ShallowResponsesService>(

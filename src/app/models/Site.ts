@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
-import { IdOr } from "@baw-api/api-common";
+import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
+import { pointMenuItem } from "@components/sites/points.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
@@ -78,6 +79,7 @@ export class Site extends AbstractModel implements ISite {
   public readonly deletedAt?: DateTimeTimezone;
   @BawCollection({ persist: true })
   public readonly projectIds?: Ids;
+  @BawPersistAttr
   public readonly regionId?: Id;
   @BawPersistAttr
   public readonly latitude?: number;
@@ -117,17 +119,29 @@ export class Site extends AbstractModel implements ISite {
       return "";
     }
 
-    return siteMenuItem.route.format({
-      projectId: this.projectIds.values().next().value,
-      siteId: this.id,
-    });
+    return this.getViewUrl(this.projectIds.values().next().value);
   }
 
   public getViewUrl(project: IdOr<Project>): string {
-    return siteMenuItem.route.format({
-      projectId: typeof project === "number" ? project : project.id,
-      siteId: this.id,
-    });
+    if (isInstantiated(this.regionId)) {
+      return pointMenuItem.route.format({
+        projectId: id(project),
+        regionId: this.regionId,
+        siteId: this.id,
+      });
+    } else {
+      return siteMenuItem.route.format({
+        projectId: id(project),
+        siteId: this.id,
+      });
+    }
+  }
+
+  /**
+   * Returns true if site should display as a point
+   */
+  public get isPoint() {
+    return isInstantiated(this.regionId);
   }
 
   /**

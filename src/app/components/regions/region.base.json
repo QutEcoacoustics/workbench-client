@@ -1,0 +1,47 @@
+{
+  "fields": [
+    {
+      "key": "id",
+      "hide": true,
+      "templateOptions": {
+        "label": "Site Id"
+      }
+    },
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Site Name",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8,
+        "description": "Description uses markdown formatting allowing you to apply some limited styling to the model. You can find a guide on the basics here: https://markdown-guide.readthedocs.io/en/latest/basics.html"
+      }
+    },
+    {
+      "key": "imageUrl",
+      "type": "image",
+      "templateOptions": {
+        "label": "Image",
+        "required": false
+      }
+    },
+    {
+      "key": "image",
+      "hide": true,
+      "type": "image",
+      "templateOptions": {
+        "label": "Image",
+        "required": false
+      }
+    }
+  ]
+}

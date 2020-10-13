@@ -1,34 +1,36 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  regionResolvers,
+  RegionsService,
+} from "@baw-api/region/regions.service";
+import {
+  editRegionMenuItem,
+  regionMenuItem,
+  regionsCategory,
+} from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Region } from "@models/Region";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../site.base.json";
-import {
-  editSiteMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "../../sites.menus";
-import { siteMenuItemActions } from "../details/details.component";
-import { siteErrorMsg } from "../new/new.component";
+import { fields } from "../../region.base.json";
+import { regionMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
-const siteKey = "site";
+const regionKey = "region";
 
 /**
- * Edit Site Component
+ * Edit Region Component
  */
 @Component({
-  selector: "app-sites-edit",
+  selector: "app-regions-edit",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -41,23 +43,18 @@ const siteKey = "site";
     ></baw-form>
   `,
 })
-class EditComponent extends FormTemplate<Site> implements OnInit {
+class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = fields;
   public title: string;
 
   constructor(
-    private api: SitesService,
+    private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      siteKey,
-      (model) => defaultSuccessMsg("updated", model.name),
-      siteErrorMsg
+    super(notifications, route, router, regionKey, (model) =>
+      defaultSuccessMsg("updated", model.name)
     );
   }
 
@@ -73,25 +70,21 @@ class EditComponent extends FormTemplate<Site> implements OnInit {
     return this.models.project as Project;
   }
 
-  protected redirectionPath(model: Site) {
-    return model.getViewUrl(this.project);
-  }
-
-  protected apiAction(model: Partial<Site>) {
-    return this.api.update(new Site(model), this.project);
+  protected apiAction(model: Partial<Region>) {
+    return this.api.update(new Region(model), this.project);
   }
 }
 
 EditComponent.LinkComponentToPageInfo({
-  category: sitesCategory,
+  category: regionsCategory,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actions: List([regionMenuItem, ...regionMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
+    [regionKey]: regionResolvers.show,
   },
-}).AndMenuRoute(editSiteMenuItem);
+}).AndMenuRoute(editRegionMenuItem);
 
 export { EditComponent };

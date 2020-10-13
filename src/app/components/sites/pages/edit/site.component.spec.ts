@@ -1,7 +1,7 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { SitesService } from "@baw-api/site/sites.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
@@ -23,12 +23,12 @@ import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { fields } from "../../site.base.json";
-import { NewComponent } from "./new.component";
+import { SiteEditComponent } from "./site.component";
 
-describe("SitesNewComponent", () => {
-  let spectator: SpectatorRouting<NewComponent>;
+describe("SiteEditComponent", () => {
+  let spectator: SpectatorRouting<SiteEditComponent>;
   const createComponent = createRoutingFactory({
-    component: NewComponent,
+    component: SiteEditComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
@@ -72,14 +72,22 @@ describe("SitesNewComponent", () => {
   describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
+    let defaultSite: Site;
 
-    function setup(error?: ApiErrorDetails) {
+    function setup(
+      projectError?: ApiErrorDetails,
+      siteError?: ApiErrorDetails
+    ) {
       spectator = createComponent({
         detectChanges: false,
-        params: { projectId: defaultProject?.id },
+        params: { projectId: defaultProject?.id, siteId: defaultSite?.id },
         data: {
-          resolvers: { project: projectResolvers.show },
-          project: { model: defaultProject, error },
+          resolvers: {
+            project: projectResolvers.show,
+            site: siteResolvers.show,
+          },
+          project: { model: defaultProject, error: projectError },
+          site: { model: defaultSite, error: siteError },
         },
       });
 
@@ -91,11 +99,17 @@ describe("SitesNewComponent", () => {
     afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
+      defaultSite = new Site(generateSite());
     });
 
     it("should create", () => {
       setup();
       expect(spectator.component).toBeTruthy();
+    });
+
+    it("should handle site error", () => {
+      setup(undefined, generateApiErrorDetails());
+      assertErrorHandler(spectator.fixture);
     });
 
     it("should handle project error", () => {
@@ -105,20 +119,24 @@ describe("SitesNewComponent", () => {
 
     it("should call api", () => {
       setup();
-      api.create.and.callFake(() => new Subject());
+      api.update.and.callFake(() => new Subject());
 
-      spectator.component.submit({});
-      expect(api.create).toHaveBeenCalled();
+      spectator.component.submit({ ...defaultSite });
+      expect(api.update).toHaveBeenCalledWith(
+        new Site({ ...defaultSite }),
+        defaultProject
+      );
     });
 
     it("should redirect to site", () => {
       setup();
       const site = new Site(generateSite());
-      spyOn(site, "getViewUrl").and.stub();
-      api.create.and.callFake(() => new BehaviorSubject<Site>(site));
+      api.update.and.callFake(() => new BehaviorSubject<Site>(site));
 
       spectator.component.submit({});
-      expect(site.getViewUrl).toHaveBeenCalledWith(defaultProject);
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+        site.getViewUrl(defaultProject)
+      );
     });
   });
 });

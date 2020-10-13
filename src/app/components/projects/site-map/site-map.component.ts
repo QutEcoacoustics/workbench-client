@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Region } from "@models/Region";
+import { ISite, Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { merge, noop, Observable } from "rxjs";
@@ -16,6 +18,7 @@ export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;
+  @Input() public region: Region;
   public markers: List<MapMarkerOption> = List([]);
 
   constructor(private sitesApi: SitesService) {
@@ -23,8 +26,14 @@ export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
+    const filters: Filters<ISite> = { paging: { page: 1 } };
+
+    if (this.region) {
+      filters.filter = { regionId: { equal: this.region.id } };
+    }
+
     this.sitesApi
-      .filter({ paging: { page: 1 } }, this.project)
+      .filter(filters, this.project)
       .pipe(
         switchMap((models) => this.getMarkers(models)),
         takeUntil(this.unsubscribe)

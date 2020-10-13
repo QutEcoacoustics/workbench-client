@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   AccessLevel,
@@ -23,6 +23,7 @@ import {
   BawImage,
   BawPersistAttr,
 } from "./AttributeDecorators";
+import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -36,6 +37,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   accessLevel?: AccessLevel;
   ownerId?: Id;
   siteIds?: Ids | Id[];
+  regionIds?: Ids | Id[];
   notes?: Notes;
 }
 
@@ -70,12 +72,16 @@ export class Project extends AbstractModel implements IProject {
   public readonly ownerId?: Id;
   @BawCollection({ persist: true })
   public readonly siteIds?: Ids;
+  @BawCollection({ persist: true })
+  public readonly regionIds?: Ids;
   @BawPersistAttr
   public readonly notes?: Notes;
 
   // Associations
   @HasMany<Project>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
+  @HasMany<Project>(SHALLOW_REGION, "regionIds")
+  public regions?: Region[];
   @Creator<Project>()
   public creator?: User;
   @Updater<Project>()

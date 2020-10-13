@@ -11,37 +11,22 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { siteMenuItemActions } from "../details/details.component";
+import { siteMenuItemActions } from "../details/site.component";
 
 const projectKey = "project";
 const siteKey = "site";
 
-/**
- * Delete Site Component
- */
 @Component({
-  selector: "app-projects-delete",
-  template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      btnColor="btn-danger"
-      submitLabel="Delete"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-  `,
+  selector: "app-sites-delete",
+  templateUrl: "./delete.component.html",
 })
-class DeleteComponent extends FormTemplate<Site> implements OnInit {
+class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
 
   constructor(
@@ -76,10 +61,10 @@ class DeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-DeleteComponent.LinkComponentToPageInfo({
+SiteDeleteComponent.LinkComponentToPageInfo({
   category: sitesCategory,
   menus: {
-    actions: List<AnyMenuItem>([siteMenuItem, ...siteMenuItemActions]),
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: {
@@ -88,4 +73,4 @@ DeleteComponent.LinkComponentToPageInfo({
   },
 }).AndMenuRoute(deleteSiteMenuItem);
 
-export { DeleteComponent };
+export { SiteDeleteComponent };

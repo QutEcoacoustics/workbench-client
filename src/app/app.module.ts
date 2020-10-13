@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
+import { RegionsModule } from "@components/regions/regions.module";
 import { GuardModule } from "@guards/guards.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -28,6 +29,7 @@ import { SecurityModule } from "./components/security/security.module";
 import { SendAudioModule } from "./components/send-audio/send-audio.module";
 import { PermissionsShieldComponent } from "./components/shared/permissions-shield/permissions-shield.component";
 import { SharedModule } from "./components/shared/shared.module";
+import { PointsModule } from "./components/sites/points.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
@@ -47,8 +49,10 @@ export const appImports = [
   AdminModule,
   DataRequestModule,
   MyAccountModule,
+  PointsModule,
   ProfileModule,
   ProjectsModule,
+  RegionsModule,
   ReportProblemsModule,
   SecurityModule,
   SendAudioModule,

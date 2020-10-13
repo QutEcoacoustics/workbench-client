@@ -29,6 +29,7 @@ class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
     { name: "Permission" },
     { name: "Annotation" },
   ];
+  protected api: ShallowSitesService;
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details https://github.com/QutEcoacoustics/baw-server/issues/406
@@ -50,10 +51,7 @@ class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 
   protected apiAction(filters: Filters) {
-    return (this.api as ShallowSitesService).filterByAccessLevel(
-      filters,
-      this.account
-    );
+    return this.api.filterByCreator(filters, this.account);
   }
 }
 
