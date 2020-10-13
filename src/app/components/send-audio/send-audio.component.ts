@@ -4,7 +4,7 @@ import { AppConfigService } from "@services/app-config/app-config.service";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Component({
-  selector: "app-send-audio",
+  selector: "baw-send-audio",
   template: `
     <baw-wip>
       <baw-cms [page]="page"></baw-cms>

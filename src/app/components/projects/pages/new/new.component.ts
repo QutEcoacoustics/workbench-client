@@ -20,7 +20,7 @@ import { fields } from "../../project.schema.json";
 import { projectsMenuItemActions } from "../list/list.component";
 
 @Component({
-  selector: "app-projects-new",
+  selector: "baw-projects-new",
   template: `
     <baw-form
       *ngIf="!failure"

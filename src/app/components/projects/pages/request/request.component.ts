@@ -16,7 +16,7 @@ import { projectsMenuItemActions } from "../list/list.component";
 import { fields } from "./request.schema.json";
 
 @Component({
-  selector: "app-projects-request",
+  selector: "baw-projects-request",
   template: `
     <baw-wip>
       <baw-form

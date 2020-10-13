@@ -18,7 +18,7 @@ import { fields } from "./my-edit.schema.json";
 const userKey = "user";
 
 @Component({
-  selector: "app-my-edit",
+  selector: "baw-my-edit",
   template: `
     <baw-wip>
       <ng-container *ngIf="model">

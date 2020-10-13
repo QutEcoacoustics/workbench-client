@@ -21,7 +21,7 @@ import {
 const tagGroupKey = "tagGroup";
 
 @Component({
-  selector: "app-admin-tag-groups-delete",
+  selector: "baw-admin-tag-groups-delete",
   template: `
     <baw-form
       *ngIf="!failure"

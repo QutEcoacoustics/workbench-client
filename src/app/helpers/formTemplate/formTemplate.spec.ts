@@ -34,7 +34,7 @@ class MockModel extends AbstractModel {
 }
 
 @Component({
-  selector: "app-test-component",
+  selector: "baw-test-component",
   template: `<div><baw-form></baw-form></div>`,
 })
 class MockComponent extends FormTemplate<MockModel> {

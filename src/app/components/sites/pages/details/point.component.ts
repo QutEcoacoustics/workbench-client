@@ -34,14 +34,14 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "app-point-details",
+  selector: "baw-point-details",
   template: `
-    <app-site
+    <baw-site
       *ngIf="project && region && site"
       [project]="project"
       [region]="region"
       [site]="site"
-    ></app-site>
+    ></baw-site>
   `,
 })
 class PointDetailsComponent extends SiteDetailsComponent implements OnInit {

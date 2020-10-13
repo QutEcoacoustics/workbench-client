@@ -12,7 +12,7 @@ import { List } from "immutable";
  * Site Details Component
  */
 @Component({
-  selector: "app-site",
+  selector: "baw-site",
   templateUrl: "./site.component.html",
   styleUrls: ["./site.component.scss"],
 })

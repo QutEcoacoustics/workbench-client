@@ -19,7 +19,7 @@ import { myAccountActions } from "../profile/my-profile.component";
 const userKey = "user";
 
 @Component({
-  selector: "app-my-annotations",
+  selector: "baw-my-annotations",
   templateUrl: "./annotations.component.html",
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {

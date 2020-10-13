@@ -11,7 +11,7 @@ import { AppConfigService } from "./services/app-config/app-config.service";
  * App Root Component
  */
 @Component({
-  selector: "app-root",
+  selector: "baw-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })

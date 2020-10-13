@@ -7,7 +7,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { AppConfigService } from "@services/app-config/app-config.service";
 
 @Component({
-  selector: "app-about-disclaimers",
+  selector: "baw-about-disclaimers",
   template: `<baw-cms [page]="page"></baw-cms>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

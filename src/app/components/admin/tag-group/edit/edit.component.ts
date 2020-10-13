@@ -22,7 +22,7 @@ import { fields } from "../tag-group.schema.json";
 const tagGroupKey = "tagGroup";
 
 @Component({
-  selector: "app-admin-tag-groups-edit",
+  selector: "baw-admin-tag-groups-edit",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -35,7 +35,8 @@ const tagGroupKey = "tagGroup";
     ></baw-form>
   `,
 })
-class AdminTagGroupsEditComponent extends FormTemplate<TagGroup>
+class AdminTagGroupsEditComponent
+  extends FormTemplate<TagGroup>
   implements OnInit {
   public fields = fields;
   public title: string;

@@ -36,7 +36,7 @@ export const theirProfileActions = [
 const accountKey = "account";
 
 @Component({
-  selector: "app-their-profile",
+  selector: "baw-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })

@@ -23,7 +23,7 @@ const projectKey = "project";
 const siteKey = "site";
 
 @Component({
-  selector: "app-sites-delete",
+  selector: "baw-sites-delete",
   templateUrl: "./delete.component.html",
 })
 class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {

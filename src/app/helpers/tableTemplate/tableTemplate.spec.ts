@@ -4,7 +4,7 @@ import { SharedModule } from "@shared/shared.module";
 import { TableTemplate } from "./tableTemplate";
 
 @Component({
-  selector: "app-test-component",
+  selector: "baw-test-component",
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,

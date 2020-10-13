@@ -21,7 +21,7 @@ import {
  * New Scripts Component
  */
 @Component({
-  selector: "app-admin-scripts-new",
+  selector: "baw-admin-scripts-new",
   template: `
     <baw-form
       *ngIf="!failure"

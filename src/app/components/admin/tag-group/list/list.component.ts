@@ -22,7 +22,7 @@ export const adminTagGroupMenuItemActions = [
 ];
 
 @Component({
-  selector: "app-admin-tag-groups-list",
+  selector: "baw-admin-tag-groups-list",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })

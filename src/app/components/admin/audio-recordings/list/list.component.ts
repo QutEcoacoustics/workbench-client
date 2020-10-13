@@ -14,7 +14,7 @@ import {
 } from "../audio-recordings.menus";
 
 @Component({
-  selector: "app-admin-audio-recordings",
+  selector: "baw-admin-audio-recordings",
   templateUrl: "./list.component.html",
 })
 class AdminAudioRecordingsComponent

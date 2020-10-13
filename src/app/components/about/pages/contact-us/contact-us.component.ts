@@ -8,7 +8,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { fields } from "./contact-us.schema.json";
 
 @Component({
-  selector: "app-about-contact-us",
+  selector: "baw-about-contact-us",
   template: `
     <baw-wip>
       <baw-form
@@ -22,7 +22,8 @@ import { fields } from "./contact-us.schema.json";
     </baw-wip>
   `,
 })
-class ContactUsComponent extends WithFormCheck(PageComponent)
+class ContactUsComponent
+  extends WithFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;

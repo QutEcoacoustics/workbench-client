@@ -21,7 +21,7 @@ const tagKey = "tag";
 const tagTypesKey = "tagTypes";
 
 @Component({
-  selector: "app-admin-tags-edit",
+  selector: "baw-admin-tags-edit",
   template: `
     <baw-form
       *ngIf="!failure"

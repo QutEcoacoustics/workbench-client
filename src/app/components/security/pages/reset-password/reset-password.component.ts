@@ -13,7 +13,7 @@ import { List } from "immutable";
 import { fields } from "./reset-password.schema.json";
 
 @Component({
-  selector: "app-reset-password",
+  selector: "baw-reset-password",
   template: `
     <baw-wip>
       <baw-form
@@ -27,7 +27,8 @@ import { fields } from "./reset-password.schema.json";
     </baw-wip>
   `,
 })
-class ResetPasswordComponent extends WithFormCheck(PageComponent)
+class ResetPasswordComponent
+  extends WithFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;

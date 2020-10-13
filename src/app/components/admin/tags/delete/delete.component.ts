@@ -19,7 +19,7 @@ import {
 const tagKey = "tag";
 
 @Component({
-  selector: "app-delete",
+  selector: "baw-delete",
   template: `
     <baw-form
       *ngIf="!failure"

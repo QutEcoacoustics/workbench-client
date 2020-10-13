@@ -22,7 +22,7 @@ const queryKey = "query";
 const pageKey = "page";
 
 @Component({
-  selector: "app-test",
+  selector: "baw-test",
   template: ``,
 })
 class MockComponent extends PaginationTemplate<Project> {

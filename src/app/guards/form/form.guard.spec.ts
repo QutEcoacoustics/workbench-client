@@ -69,7 +69,7 @@ describe("FormTouchedGuard", () => {
 
 describe("WithFormCheck", () => {
   @Component({
-    selector: "app-testing",
+    selector: "baw-testing",
     template: `
       <div>
         <baw-form

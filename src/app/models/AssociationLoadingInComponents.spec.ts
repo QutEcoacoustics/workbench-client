@@ -32,7 +32,7 @@ class MockModel extends AbstractModel {
 }
 
 @Component({
-  selector: "app-test",
+  selector: "baw-test",
   template: `
     <ng-container *ngIf="hasMany && model.childModels">
       <li *ngFor="let item of model.childModels">

@@ -15,7 +15,7 @@ import { fields } from "../../site.base.json";
 const projectKey = "project";
 
 @Component({
-  selector: "app-sites-new",
+  selector: "baw-sites-new",
   templateUrl: "./new.component.html",
 })
 export class SiteNewComponent extends FormTemplate<Site> {

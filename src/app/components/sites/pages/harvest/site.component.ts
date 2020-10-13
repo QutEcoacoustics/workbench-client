@@ -9,7 +9,7 @@ import { siteMenuItemActions } from "../details/site.component";
  * Site Harvest Component
  */
 @Component({
-  selector: "app-sites-harvest",
+  selector: "baw-sites-harvest",
   templateUrl: "./harvest.component.html",
 })
 class SiteHarvestComponent extends PageComponent implements OnInit {

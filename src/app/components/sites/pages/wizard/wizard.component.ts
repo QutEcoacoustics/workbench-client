@@ -15,7 +15,7 @@ import { newSiteMenuItem } from "../../sites.menus";
 const projectKey = "project";
 
 @Component({
-  selector: "app-wizard",
+  selector: "baw-wizard",
   styles: [
     `
       button {
@@ -48,11 +48,11 @@ const projectKey = "project";
         </button>
       </div>
 
-      <app-sites-new *ngIf="isCreating.site"></app-sites-new>
-      <app-regions-new
+      <baw-sites-new *ngIf="isCreating.site"></baw-sites-new>
+      <baw-regions-new
         *ngIf="isCreating.region"
         [hideTitle]="true"
-      ></app-regions-new>
+      ></baw-regions-new>
     </ng-container>
   `,
 })

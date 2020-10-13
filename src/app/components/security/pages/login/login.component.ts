@@ -24,7 +24,7 @@ import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";
 
 @Component({
-  selector: "app-authentication-login",
+  selector: "baw-authentication-login",
   template: `
     <baw-form
       *ngIf="!failure"

@@ -16,7 +16,7 @@ import {
 const audioRecordingKey = "audioRecording";
 
 @Component({
-  selector: "app-admin-audio-recording",
+  selector: "baw-admin-audio-recording",
   template: `
     <div *ngIf="!failure">
       <h1>Audio Recording Details</h1>
@@ -27,7 +27,8 @@ const audioRecordingKey = "audioRecording";
     </div>
   `,
 })
-class AdminAudioRecordingComponent extends WithUnsubscribe(PageComponent)
+class AdminAudioRecordingComponent
+  extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public audioRecording: AudioRecording;
   public failure: boolean;

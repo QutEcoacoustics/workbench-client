@@ -11,7 +11,7 @@ import { merge, noop, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: "app-site-map",
+  selector: "baw-site-map",
   template: `<baw-map [markers]="markers"></baw-map>`,
 })
 export class SiteMapComponent extends WithUnsubscribe() implements OnInit {

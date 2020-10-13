@@ -13,7 +13,7 @@ import { List } from "immutable";
 import { fields } from "./confirm-account.schema.json";
 
 @Component({
-  selector: "app-confirm-account",
+  selector: "baw-confirm-account",
   template: `
     <baw-wip>
       <baw-form
@@ -27,7 +27,8 @@ import { fields } from "./confirm-account.schema.json";
     </baw-wip>
   `,
 })
-class ConfirmPasswordComponent extends WithFormCheck(PageComponent)
+class ConfirmPasswordComponent
+  extends WithFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;

@@ -27,7 +27,7 @@ export const adminMenuItemActions = [
 ];
 
 @Component({
-  selector: "app-dashboard",
+  selector: "baw-dashboard",
   template: `
     <h1>Admin Dashboard</h1>
     <p>Welcome to the super-secret-site-settings!</p>

@@ -16,7 +16,7 @@ import {
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Component({
-  selector: "app-admin-tags",
+  selector: "baw-admin-tags",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
