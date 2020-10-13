@@ -1,31 +1,34 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
+  "folders": [{ "path": "." }],
   "settings": {
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "typescript.preferences.quoteStyle": "double",
-    "editor.codeActionsOnSave": {
-      "source.fixAll": true
-    },
+    "editor.codeActionsOnSave": { "source.fixAll": true },
     "cSpell.words": [
-      "Formly",
+      "dropdown",
+      "Ecosounds",
       "fontawesome",
+      "Formly",
       "fortawesome",
-      "tzinfo"
+      "Mixins",
+      "routerlink",
+      "subsink",
+      "templating",
+      "toastr",
+      "tzinfo",
+      "unprocessable",
+      "vocalisations"
     ],
     "cSpell.ignorePaths": [
-      "**/package-lock.json",
-      "**/node_modules/**",
-      "**/vscode-extension/**",
       "**/.git/objects/**",
       "**/.vscode/**",
-      "**/tslint.json",
       "**/baw-client.code-workspace",
+      "**/node_modules/**",
+      "**/package-lock.json",
+      "**/tsconfig.json",
       "**/tsconfig*.json",
-      "**/tsconfig.json"
+      "**/tslint.json",
+      "**/vscode-extension/**"
     ],
     "workbench.colorCustomizations": {
       "activityBar.background": "#3795b0",
@@ -45,15 +48,16 @@
     },
     "peacock.color": "#2b7489",
     "angularKarmaTestExplorer.debugMode": true,
-    "explorer.compactFolders": false,
-    "prettier.semi": false
+    "explorer.compactFolders": false
   },
   "extensions": {
     "recommendations": [
       "cyrilletuzi.angular-schematics",
       "ms-vscode.vscode-typescript-tslint-plugin",
       "streetsidesoftware.code-spell-checker",
-      "msjsdiag.debugger-for-chrome"
+      "msjsdiag.debugger-for-chrome",
+      "hbenl.vscode-test-explorer",
+      "raagh.angular-karma-test-explorer"
     ]
   }
 }
