@@ -353,8 +353,26 @@ describe("ProjectDetailsComponent", () => {
   });
 
   describe("api", () => {
-    function causeApiRequest(page: number) {
-      component["apiRequest$"].next({ page, filterText: "" });
+    function causeApiRequest(page: number, filterText = "") {
+      component["apiRequest$"].next({ page, filterText });
+    }
+
+    async function handleOnInit(
+      isSite: boolean,
+      expectations: FilterExpectations<ISite | IRegion>[],
+      pageNo?: number,
+      filterText?: string
+    ) {
+      const promise = interceptApiRequest(
+        [initialResponse, []],
+        [initialResponse, []],
+        isSite ? expectations : undefined,
+        !isSite ? expectations : undefined
+      );
+      await awaitChanges(promise);
+      if (pageNo) {
+        causeApiRequest(pageNo, filterText);
+      }
     }
 
     const initialResponse = [];
@@ -385,44 +403,58 @@ describe("ProjectDetailsComponent", () => {
               setup(defaultProject);
               const expectation = (filters, project) => {
                 expect(project).toEqual(defaultProject.id);
-                expect(filters).toEqual(
-                  filter
-                    ? { paging: { page: 1 }, filter }
-                    : { paging: { page: 1 } }
-                );
+                expect(filters).toEqual({ paging: { page: 1 }, filter });
                 done();
               };
-              // ngOnInit will initially call api
-              const promise = interceptApiRequest(
-                emptyResponse,
-                emptyResponse,
-                isSite ? [expectation] : undefined,
-                !isSite ? [expectation] : undefined
-              );
-              await awaitChanges(promise);
+              await handleOnInit(isSite, [expectation]);
             });
 
             it(`should create paged ${test} api filter request`, async (done) => {
               setup(defaultProject);
               const expectation = (filters, project) => {
                 expect(project).toEqual(defaultProject.id);
-                expect(filters).toEqual(
-                  filter
-                    ? { paging: { page: 5 }, filter }
-                    : { paging: { page: 5 } }
-                );
+                expect(filters).toEqual({ paging: { page: 5 }, filter });
                 done();
               };
-              // ngOnInit will initially call api
-              const promise = interceptApiRequest(
-                [initialResponse, []],
-                [initialResponse, []],
-                isSite ? [initialExpectation, expectation] : undefined,
-                !isSite ? [initialExpectation, expectation] : undefined
-              );
-              await awaitChanges(promise);
-              causeApiRequest(5);
+              await handleOnInit(isSite, [initialExpectation, expectation], 5);
             });
+
+            if (isSite) {
+              it("should handle site api filter request with regionId", async (done) => {
+                const spy = jasmine.createSpy();
+                setup(defaultProject);
+                component["generateFilter"] = spy.and.callFake(() => ({
+                  paging: { page: 1 },
+                  filter: undefined,
+                }));
+                const expectation = (filters) => {
+                  expect(filters).toEqual({ paging: { page: 1 }, filter });
+                  done();
+                };
+                await handleOnInit(
+                  isSite,
+                  [initialExpectation, expectation],
+                  1
+                );
+              });
+
+              it("should not override site api filter request with regionId", async (done) => {
+                setup(defaultProject);
+                const expectation = (filters) => {
+                  expect(filters).toEqual({
+                    paging: { page: 5 },
+                    filter: { ...filter, name: { contains: "custom filter" } },
+                  });
+                  done();
+                };
+                await handleOnInit(
+                  isSite,
+                  [initialExpectation, expectation],
+                  5,
+                  "custom filter"
+                );
+              });
+            }
 
             it("should set empty model list", () => {
               setup(defaultProject);
