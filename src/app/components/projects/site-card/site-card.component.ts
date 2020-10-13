@@ -72,6 +72,6 @@ export class SiteCardComponent implements OnInit {
   }
 
   public numPoints() {
-    return this.region.siteIds?.size || 0;
+    return this.region?.siteIds?.size || 0;
   }
 }
