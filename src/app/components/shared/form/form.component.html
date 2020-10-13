@@ -24,7 +24,7 @@
         <button
           type="submit"
           class="btn float-right"
-          [ngClass]="btnColor"
+          [ngClass]="'btn-' + btnColor"
           [disabled]="!fields || submitLoading"
         >
           {{ submitLabel }}

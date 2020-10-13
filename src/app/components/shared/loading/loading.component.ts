@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { BootstrapColorTypes } from "src/app/app.helper";
 
 /**
  * Loading Animation
@@ -20,15 +21,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 export class LoadingComponent {
   @Input() public display: boolean;
   @Input() public title: string;
-  @Input() public type:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "info"
-    | "light"
-    | "dark" = "info";
+  @Input() public type: BootstrapColorTypes = "info";
 
   constructor() {}
 }

@@ -10,6 +10,7 @@ import { FormGroup } from "@angular/forms";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ToastrService } from "ngx-toastr";
+import { BootstrapColorTypes } from "src/app/app.helper";
 
 /**
  * Formly Form Wrapper
@@ -22,7 +23,7 @@ import { ToastrService } from "ngx-toastr";
   encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
-  @Input() public btnColor: ButtonClassTypes = "btn-primary";
+  @Input() public btnColor: BootstrapColorTypes = "primary";
   @Input() public fields: FormlyFieldConfig[];
   @Input() public model: object = {};
   @Input() public size: "small" | "default" = "default";
@@ -57,12 +58,3 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
     }
   }
 }
-
-// TODO Remove btn- from type, this also be a generic bootstrap class type that is reusable
-type ButtonClassTypes =
-  | "btn-danger"
-  | "btn-success"
-  | "btn-warning"
-  | "btn-primary"
-  | "btn-secondary"
-  | "btn-info";

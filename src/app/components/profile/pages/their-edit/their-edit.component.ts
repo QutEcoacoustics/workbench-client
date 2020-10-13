@@ -28,7 +28,7 @@ const accountKey = "account";
     <baw-wip *ngIf="!failure">
       <baw-form
         [title]="title"
-        btnColor="btn-warning"
+        btnColor="warning"
         [model]="model"
         [fields]="fields"
         submitLabel="Update User"

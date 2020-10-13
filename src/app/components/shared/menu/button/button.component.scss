@@ -10,6 +10,7 @@ button {
   }
 
   &:hover span {
+    // TODO Validate colour looks fine
     filter: brightness(0.85);
   }
 }

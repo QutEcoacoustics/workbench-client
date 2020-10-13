@@ -28,14 +28,15 @@ const tagGroupKey = "tagGroup";
       [title]="title"
       [model]="model"
       [fields]="fields"
-      btnColor="btn-danger"
+      btnColor="danger"
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
 })
-class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
+class AdminTagGroupsDeleteComponent
+  extends FormTemplate<TagGroup>
   implements OnInit {
   public title: string;
 
