@@ -1,16 +1,8 @@
-import { HttpClient } from "@angular/common/http";
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input,
-  OnInit,
-} from "@angular/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { SafeHtml } from "@angular/platform-browser";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { CmsService } from "@baw-api/cms/cms.service";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { takeUntil } from "rxjs/operators";
 
 /**
  * CMS Wrapper
@@ -31,38 +23,24 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public error: ApiErrorDetails;
   public loading: boolean;
 
-  constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    private http: HttpClient,
-    private ref: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
-  ) {
+  constructor(private cms: CmsService, private ref: ChangeDetectorRef) {
     super();
   }
 
   public ngOnInit() {
     this.loading = true;
 
-    // TODO Replace with API request
-    this.http
-      // .get(this.apiRoot + this.page, { responseType: "text" })
-      .get(`/assets/content${this.page}`, { responseType: "text" })
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (data) => {
-          // TODO Validate if this is needed?
-          // https://www.intricatecloud.io/2019/10/using-angular-innerhtml-to-display-user-generated-content-without-sacrificing-security/
-          // This is a bit dangerous, however CMS should only load from trusted sources.
-          // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
-          this.loading = false;
-          this.ref.detectChanges();
-        },
-        (err: ApiErrorDetails) => {
-          this.error = err;
-          this.loading = false;
-          this.ref.detectChanges();
-        }
-      );
+    this.cms.show(this.page).subscribe(
+      (blob) => {
+        this.blob = blob;
+        this.loading = false;
+        this.ref.detectChanges();
+      },
+      (err: ApiErrorDetails) => {
+        this.error = err;
+        this.loading = false;
+        this.ref.detectChanges();
+      }
+    );
   }
 }

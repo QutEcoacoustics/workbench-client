@@ -88,9 +88,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       );
     }
 
-    request = request.clone({
-      params: newParams,
-    });
+    request = request.clone({ params: newParams });
 
     return next.handle(request).pipe(
       // Convert incoming data

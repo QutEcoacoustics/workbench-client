@@ -20,7 +20,8 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.getCms("harvest");
+    // TODO
+    // this.page = this.env.getCms("harvest");
   }
 }
 

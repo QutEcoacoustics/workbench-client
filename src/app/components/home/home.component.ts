@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
-import { AppConfigService } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 import { map, mergeMap, takeUntil } from "rxjs/operators";
@@ -64,12 +64,11 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   encapsulation: ViewEncapsulation.None,
 })
 class HomeComponent extends PageComponent implements OnInit {
-  public page: string;
+  public page = CMS.HOME;
   public projectsLink = projectsMenuItem.route.toString();
   public projectList: List<Card> = List([]);
 
   constructor(
-    private env: AppConfigService,
     private projectApi: ProjectsService,
     private securityApi: SecurityService
   ) {
@@ -77,8 +76,6 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.getCms("home");
-
     this.securityApi
       .getAuthTrigger()
       .pipe(

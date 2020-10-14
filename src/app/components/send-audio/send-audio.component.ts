@@ -20,7 +20,8 @@ class SendAudioComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.page = this.env.getCms("sendAudio");
+    // TODO
+    // this.page = this.env.getCms("sendAudio");
   }
 }
 

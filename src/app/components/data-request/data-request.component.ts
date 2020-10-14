@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { CMS } from "@baw-api/cms/cms.service";
 import { WithFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AppConfigService } from "@services/app-config/app-config.service";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as requestFields } from "./data-request.schema.json";
 import { fields as annotationFields } from "./download-annotations.schema.json";
@@ -33,24 +33,14 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     </baw-wip>
   `,
 })
-class DataRequestComponent
-  extends WithFormCheck(PageComponent)
-  implements OnInit {
+class DataRequestComponent extends WithFormCheck(PageComponent) {
   public annotationLoading: boolean;
   public annotationModel = {};
   public annotationFields = annotationFields;
-  public page: string;
+  public page = CMS.DATA_UPLOAD;
   public requestLoading: boolean;
   public requestModel = {};
   public requestFields = requestFields;
-
-  constructor(private env: AppConfigService) {
-    super();
-  }
-
-  public ngOnInit() {
-    this.page = this.env.getCms("downloadAnnotations");
-  }
 
   /**
    * Form submission
