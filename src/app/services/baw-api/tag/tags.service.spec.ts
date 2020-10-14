@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Tag } from "@models/Tag";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -14,7 +14,7 @@ import {
 import { TagsService } from "./tags.service";
 
 describe("TagsService", function () {
-  beforeEach(async(function () {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -24,7 +24,7 @@ describe("TagsService", function () {
       providers: [TagsService],
     });
     this.service = TestBed.inject(TagsService);
-  }));
+  });
 
   it("should be created", function () {
     expect(this.service).toBeTruthy();

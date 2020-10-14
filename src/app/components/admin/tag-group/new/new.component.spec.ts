@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -21,7 +21,7 @@ describe("AdminTagGroupsNewComponent", () => {
   xdescribe("form", () => {});
 
   describe("component", () => {
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [
           ...appLibraryImports,
@@ -37,9 +37,7 @@ describe("AdminTagGroupsNewComponent", () => {
           },
         ],
       }).compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(AdminTagGroupsNewComponent);
       api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
       router = TestBed.inject(Router);

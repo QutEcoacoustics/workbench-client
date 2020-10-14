@@ -19,7 +19,7 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "app-points-delete",
+  selector: "baw-points-delete",
   templateUrl: "./delete.component.html",
 })
 class PointDeleteComponent extends SiteDeleteComponent {

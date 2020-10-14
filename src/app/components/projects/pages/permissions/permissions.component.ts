@@ -24,7 +24,7 @@ import { projectMenuItemActions } from "../details/details.component";
 const projectKey = "project";
 
 @Component({
-  selector: "app-project-permissions",
+  selector: "baw-project-permissions",
   templateUrl: "permissions.component.html",
   styleUrls: ["permissions.component.scss"],
 })

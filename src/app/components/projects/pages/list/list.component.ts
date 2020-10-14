@@ -19,7 +19,7 @@ export const projectsMenuItemActions = [
 ];
 
 @Component({
-  selector: "app-projects-list",
+  selector: "baw-projects-list",
   template: `
     <ng-container *ngIf="!error">
       <baw-debounce-input

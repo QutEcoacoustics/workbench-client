@@ -38,7 +38,7 @@ export const projectMenuItemActions = [
 const projectKey = "project";
 
 @Component({
-  selector: "app-project",
+  selector: "baw-project",
   template: `
     <ng-container *ngIf="project">
       <h1>{{ project.name }}</h1>
@@ -80,17 +80,17 @@ const projectKey = "project";
       <div id="model-grid">
         <!-- Google Maps -->
         <div *ngIf="hasSites || hasRegions || loading" class="item map">
-          <app-site-map [project]="project"></app-site-map>
+          <baw-site-map [project]="project"></baw-site-map>
         </div>
 
         <!-- Regions -->
         <div *ngFor="let region of regions" class="item">
-          <app-site-card [project]="project" [region]="region"></app-site-card>
+          <baw-site-card [project]="project" [region]="region"></baw-site-card>
         </div>
 
         <!-- Sites -->
         <div *ngFor="let site of sites" class="item">
-          <app-site-card [project]="project" [site]="site"></app-site-card>
+          <baw-site-card [project]="project" [site]="site"></baw-site-card>
         </div>
       </div>
 

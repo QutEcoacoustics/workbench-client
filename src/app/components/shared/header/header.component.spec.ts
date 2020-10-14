@@ -1,10 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-} from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -43,7 +38,7 @@ describe("HeaderComponent", () => {
     spyOn(api, "getLocalUser").and.callFake(() => (isLoggedIn ? user : null));
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         HeaderComponent,
@@ -58,9 +53,7 @@ describe("HeaderComponent", () => {
         MockBawApiModule,
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
     api = TestBed.inject(SecurityService);
     router = TestBed.inject(Router);

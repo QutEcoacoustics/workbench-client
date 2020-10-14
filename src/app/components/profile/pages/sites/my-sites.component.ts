@@ -18,7 +18,7 @@ import { myAccountActions } from "../profile/my-profile.component";
 const userKey = "user";
 
 @Component({
-  selector: "app-my-sites",
+  selector: "baw-my-sites",
   templateUrl: "./sites.component.html",
 })
 class MySitesComponent extends PagedTableTemplate<TableRow, Site> {

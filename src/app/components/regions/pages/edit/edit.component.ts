@@ -30,7 +30,7 @@ const regionKey = "region";
  * Edit Region Component
  */
 @Component({
-  selector: "app-regions-edit",
+  selector: "baw-regions-edit",
   template: `
     <baw-form
       *ngIf="!failure"

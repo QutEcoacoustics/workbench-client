@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
@@ -12,7 +12,7 @@ import {
 } from "@test/helpers/api-common";
 
 describe("ScriptsService", function () {
-  beforeEach(async(function () {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -22,7 +22,7 @@ describe("ScriptsService", function () {
       providers: [ScriptsService],
     });
     this.service = TestBed.inject(ScriptsService);
-  }));
+  });
 
   it("should be created", function () {
     expect(this.service).toBeTruthy();

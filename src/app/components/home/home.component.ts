@@ -11,7 +11,7 @@ import { map, mergeMap, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
-  selector: "app-home",
+  selector: "baw-home",
   styles: [
     `
       #website-title {

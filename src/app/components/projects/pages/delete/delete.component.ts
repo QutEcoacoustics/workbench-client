@@ -28,14 +28,14 @@ const projectKey = "project";
  * Delete Project Component
  */
 @Component({
-  selector: "app-projects-delete",
+  selector: "baw-projects-delete",
   template: `
     <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
       [fields]="fields"
-      btnColor="btn-danger"
+      btnColor="danger"
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"

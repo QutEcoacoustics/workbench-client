@@ -11,7 +11,7 @@ import { SiteHarvestComponent } from "./site.component";
  * Site Harvest Component
  */
 @Component({
-  selector: "app-sites-harvest",
+  selector: "baw-sites-harvest",
   templateUrl: "./harvest.component.html",
 })
 class PointHarvestComponent extends SiteHarvestComponent {}

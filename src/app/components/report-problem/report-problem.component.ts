@@ -8,7 +8,7 @@ import {
 import { fields } from "./report-problem.schema.json";
 
 @Component({
-  selector: "app-report-problem",
+  selector: "baw-report-problem",
   template: `
     <baw-wip>
       <baw-form
@@ -23,7 +23,8 @@ import { fields } from "./report-problem.schema.json";
     </baw-wip>
   `,
 })
-class ReportProblemComponent extends WithFormCheck(PageComponent)
+class ReportProblemComponent
+  extends WithFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;

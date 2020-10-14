@@ -7,7 +7,7 @@ import { fields as requestFields } from "./data-request.schema.json";
 import { fields as annotationFields } from "./download-annotations.schema.json";
 
 @Component({
-  selector: "app-data-request",
+  selector: "baw-data-request",
   template: `
     <baw-wip>
       <h1>Data Request</h1>

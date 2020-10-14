@@ -24,7 +24,7 @@ const projectKey = "project";
  * New Region Component
  */
 @Component({
-  selector: "app-regions-new",
+  selector: "baw-regions-new",
   template: `
     <baw-form
       *ngIf="!failure"

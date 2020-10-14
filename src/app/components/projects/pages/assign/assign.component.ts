@@ -19,7 +19,7 @@ import { projectMenuItemActions } from "../details/details.component";
 const projectKey = "project";
 
 @Component({
-  selector: "app-assign",
+  selector: "baw-assign",
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"],
 })

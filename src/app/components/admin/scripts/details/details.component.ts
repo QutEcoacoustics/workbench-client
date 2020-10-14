@@ -23,7 +23,7 @@ export const adminScriptActions = [
 const scriptKey = "script";
 
 @Component({
-  selector: "app-admin-script",
+  selector: "baw-admin-script",
   template: `
     <div *ngIf="!failure">
       <h1>Script Details</h1>
@@ -31,7 +31,8 @@ const scriptKey = "script";
     </div>
   `,
 })
-class AdminScriptComponent extends WithUnsubscribe(PageComponent)
+class AdminScriptComponent
+  extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public script: Script;
   public failure: boolean;

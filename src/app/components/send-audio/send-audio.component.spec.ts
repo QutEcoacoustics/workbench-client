@@ -2,7 +2,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { cmsRoot } from "@services/app-config/app-config.service.spec";
@@ -17,7 +17,7 @@ describe("SendAudioComponent", () => {
   let env: AppConfigService;
   let cmsUrl: string;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -27,9 +27,7 @@ describe("SendAudioComponent", () => {
       ],
       declarations: [SendAudioComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(SendAudioComponent);
     httpMock = TestBed.inject(HttpTestingController);
     env = TestBed.inject(AppConfigService);

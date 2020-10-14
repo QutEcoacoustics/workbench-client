@@ -1,7 +1,7 @@
 {
   "environment": {
     "environment": "development",
-    "apiRoot": "http://localhost:3000",
+    "apiRoot": "https://staging.ecosounds.org",
     "siteRoot": "http://localhost:4200",
     "siteDir": "/",
     "ga": {

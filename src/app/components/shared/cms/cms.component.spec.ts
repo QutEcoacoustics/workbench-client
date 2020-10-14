@@ -2,7 +2,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -21,7 +21,7 @@ describe("CmsComponent", () => {
   let env: AppConfigService;
   let fixture: ComponentFixture<CmsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         SharedModule,
@@ -31,9 +31,7 @@ describe("CmsComponent", () => {
       ],
       declarations: [CmsComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CmsComponent);
     httpMock = TestBed.inject(HttpTestingController);
     api = TestBed.inject(SecurityService);

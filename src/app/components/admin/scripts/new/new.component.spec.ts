@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -17,7 +17,7 @@ describe("AdminScriptsNewComponent", () => {
   let notifications: ToastrService;
   let router: Router;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -39,7 +39,7 @@ describe("AdminScriptsNewComponent", () => {
     spyOn(router, "navigateByUrl").and.stub();
 
     fixture.detectChanges();
-  }));
+  });
 
   xdescribe("form", () => {});
 

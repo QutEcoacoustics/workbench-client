@@ -5,7 +5,7 @@ import { Site } from "@models/Site";
 import { Status } from "../../shared/indicator/indicator.component";
 
 @Component({
-  selector: "app-project-harvest-review",
+  selector: "baw-project-harvest-review",
   templateUrl: "./harvest-review.component.html",
   styles: [
     `

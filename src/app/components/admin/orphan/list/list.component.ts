@@ -16,7 +16,7 @@ import {
 } from "../orphans.menus";
 
 @Component({
-  selector: "app-admin-orphans",
+  selector: "baw-admin-orphans",
   templateUrl: "./list.component.html",
 })
 class AdminOrphansComponent

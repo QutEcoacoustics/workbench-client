@@ -25,7 +25,7 @@ const projectKey = "project";
 const siteKey = "site";
 
 @Component({
-  selector: "app-sites-edit",
+  selector: "baw-sites-edit",
   templateUrl: "./edit.component.html",
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {

@@ -9,7 +9,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 
 @Component({
-  selector: "app-site-card",
+  selector: "baw-site-card",
   template: `
     <li class="list-group-item">
       <div class="image">

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -16,7 +16,7 @@ describe("AdminScriptsComponent", () => {
   let defaultModels: Script[];
   let fixture: ComponentFixture<AdminScriptsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       declarations: [AdminScriptsComponent],
       imports: [
@@ -26,9 +26,7 @@ describe("AdminScriptsComponent", () => {
         MockBawApiModule,
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(function () {
     fixture = TestBed.createComponent(AdminScriptsComponent);
     api = TestBed.inject(ScriptsService);
 

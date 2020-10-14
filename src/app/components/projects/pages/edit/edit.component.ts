@@ -25,7 +25,7 @@ import { projectErrorMsg } from "../new/new.component";
 const projectKey = "project";
 
 @Component({
-  selector: "app-project-edit",
+  selector: "baw-project-edit",
   template: `
     <!-- Move ngIf to baw-form when baw-wip removed -->
     <baw-wip *ngIf="!failure">

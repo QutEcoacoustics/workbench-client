@@ -17,7 +17,7 @@ import {
 import { fields } from "../tag-group.schema.json";
 
 @Component({
-  selector: "app-admin-tag-groups-new",
+  selector: "baw-admin-tag-groups-new",
   template: `
     <baw-form
       *ngIf="!failure"

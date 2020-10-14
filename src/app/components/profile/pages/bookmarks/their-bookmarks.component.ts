@@ -17,7 +17,7 @@ import { theirProfileActions } from "../profile/their-profile.component";
 const accountKey = "account";
 
 @Component({
-  selector: "app-their-bookmarks",
+  selector: "baw-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
 })
 class TheirBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {

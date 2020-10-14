@@ -34,7 +34,7 @@ const regionKey = "region";
  * Region Details Component
  */
 @Component({
-  selector: "app-region",
+  selector: "baw-region",
   styleUrls: ["./details.component.scss"],
   template: `
     <ng-container *ngIf="region">
@@ -66,12 +66,12 @@ const regionKey = "region";
       <div id="model-grid">
         <!-- Google Maps -->
         <div *ngIf="hasSites()" class="item map">
-          <app-site-map [project]="project" [region]="region"></app-site-map>
+          <baw-site-map [project]="project" [region]="region"></baw-site-map>
         </div>
 
         <!-- Sites -->
         <div *ngFor="let site of sites" class="item">
-          <app-site-card [project]="project" [site]="site"></app-site-card>
+          <baw-site-card [project]="project" [site]="site"></baw-site-card>
         </div>
       </div>
 

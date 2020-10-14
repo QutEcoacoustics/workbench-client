@@ -26,7 +26,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { PagedTableTemplate } from "./pagedTableTemplate";
 
 @Component({
-  selector: "app-test-component",
+  selector: "baw-test-component",
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,

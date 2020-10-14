@@ -19,7 +19,7 @@ import { theirProfileActions } from "../profile/their-profile.component";
 const accountKey = "user";
 
 @Component({
-  selector: "app-their-annotations",
+  selector: "baw-their-annotations",
   templateUrl: "./annotations.component.html",
 })
 class TheirAnnotationsComponent extends PagedTableTemplate<

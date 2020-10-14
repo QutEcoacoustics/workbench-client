@@ -16,7 +16,7 @@ import { User } from "@models/User";
 import { List } from "immutable";
 
 @Component({
-  selector: "app-admin-users",
+  selector: "baw-admin-users",
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })

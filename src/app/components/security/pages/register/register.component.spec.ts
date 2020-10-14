@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { FormComponent } from "@shared/form/form.component";
@@ -50,14 +50,12 @@ describe("RegisterComponent", () => {
   });
 
   describe("component", () => {
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [...testFormImports, MockBawApiModule],
         declarations: [RegisterComponent, FormComponent, WIPComponent],
       }).compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(RegisterComponent);
       component = fixture.componentInstance;
       api = TestBed.inject(SecurityService);

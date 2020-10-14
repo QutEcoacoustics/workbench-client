@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { appLibraryImports } from "src/app/app.module";
@@ -9,7 +9,7 @@ describe("StatisticsComponent", () => {
   let component: StatisticsComponent;
   let fixture: ComponentFixture<StatisticsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -19,9 +19,7 @@ describe("StatisticsComponent", () => {
       ],
       declarations: [StatisticsComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(StatisticsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

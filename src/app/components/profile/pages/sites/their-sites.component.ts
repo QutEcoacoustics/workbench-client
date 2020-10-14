@@ -19,7 +19,7 @@ import { theirProfileActions } from "../profile/their-profile.component";
 const accountKey = "account";
 
 @Component({
-  selector: "app-their-sites",
+  selector: "baw-their-sites",
   templateUrl: "./sites.component.html",
 })
 class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {

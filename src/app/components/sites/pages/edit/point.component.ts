@@ -21,7 +21,7 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "app-points-edit",
+  selector: "baw-points-edit",
   templateUrl: "./edit.component.html",
 })
 class PointEditComponent extends SiteEditComponent {

@@ -18,7 +18,7 @@ import { theirProfileActions } from "../profile/their-profile.component";
 const accountKey = "account";
 
 @Component({
-  selector: "app-their-projects",
+  selector: "baw-their-projects",
   templateUrl: "./projects.component.html",
 })
 class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {

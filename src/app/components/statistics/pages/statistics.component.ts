@@ -11,7 +11,7 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
  * Statistics Component
  */
 @Component({
-  selector: "app-data-request",
+  selector: "baw-statistics",
   templateUrl: "./statistics.component.html",
   styleUrls: ["./statistics.component.scss"],
 })

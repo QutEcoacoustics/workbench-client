@@ -1,13 +1,18 @@
-a {
+.nav-link {
+  color: black;
   padding: 0.5rem 0.25rem 0.5rem 0.75rem;
-}
 
-.icon {
-  display: inline-flex;
-  justify-content: center;
-  width: 1.3rem;
+  &:hover, &:focus {
+    background-color: var(--theme-highlight-light)
+  }
 
-  fa-icon {
-    color: black;
+  &.active {
+    background-color: var(--theme-highlight);
+  }
+
+  .icon {
+    display: inline-flex;
+    justify-content: center;
+    width: 1.3rem;
   }
 }

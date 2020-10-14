@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
@@ -26,14 +26,12 @@ describe("FormTouchedGuard", () => {
     };
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
       providers: [FormTouchedGuard],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     guard = TestBed.inject(FormTouchedGuard);
   });
 
@@ -71,7 +69,7 @@ describe("FormTouchedGuard", () => {
 
 describe("WithFormCheck", () => {
   @Component({
-    selector: "app-testing",
+    selector: "baw-testing",
     template: `
       <div>
         <baw-form
@@ -115,7 +113,7 @@ describe("WithFormCheck", () => {
   let mockComponent: MockComponent;
   let fixture: ComponentFixture<MockComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [...appLibraryImports, SharedModule],
       declarations: [MockComponent],
@@ -123,7 +121,7 @@ describe("WithFormCheck", () => {
 
     fixture = TestBed.createComponent(MockComponent);
     mockComponent = fixture.componentInstance;
-  }));
+  });
 
   it("should handle class with no forms", () => {
     mockComponent.numForms = 0;

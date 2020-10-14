@@ -17,7 +17,7 @@ import {
 const siteKey = "site";
 
 @Component({
-  selector: "app-admin-orphan",
+  selector: "baw-admin-orphan",
   template: `
     <div *ngIf="!failure">
       <h1>Orphan Site Details</h1>
@@ -25,7 +25,8 @@ const siteKey = "site";
     </div>
   `,
 })
-class AdminOrphanComponent extends WithUnsubscribe(PageComponent)
+class AdminOrphanComponent
+  extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public site: Site;
   public failure: boolean;

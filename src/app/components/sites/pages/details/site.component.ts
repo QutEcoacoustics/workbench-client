@@ -35,13 +35,13 @@ const siteKey = "site";
  * Site Details Component
  */
 @Component({
-  selector: "app-site-details",
+  selector: "baw-site-details",
   template: `
-    <app-site
+    <baw-site
       *ngIf="project && site"
       [project]="project"
       [site]="site"
-    ></app-site>
+    ></baw-site>
   `,
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {

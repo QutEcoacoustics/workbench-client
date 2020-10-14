@@ -19,14 +19,14 @@ import {
 const tagKey = "tag";
 
 @Component({
-  selector: "app-delete",
+  selector: "baw-delete",
   template: `
     <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
       [fields]="fields"
-      btnColor="btn-danger"
+      btnColor="danger"
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"

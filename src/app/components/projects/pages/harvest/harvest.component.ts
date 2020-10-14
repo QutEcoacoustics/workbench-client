@@ -20,7 +20,7 @@ import { projectMenuItemActions } from "../details/details.component";
 const projectKey = "project";
 
 @Component({
-  selector: "app-harvest",
+  selector: "baw-harvest",
   templateUrl: "./harvest.component.html",
   styleUrls: ["./harvest.component.scss"],
   // tslint:disable-next-line: use-component-view-encapsulation

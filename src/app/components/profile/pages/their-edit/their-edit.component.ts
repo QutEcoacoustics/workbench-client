@@ -23,12 +23,12 @@ import { theirProfileActions } from "../profile/their-profile.component";
 const accountKey = "account";
 
 @Component({
-  selector: "app-their-edit",
+  selector: "baw-their-edit",
   template: `
     <baw-wip *ngIf="!failure">
       <baw-form
         [title]="title"
-        btnColor="btn-warning"
+        btnColor="warning"
         [model]="model"
         [fields]="fields"
         submitLabel="Update User"

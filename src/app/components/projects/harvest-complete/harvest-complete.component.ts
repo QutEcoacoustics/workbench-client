@@ -6,10 +6,11 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 
 @Component({
-  selector: "app-project-harvest-complete",
+  selector: "baw-project-harvest-complete",
   templateUrl: "./harvest-complete.component.html",
 })
-export class HarvestCompleteComponent extends PagedTableTemplate<TableRow, Site>
+export class HarvestCompleteComponent
+  extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
   @Input() public project: Project;
   public sites: Site[];

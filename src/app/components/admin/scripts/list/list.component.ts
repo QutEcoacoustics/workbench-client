@@ -16,7 +16,7 @@ import {
 export const adminScriptsMenuItemActions = [adminNewScriptsMenuItem];
 
 @Component({
-  selector: "app-admin-scripts",
+  selector: "baw-admin-scripts",
   templateUrl: "./list.component.html",
 })
 class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {

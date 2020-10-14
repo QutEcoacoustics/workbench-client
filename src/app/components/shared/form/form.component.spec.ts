@@ -1,6 +1,6 @@
 import { HttpTestingController } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -52,14 +52,12 @@ describe("FormComponent", () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: testFormImports,
       declarations: [FormComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
@@ -152,41 +150,41 @@ describe("FormComponent", () => {
 
     it("should create form with default submit button", () => {
       fixture.detectChanges();
-      assertSubmit("btn-success");
+      assertSubmit("btn-primary");
     });
 
     it("should create form with danger submit button", () => {
-      component.btnColor = "btn-danger";
+      component.btnColor = "danger";
       fixture.detectChanges();
       assertSubmit("btn-danger");
     });
 
     it("should create form with success submit button", () => {
-      component.btnColor = "btn-success";
+      component.btnColor = "success";
       fixture.detectChanges();
       assertSubmit("btn-success");
     });
 
     it("should create form with warning submit button", () => {
-      component.btnColor = "btn-warning";
+      component.btnColor = "warning";
       fixture.detectChanges();
       assertSubmit("btn-warning");
     });
 
     it("should create form with primary submit button", () => {
-      component.btnColor = "btn-primary";
+      component.btnColor = "primary";
       fixture.detectChanges();
       assertSubmit("btn-primary");
     });
 
     it("should create form with secondary submit button", () => {
-      component.btnColor = "btn-secondary";
+      component.btnColor = "secondary";
       fixture.detectChanges();
       assertSubmit("btn-secondary");
     });
 
     it("should create form with info submit button", () => {
-      component.btnColor = "btn-info";
+      component.btnColor = "info";
       fixture.detectChanges();
       assertSubmit("btn-info");
     });

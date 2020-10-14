@@ -21,21 +21,22 @@ import {
 const tagGroupKey = "tagGroup";
 
 @Component({
-  selector: "app-admin-tag-groups-delete",
+  selector: "baw-admin-tag-groups-delete",
   template: `
     <baw-form
       *ngIf="!failure"
       [title]="title"
       [model]="model"
       [fields]="fields"
-      btnColor="btn-danger"
+      btnColor="danger"
       submitLabel="Delete"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
 })
-class AdminTagGroupsDeleteComponent extends FormTemplate<TagGroup>
+class AdminTagGroupsDeleteComponent
+  extends FormTemplate<TagGroup>
   implements OnInit {
   public title: string;
 

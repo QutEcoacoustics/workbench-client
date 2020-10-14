@@ -19,7 +19,7 @@ import {
 const typeOfTagsKey = "typeOfTags";
 
 @Component({
-  selector: "app-admin-tags-new",
+  selector: "baw-admin-tags-new",
   template: `
     <baw-form
       *ngIf="!failure"

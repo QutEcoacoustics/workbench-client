@@ -9,7 +9,7 @@ import { ToastrService } from "ngx-toastr";
 import { fields } from "./register.schema.json";
 
 @Component({
-  selector: "app-authentication-register",
+  selector: "baw-authentication-register",
   template: `
     <baw-wip>
       <baw-form

@@ -22,7 +22,7 @@ import {
 const scriptKey = "script";
 
 @Component({
-  selector: "app-admin-scripts-edit",
+  selector: "baw-admin-scripts-edit",
   template: `
     <baw-form
       *ngIf="!failure"

@@ -37,11 +37,12 @@ export const myAccountActions = [
 const userKey = "user";
 
 @Component({
-  selector: "app-my-profile",
+  selector: "baw-my-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
 })
-class MyProfileComponent extends WithUnsubscribe(PageComponent)
+class MyProfileComponent
+  extends WithUnsubscribe(PageComponent)
   implements OnInit {
   public lastSeenAt: string;
   public tags: Tag[];

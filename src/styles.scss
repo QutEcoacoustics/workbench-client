@@ -7,8 +7,16 @@
 
 /* Global css variables */
 :root {
+  --color: 141, 24%;
+  --light: 25%;
+
+  --theme-header: #222;
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
-  --theme-highlight: #6c757d;
+  --theme-highlight: hsl(var(--color), var(--light));
+  --theme-highlight-light: hsl(var(--color), calc(var(--light) + 60%));
+  --theme-highlight-lightest: hsl(var(--color), calc(var(--light) + 70%));
+  --theme-highlight-darker: hsl(var(--color), calc(var(--light) - 5%));
+  --theme-highlight-darkest: hsl(var(--color), calc(var(--light) - 10%));
 }
 
 /* Overwrite bootstrap maximum window size */
@@ -23,21 +31,17 @@ body {
   padding: 0px;
 }
 
-section {
-  background-color: transparent;
-  margin: auto 0;
-  padding: 15px 1rem;
-  width: 100%;
+.pagination {
+  .page-item {
+    .page-link {
+      color: var(--theme-highlight);
+    }
 
-  h1 {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    line-height: 1.1;
-  }
-  h2 {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    line-height: 1.1;
+    &.active .page-link {
+      color: $white;
+      background-color: var(--theme-highlight);
+      border-color: var(--theme-highlight);
+    }
   }
 }
 

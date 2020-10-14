@@ -20,7 +20,7 @@ const projectKey = "project";
 const regionKey = "region";
 
 @Component({
-  selector: "app-points-new",
+  selector: "baw-points-new",
   templateUrl: "./new.component.html",
 })
 class PointNewComponent extends SiteNewComponent {

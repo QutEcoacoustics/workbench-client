@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecording } from "@models/AudioRecording";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -11,7 +11,7 @@ import {
 import { AudioRecordingsService } from "./audio-recordings.service";
 
 describe("AudioRecordingsService", function () {
-  beforeEach(async(function () {
+  beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -21,7 +21,7 @@ describe("AudioRecordingsService", function () {
       providers: [AudioRecordingsService],
     });
     this.service = TestBed.inject(AudioRecordingsService);
-  }));
+  });
 
   it("should be created", function () {
     expect(this.service).toBeTruthy();

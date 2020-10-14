@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SharedModule } from "@components/shared/shared.module";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -9,14 +9,12 @@ describe("ItemComponent", () => {
   let component: ItemComponent;
   let fixture: ComponentFixture<ItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, RouterTestingModule],
       declarations: [ItemComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ItemComponent);
     component = fixture.componentInstance;
   });

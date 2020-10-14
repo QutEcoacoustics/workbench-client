@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Component, Injector, Input } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -32,7 +32,7 @@ class MockModel extends AbstractModel {
 }
 
 @Component({
-  selector: "app-test",
+  selector: "baw-test",
   template: `
     <ng-container *ngIf="hasMany && model.childModels">
       <li *ngFor="let item of model.childModels">
@@ -60,7 +60,7 @@ describe("Association Decorators Loading In Components", () => {
   let fixture: ComponentFixture<MockComponent>;
   let injector: Injector;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
       imports: [HttpClientTestingModule, MockBawApiModule],
@@ -69,9 +69,7 @@ describe("Association Decorators Loading In Components", () => {
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);
     injector = TestBed.inject(Injector);
