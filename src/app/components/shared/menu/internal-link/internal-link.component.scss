@@ -2,6 +2,10 @@
   color: black;
   padding: 0.5rem 0.25rem 0.5rem 0.75rem;
 
+  &:hover, &:focus {
+    background-color: var(--theme-highlight-light)
+  }
+
   &.active {
     background-color: var(--theme-highlight);
   }

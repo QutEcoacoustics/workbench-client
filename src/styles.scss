@@ -7,9 +7,16 @@
 
 /* Global css variables */
 :root {
-  --theme-header: #304f3b;
+  --color: 141, 24%;
+  --light: 25%;
+
+  --theme-header: #222;
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
-  --theme-highlight: #6c757d;
+  --theme-highlight: hsl(var(--color), var(--light));
+  --theme-highlight-light: hsl(var(--color), calc(var(--light) + 60%));
+  --theme-highlight-lightest: hsl(var(--color), calc(var(--light) + 70%));
+  --theme-highlight-darker: hsl(var(--color), calc(var(--light) - 5%));
+  --theme-highlight-darkest: hsl(var(--color), calc(var(--light) - 10%));
 }
 
 /* Overwrite bootstrap maximum window size */
