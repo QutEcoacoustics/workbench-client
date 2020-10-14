@@ -1,0 +1,84 @@
+<div id="hero-image">
+  <div class="container">
+    <h1 id="website-title" class="text-break">Ecosounds</h1>
+  </div>
+
+  <div class="container-fluid" style="padding-bottom: 3rem">
+    <section class="container">
+      <baw-cms [page]="page"></baw-cms>
+    </section>
+  </div>
+
+  <div class="container-fluid" style="padding-bottom: 3rem">
+    <section class="container">
+      <h2>Our Process</h2>
+
+      <div class="justify-content-center row">
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header text-center">Environment</h4>
+            <div class="card-body">
+              <p class="card-text" ng-reflect-ng-class="[object Object]">
+                Faunal vocalisations and other human-audible environmental
+                sounds
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header text-center">Acoustic Sensors</h4>
+            <div class="card-body">
+              <p class="card-text">
+                Acoustic sensors record sound in a wide range of environments
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <h4 class="card-header text-center">Annotated Spectrogram</h4>
+            <div class="card-body">
+              <p class="card-text">
+                Practical identification of animal sounds by people and
+                automated detectors. Ecologists use these to answer
+                environmental questions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="center col-lg-4 col-sm-6 content d-flex mb-4"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="container-fluid" style="padding-bottom: 3rem">
+    <section class="container">
+      <h2>Some of the projects you can access</h2>
+      <p>
+        You can browse some public projects and audio recordings without logging
+        in. To participate in the analysis work you will need to Log in with an
+        existing account or Register for a new account.
+      </p>
+      <baw-cards [cards]="projectList">
+        <ng-container>
+          <button
+            class="m-auto btn btn-outline-primary"
+            [routerLink]="projectsLink"
+          >
+            More Projects
+          </button>
+        </ng-container>
+      </baw-cards>
+    </section>
+
+    <div class="float-right">
+      <small class="alert alert-secondary m-0">
+        Photo Credit: QUT Ecoacoustic Staff
+      </small>
+    </div>
+  </div>
+</div>
