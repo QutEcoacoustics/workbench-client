@@ -83,12 +83,12 @@ export abstract class FormTemplate<M extends AbstractModel>
     }
 
     // Retrieve models
-    const resolvedModels = retrieveResolvers(data);
-    if (!resolvedModels) {
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    if (!models) {
       this.failure = true;
       return;
     }
-    this.models = resolvedModels;
+    this.models = models;
 
     // Find primary model
     this.model = this.models[this.modelKey] as M;

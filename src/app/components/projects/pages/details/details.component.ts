@@ -16,6 +16,7 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -162,11 +163,11 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
   }
 
   public ngOnInit() {
-    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
-    if (!resolvedModels) {
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    if (!models) {
       return;
     }
-    this.project = resolvedModels[projectKey] as Project;
+    this.project = models[projectKey] as Project;
     super.ngOnInit();
   }
 

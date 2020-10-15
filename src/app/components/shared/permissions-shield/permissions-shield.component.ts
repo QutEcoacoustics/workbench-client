@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -32,10 +33,10 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   constructor(private route: ActivatedRoute) {}
 
   public ngOnInit() {
-    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
-    const modelKeys = resolvedModels ? Object.keys(resolvedModels) : [];
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const modelKeys = models ? Object.keys(models) : [];
 
-    if (!resolvedModels) {
+    if (!models) {
       this.model = undefined;
       return;
     }
@@ -44,8 +45,8 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
     const priority = [Site, Region, Project];
     for (const modelType of priority) {
       for (const modelKey of modelKeys) {
-        if (resolvedModels[modelKey] instanceof modelType) {
-          this.model = resolvedModels[modelKey] as AbstractModel;
+        if (models[modelKey] instanceof modelType) {
+          this.model = models[modelKey] as AbstractModel;
           break;
         }
       }
@@ -58,14 +59,14 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
     // If model not found, grab any abstract model
     if (!this.model && modelKeys.length > 1) {
       modelKeys.forEach((model) => {
-        if (resolvedModels[model] instanceof AbstractModel) {
-          this.model = resolvedModels[model] as AbstractModel;
+        if (models[model] instanceof AbstractModel) {
+          this.model = models[model] as AbstractModel;
           return;
         }
       });
     }
 
-    this.getAccessLevel(resolvedModels);
+    this.getAccessLevel(models);
   }
 
   private getAccessLevel(resolvedModels: ResolvedModelList) {

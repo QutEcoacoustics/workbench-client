@@ -7,6 +7,7 @@ import { regionMenuItem } from "@components/regions/regions.menus";
 import { PermissionsShieldComponent } from "@components/shared/permissions-shield/permissions-shield.component";
 import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -48,15 +49,15 @@ class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
   public region: Region;
 
   public ngOnInit() {
-    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!resolvedModels) {
+    if (!models) {
       return;
     }
 
-    this.project = resolvedModels[projectKey] as Project;
-    this.region = resolvedModels[regionKey] as Region;
-    this.site = resolvedModels[siteKey] as Site;
+    this.project = models[projectKey] as Project;
+    this.region = models[regionKey] as Region;
+    this.site = models[siteKey] as Site;
   }
 }
 
