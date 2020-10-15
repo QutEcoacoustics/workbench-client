@@ -4,18 +4,16 @@ import {
 } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { cmsRoot } from "@services/app-config/app-config.service.spec";
+import { CMS } from "@baw-api/cms/cms.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
+import { assertCms } from "@test/helpers/api-common";
 import { SendAudioComponent } from "./send-audio.component";
 
 describe("SendAudioComponent", () => {
   let httpMock: HttpTestingController;
   let component: SendAudioComponent;
   let fixture: ComponentFixture<SendAudioComponent>;
-  let env: AppConfigService;
-  let cmsUrl: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,33 +28,12 @@ describe("SendAudioComponent", () => {
 
     fixture = TestBed.createComponent(SendAudioComponent);
     httpMock = TestBed.inject(HttpTestingController);
-    env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
-
-    cmsUrl = `${cmsRoot}/sendAudio.html`;
-
     fixture.detectChanges();
   });
 
-  it("should create", () => {
-    httpMock.expectOne(cmsUrl);
-    expect(component).toBeTruthy();
-  });
-
-  it("should load cms", () => {
-    const req = httpMock.expectOne(cmsUrl);
-
-    req.flush(
-      "<h1>Test Header</h1><p class='description'>Test Description</p>"
-    );
-    fixture.detectChanges();
-
-    const header = fixture.nativeElement.querySelector("h1");
-    const body = fixture.nativeElement.querySelector("p.description");
-
-    expect(header).toBeTruthy();
-    expect(header.innerText.trim()).toBe("Test Header");
-    expect(body).toBeTruthy();
-    expect(body.innerText.trim()).toBe("Test Description");
-  });
+  assertCms<SendAudioComponent>(
+    () => ({ fixture, component, httpMock }),
+    CMS.DATA_UPLOAD
+  );
 });

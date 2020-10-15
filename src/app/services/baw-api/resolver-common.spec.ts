@@ -18,7 +18,7 @@ xdescribe("API Resolvers", () => {
 
 describe("retrieveResolvers", () => {
   it("should handle single resolver", () => {
-    const data = {
+    const data: any = {
       resolvers: {
         resolvedModel: "customResolver",
       },
@@ -33,7 +33,7 @@ describe("retrieveResolvers", () => {
   });
 
   it("should handle array resolver", () => {
-    const data = {
+    const data: any = {
       resolvers: {
         resolvedModel: "customResolver",
       },
@@ -48,7 +48,7 @@ describe("retrieveResolvers", () => {
   });
 
   it("should handle multiple resolvers", () => {
-    const data = {
+    const data: any = {
       resolvers: {
         resolvedModel1: "customResolver1",
         resolvedModel2: "customResolver2",
@@ -68,7 +68,7 @@ describe("retrieveResolvers", () => {
   });
 
   it("should handle single errored resolver", () => {
-    const data = {
+    const data: any = {
       resolvers: {
         resolvedModel1: "customResolver1",
         resolvedModel2: "customResolver2",
@@ -89,7 +89,7 @@ describe("retrieveResolvers", () => {
   });
 
   it("should handle multiple errored resolver", () => {
-    const data = {
+    const data: any = {
       resolvers: {
         resolvedModel1: "customResolver1",
         resolvedModel2: "customResolver2",

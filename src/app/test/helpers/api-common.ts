@@ -1,3 +1,6 @@
+import { HttpTestingController } from "@angular/common/http/testing";
+import { ComponentFixture } from "@angular/core/testing";
+import { cmsRoot } from "@baw-api/cms/cms.service.spec";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { BehaviorSubject } from "rxjs";
@@ -140,6 +143,62 @@ export function validateApiDestroy<
     it("should handle destroy endpoint using id", function () {
       api.destroy(id, ...parameters).subscribe();
       expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
+    });
+  });
+}
+
+export function assertCms<T>(
+  setup: () => {
+    fixture: ComponentFixture<T>;
+    component: T;
+    httpMock: HttpTestingController;
+  },
+  endpoint: string
+) {
+  let fixture: ComponentFixture<T>;
+  let component: T;
+  let httpMock: HttpTestingController;
+
+  describe("cms for " + endpoint, () => {
+    function interceptRequest() {
+      return httpMock.expectOne(`${cmsRoot}${endpoint}`);
+    }
+
+    beforeEach(() => {
+      const temp = setup();
+      fixture = temp.fixture;
+      component = temp.component;
+      httpMock = temp.httpMock;
+    });
+
+    afterEach(() => {
+      httpMock.verify();
+    });
+
+    it("should request cms page", () => {
+      interceptRequest();
+      expect(component).toBeTruthy();
+    });
+
+    it("should load plaintext cms", () => {
+      const req = interceptRequest();
+      req.flush("plaintext cms response");
+      fixture.detectChanges();
+      const content = fixture.nativeElement.querySelector("#cms-content");
+      expect(content.innerText.trim()).toBe("plaintext cms response");
+    });
+
+    it("should load cms containing html tags", () => {
+      const req = interceptRequest();
+      req.flush("<h1>Test Header</h1><p>Test Description</p>");
+      fixture.detectChanges();
+
+      const header = fixture.nativeElement.querySelector("h1");
+      const body = fixture.nativeElement.querySelector("p");
+      expect(header).toBeTruthy();
+      expect(body).toBeTruthy();
+      expect(header.innerText.trim()).toBe("Test Header");
+      expect(body.innerText.trim()).toBe("Test Description");
     });
   });
 }

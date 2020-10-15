@@ -9,13 +9,8 @@ import { fromJS } from "immutable";
 import { ToastrModule, ToastrService } from "ngx-toastr";
 import { toastrRoot } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { AppConfigService, assetRoot } from "./app-config.service";
+import { AppConfigService } from "./app-config.service";
 import { testApiConfig } from "./appConfigMock.service";
-
-/**
- * CMS root for resources. This should only be used by tests
- */
-export const cmsRoot = `${assetRoot}/content`;
 
 describe("AppConfigService", () => {
   let service: AppConfigService;

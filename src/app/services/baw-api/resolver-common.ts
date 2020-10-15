@@ -246,8 +246,8 @@ export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
-    console.error("resolver-common: Failed to detect any resolvers");
-    return false;
+    console.warn("resolver-common: Failed to detect any resolvers");
+    return models;
   }
 
   // Grab all models

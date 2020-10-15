@@ -10,7 +10,7 @@ import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 @Component({
   selector: "baw-cms",
   template: `
-    <div *ngIf="blob" [innerHtml]="blob"></div>
+    <div id="cms-content" *ngIf="blob" [innerHtml]="blob"></div>
     <baw-loading *ngIf="loading" title="Loading"></baw-loading>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,

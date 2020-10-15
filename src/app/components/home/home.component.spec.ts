@@ -1,7 +1,12 @@
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
@@ -16,6 +21,7 @@ import { CardsComponent } from "@shared/cards/cards.component";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { assertCms } from "@test/helpers/api-common";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
@@ -26,6 +32,7 @@ describe("HomeComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let securityApi: SecurityService;
   let config: AppConfigService;
+  let httpMock: HttpTestingController;
   let spectator: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
     component: HomeComponent,
@@ -34,7 +41,7 @@ describe("HomeComponent", () => {
       MockComponent(CardImageComponent),
       MockComponent(CmsComponent),
     ],
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, HttpClientTestingModule, MockBawApiModule],
   });
 
   async function interceptProjects(
@@ -67,13 +74,17 @@ describe("HomeComponent", () => {
     projectApi = spectator.inject(ProjectsService);
     securityApi = spectator.inject(SecurityService);
     config = spectator.inject(AppConfigService);
+    httpMock = spectator.inject(HttpTestingController);
   });
 
-  it("should load cms", async () => {
-    await interceptProjects();
-    const cms = spectator.query(CmsComponent);
-    expect(cms.page).toBe("/home.html");
-  });
+  assertCms<HomeComponent>(() => {
+    spectator.detectChanges();
+    return {
+      fixture: spectator.fixture,
+      component: spectator.component,
+      httpMock,
+    };
+  }, CMS.HOME);
 
   it("should create", async () => {
     await interceptProjects();
