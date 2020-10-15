@@ -79,11 +79,7 @@ describe("HomeComponent", () => {
 
   assertCms<HomeComponent>(() => {
     spectator.detectChanges();
-    return {
-      fixture: spectator.fixture,
-      component: spectator.component,
-      httpMock,
-    };
+    return { spectator };
   }, CMS.HOME);
 
   it("should create", async () => {

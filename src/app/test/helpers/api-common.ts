@@ -3,6 +3,7 @@ import { ComponentFixture } from "@angular/core/testing";
 import { cmsRoot } from "@baw-api/cms/cms.service.spec";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
+import { Spectator } from "@ngneat/spectator";
 import { BehaviorSubject } from "rxjs";
 import {
   ApiCreate,
@@ -149,14 +150,12 @@ export function validateApiDestroy<
 
 export function assertCms<T>(
   setup: () => {
-    fixture: ComponentFixture<T>;
-    component: T;
-    httpMock: HttpTestingController;
+    spectator: Spectator<T>;
+    httpMock?: HttpTestingController;
   },
   endpoint: string
 ) {
-  let fixture: ComponentFixture<T>;
-  let component: T;
+  let spectator: Spectator<T>;
   let httpMock: HttpTestingController;
 
   describe("cms for " + endpoint, () => {
@@ -166,9 +165,8 @@ export function assertCms<T>(
 
     beforeEach(() => {
       const temp = setup();
-      fixture = temp.fixture;
-      component = temp.component;
-      httpMock = temp.httpMock;
+      spectator = temp.spectator;
+      httpMock = temp.httpMock || spectator.inject(HttpTestingController);
     });
 
     afterEach(() => {
@@ -177,24 +175,24 @@ export function assertCms<T>(
 
     it("should request cms page", () => {
       interceptRequest();
-      expect(component).toBeTruthy();
+      expect(spectator.component).toBeTruthy();
     });
 
     it("should load plaintext cms", () => {
       const req = interceptRequest();
       req.flush("plaintext cms response");
-      fixture.detectChanges();
-      const content = fixture.nativeElement.querySelector("#cms-content");
+      spectator.detectChanges();
+      const content = spectator.query<HTMLElement>("#cms-content");
       expect(content.innerText.trim()).toBe("plaintext cms response");
     });
 
     it("should load cms containing html tags", () => {
       const req = interceptRequest();
       req.flush("<h1>Test Header</h1><p>Test Description</p>");
-      fixture.detectChanges();
+      spectator.detectChanges();
 
-      const header = fixture.nativeElement.querySelector("h1");
-      const body = fixture.nativeElement.querySelector("p");
+      const header = spectator.query<HTMLHeadingElement>("h1");
+      const body = spectator.query<HTMLParagraphElement>("p");
       expect(header).toBeTruthy();
       expect(body).toBeTruthy();
       expect(header.innerText.trim()).toBe("Test Header");

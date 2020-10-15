@@ -1,39 +1,21 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { CMS } from "@baw-api/cms/cms.service";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { assertCms } from "@test/helpers/api-common";
 import { SendAudioComponent } from "./send-audio.component";
 
 describe("SendAudioComponent", () => {
-  let httpMock: HttpTestingController;
-  let component: SendAudioComponent;
-  let fixture: ComponentFixture<SendAudioComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
-      declarations: [SendAudioComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(SendAudioComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  let spectator: Spectator<SendAudioComponent>;
+  const createComponent = createComponentFactory({
+    component: SendAudioComponent,
+    imports: [SharedModule, MockAppConfigModule],
   });
 
-  assertCms<SendAudioComponent>(
-    () => ({ fixture, component, httpMock }),
-    CMS.DATA_UPLOAD
-  );
+  beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+
+  assertCms<SendAudioComponent>(() => {
+    spectator.detectChanges();
+    return { spectator };
+  }, CMS.DATA_UPLOAD);
 });

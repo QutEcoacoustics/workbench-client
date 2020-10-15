@@ -3,7 +3,8 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteHarvestComponent } from "./site.component";
 
@@ -14,7 +15,12 @@ describe("SiteHarvestComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, MockAppConfigModule],
+      imports: [
+        SharedModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        MockBawApiModule,
+      ],
       declarations: [SiteHarvestComponent],
     }).compileComponents();
 
