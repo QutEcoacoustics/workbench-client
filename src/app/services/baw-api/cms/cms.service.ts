@@ -2,16 +2,20 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-export class CMS {
-  public static HOME = "/";
-  public static CREDITS = "/credits";
-  public static DATA_UPLOAD = "/data_upload";
-  public static ETHICS = "/ethics";
-  public static PRIVACY = "/privacy";
+export enum CMS {
+  HOME = "/",
+  CREDITS = "/credits",
+  DATA_UPLOAD = "/data_upload",
+  ETHICS = "/ethics",
+  PRIVACY = "/privacy",
 }
+
+const page = (x?: CMS) => x;
+const endpoint = stringTemplate`/cms/${page}`;
 
 @Injectable({
   providedIn: "root",
@@ -23,9 +27,9 @@ export class CmsService {
     @Inject(API_ROOT) private apiRoot: string
   ) {}
 
-  public show(cms: string): Observable<SafeHtml> {
+  public get(cms: CMS): Observable<SafeHtml> {
     return this.http
-      .get(this.apiRoot + "/cms" + cms, { responseType: "text" })
+      .get(this.apiRoot + endpoint(cms), { responseType: "text" })
       .pipe(
         map((response: string) =>
           this.sanitizer.bypassSecurityTrustHtml(response)

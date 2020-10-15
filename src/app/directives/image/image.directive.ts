@@ -21,8 +21,13 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
+  /** Image src, only accessible if using [src] */
   @Input() public src: ImageUrl[];
+  /** Image thumbnail size to display if exists */
   @Input() public thumbnail: ImageSizes;
+  /** Do not append auth token to image url */
+  @Input() public ignoreAuthToken: boolean;
+  /** Disable authenticated image directive on image */
   @Input() public disableAuth: boolean;
 
   /**
@@ -49,6 +54,10 @@ export class AuthenticatedImageDirective implements OnChanges {
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
+    if (this.disableAuth) {
+      return;
+    }
+
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
       this.imageRef.nativeElement.onerror = () => {
@@ -136,7 +145,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * @param url Url to append to, must be fully formed (not a relative path)
    */
   private appendAuthToken(url: string): string {
-    if (this.disableAuth || !url.startsWith(this.apiRoot)) {
+    if (this.ignoreAuthToken || !url.startsWith(this.apiRoot)) {
       return url;
     }
 

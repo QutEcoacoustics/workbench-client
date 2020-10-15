@@ -9,9 +9,8 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
 @Component({
   selector: "baw-data-request",
   template: `
+    <baw-cms [page]="page"></baw-cms>
     <baw-wip>
-      <h1>Data Request</h1>
-      <baw-cms [page]="page"></baw-cms>
       <baw-form
         title="Annotations Download"
         subTitle="Please select the timezone for the CSV file containing annotations for ..."
@@ -37,7 +36,7 @@ class DataRequestComponent extends WithFormCheck(PageComponent) {
   public annotationLoading: boolean;
   public annotationModel = {};
   public annotationFields = annotationFields;
-  public page = CMS.DATA_UPLOAD;
+  public page = "fix_me";
   public requestLoading: boolean;
   public requestModel = {};
   public requestFields = requestFields;

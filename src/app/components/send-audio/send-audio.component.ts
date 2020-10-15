@@ -1,28 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { CMS } from "@baw-api/cms/cms.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AppConfigService } from "@services/app-config/app-config.service";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Component({
   selector: "baw-send-audio",
-  template: `
-    <baw-wip>
-      <baw-cms [page]="page"></baw-cms>
-    </baw-wip>
-  `,
+  template: `<baw-cms [page]="page"></baw-cms>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class SendAudioComponent extends PageComponent implements OnInit {
-  public page: string;
-
-  constructor(private env: AppConfigService) {
-    super();
-  }
-
-  public ngOnInit() {
-    // TODO
-    // this.page = this.env.getCms("sendAudio");
-  }
+class SendAudioComponent extends PageComponent {
+  public page = CMS.DATA_UPLOAD;
 }
 
 SendAudioComponent.LinkComponentToPageInfo({
