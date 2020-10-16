@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { FactoryProvider, NgModule, Provider } from "@angular/core";
+import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { MockAppConfigModule } from "../app-config/app-configMock.module";
 import { AccountsService } from "./account/accounts.service";

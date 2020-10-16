@@ -4,9 +4,8 @@ import {
 } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { CMS } from "@baw-api/cms/cms.service";
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { Project } from "@models/Project";
@@ -25,21 +24,22 @@ import { assertCms } from "@test/helpers/api-common";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let securityApi: SecurityService;
+  let cmsService: CmsService;
   let config: AppConfigService;
   let httpMock: HttpTestingController;
   let spectator: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
     component: HomeComponent,
     declarations: [
+      CmsComponent,
       CardsComponent,
       MockComponent(CardImageComponent),
-      MockComponent(CmsComponent),
     ],
     imports: [RouterTestingModule, HttpClientTestingModule, MockBawApiModule],
   });
@@ -68,113 +68,126 @@ describe("HomeComponent", () => {
     return spectator.query<HTMLButtonElement>("button");
   }
 
+  function handleCms() {
+    cmsService.get = jasmine
+      .createSpy()
+      .and.callFake(() => new BehaviorSubject("cms content"));
+  }
+
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
 
     projectApi = spectator.inject(ProjectsService);
     securityApi = spectator.inject(SecurityService);
+    cmsService = spectator.inject(CmsService);
     config = spectator.inject(AppConfigService);
     httpMock = spectator.inject(HttpTestingController);
   });
 
-  assertCms<HomeComponent>(() => {
-    spectator.detectChanges();
-    return { spectator };
+  assertCms<HomeComponent>(async () => {
+    await interceptProjects();
+    return spectator;
   }, CMS.HOME);
 
-  it("should create", async () => {
-    await interceptProjects();
-    expect(spectator.component).toBeTruthy();
-  });
+  describe("api", () => {
+    beforeEach(() => handleCms());
 
-  it("should request 3 projects", async () => {
-    await interceptProjects();
-    expect(projectApi.filter).toHaveBeenCalledWith({
-      paging: { items: 3 },
-    } as Filters);
-  });
+    it("should request 3 projects", async () => {
+      await interceptProjects();
+      expect(projectApi.filter).toHaveBeenCalledWith({ paging: { items: 3 } });
+    });
 
-  it("should handle filter error", async () => {
-    await interceptProjects(undefined, generateApiErrorDetails());
-    expect(getCardImages().length).toBe(0);
-    expect(getButton()).toBeTruthy();
-  });
-
-  it("should display no projects", async () => {
-    await interceptProjects([]);
-    expect(getCardImages().length).toBe(0);
-    expect(getButton()).toBeTruthy();
-  });
-
-  it("should display single project", async () => {
-    await interceptProjects([new Project(generateProject())]);
-    expect(getCardImages().length).toBe(1);
-    expect(getButton()).toBeTruthy();
-  });
-
-  it("should display project name", async () => {
-    await interceptProjects([
-      new Project({ ...generateProject(), name: "Project" }),
-    ]);
-
-    const cards = getCardImages();
-    expect(cards[0].card.title).toBe("Project");
-  });
-
-  it("should display description", async () => {
-    await interceptProjects([
-      new Project({
-        ...generateProject(),
-        descriptionHtmlTagline: "Description",
-      }),
-    ]);
-
-    const cards = getCardImages();
-    expect(cards[0].card.description).toBe("Description");
-  });
-
-  it("should display missing description", async () => {
-    await interceptProjects([
-      new Project({
-        ...generateProject(),
-        descriptionHtmlTagline: undefined,
-      }),
-    ]);
-
-    const cards = getCardImages();
-    expect(cards[0].card.description).toBe(undefined);
-  });
-
-  it("should display multiple projects", async () => {
-    const ids = [1, 2, 3];
-    const names = ids.map((id) => `Project ${id}`);
-    const descriptions = ids.map((id) => `Description ${id}`);
-    await interceptProjects(
-      ids.map(
-        (id, index) =>
-          new Project({
-            ...generateProject(id),
-            name: names[index],
-            descriptionHtmlTagline: descriptions[index],
-          })
-      )
-    );
-
-    const cards = getCardImages();
-    expect(cards.length).toBe(ids.length);
-    expect(getButton()).toBeTruthy();
-    ids.forEach((_, index) => {
-      expect(cards[index].card.title).toBe(names[index]);
-      expect(cards[index].card.description).toBe(descriptions[index]);
+    it("should handle filter error", async () => {
+      await interceptProjects(undefined, generateApiErrorDetails());
+      expect(getCardImages().length).toBe(0);
+      expect(getButton()).toBeTruthy();
     });
   });
 
-  it("should link to project details page", async () => {
-    await interceptProjects([]);
+  describe("cards", () => {
+    beforeEach(() => handleCms());
 
-    const button = getButton();
-    expect(button).toBeTruthy();
-    expect(button.innerText.trim()).toBe("More Projects");
-    assertRoute(button, "/projects");
+    it("should create", async () => {
+      await interceptProjects();
+      expect(spectator.component).toBeTruthy();
+    });
+
+    it("should display no projects", async () => {
+      await interceptProjects([]);
+      expect(getCardImages().length).toBe(0);
+      expect(getButton()).toBeTruthy();
+    });
+
+    it("should display single project", async () => {
+      await interceptProjects([new Project(generateProject())]);
+      expect(getCardImages().length).toBe(1);
+      expect(getButton()).toBeTruthy();
+    });
+
+    it("should display project name", async () => {
+      await interceptProjects([
+        new Project({ ...generateProject(), name: "Project" }),
+      ]);
+
+      const cards = getCardImages();
+      expect(cards[0].card.title).toBe("Project");
+    });
+
+    it("should display description", async () => {
+      await interceptProjects([
+        new Project({
+          ...generateProject(),
+          descriptionHtmlTagline: "Description",
+        }),
+      ]);
+
+      const cards = getCardImages();
+      expect(cards[0].card.description).toBe("Description");
+    });
+
+    it("should display missing description", async () => {
+      await interceptProjects([
+        new Project({
+          ...generateProject(),
+          descriptionHtmlTagline: undefined,
+        }),
+      ]);
+
+      const cards = getCardImages();
+      expect(cards[0].card.description).toBe(undefined);
+    });
+
+    it("should display multiple projects", async () => {
+      const ids = [1, 2, 3];
+      const names = ids.map((id) => `Project ${id}`);
+      const descriptions = ids.map((id) => `Description ${id}`);
+      await interceptProjects(
+        ids.map(
+          (id, index) =>
+            new Project({
+              ...generateProject(id),
+              name: names[index],
+              descriptionHtmlTagline: descriptions[index],
+            })
+        )
+      );
+
+      const cards = getCardImages();
+      expect(cards.length).toBe(ids.length);
+      expect(getButton()).toBeTruthy();
+      ids.forEach((_, index) => {
+        expect(cards[index].card.title).toBe(names[index]);
+        expect(cards[index].card.description).toBe(descriptions[index]);
+      });
+    });
+
+    it("should link to project details page", async () => {
+      await interceptProjects([]);
+
+      const button = getButton();
+      expect(button).toBeTruthy();
+      expect(button.innerText.trim()).toBe("More Projects");
+      assertRoute(button, "/projects");
+    });
   });
 });

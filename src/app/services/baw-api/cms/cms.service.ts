@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, SecurityContext } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -17,9 +17,7 @@ export enum CMS {
 const page = (x?: CMS) => x;
 const endpoint = stringTemplate`/cms/${page}`;
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class CmsService {
   constructor(
     private http: HttpClient,

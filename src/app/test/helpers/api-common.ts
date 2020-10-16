@@ -1,10 +1,12 @@
 import { HttpTestingController } from "@angular/common/http/testing";
 import { ComponentFixture } from "@angular/core/testing";
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { cmsRoot } from "@baw-api/cms/cms.service.spec";
+import { MayBeAsync } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Spectator } from "@ngneat/spectator";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import {
   ApiCreate,
   ApiDestroy,
@@ -15,6 +17,7 @@ import {
   IdOr,
 } from "../../services/baw-api/api-common";
 import { Filters } from "../../services/baw-api/baw-api.service";
+import { nStepObservable } from "./general";
 
 export const defaultFilters: Filters = {
   filter: {},
@@ -149,46 +152,52 @@ export function validateApiDestroy<
 }
 
 export function assertCms<T>(
-  setup: () => {
-    spectator: Spectator<T>;
-    httpMock?: HttpTestingController;
-  },
+  setup: () => MayBeAsync<Spectator<T>>,
   endpoint: string
 ) {
   let spectator: Spectator<T>;
-  let httpMock: HttpTestingController;
+  let cmsService: CmsService;
 
   describe("cms for " + endpoint, () => {
-    function interceptRequest() {
-      return httpMock.expectOne(`${cmsRoot}${endpoint}`);
+    function interceptRequest(response = "response", expectation?: CMS) {
+      const subject = new Subject();
+      cmsService.get = jasmine.createSpy().and.callFake((cms: CMS) => {
+        if (expectation) {
+          expect(cms).toBe(expectation);
+        }
+        return subject;
+      });
+      return nStepObservable(subject, () => response);
     }
 
-    beforeEach(() => {
-      const temp = setup();
-      spectator = temp.spectator;
-      httpMock = temp.httpMock || spectator.inject(HttpTestingController);
+    beforeEach(async () => {
+      spectator = await setup();
+      cmsService = spectator.inject(CmsService);
     });
 
-    afterEach(() => {
-      httpMock.verify();
-    });
-
-    it("should request cms page", () => {
-      interceptRequest();
+    it("should request cms page", async () => {
+      const promise = interceptRequest();
+      spectator.detectChanges();
+      await promise;
+      spectator.detectChanges();
       expect(spectator.component).toBeTruthy();
     });
 
-    it("should load plaintext cms", () => {
-      const req = interceptRequest();
-      req.flush("plaintext cms response");
+    it("should load plaintext cms", async () => {
+      const promise = interceptRequest("plaintext cms response");
+      spectator.detectChanges();
+      await promise;
       spectator.detectChanges();
       const content = spectator.query<HTMLElement>("#cms-content");
       expect(content.innerText.trim()).toBe("plaintext cms response");
     });
 
-    it("should load cms containing html tags", () => {
-      const req = interceptRequest();
-      req.flush("<h1>Test Header</h1><p>Test Description</p>");
+    it("should load cms containing html tags", async () => {
+      const promise = interceptRequest(
+        "<h1>Test Header</h1><p>Test Description</p>"
+      );
+      spectator.detectChanges();
+      await promise;
       spectator.detectChanges();
 
       const header = spectator.query<HTMLHeadingElement>("h1");
