@@ -1,11 +1,9 @@
-import { HttpTestingController } from "@angular/common/http/testing";
-import { ComponentFixture } from "@angular/core/testing";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
-import { cmsRoot } from "@baw-api/cms/cms.service.spec";
 import { MayBeAsync } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
-import { Spectator } from "@ngneat/spectator";
+import { Spectator, SpyObject } from "@ngneat/spectator";
+import { CmsComponent } from "@shared/cms/cms.component";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   ApiCreate,
@@ -156,56 +154,26 @@ export function assertCms<T>(
   endpoint: string
 ) {
   let spectator: Spectator<T>;
-  let cmsService: CmsService;
 
   describe("cms for " + endpoint, () => {
-    function interceptRequest(response = "response", expectation?: CMS) {
-      const subject = new Subject();
-      cmsService.get = jasmine.createSpy().and.callFake((cms: CMS) => {
-        if (expectation) {
-          expect(cms).toBe(expectation);
-        }
-        return subject;
-      });
-      return nStepObservable(subject, () => response);
-    }
-
     beforeEach(async () => {
       spectator = await setup();
-      cmsService = spectator.inject(CmsService);
+      const cmsService = spectator.inject(CmsService);
+      cmsService.get.and.callFake(() => new Subject());
     });
 
-    it("should request cms page", async () => {
-      const promise = interceptRequest();
+    function getCms() {
+      return spectator.query(CmsComponent);
+    }
+
+    it("should have cms page", async () => {
       spectator.detectChanges();
-      await promise;
-      spectator.detectChanges();
-      expect(spectator.component).toBeTruthy();
+      expect(getCms()).toBeTruthy();
     });
 
     it("should load plaintext cms", async () => {
-      const promise = interceptRequest("plaintext cms response");
       spectator.detectChanges();
-      await promise;
-      spectator.detectChanges();
-      const content = spectator.query<HTMLElement>("#cms-content");
-      expect(content.innerText.trim()).toBe("plaintext cms response");
-    });
-
-    it("should load cms containing html tags", async () => {
-      const promise = interceptRequest(
-        "<h1>Test Header</h1><p>Test Description</p>"
-      );
-      spectator.detectChanges();
-      await promise;
-      spectator.detectChanges();
-
-      const header = spectator.query<HTMLHeadingElement>("h1");
-      const body = spectator.query<HTMLParagraphElement>("p");
-      expect(header).toBeTruthy();
-      expect(body).toBeTruthy();
-      expect(header.innerText.trim()).toBe("Test Header");
-      expect(body.innerText.trim()).toBe("Test Description");
+      expect(getCms().page).toBe(endpoint);
     });
   });
 }

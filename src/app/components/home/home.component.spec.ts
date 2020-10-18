@@ -1,7 +1,4 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -14,10 +11,8 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { AppConfigService } from "@services/app-config/app-config.service";
 import { CardImageComponent } from "@shared/cards/card-image/card-image.component";
-import { CardsComponent } from "@shared/cards/cards.component";
-import { CmsComponent } from "@shared/cms/cms.component";
+import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { assertCms } from "@test/helpers/api-common";
@@ -29,19 +24,17 @@ import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
-  let securityApi: SecurityService;
-  let cmsService: CmsService;
-  let config: AppConfigService;
-  let httpMock: HttpTestingController;
+  let securityApi: SpyObject<SecurityService>;
+  let cmsService: SpyObject<CmsService>;
   let spectator: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
     component: HomeComponent,
-    declarations: [
-      CmsComponent,
-      CardsComponent,
-      MockComponent(CardImageComponent),
+    imports: [
+      SharedModule,
+      RouterTestingModule,
+      HttpClientTestingModule,
+      MockBawApiModule,
     ],
-    imports: [RouterTestingModule, HttpClientTestingModule, MockBawApiModule],
   });
 
   async function interceptProjects(
@@ -69,23 +62,18 @@ describe("HomeComponent", () => {
   }
 
   function handleCms() {
-    cmsService.get = jasmine
-      .createSpy()
-      .and.callFake(() => new BehaviorSubject("cms content"));
+    cmsService = spectator.inject(CmsService);
+    cmsService.get.and.callFake(() => new BehaviorSubject("cms content"));
   }
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
-
     projectApi = spectator.inject(ProjectsService);
     securityApi = spectator.inject(SecurityService);
-    cmsService = spectator.inject(CmsService);
-    config = spectator.inject(AppConfigService);
-    httpMock = spectator.inject(HttpTestingController);
   });
 
   assertCms<HomeComponent>(async () => {
-    await interceptProjects();
+    projectApi.filter.and.callFake(() => new Subject());
     return spectator;
   }, CMS.HOME);
 
