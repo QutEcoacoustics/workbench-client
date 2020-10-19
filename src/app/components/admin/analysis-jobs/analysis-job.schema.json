@@ -1,0 +1,88 @@
+{
+  "fields": [
+    {
+      "key": "id",
+      "hide": true,
+      "templateOptions": {
+        "label": "Id"
+      }
+    },
+    {
+      "key": "name",
+      "hide": true,
+      "templateOptions": {
+        "label": "Name"
+      }
+    },
+    {
+      "key": "annotationName",
+      "hide": true,
+      "templateOptions": {
+        "label": "Annotation Name"
+      }
+    },
+    {
+      "key": "customSettings",
+      "hide": true,
+      "templateOptions": {
+        "label": "Custom Settings"
+      }
+    },
+    {
+      "key": "script",
+      "hide": true,
+      "templateOptions": {
+        "label": "Script"
+      }
+    },
+    {
+      "key": "savedSearch",
+      "hide": true,
+      "templateOptions": {
+        "label": "Saved Search"
+      }
+    },
+    {
+      "key": "startedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Started At"
+      }
+    },
+    {
+      "key": "overallStatus",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Status"
+      }
+    },
+    {
+      "key": "overallStatusModifiedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Status Modified At"
+      }
+    },
+    {
+      "key": "overallCount",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Count"
+      }
+    },
+    {
+      "key": "overallDuration",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Duration"
+      }
+    },
+    {
+      "key": "overallDataLengthBytes",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Data Length Bytes"
+      }
+    }
+  ]
+}
