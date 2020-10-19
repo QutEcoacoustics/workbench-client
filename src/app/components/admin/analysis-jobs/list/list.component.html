@@ -1,1 +1,56 @@
-<p>list works!</p>
+<ng-container *ngIf="rows && !error">
+  <h1>Analysis Jobs</h1>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Script"
+      width="50"
+      maxWidth="50"
+      [sortable]="false"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Creator"
+      width="60"
+      maxWidth="60"
+      [sortable]="false"
+    ></ngx-datatable-column>
+    <ngx-datatable-column name="Started"></ngx-datatable-column>
+    <ngx-datatable-column name="Status"></ngx-datatable-column>
+    <ngx-datatable-column name="Status Updated"></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      width="140"
+      maxWidth="140"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a
+          class="btn btn-sm btn-default mr-2"
+          [routerLink]="detailsPath(value)"
+        >
+          Details
+        </a>
+        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
+          View
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

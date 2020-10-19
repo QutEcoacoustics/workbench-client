@@ -4,9 +4,9 @@ import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminAnalysisJobsRoute } from "./analysis-jobs.menus";
 import { DetailsComponent } from "./details/details.component";
-import { ListComponent } from "./list/list.component";
+import { AdminAnalysisJobsComponent } from "./list/list.component";
 
-const components = [DetailsComponent, ListComponent];
+const components = [DetailsComponent, AdminAnalysisJobsComponent];
 const routes = adminAnalysisJobsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({

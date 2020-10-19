@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
+import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -96,7 +97,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
-    throw new Error("AnalysisJob viewUrl not implemented.");
+    return adminAnalysisJobMenuItem.route.format({ analysisJobId: this.id });
   }
 }
 
