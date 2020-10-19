@@ -36,12 +36,16 @@ export function assertImage(
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
 
-  const imageDirective = ng
+  const imageDirective: AuthenticatedImageDirective = ng
     .getDirectives(target)
     .find((directive) => directive instanceof AuthenticatedImageDirective);
 
   if (isUnauthenticated) {
-    expect(imageDirective).toBeFalsy();
+    if (imageDirective) {
+      expect(imageDirective);
+    } else {
+      expect(imageDirective.disableAuth).toBeTrue();
+    }
   } else {
     expect(imageDirective).toBeTruthy();
   }
