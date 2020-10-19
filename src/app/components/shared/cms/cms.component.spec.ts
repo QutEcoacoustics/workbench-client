@@ -1,211 +1,130 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { SafeHtml } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { CMS } from "@baw-api/cms/cms.service";
-import { cmsRoot } from "@baw-api/cms/cms.service.spec";
-import { SecurityService } from "@baw-api/security/security.service";
-import { SessionUser } from "@models/User";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { generateSessionUser } from "@test/fakes/User";
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
+import { Subject } from "rxjs";
 import { SharedModule } from "../shared.module";
 import { CmsComponent } from "./cms.component";
 
-// TODO Update
-xdescribe("CmsComponent", () => {
-  let api: SecurityService;
-  let httpMock: HttpTestingController;
+describe("CmsComponent", () => {
+  let cmsService: SpyObject<CmsService>;
   let component: CmsComponent;
-  let env: AppConfigService;
-  let fixture: ComponentFixture<CmsComponent>;
+  let spectator: Spectator<CmsComponent>;
+  const createComponent = createComponentFactory({
+    component: CmsComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+  });
+
+  async function interceptApiRequest(
+    response: string,
+    error?: ApiErrorDetails,
+    expectation: (page: string) => void = () => {}
+  ) {
+    const subject = new Subject<SafeHtml>();
+    cmsService.get.andCallFake((page: string) => {
+      expectation(page);
+      return subject;
+    });
+    return nStepObservable(subject, () => (error ? error : response), !!error);
+  }
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [CmsComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CmsComponent);
-    httpMock = TestBed.inject(HttpTestingController);
-    api = TestBed.inject(SecurityService);
-    env = TestBed.inject(AppConfigService);
-    component = fixture.componentInstance;
+    spectator = createComponent({ detectChanges: false });
+    component = spectator.component;
+    cmsService = spectator.inject(CmsService);
   });
 
-  afterEach(() => httpMock.verify());
-
-  it("should request page from api", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-
-    expect(req).toBeTruthy();
-    expect(req.request.method).toBe("GET");
+  it("should request page from api", async (done) => {
+    const promise = interceptApiRequest("page content", undefined, (page) => {
+      expect(page).toBe(CMS.HOME);
+      done();
+    });
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
   });
 
-  it("should change request based on page", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.CREDITS;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.CREDITS}`);
-
-    expect(req).toBeTruthy();
-    expect(req.request.method).toBe("GET");
+  it("should change request based on page", async (done) => {
+    const promise = interceptApiRequest("page content", undefined, (page) => {
+      expect(page).toBe(CMS.CREDITS);
+      done();
+    });
+    spectator.setInput("page", CMS.CREDITS);
+    spectator.detectChanges();
+    await promise;
   });
 
   it("should initially display loading animation", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    assertSpinner(fixture, true);
+    interceptApiRequest("page content");
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    assertSpinner(spectator.fixture, true);
   });
 
-  it("should hide loading animation after success response", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
-
-    fixture.detectChanges();
-    assertSpinner(fixture, false);
+  it("should hide loading animation after success response", async () => {
+    const promise = interceptApiRequest("page content");
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
+    assertSpinner(spectator.fixture, false);
   });
 
-  it("should hide loading animation after error response", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    req.flush("", { status: 404, statusText: "Not Found" });
-
-    fixture.detectChanges();
-    assertSpinner(fixture, false);
+  it("should hide loading animation after error response", async () => {
+    const promise = interceptApiRequest(undefined, generateApiErrorDetails());
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
+    assertSpinner(spectator.fixture, false);
   });
 
-  it("should request page from api with 'responseType' of type text", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
+  it("should display cms response containing plaintext", async () => {
+    const promise = interceptApiRequest("cms content");
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
 
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-
-    expect(req.request.responseType).toBeTruthy();
-    expect(req.request.responseType).toBe("text");
+    const cms = spectator.query<HTMLElement>("#cms-content");
+    expect(cms.innerText.trim()).toBe("cms content");
   });
 
-  it("should request page from api without 'accept' header", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    expect(req.request.headers.has("Accept")).toBeFalsy();
-  });
-
-  it("should request page from api without 'content-type' header", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    expect(req.request.headers.has("Content-Type")).toBeFalsy();
-  });
-
-  it("should request page from api without 'Authorization' header when not logged in", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    expect(req.request.headers.has("Authorization")).toBeFalsy();
-  });
-
-  // TODO Re-implement when CMS requests are performed by API
-  xit("should request page from api with 'Authorization' header when logged in", () => {
-    const sessionUser = new SessionUser(generateSessionUser());
-    spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    expect(req.request.headers.has("Authorization")).toBeTruthy();
-    expect(req.request.headers.get("Authorization")).toBe(
-      `Token token="${sessionUser.authToken}"`
+  it("should display cms response containing html", async () => {
+    const promise = interceptApiRequest(
+      "<h1>Response</h1><p>Example HTML response from API</p>"
     );
-  });
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
 
-  it("should display html on success", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    req.flush("<h1>Response</h1><p>Example HTML response from API</p>");
-
-    fixture.detectChanges();
-
-    const header = fixture.nativeElement.querySelector("h1");
-    expect(header).toBeTruthy();
+    const header = spectator.query<HTMLElement>("h1");
+    const body = spectator.query<HTMLElement>("p");
     expect(header.innerText.trim()).toBe("Response");
-
-    const body = fixture.nativeElement.querySelector("p");
-    expect(body).toBeTruthy();
     expect(body.innerText.trim()).toBe("Example HTML response from API");
   });
 
-  it("should display 'not found' on page not found", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
+  it("should display error message on failure", async () => {
+    const error = generateApiErrorDetails();
+    const promise = interceptApiRequest(undefined, error);
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
 
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    req.flush("", { status: 404, statusText: "Not Found" });
-
-    const header = fixture.nativeElement.querySelector("h1");
-    expect(header).toBeTruthy();
-    expect(header.innerText.trim()).toBe("Not Found");
-  });
-
-  it("should display 'unauthorized' on unauthorized", () => {
-    spyOn(api, "isLoggedIn").and.callFake(() => false);
-
-    component.page = CMS.HOME;
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne(`${cmsRoot}/${CMS.HOME}`);
-    req.flush("", { status: 401, statusText: "Unauthorized" });
-
-    const header = fixture.nativeElement.querySelector("h1");
-    expect(header).toBeTruthy();
-    expect(header.innerText.trim()).toBe("Unauthorized Access");
+    const errorHandler = spectator.query(ErrorHandlerComponent);
+    expect(errorHandler).toBeTruthy();
+    expect(errorHandler.error).toEqual(error);
   });
 });
