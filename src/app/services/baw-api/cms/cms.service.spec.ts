@@ -1,4 +1,3 @@
-import { SafeHtml } from "@angular/platform-browser";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import {
@@ -23,10 +22,6 @@ describe("CmsService", () => {
   });
   const defaultUrl = CMS.HOME;
 
-  function convertSafeHtmlToString(safeHtml: SafeHtml) {
-    return safeHtml["changingThisBreaksApplicationSecurity"];
-  }
-
   beforeEach(() => {
     spectator = createService();
     api = spectator.inject(SecurityService);
@@ -48,17 +43,23 @@ describe("CmsService", () => {
   it("should return text response", (done) => {
     const response = "Testing";
     spectator.service.get(defaultUrl).subscribe((cms) => {
-      expect(convertSafeHtmlToString(cms)).toBe(response);
+      expect(cms).toBe(response);
       done();
     }, noop);
     const req = spectator.expectOne(defaultUrl, HttpMethod.GET);
     req.flush(response);
   });
 
-  it("should return safeHtml", (done) => {
-    const response = "<p>Testing</p>";
+  it("should return html response", (done) => {
+    const response = `
+    <div>
+      <style>p { color: #420; }</style>
+      <p id='test'>Example HTML response from API</p>
+      <script>document.getElementById('test').style.color = '#420';</script>
+    </div>
+    `;
     spectator.service.get(defaultUrl).subscribe((cms) => {
-      expect(cms["getTypeName"]()).toBe("HTML");
+      expect(cms).toBe(response);
       done();
     }, noop);
     const req = spectator.expectOne(defaultUrl, HttpMethod.GET);

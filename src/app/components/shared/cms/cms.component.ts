@@ -1,5 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
-import { SafeHtml } from "@angular/platform-browser";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
+} from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -10,18 +16,21 @@ import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 @Component({
   selector: "baw-cms",
   template: `
-    <div id="cms-content" *ngIf="blob" [innerHtml]="blob"></div>
     <baw-loading *ngIf="loading" title="Loading"></baw-loading>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
 export class CmsComponent extends WithUnsubscribe() implements OnInit {
   @Input() public page: CMS;
-  public blob: SafeHtml;
   public error: ApiErrorDetails;
   public loading: boolean;
 
-  constructor(private cms: CmsService, private ref: ChangeDetectorRef) {
+  constructor(
+    private cms: CmsService,
+    private renderer: Renderer2,
+    private elRef: ElementRef,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -30,7 +39,12 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
 
     this.cms.get(this.page).subscribe(
       (blob) => {
-        this.blob = blob;
+        // Using html fragments instead of angular sanitization sanitization
+        // uses innerHTML to insert html blobs, and this will not run <script>
+        // tags. This is a safety feature of innerHTML and cannot be bypassed.
+        const range = document.createRange();
+        const fragment = range.createContextualFragment(blob);
+        this.renderer.appendChild(this.elRef.nativeElement, fragment);
         this.loading = false;
         this.ref.detectChanges();
       },

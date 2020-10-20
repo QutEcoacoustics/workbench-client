@@ -1,4 +1,4 @@
-import { SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -96,23 +96,53 @@ describe("CmsComponent", () => {
     await promise;
     spectator.detectChanges();
 
-    const cms = spectator.query<HTMLElement>("#cms-content");
-    expect(cms.innerText.trim()).toBe("cms content");
+    expect(spectator.element.innerText.trim()).toBe("cms content");
   });
 
   it("should display cms response containing html", async () => {
-    const promise = interceptApiRequest(
-      "<h1>Response</h1><p>Example HTML response from API</p>"
-    );
+    const promise = interceptApiRequest(`
+      <h1>Response</h1>
+      <p>Example HTML response from API</p>
+    `);
     spectator.setInput("page", CMS.HOME);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
 
-    const header = spectator.query<HTMLElement>("h1");
-    const body = spectator.query<HTMLElement>("p");
+    const header = spectator.debugElement.nativeElement.querySelector("h1");
+    const body = spectator.debugElement.nativeElement.querySelector("p");
     expect(header.innerText.trim()).toBe("Response");
     expect(body.innerText.trim()).toBe("Example HTML response from API");
+  });
+
+  it("should display cms response containing style tag", async () => {
+    const promise = interceptApiRequest(`
+      <style>p { color: #420; }</style>
+      <p>Example HTML response from API</p>
+    `);
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
+
+    const body = spectator.debugElement.nativeElement.querySelector("p");
+    expect(body.innerText.trim()).toBe("Example HTML response from API");
+    expect(body).toHaveStyle({ color: "#420" });
+  });
+
+  it("should display cms response containing script tag", async () => {
+    const promise = interceptApiRequest(`
+      <p id='test'>Example HTML response from API</p>
+      <script>document.getElementById('test').style.color = '#420';</script>
+    `);
+    spectator.setInput("page", CMS.HOME);
+    spectator.detectChanges();
+    await promise;
+    spectator.detectChanges();
+
+    const body = spectator.debugElement.nativeElement.querySelector("p");
+    expect(body.innerText.trim()).toBe("Example HTML response from API");
+    expect(body).toHaveStyle({ color: "#420" });
   });
 
   it("should display error message on failure", async () => {
