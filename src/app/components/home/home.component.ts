@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -14,8 +14,6 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   selector: "baw-home",
   styleUrls: ["./home.component.scss"],
   templateUrl: "./home.component.html",
-  // tslint:disable-next-line: use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None,
 })
 class HomeComponent extends PageComponent implements OnInit {
   public page = CMS.HOME;
