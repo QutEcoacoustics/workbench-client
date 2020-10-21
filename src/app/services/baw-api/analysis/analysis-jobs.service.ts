@@ -3,8 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob, IAnalysisJob } from "@models/AnalysisJob";
-import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -38,26 +37,9 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
     return this.apiList(endpoint(Empty, Empty));
   }
   public filter(filters: Filters<IAnalysisJob>): Observable<AnalysisJob[]> {
-    const response = [];
-    for (let i = 0; i < 25; i++) {
-      const job = new AnalysisJob(generateAnalysisJob(i), this.injector);
-      job.addMetadata({
-        paging: {
-          page: filters?.paging?.page || 1,
-          total: 100,
-          items: 25,
-          maxPage: 4,
-        },
-      });
-      response.push(job);
-    }
-    return new BehaviorSubject(response);
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   public show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
-    return new BehaviorSubject(
-      new AnalysisJob(generateAnalysisJob(parseInt(id(model))), this.injector)
-    );
     return this.apiShow(endpoint(model, Empty));
   }
   public update(model: AnalysisJob): Observable<AnalysisJob> {
