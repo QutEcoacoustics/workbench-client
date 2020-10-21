@@ -3,10 +3,10 @@ import { RouterModule } from "@angular/router";
 import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminAnalysisJobsRoute } from "./analysis-jobs.menus";
-import { DetailsComponent } from "./details/details.component";
+import { AdminAnalysisJobComponent } from "./details/details.component";
 import { AdminAnalysisJobsComponent } from "./list/list.component";
 
-const components = [DetailsComponent, AdminAnalysisJobsComponent];
+const components = [AdminAnalysisJobComponent, AdminAnalysisJobsComponent];
 const routes = adminAnalysisJobsRoute.compileRoutes(GetRouteConfigForPage);
 
 @NgModule({

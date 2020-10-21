@@ -27,10 +27,7 @@ describe("AdminAudioRecordingComponent", () => {
   let fixture: ComponentFixture<AdminAudioRecordingComponent>;
   let injector: Injector;
 
-  function configureTestingModule(
-    model: AudioRecording,
-    error?: ApiErrorDetails
-  ) {
+  function setup(model: AudioRecording, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -86,13 +83,13 @@ describe("AdminAudioRecordingComponent", () => {
   }
 
   it("should create", () => {
-    configureTestingModule(new AudioRecording(generateAudioRecording()));
+    setup(new AudioRecording(generateAudioRecording()));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
+    setup(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -101,7 +98,7 @@ describe("AdminAudioRecordingComponent", () => {
     const model = new AudioRecording(generateAudioRecording());
 
     beforeEach(async function () {
-      const promise = configureTestingModule(model);
+      const promise = setup(model);
       fixture.detectChanges();
       await promise;
       fixture.detectChanges();
