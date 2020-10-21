@@ -4,6 +4,7 @@ import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
   ColumnMode,
@@ -79,13 +80,12 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
 
   public ngOnInit() {
     if (this.route) {
-      // Retrieve models
-      const resolvedModels = retrieveResolvers(this.route.snapshot.data);
-      if (!resolvedModels) {
+      const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+      if (!models) {
         this.failure = true;
         return;
       }
-      this.models = resolvedModels;
+      this.models = models;
     }
 
     this.getPageData();

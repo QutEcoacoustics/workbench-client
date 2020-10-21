@@ -15,6 +15,8 @@ import {
   image404RelativeSrc,
 } from "./image.directive";
 
+declare const ng: any;
+
 describe("ImageDirective", () => {
   let spectator: SpectatorDirective<AuthenticatedImageDirective>;
   const image404Src = `${websiteHttpUrl}${image404RelativeSrc}`;
@@ -26,10 +28,23 @@ describe("ImageDirective", () => {
   function getImage() {
     return spectator.query<HTMLImageElement>("img");
   }
+
+  function getDirective(image: HTMLImageElement): AuthenticatedImageDirective {
+    return ng
+      .getDirectives(image)
+      .find((directive) => directive instanceof AuthenticatedImageDirective);
+  }
+
   function createDefaultDirective(src: ImageUrl[]) {
     return createDirective(`<img alt="alt" [src]="src" />`, {
       hostProps: { src },
     });
+  }
+
+  function createDisabledDirective(src: string) {
+    return createDirective(
+      `<img alt="alt" src="${src}" [disableAuth]="true" />`
+    );
   }
 
   function createThumbnailDirective(src: ImageUrl[], thumbnail: ImageSizes) {
@@ -38,15 +53,25 @@ describe("ImageDirective", () => {
       { hostProps: { src, thumbnail } }
     );
   }
-
   function createImgErrorEvent(image: HTMLImageElement) {
-    image.onerror("unit test");
+    image.onerror?.("unit test");
     spectator.detectChanges();
   }
 
   it("should create", () => {
     spectator = createDefaultDirective(modelData.imageUrls());
     expect(getImage()).toBeTruthy();
+  });
+
+  it("should disable directive if disableAuth is set", () => {
+    const src = modelData.imageUrl();
+    spectator = createDisabledDirective(src);
+    const image = getImage();
+    assertImage(image, src, "alt", true);
+    const directive = getDirective(image);
+    directive["errorHandler"] = jasmine.createSpy().and.stub();
+    createImgErrorEvent(image);
+    expect(directive["errorHandler"]).not.toHaveBeenCalled();
   });
 
   describe("error handling", () => {
@@ -141,11 +166,14 @@ describe("ImageDirective", () => {
   describe("api links", () => {
     let api: SecurityService;
 
-    function createApiDirective(src: ImageUrl[], disableAuth: boolean = false) {
+    function createApiDirective(
+      src: ImageUrl[],
+      ignoreAuthToken: boolean = false
+    ) {
       const spec = createDirective(
-        `<img alt="alt" [src]="src" [disableAuth]="disableAuth" />`,
+        `<img alt="alt" [src]="src" [ignoreAuthToken]="ignoreAuthToken" />`,
         {
-          hostProps: { src, disableAuth },
+          hostProps: { src, ignoreAuthToken },
           detectChanges: false,
         }
       );

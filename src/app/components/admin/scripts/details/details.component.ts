@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Script } from "@models/Script";
 import { List } from "immutable";
@@ -43,8 +44,7 @@ class AdminScriptComponent
   }
 
   public ngOnInit(): void {
-    const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data);
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
     if (!models) {
       this.failure = true;

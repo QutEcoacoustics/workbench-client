@@ -8,6 +8,7 @@ import { PermissionsShieldComponent } from "@components/shared/permissions-shiel
 import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
 import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { List } from "immutable";
@@ -53,14 +54,14 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!resolvedModels) {
+    if (!models) {
       return;
     }
 
-    this.project = resolvedModels[projectKey] as Project;
-    this.site = resolvedModels[siteKey] as Site;
+    this.project = models[projectKey] as Project;
+    this.site = models[siteKey] as Site;
   }
 }
 

@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
 import {
-  CMS,
   Configuration,
   Environment,
   Values,
 } from "@helpers/app-initializer/app-initializer";
 import { version } from "package.json";
-import { assetRoot } from "./app-config.service";
 
 @Injectable()
 export class AppConfigMockService {
@@ -20,10 +18,6 @@ export class AppConfigMockService {
 
   public get values(): Values {
     return new Proxy(testApiConfig.values, {});
-  }
-
-  public getCms(cms: keyof CMS): string {
-    return this.values.cms?.[cms] ? this.values.cms[cms] : "/error.html";
   }
 }
 
@@ -67,14 +61,5 @@ export const testApiConfig = new Configuration({
         ],
       },
     ],
-    cms: {
-      credits: "/credits.html",
-      disclaimers: "/disclaimers.html",
-      downloadAnnotations: "/downloadAnnotations.html",
-      ethics: "/ethics.html",
-      harvest: "/harvest.html",
-      home: "/home.html",
-      sendAudio: "/sendAudio.html",
-    },
   },
 });

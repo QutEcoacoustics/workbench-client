@@ -1,23 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { CMS } from "@baw-api/cms/cms.service";
 import { aboutCategory, ethicsMenuItem } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AppConfigService } from "@services/app-config/app-config.service";
 
 @Component({
   selector: "baw-about-ethics",
-  template: ` <baw-cms [page]="page"></baw-cms> `,
+  template: `<baw-cms [page]="page"></baw-cms>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class EthicsComponent extends PageComponent implements OnInit {
-  public page: string;
-
-  constructor(private env: AppConfigService) {
-    super();
-  }
-
-  public ngOnInit() {
-    this.page = this.env.getCms("ethics");
-  }
+class EthicsComponent extends PageComponent {
+  public page = CMS.ETHICS;
 }
 
 EthicsComponent.LinkComponentToPageInfo({

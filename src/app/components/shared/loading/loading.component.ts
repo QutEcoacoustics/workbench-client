@@ -19,7 +19,7 @@ import { BootstrapColorTypes } from "src/app/app.helper";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
-  @Input() public display: boolean;
+  @Input() public display = true;
   @Input() public title: string;
   @Input() public type: BootstrapColorTypes = "info";
 

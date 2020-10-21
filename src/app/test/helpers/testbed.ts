@@ -44,7 +44,7 @@ export function mockActivatedRoute(
 ) {
   return class MockActivatedRoute {
     public snapshot: Partial<ActivatedRouteSnapshot> = {
-      data: { resolvers, ...data },
+      data: resolvers ? { resolvers, ...data } : data,
       params,
       queryParams,
     };

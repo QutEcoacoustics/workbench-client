@@ -35,19 +35,6 @@ export class AppInitializer {
 }
 
 /**
- * App CMS pages
- */
-export interface CMS {
-  credits: string;
-  disclaimers: string;
-  downloadAnnotations: string;
-  ethics: string;
-  harvest: string;
-  home: string;
-  sendAudio: string;
-}
-
-/**
  * App values
  */
 export interface Values {
@@ -59,7 +46,6 @@ export interface Values {
     title: string;
   };
   content: Links[];
-  cms: CMS;
 }
 
 /**

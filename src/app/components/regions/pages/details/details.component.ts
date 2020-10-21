@@ -12,6 +12,7 @@ import {
   regionsCategory,
 } from "@components/regions/regions.menus";
 import { newPointMenuItem } from "@components/sites/points.menus";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -110,12 +111,12 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   }
 
   public ngOnInit(): void {
-    const resolvedModels = retrieveResolvers(this.route.snapshot.data);
-    if (!resolvedModels) {
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    if (!models) {
       return;
     }
-    this.project = resolvedModels[projectKey] as Project;
-    this.region = resolvedModels[regionKey] as Region;
+    this.project = models[projectKey] as Project;
+    this.region = models[regionKey] as Region;
     super.ngOnInit();
   }
 

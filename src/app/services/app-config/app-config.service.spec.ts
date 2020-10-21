@@ -9,13 +9,8 @@ import { fromJS } from "immutable";
 import { ToastrModule, ToastrService } from "ngx-toastr";
 import { toastrRoot } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { AppConfigService, assetRoot } from "./app-config.service";
+import { AppConfigService } from "./app-config.service";
 import { testApiConfig } from "./appConfigMock.service";
-
-/**
- * CMS root for resources. This should only be used by tests
- */
-export const cmsRoot = `${assetRoot}/content`;
 
 describe("AppConfigService", () => {
   let service: AppConfigService;
@@ -109,23 +104,5 @@ describe("AppConfigService", () => {
         positionClass: "toast-center-center",
       }
     );
-  });
-
-  describe("CMS", () => {
-    it("should get cms", () => {
-      const config: any = {
-        ...testApiConfig,
-        values: { cms: { test: "/test.html" } },
-      };
-
-      configureTestingModule(undefined, config);
-      expect(service.getCms("test" as any)).toEqual("/test.html");
-    });
-
-    it("should return error page if cms does not exist", () => {
-      const config: any = { ...testApiConfig, values: { cms: {} } };
-      configureTestingModule(undefined, config);
-      expect(service.getCms("test" as any)).toEqual("/error.html");
-    });
   });
 });

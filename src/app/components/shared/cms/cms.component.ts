@@ -1,16 +1,14 @@
-import { HttpClient } from "@angular/common/http";
 import {
   ChangeDetectorRef,
   Component,
-  Inject,
+  ElementRef,
   Input,
   OnInit,
+  Renderer2,
 } from "@angular/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { takeUntil } from "rxjs/operators";
 
 /**
  * CMS Wrapper
@@ -18,24 +16,20 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-cms",
   template: `
-    <ng-container *ngIf="blob">
-      <div [innerHtml]="blob"></div>
-    </ng-container>
-    <baw-loading title="Loading" [display]="loading"></baw-loading>
+    <baw-loading *ngIf="loading" title="Loading"></baw-loading>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
 export class CmsComponent extends WithUnsubscribe() implements OnInit {
-  @Input() public page: string;
-  public blob: SafeHtml;
+  @Input() public page: CMS;
   public error: ApiErrorDetails;
   public loading: boolean;
 
   constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    private http: HttpClient,
-    private ref: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private cms: CmsService,
+    private renderer: Renderer2,
+    private elRef: ElementRef,
+    private ref: ChangeDetectorRef
   ) {
     super();
   }
@@ -43,26 +37,26 @@ export class CmsComponent extends WithUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.loading = true;
 
-    // TODO Replace with API request
-    this.http
-      // .get(this.apiRoot + this.page, { responseType: "text" })
-      .get(`/assets/content${this.page}`, { responseType: "text" })
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (data) => {
-          // TODO Validate if this is needed?
-          // https://www.intricatecloud.io/2019/10/using-angular-innerhtml-to-display-user-generated-content-without-sacrificing-security/
-          // This is a bit dangerous, however CMS should only load from trusted sources.
-          // May need to revise this in future.
-          this.blob = this.sanitizer.bypassSecurityTrustHtml(data);
-          this.loading = false;
-          this.ref.detectChanges();
-        },
-        (err: ApiErrorDetails) => {
-          this.error = err;
-          this.loading = false;
-          this.ref.detectChanges();
-        }
-      );
+    this.cms.get(this.page).subscribe(
+      (blob) => {
+        // Using html fragments instead of innerHTML.
+        // In the HTML5 spec, script tags that are inserted via InnerHTML will not be executed.
+        // Using a document fragment allows us to insert any tag.
+        // NOTE: Angulars Sanitization is ignored since we are bypassing Angulars normal rendering system.
+        // NOTE: It might be useful to consider using ShadowDom to isolate these CMS HTML fragments from
+        //       the rest of the site. This would prevent, for example, a careless CSS global style in the CMS fragment
+        //       from affecting the rest of the angular site.
+        const range = document.createRange();
+        const fragment = range.createContextualFragment(blob);
+        this.renderer.appendChild(this.elRef.nativeElement, fragment);
+        this.loading = false;
+        this.ref.detectChanges();
+      },
+      (err: ApiErrorDetails) => {
+        this.error = err;
+        this.loading = false;
+        this.ref.detectChanges();
+      }
+    );
   }
 }
