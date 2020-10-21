@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { FactoryProvider, NgModule, Provider } from "@angular/core";
+import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { MockAppConfigModule } from "../app-config/app-configMock.module";
 import { AccountsService } from "./account/accounts.service";
@@ -10,6 +10,7 @@ import { AudioEventsService } from "./audio-event/audio-events.service";
 import { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 import { BookmarksService } from "./bookmark/bookmarks.service";
+import { CmsService } from "./cms/cms.service";
 import { DatasetItemsService } from "./dataset/dataset-items.service";
 import { DatasetsService } from "./dataset/datasets.service";
 import { MockBawApiService, MockModel } from "./mock/baseApiMock.service";
@@ -41,6 +42,7 @@ import { UserService } from "./user/user.service";
 
 const mockProviders: Provider[] = [
   { provide: SecurityService, useClass: MockSecurityService },
+  mockProvider(CmsService),
   mockProvider(AccountsService),
   mockProvider(AnalysisJobsService),
   mockProvider(AnalysisJobItemsService),

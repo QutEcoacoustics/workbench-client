@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 
 /**
  * Error Handler Wrapper
@@ -22,12 +23,16 @@ import { apiReturnCodes } from "@baw-api/baw-api.service";
       </div>
 
       <p>{{ error.message }}</p>
+      <p>
+        If you continue to encounter this error, please go to the
+        <a [routerLink]="[reportUrl]">Report Problems</a> page and report the
+        issue.
+      </p>
     </ng-container>
   `,
 })
 export class ErrorHandlerComponent {
   @Input() public error: ApiErrorDetails;
+  public reportUrl = reportProblemMenuItem.route.toString();
   public apiReturnCodes = apiReturnCodes;
-
-  constructor() {}
 }

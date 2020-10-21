@@ -1,6 +1,10 @@
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { MayBeAsync } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
-import { BehaviorSubject } from "rxjs";
+import { Spectator, SpyObject } from "@ngneat/spectator";
+import { CmsComponent } from "@shared/cms/cms.component";
+import { BehaviorSubject, Subject } from "rxjs";
 import {
   ApiCreate,
   ApiDestroy,
@@ -11,6 +15,7 @@ import {
   IdOr,
 } from "../../services/baw-api/api-common";
 import { Filters } from "../../services/baw-api/baw-api.service";
+import { nStepObservable } from "./general";
 
 export const defaultFilters: Filters = {
   filter: {},
@@ -140,6 +145,35 @@ export function validateApiDestroy<
     it("should handle destroy endpoint using id", function () {
       api.destroy(id, ...parameters).subscribe();
       expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
+    });
+  });
+}
+
+export function assertCms<T>(
+  setup: () => MayBeAsync<Spectator<T>>,
+  endpoint: string
+) {
+  let spectator: Spectator<T>;
+
+  describe("cms for " + endpoint, () => {
+    beforeEach(async () => {
+      spectator = await setup();
+      const cmsService = spectator.inject(CmsService);
+      cmsService.get.and.callFake(() => new Subject());
+    });
+
+    function getCms() {
+      return spectator.query(CmsComponent);
+    }
+
+    it("should have cms page", async () => {
+      spectator.detectChanges();
+      expect(getCms()).toBeTruthy();
+    });
+
+    it("should load plaintext cms", async () => {
+      spectator.detectChanges();
+      expect(getCms().page).toBe(endpoint);
     });
   });
 }

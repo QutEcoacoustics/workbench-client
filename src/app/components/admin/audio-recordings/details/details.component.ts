@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
@@ -39,8 +40,7 @@ class AdminAudioRecordingComponent
   }
 
   public ngOnInit(): void {
-    const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data);
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
     if (!models) {
       this.failure = true;

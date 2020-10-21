@@ -8,6 +8,7 @@ import {
   projectMenuItem,
 } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { newSiteMenuItem } from "../../sites.menus";
@@ -66,7 +67,7 @@ class WizardComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data);
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
     if (!models) {
       this.error = true;
       return;

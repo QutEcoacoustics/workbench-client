@@ -1,26 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { CMS } from "@baw-api/cms/cms.service";
 import {
   aboutCategory,
   disclaimersMenuItem,
 } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AppConfigService } from "@services/app-config/app-config.service";
 
 @Component({
   selector: "baw-about-disclaimers",
   template: `<baw-cms [page]="page"></baw-cms>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class DisclaimersComponent extends PageComponent implements OnInit {
-  public page: string;
-
-  constructor(private env: AppConfigService) {
-    super();
-  }
-
-  public ngOnInit() {
-    this.page = this.env.getCms("disclaimers");
-  }
+class DisclaimersComponent extends PageComponent {
+  public page = CMS.PRIVACY;
 }
 
 DisclaimersComponent.LinkComponentToPageInfo({

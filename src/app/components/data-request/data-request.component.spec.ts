@@ -5,7 +5,6 @@ import {
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppConfigService } from "@services/app-config/app-config.service";
-import { cmsRoot } from "@services/app-config/app-config.service.spec";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
@@ -37,7 +36,6 @@ xdescribe("DataRequestComponent", () => {
   });
 
   it("should create", () => {
-    httpMock.expectOne(`${cmsRoot}/downloadAnnotations.html`);
     expect(component).toBeTruthy();
   });
 });

@@ -1,0 +1,44 @@
+#website-title {
+  color: white;
+  font-weight: bold;
+  font-size: 10rem;
+  font-family: "Arial";
+  // TODO Are these using the same implementation?
+  //text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+  padding-bottom: 15rem;
+}
+
+section {
+  background-color: #fff;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.credits {
+  margin-left: 0.5rem;
+  margin-top: -2.5rem;
+}
+
+.credits span {
+  padding: 0.5rem 1rem;
+}
+
+section {
+  padding: 15px 1rem;
+  width: 100%;
+
+  h1,
+  h2 {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-weight: 400;
+  }
+}
+
+#hero-image {
+  background-image: url("/assets/images/landing/IMG_1318.JPG");
+}

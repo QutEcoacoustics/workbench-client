@@ -77,18 +77,13 @@ export abstract class FormTemplate<M extends AbstractModel>
     // Retrieve models from router
     const data = this.route.snapshot.data as PageInfo;
 
-    // If no resolvers, return early
-    if (!data.resolvers) {
-      return;
-    }
-
     // Retrieve models
-    const resolvedModels = retrieveResolvers(data);
-    if (!resolvedModels) {
+    const models = retrieveResolvers(data);
+    if (!models) {
       this.failure = true;
       return;
     }
-    this.models = resolvedModels;
+    this.models = models;
 
     // Find primary model
     this.model = this.models[this.modelKey] as M;

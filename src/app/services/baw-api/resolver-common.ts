@@ -1,5 +1,6 @@
 import { Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
 import { AbstractModel } from "@models/AbstractModel";
@@ -240,11 +241,17 @@ function convertToId(id: string): Id {
  * resolved models using the resolver key as the object key.
  * @param data Page Data
  */
-export function retrieveResolvers(data: any): ResolvedModelList | false {
+export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
   const models = {};
+  const keys = Object.keys(data?.resolvers || {});
+
+  if (keys.length === 0) {
+    console.warn("resolver-common: Failed to detect any resolvers");
+    return models;
+  }
 
   // Grab all models
-  for (const key of Object.keys(data.resolvers)) {
+  for (const key of keys) {
     const resolvedModel: ResolvedModel = data[key];
 
     // If error detected, return

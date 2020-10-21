@@ -21,3 +21,8 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 export type XOR<T, U> = T | U extends object
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
+
+/**
+ * Response may be a promise, or may return in real time
+ */
+export type MayBeAsync<T> = T | Promise<T>;
