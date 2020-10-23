@@ -66,7 +66,7 @@ export const myBookmarksMenuItem = MenuRoute({
 export const myAnnotationsMenuItem = MenuRoute({
   icon: ["fas", "border-all"],
   label: "My Annotations",
-  parent: myAccountMenuItem,
+  order: 3,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("annotations"),
   tooltip: (user) => `Annotations created by ${user.userName}`,

@@ -8,7 +8,6 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
@@ -41,9 +40,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 
 MyAnnotationsComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-  },
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
 }).AndMenuRoute(myAnnotationsMenuItem);
 
