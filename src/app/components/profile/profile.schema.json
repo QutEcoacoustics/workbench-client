@@ -2,10 +2,10 @@
   "fields": [
     {
       "key": "id",
-      "type": "input",
       "hide": true,
       "templateOptions": {
-        "label": "Id"
+        "label": "Id",
+        "disabled": true
       }
     },
     {
@@ -45,8 +45,7 @@
       "key": "imageUrls",
       "type": "image",
       "templateOptions": {
-        "label": "Image",
-        "type": "text"
+        "label": "Image"
       }
     },
     {
@@ -55,7 +54,8 @@
       "hide": true,
       "wrappers": ["form-field-horizontal"],
       "templateOptions": {
-        "label": "Email Confirmation"
+        "label": "Email Confirmation",
+        "disabled": true
       }
     },
     {
@@ -64,150 +64,136 @@
       "hide": true,
       "wrappers": ["form-field-horizontal"],
       "templateOptions": {
-        "label": "Account Confirmation"
+        "label": "Account Confirmation",
+        "disabled": true
       }
     },
     {
       "key": "confirmedAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Last Seen At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "resetPasswordSentAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Reset Password Sent At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "rememberCreatedAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Remember Created At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "signInCount",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Sign In Count",
-        "type": "number"
+        "disabled": true
       }
     },
     {
       "key": "lastSeenAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Last Seen At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "currentSignInAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Current Sign In At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "lastSignInAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Last Sign In At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "currentSignInIp",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Current Sign In IP",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "lastSignInIp",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Last Sign In IP",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "confirmationSentAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Confirmation Sent At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "failedAttempts",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Failed Attempts",
-        "type": "number"
+        "disabled": true
       }
     },
     {
       "key": "lockedAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Locked At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "createdAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Created At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "updatedAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Updated At",
-        "type": "text"
+        "disabled": true
       }
     },
     {
       "key": "rolesMaskNames",
       "type": "textarea",
-      "hide": true,
       "templateOptions": {
-        "label": "Roles Mask Names"
+        "label": "Roles Mask Names",
+        "disabled": true
       }
     },
     {
       "key": "imageUpdatedAt",
-      "type": "input",
       "hide": true,
       "templateOptions": {
         "label": "Image Updated At",
-        "type": "text"
+        "disabled": true
       }
     }
   ]

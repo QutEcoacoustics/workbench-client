@@ -21,7 +21,7 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
 }
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
-  public readonly kind = "SavedSearches";
+  public readonly kind = "Saved Search";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -50,6 +50,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   }
 
   public get viewUrl(): string {
-    throw new Error("SavedSearch viewUrl not implemented.");
+    console.error("SavedSearch viewUrl not implement");
+    return "not_implemented";
   }
 }

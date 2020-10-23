@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -73,8 +67,9 @@ import { takeUntil } from "rxjs/operators";
     `,
   ],
 })
-export class RenderFieldComponent extends WithUnsubscribe()
-  implements OnInit, OnChanges {
+export class RenderFieldComponent
+  extends WithUnsubscribe()
+  implements OnChanges {
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean | ImageUrl[];
@@ -88,11 +83,6 @@ export class RenderFieldComponent extends WithUnsubscribe()
   constructor(private ref: ChangeDetectorRef) {
     super();
   }
-
-  public ngOnInit(): void {
-    this.ngOnChanges();
-  }
-
   public ngOnChanges(): void {
     this.humanize(this.value);
   }

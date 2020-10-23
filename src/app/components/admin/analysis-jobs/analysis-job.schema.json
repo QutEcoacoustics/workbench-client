@@ -1,0 +1,129 @@
+{
+  "fields": [
+    {
+      "key": "id",
+      "hide": true,
+      "templateOptions": {
+        "label": "Id",
+        "disabled": true
+      }
+    },
+    {
+      "key": "name",
+      "type": "input",
+      "templateOptions": {
+        "label": "Name",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8
+      }
+    },
+    {
+      "key": "annotationName",
+      "type": "input",
+      "templateOptions": {
+        "label": "Annotation Name",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "customSettings",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Custom Settings",
+        "required": false,
+        "rows": 8,
+        "description": "Custom settings an analyzer can use to customize its behavior. This follows the yaml format."
+      }
+    },
+    {
+      "key": "script",
+      "hide": true,
+      "templateOptions": {
+        "label": "Script",
+        "disabled": true
+      }
+    },
+    {
+      "key": "script_id",
+      "type": "input",
+      "templateOptions": {
+        "label": "Script Id",
+        "type": "text"
+      }
+    },
+    {
+      "key": "savedSearch",
+      "hide": true,
+      "templateOptions": {
+        "label": "Saved Search",
+        "disabled": true
+      }
+    },
+    {
+      "key": "saved_search_id",
+      "type": "input",
+      "templateOptions": {
+        "label": "Saved Search Id",
+        "type": "text"
+      }
+    },
+    {
+      "key": "startedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Started At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallStatus",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Status",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallStatusModifiedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Status Modified At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallCount",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Count",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallDuration",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Duration",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallDataLengthBytes",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Data Length Bytes",
+        "disabled": true
+      }
+    }
+  ]
+}

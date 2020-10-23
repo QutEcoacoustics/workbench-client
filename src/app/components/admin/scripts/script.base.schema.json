@@ -4,7 +4,8 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Script Id"
+        "label": "Script Id",
+        "disabled": true
       }
     },
     {
@@ -83,14 +84,16 @@
       "key": "verified",
       "hide": true,
       "templateOptions": {
-        "label": "Verified"
+        "label": "Verified",
+        "disabled": true
       }
     },
     {
       "key": "groupId",
       "hide": true,
       "templateOptions": {
-        "label": "Group Id"
+        "label": "Group Id",
+        "disabled": true
       }
     }
   ]

@@ -1,5 +1,5 @@
 <ng-container *ngIf="rows && !error">
-  <h1>Audio Recordings</h1>
+  <h1>Analysis Jobs</h1>
 
   <ngx-datatable
     #table
@@ -14,10 +14,34 @@
   >
     <ngx-datatable-column name="Id" width="50" maxWidth="50">
     </ngx-datatable-column>
-    <ngx-datatable-column name="Site" width="50" maxWidth="50">
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Duration"></ngx-datatable-column>
-    <ngx-datatable-column name="Recorded"></ngx-datatable-column>
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Script"
+      width="50"
+      maxWidth="50"
+      [sortable]="false"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Creator"
+      width="60"
+      maxWidth="60"
+      [sortable]="false"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Started"
+      width="110"
+      maxWidth="110"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Status"
+      width="95"
+      maxWidth="95"
+    ></ngx-datatable-column>
+    <ngx-datatable-column
+      name="Status Updated"
+      width="115"
+      maxWidth="115"
+    ></ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
       width="140"
@@ -29,12 +53,12 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-default mr-2"
-          [routerLink]="detailsPath(value)"
+          [routerLink]="value.adminViewUrl"
         >
           Details
         </a>
         <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
-          Play
+          View
         </a>
       </ng-template>
     </ngx-datatable-column>
