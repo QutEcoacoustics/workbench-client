@@ -4,14 +4,16 @@
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator"
+        "label": "Creator",
+        "disabled": true
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At"
+        "label": "Created At",
+        "disabled": true
       }
     }
   ]

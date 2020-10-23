@@ -4,7 +4,8 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Site Id"
+        "label": "Site Id",
+        "disabled": true
       }
     },
     {
@@ -30,7 +31,8 @@
       "key": "locationObfuscated",
       "hide": true,
       "templateOptions": {
-        "label": "Location Obfuscated"
+        "label": "Location Obfuscated",
+        "disabled": true
       }
     },
     {
@@ -44,28 +46,32 @@
       "key": "latitude",
       "hide": true,
       "templateOptions": {
-        "label": "Latitude"
+        "label": "Latitude",
+        "disabled": true
       }
     },
     {
       "key": "longitude",
       "hide": true,
       "templateOptions": {
-        "label": "Longitude"
+        "label": "Longitude",
+        "disabled": true
       }
     },
     {
       "key": "customLatitude",
       "hide": true,
       "templateOptions": {
-        "label": "Custom Latitude"
+        "label": "Custom Latitude",
+        "disabled": true
       }
     },
     {
       "key": "customLongitude",
       "hide": true,
       "templateOptions": {
-        "label": "Custom Longitude"
+        "label": "Custom Longitude",
+        "disabled": true
       }
     },
     {
@@ -79,10 +85,9 @@
     {
       "key": "image",
       "hide": true,
-      "type": "image",
       "templateOptions": {
         "label": "Image",
-        "required": false
+        "disabled": true
       }
     },
     {
@@ -97,7 +102,8 @@
       "key": "timezoneInformation",
       "hide": true,
       "templateOptions": {
-        "label": "Time Zone Information"
+        "label": "Time Zone Information",
+        "disabled": true
       }
     }
   ]

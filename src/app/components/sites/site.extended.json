@@ -4,35 +4,40 @@
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator"
+        "label": "Creator",
+        "disabled": true
       }
     },
     {
       "key": "updater",
       "hide": true,
       "templateOptions": {
-        "label": "Updater"
+        "label": "Updater",
+        "disabled": true
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At"
+        "label": "Created At",
+        "disabled": true
       }
     },
     {
       "key": "updatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Updated At"
+        "label": "Updated At",
+        "disabled": true
       }
     },
     {
       "key": "projects",
       "hide": true,
       "templateOptions": {
-        "label": "Projects"
+        "label": "Projects",
+        "disabled": true
       }
     }
   ]

@@ -32,7 +32,7 @@
         "label": "Custom Settings",
         "required": false,
         "rows": 8,
-        "description": "Anthony Give Description"
+        "description": "Custom settings an analyzer can use to customize its behavior. This follows the yaml format."
       }
     },
     {

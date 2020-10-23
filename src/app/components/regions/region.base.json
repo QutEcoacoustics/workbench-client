@@ -4,7 +4,8 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Site Id"
+        "label": "Site Id",
+        "disabled": true
       }
     },
     {
@@ -37,10 +38,9 @@
     {
       "key": "image",
       "hide": true,
-      "type": "image",
       "templateOptions": {
         "label": "Image",
-        "required": false
+        "disabled": true
       }
     }
   ]
