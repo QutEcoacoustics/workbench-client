@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
@@ -8,7 +10,8 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AudioEvent } from "@models/AudioEvent";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
+import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
@@ -21,11 +24,18 @@ const userKey = "user";
   selector: "baw-my-annotations",
   templateUrl: "./annotations.component.html",
 })
-class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
-  constructor(api: AudioEventsService, route: ActivatedRoute) {
+class MyAnnotationsComponent extends PagedTableTemplate<
+  TableRow,
+  AudioRecording
+> {
+  protected api: AudioRecordingsService;
+
+  constructor(api: AudioRecordingsService, route: ActivatedRoute) {
     super(
       api,
-      (audioEvents) => {
+      (audioRecordings) => {
+        console.log({ audioEvents: audioRecordings });
+
         // TODO Implement
         return [];
       },
@@ -35,6 +45,15 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 
   public get account(): User {
     return this.models[userKey] as User;
+  }
+
+  protected apiAction(filters: Filters<IAudioRecording>) {
+    return this.api.filter({
+      paging: filters.paging,
+      filter: {
+        and: { audio_events: { creator_id: { eq: this.account.id } } },
+      },
+    } as Filters<IAudioRecording>);
   }
 }
 

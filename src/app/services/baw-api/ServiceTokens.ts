@@ -9,7 +9,7 @@ import { InjectionToken } from "@angular/core";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
-import type { AudioEventsService } from "./audio-event/audio-events.service";
+import type { AudioEventsService, ShallowAudioEventsService } from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
@@ -59,6 +59,9 @@ export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService>(
 );
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
   "AUDIO_EVENTS_SERVICE"
+);
+export const SHALLOW_AUDIO_EVENT = new ServiceToken<ShallowAudioEventsService>(
+  "SHALLOW_AUDIO_EVENTS_SERVICE"
 );
 export const AUDIO_RECORDING = new ServiceToken<AudioRecordingsService>(
   "AUDIO_RECORDINGS_SERVICE"

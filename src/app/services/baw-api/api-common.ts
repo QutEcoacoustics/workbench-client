@@ -52,7 +52,7 @@ export function option(x?: New | Filter | Empty) {
  * @param key Foreign key
  * @param model Foreign key value
  */
-export function filterByForeignKey<T extends AbstractModel>(
+export function filterByForeignKey<T>(
   filters: Filters<T>,
   key: keyof T,
   model: AbstractModel | string | number
