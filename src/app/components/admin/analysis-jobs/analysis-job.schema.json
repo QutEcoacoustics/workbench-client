@@ -4,7 +4,8 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Id"
+        "label": "Id",
+        "disabled": true
       }
     },
     {
@@ -14,6 +15,15 @@
         "label": "Name",
         "type": "text",
         "required": true
+      }
+    },
+    {
+      "key": "description",
+      "type": "textarea",
+      "templateOptions": {
+        "label": "Description",
+        "required": false,
+        "rows": 8
       }
     },
     {
@@ -39,56 +49,80 @@
       "key": "script",
       "hide": true,
       "templateOptions": {
-        "label": "Script"
+        "label": "Script",
+        "disabled": true
+      }
+    },
+    {
+      "key": "script_id",
+      "type": "input",
+      "templateOptions": {
+        "label": "Script Id",
+        "type": "text"
       }
     },
     {
       "key": "savedSearch",
       "hide": true,
       "templateOptions": {
-        "label": "Saved Search"
+        "label": "Saved Search",
+        "disabled": true
+      }
+    },
+    {
+      "key": "saved_search_id",
+      "type": "input",
+      "templateOptions": {
+        "label": "Saved Search Id",
+        "type": "text"
       }
     },
     {
       "key": "startedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Started At"
+        "label": "Started At",
+        "disabled": true
       }
     },
     {
       "key": "overallStatus",
       "hide": true,
       "templateOptions": {
-        "label": "Overall Status"
+        "label": "Overall Status",
+        "disabled": true
       }
     },
     {
       "key": "overallStatusModifiedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Overall Status Modified At"
+        "label": "Overall Status Modified At",
+        "disabled": true
       }
     },
     {
       "key": "overallCount",
       "hide": true,
       "templateOptions": {
-        "label": "Overall Count"
+        "label": "Overall Count",
+        "disabled": true
       }
     },
     {
       "key": "overallDuration",
       "hide": true,
       "templateOptions": {
-        "label": "Overall Duration"
+        "label": "Overall Duration",
+        "disabled": true
       }
     },
     {
       "key": "overallDataLengthBytes",
       "hide": true,
       "templateOptions": {
-        "label": "Overall Data Length Bytes"
+        "label": "Overall Data Length Bytes",
+        "disabled": true
       }
     }
   ]
