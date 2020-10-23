@@ -9,23 +9,30 @@
     },
     {
       "key": "name",
-      "hide": true,
+      "type": "input",
       "templateOptions": {
-        "label": "Name"
+        "label": "Name",
+        "type": "text",
+        "required": true
       }
     },
     {
       "key": "annotationName",
-      "hide": true,
+      "type": "input",
       "templateOptions": {
-        "label": "Annotation Name"
+        "label": "Annotation Name",
+        "type": "text",
+        "required": true
       }
     },
     {
       "key": "customSettings",
-      "hide": true,
+      "type": "textarea",
       "templateOptions": {
-        "label": "Custom Settings"
+        "label": "Custom Settings",
+        "required": false,
+        "rows": 8,
+        "description": "Anthony Give Description"
       }
     },
     {

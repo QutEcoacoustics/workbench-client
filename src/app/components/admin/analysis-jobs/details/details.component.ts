@@ -4,6 +4,7 @@ import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
@@ -40,7 +41,7 @@ class AdminAnalysisJobComponent
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data);
+    const models = retrieveResolvers(data as PageInfo);
 
     if (!models) {
       this.failure = true;

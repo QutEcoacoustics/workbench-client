@@ -27,7 +27,7 @@ import type { User } from "./User";
 export interface IAnalysisJob extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  annotationName?: string;
+  annotationName?: Param;
   customSettings?: Blob | object;
   scriptId?: Id;
   savedSearchId?: Id;
@@ -48,7 +48,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @BawPersistAttr
   public readonly name?: Param;
   @BawPersistAttr
-  public readonly annotationName?: string;
+  public readonly annotationName?: Param;
   @BawPersistAttr
   public readonly customSettings?: Blob;
   @BawPersistAttr
@@ -97,6 +97,14 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
+    // TODO Change with correct path once built
+    return adminAnalysisJobMenuItem.route.format({ analysisJobId: this.id });
+  }
+
+  /**
+   * Gets the route path for the admin details page for this model
+   */
+  public get adminViewUrl(): string {
     return adminAnalysisJobMenuItem.route.format({ analysisJobId: this.id });
   }
 }

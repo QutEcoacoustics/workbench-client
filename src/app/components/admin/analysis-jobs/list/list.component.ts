@@ -53,16 +53,6 @@ class AdminAnalysisJobsComponent
       }))
     );
   }
-
-  /**
-   * Path to view analysis job details
-   * @param model Analysis Job
-   */
-  public detailsPath(model: AnalysisJob) {
-    return adminAnalysisJobMenuItem.route.format({
-      analysisJobId: model.id,
-    });
-  }
 }
 
 AdminAnalysisJobsComponent.LinkComponentToPageInfo({

@@ -9,9 +9,11 @@
     },
     {
       "key": "uuid",
-      "hide": true,
+      "type": "input",
       "templateOptions": {
-        "label": "Uuid"
+        "label": "Uuid",
+        "type": "text",
+        "required": true
       }
     },
     {
@@ -23,7 +25,6 @@
     },
     {
       "key": "recordedDate",
-      "hide": true,
       "templateOptions": {
         "label": "Recorded Date"
       }
@@ -86,9 +87,11 @@
     },
     {
       "key": "notes",
-      "hide": true,
+      "type": "textarea",
       "templateOptions": {
-        "label": "Notes"
+        "label": "Notes",
+        "required": false,
+        "rows": 8
       }
     },
     {
