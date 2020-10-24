@@ -381,7 +381,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
   /** Current sorting options */
   sorting?: {
     /** Which key to sort by */
-    orderBy: string;
+    orderBy: K | string;
     /** Sorting direction */
     direction: "desc" | "asc";
   };

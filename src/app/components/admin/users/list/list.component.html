@@ -22,12 +22,16 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="User">
-      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="[viewPath(row.account)]">{{ value }}</a>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Last Login"> </ngx-datatable-column>
+    <ng-container *ngFor="let column of columnData">
+      <ngx-datatable-column
+        *ngIf="!column.customTemplate"
+        [name]="column.name"
+        [width]="column.width"
+        [maxWidth]="column.width"
+        [sortable]="column.sortKey"
+      ></ngx-datatable-column>
+    </ng-container>
+
     <ngx-datatable-column
       name="Confirmed"
       [width]="90"
@@ -51,18 +55,18 @@
     </ngx-datatable-column>
     <ngx-datatable-column
       name="Account"
-      [width]="75"
-      [maxWidth]="75"
+      [width]="125"
+      [maxWidth]="125"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-warning w-100"
-          [routerLink]="[editPath(value)]"
-        >
+        <a class="btn btn-sm btn-warning mr-2" [routerLink]="[editPath(value)]">
           Edit
+        </a>
+        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
+          View
         </a>
       </ng-template>
     </ngx-datatable-column>
