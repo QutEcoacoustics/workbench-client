@@ -21,56 +21,34 @@
     [offset]="pageNumber"
     (page)="setPage($event)"
     (sort)="onSort($event)"
-  >
-    <ng-container *ngFor="let column of columnData">
-      <ngx-datatable-column
-        *ngIf="!column.customTemplate"
-        [name]="column.name"
-        [width]="column.width"
-        [maxWidth]="column.width"
-        [sortable]="column.sortKey"
-      ></ngx-datatable-column>
-    </ng-container>
-
-    <ngx-datatable-column
-      name="Confirmed"
-      [width]="90"
-      [maxWidth]="90"
-      [sortable]="false"
-    >
-      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <div class="mx-auto" style="width: 24px">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              disabled
-              [id]="row.user + '-checkbox'"
-              [checked]="value"
-            />
-            <label class="custom-control-label" for="checkbox"></label>
-          </div>
-        </div>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
-      name="Account"
-      [width]="125"
-      [maxWidth]="125"
-      [sortable]="false"
-    >
-      <ng-template let-column="column" ngx-datatable-header-template>
-      </ng-template>
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-warning mr-2" [routerLink]="[editPath(value)]">
-          Edit
-        </a>
-        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
-          View
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
+  ></ngx-datatable>
 </ng-container>
 
 <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+
+<ng-template
+  #confirmed
+  let-row="row"
+  let-value="value"
+  ngx-datatable-cell-template
+>
+  <div class="mx-auto" style="width: 24px">
+    <div class="custom-control custom-checkbox">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        disabled
+        [id]="row.user + '-checkbox'"
+        [checked]="value"
+      />
+      <label class="custom-control-label" for="checkbox"></label>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #action let-value="value" ngx-datatable-cell-template>
+  <a class="btn btn-sm btn-warning mr-2" [routerLink]="[editPath(value)]">
+    Edit
+  </a>
+  <a class="btn btn-sm btn-primary" [routerLink]="value.viewUrl"> View </a>
+</ng-template>

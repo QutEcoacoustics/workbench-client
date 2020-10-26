@@ -1,4 +1,10 @@
-import { Component } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import {
   adminCategory,
@@ -10,10 +16,7 @@ import {
   theirEditMenuItem,
   theirProfileMenuItem,
 } from "@components/profile/profile.menus";
-import {
-  PagedTableTemplate,
-  PagedTableTemplateV2,
-} from "@helpers/tableTemplate/pagedTableTemplate";
+import { PagedTableTemplateV2 } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { IUser, User } from "@models/User";
 import { List } from "immutable";
@@ -23,10 +26,17 @@ import { List } from "immutable";
   templateUrl: "./list.component.html",
   styleUrls: ["./list.component.scss"],
 })
-class AdminUserListComponent extends PagedTableTemplateV2<IUser, User> {
+class AdminUserListComponent
+  extends PagedTableTemplateV2<IUser, User>
+  implements OnInit {
+  @ViewChild("confirmed", { static: true })
+  public confirmedTemplate: TemplateRef<any>;
+  @ViewChild("action", { static: true })
+  public actionTemplate: TemplateRef<any>;
+
   public userIcon = theirProfileMenuItem.icon;
 
-  constructor(api: AccountsService) {
+  constructor(api: AccountsService, private ref: ChangeDetectorRef) {
     super(api, [
       {
         key: "user",
@@ -45,13 +55,15 @@ class AdminUserListComponent extends PagedTableTemplateV2<IUser, User> {
       {
         key: "confirmed",
         name: "Confirmed",
-        customTemplate: true,
+        width: 90,
+        cellTemplate: () => this.confirmedTemplate,
         transform: (model) => model.isConfirmed,
       },
       {
-        key: "account",
-        name: "Account",
-        customTemplate: true,
+        key: "actions",
+        name: "Actions",
+        width: 125,
+        cellTemplate: () => this.actionTemplate,
         transform: (model) => model,
       },
     ]);
@@ -88,10 +100,3 @@ AdminUserListComponent.LinkComponentToPageInfo({
 }).AndMenuRoute(adminUserListMenuItem);
 
 export { AdminUserListComponent };
-
-interface TableRow {
-  account: User;
-  user: string;
-  lastLogin: string;
-  confirmed: boolean;
-}

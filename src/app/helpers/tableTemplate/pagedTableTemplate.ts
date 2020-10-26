@@ -25,7 +25,7 @@ export interface ColumnData<T, M extends AbstractModel> {
   width?: number;
   sortKey?: keyof T;
   isFilterKey?: boolean;
-  customTemplate?: boolean;
+  cellTemplate?: () => any;
 }
 
 @Directive()
@@ -66,16 +66,6 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     this.pageNumber = 0;
     this.filters = {};
 
-    this.columnData.forEach((column) => {
-      this.columns.push({ name: column.name });
-      if (column.sortKey) {
-        this.sortKeys[column.key] = column.sortKey;
-      }
-      if (column.isFilterKey) {
-        this.filterKey = column.sortKey;
-      }
-    });
-
     this.filterEvent$
       .pipe(
         debounceTime(defaultDebounceTime),
@@ -90,6 +80,8 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
   }
 
   public ngOnInit() {
+    this.createColumns();
+
     if (this.route) {
       const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
       if (!models) {
@@ -102,6 +94,10 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     this.getPageData();
   }
 
+  /**
+   * Set the new page number
+   * @param pageInfo Information about current page
+   */
   public setPage(pageInfo: TablePage) {
     this.pageNumber = pageInfo.offset;
     this.filters.paging = {
@@ -111,6 +107,10 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     this.getPageData();
   }
 
+  /**
+   * Handle filter events
+   * @param filter Filter text
+   */
   public onFilter(filter: string) {
     if (!filter) {
       this.filters.filter = undefined;
@@ -124,6 +124,10 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     this.filterEvent$.next(filter);
   }
 
+  /**
+   * Handle sorting events
+   * @param event Sort Event
+   */
   public onSort(event: SortEvent) {
     if (!event.newValue) {
       this.filters.sorting = undefined;
@@ -137,6 +141,10 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     this.getPageData();
   }
 
+  /**
+   * Retrieve page data for the table. If you are trying to customize
+   * the request, override `apiAction` instead
+   */
   public getPageData() {
     this.loadingData = true;
     this.rows = [];
@@ -163,6 +171,10 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
       );
   }
 
+  /**
+   * API Request. Override this if you wish to make a more
+   * customized request
+   */
   protected apiAction(
     filters: Filters<M>,
     args: AbstractModel[]
@@ -170,13 +182,38 @@ export abstract class PagedTableTemplateV2<T, M extends AbstractModel>
     return this.api.filter(filters, ...args);
   }
 
+  /**
+   * Create datatable rows
+   */
   protected createRows(models: M[]) {
     return models.map((model) => {
       const row = {};
-      this.columnData.forEach((column) => {
-        row[column.key] = column.transform(model);
-      });
+      this.columnData.forEach(
+        (column) => (row[column.key] = column.transform(model))
+      );
       return row;
+    });
+  }
+
+  /**
+   * Convert columnData into columns which ngx-datatable will
+   * understand. This also extract the sort keys, and filter key.
+   */
+  private createColumns() {
+    this.columnData.forEach((column) => {
+      this.columns.push({
+        name: column.name,
+        sortable: !!column.sortKey,
+        width: column.width,
+        maxWidth: column.width,
+        cellTemplate: column.cellTemplate?.(),
+      });
+      if (column.sortKey) {
+        this.sortKeys[column.key] = column.sortKey;
+      }
+      if (column.isFilterKey) {
+        this.filterKey = column.sortKey;
+      }
     });
   }
 }
