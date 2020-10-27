@@ -365,6 +365,16 @@ export type InnerFilter<T = {}> = Combinations<T> &
   { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
 
 /**
+ * Api Sorting parameters
+ */
+export interface Sorting<T = {}> {
+  /** Which key to sort by */
+  orderBy: keyof T | string;
+  /** Sorting direction */
+  direction: "desc" | "asc";
+}
+
+/**
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
@@ -379,12 +389,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
     exclude?: K[];
   };
   /** Current sorting options */
-  sorting?: {
-    /** Which key to sort by */
-    orderBy: K | string;
-    /** Sorting direction */
-    direction: "desc" | "asc";
-  };
+  sorting?: Sorting<T>;
   /** Current page data */
   paging?: Paging;
 }
