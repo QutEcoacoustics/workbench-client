@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IUser, User } from "@models/User";
+import { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   Empty,
@@ -36,7 +36,7 @@ export class AccountsService extends StandardApi<User> {
   public list(): Observable<User[]> {
     return this.apiList(endpoint(Empty, Empty));
   }
-  public filter(filters: Filters<IUser>): Observable<User[]> {
+  public filter(filters: Filters<User>): Observable<User[]> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   public show(model: IdOr<User>): Observable<User> {
