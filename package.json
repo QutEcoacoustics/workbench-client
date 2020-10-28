@@ -49,7 +49,7 @@
     "@ngx-loading-bar/core": "^5.1.0",
     "@ngx-loading-bar/http-client": "^5.1.0",
     "@swimlane/ngx-datatable": "^18.0.0",
-    "@vvo/tzdb": "^6.2.0",
+    "@vvo/tzdb": "^6.2.1",
     "bootstrap": "^4.5.3",
     "express": "^4.17.1",
     "filesize": "^6.1.0",
