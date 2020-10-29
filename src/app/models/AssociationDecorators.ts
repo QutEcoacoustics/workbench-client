@@ -1,4 +1,5 @@
 import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids } from "@interfaces/apiInterfaces";
@@ -38,26 +39,37 @@ export function Deleter<M extends AbstractModel & { deleterId?: Id }>() {
 }
 
 /**
+ * TODO Improve documentation
  * Associate models with list of IDs
  * @param serviceToken Injection token for API Service
  * @param modelIdentifier Property to read IDs from
  * @param modelPrimaryKey Keys to match additional ids against
  */
-export function HasMany<M extends AbstractModel>(
-  serviceToken: ServiceToken<ApiFilter<any, any[]>>,
-  modelIdentifier: keyof M,
-  modelPrimaryKey: keyof M = "id",
-  ...modelParameters: ReadonlyArray<keyof M>
+export function HasMany<
+  Parent extends AbstractModel,
+  Child extends AbstractModel,
+  Params extends any[]
+>(
+  serviceToken: ServiceToken<ApiFilter<Child, Params>>,
+  identifierKeys?: keyof Parent,
+  childIdentifier: keyof Child = "id",
+  routeParams: Params = [] as Params
 ) {
-  return createModelDecorator<M, ApiFilter<AbstractModel, any[]>>(
+  /** Create filter to retrieve association models */
+  function modelFilter(parent: Parent): Filters<Child> {
+    return {
+      filter: {
+        [childIdentifier]: { in: Array.from(parent[identifierKeys] as any) },
+      },
+    } as Filters<Child>;
+  }
+
+  return createModelDecorator<Parent, ApiFilter<Child, Params>>(
     serviceToken,
-    modelIdentifier,
-    modelParameters,
-    (service, ids: Ids, ...params: any[]) =>
-      service.filter(
-        { filter: { [modelPrimaryKey]: { in: Array.from(ids) } } },
-        ...params
-      ),
+    identifierKeys,
+    routeParams,
+    (service, parent: Parent, ...params: Params) =>
+      service.filter(modelFilter(parent), ...params),
     UnresolvedModel.many,
     []
   );
@@ -71,8 +83,7 @@ export function HasMany<M extends AbstractModel>(
  */
 export function HasOne<M extends AbstractModel>(
   serviceToken: ServiceToken<ApiShow<any, any[], IdOr<AbstractModel>>>,
-  modelIdentifier: keyof M,
-  ...modelParameters: ReadonlyArray<keyof M>
+  modelIdentifier: keyof M
 ) {
   return createModelDecorator<
     M,
@@ -80,8 +91,8 @@ export function HasOne<M extends AbstractModel>(
   >(
     serviceToken,
     modelIdentifier,
-    modelParameters,
-    (service, id: Id, ...params: any[]) => service.show(id, ...params),
+    [],
+    (service, parent: M) => service.show(parent[modelIdentifier] as any),
     UnresolvedModel.one,
     null
   );
@@ -102,7 +113,7 @@ function createModelDecorator<M extends AbstractModel, S>(
   modelParameters: ReadonlyArray<keyof M>,
   createRequest: (
     service: S,
-    id: Id | Ids,
+    parent: M,
     ...params: any[]
   ) => Observable<AbstractModel | AbstractModel[]>,
   unresolvedValue: any,
@@ -178,7 +189,7 @@ function createModelDecorator<M extends AbstractModel, S>(
 
     // Create service and request from API
     const service = injector.get(serviceToken.token);
-    createRequest(service, identifier, parameters).subscribe(
+    createRequest(service, target, parameters).subscribe(
       (model) => updateBackingField(target, backingFieldKey, model),
       (error) => {
         console.error(`${target} failed to load ${associationKey}.`, {

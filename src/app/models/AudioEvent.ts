@@ -5,6 +5,7 @@ import { AbstractModel } from "./AbstractModel";
 import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
+import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
 
 export interface IAudioEvent extends HasAllUsers {
@@ -15,6 +16,7 @@ export interface IAudioEvent extends HasAllUsers {
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
   isReference?: boolean;
+  taggings?: ITagging[] | Tagging[];
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
@@ -33,6 +35,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public readonly highFrequencyHertz?: number;
   @BawPersistAttr
   public readonly isReference?: boolean;
+  public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
@@ -52,11 +55,12 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public deleter?: User;
   @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  // TODO Add hasOne for site (using custom filter)
-  // TODO Add hasMany for tags (using custom filter)
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);
+    this.taggings = (audioEvent.taggings as ITagging[]).map(
+      (tagging) => new Tagging(tagging, injector)
+    );
   }
 
   public get viewUrl(): string {

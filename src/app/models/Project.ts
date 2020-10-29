@@ -78,9 +78,9 @@ export class Project extends AbstractModel implements IProject {
   public readonly notes?: Notes;
 
   // Associations
-  @HasMany<Project>(SHALLOW_SITE, "siteIds")
+  @HasMany<Project, Site, []>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
-  @HasMany<Project>(SHALLOW_REGION, "regionIds")
+  @HasMany<Project, Region, []>(SHALLOW_REGION, "regionIds")
   public regions?: Region[];
   @Creator<Project>()
   public creator?: User;
