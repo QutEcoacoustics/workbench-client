@@ -52,6 +52,8 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public deleter?: User;
   @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+  // TODO Add hasOne for site (using custom filter)
+  // TODO Add hasMany for tags (using custom filter)
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);

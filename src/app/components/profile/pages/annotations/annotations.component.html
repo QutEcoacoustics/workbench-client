@@ -21,10 +21,14 @@
   >
     <ngx-datatable-column name="Site" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
+        {{ value.audioRecording?.site?.name || "(loading)" }}
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Updated"> </ngx-datatable-column>
+    <ngx-datatable-column name="Uploaded">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value.audioRecording?.recordedDate?.toRelative() || "(loading)" }}
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column name="Tags" [sortable]="false">
     </ngx-datatable-column>
   </ngx-datatable>
