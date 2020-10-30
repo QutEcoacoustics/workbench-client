@@ -10,8 +10,6 @@ import {
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
-import { AudioRecording } from "@models/AudioRecording";
-import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";

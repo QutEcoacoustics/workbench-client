@@ -1,15 +1,39 @@
 /**
- * Purpose of this file is to create ./account/account.serviceeen the services
+ * Purpose of this file is to create a disconnect between the services
  * and being able to call them from the models. If the disconnect does not
  * exist, when you attempt to add association loading to the model it
  * will cause a circular dependency.
  */
 
 import { InjectionToken } from "@angular/core";
+import type { AbstractModel } from "@models/AbstractModel";
+import type { AnalysisJob } from "@models/AnalysisJob";
+import type { AnalysisJobItem } from "@models/AnalysisJobItem";
+import type { AudioEvent } from "@models/AudioEvent";
+import type { AudioRecording } from "@models/AudioRecording";
+import type { Bookmark } from "@models/Bookmark";
+import type { Dataset } from "@models/Dataset";
+import type { DatasetItem } from "@models/DatasetItem";
+import type { ProgressEvent } from "@models/ProgressEvent";
+import type { Project } from "@models/Project";
+import type { Question } from "@models/Question";
+import type { Region } from "@models/Region";
+import type { Response } from "@models/Response";
+import type { SavedSearch } from "@models/SavedSearch";
+import type { Script } from "@models/Script";
+import type { Site } from "@models/Site";
+import type { Study } from "@models/Study";
+import type { Tag } from "@models/Tag";
+import type { Tagging } from "@models/Tagging";
+import type { TagGroup } from "@models/TagGroup";
+import type { User } from "@models/User";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
-import type { AudioEventsService, ShallowAudioEventsService } from "./audio-event/audio-events.service";
+import type {
+  AudioEventsService,
+  ShallowAudioEventsService,
+} from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
@@ -33,6 +57,7 @@ import type {
 } from "./study/responses.service";
 import type { StudiesService } from "./study/studies.service";
 import type { TagGroupsService } from "./tag/tag-group.service";
+import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 
@@ -40,65 +65,83 @@ import type { UserService } from "./user/user.service";
  * Wrapper for InjectionToken class. This is required because of
  * https://github.com/angular/angular/issues/36736.
  */
-export class ServiceToken<T> {
-  public kind: T;
-  public token: InjectionToken<T>;
+export class ServiceToken<
+  Service,
+  Child extends AbstractModel = AbstractModel,
+  Params extends any[] = []
+> {
+  public kind: Service;
+  public model: Child;
+  public params: Params;
+  public token: InjectionToken<Service>;
 
   constructor(_desc: string) {
-    this.kind = (_desc as unknown) as T;
-    this.token = new InjectionToken<T>(_desc);
+    this.kind = (_desc as unknown) as Service;
+    this.token = new InjectionToken<Service>(_desc);
   }
 }
 
-export const ACCOUNT = new ServiceToken<AccountsService>("ACCOUNTS_SERVICE");
-export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService>(
-  "ANALYSIS_JOBS_SERVICE"
+export const ACCOUNT = new ServiceToken<AccountsService, User>("ACCOUNT");
+export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>(
+  "A_JOB"
 );
-export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService>(
-  "ANALYSIS_JOB_ITEMS_SERVICE"
+export const ANALYSIS_JOB_ITEM = new ServiceToken<
+  AnalysisJobItemsService,
+  AnalysisJobItem
+>("A_JOB_ITEM");
+export const AUDIO_EVENT = new ServiceToken<AudioEventsService, AudioEvent>(
+  "AUDIO"
 );
-export const AUDIO_EVENT = new ServiceToken<AudioEventsService>(
-  "AUDIO_EVENTS_SERVICE"
+export const SHALLOW_AUDIO_EVENT = new ServiceToken<
+  ShallowAudioEventsService,
+  AudioEvent
+>("S_AUDIO");
+export const AUDIO_RECORDING = new ServiceToken<
+  AudioRecordingsService,
+  AudioRecording
+>("RECORDING");
+export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>(
+  "BOOKMARK"
 );
-export const SHALLOW_AUDIO_EVENT = new ServiceToken<ShallowAudioEventsService>(
-  "SHALLOW_AUDIO_EVENTS_SERVICE"
+export const DATASET = new ServiceToken<DatasetsService, Dataset>("DATASET");
+export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>(
+  "D_ITEM"
 );
-export const AUDIO_RECORDING = new ServiceToken<AudioRecordingsService>(
-  "AUDIO_RECORDINGS_SERVICE"
+export const PROGRESS_EVENT = new ServiceToken<
+  ProgressEventsService,
+  ProgressEvent
+>("PROGRESS");
+export const PROJECT = new ServiceToken<ProjectsService, Project>("PROJECT");
+export const QUESTION = new ServiceToken<QuestionsService, Question>(
+  "QUESTION"
 );
-export const BOOKMARK = new ServiceToken<BookmarksService>("BOOKMARKS_SERVICE");
-export const DATASET = new ServiceToken<DatasetsService>("DATASETS_SERVICE");
-export const DATASET_ITEM = new ServiceToken<DatasetItemsService>(
-  "DATASET_ITEMS_SERVICE"
+export const SHALLOW_QUESTION = new ServiceToken<
+  ShallowQuestionsService,
+  Question
+>("S_QUESTION");
+export const REGION = new ServiceToken<RegionsService, Region>("REGION");
+export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService, Region>(
+  "S_REGION"
 );
-export const PROGRESS_EVENT = new ServiceToken<ProgressEventsService>(
-  "PROGRESS_EVENTS_SERVICE"
+export const RESPONSE = new ServiceToken<ResponsesService, Response>(
+  "RESPONSE"
 );
-export const PROJECT = new ServiceToken<ProjectsService>("PROJECTS_SERVICE");
-export const QUESTION = new ServiceToken<QuestionsService>("QUESTIONS_SERVICE");
-export const SHALLOW_QUESTION = new ServiceToken<ShallowQuestionsService>(
-  "SHALLOW_QUESTIONS_SERVICE"
+export const SHALLOW_RESPONSE = new ServiceToken<
+  ShallowResponsesService,
+  Response
+>("S_RESPONSE");
+export const SAVED_SEARCH = new ServiceToken<SavedSearchesService, SavedSearch>(
+  "SAVED_SEARCH"
 );
-export const REGION = new ServiceToken<RegionsService>("REGIONS_SERVICE");
-export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService>(
-  "SHALLOW_REGIONS_SERVICE"
+export const SCRIPT = new ServiceToken<ScriptsService, Script>("SCRIPT");
+export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>(
+  "S_SITE"
 );
-export const RESPONSE = new ServiceToken<ResponsesService>("RESPONSES_SERVICE");
-export const SHALLOW_RESPONSE = new ServiceToken<ShallowResponsesService>(
-  "SHALLOW_RESPONSES_SERVICE"
+export const SITE = new ServiceToken<SitesService, Site>("SITE");
+export const STUDY = new ServiceToken<StudiesService, Study>("STUDY");
+export const TAG = new ServiceToken<TagsService, Tag>("TAG");
+export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(
+  "TAG_GROUP"
 );
-export const SAVED_SEARCH = new ServiceToken<SavedSearchesService>(
-  "SAVED_SEARCHES_SERVICE"
-);
-export const SCRIPT = new ServiceToken<ScriptsService>("SCRIPTS_SERVICE");
-export const SHALLOW_SITE = new ServiceToken<ShallowSitesService>(
-  "SHALLOW_SITES_SERVICE"
-);
-export const SITE = new ServiceToken<SitesService>("SITES_SERVICE");
-export const STUDY = new ServiceToken<StudiesService>("STUDIES_SERVICE");
-export const TAG = new ServiceToken<TagsService>("TAGS_SERVICE");
-export const TAG_GROUP = new ServiceToken<TagGroupsService>(
-  "TAG_GROUPS_SERVICE"
-);
-export const TAGGING = new ServiceToken<TagGroupsService>("TAGGINGS_SERVICE");
-export const USER = new ServiceToken<UserService>("USER_SERVICE");
+export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
+export const USER = new ServiceToken<UserService, User>("USER");

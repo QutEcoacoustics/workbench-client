@@ -62,7 +62,7 @@ export class Script extends AbstractModel implements IScript {
   // Associations
   @Creator<Script>()
   public creator?: User;
-  @HasOne<Script>(SCRIPT, "groupId")
+  @HasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
 
   constructor(script: IScript, injector?: Injector) {

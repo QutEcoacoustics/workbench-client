@@ -4,6 +4,7 @@ import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { Creator, HasOne } from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { Dataset } from "./Dataset";
 import type { DatasetItem } from "./DatasetItem";
 import type { User } from "./User";
 
@@ -28,8 +29,7 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   // Associations
   @Creator<ProgressEvent>()
   public creator?: User;
-  @HasOne<ProgressEvent>(DATASET_ITEM, "datasetItemId")
-  public datasetItem?: DatasetItem;
+  // TODO Add association to DatasetItem
 
   constructor(progressEvent: IProgressEvent, injector?: Injector) {
     super(progressEvent, injector);

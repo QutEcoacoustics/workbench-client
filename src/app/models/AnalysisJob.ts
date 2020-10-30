@@ -88,9 +88,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: User;
   @Deleter<AnalysisJob>()
   public deleter?: User;
-  @HasOne<AnalysisJob>(SCRIPT, "scriptId")
+  @HasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
   public script?: Script;
-  @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
+  @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {

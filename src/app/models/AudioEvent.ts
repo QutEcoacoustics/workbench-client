@@ -53,7 +53,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public updater?: User;
   @Deleter<AudioEvent>()
   public deleter?: User;
-  @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
+  @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {

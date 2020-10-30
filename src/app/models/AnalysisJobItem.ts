@@ -39,9 +39,9 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne<AnalysisJobItem>(ANALYSIS_JOB, "analysisJobId")
+  @HasOne<AnalysisJobItem, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
-  @HasOne<AnalysisJobItem>(AUDIO_RECORDING, "audioRecordingId")
+  @HasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
