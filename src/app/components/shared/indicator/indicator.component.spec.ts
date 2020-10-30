@@ -36,7 +36,6 @@ describe("IndicatorComponent", () => {
     spectator.detectChanges();
 
     const icon = spectator.query("fa-icon");
-    console.log(icon);
     expect(icon).toHaveStyle({ color: "red" });
   });
 });

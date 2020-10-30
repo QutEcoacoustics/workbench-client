@@ -64,7 +64,7 @@ export const myBookmarksMenuItem = MenuRoute({
 });
 
 export const myAnnotationsMenuItem = MenuRoute({
-  icon: ["fas", "border-all"],
+  icon: ["fas", "bullseye"],
   label: "My Annotations",
   order: 3,
   predicate: isLoggedInPredicate,
@@ -95,7 +95,7 @@ export const theirProfileMenuItem = MenuRoute({
 });
 
 export const theirEditMenuItem = MenuRoute({
-  icon: defaultEditIcon,
+  icon: myEditMenuItem.icon,
   label: "Edit their profile",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
@@ -104,7 +104,7 @@ export const theirEditMenuItem = MenuRoute({
 });
 
 export const theirProjectsMenuItem = MenuRoute({
-  icon: ["fas", "globe-asia"],
+  icon: myProjectsMenuItem.icon,
   label: "Their Projects",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
@@ -113,7 +113,7 @@ export const theirProjectsMenuItem = MenuRoute({
 });
 
 export const theirSitesMenuItem = MenuRoute({
-  icon: ["fas", "map-marker-alt"],
+  icon: mySitesMenuItem.icon,
   label: "Their Sites",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
@@ -122,7 +122,7 @@ export const theirSitesMenuItem = MenuRoute({
 });
 
 export const theirBookmarksMenuItem = MenuRoute({
-  icon: ["fas", "bookmark"],
+  icon: myBookmarksMenuItem.icon,
   label: "Their Bookmarks",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
@@ -131,7 +131,7 @@ export const theirBookmarksMenuItem = MenuRoute({
 });
 
 export const theirAnnotationsMenuItem = MenuRoute({
-  icon: ["fas", "bullseye"],
+  icon: myAnnotationsMenuItem.icon,
   label: "Their Annotations",
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,

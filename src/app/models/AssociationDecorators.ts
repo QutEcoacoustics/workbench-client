@@ -156,9 +156,7 @@ function createModelDecorator<
    * Get the associated model for a target model
    * @param parent Parent model
    */
-  function getAssociatedModel(
-    parent: Parent
-  ): null | AbstractModel | AbstractModel[] {
+  function getAssociatedModel(parent: Parent): AbstractModel | AbstractModel[] {
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey;
     if (parent.hasOwnProperty(backingFieldKey)) {
@@ -175,10 +173,10 @@ function createModelDecorator<
 
     // Get child model identifying ID/s
     const identifier: Id | Ids = parent[identifierKey] as any;
-    if (!isInstantiated(identifier)) {
+    if (!isInstantiated(identifier) || (identifier as Set<any>)?.size === 0) {
       console.warn(`${parent} is missing identifier: `, {
-        target: parent,
-        associationKey: identifierKey,
+        parent,
+        identifierKey,
         identifier,
       });
       return failureValue;
@@ -189,8 +187,8 @@ function createModelDecorator<
       const paramValue = parent[param];
       if (!isInstantiated(paramValue)) {
         console.warn(`${parent} is missing parameter: `, {
-          target: parent,
-          associationKey: identifierKey,
+          parent,
+          identifierKey,
           param,
         });
       }

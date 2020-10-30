@@ -9,9 +9,7 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { UnresolvedModel } from "@models/AbstractModel";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
-import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
@@ -31,8 +29,6 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
     super(
       api,
       (audioEvents) => {
-        console.log({ audioEvents });
-
         return audioEvents.map((audioEvent) => ({
           site: audioEvent,
           updated: audioEvent.updatedAt.toRelative(),
@@ -46,10 +42,6 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 
   public get account(): User {
     return this.models[userKey] as User;
-  }
-
-  public isUnresolved(model: Tag | UnresolvedModel): boolean {
-    return model.kind === UnresolvedModel.one.kind;
   }
 
   protected apiAction(filters: Filters<IAudioEvent>) {
