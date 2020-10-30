@@ -39,7 +39,8 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   public selected: T[] = [];
   public sortKeys: { [key: string]: string };
   public filterKey: keyof M;
-  public totalModels: number;
+  public totalModels = 0;
+  public pageSize = 0;
 
   /**
    * API Error Response for Table Data
@@ -133,10 +134,11 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
     this.apiAction(this.filters, this.getUrlParameters(this))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => {
+        (models: M[]) => {
           this.rows = this.rowsCallback(models);
           this.loadingData = false;
 
+          this.pageSize = models.length;
           if (models.length > 0) {
             const meta = models[0].getMetadata();
             this.totalModels = meta.paging.total;

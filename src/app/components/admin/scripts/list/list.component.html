@@ -1,6 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Scripts</h1>
 
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> scripts.
+  </p>
+
   <baw-debounce-input
     label="Filter"
     placeholder="Filter Scripts"

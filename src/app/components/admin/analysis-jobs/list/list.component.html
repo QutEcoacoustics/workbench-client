@@ -1,6 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Analysis Jobs</h1>
 
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> analysis jobs.
+  </p>
+
   <ngx-datatable
     #table
     bawDatatableDefaults

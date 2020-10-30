@@ -1,6 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Audio Recordings</h1>
 
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> audio recordings.
+  </p>
+
   <ngx-datatable
     #table
     bawDatatableDefaults
