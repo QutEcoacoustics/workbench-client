@@ -24,12 +24,32 @@
         {{ value.audioRecording?.site?.name || "(loading)" }}
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Uploaded">
+    <ngx-datatable-column name="Updated">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{ value.audioRecording?.recordedDate?.toRelative() || "(loading)" }}
+        {{ value }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Tags" [sortable]="false">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <ng-container *ngFor="let tag of value.tags">
+          <span class="badge badge-primary mr-1">
+            {{ tag.text || "(loading)" }}
+          </span>
+        </ng-container>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      [width]="160"
+      [maxWidth]="160"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-primary mr-1"> Play </a>
+        <a class="btn btn-sm btn-secondary"> Annotation </a>
+      </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
 </div>

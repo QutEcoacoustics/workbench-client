@@ -9,7 +9,9 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { UnresolvedModel } from "@models/AbstractModel";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
+import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
@@ -21,7 +23,8 @@ const userKey = "user";
   templateUrl: "./annotations.component.html",
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
-  public columns = [{ name: "Site" }, { name: "Uploaded" }, { name: "Tags" }];
+  public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
+  public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
   constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
@@ -32,8 +35,9 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 
         return audioEvents.map((audioEvent) => ({
           site: audioEvent,
-          uploaded: audioEvent,
+          updated: audioEvent.updatedAt.toRelative(),
           tags: audioEvent,
+          model: audioEvent,
         }));
       },
       route
@@ -44,8 +48,12 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
     return this.models[userKey] as User;
   }
 
+  public isUnresolved(model: Tag | UnresolvedModel): boolean {
+    return model.kind === UnresolvedModel.one.kind;
+  }
+
   protected apiAction(filters: Filters<IAudioEvent>) {
-    return this.api.filterByCreator({ paging: filters.paging }, 3);
+    return this.api.filterByCreator(filters, this.api.getLocalUser().id);
   }
 }
 
@@ -59,6 +67,7 @@ export { MyAnnotationsComponent };
 
 interface TableRow {
   site: AudioEvent;
-  uploaded: AudioEvent;
+  updated: string;
   tags: AudioEvent;
+  model: AudioEvent;
 }

@@ -1,4 +1,4 @@
-import { ApiFilter, ApiShow, IdOr } from "@baw-api/api-common";
+import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -146,10 +146,6 @@ function createModelDecorator<
     backingFieldKey: string,
     child: Child | Child[] | UnresolvedModel | UnresolvedModel[] | Subscription
   ) {
-    if (parent[backingFieldKey] instanceof Array && child instanceof Array) {
-      child = parent[backingFieldKey].concat(child);
-    }
-
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
       configurable: true,

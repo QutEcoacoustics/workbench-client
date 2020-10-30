@@ -1,10 +1,22 @@
 import { Injector } from "@angular/core";
-import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, HasAllUsers, Id } from "@interfaces/apiInterfaces";
+import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import {
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Ids,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+import {
+  Creator,
+  Deleter,
+  HasMany,
+  HasOne,
+  Updater,
+} from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
+import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
 
@@ -55,6 +67,8 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public deleter?: User;
   @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+  @HasMany<AudioEvent, Tag>(TAG, "tagIds")
+  public tags?: Tag[];
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);
@@ -65,5 +79,9 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
 
   public get viewUrl(): string {
     throw new Error("AudioEvent viewUrl not implemented.");
+  }
+
+  public get tagIds(): Ids {
+    return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
   }
 }
