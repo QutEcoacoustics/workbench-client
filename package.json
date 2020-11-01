@@ -98,7 +98,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-opera-launcher": "^1.0.0",
     "karma-viewport": "^1.0.7",
-    "ng-mocks": "^10.4.0",
+    "ng-mocks": "^10.5.1",
     "protractor": "^7.0.0",
     "rxjs-tslint-rules": "^4.34.3",
     "ts-node": "^9.0.0",
