@@ -16,7 +16,10 @@ import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 @Component({
   selector: "baw-cms",
   template: `
-    <baw-loading *ngIf="loading" title="Loading"></baw-loading>
+    <ng-container *ngIf="loading">
+      <h4 class="text-center">Loading</h4>
+      <baw-loading></baw-loading>
+    </ng-container>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })

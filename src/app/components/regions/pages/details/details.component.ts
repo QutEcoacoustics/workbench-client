@@ -58,7 +58,7 @@ const regionKey = "region";
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <baw-loading [display]="loading"></baw-loading>
+      <baw-loading *ngIf="loading"></baw-loading>
 
       <p *ngIf="!hasSites() && !loading" class="lead">
         No additional data to display here, try adding points to the site

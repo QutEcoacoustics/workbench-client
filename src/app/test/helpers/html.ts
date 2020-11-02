@@ -186,7 +186,7 @@ export function assertSpinner(
   visible: boolean
 ) {
   const expectation = expect(
-    fixture.nativeElement.querySelector("#baw-spinner")
+    fixture.nativeElement.querySelector("baw-loading")
   );
 
   if (visible) {

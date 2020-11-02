@@ -22,9 +22,11 @@
   >
     <ngx-datatable-column name="Site" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <span
-          [innerHTML]="value.audioRecording?.site?.name | spinner: 'sm'"
-        ></span>
+        <span>{{ value.audioRecording?.site?.name }}</span>
+        <baw-loading
+          *ngIf="!value.audioRecording?.site?.name"
+          size="sm"
+        ></baw-loading>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Updated">
@@ -39,9 +41,7 @@
             {{ tag.text }}
           </span>
         </ng-container>
-        <ng-container *ngIf="value.tags | isUnresolved">
-          <span [innerHTML]="undefined | spinner"></span>
-        </ng-container>
+        <baw-loading *ngIf="value.tags | isUnresolved" size="sm"></baw-loading>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column

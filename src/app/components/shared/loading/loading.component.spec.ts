@@ -1,59 +1,26 @@
+import {
+  BootstrapColorTypes,
+  BootstrapScreenSizes,
+} from "@helpers/bootstrapTypes";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingComponent } from "./loading.component";
 
 describe("LoadingComponent", () => {
-  let spectator: Spectator<LoadingComponent>;
+  let spec: Spectator<LoadingComponent>;
   const createComponent = createComponentFactory({
     component: LoadingComponent,
     imports: [NgbModule],
   });
 
-  beforeEach(() => (spectator = createComponent()));
+  function getSpinner(klass: string) {
+    return spec.query(`#spinner.${klass}`);
+  }
 
-  describe("display", () => {
-    it("should exist when display true", () => {
-      spectator.setInput("display", true);
-      expect(spectator.element.childElementCount).toBe(1);
-    });
+  beforeEach(() => (spec = createComponent({ detectChanges: false })));
 
-    it("should display bootstrap spinner when display true", () => {
-      spectator.setInput("display", true);
-      expect(spectator.query(".spinner-border")).toBeTruthy();
-    });
-
-    it("should not exist when display true", () => {
-      spectator.setInput("display", false);
-      expect(spectator.element.childElementCount).toBe(0);
-    });
-
-    it("should update on display state change", () => {
-      spectator.setInput("display", true);
-      expect(spectator.query(".spinner-border")).toBeTruthy();
-      spectator.setInput("display", false);
-      expect(spectator.element.childElementCount).toBe(0);
-    });
-  });
-
-  describe("title", () => {
-    it("should handle missing title", () => {
-      spectator.setInput("display", true);
-
-      const title = spectator.query<HTMLHeadingElement>("h4");
-      expect(title).toBeFalsy();
-    });
-
-    it("should display title", () => {
-      spectator.setInput("display", true);
-      spectator.setInput("title", "custom title");
-
-      const title = spectator.query<HTMLHeadingElement>("h4").innerText.trim();
-      expect(title).toBe("custom title");
-    });
-  });
-
-  describe("type", () => {
-    const types = [
+  describe("colors", () => {
+    const colors: BootstrapColorTypes[] = [
       "primary",
       "secondary",
       "success",
@@ -64,13 +31,46 @@ describe("LoadingComponent", () => {
       "dark",
     ];
 
-    types.forEach((type) => {
-      it("should display loading spinner with class " + type, () => {
-        spectator.setInput("display", true);
-        spectator.setInput("type", type as any);
-
-        expect(spectator.query(".spinner-border")).toHaveClass("text-" + type);
+    colors.forEach((color) => {
+      it(`should display spinner with ${color} color`, () => {
+        spec.setInput("color", color);
+        spec.detectChanges();
+        expect(getSpinner(`text-${color}`)).toBeTruthy();
       });
+    });
+  });
+
+  describe("size", () => {
+    const sizes: BootstrapScreenSizes[] = ["xs", "sm", "md", "lg", "xl"];
+
+    sizes.forEach((size) => {
+      it(`should display border spinner with ${size} size`, () => {
+        spec.setInput("type", "border");
+        spec.setInput("size", size);
+        spec.detectChanges();
+        expect(getSpinner(`spinner-border-${size}`)).toBeTruthy();
+      });
+
+      it(`should display grower spinner with ${size} size`, () => {
+        spec.setInput("type", "grower");
+        spec.setInput("size", size);
+        spec.detectChanges();
+        expect(getSpinner(`spinner-grower-${size}`)).toBeTruthy();
+      });
+    });
+  });
+
+  describe("type", () => {
+    it("should display a border type spinner", () => {
+      spec.setInput("type", "border");
+      spec.detectChanges();
+      expect(getSpinner("spinner-border")).toBeTruthy();
+    });
+
+    it("should display a grower type spinner", () => {
+      spec.setInput("type", "grower");
+      spec.detectChanges();
+      expect(getSpinner("spinner-grower")).toBeTruthy();
     });
   });
 });

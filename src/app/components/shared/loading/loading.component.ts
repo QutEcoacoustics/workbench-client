@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
+import { Component, Input, OnInit } from "@angular/core";
+import {
+  BootstrapColorTypes,
+  BootstrapScreenSizes,
+} from "@helpers/bootstrapTypes";
 
 /**
  * Loading Animation
@@ -7,21 +10,27 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 @Component({
   selector: "baw-loading",
   template: `
-    <ng-container *ngIf="display">
-      <h4 *ngIf="title" class="text-center">{{ title }}</h4>
-      <div id="baw-spinner" class="d-flex justify-content-center m-3">
-        <div class="spinner-border" [ngClass]="'text-' + type" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <div id="spinner" role="status" [ngClass]="spinnerClass">
+        <span class="sr-only">Loading...</span>
       </div>
-    </ng-container>
+    </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoadingComponent {
-  @Input() public display = true;
-  @Input() public title: string;
-  @Input() public type: BootstrapColorTypes = "info";
+export class LoadingComponent implements OnInit {
+  @Input() public color: BootstrapColorTypes = "info";
+  @Input() public size: BootstrapScreenSizes = "md";
+  @Input() public type: "border" | "grower" = "border";
+
+  public spinnerClass: { [klass: string]: true };
 
   constructor() {}
+
+  public ngOnInit(): void {
+    this.spinnerClass = {
+      [`spinner-${this.type}`]: true,
+      [`spinner-${this.type}-${this.size}`]: true,
+      [`text-${this.color}`]: true,
+    };
+  }
 }
