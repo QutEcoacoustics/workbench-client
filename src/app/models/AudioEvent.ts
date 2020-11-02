@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import { libraryMenuItem, listenMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasAllUsers,
@@ -78,7 +79,11 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   }
 
   public get viewUrl(): string {
-    throw new Error("AudioEvent viewUrl not implemented.");
+    return libraryMenuItem.uri([]);
+  }
+
+  public get listenViewUrl(): string {
+    return listenMenuItem.uri([]);
   }
 
   public get tagIds(): Ids {

@@ -32,6 +32,13 @@ export const analysisJobMenuItem = MenuLink({
   tooltip: () => "View analysis job",
 });
 
+export const listenMenuItem = MenuLink({
+  icon: ["fas", "exclamation-triangle"],
+  label: "Listen (NOT IMPLEMENTED)",
+  tooltip: () => "Listen (NOT IMPLEMENTED)",
+  uri: () => "/listen",
+});
+
 function ids(params: Params): string {
   if (!params) {
     return "";
