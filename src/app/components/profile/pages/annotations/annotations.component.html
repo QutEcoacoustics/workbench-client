@@ -37,6 +37,9 @@
             {{ tag.text || "(loading)" }}
           </span>
         </ng-container>
+        <ng-container>
+          {{ value.tags | isUnresolved }}
+        </ng-container>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column

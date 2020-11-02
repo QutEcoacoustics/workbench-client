@@ -7,6 +7,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
+import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { ToastrModule } from "ngx-toastr";
@@ -60,6 +61,7 @@ export const sharedModules = [
   ToastrModule,
 
   DirectivesModule,
+  PipesModule,
   CustomInputsModule,
   CardsModule,
   HeaderModule,

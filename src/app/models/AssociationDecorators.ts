@@ -132,7 +132,7 @@ function createModelDecorator<
     parent: Parent,
     params: Params
   ) => Observable<Child | Child[]>,
-  unresolvedValue: UnresolvedModel | UnresolvedModel[],
+  unresolvedValue: UnresolvedModel | Readonly<UnresolvedModel[]>,
   failureValue: any
 ) {
   /**
@@ -144,7 +144,12 @@ function createModelDecorator<
   function updateBackingField(
     parent: Parent,
     backingFieldKey: string,
-    child: Child | Child[] | UnresolvedModel | UnresolvedModel[] | Subscription
+    child:
+      | Child
+      | Child[]
+      | UnresolvedModel
+      | Readonly<UnresolvedModel[]>
+      | Subscription
   ) {
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
@@ -156,7 +161,9 @@ function createModelDecorator<
    * Get the associated model for a target model
    * @param parent Parent model
    */
-  function getAssociatedModel(parent: Parent): AbstractModel | AbstractModel[] {
+  function getAssociatedModel(
+    parent: Parent
+  ): AbstractModel | AbstractModel[] | Readonly<AbstractModel[]> {
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey;
     if (parent.hasOwnProperty(backingFieldKey)) {
