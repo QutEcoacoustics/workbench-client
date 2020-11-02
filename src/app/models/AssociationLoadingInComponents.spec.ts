@@ -200,25 +200,6 @@ describe("Association Decorators Loading In Components", () => {
     assertOutput(associatedModels);
   });
 
-  it("should display hasMany multiple responses", async () => {
-    const associatedModels = [
-      [new AssociatedModel({ id: 1 })],
-      [new AssociatedModel({ id: 2 })],
-      [new AssociatedModel({ id: 3 })],
-    ];
-    const promise = interceptMultipleModels(undefined, ...associatedModels);
-    component.model = new MockModel({ id: 0 }, injector);
-    component.hasMany = true;
-    fixture.detectChanges(); // Load childModel
-    await promise;
-    fixture.detectChanges(); // Displays childModel
-    assertOutput([
-      new AssociatedModel({ id: 1 }),
-      new AssociatedModel({ id: 2 }),
-      new AssociatedModel({ id: 3 }),
-    ]);
-  });
-
   it("should display hasMany error", async () => {
     const promise = interceptMultipleModels(
       generateApiErrorDetails("Not Found")
