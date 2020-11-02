@@ -14,9 +14,9 @@ import { RenderFieldComponent } from "./render-field/render-field.component";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  @HasOne<MockModel>(MOCK, "id")
+  @HasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @HasMany<MockModel>(MOCK, "id")
+  @HasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
   constructor(opts: any, injector?: Injector) {

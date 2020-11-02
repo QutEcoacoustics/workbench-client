@@ -55,7 +55,7 @@ describe("Association Decorators", () => {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasMany<MockModel>(
+        @HasMany<MockModel, AbstractModel>(
           MOCK,
           "ids",
           key as any,
@@ -246,7 +246,11 @@ describe("Association Decorators", () => {
         public readonly id: Id;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasOne<MockModel>(MOCK, "id", ...(modelParameters as any))
+        @HasOne<MockModel, AbstractModel>(
+          MOCK,
+          "id",
+          ...(modelParameters as any)
+        )
         public readonly childModel: AbstractModel;
 
         public get viewUrl(): string {

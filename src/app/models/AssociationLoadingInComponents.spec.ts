@@ -14,9 +14,9 @@ import { HasMany, HasOne } from "./AssociationDecorators";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  @HasOne<MockModel>(MOCK, "id")
+  @HasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @HasMany<MockModel>(MOCK, "id")
+  @HasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
   constructor(opts: any, injector?: Injector) {
@@ -104,7 +104,7 @@ describe("Association Decorators Loading In Components", () => {
     return promise;
   }
 
-  function assertOutput(model?: AbstractModel | AbstractModel[]) {
+  function assertOutput(model?: AbstractModel | Readonly<AbstractModel[]>) {
     if (model instanceof Array) {
       const listItems = fixture.nativeElement.querySelectorAll("li");
 
