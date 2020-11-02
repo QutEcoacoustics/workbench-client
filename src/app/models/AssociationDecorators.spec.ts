@@ -55,11 +55,11 @@ describe("Association Decorators", () => {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasMany<MockModel>(
+        @HasMany<MockModel, AbstractModel>(
           MOCK,
           "ids",
           key as any,
-          ...(modelParameters as any)
+          modelParameters as any
         )
         public readonly childModels: AbstractModel[];
 
@@ -115,22 +115,6 @@ describe("Association Decorators", () => {
           await assertModel(promise, model, "childModels", []);
         });
 
-        it("should handle multiple responses", async () => {
-          const response = [
-            new ChildModel({ id: 1 }),
-            new ChildModel({ id: 2 }),
-          ];
-          const subject = new Subject<ChildModel[]>();
-          const promise = Promise.all([
-            nStepObservable(subject, () => [response[0]]),
-            nStepObservable(subject, () => [response[1]]),
-          ]);
-
-          spyOn(api, "filter").and.callFake(() => subject);
-          const model = createModel({ ids: idsType.multiple }, injector);
-          await assertModel(promise, model, "childModels", response);
-        });
-
         it("should handle single modelIdentifier", async () => {
           const childModels = [new ChildModel({ id: 1 })];
           const promise = interceptApiRequest(childModels);
@@ -160,7 +144,7 @@ describe("Association Decorators", () => {
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
-            [5]
+            5
           );
         });
 
@@ -177,7 +161,8 @@ describe("Association Decorators", () => {
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
-            [5, 10]
+            5,
+            10
           );
         });
 
@@ -195,10 +180,9 @@ describe("Association Decorators", () => {
           const model = createModel({ ids: idsType.multiple }, injector);
           // tslint:disable-next-line no-unused-expression
           model.childModels;
-          expect(api.filter).toHaveBeenCalledWith(
-            { filter: { id: { in: [1, 2] } } },
-            []
-          );
+          expect(api.filter).toHaveBeenCalledWith({
+            filter: { id: { in: [1, 2] } },
+          });
         });
 
         it("should handle custom primary key", () => {
@@ -210,10 +194,9 @@ describe("Association Decorators", () => {
           );
           // tslint:disable-next-line no-unused-expression
           model.childModels;
-          expect(api.filter).toHaveBeenCalledWith(
-            { filter: { customKey: { in: [1, 2] } } },
-            []
-          );
+          expect(api.filter).toHaveBeenCalledWith({
+            filter: { customKey: { in: [1, 2] } },
+          });
         });
 
         it("should load cached data", async () => {
@@ -240,13 +223,19 @@ describe("Association Decorators", () => {
     function createModel(
       data: object,
       modelInjector: Injector,
-      ...modelParameters: string[]
+      modelParameters?: string[],
+      failureValue?: any
     ) {
       class MockModel extends AbstractModel {
         public readonly id: Id;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasOne<MockModel>(MOCK, "id", ...(modelParameters as any))
+        @HasOne<MockModel, AbstractModel>(
+          MOCK,
+          "id",
+          modelParameters as any,
+          failureValue
+        )
         public readonly childModel: AbstractModel;
 
         public get viewUrl(): string {
@@ -297,36 +286,32 @@ describe("Association Decorators", () => {
 
     it("should handle single parameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
-      const model = createModel({ id: 1, param1: 5 }, injector, "param1");
+      const model = createModel({ id: 1, param1: 5 }, injector, ["param1"]);
       // tslint:disable-next-line no-unused-expression
       model.childModel;
-      expect(api.show).toHaveBeenCalledWith(1, [5]);
+      expect(api.show).toHaveBeenCalledWith(1, 5);
     });
 
     it("should handle multiple parameters", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
-      const model = createModel(
-        { id: 1, param1: 5, param2: 10 },
-        injector,
+      const model = createModel({ id: 1, param1: 5, param2: 10 }, injector, [
         "param1",
-        "param2"
-      );
+        "param2",
+      ]);
       // tslint:disable-next-line no-unused-expression
       model.childModel;
-      expect(api.show).toHaveBeenCalledWith(1, [5, 10]);
+      expect(api.show).toHaveBeenCalledWith(1, 5, 10);
     });
 
     it("should handle undefined modelParameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
-      const model = createModel(
-        { id: 1, param1: 5 },
-        injector,
+      const model = createModel({ id: 1, param1: 5 }, injector, [
         "param1",
-        "param2"
-      );
+        "param2",
+      ]);
       // tslint:disable-next-line no-unused-expression
       model.childModel;
-      expect(api.show).toHaveBeenCalledWith(1, [5, undefined]);
+      expect(api.show).toHaveBeenCalledWith(1, 5, undefined);
     });
 
     it("should handle error", async () => {
@@ -353,6 +338,15 @@ describe("Association Decorators", () => {
 
       await assertModel(promise, model, "childModel", childModel);
       expect(api.show).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return failure value", async () => {
+      const promise = interceptApiRequest(
+        undefined,
+        generateApiErrorDetails("Unauthorized")
+      );
+      const model = createModel({ id: 1 }, injector, [], true);
+      await assertModel(promise, model, "childModel", true as any);
     });
   });
 });

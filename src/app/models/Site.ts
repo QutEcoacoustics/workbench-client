@@ -98,7 +98,7 @@ export class Site extends AbstractModel implements ISite {
   public creator?: User;
   @Updater<Site>()
   public updater?: User;
-  @HasMany<Site>(PROJECT, "projectIds")
+  @HasMany<Site, Project>(PROJECT, "projectIds")
   public projects?: Project[];
 
   constructor(site: ISite, injector?: Injector) {

@@ -10,6 +10,7 @@ import {
 import {
   audioEventResolvers,
   AudioEventsService,
+  ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import {
   audioRecordingResolvers,
@@ -86,6 +87,11 @@ const serviceList = [
     serviceToken: Tokens.AUDIO_EVENT,
     service: AudioEventsService,
     resolvers: audioEventResolvers,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_AUDIO_EVENT,
+    service: ShallowAudioEventsService,
+    resolvers: undefined,
   },
   {
     serviceToken: Tokens.AUDIO_RECORDING,

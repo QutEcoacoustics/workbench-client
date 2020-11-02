@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
+import { analysisJobMenuItem } from "@helpers/page/externalMenus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -87,9 +88,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: User;
   @Deleter<AnalysisJob>()
   public deleter?: User;
-  @HasOne<AnalysisJob>(SCRIPT, "scriptId")
+  @HasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
   public script?: Script;
-  @HasOne<AnalysisJob>(SAVED_SEARCH, "savedSearchId")
+  @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {
@@ -97,8 +98,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
-    // TODO Change with correct path once built
-    return adminAnalysisJobMenuItem.route.format({ analysisJobId: this.id });
+    return analysisJobMenuItem.uri(undefined);
   }
 
   /**

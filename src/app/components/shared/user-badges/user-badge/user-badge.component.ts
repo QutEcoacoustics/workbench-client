@@ -20,7 +20,7 @@ import { List } from "immutable";
     <h4 id="label">{{ label }}</h4>
 
     <!-- No users -->
-    <baw-loading [display]="loading"></baw-loading>
+    <baw-loading *ngIf="loading"></baw-loading>
 
     <!-- No users -->
     <ng-container *ngIf="!loading && !userFound">

@@ -35,7 +35,7 @@ export let STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
  * Interface with BAW Server Rest API
  */
 @Injectable()
-export abstract class BawApiService<T extends AbstractModel> {
+export abstract class BawApiService<Model extends AbstractModel> {
   private platform: any;
 
   /*
@@ -57,13 +57,13 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Handle API collection response
    * @param response Api Response
    */
-  private handleCollectionResponse: (response: ApiResponse<T>) => T[];
+  private handleCollectionResponse: (response: ApiResponse<Model>) => Model[];
 
   /**
    * Handle API single model response
    * @param response Api Response
    */
-  private handleSingleResponse: (response: ApiResponse<T>) => T;
+  private handleSingleResponse: (response: ApiResponse<Model>) => Model;
 
   /**
    * Handle API empty response
@@ -76,13 +76,13 @@ export abstract class BawApiService<T extends AbstractModel> {
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: object, injector?: Injector) => T,
+    classBuilder: new (_: object, injector?: Injector) => Model,
     protected injector: Injector
   ) {
     this.platform = injector.get(PLATFORM_ID);
 
     // Create pure functions to prevent rebinding of 'this'
-    this.handleCollectionResponse = (response: ApiResponse<T>): T[] => {
+    this.handleCollectionResponse = (response: ApiResponse<Model>): Model[] => {
       if (response.data instanceof Array) {
         return response.data.map((data) => {
           const model = new classBuilder(data, this.injector);
@@ -96,7 +96,7 @@ export abstract class BawApiService<T extends AbstractModel> {
       }
     };
 
-    this.handleSingleResponse = (response: ApiResponse<T>) => {
+    this.handleSingleResponse = (response: ApiResponse<Model>) => {
       if (response.data instanceof Array) {
         throw new Error(
           "Received an array of API results when only a single result was expected"
@@ -162,7 +162,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from list route
    * @param path API path
    */
-  protected apiList(path: string): Observable<T[]> {
+  protected apiList(path: string): Observable<Model[]> {
     return this.httpGet(path).pipe(map(this.handleCollectionResponse));
   }
 
@@ -171,7 +171,10 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param filters API filters
    */
-  protected apiFilter(path: string, filters: Filters<T>): Observable<T[]> {
+  protected apiFilter(
+    path: string,
+    filters: Filters<Model>
+  ): Observable<Model[]> {
     return this.httpPost(path, filters).pipe(
       map(this.handleCollectionResponse)
     );
@@ -181,7 +184,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from show route
    * @param path API path
    */
-  protected apiShow(path: string): Observable<T> {
+  protected apiShow(path: string): Observable<Model> {
     return this.httpGet(path).pipe(map(this.handleSingleResponse));
   }
 
@@ -190,7 +193,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiCreate(path: string, body: AbstractModel): Observable<T> {
+  protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
     return this.httpPost(path, body.toJSON()).pipe(
       map(this.handleSingleResponse)
     );
@@ -201,7 +204,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected apiUpdate(path: string, body: AbstractModel): Observable<T> {
+  protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
     return this.httpPatch(path, body.toJSON()).pipe(
       map(this.handleSingleResponse)
     );
@@ -211,7 +214,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Get response from destroy route
    * @param path API path
    */
-  protected apiDestroy(path: string): Observable<T | void> {
+  protected apiDestroy(path: string): Observable<Model | void> {
     return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
   }
 
@@ -220,8 +223,8 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    */
-  protected httpGet(path: string): Observable<ApiResponse<T | T[]>> {
-    return this.http.get<ApiResponse<T>>(this.getPath(path));
+  protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
+    return this.http.get<ApiResponse<Model>>(this.getPath(path));
   }
 
   /**
@@ -229,7 +232,7 @@ export abstract class BawApiService<T extends AbstractModel> {
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
    * @param path API path
    */
-  protected httpDelete(path: string): Observable<ApiResponse<T | void>> {
+  protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
     return this.http.delete<ApiResponse<null>>(this.getPath(path));
   }
 
@@ -239,8 +242,11 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPost(path: string, body?: object): Observable<ApiResponse<T>> {
-    return this.http.post<ApiResponse<T>>(this.getPath(path), body);
+  protected httpPost(
+    path: string,
+    body?: object
+  ): Observable<ApiResponse<Model>> {
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
   }
 
   /**
@@ -249,8 +255,11 @@ export abstract class BawApiService<T extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPatch(path: string, body?: object): Observable<ApiResponse<T>> {
-    return this.http.patch<ApiResponse<T>>(this.getPath(path), body);
+  protected httpPatch(
+    path: string,
+    body?: object
+  ): Observable<ApiResponse<Model>> {
+    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
   }
 
   /**

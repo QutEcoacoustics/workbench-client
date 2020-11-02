@@ -76,9 +76,9 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public updater?: User;
   @Deleter<AudioRecording>()
   public deleter?: User;
-  @HasOne<AudioRecording>(ACCOUNT, "uploaderId")
+  @HasOne<AudioRecording, User>(ACCOUNT, "uploaderId")
   public uploader?: User;
-  @HasOne<AudioRecording>(SHALLOW_SITE, "siteId")
+  @HasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
   constructor(audioRecording: IAudioRecording, injector?: Injector) {

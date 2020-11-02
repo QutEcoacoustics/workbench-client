@@ -29,7 +29,7 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <baw-loading [display]="loading"></baw-loading>
+      <baw-loading *ngIf="loading"></baw-loading>
 
       <ng-container *ngIf="!loading">
         <!-- Projects Exist -->

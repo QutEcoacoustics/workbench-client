@@ -1,6 +1,11 @@
 <ng-container *ngIf="rows && !error">
   <h1>Tag Groups</h1>
 
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> tag groups.
+  </p>
+
   <baw-debounce-input
     label="Filter"
     placeholder="Filter Tag Groups"

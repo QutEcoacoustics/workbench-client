@@ -41,9 +41,8 @@ export class BookmarksService extends StandardApi<Bookmark> {
     filters: Filters<IBookmark>,
     user?: IdOr<User>
   ): Observable<Bookmark[]> {
-    return this.apiFilter(
-      endpoint(Empty, Filter),
-      user ? filterByForeignKey<Bookmark>(filters, "creatorId", user) : filters
+    return this.filter(
+      user ? filterByForeignKey<IBookmark>(filters, "creatorId", user) : filters
     );
   }
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {

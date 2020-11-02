@@ -10,7 +10,11 @@
 
   <div class="clearfix">
     <form [formGroup]="form" (ngSubmit)="submit(model)">
-      <baw-loading title="Loading" [display]="!fields"></baw-loading>
+      <!-- Spinner -->
+      <ng-container *ngIf="!fields">
+        <h4 class="text-center">Loading</h4>
+        <baw-loading></baw-loading>
+      </ng-container>
 
       <!-- Form -->
       <formly-form

@@ -78,9 +78,9 @@ export class Region extends AbstractModel implements IRegion {
   public readonly notes?: Notes;
 
   // Associations
-  @HasOne<Region>(PROJECT, "projectId")
+  @HasOne<Region, Project>(PROJECT, "projectId")
   public project?: Project;
-  @HasMany<Region>(SHALLOW_SITE, "siteIds")
+  @HasMany<Region, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
   @Creator<Region>()
   public creator?: User;

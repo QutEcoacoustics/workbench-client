@@ -14,9 +14,9 @@ import { HasMany, HasOne } from "./AssociationDecorators";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  @HasOne<MockModel>(MOCK, "id")
+  @HasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @HasMany<MockModel>(MOCK, "id")
+  @HasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
   constructor(opts: any, injector?: Injector) {
@@ -104,7 +104,7 @@ describe("Association Decorators Loading In Components", () => {
     return promise;
   }
 
-  function assertOutput(model?: AbstractModel | AbstractModel[]) {
+  function assertOutput(model?: AbstractModel | Readonly<AbstractModel[]>) {
     if (model instanceof Array) {
       const listItems = fixture.nativeElement.querySelectorAll("li");
 
@@ -198,25 +198,6 @@ describe("Association Decorators Loading In Components", () => {
     await promise;
     fixture.detectChanges(); // Displays childModel
     assertOutput(associatedModels);
-  });
-
-  it("should display hasMany multiple responses", async () => {
-    const associatedModels = [
-      [new AssociatedModel({ id: 1 })],
-      [new AssociatedModel({ id: 2 })],
-      [new AssociatedModel({ id: 3 })],
-    ];
-    const promise = interceptMultipleModels(undefined, ...associatedModels);
-    component.model = new MockModel({ id: 0 }, injector);
-    component.hasMany = true;
-    fixture.detectChanges(); // Load childModel
-    await promise;
-    fixture.detectChanges(); // Displays childModel
-    assertOutput([
-      new AssociatedModel({ id: 1 }),
-      new AssociatedModel({ id: 2 }),
-      new AssociatedModel({ id: 3 }),
-    ]);
   });
 
   it("should display hasMany error", async () => {

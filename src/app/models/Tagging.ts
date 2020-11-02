@@ -38,9 +38,8 @@ export class Tagging extends AbstractModel implements ITagging {
   public creator?: User;
   @Updater<Tagging>()
   public updater?: User;
-  @HasOne<Tagging>(AUDIO_EVENT, "audioEventId")
-  public audioEvent?: AudioEvent;
-  @HasOne<Tagging>(TAG, "tagId")
+  // TODO Add association with AudioEvent
+  @HasOne<Tagging, Tag>(TAG, "tagId")
   public tag?: Tag;
 
   constructor(tagging: ITagging, injector?: Injector) {

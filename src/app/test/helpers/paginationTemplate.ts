@@ -47,23 +47,16 @@ export function assertPaginationTemplate<
         return spectator.query(LoadingComponent);
       }
 
-      it("should have loading spinner", () => {
-        const spinner = getSpinner();
-        expect(spinner).toBeTruthy();
-      });
-
       it("should display when page is loading", () => {
         spectator.component.loading = true;
         spectator.detectChanges();
-        const spinner = getSpinner();
-        expect(spinner.display).toBeTruthy();
+        expect(getSpinner()).toBeTruthy();
       });
 
       it("should not display when page has loaded", () => {
         spectator.component.loading = false;
         spectator.detectChanges();
-        const spinner = getSpinner();
-        expect(spinner.display).toBeFalsy();
+        expect(getSpinner()).toBeFalsy();
       });
     });
 

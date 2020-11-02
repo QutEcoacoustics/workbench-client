@@ -7,10 +7,10 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ToastrService } from "ngx-toastr";
-import { BootstrapColorTypes } from "src/app/app.helper";
 
 /**
  * Formly Form Wrapper

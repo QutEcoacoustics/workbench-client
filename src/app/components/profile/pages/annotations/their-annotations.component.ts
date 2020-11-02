@@ -1,20 +1,17 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
-import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
 import {
   theirAnnotationsMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@components/profile/profile.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { AudioEvent } from "@models/AudioEvent";
-import { Site } from "@models/Site";
-import { Tag } from "@models/Tag";
+import { IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
+import { MyAnnotationsComponent } from "./my-annotations.component";
 
 const accountKey = "user";
 
@@ -22,23 +19,13 @@ const accountKey = "user";
   selector: "baw-their-annotations",
   templateUrl: "./annotations.component.html",
 })
-class TheirAnnotationsComponent extends PagedTableTemplate<
-  TableRow,
-  AudioEvent
-> {
-  constructor(api: AudioEventsService, route: ActivatedRoute) {
-    super(
-      api,
-      (audioEvents) => {
-        // TODO Implement
-        return [];
-      },
-      route
-    );
-  }
-
+class TheirAnnotationsComponent extends MyAnnotationsComponent {
   public get account(): User {
     return this.models[accountKey] as User;
+  }
+
+  protected apiAction(filters: Filters<IAudioEvent>) {
+    return this.api.filterByCreator(filters, this.account.id);
   }
 }
 
@@ -51,9 +38,3 @@ TheirAnnotationsComponent.LinkComponentToPageInfo({
 }).AndMenuRoute(theirAnnotationsMenuItem);
 
 export { TheirAnnotationsComponent };
-
-interface TableRow {
-  site: Site;
-  uploaded: string;
-  tags: Tag[];
-}

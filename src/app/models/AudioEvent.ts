@@ -1,10 +1,24 @@
 import { Injector } from "@angular/core";
-import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, HasAllUsers, Id } from "@interfaces/apiInterfaces";
+import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import { libraryMenuItem, listenMenuItem } from "@helpers/page/externalMenus";
+import {
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Ids,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+import {
+  Creator,
+  Deleter,
+  HasMany,
+  HasOne,
+  Updater,
+} from "./AssociationDecorators";
 import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
+import type { Tag } from "./Tag";
+import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
 
 export interface IAudioEvent extends HasAllUsers {
@@ -15,6 +29,7 @@ export interface IAudioEvent extends HasAllUsers {
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
   isReference?: boolean;
+  taggings?: ITagging[] | Tagging[];
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
@@ -33,6 +48,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public readonly highFrequencyHertz?: number;
   @BawPersistAttr
   public readonly isReference?: boolean;
+  public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
@@ -50,14 +66,27 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public updater?: User;
   @Deleter<AudioEvent>()
   public deleter?: User;
-  @HasOne<AudioEvent>(AUDIO_RECORDING, "audioRecordingId")
+  @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+  @HasMany<AudioEvent, Tag>(TAG, "tagIds")
+  public tags?: Tag[];
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);
+    this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
+      (tagging) => new Tagging(tagging, injector)
+    );
   }
 
   public get viewUrl(): string {
-    throw new Error("AudioEvent viewUrl not implemented.");
+    return libraryMenuItem.uri([]);
+  }
+
+  public get listenViewUrl(): string {
+    return listenMenuItem.uri([]);
+  }
+
+  public get tagIds(): Ids {
+    return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
   }
 }

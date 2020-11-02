@@ -1,16 +1,6 @@
 import { Params } from "@angular/router";
 import { MenuLink } from "@interfaces/menusInterfaces";
-import { isLoggedInPredicate } from "src/app/app.menus";
 import { stringTemplate } from "../stringTemplate/stringTemplate";
-
-export const annotationsMenuItem = MenuLink({
-  icon: ["fas", "border-all"],
-  label: "Annotations",
-  predicate: isLoggedInPredicate,
-  tooltip: () => "View my recent annotations",
-  order: 3,
-  uri: () => "/annotations",
-});
 
 export const audioAnalysisMenuItem = MenuLink({
   icon: ["fas", "server"],
@@ -33,6 +23,20 @@ export const exploreAudioMenuItem = MenuLink({
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio",
+});
+
+export const analysisJobMenuItem = MenuLink({
+  icon: ["fas", "exclamation-triangle"],
+  label: "Analysis Job Details",
+  uri: () => "/fix_me",
+  tooltip: () => "View analysis job",
+});
+
+export const listenMenuItem = MenuLink({
+  icon: ["fas", "exclamation-triangle"],
+  label: "Listen (NOT IMPLEMENTED)",
+  tooltip: () => "Listen (NOT IMPLEMENTED)",
+  uri: () => "/listen",
 });
 
 function ids(params: Params): string {

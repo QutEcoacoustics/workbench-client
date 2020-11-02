@@ -58,7 +58,10 @@ export type DateTimeTimezone = DateTime;
  * TODO Replace with luxon official solution
  * @param dur Duration
  */
-export function toRelative(dur: Duration, opts?: any): string {
+export function toRelative(
+  dur: Duration,
+  opts?: HumanizeDurationOptions
+): string {
   return humanizeDuration(dur.as("milliseconds"), opts);
 }
 
@@ -154,3 +157,62 @@ export interface HasDescription {
 export type HasAllUsers = HasCreator & HasUpdater & HasDeleter;
 export type HasCreatorAndUpdater = HasCreator & HasUpdater;
 export type HasCreatorAndDeleter = HasCreator & HasDeleter;
+
+/**
+ * Typescript definition for humanize-duration options. Full definition
+ * and examples can be found here: https://github.com/EvanHahn/HumanizeDuration.js
+ */
+export interface HumanizeDurationOptions {
+  /**
+   * Language for unit display (accepts an ISO 639-1 code from one
+   * of the supported languages).
+   */
+  language?: string;
+  /**
+   * Fallback languages if the provided language cannot be found
+   * (accepts an ISO 639-1 code from one of the supported languages).
+   * It works from left to right.
+   */
+  fallbacks?: string[];
+  /** String to display between the previous unit and next value */
+  delimiter?: string;
+  /** String to display between each value and unit */
+  spacer?: string;
+  /**
+   * Number representing the maximum number of units to display for the
+   * duration
+   */
+  largest?: number;
+  /**
+   * Array of strings to define which units are used to display the
+   * duration (if needed). Can be one, or a combination of any of the
+   * following: `['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms']`
+   */
+  units?: ("y" | "mo" | "w" | "d" | "h" | "m" | "s" | "ms")[];
+  /**
+   * Boolean value. Use `true` to round the smallest unit displayed
+   * (can be combined with `largest` and `units`).
+   */
+  round?: boolean;
+  /** String to substitute for the decimal point in a decimal fraction. */
+  decimal?: string;
+  /**
+   * String to include before the final unit. You can also set
+   * `serialComma` to `false` to eliminate the final comma.
+   */
+  conjunction?: string;
+  serialComma?: boolean;
+  /** Number that defines a maximal decimal points for float values. */
+  maxDecimalPoint?: number;
+  /** Customize the value used to calculate each unit of time. */
+  unitMeasures?: {
+    y?: number;
+    mo?: number;
+    w?: number;
+    d?: number;
+    h?: number;
+    m?: number;
+    s?: number;
+    ms?: number;
+  };
+}

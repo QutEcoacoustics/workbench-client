@@ -17,6 +17,7 @@
       "@shared/*": ["./src/app/components/shared/*"],
       "@components/*": ["./src/app/components/*"],
       "@directives/*": ["./src/app/directives/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
       "@guards/*": ["./src/app/guards/*"],
       "@helpers/*": ["./src/app/helpers/*"],
       "@interfaces/*": ["./src/app/interfaces/*"],

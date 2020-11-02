@@ -1,12 +1,19 @@
 <ng-container *ngIf="rows && !error">
   <h1>Orphan Sites</h1>
+
   <p>
     There are {{ totalModels }} orphan sites. A site becomes orphaned when it
     can no longer be accessed from any project.
   </p>
+
   <p>
     To assign orphan sites to a project, go to the project's detail page and
     click on '{{ assignSitesLabel }}' in the list of actions on the right.
+  </p>
+
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> orphaned sites.
   </p>
 
   <baw-debounce-input

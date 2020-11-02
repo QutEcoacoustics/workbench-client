@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
@@ -8,10 +9,7 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { AudioEvent } from "@models/AudioEvent";
-import { Site } from "@models/Site";
-import { Tag } from "@models/Tag";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
@@ -23,12 +21,20 @@ const userKey = "user";
   templateUrl: "./annotations.component.html",
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
-  constructor(api: AudioEventsService, route: ActivatedRoute) {
+  public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
+  public sortKeys = { updated: "updatedAt" };
+  protected api: ShallowAudioEventsService;
+
+  constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
     super(
       api,
       (audioEvents) => {
-        // TODO Implement
-        return [];
+        return audioEvents.map((audioEvent) => ({
+          site: audioEvent,
+          updated: audioEvent.updatedAt.toRelative(),
+          tags: audioEvent,
+          model: audioEvent,
+        }));
       },
       route
     );
@@ -37,20 +43,23 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public get account(): User {
     return this.models[userKey] as User;
   }
+
+  protected apiAction(filters: Filters<IAudioEvent>) {
+    return this.api.filterByCreator(filters, this.api.getLocalUser().id);
+  }
 }
 
 MyAnnotationsComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-  },
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
 }).AndMenuRoute(myAnnotationsMenuItem);
 
 export { MyAnnotationsComponent };
 
 interface TableRow {
-  site: Site;
-  uploaded: string;
-  tags: Tag[];
+  site: AudioEvent;
+  updated: string;
+  tags: AudioEvent;
+  model: AudioEvent;
 }
