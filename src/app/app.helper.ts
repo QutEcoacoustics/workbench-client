@@ -39,13 +39,3 @@ export function fontAwesomeLibraries(library: FaIconLibrary) {
  * Default number of milliseconds to wait when de-bouncing an input
  */
 export const defaultDebounceTime = 500;
-
-export type BootstrapColorTypes =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info"
-  | "light"
-  | "dark";

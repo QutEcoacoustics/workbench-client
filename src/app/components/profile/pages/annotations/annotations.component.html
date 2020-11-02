@@ -22,7 +22,9 @@
   >
     <ngx-datatable-column name="Site" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        {{ value.audioRecording?.site?.name || "(loading)" }}
+        <span
+          [innerHTML]="value.audioRecording?.site?.name | spinner: 'sm'"
+        ></span>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Updated">
@@ -34,11 +36,11 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <ng-container *ngFor="let tag of value.tags">
           <span class="badge badge-primary mr-1">
-            {{ tag.text || "(loading)" }}
+            {{ tag.text }}
           </span>
         </ng-container>
-        <ng-container>
-          {{ value.tags | isUnresolved }}
+        <ng-container *ngIf="value.tags | isUnresolved">
+          <span [innerHTML]="undefined | spinner"></span>
         </ng-container>
       </ng-template>
     </ngx-datatable-column>

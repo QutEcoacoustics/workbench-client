@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { BootstrapColorTypes } from "src/app/app.helper";
+import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 
 /**
  * Loading Animation
