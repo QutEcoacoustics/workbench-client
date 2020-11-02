@@ -1,5 +1,6 @@
 import { Id } from "@interfaces/apiInterfaces";
 import { IAudioEvent } from "@models/AudioEvent";
+import { generateTagging } from "@test/fakes/Tagging";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
@@ -15,6 +16,7 @@ export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
     endTimeSeconds,
     lowFrequencyHertz,
     highFrequencyHertz,
+    taggings: modelData.randomArray(0, 5, (i) => generateTagging(i)),
     isReference: modelData.boolean(),
     ...modelData.model.generateAllUsers(),
   };

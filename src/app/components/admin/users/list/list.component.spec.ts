@@ -61,7 +61,18 @@ describe("AdminUserListComponent", () => {
     fixture.detectChanges();
 
     const description = fixture.nativeElement.querySelector("p");
-    expect(description.innerText.trim()).toBe("Displaying all 100 user/s");
+    expect(description.innerText.trim()).toBe("Displaying 1 of all 100 users.");
+  });
+
+  it("should display number of results in page in description using paging data", () => {
+    datatableApiResponse<User>(api, [defaultUser, defaultUser, defaultUser], {
+      total: 100,
+      maxPage: 4,
+    });
+    fixture.detectChanges();
+
+    const description = fixture.nativeElement.querySelector("p");
+    expect(description.innerText.trim()).toBe("Displaying 3 of all 100 users.");
   });
 
   assertPagination<User, AccountsService>();

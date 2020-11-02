@@ -241,42 +241,6 @@ describe("DetailViewComponent", () => {
         expect(values[0].innerText.trim()).toBe("MockModel: 1");
         expect(values[1].innerText.trim()).toBe("MockModel: 2");
       });
-
-      it("should handle hasMany associated model second update", async () => {
-        const subject = new Subject<AssociatedModel[]>();
-        const promise = Promise.all([
-          nStepObservable(
-            subject,
-            () => [
-              new AssociatedModel({ id: 1 }),
-              new AssociatedModel({ id: 2 }),
-            ],
-            false,
-            0
-          ),
-          nStepObservable(
-            subject,
-            () => [
-              new AssociatedModel({ id: 3 }),
-              new AssociatedModel({ id: 4 }),
-            ],
-            false,
-            1
-          ),
-        ]);
-        spyOn(api, "filter").and.callFake(() => subject);
-
-        setupComponent("childModels");
-        await promise;
-        fixture.detectChanges();
-
-        const values = getValues();
-        expect(values.length).toBe(4);
-        expect(values[0].innerText.trim()).toBe("MockModel: 1");
-        expect(values[1].innerText.trim()).toBe("MockModel: 2");
-        expect(values[2].innerText.trim()).toBe("MockModel: 3");
-        expect(values[3].innerText.trim()).toBe("MockModel: 4");
-      });
     });
   });
 

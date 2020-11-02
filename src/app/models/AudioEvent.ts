@@ -72,7 +72,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);
-    this.taggings = (audioEvent.taggings as ITagging[]).map(
+    this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
       (tagging) => new Tagging(tagging, injector)
     );
   }

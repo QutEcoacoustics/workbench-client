@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioEvent } from "@models/AudioEvent";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -45,23 +46,23 @@ describe("AudioEventsService", function () {
   validateApiShow<AudioEvent, AudioEventsService>(
     "/audio_recordings/5/audio_events/10",
     10,
-    new AudioEvent({ id: 10 }),
+    new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiCreate<AudioEvent, AudioEventsService>(
     "/audio_recordings/5/audio_events/",
-    new AudioEvent({ id: 10 }),
+    new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiUpdate<AudioEvent, AudioEventsService>(
     "/audio_recordings/5/audio_events/10",
-    new AudioEvent({ id: 10 }),
+    new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiDestroy<AudioEvent, AudioEventsService>(
     "/audio_recordings/5/audio_events/10",
     10,
-    new AudioEvent({ id: 10 }),
+    new AudioEvent(generateAudioEvent(10)),
     5
   );
 });
