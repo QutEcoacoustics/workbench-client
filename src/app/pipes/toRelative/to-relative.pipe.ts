@@ -13,6 +13,10 @@ export class ToRelativePipe implements PipeTransform {
     value: Duration | DateTime,
     options: HumanizeDurationOptions | ToRelativeOptions
   ): string {
+    if (!value) {
+      return "(no value)";
+    }
+
     return value instanceof Duration
       ? toRelative(value, options as HumanizeDurationOptions)
       : value.toRelative(options as ToRelativeOptions);
