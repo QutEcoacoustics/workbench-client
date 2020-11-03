@@ -1,11 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { homeCategory } from "@components/home/home.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { pageNotFoundMenuItem } from "./error.menus";
 
 @Component({
   selector: "baw-page-not-found",
   template: `<div>Not Found! TODO: make me better!</div>`,
 })
-export class PageNotFoundComponent implements OnInit {
-  constructor() {}
+class PageNotFoundComponent extends PageComponent {}
 
-  public ngOnInit() {}
-}
+PageNotFoundComponent.LinkComponentToPageInfo({
+  category: homeCategory,
+}).AndMenuRoute(pageNotFoundMenuItem);
+export { PageNotFoundComponent };

@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink } from "@interfaces/menusInterfaces";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
@@ -14,119 +15,168 @@ import { MenuExternalLinkComponent } from "./external-link.component";
 
 describe("MenuExternalLinkComponent", () => {
   let env: AppConfigService;
+  let defaultLink: MenuLink;
+  let spec: SpectatorHost<MenuExternalLinkComponent>;
   let component: MenuExternalLinkComponent;
-  let fixture: ComponentFixture<MenuExternalLinkComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedModule, MockAppConfigModule],
-      declarations: [MenuExternalLinkComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MenuExternalLinkComponent);
-    env = TestBed.inject(AppConfigService);
-    component = fixture.componentInstance;
+  const createHost = createHostFactory({
+    component: MenuExternalLinkComponent,
+    imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
   });
 
-  function createLink() {
-    component.id = "id";
-    component.link = MenuLink({
+  function retrieveLink() {
+    return spec.query<HTMLAnchorElement>("a");
+  }
+
+  function setup(inputs: Partial<MenuExternalLinkComponent> = {}) {
+    spec = createHost(
+      `
+      <baw-menu-external-link
+        [id]="id"
+        [link]="link"
+        [placement]="placement"
+        [tooltip]="tooltip"
+        [uri]="uri"
+      ></baw-menu-external-link>
+    `,
+      {
+        detectChanges: false,
+        hostProps: {
+          id: "id",
+          link: defaultLink,
+          placement: "left",
+          tooltip: "tooltip",
+          uri: "http://link/",
+          ...inputs,
+        },
+      }
+    );
+    component = spec.component;
+    env = spec.inject(AppConfigService);
+  }
+
+  beforeEach(() => {
+    defaultLink = MenuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: () => "http://link/",
       tooltip: () => "tooltip",
     });
-    component.tooltip = "tooltip";
-    component.uri = "http://link/";
-    component.placement = "left";
-  }
-
-  function retrieveLink() {
-    return fixture.nativeElement.querySelector("a");
-  }
+  });
 
   it("should create", () => {
-    createLink();
-    fixture.detectChanges();
+    setup();
+    spec.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should have icon", () => {
-    createLink();
-    component.link.icon = ["fas", "exclamation-triangle"];
-    fixture.detectChanges();
-    assertIcon(fixture.nativeElement, "fas,exclamation-triangle");
+    setup({
+      link: MenuLink({
+        ...defaultLink,
+        icon: ["fas", "exclamation-triangle"],
+      }),
+    });
+    spec.detectChanges();
+    assertIcon(spec.element, "fas,exclamation-triangle");
   });
 
   it("should have label", () => {
-    createLink();
-    component.link.label = "custom label";
-    fixture.detectChanges();
+    setup({ link: MenuLink({ ...defaultLink, label: "custom label" }) });
+    spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = fixture.nativeElement.querySelector("#label");
+    const label = spec.query<HTMLElement>("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
 
-  it("should have tooltip", () => {
-    createLink();
-    component.link.tooltip = () => "custom tooltip";
-    component.tooltip = "custom tooltip";
-    fixture.detectChanges();
+  describe("tooltip", () => {
+    it("should have tooltip", () => {
+      setup({
+        tooltip: "custom tooltip",
+        link: MenuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
+      });
+      spec.detectChanges();
+      assertTooltip(retrieveLink(), "custom tooltip");
+    });
 
-    assertTooltip(retrieveLink(), "custom tooltip");
+    it("should not use link tooltip", () => {
+      setup({
+        tooltip: "custom tooltip",
+        link: MenuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+      });
+      spec.detectChanges();
+      assertTooltip(retrieveLink(), "custom tooltip");
+    });
+
+    it("should handle left placement of tooltip", () => {
+      setup({ placement: "left" });
+      spec.detectChanges();
+      assertAttribute(retrieveLink(), "placement", "left");
+    });
+
+    it("should handle right placement of tooltip", () => {
+      setup({ placement: "right" });
+      spec.detectChanges();
+      assertAttribute(retrieveLink(), "placement", "right");
+    });
   });
 
-  it("should not use link tooltip", () => {
-    createLink();
-    component.link.tooltip = () => "wrong tooltip";
-    component.tooltip = "custom tooltip";
-    fixture.detectChanges();
+  describe("link", () => {
+    it("should not use link uri", () => {
+      setup({
+        uri: "http://brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "http://wronglink/" }),
+      });
+      console.log(spec.component);
+      spec.detectChanges();
+      assertHref(retrieveLink(), "http://brokenlink/");
+    });
 
-    assertTooltip(retrieveLink(), "custom tooltip");
+    it("should link to external website", () => {
+      setup({
+        uri: "http://brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "http://brokenlink/" }),
+      });
+      spec.detectChanges();
+      assertHref(retrieveLink(), "http://brokenlink/");
+    });
+
+    it("should convert links to AngularJS server", () => {
+      setup({
+        uri: "/brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
+      });
+      spec.detectChanges();
+      assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
+    });
   });
 
-  it("should handle left placement of tooltip", () => {
-    createLink();
-    component.placement = "left";
-    fixture.detectChanges();
+  describe("disabled", () => {
+    function assertDisabled(isDisabled: boolean) {
+      if (isDisabled) {
+        expect(spec.query("a.disabled")).toBeTruthy();
+      } else {
+        expect(spec.query("a.disabled")).toBeFalsy();
+      }
+    }
 
-    assertAttribute(retrieveLink(), "placement", "left");
-  });
+    it("should default as enabled if disabled is undefined", () => {
+      setup({ link: MenuLink({ ...defaultLink, disabled: undefined }) });
+      spec.detectChanges();
+      assertDisabled(false);
+    });
 
-  it("should handle right placement of tooltip", () => {
-    createLink();
-    component.placement = "right";
-    fixture.detectChanges();
+    it("should be enabled if disabled is false", () => {
+      setup({ link: MenuLink({ ...defaultLink, disabled: false }) });
+      spec.detectChanges();
+      assertDisabled(false);
+    });
 
-    assertAttribute(retrieveLink(), "placement", "right");
-  });
-
-  it("should not use link uri", () => {
-    createLink();
-    component.link.uri = () => "http://wronglink/";
-    component.uri = "http://brokenlink/";
-    fixture.detectChanges();
-
-    assertHref(retrieveLink(), "http://brokenlink/");
-  });
-
-  it("should link to external website", () => {
-    createLink();
-    component.link.uri = () => "http://brokenlink/";
-    component.uri = "http://brokenlink/";
-    fixture.detectChanges();
-
-    assertHref(retrieveLink(), "http://brokenlink/");
-  });
-
-  it("should convert links to AngularJS server", () => {
-    createLink();
-    component.link.uri = () => "/brokenlink/";
-    component.uri = "/brokenlink/";
-    fixture.detectChanges();
-
-    assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
+    it("should be disabled if disabled is true", () => {
+      setup({ link: MenuLink({ ...defaultLink, disabled: true }) });
+      spec.detectChanges();
+      assertDisabled(true);
+    });
   });
 });

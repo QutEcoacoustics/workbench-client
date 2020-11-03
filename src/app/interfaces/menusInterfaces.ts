@@ -93,6 +93,11 @@ export interface MenuItem extends LabelAndIcon {
    * It allows the link to skip its predicate temporarily.
    */
   active?: boolean;
+  /**
+   * Tracks whether this link should be disabled, this will prevent the link from being
+   * clicked on, and highlight it as disabled.
+   */
+  disabled?: boolean;
 }
 
 /**

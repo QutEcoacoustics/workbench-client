@@ -8,9 +8,10 @@ import { ResolverList } from "@interfaces/menusInterfaces";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
-  template: ` <baw-error-handler [error]="error"></baw-error-handler> `,
+  template: `<baw-error-handler [error]="error"></baw-error-handler>`,
 })
-export class ResolverHandlerComponent extends WithUnsubscribe()
+export class ResolverHandlerComponent
+  extends WithUnsubscribe()
   implements OnInit {
   public error: ApiErrorDetails;
 
@@ -46,7 +47,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
         continue;
       }
 
-      this.error = data[key].error as ApiErrorDetails;
+      this.error = data[key].error;
 
       // If unauthorized response, no point downgrading to "Not Found"
       if (this.error.status === apiReturnCodes.unauthorized) {
