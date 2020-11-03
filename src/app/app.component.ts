@@ -92,8 +92,10 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
 
     // Check if component is a page info component and is not set to fullscreen
     const component: PageComponent = displayComponent.component as any;
-    if (isInstantiated(component.pageInfo?.fullscreen)) {
-      this.fullscreen = component.pageInfo?.fullscreen;
+    if (!component.pageInfo) {
+      this.fullscreen = true;
+    } else {
+      this.fullscreen = !!component.pageInfo.fullscreen;
     }
   }
 }

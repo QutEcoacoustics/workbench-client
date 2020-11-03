@@ -115,6 +115,12 @@ describe("AppComponent", () => {
       assertFullscreen();
     });
 
+    it("should set menu layout if fullscreen is undefined", () => {
+      setup(createFirstChild(1, { pageInfo: { fullscreen: undefined } }));
+      spec.detectChanges();
+      assertFullscreen();
+    });
+
     it("should detect fullscreen component", () => {
       setup(createFirstChild(1, createPageComponent(true)));
       updatePageLayout(false);
