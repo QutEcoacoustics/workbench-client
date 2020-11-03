@@ -1,4 +1,5 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { MockAppConfigModule } from "../app-config/app-configMock.module";
@@ -71,7 +72,7 @@ const mockProviders: Provider[] = [
 ];
 
 @NgModule({
-  imports: [HttpClientModule, MockAppConfigModule],
+  imports: [HttpClientTestingModule, MockAppConfigModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

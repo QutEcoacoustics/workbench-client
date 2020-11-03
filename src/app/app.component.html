@@ -1,39 +1,44 @@
 <div class="app">
   <baw-header></baw-header>
   <ngx-loading-bar [value]="(delayedProgress$ | async) || 0"></ngx-loading-bar>
+
+  <!-- App Content-->
   <div class="content">
     <div
       class="p-0"
-      [ngClass]="{ container: menuLayout, 'container-fluid': !menuLayout }"
+      [ngClass]="{ container: !fullscreen, 'container-fluid': fullscreen }"
     >
       <div class="d-flex flex-wrap col p-0">
+        <!-- Secondary Menu (only active on menuLayout) -->
         <div
           id="secondary"
           class="p-0 order-1 col-lg-2 col-sm-12"
-          [ngClass]="{ hidden: !menuLayout }"
+          [ngClass]="{ hidden: fullscreen }"
         >
           <router-outlet name="secondary"></router-outlet>
         </div>
+
+        <!-- Default and Error Menus -->
         <div
           id="page"
           class="order-lg-2 order-3 col-lg-8 col-12"
-          [ngClass]="{
-            page: menuLayout,
-            'full-width': !menuLayout
-          }"
+          [ngClass]="{ page: !fullscreen, 'full-width': fullscreen }"
         >
           <router-outlet></router-outlet>
-          <router-outlet class="" name="error"></router-outlet>
+          <router-outlet name="error"></router-outlet>
         </div>
+
+        <!-- Action Menu (only active on menuLayout) -->
         <div
           id="action"
           class="p-0 order-lg-3 order-2 col-lg-2 col-12"
-          [ngClass]="{ hidden: !menuLayout }"
+          [ngClass]="{ hidden: fullscreen }"
         >
           <router-outlet name="action"></router-outlet>
         </div>
       </div>
     </div>
   </div>
+
   <baw-footer></baw-footer>
 </div>
