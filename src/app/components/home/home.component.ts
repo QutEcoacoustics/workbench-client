@@ -4,7 +4,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Project } from "@models/Project";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 import { map, mergeMap, takeUntil } from "rxjs/operators";
@@ -32,13 +31,11 @@ class HomeComponent extends PageComponent implements OnInit {
       .getAuthTrigger()
       .pipe(
         mergeMap(() => this.projectApi.filter({ paging: { items: 3 } })),
-        map((data: Project[]) =>
-          List(data.map((project) => project.getCard()))
-        ),
+        map((data) => List(data.map((project) => project.getCard()))),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        (cards: List<Card>) => (this.projectList = cards),
+        (cards) => (this.projectList = cards),
         () => (this.projectList = List([]))
       );
   }

@@ -18,7 +18,6 @@ import { generateProject } from "@test/fakes/Project";
 import { assertCms } from "@test/helpers/api-common";
 import { nStepObservable } from "@test/helpers/general";
 import { assertRoute } from "@test/helpers/html";
-import { MockComponent } from "ng-mocks";
 import { BehaviorSubject, Subject } from "rxjs";
 import { HomeComponent } from "./home.component";
 
@@ -58,7 +57,7 @@ describe("HomeComponent", () => {
   }
 
   function getButton() {
-    return spectator.query<HTMLButtonElement>("button");
+    return spectator.query<HTMLButtonElement>("a.btn");
   }
 
   function handleCms() {

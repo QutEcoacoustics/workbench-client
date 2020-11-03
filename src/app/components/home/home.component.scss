@@ -1,29 +1,15 @@
 #website-title {
   color: white;
-  font-weight: bold;
-  font-size: 10rem;
-  font-family: "Arial";
-  // TODO Are these using the same implementation?
-  //text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
+  font-family: "Arial";
+  font-size: 10rem;
+  font-weight: bold;
   padding-bottom: 15rem;
 }
 
 section {
   background-color: #fff;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
-}
-
-.credits {
-  margin-left: 0.5rem;
-  margin-top: -2.5rem;
-}
-
-.credits span {
-  padding: 0.5rem 1rem;
-}
-
-section {
   padding: 15px 1rem;
   width: 100%;
 
