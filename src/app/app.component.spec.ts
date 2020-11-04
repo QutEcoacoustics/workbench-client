@@ -19,7 +19,6 @@ describe("AppComponent", () => {
   let spec: SpectatorRouting<AppComponent>;
   const createComponent = createRoutingFactory({
     component: AppComponent,
-    stubsEnabled: true,
     declarations: [
       MockComponent(HeaderComponent),
       MockComponent(FooterComponent),
@@ -30,11 +29,7 @@ describe("AppComponent", () => {
   });
 
   function setup(firstChild?: ActivatedRouteStub) {
-    spec = createComponent({
-      detectChanges: true,
-      data: { testing: true },
-      firstChild,
-    });
+    spec = createComponent({ detectChanges: true, firstChild });
   }
 
   it("should create the app", () => {

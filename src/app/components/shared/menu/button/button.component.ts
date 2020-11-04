@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
 
 /**
@@ -19,7 +14,7 @@ import { MenuAction } from "@interfaces/menusInterfaces";
     <button
       class="btn text-left"
       (click)="link.action()"
-      [disabled]="disabled"
+      [disabled]="link.disabled"
       [ngbTooltip]="tooltip"
       [placement]="placement"
     >
@@ -32,14 +27,9 @@ import { MenuAction } from "@interfaces/menusInterfaces";
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MenuButtonComponent implements OnChanges {
+export class MenuButtonComponent {
   @Input() public id: string;
   @Input() public link: MenuAction;
   @Input() public placement: "left" | "right";
   @Input() public tooltip: string;
-  public disabled: boolean;
-
-  public ngOnChanges() {
-    this.disabled = this.link.disabled;
-  }
 }

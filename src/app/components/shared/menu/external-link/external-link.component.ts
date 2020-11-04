@@ -20,7 +20,7 @@ import { MenuLink } from "@interfaces/menusInterfaces";
     -->
     <a
       class="nav-link"
-      [ngClass]="{ disabled: disabled }"
+      [ngClass]="{ disabled: link.disabled }"
       [href]="href"
       [placement]="placement"
       [ngbTooltip]="tooltip"
@@ -41,12 +41,10 @@ export class MenuExternalLinkComponent implements OnChanges {
   @Input() public tooltip: string;
   @Input() public uri: string;
   public href: string;
-  public disabled: boolean;
 
   constructor(@Inject(API_ROOT) private apiRoot: string) {}
 
   public ngOnChanges() {
-    this.disabled = this.link.disabled;
     // Prepend apiRoot to relative links
     this.href = this.uri.startsWith("/") ? this.apiRoot + this.uri : this.uri;
   }

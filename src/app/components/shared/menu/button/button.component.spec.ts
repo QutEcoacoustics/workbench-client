@@ -1,6 +1,4 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MenuAction } from "@interfaces/menusInterfaces";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
@@ -131,9 +129,9 @@ describe("MenuButtonComponent", () => {
   describe("disabled", () => {
     function assertDisabled(isDisabled: boolean) {
       if (isDisabled) {
-        expect(spec.query("btn:disabled")).toBeTruthy();
+        expect(spec.query("button:disabled")).toBeTruthy();
       } else {
-        expect(spec.query("btn:disabled")).toBeFalsy();
+        expect(spec.query("button:disabled")).toBeFalsy();
       }
     }
 

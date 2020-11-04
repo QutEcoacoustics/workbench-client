@@ -23,7 +23,7 @@ import { Subject } from "rxjs";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { UserBadgesComponent } from "./user-badges.component";
 
-export class MockModel extends AbstractModel {
+class MockModel extends AbstractModel {
   public kind = "MockModel";
   public id: Id;
   public creatorId?: Id;
