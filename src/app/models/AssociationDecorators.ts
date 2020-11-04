@@ -45,7 +45,7 @@ export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
  *
  * @param serviceToken Injection token for API service used to retrieve the child models
  * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
- * @param childIdentifier field used to filter child models by, typically ìd`
+ * @param childIdentifier field used to filter child models by, typically `id`
  * @param routeParams Additional route params required for the filter request.
  * This is a list of keys from the parent where the values can be retrieved
  */
