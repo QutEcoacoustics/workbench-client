@@ -13,11 +13,11 @@ import {
 } from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { projectMenuItemActions } from "../details/details.component";
 

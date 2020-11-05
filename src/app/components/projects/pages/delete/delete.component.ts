@@ -15,9 +15,9 @@ import {
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { projectMenuItemActions } from "../details/details.component";

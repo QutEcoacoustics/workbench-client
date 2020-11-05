@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
-import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";

@@ -6,10 +6,10 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { Project } from "@models/Project";
-import { Site } from "@models/Site";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "../../site.base.json";
