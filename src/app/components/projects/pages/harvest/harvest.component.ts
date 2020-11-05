@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { PermissionsShieldComponent } from "@components/shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@components/shared/widget/widgetItem";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { ResolvedModel } from "@services/baw-api/resolver-common";

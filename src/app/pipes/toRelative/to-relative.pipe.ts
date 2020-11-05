@@ -11,7 +11,7 @@ import { DateTime, Duration, ToRelativeOptions } from "luxon";
 export class ToRelativePipe implements PipeTransform {
   public transform(
     value: Duration | DateTime,
-    options: HumanizeDurationOptions | ToRelativeOptions
+    options?: HumanizeDurationOptions | ToRelativeOptions
   ): string {
     if (!value) {
       return "(no value)";

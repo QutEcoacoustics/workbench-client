@@ -92,10 +92,24 @@ export class User extends AbstractModel implements IUser {
   @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
+  public static get deletedUser(): User {
+    return new User({
+      id: -1,
+      email: "deleted-user@noreply.com.au",
+      userName: "Deleted User",
+    });
+  }
+
+  public static get unknownUser(): User {
+    return new User({
+      id: -2,
+      email: "unknown-user@noreply.com.au",
+      userName: "Unknown User",
+    });
+  }
+
   constructor(user: IUser) {
     super(user);
-
-    this.userName = user.userName ?? "Deleted User";
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 

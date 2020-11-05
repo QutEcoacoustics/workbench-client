@@ -7,9 +7,9 @@ import {
   pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Region } from "@models/Region";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { pointMenuItemActions } from "../details/point.component";
 import { SiteDeleteComponent } from "./site.component";

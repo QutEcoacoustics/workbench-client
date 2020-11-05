@@ -14,6 +14,11 @@
     "outDir": "./dist/out-tsc",
     "paths": {
       "@assets/*": ["./src/assets/*"],
+      "@menu/*": [
+        "./src/app/components/shared/menu/permissions-shield/*",
+        "./src/app/components/shared/menu/widget/*",
+        "./src/app/components/shared/menu/*"
+      ],
       "@shared/*": ["./src/app/components/shared/*"],
       "@components/*": ["./src/app/components/*"],
       "@directives/*": ["./src/app/directives/*"],

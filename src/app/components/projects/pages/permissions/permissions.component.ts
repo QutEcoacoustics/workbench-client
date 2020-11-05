@@ -16,8 +16,8 @@ import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { projectMenuItemActions } from "../details/details.component";
 

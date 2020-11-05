@@ -19,9 +19,9 @@ import {
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
 import { List } from "immutable";
-import { WidgetComponent } from "../widget/widget.component";
-import { WidgetDirective } from "../widget/widget.directive";
-import { WidgetMenuItem } from "../widget/widgetItem";
+import { WidgetComponent } from "./widget/widget.component";
+import { WidgetDirective } from "./widget/widget.directive";
+import { WidgetMenuItem } from "./widget/widgetItem";
 
 /**
  * Menu Component.
@@ -31,7 +31,6 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   selector: "baw-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuComponent extends WithUnsubscribe() implements OnInit {
   @Input() public title?: LabelAndIcon;

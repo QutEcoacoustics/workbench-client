@@ -8,8 +8,8 @@ import {
   pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "../../point.base.json";

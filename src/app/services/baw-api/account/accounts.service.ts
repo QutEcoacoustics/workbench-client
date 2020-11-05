@@ -1,9 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
-import { Observable } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import {
   Empty,
   Filter,
@@ -13,7 +15,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { apiReturnCodes, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
@@ -40,7 +42,21 @@ export class AccountsService extends StandardApi<User> {
     return this.apiFilter(endpoint(Empty, Filter), filters);
   }
   public show(model: IdOr<User>): Observable<User> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, Empty)).pipe(
+      // Return unknown or deleted user depending on error code
+      catchError((err: ApiErrorDetails) => {
+        switch (err.status) {
+          case apiReturnCodes.unauthorized:
+            console.warn("Returning Unknown User");
+            return of(User.unknownUser);
+          case apiReturnCodes.notFound:
+            console.warn("Returning Not Found User");
+            return of(User.deletedUser);
+          default:
+            return throwError(err);
+        }
+      })
+    );
   }
   public create(model: User): Observable<User> {
     return this.apiCreate(endpoint(Empty, Empty), model);
