@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Tagging } from "@models/Tagging";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateTagging } from "@test/fakes/Tagging";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -27,10 +28,6 @@ describe("TaggingsService", function () {
     this.service = TestBed.inject(TaggingsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<Tagging, TaggingsService>(
     "/audio_recordings/5/audio_events/10/taggings/",
     undefined,
@@ -47,26 +44,26 @@ describe("TaggingsService", function () {
   validateApiShow<Tagging, TaggingsService>(
     "/audio_recordings/5/audio_events/10/taggings/15",
     15,
-    new Tagging({ id: 15 }),
+    new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiCreate<Tagging, TaggingsService>(
     "/audio_recordings/5/audio_events/10/taggings/",
-    new Tagging({ id: 15 }),
+    new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiUpdate<Tagging, TaggingsService>(
     "/audio_recordings/5/audio_events/10/taggings/15",
-    new Tagging({ id: 15 }),
+    new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiDestroy<Tagging, TaggingsService>(
     "/audio_recordings/5/audio_events/10/taggings/15",
     15,
-    new Tagging({ id: 15 }),
+    new Tagging(generateTagging(15)),
     5,
     10
   );

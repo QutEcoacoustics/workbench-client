@@ -20,11 +20,9 @@ describe("Shallow AudioEventsService", function () {
     this.service = TestBed.inject(ShallowAudioEventsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiFilter<AudioEvent, ShallowAudioEventsService>(
     "/audio_events/filter"
   );
+
+  // TODO Add unit tests for filterByCreator
 });

@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AnalysisJobItem } from "@models/AnalysisJobItem";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateAnalysisJobItem } from "@test/fakes/AnalysisJobItem";
 import {
   validateApiFilter,
   validateApiList,
@@ -38,7 +39,7 @@ describe("AnalysisJobItemsService", function () {
   validateApiShow<AnalysisJobItem, AnalysisJobItemsService>(
     "/analysis_jobs/5/audio_recordings/10",
     10,
-    new AnalysisJobItem({ id: 10 }),
+    new AnalysisJobItem(generateAnalysisJobItem(10)),
     5
   );
 });

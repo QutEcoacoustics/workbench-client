@@ -4,6 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateTagGroup } from "@test/fakes/TagGroup";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -26,28 +27,24 @@ describe("TagGroupService", function () {
     this.service = TestBed.inject(TagGroupsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<TagGroup, TagGroupsService>("/tag_groups/");
   validateApiFilter<TagGroup, TagGroupsService>("/tag_groups/filter");
   validateApiShow<TagGroup, TagGroupsService>(
     "/tag_groups/5",
     5,
-    new TagGroup({ id: 5 })
+    new TagGroup(generateTagGroup(5))
   );
   validateApiCreate<TagGroup, TagGroupsService>(
     "/tag_groups/",
-    new TagGroup({ id: 5 })
+    new TagGroup(generateTagGroup(5))
   );
   validateApiUpdate<TagGroup, TagGroupsService>(
     "/tag_groups/5",
-    new TagGroup({ id: 5 })
+    new TagGroup(generateTagGroup(5))
   );
   validateApiDestroy<TagGroup, TagGroupsService>(
     "/tag_groups/5",
     5,
-    new TagGroup({ id: 5 })
+    new TagGroup(generateTagGroup(5))
   );
 });

@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Response } from "@models/Response";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateResponse } from "@test/fakes/Response";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -27,28 +28,24 @@ describe("ShallowResponsesService", function () {
     this.service = TestBed.inject(ShallowResponsesService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<Response, ShallowResponsesService>("/responses/");
   validateApiFilter<Response, ShallowResponsesService>("/responses/filter");
   validateApiShow<Response, ShallowResponsesService>(
     "/responses/5",
     5,
-    new Response({ id: 5 })
+    new Response(generateResponse(5))
   );
   validateApiCreate<Response, ShallowResponsesService>(
     "/responses/",
-    new Response({ id: 5 })
+    new Response(generateResponse(5))
   );
   validateApiUpdate<Response, ShallowResponsesService>(
     "/responses/5",
-    new Response({ id: 5 })
+    new Response(generateResponse(5))
   );
   validateApiDestroy<Response, ShallowResponsesService>(
     "/responses/5",
     5,
-    new Response({ id: 5 })
+    new Response(generateResponse(5))
   );
 });

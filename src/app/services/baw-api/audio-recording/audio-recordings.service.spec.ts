@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecording } from "@models/AudioRecording";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
   validateApiFilter,
   validateApiList,
@@ -23,10 +24,6 @@ describe("AudioRecordingsService", function () {
     this.service = TestBed.inject(AudioRecordingsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<AudioRecording, AudioRecordingsService>("/audio_recordings/");
   validateApiFilter<AudioRecording, AudioRecordingsService>(
     "/audio_recordings/filter"
@@ -34,6 +31,6 @@ describe("AudioRecordingsService", function () {
   validateApiShow<AudioRecording, AudioRecordingsService>(
     "/audio_recordings/5",
     5,
-    new AudioRecording({ id: 5 })
+    new AudioRecording(generateAudioRecording(5))
   );
 });

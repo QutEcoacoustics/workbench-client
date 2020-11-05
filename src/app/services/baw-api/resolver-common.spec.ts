@@ -1,12 +1,6 @@
-import { AbstractModel } from "@models/AbstractModel";
 import { ApiErrorDetails } from "./api.interceptor.service";
+import { MockModel } from "./mock/baseApiMock.service";
 import { retrieveResolvers } from "./resolver-common";
-
-class MockModel extends AbstractModel {
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
-  }
-}
 
 // TODO Write unit tests
 xdescribe("API Resolvers", () => {

@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DatasetItem } from "@models/DatasetItem";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateDatasetItem } from "@test/fakes/DatasetItem";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -26,10 +27,6 @@ describe("DatasetItemsService", function () {
     this.service = TestBed.inject(DatasetItemsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<DatasetItem, DatasetItemsService>(
     "/datasets/5/items/",
     undefined,
@@ -44,18 +41,18 @@ describe("DatasetItemsService", function () {
   validateApiShow<DatasetItem, DatasetItemsService>(
     "/datasets/5/items/10",
     10,
-    new DatasetItem({ id: 10 }),
+    new DatasetItem(generateDatasetItem(10)),
     5
   );
   validateApiCreate<DatasetItem, DatasetItemsService>(
     "/datasets/5/items/",
-    new DatasetItem({ id: 10 }),
+    new DatasetItem(generateDatasetItem(10)),
     5
   );
   validateApiDestroy<DatasetItem, DatasetItemsService>(
     "/datasets/5/items/10",
     10,
-    new DatasetItem({ id: 10 }),
+    new DatasetItem(generateDatasetItem(10)),
     5
   );
 });

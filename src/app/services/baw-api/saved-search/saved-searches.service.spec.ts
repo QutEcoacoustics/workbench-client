@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { SavedSearch } from "@models/SavedSearch";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateSavedSearch } from "@test/fakes/SavedSearch";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -26,10 +27,6 @@ describe("SavedSearchesService", function () {
     this.service = TestBed.inject(SavedSearchesService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<SavedSearch, SavedSearchesService>("/saved_searches/");
   validateApiFilter<SavedSearch, SavedSearchesService>(
     "/saved_searches/filter"
@@ -37,15 +34,15 @@ describe("SavedSearchesService", function () {
   validateApiShow<SavedSearch, SavedSearchesService>(
     "/saved_searches/5",
     5,
-    new SavedSearch({ id: 5 })
+    new SavedSearch(generateSavedSearch(5))
   );
   validateApiCreate<SavedSearch, SavedSearchesService>(
     "/saved_searches/",
-    new SavedSearch({ id: 5 })
+    new SavedSearch(generateSavedSearch(5))
   );
   validateApiDestroy<SavedSearch, SavedSearchesService>(
     "/saved_searches/5",
     5,
-    new SavedSearch({ id: 5 })
+    new SavedSearch(generateSavedSearch(5))
   );
 });
