@@ -85,7 +85,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
       count++;
     }
 
-    if (count === 50) {
+    if (count >= 50) {
       console.error("Search for component layout type exceeded a depth of 50.");
       return;
     }

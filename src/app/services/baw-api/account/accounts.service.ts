@@ -47,10 +47,10 @@ export class AccountsService extends StandardApi<User> {
       catchError((err: ApiErrorDetails) => {
         switch (err.status) {
           case apiReturnCodes.unauthorized:
-            console.warn("Returning Unknown User");
+            // Return unknown user, this only occurs when user is anonymous to the logged in/guest user
             return of(User.unknownUser);
           case apiReturnCodes.notFound:
-            console.warn("Returning Not Found User");
+            // Return deleted user, this only occurs when a user is soft-deleted
             return of(User.deletedUser);
           default:
             return throwError(err);

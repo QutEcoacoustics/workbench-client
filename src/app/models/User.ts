@@ -46,6 +46,22 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
+  public static deletedUser = Object.freeze(
+    new User({
+      id: -1,
+      email: "deleted-user@noreply.com.au",
+      userName: "Deleted User",
+    })
+  );
+
+  public static unknownUser = Object.freeze(
+    new User({
+      id: -2,
+      email: "unknown-user@noreply.com.au",
+      userName: "Unknown User",
+    })
+  );
+
   public readonly kind = "User";
   @BawPersistAttr
   public readonly id?: Id;
@@ -91,22 +107,6 @@ export class User extends AbstractModel implements IUser {
   public readonly updatedAt?: DateTimeTimezone;
   @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
-
-  public static get deletedUser(): User {
-    return new User({
-      id: -1,
-      email: "deleted-user@noreply.com.au",
-      userName: "Deleted User",
-    });
-  }
-
-  public static get unknownUser(): User {
-    return new User({
-      id: -2,
-      email: "unknown-user@noreply.com.au",
-      userName: "Unknown User",
-    });
-  }
 
   constructor(user: IUser) {
     super(user);

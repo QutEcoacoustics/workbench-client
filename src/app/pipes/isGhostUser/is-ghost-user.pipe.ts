@@ -23,8 +23,8 @@ export class IsGhostUserPipe implements PipeTransform {
       return true;
     }
 
-    const isDeleted = value.id === User.deletedUser.id;
-    const isUnknown = value.id === User.unknownUser.id;
+    const isDeleted = value === User.deletedUser;
+    const isUnknown = value === User.unknownUser;
 
     switch (type) {
       case "all":

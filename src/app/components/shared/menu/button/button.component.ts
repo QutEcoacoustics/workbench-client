@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
+import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Menu Button Component
@@ -7,10 +8,6 @@ import { MenuAction } from "@interfaces/menusInterfaces";
 @Component({
   selector: "baw-menu-button",
   template: `
-    <!--
-      No tooltips for disabled buttons because of:
-      https://github.com/ng-bootstrap/ng-bootstrap/issues/1250#issuecomment-274916839
-    -->
     <button
       class="btn text-left"
       (click)="link.action()"
@@ -30,6 +27,6 @@ import { MenuAction } from "@interfaces/menusInterfaces";
 export class MenuButtonComponent {
   @Input() public id: string;
   @Input() public link: MenuAction;
-  @Input() public placement: "left" | "right";
+  @Input() public placement: Placement;
   @Input() public tooltip: string;
 }

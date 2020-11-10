@@ -44,10 +44,6 @@ or
 $ npm run ng
 ```
 
-### Extensions
-
-The workspace comes with a list of extensions which may help you when it comes to working on the application. Currently the Angular Language Service extension does not officially support the version of typescript that this project is running, and you will need to upgrade it to a beta release: https://github.com/angular/vscode-ng-language-service/issues/797 https://github.com/angular/vscode-ng-language-service/releases/tag/v0.1000.0-rc.1
-
 ### Testing
 
 #### End to End Testing
