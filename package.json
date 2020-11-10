@@ -70,7 +70,7 @@
     "@angular-devkit/build-angular": "^0.1002.0",
     "@angular/cli": "^10.2.0",
     "@angular/compiler-cli": "^10.2.1",
-    "@angular/language-service": "^10.2.2",
+    "@angular/language-service": "^10.2.3",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.0",
     "@ngneat/spectator": "^6.0.0",
     "@nguniversal/builders": "^10.1.0",
