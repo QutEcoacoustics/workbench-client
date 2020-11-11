@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { tagMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -58,7 +59,7 @@ export class Tag extends AbstractModel implements ITag {
 
   public get viewUrl(): string {
     console.warn("Tag viewUrl method not implemented");
-    return "/broken_link";
+    return tagMenuItem.uri();
   }
 
   public toString(): string {

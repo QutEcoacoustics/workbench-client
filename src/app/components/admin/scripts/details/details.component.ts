@@ -11,16 +11,12 @@ import { fields as baseFields } from "../script.base.schema.json";
 import { fields as extendedFields } from "../script.extended.schema.json";
 import {
   adminEditScriptMenuItem,
-  adminNewScriptsMenuItem,
   adminScriptMenuItem,
   adminScriptsCategory,
   adminScriptsMenuItem,
 } from "../scripts.menus";
 
-export const adminScriptActions = [
-  adminNewScriptsMenuItem,
-  adminEditScriptMenuItem,
-];
+export const adminScriptActions = [adminEditScriptMenuItem];
 const scriptKey = "script";
 
 @Component({

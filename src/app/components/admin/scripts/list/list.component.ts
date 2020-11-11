@@ -31,7 +31,6 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
     name: "name",
     version: "version",
     id: "id",
-    command: "executableCommand",
   };
 
   constructor(api: ScriptsService) {

@@ -54,7 +54,7 @@
       }
     },
     {
-      "key": "script_id",
+      "key": "scriptId",
       "type": "input",
       "templateOptions": {
         "label": "Script Id",
@@ -70,7 +70,7 @@
       }
     },
     {
-      "key": "saved_search_id",
+      "key": "savedSearchId",
       "type": "input",
       "templateOptions": {
         "label": "Saved Search Id",

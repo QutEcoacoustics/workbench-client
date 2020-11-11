@@ -9,10 +9,7 @@ import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
-import {
-  adminAnalysisJobMenuItem,
-  adminAnalysisJobsCategory,
-} from "../analysis-jobs.menus";
+import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
 
 @Component({
   selector: "baw-admin-analysis-jobs",
@@ -46,9 +43,9 @@ class AdminAnalysisJobsComponent
         name: analysisJob.name,
         script: analysisJob.scriptId,
         creator: analysisJob.creatorId,
-        started: analysisJob.startedAt.toRelative(),
+        started: analysisJob.startedAt?.toRelative(),
         status: analysisJob.overallStatus,
-        statusUpdated: analysisJob.overallStatusModifiedAt.toRelative(),
+        statusUpdated: analysisJob.overallStatusModifiedAt?.toRelative(),
         model: analysisJob,
       }))
     );
