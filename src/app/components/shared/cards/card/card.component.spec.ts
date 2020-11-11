@@ -34,7 +34,7 @@ describe("CardComponent", () => {
 
   it("should have default description when none provided", () => {
     spectator.setInput("card", { title: "title" });
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     const description = spectator.query<HTMLParagraphElement>("p");
     expect(description.textContent).toContain("No description given");
@@ -42,7 +42,7 @@ describe("CardComponent", () => {
 
   it("should have description when provided", () => {
     spectator.setInput("card", { title: "title", description: "description" });
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     const description = spectator.query<HTMLParagraphElement>("p");
     expect(description.textContent).toContain("description");
@@ -53,7 +53,7 @@ describe("CardComponent", () => {
       title: "title",
       description: modelData.descriptionLong(),
     });
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     const description = spectator.query<HTMLParagraphElement>("p");
     assertTruncation(description, 4);
