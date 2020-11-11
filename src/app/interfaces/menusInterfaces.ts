@@ -1,7 +1,7 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
-import { WidgetMenuItem } from "../components/shared/widget/widgetItem";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
 
@@ -93,6 +93,11 @@ export interface MenuItem extends LabelAndIcon {
    * It allows the link to skip its predicate temporarily.
    */
   active?: boolean;
+  /**
+   * Tracks whether this link should be disabled, this will prevent the link from being
+   * clicked on, and highlight it as disabled.
+   */
+  disabled?: boolean;
 }
 
 /**

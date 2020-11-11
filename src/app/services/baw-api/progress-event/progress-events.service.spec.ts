@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ProgressEvent } from "@models/ProgressEvent";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateProgressEvent } from "@test/fakes/ProgressEvent";
 import {
   validateApiCreate,
   validateApiFilter,
@@ -25,10 +26,6 @@ describe("ProgressEventsService", function () {
     this.service = TestBed.inject(ProgressEventsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<ProgressEvent, ProgressEventsService>("/progress_events/");
   validateApiFilter<ProgressEvent, ProgressEventsService>(
     "/progress_events/filter"
@@ -36,10 +33,10 @@ describe("ProgressEventsService", function () {
   validateApiShow<ProgressEvent, ProgressEventsService>(
     "/progress_events/5",
     5,
-    new ProgressEvent({ id: 5 })
+    new ProgressEvent(generateProgressEvent(5))
   );
   validateApiCreate<ProgressEvent, ProgressEventsService>(
     "/progress_events/",
-    new ProgressEvent({ id: 5 })
+    new ProgressEvent(generateProgressEvent(5))
   );
 });

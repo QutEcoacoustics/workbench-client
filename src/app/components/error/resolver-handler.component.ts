@@ -4,13 +4,15 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { apiReturnCodes } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ResolverList } from "@interfaces/menusInterfaces";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
-  template: ` <baw-error-handler [error]="error"></baw-error-handler> `,
+  template: `
+    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+  `,
 })
-export class ResolverHandlerComponent extends WithUnsubscribe()
+export class ResolverHandlerComponent
+  extends WithUnsubscribe()
   implements OnInit {
   public error: ApiErrorDetails;
 
@@ -21,9 +23,7 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
   public ngOnInit() {
     // Detect any page errors
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (data: IPageInfo) => {
-        this.handleResolvers(data);
-      },
+      (data: IPageInfo) => this.handleResolvers(data),
       (err) => {
         console.error("ErrorHandlerComponent: ", err);
         this.error = {
@@ -35,19 +35,22 @@ export class ResolverHandlerComponent extends WithUnsubscribe()
   }
 
   private handleResolvers(data: IPageInfo) {
-    // Find page resolvers
-    const resolvers: ResolverList = {};
-    if (data.resolvers) {
-      Object.assign(resolvers, data.resolvers);
+    // Reset error
+    this.error = null;
+
+    // Skip if no resolvers
+    if (!data.resolvers) {
+      return;
     }
 
-    for (const key of Object.keys(resolvers)) {
+    // For each page resolver
+    for (const key of Object.keys({ ...data.resolvers })) {
+      // Skip if not an error
       if (!data[key].error) {
         continue;
       }
 
-      this.error = data[key].error as ApiErrorDetails;
-
+      this.error = data[key].error;
       // If unauthorized response, no point downgrading to "Not Found"
       if (this.error.status === apiReturnCodes.unauthorized) {
         return;

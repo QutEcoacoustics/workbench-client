@@ -6,17 +6,15 @@
           <fa-icon [icon]="title.icon"></fa-icon>
           {{ title.label.toUpperCase() }}
         </ng-container>
-        <ng-template #linksTitle>
-          MENU
-        </ng-template>
+        <ng-template #linksTitle>MENU</ng-template>
       </h6>
     </li>
 
     <ng-container *ngIf="linksExist()">
-      <hr class="w-100" *ngIf="menuType === 'action'" />
+      <hr *ngIf="menuType === 'action'" class="w-100" />
       <li
-        class="nav-item"
         *ngFor="let link of filteredLinks; let i = index"
+        class="nav-item"
         [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
       >
         <ng-container *ngIf="isAction(link)">
@@ -52,7 +50,7 @@
       <hr class="w-100" *ngIf="widget" />
     </ng-container>
 
-    <div class="widget">
+    <div id="widget">
       <ng-template bawMenuWidget></ng-template>
     </div>
   </ul>

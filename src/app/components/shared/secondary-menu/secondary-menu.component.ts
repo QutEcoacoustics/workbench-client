@@ -4,9 +4,9 @@ import { DefaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
-import { WidgetMenuItem } from "../widget/widgetItem";
 
 /**
  * Secondary Menu Component.
@@ -26,7 +26,8 @@ import { WidgetMenuItem } from "../widget/widgetItem";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SecondaryMenuComponent extends WithUnsubscribe()
+export class SecondaryMenuComponent
+  extends WithUnsubscribe()
   implements OnInit {
   public contextLinks: List<NavigableMenuItem>;
   public linksWidget: WidgetMenuItem;

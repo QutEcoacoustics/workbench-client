@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Site } from "@models/Site";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateSite } from "@test/fakes/Site";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -27,24 +28,26 @@ describe("ShallowSitesService", function () {
     this.service = TestBed.inject(ShallowSitesService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<Site, ShallowSitesService>("/sites/");
   validateApiFilter<Site, ShallowSitesService>("/sites/filter");
   validateApiShow<Site, ShallowSitesService>(
     "/sites/5",
     5,
-    new Site({ id: 5 })
+    new Site(generateSite(5))
   );
-  validateApiCreate<Site, ShallowSitesService>("/sites/", new Site({ id: 5 }));
-  validateApiUpdate<Site, ShallowSitesService>("/sites/5", new Site({ id: 5 }));
+  validateApiCreate<Site, ShallowSitesService>(
+    "/sites/",
+    new Site(generateSite(5))
+  );
+  validateApiUpdate<Site, ShallowSitesService>(
+    "/sites/5",
+    new Site(generateSite(5))
+  );
   validateApiDestroy<Site, ShallowSitesService>(
     "/sites/5",
     5,
-    new Site({ id: 5 })
+    new Site(generateSite(5))
   );
 
-  // TODO Add tests for filterByAccessLevel and Orphans
+  // TODO Add tests for filterByCreator, orphanList, and orphanFilter
 });

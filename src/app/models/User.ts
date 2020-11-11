@@ -46,6 +46,29 @@ export interface IUser {
  * A user model.
  */
 export class User extends AbstractModel implements IUser {
+  /**
+   * Deleted User. This is used when a user has been soft deleted
+   * from the API.
+   */
+  public static get deletedUser(): User {
+    return new User({
+      id: -1,
+      email: "deleted-user@noreply.com.au",
+      userName: "Deleted User",
+    });
+  }
+  /**
+   * Unknown User. This is used when the current logged in user/guest
+   * does not have the permissions to view a user.
+   */
+  public static get unknownUser(): User {
+    return new User({
+      id: -2,
+      email: "unknown-user@noreply.com.au",
+      userName: "Unknown User",
+    });
+  }
+
   public readonly kind = "User";
   @BawPersistAttr
   public readonly id?: Id;
@@ -94,8 +117,6 @@ export class User extends AbstractModel implements IUser {
 
   constructor(user: IUser) {
     super(user);
-
-    this.userName = user.userName ?? "Deleted User";
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 

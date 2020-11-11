@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Response } from "@models/Response";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateResponse } from "@test/fakes/Response";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -27,10 +28,6 @@ describe("ResponsesService", function () {
     this.service = TestBed.inject(ResponsesService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<Response, ResponsesService>(
     "/studies/5/responses/",
     undefined,
@@ -45,23 +42,23 @@ describe("ResponsesService", function () {
   validateApiShow<Response, ResponsesService>(
     "/studies/5/responses/10",
     10,
-    new Response({ id: 10 }),
+    new Response(generateResponse(10)),
     5
   );
   validateApiCreate<Response, ResponsesService>(
     "/studies/5/responses/",
-    new Response({ id: 10 }),
+    new Response(generateResponse(10)),
     5
   );
   validateApiUpdate<Response, ResponsesService>(
     "/studies/5/responses/10",
-    new Response({ id: 10 }),
+    new Response(generateResponse(10)),
     5
   );
   validateApiDestroy<Response, ResponsesService>(
     "/studies/5/responses/10",
     10,
-    new Response({ id: 10 }),
+    new Response(generateResponse(10)),
     5
   );
 });

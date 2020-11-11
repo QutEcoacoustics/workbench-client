@@ -1,8 +1,8 @@
 import { Location } from "@angular/common";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import {
   assertAttribute,
   assertIcon,
@@ -13,133 +13,197 @@ import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
 
 describe("MenuInternalLinkComponent", () => {
-  let component: MenuInternalLinkComponent;
-  let fixture: ComponentFixture<MenuInternalLinkComponent>;
+  let defaultLink: MenuRoute;
   let location: Location;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule],
-      declarations: [MenuInternalLinkComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MenuInternalLinkComponent);
-    location = TestBed.inject(Location);
-    component = fixture.componentInstance;
+  let spec: SpectatorHost<MenuInternalLinkComponent>;
+  let component: MenuInternalLinkComponent;
+  const createHost = createHostFactory({
+    component: MenuInternalLinkComponent,
+    imports: [SharedModule, RouterTestingModule],
   });
 
-  function createLink() {
-    component.id = "id";
-    component.tooltip = "tooltip";
-    component.route = "/home";
-    component.placement = "left";
-    component.link = MenuRoute({
+  function retrieveWrapper() {
+    return spec.query<HTMLElement>("span");
+  }
+
+  function retrieveLink() {
+    return spec.query<HTMLAnchorElement>("a");
+  }
+
+  function assertActive(isActive: boolean) {
+    if (isActive) {
+      expect(spec.query("a.active")).toBeTruthy();
+    } else {
+      expect(spec.query("a.active")).toBeFalsy();
+    }
+  }
+
+  function setup(inputs: Partial<MenuInternalLinkComponent> = {}) {
+    spec = createHost(
+      `
+      <baw-menu-internal-link
+        [id]="id"
+        [link]="link"
+        [placement]="placement"
+        [tooltip]="tooltip"
+        [route]="route"
+      ></baw-menu-internal-link>
+    `,
+      {
+        detectChanges: false,
+        hostProps: {
+          id: "id",
+          link: defaultLink,
+          placement: "left",
+          tooltip: "tooltip",
+          route: "/home",
+          ...inputs,
+        },
+      }
+    );
+    component = spec.component;
+    location = spec.inject(Location);
+  }
+
+  beforeEach(() => {
+    defaultLink = MenuRoute({
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.Base.add("home"),
       tooltip: () => "tooltip",
     });
-  }
-
-  function retrieveLink() {
-    return fixture.nativeElement.querySelector("a");
-  }
+  });
 
   it("should create", () => {
-    createLink();
-    fixture.detectChanges();
+    setup();
+    spec.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should have icon", () => {
-    createLink();
-    component.link.icon = ["fas", "exclamation-triangle"];
-    fixture.detectChanges();
-    assertIcon(fixture.nativeElement, "fas,exclamation-triangle");
+    setup({
+      link: MenuRoute({
+        ...defaultLink,
+        icon: ["fas", "exclamation-triangle"],
+      }),
+    });
+    spec.detectChanges();
+    assertIcon(spec.element, "fas,exclamation-triangle");
   });
 
   it("should have label", () => {
-    createLink();
-    component.link.label = "custom label";
-    fixture.detectChanges();
+    setup({ link: MenuRoute({ ...defaultLink, label: "custom label" }) });
+    spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = fixture.nativeElement.querySelector("#label");
+    const label = spec.query<HTMLElement>("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
     expect(label.innerText).toBe("custom label");
   });
 
-  it("should have tooltip", () => {
-    createLink();
-    component.link.tooltip = () => "custom tooltip";
-    component.tooltip = "custom tooltip";
-    fixture.detectChanges();
+  describe("tooltip", () => {
+    it("should have tooltip", () => {
+      setup({
+        tooltip: "custom tooltip",
+        link: MenuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
+      });
+      spec.detectChanges();
+      assertTooltip(retrieveWrapper(), "custom tooltip");
+    });
 
-    assertTooltip(retrieveLink(), "custom tooltip");
+    it("should not use link tooltip", () => {
+      setup({
+        tooltip: "custom tooltip",
+        link: MenuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+      });
+      spec.detectChanges();
+      assertTooltip(retrieveWrapper(), "custom tooltip");
+    });
+
+    it("should handle left placement of tooltip", () => {
+      setup({ placement: "left" });
+      spec.detectChanges();
+      assertAttribute(retrieveWrapper(), "placement", "left");
+    });
+
+    it("should handle right placement of tooltip", () => {
+      setup({ placement: "right" });
+      spec.detectChanges();
+      assertAttribute(retrieveWrapper(), "placement", "right");
+    });
   });
 
-  it("should not use link tooltip", () => {
-    createLink();
-    component.link.tooltip = () => "wrong tooltip";
-    component.tooltip = "custom tooltip";
-    fixture.detectChanges();
+  describe("link", () => {
+    it("should create routerLink", () => {
+      setup({
+        route: "/brokenlink",
+        link: MenuRoute({
+          ...defaultLink,
+          route: StrongRoute.Base.add("brokenlink"),
+        }),
+      });
+      spec.detectChanges();
+      assertRoute(retrieveLink(), "/brokenlink");
+    });
 
-    assertTooltip(retrieveLink(), "custom tooltip");
+    it("should not use link route", () => {
+      setup({
+        route: "/brokenlink",
+        link: MenuRoute({
+          ...defaultLink,
+          route: StrongRoute.Base.add("wronglink"),
+        }),
+      });
+      spec.detectChanges();
+      assertRoute(retrieveLink(), "/brokenlink");
+    });
+
+    it("should not highlight link when not active", () => {
+      setup({ route: "/brokenlink" });
+      spyOn(location, "path").and.callFake(() => "/customRoute");
+      spec.detectChanges();
+      assertActive(false);
+    });
+
+    it("should highlight link when active", () => {
+      setup({ route: "/customRoute" });
+      spyOn(location, "path").and.callFake(() => "/customRoute");
+      spec.detectChanges();
+      assertActive(true);
+    });
   });
 
-  it("should handle left placement of tooltip", () => {
-    createLink();
-    component.placement = "left";
-    fixture.detectChanges();
+  describe("disabled", () => {
+    function assertDisabled(isDisabled: boolean) {
+      if (isDisabled) {
+        expect(spec.query("a.disabled")).toBeTruthy();
+      } else {
+        expect(spec.query("a.disabled")).toBeFalsy();
+      }
+    }
 
-    assertAttribute(retrieveLink(), "placement", "left");
-  });
+    it("should default as enabled if disabled is undefined", () => {
+      setup({ link: MenuRoute({ ...defaultLink, disabled: undefined }) });
+      spec.detectChanges();
+      assertDisabled(false);
+    });
 
-  it("should handle right placement of tooltip", () => {
-    createLink();
-    component.placement = "right";
-    fixture.detectChanges();
+    it("should be enabled if disabled is false", () => {
+      setup({ link: MenuRoute({ ...defaultLink, disabled: false }) });
+      spec.detectChanges();
+      assertDisabled(false);
+    });
 
-    assertAttribute(retrieveLink(), "placement", "right");
-  });
+    it("should be disabled if disabled is true", () => {
+      setup({ link: MenuRoute({ ...defaultLink, disabled: true }) });
+      spec.detectChanges();
+      assertDisabled(true);
+    });
 
-  it("should create routerLink", () => {
-    createLink();
-    component.link.route = StrongRoute.Base.add("brokenlink");
-    component.route = "/brokenlink";
-    fixture.detectChanges();
-
-    assertRoute(retrieveLink(), "/brokenlink");
-  });
-
-  it("should not use link route", () => {
-    createLink();
-    component.link.route = StrongRoute.Base.add("wronglink");
-    component.route = "/brokenlink";
-    fixture.detectChanges();
-
-    assertRoute(retrieveLink(), "/brokenlink");
-  });
-
-  it("should not highlight link when not active", () => {
-    spyOn(location, "path").and.callFake(() => "/customRoute");
-
-    createLink();
-    component.route = "/brokenlink";
-    fixture.detectChanges();
-
-    const link = fixture.nativeElement.querySelector("a.active");
-    expect(link).toBeFalsy();
-  });
-
-  it("should highlight link when active", () => {
-    spyOn(location, "path").and.callFake(() => "/customRoute");
-
-    createLink();
-    component.route = "/customRoute";
-    fixture.detectChanges();
-
-    const link = fixture.nativeElement.querySelector("a.active");
-    expect(link).toBeTruthy();
+    it("should be active is disabled is true", () => {
+      setup({ link: MenuRoute({ ...defaultLink, disabled: true }) });
+      spec.detectChanges();
+      assertActive(true);
+    });
   });
 });

@@ -9,7 +9,6 @@ import { User } from "./User";
 
 /**
  * Creates an association between the ownerId and its user model
- * TODO Modify to handle ghost users
  */
 export function Owner<Parent extends AbstractModel & { ownerId?: Id }>() {
   return HasOne<Parent, User>(ACCOUNT, "ownerId");
@@ -17,7 +16,6 @@ export function Owner<Parent extends AbstractModel & { ownerId?: Id }>() {
 
 /**
  * Creates an association between the creatorId and its user model
- * TODO Modify to handle ghost users
  */
 export function Creator<Parent extends AbstractModel & { creatorId?: Id }>() {
   return HasOne<Parent, User>(ACCOUNT, "creatorId");
@@ -25,7 +23,6 @@ export function Creator<Parent extends AbstractModel & { creatorId?: Id }>() {
 
 /**
  * Creates an association between the updaterId and its user model
- * TODO Modify to handle ghost users
  */
 export function Updater<Parent extends AbstractModel & { updaterId?: Id }>() {
   return HasOne<Parent, User>(ACCOUNT, "updaterId");
@@ -33,7 +30,6 @@ export function Updater<Parent extends AbstractModel & { updaterId?: Id }>() {
 
 /**
  * Creates an association between the deleterId and its user model
- * TODO Modify to handle ghost users
  */
 export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
   return HasOne<Parent, User>(ACCOUNT, "deleterId");
@@ -45,7 +41,7 @@ export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
  *
  * @param serviceToken Injection token for API service used to retrieve the child models
  * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
- * @param childIdentifier field used to filter child models by, typically ìd`
+ * @param childIdentifier field used to filter child models by, typically `id`
  * @param routeParams Additional route params required for the filter request.
  * This is a list of keys from the parent where the values can be retrieved
  */
@@ -181,11 +177,6 @@ function createModelDecorator<
     // Get child model identifying ID/s
     const identifier: Id | Ids = parent[identifierKey] as any;
     if (!isInstantiated(identifier) || (identifier as Set<any>)?.size === 0) {
-      console.warn(`${parent} is missing identifier: `, {
-        parent,
-        identifierKey,
-        identifier,
-      });
       return failureValue;
     }
 

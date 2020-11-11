@@ -13,9 +13,9 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "../../project.schema.json";

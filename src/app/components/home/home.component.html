@@ -1,14 +1,17 @@
 <div id="hero-image">
+  <!-- Title -->
   <div class="container">
     <h1 id="website-title" class="text-break">Ecosounds</h1>
   </div>
 
+  <!-- CMS -->
   <div class="container-fluid" style="padding-bottom: 3rem">
     <section class="container">
       <baw-cms [page]="page"></baw-cms>
     </section>
   </div>
 
+  <!-- Description of our process -->
   <div class="container-fluid" style="padding-bottom: 3rem">
     <section class="container">
       <h2>Our Process</h2>
@@ -55,6 +58,7 @@
     </section>
   </div>
 
+  <!-- Link to projects -->
   <div class="container-fluid" style="padding-bottom: 3rem">
     <section class="container">
       <h2>Some of the projects you can access</h2>
@@ -65,20 +69,18 @@
       </p>
       <baw-cards [cards]="projectList">
         <ng-container>
-          <button
-            class="m-auto btn btn-outline-primary"
-            [routerLink]="projectsLink"
-          >
+          <a class="m-auto btn btn-outline-primary" [routerLink]="projectsLink">
             More Projects
-          </button>
+          </a>
         </ng-container>
       </baw-cards>
     </section>
+  </div>
 
-    <div class="float-right">
-      <small class="alert alert-secondary m-0">
-        Photo Credit: QUT Ecoacoustic Staff
-      </small>
-    </div>
+  <!-- Photo Credits -->
+  <div class="d-flex justify-content-center" style="padding-bottom: 3rem">
+    <small class="alert alert-secondary m-0">
+      Photo Credit: QUT Ecoacoustic Staff
+    </small>
   </div>
 </div>

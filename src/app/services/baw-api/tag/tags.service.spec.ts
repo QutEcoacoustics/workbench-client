@@ -3,6 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Tag } from "@models/Tag";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateTag } from "@test/fakes/Tag";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -26,14 +27,11 @@ describe("TagsService", function () {
     this.service = TestBed.inject(TagsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<Tag, TagsService>("/tags/");
   validateApiFilter<Tag, TagsService>("/tags/filter");
-  validateApiShow<Tag, TagsService>("/tags/5", 5, new Tag({ id: 5 }));
-  validateApiCreate<Tag, TagsService>("/tags/", new Tag({ id: 5 }));
-  validateApiUpdate<Tag, TagsService>("/tags/5", new Tag({ id: 5 }));
-  validateApiDestroy<Tag, TagsService>("/tags/5", 5, new Tag({ id: 5 }));
+  // TODO Add unit tests for filterByCreator
+  validateApiShow<Tag, TagsService>("/tags/5", 5, new Tag(generateTag(5)));
+  validateApiCreate<Tag, TagsService>("/tags/", new Tag(generateTag(5)));
+  validateApiUpdate<Tag, TagsService>("/tags/5", new Tag(generateTag(5)));
+  validateApiDestroy<Tag, TagsService>("/tags/5", 5, new Tag(generateTag(5)));
 });

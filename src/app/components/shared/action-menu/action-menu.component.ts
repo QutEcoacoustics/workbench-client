@@ -5,9 +5,9 @@ import { DefaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
-import { WidgetMenuItem } from "../widget/widgetItem";
 
 /**
  * Action Menu Component.

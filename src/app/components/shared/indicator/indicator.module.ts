@@ -1,19 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import {
-  FaIconLibrary,
-  FontAwesomeModule,
-} from "@fortawesome/angular-fontawesome";
-import { fontAwesomeLibraries } from "src/app/app.helper";
+import { IconsModule } from "@shared/icons/icons.module";
 import { IndicatorComponent } from "./indicator.component";
 
 @NgModule({
   declarations: [IndicatorComponent],
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, IconsModule],
   exports: [IndicatorComponent],
 })
-export class IndicatorModule {
-  constructor(library: FaIconLibrary) {
-    fontAwesomeLibraries(library);
-  }
-}
+export class IndicatorModule {}

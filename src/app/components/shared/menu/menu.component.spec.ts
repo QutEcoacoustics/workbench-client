@@ -1,1101 +1,464 @@
-import { HttpClientModule } from "@angular/common/http";
-import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
-import {
-  AnyMenuItem,
-  MenuAction,
-  MenuLink,
-  MenuRoute,
-} from "@interfaces/menusInterfaces";
+import { MenuAction, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { WidgetDirective } from "@menu/widget.directive";
 import { SessionUser } from "@models/User";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser } from "@test/fakes/User";
-import {
-  assertHref,
-  assertIcon,
-  assertRoute,
-  assertTooltip,
-  getText,
-} from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
+import { assertIcon } from "@test/helpers/html";
 import { List } from "immutable";
-import { SharedModule } from "../shared.module";
+import { MockComponent } from "ng-mocks";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
 import { MenuInternalLinkComponent } from "./internal-link/internal-link.component";
 import { MenuComponent } from "./menu.component";
 
+const mock = {
+  action: MockComponent(MenuButtonComponent),
+  external: MockComponent(MenuExternalLinkComponent),
+  internal: MockComponent(MenuInternalLinkComponent),
+};
+
 describe("MenuComponent", () => {
-  let router: ActivatedRoute;
-  let component: MenuComponent;
-  let fixture: ComponentFixture<MenuComponent>;
   let api: SecurityService;
-  let componentElement: DebugElement;
-  let sessionUser: SessionUser;
+  let defaultUser: SessionUser;
+  let defaultMenuAction: MenuAction;
+  let defaultMenuLink: MenuLink;
+  let defaultMenuRoute: MenuRoute;
+  let spec: SpectatorRouting<MenuComponent>;
+  const createComponent = createRoutingFactory({
+    component: MenuComponent,
+    declarations: [mock.action, mock.external, mock.internal, WidgetDirective],
+    imports: [IconsModule, RouterTestingModule, MockBawApiModule],
+  });
+  const menuTypes: ("action" | "secondary")[] = ["action", "secondary"];
 
-  function assertTitle(target: HTMLElement, header: string) {
-    expect(target).toBeTruthy();
-    expect(target.innerText.trim()).toBe(header);
+  function getMenuActions() {
+    return spec.queryAll(mock.action);
   }
 
-  function assertLabel(target: HTMLElement, labelText: string) {
-    const label: HTMLElement = target.querySelector("#label");
-    expect(label).toBeTruthy();
-    expect(label.innerText.trim()).toBe(labelText);
+  function getMenuLinks() {
+    return spec.queryAll(mock.external);
   }
 
-  function findLinks(
-    selector: "internal-link" | "external-link" | "button"
-  ): HTMLElement[] {
-    return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
+  function getMenuRoutes() {
+    return spec.queryAll(mock.internal);
   }
 
-  function setLoggedInState() {
-    sessionUser = new SessionUser(generateSessionUser());
-    spyOn(api, "getLocalUser").and.callFake(() => sessionUser);
+  function setLoggedInState(user: SessionUser = defaultUser) {
+    spyOn(api, "getLocalUser").and.callFake(() => user);
   }
 
-  function configureTestingModule(data?: any) {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientModule,
-        RouterTestingModule.withRoutes([]),
-        MockBawApiModule,
-      ],
-      declarations: [
-        MenuComponent,
-        MenuButtonComponent,
-        MenuExternalLinkComponent,
-        MenuInternalLinkComponent,
-      ],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(undefined, data, { attribute: 10 }),
-        },
-      ],
-    }).compileComponents();
-
-    router = TestBed.inject(ActivatedRoute);
-    api = TestBed.inject(SecurityService);
-    fixture = TestBed.createComponent(MenuComponent);
-    component = fixture.componentInstance;
-    componentElement = fixture.debugElement;
+  function setup(
+    props?: Partial<MenuComponent>,
+    data: Data = {},
+    params: Params = {}
+  ) {
+    spec = createComponent({
+      detectChanges: false,
+      props,
+      params,
+      data,
+    });
+    api = spec.inject(SecurityService);
   }
 
-  afterEach(() => {
-    localStorage.clear();
+  beforeEach(() => {
+    defaultUser = new SessionUser(generateSessionUser());
+    defaultMenuAction = MenuAction({
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      action: () => {},
+    });
+    defaultMenuLink = MenuLink({
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      uri: () => "http://brokenlink/",
+    });
+    defaultMenuRoute = MenuRoute({
+      label: "label",
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.Base.add("home"),
+    });
   });
 
   describe("menu", () => {
-    beforeEach(() => {
-      configureTestingModule();
-    });
+    function getTitle() {
+      return spec.query<HTMLHeadingElement>("h6");
+    }
+
+    function getWidget() {
+      return spec.query("#widget");
+    }
+
+    function assertTitle(title: string) {
+      expect(getTitle()).toHaveText(title);
+    }
 
     it("should create default title when none provided", () => {
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h6");
-      assertTitle(title, "MENU");
+      setup({ links: List([]) });
+      spec.detectChanges();
+      assertTitle("MENU");
     });
 
     it("should create title when provided", () => {
-      component.title = { label: "SECONDARY", icon: ["fas", "home"] };
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h6");
-      assertTitle(title, "SECONDARY");
+      setup({
+        links: List([]),
+        title: { label: "SECONDARY", icon: ["fas", "home"] },
+      });
+      spec.detectChanges();
+      assertTitle("SECONDARY");
     });
 
     it("should create title icon when provided", () => {
-      component.title = { label: "SECONDARY", icon: ["fas", "home"] };
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h6");
-      assertIcon(title, "fas,home");
+      setup({
+        links: List([]),
+        title: { label: "SECONDARY", icon: ["fas", "home"] },
+      });
+      spec.detectChanges();
+      assertIcon(getTitle(), "fas,home");
     });
 
     it("should create capitalized title", () => {
-      component.title = { label: "secondary", icon: ["fas", "home"] };
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h6");
-      assertTitle(title, "SECONDARY");
+      setup({
+        links: List([]),
+        title: { label: "secondary", icon: ["fas", "home"] },
+      });
+      spec.detectChanges();
+      assertTitle("SECONDARY");
     });
 
-    it("should create no links on action menu", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
+    menuTypes.forEach((menuType) => {
+      it(`should create no links on ${menuType} menu`, () => {
+        setup({ menuType, links: List([]) });
+        spec.detectChanges();
+        expect(getMenuActions().length).toBe(0);
+        expect(getMenuLinks().length).toBe(0);
+        expect(getMenuRoutes().length).toBe(0);
+      });
 
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
+      it(`should create mixed links on ${menuType} menu`, () => {
+        setup({
+          menuType,
+          links: List([defaultMenuAction, defaultMenuLink, defaultMenuRoute]),
+        });
+        spec.detectChanges();
+        expect(getMenuActions().length).toBe(1);
+        expect(getMenuLinks().length).toBe(1);
+        expect(getMenuRoutes().length).toBe(1);
+      });
     });
 
-    it("should create no links on secondary menu", () => {
-      component.menuType = "secondary";
-      component.links = List<AnyMenuItem>([]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
+    it("should not create widget when none provided", () => {
+      setup({ links: List([]) });
+      spec.detectChanges();
+      expect(getWidget().childElementCount).toBe(0);
     });
 
-    it("should create mixed links on action menu", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home"),
-        }),
-        MenuLink({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/",
-        }),
-        MenuAction({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          action: () => {},
-        }),
-      ]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(1);
-      expect(findLinks("external-link").length).toBe(1);
-      expect(findLinks("button").length).toBe(1);
-    });
-
-    it("should create mixed links on secondary menu", () => {
-      component.menuType = "secondary";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home"),
-        }),
-        MenuLink({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/",
-        }),
-        MenuAction({
-          label: "label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          action: () => {},
-        }),
-      ]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(1);
-      expect(findLinks("external-link").length).toBe(1);
-      expect(findLinks("button").length).toBe(1);
-    });
-
-    xit("should not create widget when none provided", () => {});
     xit("should create widget when provided", () => {});
   });
 
-  describe("internal links", () => {
-    const linkSelector = "internal-link";
-    let defaultLink: MenuRoute;
-
-    beforeEach(() => {
-      configureTestingModule();
-
-      defaultLink = MenuRoute({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-      });
-    });
-
-    it("should create single link in action menu", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(1);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should create single link in secondary menu", () => {
-      component.menuType = "secondary";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(1);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should create multiple links", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          label: "label 1",
-        }),
-        MenuRoute({
-          ...defaultLink,
-          label: "label 2",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(2);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should label link", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          label: "Custom Label",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertLabel(link, "Custom Label");
-    });
-
-    it("should create link icon", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          icon: ["fas", "exclamation-triangle"],
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertIcon(link, "fas,exclamation-triangle");
-    });
-
-    it("should create link tooltip", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          tooltip: () => "Custom Tooltip",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, "Custom Tooltip");
-    });
-
-    it("should create link tooltip with username", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          tooltip: (user) => `${user.userName} tooltip`,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, `${sessionUser.userName} tooltip`);
-    });
-
-    it("should create link route", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          route: StrongRoute.Base.add("custom_route"),
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0].querySelector("a");
-      assertRoute(link, "/custom_route");
-    });
-
-    it("should create link route with parameter", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          route: StrongRoute.Base.add("home").add(":attribute"),
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0].querySelector("a");
-      assertRoute(link, "/home/10");
-    });
-
-    it("should not filter links without predicate", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          route: StrongRoute.Base.add("home"),
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-
-    it("should filter links without passing predicates", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuRoute({
-          ...defaultLink,
-          label: "label 1",
-          predicate: () => true,
-        }),
-        MenuRoute({
-          ...defaultLink,
-          label: "label 2",
-          predicate: () => false,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-      assertLabel(links[0], "label 1");
-    });
-
-    it("should filter duplicate links (by object identity)", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink, defaultLink]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-  });
-
-  describe("external links", () => {
-    const linkSelector = "external-link";
-    let defaultLink: MenuLink;
-
-    beforeEach(() => {
-      configureTestingModule();
-      defaultLink = MenuLink({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        uri: () => "http://brokenlink/",
-      });
-    });
-
-    it("should create single link in action menu", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(1);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should create single link in secondary menu", () => {
-      component.menuType = "secondary";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(1);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should create multiple links", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          label: "label 1",
-        }),
-        MenuLink({
-          ...defaultLink,
-          label: "label 2",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(2);
-      expect(findLinks("button").length).toBe(0);
-    });
-
-    it("should label link", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          label: "Custom Label",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertLabel(link, "Custom Label");
-    });
-
-    it("should create link icon", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          icon: ["fas", "exclamation-triangle"],
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertIcon(link, "fas,exclamation-triangle");
-    });
-
-    it("should create link tooltip", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          tooltip: () => "Custom Tooltip",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, "Custom Tooltip");
-    });
-
-    it("should create link tooltip with username", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          tooltip: (user) => `${user.userName} tooltip`,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, `${sessionUser.userName} tooltip`);
-    });
-
-    it("should create link href", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          uri: () => "http://brokenlink/",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0].querySelector("a");
-      assertHref(link, "http://brokenlink/");
-    });
-
-    it("should create link href with router params", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          uri: (params) => "http://brokenlink/" + params.attribute,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0].querySelector("a");
-      assertHref(link, "http://brokenlink/10");
-    });
-
-    it("should not filter links without predicate", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-
-    it("should filter links without passing predicates", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuLink({
-          ...defaultLink,
-          label: "label 1",
-          predicate: () => true,
-        }),
-        MenuLink({
-          ...defaultLink,
-          label: "label 2",
-          predicate: () => false,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-      assertLabel(links[0], "label 1");
-    });
-
-    it("should filter duplicate links (by object identity)", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink, defaultLink]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-  });
-
-  describe("action buttons", () => {
-    const linkSelector = "button";
-    let defaultLink: MenuAction;
-
-    function assertFunction(target: HTMLElement, spy: jasmine.Spy) {
-      const button: HTMLButtonElement = target.querySelector("button");
-      expect(button).toBeTruthy();
-
-      button.click();
-      expect(spy).toHaveBeenCalled();
+  [
+    {
+      title: "Menu Action",
+      baseLink: () => defaultMenuAction,
+      create: (data) => MenuAction(data),
+      getLink: () => getMenuActions(),
+      action: true,
+    },
+    {
+      title: "Menu External Link",
+      baseLink: () => defaultMenuLink,
+      create: (data) => MenuLink(data),
+      getLink: () => getMenuLinks(),
+      link: true,
+    },
+    {
+      title: "Menu Internal Link",
+      baseLink: () => defaultMenuRoute,
+      create: (data) => MenuRoute(data),
+      getLink: () => getMenuRoutes(),
+      route: true,
+    },
+  ].forEach((test) => {
+    function createLink(args: object = {}) {
+      return test.create({ ...test.baseLink(), ...args });
     }
 
-    beforeEach(() => {
-      configureTestingModule();
-      defaultLink = MenuAction({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        action: () => {},
+    function assertLinks(length: number) {
+      expect(getMenuActions().length).toBe(test.action ? length : 0);
+      expect(getMenuLinks().length).toBe(test.link ? length : 0);
+      expect(getMenuRoutes().length).toBe(test.route ? length : 0);
+    }
+
+    describe(test.title, () => {
+      menuTypes.forEach((menuType) => {
+        it(`should create single link for ${menuType} menu`, () => {
+          setup({ menuType, links: List([createLink()]) });
+          spec.detectChanges();
+          assertLinks(1);
+        });
+
+        it(`should create multiple links for ${menuType} menu`, () => {
+          setup({ menuType, links: List([createLink(), createLink()]) });
+          spec.detectChanges();
+          assertLinks(2);
+        });
+
+        it(`should set link id for ${menuType} menu`, () => {
+          setup({ menuType, links: List([createLink()]) });
+          spec.detectChanges();
+          expect(test.getLink()[0].id).toBe(`${menuType}-tooltip-0`);
+        });
+
+        it(`should set link ids for ${menuType} menu`, () => {
+          setup({ menuType, links: List([createLink(), createLink()]) });
+          spec.detectChanges();
+          expect(test.getLink()[0].id).toBe(`${menuType}-tooltip-0`);
+          expect(test.getLink()[1].id).toBe(`${menuType}-tooltip-1`);
+        });
+
+        it(`should set link placement for ${menuType} menu`, () => {
+          setup({ menuType, links: List([createLink()]) });
+          spec.detectChanges();
+          expect(test.getLink()[0].placement).toBe(
+            menuType === "action" ? "left" : "right"
+          );
+        });
+      });
+
+      it("should set link tooltip", () => {
+        const link = createLink();
+        setup({ menuType: "action", links: List([link]) });
+        spec.detectChanges();
+        expect(test.getLink()[0].tooltip).toBe(link.tooltip());
+      });
+
+      it("should set link tooltip with username", () => {
+        const link = createLink({
+          tooltip: (user: SessionUser) => `Custom tooltip for ${user.userName}`,
+        });
+        setup({ menuType: "action", links: List([link]) });
+        setLoggedInState();
+        spec.detectChanges();
+        expect(test.getLink()[0].tooltip).toBe(
+          `Custom tooltip for ${defaultUser.userName}`
+        );
+      });
+
+      it("should set link link", () => {
+        const link = createLink();
+        setup({ menuType: "action", links: List([link]) });
+        spec.detectChanges();
+        expect(test.getLink()[0].link).toEqual(link);
+      });
+
+      describe("predicate", () => {
+        it("should filter links without passing predicate", () => {
+          setup({
+            menuType: "action",
+            links: List([
+              createLink({ predicate: undefined }),
+              createLink({ predicate: () => false }),
+              createLink({ predicate: () => true }),
+            ]),
+          });
+          spec.detectChanges();
+          assertLinks(2);
+        });
+
+        it("should filter duplicate links (by object identity)", () => {
+          const link = createLink();
+          setup({ menuType: "action", links: List([link, link, link]) });
+          spec.detectChanges();
+          assertLinks(1);
+        });
+
+        it("should not provide user to predicate function when unauthenticated", (done) => {
+          const link = createLink({
+            predicate: (_user) => {
+              expect(_user).toBe(null);
+              done();
+            },
+          });
+          setup({ menuType: "action", links: List([link]) });
+          spec.detectChanges();
+        });
+
+        it("should provide user to predicate function when authenticated", (done) => {
+          const user = new SessionUser(generateSessionUser());
+          const link = createLink({
+            predicate: (_user) => {
+              expect(_user).toEqual(user);
+              done();
+            },
+          });
+          setup({ menuType: "action", links: List([link]) });
+          setLoggedInState(user);
+          spec.detectChanges();
+        });
+
+        it("should provide page data to predicate function", (done) => {
+          const data = { value: 42 };
+          const link = createLink({
+            predicate: (_, _data) => {
+              expect(_data).toEqual(data);
+              done();
+            },
+          });
+          setup({ menuType: "action", links: List([link]) }, data);
+          spec.detectChanges();
+        });
       });
     });
+  });
 
-    it("should create single link in action menu", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(1);
+  describe("Menu External Link", () => {
+    it("should set uri route", () => {
+      setup({ menuType: "action", links: List([defaultMenuLink]) });
+      spec.detectChanges();
+      expect(getMenuLinks()[0].uri).toBe(defaultMenuLink.uri({}));
     });
 
-    it("should create single link in secondary menu", () => {
-      component.menuType = "secondary";
-      component.links = List<AnyMenuItem>([defaultLink]);
-      fixture.detectChanges();
+    it("should set uri route with parameter", () => {
+      const params = { attribute: 10 };
+      const link = MenuLink({
+        ...defaultMenuLink,
+        uri: (_params: Params) => `http://broken_link/${_params.attribute}`,
+      });
+      setup({ menuType: "action", links: List([link]) }, undefined, params);
+      spec.detectChanges();
+      expect(getMenuLinks()[0].uri).toBe("http://broken_link/10");
+    });
+  });
 
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(1);
+  describe("Menu Internal Link", () => {
+    it("should set link route", () => {
+      setup({ menuType: "action", links: List([defaultMenuRoute]) });
+      spec.detectChanges();
+      expect(getMenuRoutes()[0].route).toBe(defaultMenuRoute.route.format({}));
     });
 
-    it("should create multiple links", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          label: "label 1",
-        }),
-        MenuAction({
-          ...defaultLink,
-          label: "label 2",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(2);
-    });
-
-    it("should label link", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          label: "Custom Label",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertLabel(link, "Custom Label");
-    });
-
-    it("should create link icon", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          icon: ["fas", "exclamation-triangle"],
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertIcon(link, "fas,exclamation-triangle");
-    });
-
-    it("should create link tooltip", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          tooltip: () => "Custom Tooltip",
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, "Custom Tooltip");
-    });
-
-    it("should create link tooltip with username", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          tooltip: (user) => `${user.userName} tooltip`,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertTooltip(link, `${sessionUser.userName} tooltip`);
-    });
-
-    it("should not filter links without predicate", () => {
-      setLoggedInState();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-
-    it("should filter links without passing predicates", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          label: "label 1",
-          predicate: () => true,
-        }),
-        MenuAction({
-          ...defaultLink,
-          label: "label 2",
-          predicate: () => false,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-      assertLabel(links[0], "label 1");
-    });
-
-    it("should filter duplicate links (by object identity)", () => {
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([defaultLink, defaultLink]);
-      fixture.detectChanges();
-
-      const links = findLinks(linkSelector);
-      expect(links.length).toBe(1);
-    });
-
-    it("should execute action", () => {
-      const spy = jasmine.createSpy();
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([
-        MenuAction({
-          ...defaultLink,
-          action: spy,
-        }),
-      ]);
-      fixture.detectChanges();
-
-      const link = findLinks(linkSelector)[0];
-      assertFunction(link, spy);
+    it("should set link route with parameter", () => {
+      const params = { attribute: 10 };
+      const link = MenuRoute({
+        ...defaultMenuRoute,
+        route: StrongRoute.Base.add("home").add(":attribute"),
+      });
+      setup({ menuType: "action", links: List([link]) }, undefined, params);
+      spec.detectChanges();
+      expect(getMenuRoutes()[0].route).toBe("/home/10");
     });
   });
 
   describe("item ordering", () => {
-    function arrange(a, b, c, menuType) {
-      const link1 = MenuRoute({
-        label: "label b",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        order: a,
-      });
-      const link2 = MenuRoute({
-        label: "label a",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("house"),
-        order: b,
-      });
-      const link3 = MenuRoute({
-        label: "label z",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("house"),
-        order: c,
-      });
-      const links = List<AnyMenuItem>([link1, link2, link3]);
-      component.links = links;
-      component.menuType = menuType;
-      fixture.detectChanges();
+    function arrange(a: number, b: number, c: number) {
+      // Labels are set so that lexicographical order can be determined
+      const linkA = MenuRoute({ ...defaultMenuRoute, label: "b", order: a });
+      const linkB = MenuLink({ ...defaultMenuLink, label: "a", order: b });
+      const linkC = MenuAction({ ...defaultMenuAction, label: "z", order: c });
+      return List([linkA, linkB, linkC]);
     }
 
-    beforeEach(() => {
-      configureTestingModule();
-    });
+    function getAllLinks() {
+      return spec.queryAll<HTMLElement>("li");
+    }
 
-    it("should order links on secondary menu", () => {
-      arrange(3, 2, 1, "secondary");
+    function assertLinkA(el: HTMLElement) {
+      expect(el.querySelector("baw-menu-internal-link")).toBeTruthy();
+    }
 
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
+    function assertLinkB(el: HTMLElement) {
+      expect(el.querySelector("baw-menu-external-link")).toBeTruthy();
+    }
 
-      expect(linksText).toEqual([
-        "label z",
-        "tooltip",
-        "label a",
-        "tooltip",
-        "label b",
-        "tooltip",
-      ]);
-    });
+    function assertLinkC(el: HTMLElement) {
+      expect(el.querySelector("baw-menu-button")).toBeTruthy();
+    }
 
-    it("should order links on action menu", () => {
-      arrange(2, 3, 1, "action");
+    menuTypes.forEach((menuType) => {
+      describe(menuType, () => {
+        it("should order links", () => {
+          setup({ menuType, links: arrange(3, 2, 1) });
+          spec.detectChanges();
 
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
+          const links = getAllLinks();
+          assertLinkA(links[3]);
+          assertLinkB(links[2]);
+          assertLinkC(links[1]);
+        });
 
-      expect(linksText).toEqual([
-        "label z",
-        "tooltip",
-        "label b",
-        "tooltip",
-        "label a",
-        "tooltip",
-      ]);
-    });
+        it("ensures order is stable if not specified", () => {
+          setup({ menuType, links: arrange(undefined, undefined, undefined) });
+          spec.detectChanges();
 
-    it("ensures order is stable if not specified for the secondary menu", async () => {
-      arrange(undefined, undefined, undefined, "secondary");
+          const links = getAllLinks();
+          assertLinkA(links[1]);
+          assertLinkB(links[2]);
+          assertLinkC(links[3]);
+        });
 
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
+        it("should sort lexicographically only if order is equal", () => {
+          setup({ menuType, links: arrange(3, 3, 3) });
+          spec.detectChanges();
 
-      expect(linksText).toEqual([
-        "label b",
-        "tooltip",
-        "label a",
-        "tooltip",
-        "label z",
-        "tooltip",
-      ]);
-    });
+          const links = getAllLinks();
+          assertLinkA(links[2]);
+          assertLinkB(links[1]);
+          assertLinkC(links[3]);
+        });
 
-    it("ensures order is stable if not specified for the action menu", async () => {
-      arrange(undefined, undefined, undefined, "action");
+        it("should order links with order link first", () => {
+          setup({ menuType, links: arrange(undefined, undefined, -3) });
+          spec.detectChanges();
 
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
+          const links = getAllLinks();
+          assertLinkA(links[2]);
+          assertLinkB(links[3]);
+          assertLinkC(links[1]);
+        });
 
-      expect(linksText).toEqual([
-        "label b",
-        "tooltip",
-        "label a",
-        "tooltip",
-        "label z",
-        "tooltip",
-      ]);
-    });
+        it("should order sub-links", () => {
+          const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
+          const child = MenuRoute({ ...defaultMenuRoute, parent, order: 1 });
+          setup({ menuType, links: List([child, parent]) });
+          spec.detectChanges();
 
-    it("should sort lexicographically only if order is equal on secondary menu", () => {
-      arrange(3, 3, 3, "action");
+          const links = getMenuRoutes();
+          expect(links[0].link).toEqual(parent);
+          expect(links[1].link).toEqual(child);
+        });
 
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
+        it("should order sub-links inside a parent", () => {
+          const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
+          const child1 = MenuRoute({
+            ...defaultMenuRoute,
+            parent,
+            label: "b",
+            order: 1,
+          });
+          const child2 = MenuRoute({
+            ...defaultMenuRoute,
+            parent,
+            label: "a",
+            order: 1,
+          });
+          setup({ menuType, links: List([child2, child1, parent]) });
+          spec.detectChanges();
 
-      expect(linksText).toEqual([
-        "label a",
-        "tooltip",
-        "label b",
-        "tooltip",
-        "label z",
-        "tooltip",
-      ]);
-    });
-
-    it("should sort lexicographically only if order is equal on action menu", () => {
-      arrange(3, 3, 3, "action");
-
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
-
-      expect(linksText).toEqual([
-        "label a",
-        "tooltip",
-        "label b",
-        "tooltip",
-        "label z",
-        "tooltip",
-      ]);
-    });
-
-    it("should order links with ordered link first on secondary menu", () => {
-      arrange(undefined, undefined, -3, "secondary");
-
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
-
-      expect(linksText).toEqual([
-        "label z",
-        "tooltip",
-        "label b",
-        "tooltip",
-        "label a",
-        "tooltip",
-      ]);
-    });
-
-    it("should order links with ordered link first on action menu", () => {
-      arrange(undefined, undefined, -3, "action");
-
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
-
-      expect(linksText).toEqual([
-        "label z",
-        "tooltip",
-        "label b",
-        "tooltip",
-        "label a",
-        "tooltip",
-      ]);
-    });
-
-    it("should order sub-links on secondary menu", () => {
-      const parent = MenuRoute({
-        label: "parent",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        order: 1,
+          const links = getMenuRoutes();
+          expect(links[0].link).toEqual(parent);
+          expect(links[1].link).toEqual(child2);
+          expect(links[2].link).toEqual(child1);
+        });
       });
-      const link2 = MenuRoute({
-        label: "label a",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("house"),
-        parent,
-        order: 1,
-      });
-      component.links = List<AnyMenuItem>([link2, parent]);
-      component.menuType = "secondary";
-      fixture.detectChanges();
-
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
-
-      expect(linksText).toEqual(["parent", "tooltip", "label a", "tooltip"]);
-    });
-
-    it("should order sub-links inside a parent on secondary menu", () => {
-      const parent = MenuRoute({
-        label: "parent",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        order: 1,
-      });
-      const link1 = MenuRoute({
-        label: "label b",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        parent,
-        order: 1,
-      });
-      const link2 = MenuRoute({
-        label: "label a",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("house"),
-        parent,
-        order: 1,
-      });
-      component.links = List<AnyMenuItem>([link2, link1, parent]);
-      component.menuType = "secondary";
-      fixture.detectChanges();
-
-      const linksText = getText(
-        componentElement,
-        "baw-menu-internal-link span"
-      );
-
-      expect(linksText).toEqual([
-        "parent",
-        "tooltip",
-        "label a",
-        "tooltip",
-        "label b",
-        "tooltip",
-      ]);
-    });
-  });
-
-  describe("predicate", () => {
-    it("should not call predicate with user when unauthenticated", () => {
-      configureTestingModule();
-      const link = MenuRoute({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true,
-      });
-
-      spyOn(link, "predicate").and.callThrough();
-
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([link]);
-      fixture.detectChanges();
-
-      expect(link.predicate).toHaveBeenCalledWith(null, { resolvers: {} });
-    });
-
-    it("should call predicate with user with authenticated", () => {
-      configureTestingModule();
-      setLoggedInState();
-      const link = MenuRoute({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true,
-      });
-
-      spyOn(link, "predicate").and.callThrough();
-
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([link]);
-      fixture.detectChanges();
-
-      expect(link.predicate).toHaveBeenCalledWith(sessionUser, {
-        resolvers: {},
-      });
-    });
-
-    it("should call predicate with page data when unauthenticated", () => {
-      const pageData = {
-        resolvers: {},
-        value1: 1,
-        value2: 2,
-      };
-
-      configureTestingModule(pageData);
-      const link = MenuRoute({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true,
-      });
-
-      spyOn(link, "predicate").and.callThrough();
-
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([link]);
-      fixture.detectChanges();
-
-      expect(link.predicate).toHaveBeenCalledWith(null, pageData);
-    });
-
-    it("should call predicate with page data when authenticated", () => {
-      const pageData = {
-        resolvers: {},
-        value1: 1,
-        value2: 2,
-      };
-
-      configureTestingModule(pageData);
-      setLoggedInState();
-      const link = MenuRoute({
-        label: "label",
-        icon: ["fas", "home"],
-        tooltip: () => "tooltip",
-        route: StrongRoute.Base.add("home"),
-        predicate: (user, data) => true,
-      });
-
-      spyOn(link, "predicate").and.callThrough();
-
-      component.menuType = "action";
-      component.links = List<AnyMenuItem>([link]);
-      fixture.detectChanges();
-
-      expect(link.predicate).toHaveBeenCalledWith(sessionUser, pageData);
     });
   });
 });

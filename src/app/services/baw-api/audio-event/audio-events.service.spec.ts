@@ -28,10 +28,6 @@ describe("AudioEventsService", function () {
     this.service = TestBed.inject(AudioEventsService);
   });
 
-  it("should be created", function () {
-    expect(this.service).toBeTruthy();
-  });
-
   validateApiList<AudioEvent, AudioEventsService>(
     "/audio_recordings/5/audio_events/",
     undefined,

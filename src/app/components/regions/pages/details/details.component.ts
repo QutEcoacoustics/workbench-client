@@ -14,12 +14,12 @@ import {
 import { newPointMenuItem } from "@components/sites/points.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { PermissionsShieldComponent } from "@shared/permissions-shield/permissions-shield.component";
-import { WidgetMenuItem } from "@shared/widget/widgetItem";
 import { List } from "immutable";
 
 export const regionMenuItemActions = [
