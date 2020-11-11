@@ -2,13 +2,9 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import {
-  FaIconLibrary,
-  FontAwesomeModule,
-} from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
-import { fontAwesomeLibraries } from "src/app/app.helper";
+import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "../loading/loading.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
@@ -35,15 +31,11 @@ import { WidgetDirective } from "./widget/widget.directive";
     CommonModule,
     RouterModule,
     NgbModule,
-    FontAwesomeModule,
+    IconsModule,
     AuthenticatedImageModule,
     LoadingModule,
     PipesModule,
   ],
   exports: [MenuComponent, PermissionsShieldComponent, WidgetDirective],
 })
-export class MenuModule {
-  constructor(library: FaIconLibrary) {
-    fontAwesomeLibraries(library);
-  }
-}
+export class MenuModule {}

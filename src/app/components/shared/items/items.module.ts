@@ -1,11 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import {
-  FaIconLibrary,
-  FontAwesomeModule,
-} from "@fortawesome/angular-fontawesome";
-import { fontAwesomeLibraries } from "src/app/app.helper";
+import { IconsModule } from "@shared/icons/icons.module";
 import { ItemComponent } from "./item/item.component";
 import { ItemsComponent } from "./items/items.component";
 import { SelectableItemsComponent } from "./selectable-items/selectable-items.component";
@@ -15,11 +11,7 @@ import { SelectableItemsComponent } from "./selectable-items/selectable-items.co
  */
 @NgModule({
   declarations: [ItemsComponent, ItemComponent, SelectableItemsComponent],
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, IconsModule],
   exports: [ItemsComponent, ItemComponent, SelectableItemsComponent],
 })
-export class ItemsModule {
-  constructor(library: FaIconLibrary) {
-    fontAwesomeLibraries(library);
-  }
-}
+export class ItemsModule {}

@@ -1,5 +1,3 @@
-import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
-import { fas } from "@fortawesome/free-solid-svg-icons";
 import { ConfigOption } from "@ngx-formly/core";
 import {
   formlyInputTypes,
@@ -26,14 +24,6 @@ export const formlyRoot: ConfigOption = {
   wrappers: formlyWrappers,
   validationMessages: formlyValidationMessages,
 };
-
-/**
- * Load icon packs into font awesome library
- * @param library Font awesome library
- */
-export function fontAwesomeLibraries(library: FaIconLibrary) {
-  library.addIconPacks(fas);
-}
 
 /**
  * Default number of milliseconds to wait when de-bouncing an input

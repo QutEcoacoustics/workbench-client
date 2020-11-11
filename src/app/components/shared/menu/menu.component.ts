@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   ComponentFactoryResolver,
   Input,
@@ -18,6 +17,7 @@ import {
   LabelAndIcon,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
+import { Placement } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { WidgetComponent } from "./widget/widget.component";
 import { WidgetDirective } from "./widget/widget.directive";
@@ -41,11 +41,9 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   public menuWidget: WidgetDirective;
 
   public filteredLinks: Set<AnyMenuItem>;
-  public placement: "left" | "right";
+  public placement: Placement;
   public params: Params;
-  public url: string;
   public user: SessionUser;
-  public loading: boolean;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
@@ -63,11 +61,12 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
     // Get user details
     this.user = this.api.getLocalUser();
     this.placement = this.menuType === "action" ? "left" : "right";
-    const pageData = this.route.snapshot.data;
+    const snapshot = this.route.snapshot;
+    const pageData = snapshot.data;
 
     // Filter links
     this.filteredLinks = new Set(
-      this?.links
+      this.links
         ?.filter((link) => {
           if (!link.predicate || link.active) {
             // Clear any modifications to link by secondary menu
@@ -76,13 +75,13 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
           }
 
           // If link has predicate function, test if returns true
-          return link.predicate(this?.user, pageData);
+          return link.predicate(this.user, pageData);
         })
         ?.sort(this.compare)
     );
 
     // Retrieve router parameters to override link attributes
-    this.params = this.route.snapshot.params;
+    this.params = snapshot.params;
 
     // Load widget
     this.loadComponent();
@@ -92,7 +91,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
    * Determine whether to show links
    */
   public linksExist() {
-    return this.filteredLinks.size > 0 && !this.loading;
+    return this.filteredLinks.size > 0;
   }
 
   /**

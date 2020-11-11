@@ -1,4 +1,3 @@
-import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -22,6 +21,10 @@ describe("MenuExternalLinkComponent", () => {
     component: MenuExternalLinkComponent,
     imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
   });
+
+  function retrieveWrapper() {
+    return spec.query<HTMLElement>("span");
+  }
 
   function retrieveLink() {
     return spec.query<HTMLAnchorElement>("a");
@@ -97,7 +100,7 @@ describe("MenuExternalLinkComponent", () => {
         link: MenuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveLink(), "custom tooltip");
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
     it("should not use link tooltip", () => {
@@ -106,19 +109,19 @@ describe("MenuExternalLinkComponent", () => {
         link: MenuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveLink(), "custom tooltip");
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
     it("should handle left placement of tooltip", () => {
       setup({ placement: "left" });
       spec.detectChanges();
-      assertAttribute(retrieveLink(), "placement", "left");
+      assertAttribute(retrieveWrapper(), "placement", "left");
     });
 
     it("should handle right placement of tooltip", () => {
       setup({ placement: "right" });
       spec.detectChanges();
-      assertAttribute(retrieveLink(), "placement", "right");
+      assertAttribute(retrieveWrapper(), "placement", "right");
     });
   });
 

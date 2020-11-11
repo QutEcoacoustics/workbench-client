@@ -22,6 +22,10 @@ describe("MenuInternalLinkComponent", () => {
     imports: [SharedModule, RouterTestingModule],
   });
 
+  function retrieveWrapper() {
+    return spec.query<HTMLElement>("span");
+  }
+
   function retrieveLink() {
     return spec.query<HTMLAnchorElement>("a");
   }
@@ -104,7 +108,7 @@ describe("MenuInternalLinkComponent", () => {
         link: MenuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveLink(), "custom tooltip");
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
     it("should not use link tooltip", () => {
@@ -113,19 +117,19 @@ describe("MenuInternalLinkComponent", () => {
         link: MenuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveLink(), "custom tooltip");
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
     it("should handle left placement of tooltip", () => {
       setup({ placement: "left" });
       spec.detectChanges();
-      assertAttribute(retrieveLink(), "placement", "left");
+      assertAttribute(retrieveWrapper(), "placement", "left");
     });
 
     it("should handle right placement of tooltip", () => {
       setup({ placement: "right" });
       spec.detectChanges();
-      assertAttribute(retrieveLink(), "placement", "right");
+      assertAttribute(retrieveWrapper(), "placement", "right");
     });
   });
 

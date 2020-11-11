@@ -24,6 +24,7 @@ import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { HeaderModule } from "./header/header.module";
+import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
@@ -60,6 +61,7 @@ export const sharedModules = [
   NgxDatatableModule,
   ToastrModule,
 
+  IconsModule,
   DirectivesModule,
   PipesModule,
   CustomInputsModule,
