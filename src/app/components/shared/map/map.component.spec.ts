@@ -34,13 +34,13 @@ describe("MapComponent", () => {
 
   it("should create", () => {
     spectator.setInput("markers", List([]));
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
   });
 
   it("should display placeholder", () => {
     spectator.setInput("markers", List([]));
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
     const label = spectator
       .query<HTMLDivElement>("div.map-placeholder")
       .innerText.trim();
@@ -52,7 +52,7 @@ describe("MapComponent", () => {
       "markers",
       List([new Site(generateSite()).getMapMarker()])
     );
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     expect(getMap()).toBeTruthy();
   });
@@ -62,7 +62,7 @@ describe("MapComponent", () => {
       "markers",
       List([new Site(generateSite()).getMapMarker()])
     );
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     expect(getMap()).toBeTruthy();
   });
@@ -72,7 +72,7 @@ describe("MapComponent", () => {
       "markers",
       List([new Site(generateSite()).getMapMarker()])
     );
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     expect(getInfoWindow()).toBeTruthy();
   });
@@ -82,7 +82,7 @@ describe("MapComponent", () => {
       [1, 2, 3].map(() => new Site(generateSite()).getMapMarker())
     );
     spectator.setInput("markers", markers);
-    spectator.component.ngOnChanges();
+    spectator.detectChanges();
 
     expect(getMarker().length).toBe(3);
   });

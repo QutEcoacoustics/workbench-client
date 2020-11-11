@@ -57,7 +57,6 @@ describe("CardsComponent", () => {
     beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
     it("should handle no cards", () => {
-      spectator.component.ngOnChanges();
       spectator.detectChanges();
       expect(getImageCards().length).toBe(0);
       expect(getDefaultCards().length).toBe(0);
@@ -65,7 +64,7 @@ describe("CardsComponent", () => {
 
     it("should handle empty cards list", () => {
       spectator.setInput("cards", List([]));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       expect(getImageCards().length).toBe(0);
       expect(getDefaultCards().length).toBe(0);
     });
@@ -79,8 +78,9 @@ describe("CardsComponent", () => {
           image: modelData.imageUrls(),
         }),
       };
-      spectator.setInput("cards", List([defaultCard, imageCard]));
-      expect(() => spectator.component.ngOnChanges()).toThrow();
+      expect(() =>
+        spectator.setInput("cards", List([defaultCard, imageCard]))
+      ).toThrow();
     });
   });
 
@@ -93,27 +93,27 @@ describe("CardsComponent", () => {
 
     it("should create single card", () => {
       spectator.setInput("cards", List([{ title: "title" }]));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       expect(getDefaultCards().length).toBe(1);
     });
 
     it("should create single card with title", () => {
       spectator.setInput("cards", List([{ title: "custom title" }]));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       assertCard(getDefaultCards()[0], "custom title");
     });
 
     it("should create multiple cards", () => {
       const titles = [1, 2, 3].map((id) => ({ title: "title" + id }));
       spectator.setInput("cards", List(titles));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       expect(getDefaultCards().length).toBe(3);
     });
 
     it("should create multiple cards with titles", () => {
       const titles = [1, 2, 3].map((id) => ({ title: "title" + id }));
       spectator.setInput("cards", List(titles));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       getDefaultCards().forEach((card, index) => {
         assertCard(card, titles[index].title);
       });
@@ -132,7 +132,7 @@ describe("CardsComponent", () => {
         "cards",
         List([{ title: "title", model: defaultModel }])
       );
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       expect(getImageCards().length).toBe(1);
     });
 
@@ -141,7 +141,7 @@ describe("CardsComponent", () => {
         "cards",
         List([{ title: "custom title", model: defaultModel }])
       );
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       assertCard(getImageCards()[0], "custom title");
     });
 
@@ -151,7 +151,7 @@ describe("CardsComponent", () => {
         model: defaultModel,
       }));
       spectator.setInput("cards", List(titles));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       expect(getImageCards().length).toBe(3);
     });
 
@@ -161,7 +161,7 @@ describe("CardsComponent", () => {
         model: defaultModel,
       }));
       spectator.setInput("cards", List(titles));
-      spectator.component.ngOnChanges();
+      spectator.detectChanges();
       getImageCards().forEach((card, index) => {
         assertCard(card, titles[index].title);
       });
