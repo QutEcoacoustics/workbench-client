@@ -100,10 +100,10 @@ describe("BawApiService", () => {
   let httpMock: HttpTestingController;
 
   // Multi response metadata
-  let multiMeta: Meta;
+  let multiMeta: Meta<MockModel>;
 
   // Single response metadata
-  const singleMeta: Meta = { status: 200, message: "OK" };
+  const singleMeta: Meta<MockModel> = { status: 200, message: "OK" };
 
   // Api error metadata
   const errorMeta: Meta = {

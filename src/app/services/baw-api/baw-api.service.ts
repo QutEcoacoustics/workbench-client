@@ -272,6 +272,16 @@ export abstract class BawApiService<Model extends AbstractModel> {
 }
 
 /**
+ * Sorting metadata from api response
+ */
+export interface Sorting<K> {
+  /** Which key to sort by */
+  orderBy: K;
+  /** Sorting direction */
+  direction: "desc" | "asc";
+}
+
+/**
  * Filter paging metadata from api response
  */
 export interface Paging {
@@ -388,12 +398,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
     exclude?: K[];
   };
   /** Current sorting options */
-  sorting?: {
-    /** Which key to sort by */
-    orderBy: string;
-    /** Sorting direction */
-    direction: "desc" | "asc";
-  };
+  sorting?: Sorting<K>;
   /** Current page data */
   paging?: Paging;
 }
@@ -401,7 +406,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
 /**
  * Metadata from api response
  */
-export interface Meta extends Filters {
+export interface Meta<T = {}> extends Filters<T> {
   /** Response status */
   status?: number;
   /** Human readable response status */

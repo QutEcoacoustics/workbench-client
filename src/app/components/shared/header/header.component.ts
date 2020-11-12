@@ -6,6 +6,7 @@ import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
 } from "@helpers/app-initializer/app-initializer";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
@@ -17,7 +18,7 @@ import { SessionUser } from "@models/User";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { contactUsMenuItem } from "../../about/about.menus";
 import { adminDashboardMenuItem } from "../../admin/admin.menus";
 import { homeMenuItem } from "../../home/home.menus";
@@ -70,14 +71,15 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       contactUsMenuItem,
     ]);
 
-    this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (val) => {
-        if (val instanceof NavigationEnd) {
-          this.toggleCollapse(true);
-        }
-      },
-      (err) => console.error("HeaderComponent: ", err)
-    );
+    this.router.events
+      .pipe(
+        filter((val) => val instanceof NavigationEnd),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe(
+        () => this.toggleCollapse(true),
+        (err) => console.error("HeaderComponent: ", err)
+      );
 
     this.api
       .getAuthTrigger()
@@ -113,11 +115,16 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       .signOut()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        error: (err: ApiErrorDetails) => {
-          this.notifications.error(err.message);
-        },
+        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
         complete: () => {
-          this.router.navigate([homeMenuItem.route.toString()]);
+          if (this.hasLocationGlobal()) {
+            // If the location global class exists, use it to reload the page
+            // Location may be undefined during SSR
+            this.reloadPage();
+          } else {
+            // Else just redirect back to home
+            this.router.navigate(homeMenuItem.route.toRoute());
+          }
         },
       });
   }
@@ -149,5 +156,21 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
       tooltip: () => "UPDATE ME",
       uri: () => item.url,
     });
+  }
+
+  /**
+   * Determine if window.location is instantiated
+   * ! This is extracted to a separate function so that tests can be performed.
+   */
+  private hasLocationGlobal() {
+    return isInstantiated(location);
+  }
+
+  /**
+   * Reload page.
+   * ! This is extracted to a separate function so that tests can be performed.
+   */
+  private reloadPage() {
+    location.reload();
   }
 }

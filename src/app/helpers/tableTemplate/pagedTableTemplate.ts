@@ -119,7 +119,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       this.filters.sorting = undefined;
     } else {
       this.filters.sorting = {
-        orderBy: this.sortKeys[event.column.prop],
+        orderBy: this.sortKeys[event.column.prop] as keyof M,
         direction: event.newValue,
       };
     }

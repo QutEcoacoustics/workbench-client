@@ -1,8 +1,8 @@
-import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { CmsService } from "@baw-api/cms/cms.service";
 import { MayBeAsync } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
-import { Spectator, SpyObject } from "@ngneat/spectator";
+import { Spectator } from "@ngneat/spectator";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
@@ -15,9 +15,8 @@ import {
   IdOr,
 } from "../../services/baw-api/api-common";
 import { Filters } from "../../services/baw-api/baw-api.service";
-import { nStepObservable } from "./general";
 
-export const defaultFilters: Filters = {
+export const defaultFilters: Filters<AbstractModel> = {
   filter: {},
   projection: {},
   sorting: { orderBy: "id", direction: "asc" },
@@ -47,7 +46,7 @@ export function validateApiFilter<
 >(
   endpoint: string,
   models: M[] = [],
-  filters: Filters = defaultFilters,
+  filters: Filters<AbstractModel> = defaultFilters,
   ...parameters: any[]
 ) {
   describe("Api Filter", function () {
