@@ -1,66 +1,47 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { userResolvers } from "@baw-api/user/user.service";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
-import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
-  let component: MyProfileComponent;
-  let fixture: ComponentFixture<MyProfileComponent>;
   let defaultUser: User;
+  let spec: SpectatorRouting<MyProfileComponent>;
+  const createComponent = createRoutingFactory({
+    component: MyProfileComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    stubsEnabled: false,
+  });
 
-  function configureTestingModule(model: User, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      imports: [
-        SharedModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [MyProfileComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { user: userResolvers.show },
-            { user: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
+  function setup(model: User, error?: ApiErrorDetails) {
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: { user: "resolver" },
+        user: { model, error },
+      },
+    });
 
-    fixture = TestBed.createComponent(MyProfileComponent);
-    const projectApi = TestBed.inject(ProjectsService) as SpyObject<
-      ProjectsService
-    >;
-    const tagApi = TestBed.inject(TagsService) as SpyObject<TagsService>;
-    const bookmarkApi = TestBed.inject(BookmarksService) as SpyObject<
-      BookmarksService
-    >;
-    const siteApi = TestBed.inject(ShallowSitesService) as SpyObject<
-      ShallowSitesService
-    >;
-    component = fixture.componentInstance;
+    const audioEventsApi = spec.inject(ShallowAudioEventsService);
+    const bookmarksApi = spec.inject(BookmarksService);
+    const projectsApi = spec.inject(ProjectsService);
+    const sitesApi = spec.inject(ShallowSitesService);
+    const tagsApi = spec.inject(TagsService);
 
-    projectApi.list.and.callFake(() => new Subject());
-    tagApi.list.and.callFake(() => new Subject());
-    bookmarkApi.list.and.callFake(() => new Subject());
-    siteApi.list.and.callFake(() => new Subject());
-
-    fixture.detectChanges();
+    audioEventsApi.filterByCreator.andCallFake(() => new Subject());
+    bookmarksApi.filterByCreator.andCallFake(() => new Subject());
+    projectsApi.filterByCreator.andCallFake(() => new Subject());
+    sitesApi.filterByCreator.andCallFake(() => new Subject());
+    tagsApi.filterByCreator.andCallFake(() => new Subject());
   }
 
   beforeEach(() => {
@@ -68,7 +49,10 @@ describe("MyProfileComponent", () => {
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser);
-    expect(component).toBeTruthy();
+    setup(defaultUser);
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
+
+  // TODO Implement tests
 });
