@@ -1,6 +1,7 @@
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
+  defaultDeleteIcon,
   defaultEditIcon,
   defaultUserIcon,
   isAdminPredicate,
@@ -34,6 +35,24 @@ export const myEditMenuItem = MenuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("edit"),
   tooltip: () => "Change the details for your profile",
+});
+
+export const myPasswordMenuItem = MenuRoute({
+  icon: ["fas", "key"],
+  label: "Edit my password",
+  parent: myAccountMenuItem,
+  predicate: isLoggedInPredicate,
+  route: myEditMenuItem.route.add("password"),
+  tooltip: () => "Change the password for your profile",
+});
+
+export const myDeleteMenuItem = MenuRoute({
+  icon: defaultDeleteIcon,
+  label: "Cancel my account",
+  parent: myAccountMenuItem,
+  predicate: isLoggedInPredicate,
+  route: myAccountMenuItem.route.add("delete"),
+  tooltip: () => "Remove your account from this website",
 });
 
 export const myProjectsMenuItem = MenuRoute({

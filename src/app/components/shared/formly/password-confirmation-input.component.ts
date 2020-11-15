@@ -14,6 +14,7 @@ import { FieldType } from "@ngx-formly/core";
         id="password"
         type="password"
         class="form-control"
+        auto-complete="new-password"
         [class]="{ 'is-invalid': passwordError }"
         [formlyAttributes]="field"
         [(ngModel)]="password"
@@ -37,6 +38,7 @@ import { FieldType } from "@ngx-formly/core";
         id="confirmation"
         type="password"
         class="form-control"
+        auto-complete="new-password"
         [class]="{ 'is-invalid': confirmationError }"
         [formlyAttributes]="field"
         [(ngModel)]="confirmation"
@@ -56,7 +58,8 @@ import { FieldType } from "@ngx-formly/core";
   `,
 })
 // tslint:disable-next-line: component-class-suffix
-export class FormlyPasswordConfirmationInput extends FieldType
+export class FormlyPasswordConfirmationInput
+  extends FieldType
   implements OnInit {
   public password = "";
   public passwordError: boolean;

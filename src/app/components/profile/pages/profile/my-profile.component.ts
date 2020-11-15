@@ -3,7 +3,6 @@ import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -15,7 +14,9 @@ import {
   myAccountMenuItem,
   myAnnotationsMenuItem,
   myBookmarksMenuItem,
+  myDeleteMenuItem,
   myEditMenuItem,
+  myPasswordMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
 } from "@components/profile/profile.menus";
@@ -31,6 +32,8 @@ import { List } from "immutable";
 
 export const myAccountActions = [
   myEditMenuItem,
+  myPasswordMenuItem,
+  myDeleteMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
   myBookmarksMenuItem,
