@@ -1,5 +1,7 @@
 import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { AbstractModel } from "@models/AbstractModel";
+import type { User } from "@models/User";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -7,6 +9,10 @@ import {
   isAdminPredicate,
   isLoggedInPredicate,
 } from "src/app/app.menus";
+
+function getUserName(user: AbstractModel) {
+  return user ? (user as User).userName : "unknown";
+}
 
 export const myAccountRoute = StrongRoute.Base.add("my_account");
 
@@ -61,7 +67,7 @@ export const myProjectsMenuItem = MenuRoute({
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("projects"),
-  tooltip: (user) => `Projects ${user.userName} can access`,
+  tooltip: (user) => `Projects ${getUserName(user)} can access`,
 });
 
 export const mySitesMenuItem = MenuRoute({
@@ -70,7 +76,7 @@ export const mySitesMenuItem = MenuRoute({
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("sites"),
-  tooltip: (user) => `Sites ${user.userName} can access`,
+  tooltip: (user) => `Sites ${getUserName(user)} can access`,
 });
 
 export const myBookmarksMenuItem = MenuRoute({
@@ -79,7 +85,7 @@ export const myBookmarksMenuItem = MenuRoute({
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("bookmarks"),
-  tooltip: (user) => `Bookmarks created by ${user.userName}`,
+  tooltip: (user) => `Bookmarks created by ${getUserName(user)}`,
 });
 
 export const myAnnotationsMenuItem = MenuRoute({
@@ -88,7 +94,7 @@ export const myAnnotationsMenuItem = MenuRoute({
   order: 3,
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("annotations"),
-  tooltip: (user) => `Annotations created by ${user.userName}`,
+  tooltip: (user) => `Annotations created by ${getUserName(user)}`,
 });
 
 /**

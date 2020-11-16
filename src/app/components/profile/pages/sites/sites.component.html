@@ -1,43 +1,73 @@
-<div *ngIf="rows && !error && !failure">
-  <h1>
-    Sites
-    <small class="text-muted">accessible by {{ account.userName }}</small>
-  </h1>
+<ng-container *ngIf="!failure">
+  <ng-container *ngIf="!error">
+    <h1>
+      Sites
+      <small class="text-muted">accessible by {{ account.userName }}</small>
+    </h1>
 
-  <p>
-    Displaying <strong>{{ pageSize }}</strong> of
-    <strong>all {{ totalModels }}</strong> sites.
-  </p>
+    <p>
+      Displaying <strong>{{ pageSize }}</strong> of
+      <strong>all {{ totalModels }}</strong> sites.
+    </p>
 
-  <ngx-datatable
-    #table
-    bawDatatableDefaults
-    [columnMode]="ColumnMode.force"
-    [columns]="columns"
-    [rows]="rows"
-    [count]="totalModels"
-    [offset]="pageNumber"
-    (page)="setPage($event)"
-    (sort)="onSort($event)"
-  >
-    <ngx-datatable-column name="Site">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Recent Audio Upload"> </ngx-datatable-column>
-    <ngx-datatable-column name="Permission"> </ngx-datatable-column>
-    <ngx-datatable-column name="Annotation" width="115" maxWidth="115">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-default" [routerLink]="[value]">
-          Annotation
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
-</div>
+    <ngx-datatable
+      #table
+      bawDatatableDefaults
+      [columnMode]="ColumnMode.force"
+      [columns]="columns"
+      [rows]="rows"
+      [count]="totalModels"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
+      (sort)="onSort($event)"
+    >
+      <ngx-datatable-column name="Site">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a [routerLink]="[value.viewUrl]">
+            {{ value.name }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Last Modified" width="150" maxWidth="150">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value | toRelative }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Permission"
+        width="100"
+        maxWidth="100"
+        [sortable]="false"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-loading
+            *ngIf="value.projects | isUnresolved"
+            size="sm"
+          ></baw-loading>
 
-<baw-error-handler
-  *ngIf="!failure && error"
-  [error]="error"
-></baw-error-handler>
+          <span *ngIf="!(value.projects | isUnresolved)">
+            {{ resolveHighestAccessLevel(value.projects) }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Annotation"
+        width="115"
+        maxWidth="115"
+        [sortable]="false"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a
+            class="btn btn-sm btn-default"
+            [routerLink]="[annotationLink]"
+            [queryParams]="{ siteId: value.id }"
+          >
+            Annotation
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </ng-container>
+
+  <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+</ng-container>
