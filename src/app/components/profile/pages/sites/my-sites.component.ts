@@ -34,8 +34,6 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   protected api: ShallowSitesService;
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
-    // TODO Add missing details
-    // https://github.com/QutEcoacoustics/baw-server/issues/438
     super(
       api,
       (sites) =>

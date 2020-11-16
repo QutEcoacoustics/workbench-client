@@ -1,5 +1,5 @@
-<baw-wip>
-  <ng-container *ngIf="rows && !failure && !error">
+<ng-container *ngIf="!failure">
+  <ng-container *ngIf="!error">
     <h1>{{ project.name }}</h1>
 
     <h2>Assign Sites</h2>
@@ -35,7 +35,6 @@
       [offset]="pageNumber"
       (page)="setPage($event)"
       (sort)="onSort($event)"
-      (select)="onSelect($event)"
     >
       <ngx-datatable-column
         [canAutoResize]="false"
@@ -53,9 +52,15 @@
         [maxWidth]="75"
       ></ngx-datatable-column>
       <ngx-datatable-column name="Name"></ngx-datatable-column>
-      <ngx-datatable-column name="Description"></ngx-datatable-column>
+      <ngx-datatable-column name="Description" [sortable]="false">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <span [innerHTML]="value"></span>
+        </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
 
-    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+    <baw-form submitLabel="Update" (onSubmit)="onSubmit()"></baw-form>
   </ng-container>
-</baw-wip>
+
+  <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+</ng-container>

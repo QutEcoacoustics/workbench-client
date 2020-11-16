@@ -13,6 +13,9 @@ import { MySitesComponent } from "./my-sites.component";
 
 const accountKey = "account";
 
+/**
+ * TODO List of sites is filtered incorrectly
+ */
 @Component({
   selector: "baw-their-sites",
   templateUrl: "./sites.component.html",
