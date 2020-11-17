@@ -194,18 +194,19 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPost(path, body.toJSON()).pipe(
+    return this.httpPost(path, body.toJSON?.() ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
 
   /**
    * Get response from update route
+   * TODO Add option to switch between Put and Patch requests
    * @param path API path
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPatch(path, body.toJSON()).pipe(
+    return this.httpPatch(path, body.toJSON?.() ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }

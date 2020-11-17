@@ -87,6 +87,7 @@ export const assignSiteMenuItem = MenuRoute({
   icon: ["fas", "toolbox"],
   label: "Assign sites",
   parent: projectMenuItem,
+  // This is an admin only tool
   predicate: isAdminPredicate,
   route: projectMenuItem.route.add("assign"),
   tooltip: () => "Change which sites belong to this project",
