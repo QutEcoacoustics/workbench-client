@@ -124,6 +124,54 @@
         "label": "Overall Data Length Bytes",
         "disabled": true
       }
+    },
+    {
+      "key": "creator",
+      "hide": true,
+      "templateOptions": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updater",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updatedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updated At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deleter",
+      "hide": true,
+      "templateOptions": {
+        "label": "Deleter",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deletedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Deleted At",
+        "disabled": true
+      }
     }
   ]
 }

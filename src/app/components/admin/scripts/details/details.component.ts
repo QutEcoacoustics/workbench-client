@@ -5,6 +5,8 @@ import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { fields as baseFields } from "../script.base.schema.json";
@@ -55,6 +57,7 @@ AdminScriptComponent.LinkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
 }).AndMenuRoute(adminScriptMenuItem);
