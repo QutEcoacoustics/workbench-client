@@ -3,6 +3,10 @@ import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import {
+  exploreAudioMenuItem,
+  listenMenuItem,
+} from "@helpers/page/externalMenus";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
@@ -120,6 +124,14 @@ export class Site extends AbstractModel implements ISite {
     }
 
     return this.getViewUrl(this.projectIds.values().next().value);
+  }
+
+  public get playUrl(): string {
+    return listenMenuItem.uri();
+  }
+
+  public get visualizeUrl(): string {
+    return exploreAudioMenuItem.uri({ siteId: this.id });
   }
 
   public getViewUrl(project: IdOr<Project>): string {

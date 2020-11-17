@@ -17,34 +17,87 @@
   </div>
 </div>
 
-<baw-wip>
-  <!-- Audio Recording Summary -->
-  <h2>Audio Recordings</h2>
+<!-- Audio Recording Summary -->
+<h2>Audio Recordings</h2>
 
-  <div class="row">
-    <div class="col-sm-6">
-      <p id="audio_recording_description">
-        This site contains recordings from ... at ... to ... at ....<br />This
-        site covers ... and there are records for ... of that time.
-      </p>
+<!-- Loading animation -->
+<baw-loading *ngIf="!recordings"></baw-loading>
 
-      <ul class="nav nav-pills mb-0">
-        <li class="nav-item">
-          <a class="nav-link" href="BROKEN_LINK">
-            <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-            Play
+<!-- Handle no recordings -->
+<p *ngIf="recordings?.length === 0">
+  This site does not contain any audio recordings.
+</p>
+
+<!-- Handle recordings -->
+<div *ngIf="recordings?.length > 0" class="row">
+  <!-- Details in left column -->
+  <div class="col-sm-6">
+    <!-- Description -->
+    <p id="audio_recording_description">
+      This site contains recordings from {{ humanizeDate(recordingsStart) }} to
+      {{ humanizeDate(recordingsEnd) }}.
+    </p>
+
+    <!-- TODO Statistics about recordings -->
+    <p style="display: none">
+      This site covers 4 days, 23 hours, 20 minutes, and 51 seconds and there
+      are recordings for 4.0 days, 23.0 hours, 16.0 minutes, and 35 seconds of
+      that time.
+    </p>
+
+    <!-- Play and Visualize links -->
+    <ul class="nav nav-pills mb-0">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="site.playUrl">
+          <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
+          Play
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="site.visualizeUrl">
+          <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+          Visualise
+        </a>
+      </li>
+    </ul>
+
+    <!-- Recent Annotations Summary -->
+    <h3>Recent Annotations</h3>
+
+    <ul class="nav nav-pills">
+      <!-- Loading animation -->
+      <baw-loading *ngIf="!annotations"></baw-loading>
+
+      <!-- Handle no annotations -->
+      <p *ngIf="annotations.length === 0">No recent annotations found</p>
+
+      <!-- For each annotation and tagging -->
+      <ng-container *ngFor="let annotation of annotations" class="nav-item">
+        <li *ngFor="let tagging of annotation.taggings" class="nav-item">
+          <!-- Annotation link -->
+          <a class="nav-link" [routerLink]="tagging.viewUrl">
+            <!-- Loading when unresolved -->
+            <ng-container
+              *ngIf="
+                (tagging.tag | isUnresolved) ||
+                  (tagging.tag?.creator | isUnresolved);
+                else loaded
+              "
+            >
+              <baw-loading size="sm"></baw-loading>
+            </ng-container>
+
+            <!-- Annotation details -->
+            <ng-template #loaded>
+              "{{ tagging.tag?.text }}" by {{ tagging.tag?.creator?.userName }}
+            </ng-template>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="BROKEN_LINK">
-            <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-            Visualise
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="col-sm-6" style="min-height: 400px">
-      <baw-map [markers]="marker"></baw-map>
-    </div>
+      </ng-container>
+    </ul>
   </div>
-</baw-wip>
+  <!-- Map using right column -->
+  <div class="col-sm-6" style="min-height: 400px">
+    <baw-map [markers]="marker"></baw-map>
+  </div>
+</div>
