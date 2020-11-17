@@ -55,7 +55,7 @@ export type DateTimeTimezone = DateTime;
 
 /**
  * Humanize a durations length of time.
- * TODO Replace with luxon official solution
+ * TODO Replace with luxon official solution (https://github.com/moment/luxon/issues/688)
  * @param dur Duration
  */
 export function toRelative(
