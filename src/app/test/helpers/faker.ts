@@ -42,12 +42,12 @@ export const modelData = {
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substr(2),
   html: () => "hello <b>world</b>",
   id: (id?: Id) => (id ? id : faker.random.number(25)),
-  ids: () => randomArray(0, 5, () => faker.random.number(100)),
+  ids: () => randomArray(1, 5, () => faker.random.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
-  notes: () => randomObject(0, 5),
+  notes: () => randomObject(1, 5),
   offset: () =>
     faker.random.arrayElement(["+", "-"]) +
     faker.random.number(11) +

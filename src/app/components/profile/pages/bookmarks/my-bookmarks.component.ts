@@ -34,7 +34,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
         bookmarks.map((bookmark) => ({
           bookmark,
           category: bookmark.category,
-          description: bookmark.description,
+          description: bookmark.descriptionHtmlTagline,
         })),
       route
     );

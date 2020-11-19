@@ -1,6 +1,7 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { Params } from "@angular/router";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { LineTruncationDirective } from "ngx-line-truncation";
 
@@ -71,10 +72,20 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
   // TODO Add accessability expectations (id, visible on highlight, etc.)
 }
 
-export function assertHref(target: HTMLAnchorElement, href: string) {
+export function assertHref(
+  target: HTMLAnchorElement,
+  href: string,
+  isRoute?: boolean
+) {
   expect(target).toBeTruthy();
   expect(target.href).toBe(href);
-  expect(target.attributes.getNamedItem("ng-reflect-router-link")).toBeFalsy();
+
+  const routerLink = target.attributes.getNamedItem("ng-reflect-router-link");
+  if (isRoute) {
+    expect(routerLink).toBeTruthy();
+  } else {
+    expect(routerLink).toBeFalsy();
+  }
 }
 
 /**

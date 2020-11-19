@@ -43,10 +43,11 @@
           <span [innerText]="value"></span>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column
-        name="Description"
-        [sortable]="false"
-      ></ngx-datatable-column>
+      <ngx-datatable-column name="Description" [sortable]="false">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <span [innerHTML]="value"></span>
+        </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
   </ng-container>
 

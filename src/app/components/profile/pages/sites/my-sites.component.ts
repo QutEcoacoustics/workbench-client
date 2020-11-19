@@ -52,8 +52,8 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 
   public resolveHighestAccessLevel(projects: Project[]): string {
-    if (!projects) {
-      return "";
+    if ((projects ?? []).length === 0) {
+      return "Unknown";
     }
 
     let isWriter = false;
