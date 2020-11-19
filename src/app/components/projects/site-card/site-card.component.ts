@@ -47,7 +47,11 @@ import { Site } from "@models/Site";
             </a>
           </li>
           <li class="nav-item">
-            <a id="visualize" class="nav-link" [routerLink]="site.visualizeUrl">
+            <a
+              id="visualize"
+              class="nav-link"
+              [routerLink]="model.visualizeUrl"
+            >
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               Visualise
             </a>

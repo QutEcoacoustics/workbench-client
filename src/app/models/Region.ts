@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { regionMenuItem } from "@components/regions/regions.menus";
+import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   Description,
@@ -98,5 +99,9 @@ export class Region extends AbstractModel implements IRegion {
       projectId: this.projectId,
       regionId: this.id,
     });
+  }
+
+  public get visualizeUrl(): string {
+    return exploreAudioMenuItem.uri({ regionId: this.id });
   }
 }
