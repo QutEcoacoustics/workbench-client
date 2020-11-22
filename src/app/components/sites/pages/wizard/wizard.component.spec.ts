@@ -1,23 +1,23 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { NewComponent } from '@components/regions/pages/new/new.component';
-import { Project } from '@models/Project';
-import { createRoutingFactory, SpectatorRouting } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { assertErrorHandler } from '@test/helpers/html';
-import { MockComponent } from 'ng-mocks';
-import { SiteNewComponent } from '../new/site.component';
-import { WizardComponent } from './wizard.component';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { NewComponent } from "@components/regions/pages/new/new.component";
+import { Project } from "@models/Project";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { assertErrorHandler } from "@test/helpers/html";
+import { MockComponent } from "ng-mocks";
+import { SiteNewComponent } from "../new/site.component";
+import { WizardComponent } from "./wizard.component";
 
 const mock = {
   newRegion: MockComponent(NewComponent),
   newSite: MockComponent(SiteNewComponent),
 };
 
-describe('WizardComponent', () => {
+describe("WizardComponent", () => {
   let defaultProject: Project;
   let spectator: SpectatorRouting<WizardComponent>;
   const createComponent = createRoutingFactory({
@@ -37,7 +37,7 @@ describe('WizardComponent', () => {
   }
 
   function getWizardOptions() {
-    return spectator.queryAll<HTMLButtonElement>('button');
+    return spectator.queryAll<HTMLButtonElement>("button");
   }
 
   function getNewSitesForm() {
@@ -52,39 +52,39 @@ describe('WizardComponent', () => {
     defaultProject = new Project(generateProject());
   });
 
-  it('should create', () => {
+  it("should create", () => {
     setup(defaultProject);
     spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
   });
 
-  it('should handle project error', () => {
+  it("should handle project error", () => {
     setup(undefined, generateApiErrorDetails());
     spectator.detectChanges();
     assertErrorHandler(spectator.fixture);
   });
 
-  it('should show new site title', () => {
+  it("should show new site title", () => {
     setup(defaultProject);
     spectator.detectChanges();
-    const title = spectator.query<HTMLHeadingElement>('h2');
-    expect(title.innerText.trim()).toBe('New Site');
+    const title = spectator.query<HTMLHeadingElement>("h2");
+    expect(title.innerText.trim()).toBe("New Site");
   });
 
-  it('should show wizard question', () => {
+  it("should show wizard question", () => {
     setup(defaultProject);
     spectator.detectChanges();
-    const question = spectator.query<HTMLHeadingElement>('p.lead');
+    const question = spectator.query<HTMLHeadingElement>("p.lead");
     expect(question.innerText.trim()).toBeTruthy();
   });
 
-  it('should show wizard buttons', () => {
+  it("should show wizard buttons", () => {
     setup(defaultProject);
     spectator.detectChanges();
     expect(getWizardOptions().length).toBe(2);
   });
 
-  it('should show new sites form on selection', () => {
+  it("should show new sites form on selection", () => {
     setup(defaultProject);
     spectator.detectChanges();
     const buttons = getWizardOptions();
@@ -94,7 +94,7 @@ describe('WizardComponent', () => {
     expect(getNewRegionsForm()).toBeTruthy();
   });
 
-  it('should show new regions form on selection', () => {
+  it("should show new regions form on selection", () => {
     setup(defaultProject);
     spectator.detectChanges();
     const buttons = getWizardOptions();
@@ -104,7 +104,7 @@ describe('WizardComponent', () => {
     expect(getNewRegionsForm()).toBeFalsy();
   });
 
-  it('should switch between forms', () => {
+  it("should switch between forms", () => {
     setup(defaultProject);
     spectator.detectChanges();
     const buttons = getWizardOptions();

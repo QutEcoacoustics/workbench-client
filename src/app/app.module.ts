@@ -1,37 +1,37 @@
-import { HttpClientModule } from '@angular/common/http';
-import { DoBootstrap, NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BawApiModule } from '@baw-api/baw-api.module';
-import { RegionsModule } from '@components/regions/regions.module';
-import { GuardModule } from '@guards/guards.module';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { FormlyModule } from '@ngx-formly/core';
-import { AppConfigModule } from '@services/app-config/app-config.module';
-import { ToastrModule } from 'ngx-toastr';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { formlyRoot, toastrRoot } from './app.helper';
-import { AboutModule } from './components/about/about.module';
-import { AdminModule } from './components/admin/admin.module';
-import { DataRequestModule } from './components/data-request/data-request.module';
-import { ErrorModule } from './components/error/error.module';
-import { HomeModule } from './components/home/home.module';
+import { HttpClientModule } from "@angular/common/http";
+import { DoBootstrap, NgModule } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { BawApiModule } from "@baw-api/baw-api.module";
+import { RegionsModule } from "@components/regions/regions.module";
+import { GuardModule } from "@guards/guards.module";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { AppConfigModule } from "@services/app-config/app-config.module";
+import { ToastrModule } from "ngx-toastr";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { formlyRoot, toastrRoot } from "./app.helper";
+import { AboutModule } from "./components/about/about.module";
+import { AdminModule } from "./components/admin/admin.module";
+import { DataRequestModule } from "./components/data-request/data-request.module";
+import { ErrorModule } from "./components/error/error.module";
+import { HomeModule } from "./components/home/home.module";
 import {
   MyAccountModule,
   ProfileModule,
-} from './components/profile/profile.module';
-import { ProjectsModule } from './components/projects/projects.module';
-import { ReportProblemsModule } from './components/report-problem/report-problem.module';
-import { SecurityModule } from './components/security/security.module';
-import { SendAudioModule } from './components/send-audio/send-audio.module';
-import { SharedModule } from './components/shared/shared.module';
-import { PointsModule } from './components/sites/points.module';
-import { SitesModule } from './components/sites/sites.module';
-import { StatisticsModule } from './components/statistics/statistics.module';
+} from "./components/profile/profile.module";
+import { ProjectsModule } from "./components/projects/projects.module";
+import { ReportProblemsModule } from "./components/report-problem/report-problem.module";
+import { SecurityModule } from "./components/security/security.module";
+import { SendAudioModule } from "./components/send-audio/send-audio.module";
+import { SharedModule } from "./components/shared/shared.module";
+import { PointsModule } from "./components/sites/points.module";
+import { SitesModule } from "./components/sites/sites.module";
+import { StatisticsModule } from "./components/statistics/statistics.module";
 
 export const appLibraryImports = [
   BrowserModule,
@@ -66,7 +66,7 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'workbench-client' }),
+    BrowserModule.withServerTransition({ appId: "workbench-client" }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,

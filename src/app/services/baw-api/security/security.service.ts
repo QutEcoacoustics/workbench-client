@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { AbstractModel } from '@models/AbstractModel';
-import { BawPersistAttr } from '@models/AttributeDecorators';
-import { SessionUser } from '@models/User';
-import { BehaviorSubject, Observable, ObservableInput, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { ApiErrorDetails } from '../api.interceptor.service';
-import { BawApiService } from '../baw-api.service';
-import { UserService } from '../user/user.service';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { AbstractModel } from "@models/AbstractModel";
+import { BawPersistAttr } from "@models/AttributeDecorators";
+import { SessionUser } from "@models/User";
+import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
+import { catchError, map, mergeMap } from "rxjs/operators";
+import { ApiErrorDetails } from "../api.interceptor.service";
+import { BawApiService } from "../baw-api.service";
+import { UserService } from "../user/user.service";
 
 const registerEndpoint = stringTemplate`/security/`;
 const signInEndpoint = stringTemplate`/security/`;
@@ -108,7 +108,7 @@ export interface LoginDetailsInterface {
 export class LoginDetails
   extends AbstractModel
   implements LoginDetailsInterface {
-  public readonly kind: 'LoginDetails' = 'LoginDetails';
+  public readonly kind: "LoginDetails" = "LoginDetails";
   @BawPersistAttr
   public readonly login: string;
   @BawPersistAttr
@@ -119,6 +119,6 @@ export class LoginDetails
   }
 
   public get viewUrl(): string {
-    throw new Error('Not Implemented');
+    throw new Error("Not Implemented");
   }
 }

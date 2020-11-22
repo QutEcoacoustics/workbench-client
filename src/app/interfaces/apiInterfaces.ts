@@ -1,5 +1,5 @@
-import humanizeDuration from 'humanize-duration';
-import { DateTime, Duration } from 'luxon';
+import humanizeDuration from "humanize-duration";
+import { DateTime, Duration } from "luxon";
 
 /**
  * BAW API ID
@@ -34,7 +34,7 @@ export type AuthToken = string;
 /**
  * BAW API Access Levels
  */
-export type AccessLevel = 'Reader' | 'Writer' | 'Owner';
+export type AccessLevel = "Reader" | "Writer" | "Owner";
 
 /**
  * BAW API Item Description
@@ -63,7 +63,7 @@ export function toRelative(
   dur: Duration,
   opts?: HumanizeDurationOptions
 ): string {
-  return humanizeDuration(dur.as('milliseconds'), opts);
+  return humanizeDuration(dur.as("milliseconds"), opts);
 }
 
 /**
@@ -80,13 +80,13 @@ export type Longitude = string;
  * BAW API Image Sizes
  */
 export enum ImageSizes {
-  EXTRA_LARGE = 'extralarge',
-  LARGE = 'large',
-  MEDIUM = 'medium',
-  SMALL = 'small',
-  TINY = 'tiny',
-  DEFAULT = 'default',
-  UNKNOWN = 'unknown',
+  EXTRA_LARGE = "extralarge",
+  LARGE = "large",
+  MEDIUM = "medium",
+  SMALL = "small",
+  TINY = "tiny",
+  DEFAULT = "default",
+  UNKNOWN = "unknown",
 }
 
 /**
@@ -121,8 +121,8 @@ export function isImageUrl(value: any): value is ImageUrl {
   }
 
   const keys = Object.keys(value);
-  const hasHeight = keys.includes('height');
-  const hasWidth = keys.includes('width');
+  const hasHeight = keys.includes("height");
+  const hasWidth = keys.includes("width");
 
   let expectedKeys = 2;
   expectedKeys += hasHeight ? 1 : 0;
@@ -130,8 +130,8 @@ export function isImageUrl(value: any): value is ImageUrl {
 
   return (
     keys.length === expectedKeys &&
-    keys.includes('size') &&
-    keys.includes('url')
+    keys.includes("size") &&
+    keys.includes("url")
   );
 }
 
@@ -190,7 +190,7 @@ export interface HumanizeDurationOptions {
    * duration (if needed). Can be one, or a combination of any of the
    * following: `['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms']`
    */
-  units?: ('y' | 'mo' | 'w' | 'd' | 'h' | 'm' | 's' | 'ms')[];
+  units?: ("y" | "mo" | "w" | "d" | "h" | "m" | "s" | "ms")[];
   /**
    * Boolean value. Use `true` to round the smallest unit displayed
    * (can be combined with `largest` and `units`).

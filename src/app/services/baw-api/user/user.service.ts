@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { User } from '@models/User';
-import { Observable } from 'rxjs';
-import { ApiShow, IdOr } from '../api-common';
-import { BawApiService } from '../baw-api.service';
-import { ShowResolver } from '../resolver-common';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { User } from "@models/User";
+import { Observable } from "rxjs";
+import { ApiShow, IdOr } from "../api-common";
+import { BawApiService } from "../baw-api.service";
+import { ShowResolver } from "../resolver-common";
 
 const endpoint = stringTemplate`/my_account/`;
 
@@ -33,4 +33,4 @@ export class UserService
 
 export const userResolvers = new ShowResolver<User, UserService>([
   UserService,
-]).create('User');
+]).create("User");

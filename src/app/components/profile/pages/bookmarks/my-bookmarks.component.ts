@@ -1,30 +1,30 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { BookmarksService } from '@baw-api/bookmark/bookmarks.service';
-import { userResolvers } from '@baw-api/user/user.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
   myBookmarksMenuItem,
-} from '@components/profile/profile.menus';
-import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { Bookmark } from '@models/Bookmark';
-import { User } from '@models/User';
-import { List } from 'immutable';
-import { myAccountActions } from '../profile/my-profile.component';
+} from "@components/profile/profile.menus";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Bookmark } from "@models/Bookmark";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { myAccountActions } from "../profile/my-profile.component";
 
-const userKey = 'user';
+const userKey = "user";
 
 @Component({
-  selector: 'baw-my-bookmarks',
-  templateUrl: './bookmarks.component.html',
+  selector: "baw-my-bookmarks",
+  templateUrl: "./bookmarks.component.html",
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public columns = [
-    { name: 'Bookmark' },
-    { name: 'Category' },
-    { name: 'Description' },
+    { name: "Bookmark" },
+    { name: "Category" },
+    { name: "Description" },
   ];
 
   constructor(api: BookmarksService, route: ActivatedRoute) {

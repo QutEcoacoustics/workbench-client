@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { GetRouteConfigForPage } from '@helpers/page/pageRouting';
-import { SharedModule } from '@shared/shared.module';
-import { AdminTagGroupsDeleteComponent } from './delete/delete.component';
-import { AdminTagGroupsEditComponent } from './edit/edit.component';
-import { AdminTagGroupsComponent } from './list/list.component';
-import { AdminTagGroupsNewComponent } from './new/new.component';
-import { adminTagGroupsRoute } from './tag-group.menus';
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { SharedModule } from "@shared/shared.module";
+import { AdminTagGroupsDeleteComponent } from "./delete/delete.component";
+import { AdminTagGroupsEditComponent } from "./edit/edit.component";
+import { AdminTagGroupsComponent } from "./list/list.component";
+import { AdminTagGroupsNewComponent } from "./new/new.component";
+import { adminTagGroupsRoute } from "./tag-group.menus";
 
 const components = [
   AdminTagGroupsComponent,

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { BookmarksService } from '@baw-api/bookmark/bookmarks.service';
-import { ProjectsService } from '@baw-api/project/projects.service';
-import { ResolvedModel } from '@baw-api/resolver-common';
-import { ShallowSitesService } from '@baw-api/site/sites.service';
-import { TagsService } from '@baw-api/tag/tags.service';
-import { userResolvers } from '@baw-api/user/user.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
@@ -14,17 +14,17 @@ import {
   myEditMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
-} from '@components/profile/profile.menus';
-import { projectsMenuItem } from '@components/projects/projects.menus';
-import { siteMenuItem } from '@components/sites/sites.menus';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { AbstractModel } from '@models/AbstractModel';
-import { Tag } from '@models/Tag';
-import { User } from '@models/User';
-import { ItemInterface } from '@shared/items/item/item.component';
-import { List } from 'immutable';
+} from "@components/profile/profile.menus";
+import { projectsMenuItem } from "@components/projects/projects.menus";
+import { siteMenuItem } from "@components/sites/sites.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { Tag } from "@models/Tag";
+import { User } from "@models/User";
+import { ItemInterface } from "@shared/items/item/item.component";
+import { List } from "immutable";
 
 export const myAccountActions = [
   myEditMenuItem,
@@ -34,12 +34,12 @@ export const myAccountActions = [
   myAnnotationsMenuItem,
 ];
 
-const userKey = 'user';
+const userKey = "user";
 
 @Component({
-  selector: 'baw-my-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss'],
+  selector: "baw-my-profile",
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.scss"],
 })
 class MyProfileComponent
   extends WithUnsubscribe(PageComponent)
@@ -49,12 +49,12 @@ class MyProfileComponent
   public thirdPerson = false;
   public user: User;
   public userStatistics: List<ItemInterface> = List([
-    { icon: projectsMenuItem.icon, name: 'Projects', value: '...' },
-    { icon: ['fas', 'tags'], name: 'Tags', value: '...' },
-    { icon: ['fas', 'bookmark'], name: 'Bookmarks', value: '...' },
-    { icon: siteMenuItem.icon, name: 'Sites', value: '...' },
+    { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
+    { icon: ["fas", "tags"], name: "Tags", value: "..." },
+    { icon: ["fas", "bookmark"], name: "Bookmarks", value: "..." },
+    { icon: siteMenuItem.icon, name: "Sites", value: "..." },
     // TODO Implement
-    { icon: ['fas', 'bullseye'], name: 'Annotations', value: 'Unknown' },
+    { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
   ]);
 
   constructor(
@@ -77,7 +77,7 @@ class MyProfileComponent
     this.user = userModel.model;
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
-      : 'Unknown time since last logged in';
+      : "Unknown time since last logged in";
 
     this.projectsApi.list().subscribe(
       (models) => this.extractTotal(0, models),
@@ -115,7 +115,7 @@ class MyProfileComponent
   private handleError(index: number) {
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
-      value: 'Unknown',
+      value: "Unknown",
     }));
   }
 }

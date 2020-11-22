@@ -1,32 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { siteResolvers, SitesService } from '@baw-api/site/sites.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from '../../site.base.json';
+} from "@helpers/formTemplate/formTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "../../site.base.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory,
-} from '../../sites.menus';
-import { siteMenuItemActions } from '../details/site.component';
-import { siteErrorMsg } from '../new/site.component';
+} from "../../sites.menus";
+import { siteMenuItemActions } from "../details/site.component";
+import { siteErrorMsg } from "../new/site.component";
 
-const projectKey = 'project';
-const siteKey = 'site';
+const projectKey = "project";
+const siteKey = "site";
 
 @Component({
-  selector: 'baw-sites-edit',
-  templateUrl: './edit.component.html',
+  selector: "baw-sites-edit",
+  templateUrl: "./edit.component.html",
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public fields = fields;
@@ -43,7 +43,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
       route,
       router,
       siteKey,
-      (model) => defaultSuccessMsg('updated', model.name),
+      (model) => defaultSuccessMsg("updated", model.name),
       siteErrorMsg
     );
   }

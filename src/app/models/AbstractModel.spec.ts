@@ -1,8 +1,8 @@
-import { DateTime, Duration } from 'luxon';
-import { AbstractModel } from './AbstractModel';
+import { DateTime, Duration } from "luxon";
+import { AbstractModel } from "./AbstractModel";
 
-describe('AbstractModel', () => {
-  describe('toJSON', () => {
+describe("AbstractModel", () => {
+  describe("toJSON", () => {
     function createModel(attributes: string[], data: any) {
       class MockModel extends AbstractModel {
         constructor(modelData: any) {
@@ -11,83 +11,83 @@ describe('AbstractModel', () => {
         }
 
         public get viewUrl(): string {
-          throw new Error('Method not implemented.');
+          throw new Error("Method not implemented.");
         }
       }
 
       return new MockModel(data);
     }
 
-    it('should handle undefined', () => {
-      const model = createModel(['name'], { id: 1 });
+    it("should handle undefined", () => {
+      const model = createModel(["name"], { id: 1 });
       expect(model.toJSON()).toEqual({ name: undefined });
     });
 
-    it('should handle null', () => {
-      const model = createModel(['name'], { id: 1, name: null });
+    it("should handle null", () => {
+      const model = createModel(["name"], { id: 1, name: null });
       expect(model.toJSON()).toEqual({ name: null });
     });
 
-    it('should handle string', () => {
-      const model = createModel(['name'], { id: 1, name: 'name' });
-      expect(model.toJSON()).toEqual({ name: 'name' });
+    it("should handle string", () => {
+      const model = createModel(["name"], { id: 1, name: "name" });
+      expect(model.toJSON()).toEqual({ name: "name" });
     });
 
-    it('should handle empty string', () => {
-      const model = createModel(['name'], { id: 1, name: '' });
-      expect(model.toJSON()).toEqual({ name: '' });
+    it("should handle empty string", () => {
+      const model = createModel(["name"], { id: 1, name: "" });
+      expect(model.toJSON()).toEqual({ name: "" });
     });
 
-    it('should handle number', () => {
-      const model = createModel(['id'], { id: 1, name: 'name' });
+    it("should handle number", () => {
+      const model = createModel(["id"], { id: 1, name: "name" });
       expect(model.toJSON()).toEqual({ id: 1 });
     });
 
-    it('should handle zero', () => {
-      const model = createModel(['id'], { id: 0, name: 'name' });
+    it("should handle zero", () => {
+      const model = createModel(["id"], { id: 0, name: "name" });
       expect(model.toJSON()).toEqual({ id: 0 });
     });
 
-    it('should handle Set', () => {
-      const model = createModel(['set'], { id: 1, set: new Set([1, 2, 3]) });
+    it("should handle Set", () => {
+      const model = createModel(["set"], { id: 1, set: new Set([1, 2, 3]) });
       expect(model.toJSON()).toEqual({ set: [1, 2, 3] });
     });
 
-    it('should handle DateTime', () => {
-      const date = DateTime.fromISO('2019-01-01T00:00:00');
-      const model = createModel(['date'], {
+    it("should handle DateTime", () => {
+      const date = DateTime.fromISO("2019-01-01T00:00:00");
+      const model = createModel(["date"], {
         id: 1,
         date,
       });
       expect(model.toJSON()).toEqual({ date: date.toISO() });
     });
 
-    it('should handle Duration', () => {
+    it("should handle Duration", () => {
       const seconds = 100;
       const duration = Duration.fromMillis(seconds * 1000);
-      const model = createModel(['duration'], {
+      const model = createModel(["duration"], {
         id: 1,
         duration,
       });
       expect(model.toJSON()).toEqual({ duration: seconds });
     });
 
-    it('should handle multiple', () => {
-      const model = createModel(['name', 'value', 'set'], {
+    it("should handle multiple", () => {
+      const model = createModel(["name", "value", "set"], {
         id: 1,
-        name: 'name',
+        name: "name",
         value: 5,
         set: new Set([1, 2, 3]),
       });
       expect(model.toJSON()).toEqual({
-        name: 'name',
+        name: "name",
         value: 5,
         set: [1, 2, 3],
       });
     });
   });
 
-  describe('metadata', () => {
+  describe("metadata", () => {
     let model: AbstractModel;
     beforeEach(() => {
       class MockModel extends AbstractModel {
@@ -96,29 +96,29 @@ describe('AbstractModel', () => {
         }
 
         public get viewUrl(): string {
-          throw new Error('Method not implemented.');
+          throw new Error("Method not implemented.");
         }
       }
       model = new MockModel();
     });
 
-    it('should store metadata', () => {
-      model.addMetadata({ status: 200, message: 'OK' });
-      expect(model[AbstractModel['metaKey']]).toEqual({
+    it("should store metadata", () => {
+      model.addMetadata({ status: 200, message: "OK" });
+      expect(model[AbstractModel["metaKey"]]).toEqual({
         status: 200,
-        message: 'OK',
+        message: "OK",
       });
     });
 
-    it('should retrieve metadata', () => {
-      model.addMetadata({ status: 200, message: 'OK' });
+    it("should retrieve metadata", () => {
+      model.addMetadata({ status: 200, message: "OK" });
       expect(model.getMetadata()).toEqual({
         status: 200,
-        message: 'OK',
+        message: "OK",
       });
     });
 
-    it('should retrieve empty metadata', () => {
+    it("should retrieve empty metadata", () => {
       expect(model.getMetadata()).toBe(undefined);
     });
   });

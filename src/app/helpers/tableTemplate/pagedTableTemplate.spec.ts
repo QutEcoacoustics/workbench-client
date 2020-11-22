@@ -1,32 +1,32 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import {
   ComponentFixture,
   fakeAsync,
   TestBed,
   tick,
-} from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { defaultApiPageSize } from '@baw-api/baw-api.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { MockModel } from '@baw-api/mock/baseApiMock.service';
-import { ProjectsService } from '@baw-api/project/projects.service';
-import { Id } from '@interfaces/apiInterfaces';
-import { Project } from '@models/Project';
-import { SpyObject } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
+} from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { Id } from "@interfaces/apiInterfaces";
+import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
 import {
   mockActivatedRoute,
   MockData,
   MockResolvers,
-} from '@test/helpers/testbed';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { PagedTableTemplate } from './pagedTableTemplate';
+} from "@test/helpers/testbed";
+import { BehaviorSubject, Subject } from "rxjs";
+import { PagedTableTemplate } from "./pagedTableTemplate";
 
 @Component({
-  selector: 'baw-test-component',
+  selector: "baw-test-component",
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
@@ -35,7 +35,7 @@ class MockComponent extends PagedTableTemplate<
   { id: Id; name: string },
   Project
 > {
-  public columns = [{ prop: 'id' }];
+  public columns = [{ prop: "id" }];
 
   constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
@@ -46,7 +46,7 @@ class MockComponent extends PagedTableTemplate<
   }
 }
 
-describe('PagedTableTemplate', () => {
+describe("PagedTableTemplate", () => {
   let component: MockComponent;
   let fixture: ComponentFixture<MockComponent>;
   let api: SpyObject<ProjectsService>;
@@ -74,19 +74,19 @@ describe('PagedTableTemplate', () => {
   function generateMetaData(page: number = 1, total: number = 1) {
     return {
       status: 200,
-      message: 'OK',
+      message: "OK",
       paging: { page, total },
     };
   }
 
-  it('should create', () => {
+  it("should create", () => {
     configureTestingModule();
     api.filter.and.callFake(() => new Subject());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should handle error response', () => {
+  it("should handle error response", () => {
     configureTestingModule();
     const error = generateApiErrorDetails();
     api.filter.and.callFake(() => {
@@ -99,14 +99,14 @@ describe('PagedTableTemplate', () => {
     expect(component.error).toEqual(error);
   });
 
-  describe('resolvers', () => {
+  describe("resolvers", () => {
     function setProject() {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
     }
 
-    it('should handle resolver', () => {
+    it("should handle resolver", () => {
       configureTestingModule(
-        { model: 'modelResolver' },
+        { model: "modelResolver" },
         { model: { model: new MockModel({ id: 1 }) } }
       );
       setProject();
@@ -116,9 +116,9 @@ describe('PagedTableTemplate', () => {
       expect(component.models.model).toEqual(new MockModel({ id: 1 }));
     });
 
-    it('should handle multiple resolvers', () => {
+    it("should handle multiple resolvers", () => {
       configureTestingModule(
-        { model1: 'model1Resolver', model2: 'model2Resolver' },
+        { model1: "model1Resolver", model2: "model2Resolver" },
         {
           model1: { model: new MockModel({ id: 1 }) },
           model2: { model: new MockModel({ id: 2 }) },
@@ -132,9 +132,9 @@ describe('PagedTableTemplate', () => {
       expect(component.models.model2).toEqual(new MockModel({ id: 2 }));
     });
 
-    it('should handle resolver error', () => {
+    it("should handle resolver error", () => {
       configureTestingModule(
-        { model: 'modelResolver' },
+        { model: "modelResolver" },
         { model: { error: generateApiErrorDetails() } }
       );
       setProject();
@@ -143,9 +143,9 @@ describe('PagedTableTemplate', () => {
       expect(component.failure).toBeTrue();
     });
 
-    it('should handle any resolver error', () => {
+    it("should handle any resolver error", () => {
       configureTestingModule(
-        { model1: 'model1Resolver', model2: 'model2Resolver' },
+        { model1: "model1Resolver", model2: "model2Resolver" },
         {
           model1: { model: new MockModel({ id: 1 }) },
           model2: { error: generateApiErrorDetails() },
@@ -158,7 +158,7 @@ describe('PagedTableTemplate', () => {
     });
   });
 
-  describe('rows', () => {
+  describe("rows", () => {
     function setProjects(projects: Project[]) {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>(projects));
     }
@@ -167,13 +167,13 @@ describe('PagedTableTemplate', () => {
       configureTestingModule();
     });
 
-    it('should handle zero model response', () => {
+    it("should handle zero model response", () => {
       setProjects([]);
       fixture.detectChanges();
       expect(component.rows).toEqual([]);
     });
 
-    it('should handle single model response', () => {
+    it("should handle single model response", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData());
       setProjects([project]);
@@ -182,7 +182,7 @@ describe('PagedTableTemplate', () => {
       expect(component.rows).toEqual([{ id: project.id, name: project.name }]);
     });
 
-    it('should handle multiple model total', () => {
+    it("should handle multiple model total", () => {
       const project1 = new Project(generateProject());
       const project2 = new Project(generateProject());
       [project1, project2].forEach((project) =>
@@ -199,12 +199,12 @@ describe('PagedTableTemplate', () => {
     });
   });
 
-  describe('setPage', () => {
+  describe("setPage", () => {
     beforeEach(() => {
       configureTestingModule();
     });
 
-    it('should handle zero models', () => {
+    it("should handle zero models", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       component.setPage({
         offset: 0,
@@ -217,7 +217,7 @@ describe('PagedTableTemplate', () => {
       expect(component.pageNumber).toBe(0);
     });
 
-    it('should handle 0 offset', () => {
+    it("should handle 0 offset", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       component.setPage({
         offset: 0,
@@ -230,7 +230,7 @@ describe('PagedTableTemplate', () => {
       expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
     });
 
-    it('should handle 1 offset', () => {
+    it("should handle 1 offset", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       component.setPage({
         offset: 1,
@@ -244,18 +244,18 @@ describe('PagedTableTemplate', () => {
     });
   });
 
-  describe('pageNumber', () => {
+  describe("pageNumber", () => {
     beforeEach(() => {
       configureTestingModule();
     });
 
-    it('should handle zero models', () => {
+    it("should handle zero models", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       fixture.detectChanges();
       expect(component.pageNumber).toBe(0);
     });
 
-    it('should handle first page', () => {
+    it("should handle first page", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 25));
       api.filter.and.callFake(
@@ -272,7 +272,7 @@ describe('PagedTableTemplate', () => {
       expect(component.pageNumber).toBe(0);
     });
 
-    it('should handle random page', () => {
+    it("should handle random page", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(3, 25));
       api.filter.and.callFake(
@@ -289,7 +289,7 @@ describe('PagedTableTemplate', () => {
       expect(component.pageNumber).toBe(2);
     });
 
-    it('should update before api response', () => {
+    it("should update before api response", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(3, 25));
       api.filter.and.callFake(() => new Subject<Project[]>());
@@ -305,14 +305,14 @@ describe('PagedTableTemplate', () => {
     });
   });
 
-  describe('onFilter', () => {
+  describe("onFilter", () => {
     beforeEach(() => {
       configureTestingModule();
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
     });
 
     function createInput() {
-      return document.createElement('input');
+      return document.createElement("input");
     }
 
     function createFilterEvent(
@@ -326,74 +326,74 @@ describe('PagedTableTemplate', () => {
       fixture.detectChanges();
     }
 
-    it('should handle empty filter', fakeAsync(() => {
+    it("should handle empty filter", fakeAsync(() => {
       const mockInput = createInput();
-      createFilterEvent('testing', '', mockInput);
+      createFilterEvent("testing", "", mockInput);
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({ filter: undefined });
     }));
 
-    it('should handle random filterKey', fakeAsync(() => {
+    it("should handle random filterKey", fakeAsync(() => {
       const mockInput = createInput();
-      createFilterEvent('custom', 'a', mockInput);
+      createFilterEvent("custom", "a", mockInput);
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { ['custom' as any]: { contains: 'a' } },
+        filter: { ["custom" as any]: { contains: "a" } },
       });
     }));
 
-    it('should handle single character filter', fakeAsync(() => {
+    it("should handle single character filter", fakeAsync(() => {
       const mockInput = createInput();
-      createFilterEvent('testing', 'a', mockInput);
+      createFilterEvent("testing", "a", mockInput);
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { ['testing' as any]: { contains: 'a' } },
+        filter: { ["testing" as any]: { contains: "a" } },
       });
     }));
 
-    it('should handle multi character filter', fakeAsync(() => {
+    it("should handle multi character filter", fakeAsync(() => {
       const mockInput = createInput();
-      createFilterEvent('testing', 'testing', mockInput);
+      createFilterEvent("testing", "testing", mockInput);
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { ['testing' as any]: { contains: 'testing' } },
+        filter: { ["testing" as any]: { contains: "testing" } },
       });
     }));
 
-    it('should debounce filters', fakeAsync(() => {
-      const input = 'testing';
+    it("should debounce filters", fakeAsync(() => {
+      const input = "testing";
       const mockInput = createInput();
 
       for (let i = 0; i < input.length; i++) {
         const subSet = input.substring(0, i);
-        createFilterEvent('testing', subSet, mockInput);
+        createFilterEvent("testing", subSet, mockInput);
       }
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledTimes(2); // Initial filter request on ngOnInit
     }));
 
-    it('should call last filter value', fakeAsync(() => {
-      const input = 'testing';
+    it("should call last filter value", fakeAsync(() => {
+      const input = "testing";
       const mockInput = createInput();
 
       for (let i = 0; i < input.length; i++) {
         const subSet = input.substring(0, i + 1);
-        createFilterEvent('testing', subSet, mockInput);
+        createFilterEvent("testing", subSet, mockInput);
       }
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        filter: { ['testing' as any]: { contains: 'testing' } },
+        filter: { ["testing" as any]: { contains: "testing" } },
       });
     }));
   });
 
-  describe('onSort', () => {
+  describe("onSort", () => {
     beforeEach(() => {
       configureTestingModule();
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
@@ -401,7 +401,7 @@ describe('PagedTableTemplate', () => {
 
     function createSortEvent(
       sortKeys: { [key: string]: string },
-      value: 'asc' | 'desc',
+      value: "asc" | "desc",
       prop: string
     ) {
       component.sortKeys = sortKeys;
@@ -411,76 +411,76 @@ describe('PagedTableTemplate', () => {
         column: {
           sortable: true,
           prop,
-          name: 'Do Not Read',
+          name: "Do Not Read",
         },
       });
     }
 
-    it('should handle no sorting', fakeAsync(() => {
-      createSortEvent({ testing: 'customKey' }, undefined, 'testing');
+    it("should handle no sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, undefined, "testing");
       fixture.detectChanges();
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({ sorting: undefined });
     }));
 
-    it('should handle asc sorting', fakeAsync(() => {
-      createSortEvent({ testing: 'customKey' }, 'asc', 'testing');
+    it("should handle asc sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "asc", "testing");
       fixture.detectChanges();
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: 'customKey', direction: 'asc' },
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
 
-    it('should handle desc sorting', fakeAsync(() => {
-      createSortEvent({ testing: 'customKey' }, 'desc', 'testing');
+    it("should handle desc sorting", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "desc", "testing");
       fixture.detectChanges();
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: 'customKey', direction: 'desc' },
+        sorting: { orderBy: "customKey", direction: "desc" },
       });
     }));
 
-    it('should handle single sortKey', fakeAsync(() => {
-      createSortEvent({ testing: 'customKey' }, 'asc', 'testing');
+    it("should handle single sortKey", fakeAsync(() => {
+      createSortEvent({ testing: "customKey" }, "asc", "testing");
       fixture.detectChanges();
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: 'customKey', direction: 'asc' },
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
 
-    it('should handle multiple sortKeys', fakeAsync(() => {
+    it("should handle multiple sortKeys", fakeAsync(() => {
       createSortEvent(
-        { testing: 'customKey', testing2: 'extraCustomKey' },
-        'asc',
-        'testing'
+        { testing: "customKey", testing2: "extraCustomKey" },
+        "asc",
+        "testing"
       );
       fixture.detectChanges();
 
       tick(1000);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: 'customKey', direction: 'asc' },
+        sorting: { orderBy: "customKey", direction: "asc" },
       });
     }));
   });
 
-  describe('totalModels', () => {
+  describe("totalModels", () => {
     beforeEach(() => {
       configureTestingModule();
     });
 
-    it('should handle zero models', () => {
+    it("should handle zero models", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       fixture.detectChanges();
       expect(component.totalModels).toBe(0);
     });
 
-    it('should handle single model', () => {
+    it("should handle single model", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 1));
 
@@ -492,7 +492,7 @@ describe('PagedTableTemplate', () => {
       expect(component.totalModels).toBe(1);
     });
 
-    it('should handle multiple models', () => {
+    it("should handle multiple models", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 100));
 
@@ -505,30 +505,30 @@ describe('PagedTableTemplate', () => {
     });
   });
 
-  describe('loadingData', () => {
+  describe("loadingData", () => {
     beforeEach(() => {
       configureTestingModule();
     });
 
-    it('should be false initially', () => {
+    it("should be false initially", () => {
       expect(component.loadingData).toBeFalsy();
     });
 
-    it('should be true while awaiting api response', () => {
+    it("should be true while awaiting api response", () => {
       api.filter.and.callFake(() => new Subject<Project[]>());
       fixture.detectChanges();
 
       expect(component.loadingData).toBeTrue();
     });
 
-    it('should be false after success api response', () => {
+    it("should be false after success api response", () => {
       api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
       fixture.detectChanges();
 
       expect(component.loadingData).toBeFalse();
     });
 
-    it('should be false after error api response', () => {
+    it("should be false after error api response", () => {
       api.filter.and.callFake(() => {
         const subject = new Subject<Project[]>();
         subject.error(generateApiErrorDetails());

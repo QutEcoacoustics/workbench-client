@@ -1,20 +1,20 @@
-import { Id } from '@interfaces/apiInterfaces';
+import { Id } from "@interfaces/apiInterfaces";
 import {
   AnalysisJobItemStatus,
   IAnalysisJobItem,
-} from '@models/AnalysisJobItem';
-import { modelData } from '@test/helpers/faker';
+} from "@models/AnalysisJobItem";
+import { modelData } from "@test/helpers/faker";
 
 export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
   const statuses: AnalysisJobItemStatus[] = [
-    'successful',
-    'new',
-    'queued',
-    'working',
-    'failed',
-    'timed_out',
-    'cancelling',
-    'cancelled',
+    "successful",
+    "new",
+    "queued",
+    "working",
+    "failed",
+    "timed_out",
+    "cancelling",
+    "cancelled",
   ];
 
   return {

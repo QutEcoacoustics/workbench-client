@@ -1,34 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   projectResolvers,
   ProjectsService,
-} from '@baw-api/project/projects.service';
+} from "@baw-api/project/projects.service";
 import {
   deleteProjectMenuItem,
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
-} from '@components/projects/projects.menus';
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { projectMenuItemActions } from '../details/details.component';
+} from "@helpers/formTemplate/formTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { projectMenuItemActions } from "../details/details.component";
 
-const projectKey = 'project';
+const projectKey = "project";
 
 /**
  * Delete Project Component
  */
 @Component({
-  selector: 'baw-projects-delete',
+  selector: "baw-projects-delete",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -52,7 +52,7 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, projectKey, (model) =>
-      defaultSuccessMsg('destroyed', model.name)
+      defaultSuccessMsg("destroyed", model.name)
     );
   }
 

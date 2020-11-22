@@ -1,8 +1,8 @@
-import { DebugElement } from '@angular/core';
-import { ComponentFixture, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { AuthenticatedImageDirective } from '@directives/image/image.directive';
-import { LineTruncationDirective } from 'ngx-line-truncation';
+import { DebugElement } from "@angular/core";
+import { ComponentFixture, tick } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { LineTruncationDirective } from "ngx-line-truncation";
 
 declare const ng: any;
 
@@ -13,10 +13,10 @@ declare const ng: any;
  * @param prop Icon
  */
 export function assertIcon(target: HTMLElement, prop: string) {
-  const icon: HTMLElement = target.querySelector('fa-icon');
-  expect(icon).toBeTruthy('No icon detected');
-  expect(icon.attributes.getNamedItem('ng-reflect-icon')).toBeTruthy();
-  expect(icon.attributes.getNamedItem('ng-reflect-icon').value.trim()).toBe(
+  const icon: HTMLElement = target.querySelector("fa-icon");
+  expect(icon).toBeTruthy("No icon detected");
+  expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+  expect(icon.attributes.getNamedItem("ng-reflect-icon").value.trim()).toBe(
     prop
   );
 }
@@ -34,7 +34,7 @@ export function assertImage(
   alt: string,
   isUnauthenticated?: boolean
 ) {
-  expect(target).toBeTruthy('Image should exist');
+  expect(target).toBeTruthy("Image should exist");
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
 
@@ -60,12 +60,12 @@ export function assertImage(
  * @param tooltip Tooltip text
  */
 export function assertTooltip(target: HTMLElement, tooltip: string) {
-  expect(target).toBeTruthy('No tooltip detected');
+  expect(target).toBeTruthy("No tooltip detected");
 
-  let attr = target.attributes.getNamedItem('ng-reflect-ngb-tooltip');
+  let attr = target.attributes.getNamedItem("ng-reflect-ngb-tooltip");
 
   if (!attr) {
-    attr = target.attributes.getNamedItem('ng-reflect-tooltip');
+    attr = target.attributes.getNamedItem("ng-reflect-tooltip");
   }
 
   expect(attr).toBeTruthy();
@@ -77,7 +77,7 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
 export function assertHref(target: HTMLAnchorElement, href: string) {
   expect(target).toBeTruthy();
   expect(target.href).toBe(href);
-  expect(target.attributes.getNamedItem('ng-reflect-router-link')).toBeFalsy();
+  expect(target.attributes.getNamedItem("ng-reflect-router-link")).toBeFalsy();
 }
 
 /**
@@ -87,8 +87,8 @@ export function assertHref(target: HTMLAnchorElement, href: string) {
  * @param route Route text
  */
 export function assertRoute(target: HTMLElement, route: string) {
-  expect(target).toBeTruthy('No route detected');
-  assertAttribute(target, 'router-link', route);
+  expect(target).toBeTruthy("No route detected");
+  assertAttribute(target, "router-link", route);
 }
 
 /**
@@ -99,7 +99,7 @@ export function assertRoute(target: HTMLElement, route: string) {
  * @param value Expected value of attribute
  */
 export function assertAttribute(target: HTMLElement, key: string, value: any) {
-  const attribute = target.attributes.getNamedItem('ng-reflect-' + key);
+  const attribute = target.attributes.getNamedItem("ng-reflect-" + key);
   expect(attribute).toBeTruthy(`HTML element should have ${key} attribute`);
   expect(attribute.value.trim()).toBe(
     value,
@@ -125,7 +125,7 @@ export function getText(target: DebugElement, selector: string) {
  * @param fixture Component Fixture
  */
 export function getInputs(fixture: ComponentFixture<any>) {
-  return fixture.nativeElement.querySelectorAll('formly-field');
+  return fixture.nativeElement.querySelectorAll("formly-field");
 }
 
 /**
@@ -139,7 +139,7 @@ export function getInputs(fixture: ComponentFixture<any>) {
 export function inputValue(wrapper: any, selector: string, value: string) {
   const input = wrapper.querySelector(selector);
   input.value = value;
-  input.dispatchEvent(new Event('input'));
+  input.dispatchEvent(new Event("input"));
 }
 
 /**
@@ -149,7 +149,7 @@ export function inputValue(wrapper: any, selector: string, value: string) {
  * @param fixture Component fixture
  */
 export function submitForm(fixture: ComponentFixture<any>) {
-  const button = fixture.nativeElement.querySelector('button[type=\'submit\']');
+  const button = fixture.nativeElement.querySelector("button[type='submit']");
   button.click();
 
   tick();
@@ -163,7 +163,7 @@ export function submitForm(fixture: ComponentFixture<any>) {
  * @param message Validation message
  */
 export function assertValidationMessage(wrapper: any, message: string) {
-  const error = wrapper.querySelector('formly-validation-message');
+  const error = wrapper.querySelector("formly-validation-message");
   expect(error).toBeTruthy();
   expect(error.innerText.trim()).toBe(message);
 }
@@ -180,7 +180,7 @@ export function assertErrorHandler(
 ) {
   if (internal) {
     expect(
-      fixture.nativeElement.querySelector('baw-error-handler h1')
+      fixture.nativeElement.querySelector("baw-error-handler h1")
     ).toBeTruthy();
   } else {
     expect(fixture.nativeElement.childElementCount).toBe(0);
@@ -198,13 +198,13 @@ export function assertSpinner(
   visible: boolean
 ) {
   const expectation = expect(
-    fixture.nativeElement.querySelector('baw-loading')
+    fixture.nativeElement.querySelector("baw-loading")
   );
 
   if (visible) {
-    expectation.toBeTruthy('Expected Spinner to Exist');
+    expectation.toBeTruthy("Expected Spinner to Exist");
   } else {
-    expectation.toBeFalsy('Expected Spinner not to Exist');
+    expectation.toBeFalsy("Expected Spinner not to Exist");
   }
 }
 

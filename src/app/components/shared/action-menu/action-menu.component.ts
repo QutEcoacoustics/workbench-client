@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { DefaultMenu } from '@helpers/page/defaultMenus';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { AnyMenuItem, LabelAndIcon } from '@interfaces/menusInterfaces';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { List } from 'immutable';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 
 /**
  * Action Menu Component.
@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
  * to the user.
  */
 @Component({
-  selector: 'baw-action-menu',
+  selector: "baw-action-menu",
   template: `
     <baw-menu
       [title]="actionTitle"
@@ -52,7 +52,7 @@ export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
         this.actionLinks = actionMenu;
         this.actionWidget = actionWidget;
       },
-      (err: ApiErrorDetails) => console.error('ActionMenuComponent', err)
+      (err: ApiErrorDetails) => console.error("ActionMenuComponent", err)
     );
   }
 }

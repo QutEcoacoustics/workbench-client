@@ -1,6 +1,6 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { AudioRecordingStatus, IAudioRecording } from '@models/AudioRecording';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
+import { modelData } from "@test/helpers/faker";
 
 export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
   const bitRateBps = modelData.random.arrayElement(
@@ -14,14 +14,14 @@ export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
     7200,
     21600,
   ]);
-  const mediaTypes = ['audio/mpeg', 'audio/flac', 'audio/wave'];
+  const mediaTypes = ["audio/mpeg", "audio/flac", "audio/wave"];
   const statuses: AudioRecordingStatus[] = [
-    'new',
-    'uploading',
-    'to_check',
-    'ready',
-    'corrupt',
-    'aborted',
+    "new",
+    "uploading",
+    "to_check",
+    "ready",
+    "corrupt",
+    "aborted",
   ];
 
   return {
@@ -41,7 +41,7 @@ export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
     fileHash: modelData.hash(),
     status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
-    originalFileName: modelData.system.fileName('.mpg', 'audio'),
+    originalFileName: modelData.system.fileName(".mpg", "audio"),
     recordedUtcOffset: modelData.offset(),
     ...modelData.model.generateAllUsers(),
   };

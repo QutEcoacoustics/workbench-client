@@ -1,6 +1,6 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { IProject } from '@models/Project';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { IProject } from "@models/Project";
+import { modelData } from "@test/helpers/faker";
 
 export function generateProject(id?: Id): Required<IProject> {
   return {

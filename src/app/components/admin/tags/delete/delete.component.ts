@@ -1,25 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { tagResolvers, TagsService } from '@baw-api/tag/tags.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { Tag } from '@models/Tag';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { adminTagsMenuItemActions } from '../list/list.component';
+} from "@helpers/formTemplate/formTemplate";
+import { Tag } from "@models/Tag";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { adminTagsMenuItemActions } from "../list/list.component";
 import {
   adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
   adminTagsMenuItem,
-} from '../tags.menus';
+} from "../tags.menus";
 
-const tagKey = 'tag';
+const tagKey = "tag";
 
 @Component({
-  selector: 'baw-delete',
+  selector: "baw-delete",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -43,7 +43,7 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, tagKey, (model) =>
-      defaultSuccessMsg('destroyed', model.text)
+      defaultSuccessMsg("destroyed", model.text)
     );
   }
 

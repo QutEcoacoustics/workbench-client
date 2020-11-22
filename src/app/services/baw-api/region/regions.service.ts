@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { Project } from '@models/Project';
-import { IRegion, Region } from '@models/Region';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Project } from "@models/Project";
+import { IRegion, Region } from "@models/Region";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const projectId: IdParam<Project> = id;
 const regionId: IdParamOptional<Region> = id;
@@ -99,11 +99,11 @@ export class ShallowRegionsService extends StandardApi<Region> {
 
 export const regionResolvers = new Resolvers<Region, RegionsService>(
   [RegionsService],
-  'regionId',
-  ['projectId']
-).create('Region');
+  "regionId",
+  ["projectId"]
+).create("Region");
 
 export const shallowRegionResolvers = new Resolvers<
   Region,
   ShallowRegionsService
->([ShallowRegionsService], 'regionId').create('ShallowRegion');
+>([ShallowRegionsService], "regionId").create("ShallowRegion");

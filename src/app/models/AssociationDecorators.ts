@@ -1,38 +1,38 @@
-import { ApiFilter, ApiShow } from '@baw-api/api-common';
-import { Filters } from '@baw-api/baw-api.service';
-import { ACCOUNT, ServiceToken } from '@baw-api/ServiceTokens';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { Id, Ids } from '@interfaces/apiInterfaces';
-import { Observable, Subscription } from 'rxjs';
-import { AbstractModel, UnresolvedModel } from './AbstractModel';
-import { User } from './User';
+import { ApiFilter, ApiShow } from "@baw-api/api-common";
+import { Filters } from "@baw-api/baw-api.service";
+import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { Id, Ids } from "@interfaces/apiInterfaces";
+import { Observable, Subscription } from "rxjs";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
+import { User } from "./User";
 
 /**
  * Creates an association between the ownerId and its user model
  */
 export function Owner<Parent extends AbstractModel & { ownerId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, 'ownerId');
+  return HasOne<Parent, User>(ACCOUNT, "ownerId");
 }
 
 /**
  * Creates an association between the creatorId and its user model
  */
 export function Creator<Parent extends AbstractModel & { creatorId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, 'creatorId');
+  return HasOne<Parent, User>(ACCOUNT, "creatorId");
 }
 
 /**
  * Creates an association between the updaterId and its user model
  */
 export function Updater<Parent extends AbstractModel & { updaterId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, 'updaterId');
+  return HasOne<Parent, User>(ACCOUNT, "updaterId");
 }
 
 /**
  * Creates an association between the deleterId and its user model
  */
 export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, 'deleterId');
+  return HasOne<Parent, User>(ACCOUNT, "deleterId");
 }
 
 /**
@@ -52,7 +52,7 @@ export function HasMany<
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
   identifierKeys?: keyof Parent,
-  childIdentifier: keyof Child = 'id',
+  childIdentifier: keyof Child = "id",
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {
   /** Create filter to retrieve association models */
@@ -164,13 +164,13 @@ function createModelDecorator<
     parent: Parent
   ): AbstractModel | AbstractModel[] | Readonly<AbstractModel[]> {
     // Check for any backing models
-    const backingFieldKey = '_' + identifierKey;
+    const backingFieldKey = "_" + identifierKey;
     if (parent.hasOwnProperty(backingFieldKey)) {
       return parent[backingFieldKey];
     }
 
     // Get Angular Injector Service
-    const injector = parent['injector'];
+    const injector = parent["injector"];
     if (!injector) {
       throw new Error(
         `${parent} does not have injector service. Tried to access ${identifierKey}`

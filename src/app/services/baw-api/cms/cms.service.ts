@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Observable } from "rxjs";
 
 /**
  * Default CMS Pages
@@ -14,11 +14,11 @@ import { Observable } from 'rxjs';
  * what pages are available.
  */
 export enum CMS {
-  HOME = '',
-  CREDITS = 'credits',
-  DATA_UPLOAD = 'data_upload',
-  ETHICS = 'ethics',
-  PRIVACY = 'privacy',
+  HOME = "",
+  CREDITS = "credits",
+  DATA_UPLOAD = "data_upload",
+  ETHICS = "ethics",
+  PRIVACY = "privacy",
 }
 
 const page = (x?: CMS) => x;
@@ -35,7 +35,7 @@ export class CmsService {
     return this.http.get(this.apiRoot + endpoint(cms), {
       // Set response type so that interceptor can identify this is not
       // json traffic
-      responseType: 'text',
+      responseType: "text",
     });
   }
 }

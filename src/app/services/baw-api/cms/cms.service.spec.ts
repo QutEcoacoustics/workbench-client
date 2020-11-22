@@ -1,18 +1,18 @@
-import { SecurityService } from '@baw-api/security/security.service';
-import { UserService } from '@baw-api/user/user.service';
+import { SecurityService } from "@baw-api/security/security.service";
+import { UserService } from "@baw-api/user/user.service";
 import {
   createHttpFactory,
   HttpMethod,
   SpectatorHttp,
-} from '@ngneat/spectator';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { testApiConfig } from '@services/app-config/appConfigMock.service';
-import { noop } from 'rxjs';
-import { CMS, CmsService } from './cms.service';
+} from "@ngneat/spectator";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { testApiConfig } from "@services/app-config/appConfigMock.service";
+import { noop } from "rxjs";
+import { CMS, CmsService } from "./cms.service";
 
-export const cmsRoot = testApiConfig.environment.apiRoot + '/cms/';
+export const cmsRoot = testApiConfig.environment.apiRoot + "/cms/";
 
-describe('CmsService', () => {
+describe("CmsService", () => {
   let api: SecurityService;
   let spectator: SpectatorHttp<CmsService>;
   const createService = createHttpFactory({
@@ -29,19 +29,19 @@ describe('CmsService', () => {
 
   afterEach(() => spectator.controller.verify());
 
-  it('should create get request', () => {
+  it("should create get request", () => {
     spectator.service.get(defaultUrl).subscribe(noop, noop, noop);
     spectator.expectOne(defaultUrl, HttpMethod.GET);
   });
 
-  it('should set responseType', () => {
+  it("should set responseType", () => {
     spectator.service.get(defaultUrl).subscribe(noop, noop, noop);
     const req = spectator.expectOne(defaultUrl, HttpMethod.GET);
-    expect(req.request.responseType).toBe('text');
+    expect(req.request.responseType).toBe("text");
   });
 
-  it('should return text response', (done) => {
-    const response = 'Testing';
+  it("should return text response", (done) => {
+    const response = "Testing";
     spectator.service.get(defaultUrl).subscribe((cms) => {
       expect(cms).toBe(response);
       done();
@@ -50,7 +50,7 @@ describe('CmsService', () => {
     req.flush(response);
   });
 
-  it('should return html response', (done) => {
+  it("should return html response", (done) => {
     const response = `
     <div>
       <style>p { color: #420; }</style>
@@ -66,8 +66,8 @@ describe('CmsService', () => {
     req.flush(response);
   });
 
-  it('should complete request', (done) => {
-    const response = 'Testing';
+  it("should complete request", (done) => {
+    const response = "Testing";
     spectator.service.get(defaultUrl).subscribe(noop, noop, () => {
       expect(true).toBeTruthy();
       done();

@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { LineTruncationDirective } from 'ngx-line-truncation';
+import { NgModule } from "@angular/core";
+import { LineTruncationDirective } from "ngx-line-truncation";
 import {
   internalComponents,
   internalModules,
   sharedComponents,
   sharedModules,
-} from './shared.components';
+} from "./shared.components";
 
 /**
  * Shared Components Module

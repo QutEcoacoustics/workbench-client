@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { retrieveResolvers } from '@baw-api/resolver-common';
-import { siteResolvers } from '@baw-api/site/sites.service';
-import { projectMenuItem } from '@components/projects/projects.menus';
-import { exploreAudioMenuItem } from '@helpers/page/externalMenus';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
-import { List } from 'immutable';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { siteResolvers } from "@baw-api/site/sites.service";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { List } from "immutable";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
@@ -19,7 +19,7 @@ import {
   siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
-} from '../../sites.menus';
+} from "../../sites.menus";
 
 export const siteMenuItemActions = [
   exploreAudioMenuItem,
@@ -29,14 +29,14 @@ export const siteMenuItemActions = [
   deleteSiteMenuItem,
 ];
 
-const projectKey = 'project';
-const siteKey = 'site';
+const projectKey = "project";
+const siteKey = "site";
 
 /**
  * Site Details Component
  */
 @Component({
-  selector: 'baw-site-details',
+  selector: "baw-site-details",
   template: `
     <baw-site
       *ngIf="project && site"

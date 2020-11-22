@@ -1,23 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { tagResolvers, TagsService } from '@baw-api/tag/tags.service';
-import { Tag } from '@models/Tag';
-import { SpyObject } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateTag } from '@test/fakes/Tag';
-import { assertErrorHandler } from '@test/helpers/html';
-import { mockActivatedRoute } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { appLibraryImports } from 'src/app/app.module';
-import { adminTagsMenuItem } from '../tags.menus';
-import { AdminTagsDeleteComponent } from './delete.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
+import { Tag } from "@models/Tag";
+import { SpyObject } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateTag } from "@test/fakes/Tag";
+import { assertErrorHandler } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
+import { adminTagsMenuItem } from "../tags.menus";
+import { AdminTagsDeleteComponent } from "./delete.component";
 
-describe('AdminTagsDeleteComponent', () => {
+describe("AdminTagsDeleteComponent", () => {
   let api: SpyObject<TagsService>;
   let component: AdminTagsDeleteComponent;
   let defaultTag: Tag;
@@ -51,9 +51,9 @@ describe('AdminTagsDeleteComponent', () => {
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
 
-    spyOn(notifications, 'success').and.stub();
-    spyOn(notifications, 'error').and.stub();
-    spyOn(router, 'navigateByUrl').and.stub();
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
 
     fixture.detectChanges();
   }
@@ -62,32 +62,32 @@ describe('AdminTagsDeleteComponent', () => {
     defaultTag = new Tag(generateTag());
   });
 
-  describe('form', () => {
-    it('should have no fields', () => {
+  describe("form", () => {
+    it("should have no fields", () => {
       configureTestingModule(defaultTag);
       expect(component.fields).toEqual([]);
     });
   });
 
-  describe('component', () => {
-    it('should create', () => {
+  describe("component", () => {
+    it("should create", () => {
       configureTestingModule(defaultTag);
       expect(component).toBeTruthy();
     });
 
-    it('should handle tag error', () => {
+    it("should handle tag error", () => {
       configureTestingModule(undefined, generateApiErrorDetails());
       assertErrorHandler(fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       configureTestingModule(defaultTag);
       api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
-    it('should redirect to tag list', () => {
+    it("should redirect to tag list", () => {
       configureTestingModule(defaultTag);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 

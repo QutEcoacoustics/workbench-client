@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'baw-pill-list',
-  templateUrl: './pill-list.component.html',
+  selector: "baw-pill-list",
+  templateUrl: "./pill-list.component.html",
 })
 export class PillListComponent implements OnInit {
   @Input() public text: string[];

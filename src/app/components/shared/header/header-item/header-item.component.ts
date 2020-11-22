@@ -3,21 +3,21 @@ import {
   Component,
   Input,
   OnInit,
-} from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+} from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
 import {
   getRoute,
   isExternalLink,
   isInternalRoute,
   NavigableMenuItem,
-} from '@interfaces/menusInterfaces';
+} from "@interfaces/menusInterfaces";
 
 /**
  * Header Item Component.
  * Displays a header link.
  */
 @Component({
-  selector: 'baw-header-item',
+  selector: "baw-header-item",
   template: `
     <li class="nav-item" *ngIf="link">
       <ng-container *ngIf="isInternalRoute(link)">

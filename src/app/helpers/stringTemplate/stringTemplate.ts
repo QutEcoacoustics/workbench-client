@@ -24,7 +24,7 @@ export function stringTemplate<T extends((input: any) => any)[]>(
 
     result[result.length - 1] = strings[strings.length - 1];
 
-    return result.join('');
+    return result.join("");
   };
 }
 

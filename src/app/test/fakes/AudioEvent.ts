@@ -1,7 +1,7 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { IAudioEvent } from '@models/AudioEvent';
-import { generateTagging } from '@test/fakes/Tagging';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { IAudioEvent } from "@models/AudioEvent";
+import { generateTagging } from "@test/fakes/Tagging";
+import { modelData } from "@test/helpers/faker";
 
 export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
   const [startTimeSeconds, endTimeSeconds] = modelData.startEndSeconds();

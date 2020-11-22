@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { noop, Observable } from 'rxjs';
-import { delay, filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { WithUnsubscribe } from './helpers/unsubscribe/unsubscribe';
-import { AppConfigService } from './services/app-config/app-config.service';
+import { Component, OnInit } from "@angular/core";
+import { Title } from "@angular/platform-browser";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { LoadingBarService } from "@ngx-loading-bar/core";
+import { noop, Observable } from "rxjs";
+import { delay, filter, map, takeUntil, withLatestFrom } from "rxjs/operators";
+import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
+import { AppConfigService } from "./services/app-config/app-config.service";
 
 /**
  * App Root Component
  */
 @Component({
-  selector: 'baw-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: "baw-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent extends WithUnsubscribe() implements OnInit {
   public fullscreen: boolean;
@@ -65,7 +65,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
     while (count < 50) {
       if (!displayComponent) {
         // This is not a display component, cannot go any further
-        console.error('Could not find a display component.');
+        console.error("Could not find a display component.");
         return;
       } else if (displayComponent.component) {
         // This is a display component, break out of while loop and check page info
@@ -78,7 +78,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
     }
 
     if (count >= 50) {
-      console.error('Search for component layout type exceeded a depth of 50.');
+      console.error("Search for component layout type exceeded a depth of 50.");
       return;
     }
 

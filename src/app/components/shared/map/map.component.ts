@@ -6,18 +6,18 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
-} from '@angular/core';
-import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { List } from 'immutable';
-import { takeUntil } from 'rxjs/operators';
+} from "@angular/core";
+import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 
 /**
  * Google Maps Wrapper Component
  * ! Manually test when editing, unit test coverage is poor
  */
 @Component({
-  selector: 'baw-map',
+  selector: "baw-map",
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
       <google-map height="100%" width="100%" [options]="mapOptions">
@@ -34,7 +34,7 @@ import { takeUntil } from 'rxjs/operators';
       <div class="map-placeholder"><p>No locations specified</p></div>
     </ng-template>
   `,
-  styleUrls: ['./map.component.scss'],
+  styleUrls: ["./map.component.scss"],
 })
 export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
@@ -44,10 +44,10 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   @Input() public markers: List<MapMarkerOption>;
   public filteredMarkers: MapMarkerOption[];
   public hasMarkers = false;
-  public infoContent = '';
+  public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions: google.maps.MapOptions = { mapTypeId: 'satellite' };
+  public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
   public markerOptions: google.maps.MarkerOptions = {};
 
   constructor(private ref: ChangeDetectorRef) {
@@ -82,7 +82,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
           this.infoContent = this.filteredMarkers[index].label as string;
           this.info.open(marker);
         },
-        () => console.error('Failed to create info content for map marker')
+        () => console.error("Failed to create info content for map marker")
       );
     });
   }
@@ -95,8 +95,8 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
  */
 function isMarkerValid(marker: MapMarkerOption): boolean {
   return (
-    typeof marker?.position?.lat === 'number' &&
-    typeof marker?.position?.lng === 'number'
+    typeof marker?.position?.lat === "number" &&
+    typeof marker?.position?.lng === "number"
   );
 }
 

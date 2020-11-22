@@ -1,71 +1,71 @@
-import { accountResolvers, AccountsService } from './account/accounts.service';
+import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResolvers,
   AnalysisJobItemsService,
-} from './analysis/analysis-job-items.service';
+} from "./analysis/analysis-job-items.service";
 import {
   analysisJobResolvers,
   AnalysisJobsService,
-} from './analysis/analysis-jobs.service';
+} from "./analysis/analysis-jobs.service";
 import {
   audioEventResolvers,
   AudioEventsService,
   ShallowAudioEventsService,
-} from './audio-event/audio-events.service';
+} from "./audio-event/audio-events.service";
 import {
   audioRecordingResolvers,
   AudioRecordingsService,
-} from './audio-recording/audio-recordings.service';
+} from "./audio-recording/audio-recordings.service";
 import {
   bookmarkResolvers,
   BookmarksService,
-} from './bookmark/bookmarks.service';
+} from "./bookmark/bookmarks.service";
 import {
   datasetItemResolvers,
   DatasetItemsService,
-} from './dataset/dataset-items.service';
-import { datasetResolvers, DatasetsService } from './dataset/datasets.service';
+} from "./dataset/dataset-items.service";
+import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
 import {
   progressEventResolvers,
   ProgressEventsService,
-} from './progress-event/progress-events.service';
-import { projectResolvers, ProjectsService } from './project/projects.service';
+} from "./progress-event/progress-events.service";
+import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
   regionResolvers,
   RegionsService,
   shallowRegionResolvers,
   ShallowRegionsService,
-} from './region/regions.service';
-import { BawProvider } from './resolver-common';
+} from "./region/regions.service";
+import { BawProvider } from "./resolver-common";
 import {
   SavedSearchesService,
   savedSearchResolvers,
-} from './saved-search/saved-searches.service';
-import { scriptResolvers, ScriptsService } from './script/scripts.service';
-import * as Tokens from './ServiceTokens';
+} from "./saved-search/saved-searches.service";
+import { scriptResolvers, ScriptsService } from "./script/scripts.service";
+import * as Tokens from "./ServiceTokens";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
   siteResolvers,
   SitesService,
-} from './site/sites.service';
+} from "./site/sites.service";
 import {
   questionResolvers,
   QuestionsService,
   shallowQuestionResolvers,
   ShallowQuestionsService,
-} from './study/questions.service';
+} from "./study/questions.service";
 import {
   responseResolvers,
   ResponsesService,
   shallowResponseResolvers,
   ShallowResponsesService,
-} from './study/responses.service';
-import { StudiesService, studyResolvers } from './study/studies.service';
-import { tagGroupResolvers, TagGroupsService } from './tag/tag-group.service';
-import { taggingResolvers, TaggingsService } from './tag/taggings.service';
-import { tagResolvers, TagsService } from './tag/tags.service';
-import { userResolvers, UserService } from './user/user.service';
+} from "./study/responses.service";
+import { StudiesService, studyResolvers } from "./study/studies.service";
+import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
+import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
+import { tagResolvers, TagsService } from "./tag/tags.service";
+import { userResolvers, UserService } from "./user/user.service";
 
 const serviceList = [
   {

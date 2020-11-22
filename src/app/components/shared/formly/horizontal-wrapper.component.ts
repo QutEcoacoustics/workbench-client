@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FieldWrapper } from '@ngx-formly/core';
+import { Component } from "@angular/core";
+import { FieldWrapper } from "@ngx-formly/core";
 
 /**
  * Horizontal wrapper for formly components so they can be center aligned
@@ -7,7 +7,7 @@ import { FieldWrapper } from '@ngx-formly/core';
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'formly-horizontal-wrapper',
+  selector: "formly-horizontal-wrapper",
   template: `
     <div class="form-group row">
       <label [attr.for]="id" class="col-sm-2 col-form-label" *ngIf="to.label">

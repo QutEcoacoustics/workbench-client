@@ -1,6 +1,6 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { IQuestion } from '@models/Question';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { IQuestion } from "@models/Question";
+import { modelData } from "@test/helpers/faker";
 
 export function generateQuestion(id?: Id): Required<IQuestion> {
   return {

@@ -1,22 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
-} from '@baw-api/project/projects.service';
-import { Project } from '@models/Project';
-import { SpyObject } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { generateProject } from '@test/fakes/Project';
-import { mockActivatedRoute } from '@test/helpers/testbed';
-import { Subject } from 'rxjs';
-import { appLibraryImports } from 'src/app/app.module';
-import { RequestComponent } from './request.component';
+} from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { Subject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
+import { RequestComponent } from "./request.component";
 
-describe('ProjectsRequestComponent', () => {
+describe("ProjectsRequestComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: RequestComponent;
   let defaultProject: Project;
@@ -54,7 +54,7 @@ describe('ProjectsRequestComponent', () => {
     defaultProject = new Project(generateProject());
   });
 
-  xit('should create', () => {
+  xit("should create", () => {
     configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });

@@ -1,16 +1,16 @@
-import { Injector } from '@angular/core';
-import { AUDIO_EVENT, TAG } from '@baw-api/ServiceTokens';
+import { Injector } from "@angular/core";
+import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
   Id,
-} from '@interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import { Creator, HasOne, Updater } from './AssociationDecorators';
-import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
-import type { AudioEvent } from './AudioEvent';
-import type { Tag } from './Tag';
-import type { User } from './User';
+} from "@interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import type { AudioEvent } from "./AudioEvent";
+import type { Tag } from "./Tag";
+import type { User } from "./User";
 
 export interface ITagging extends HasCreatorAndUpdater {
   id?: Id;
@@ -19,7 +19,7 @@ export interface ITagging extends HasCreatorAndUpdater {
 }
 
 export class Tagging extends AbstractModel implements ITagging {
-  public readonly kind = 'Tagging';
+  public readonly kind = "Tagging";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -39,7 +39,7 @@ export class Tagging extends AbstractModel implements ITagging {
   @Updater<Tagging>()
   public updater?: User;
   // TODO Add association with AudioEvent
-  @HasOne<Tagging, Tag>(TAG, 'tagId')
+  @HasOne<Tagging, Tag>(TAG, "tagId")
   public tag?: Tag;
 
   constructor(tagging: ITagging, injector?: Injector) {
@@ -47,6 +47,6 @@ export class Tagging extends AbstractModel implements ITagging {
   }
 
   public get viewUrl(): string {
-    throw new Error('Tagging viewUrl not implemented.');
+    throw new Error("Tagging viewUrl not implemented.");
   }
 }

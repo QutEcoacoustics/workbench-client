@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Study } from '@models/Study';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { generateStudy } from '@test/fakes/Study';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Study } from "@models/Study";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateStudy } from "@test/fakes/Study";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -11,10 +11,10 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from '@test/helpers/api-common';
-import { StudiesService } from './studies.service';
+} from "@test/helpers/api-common";
+import { StudiesService } from "./studies.service";
 
-describe('StudiesService', function () {
+describe("StudiesService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
@@ -28,23 +28,23 @@ describe('StudiesService', function () {
     this.service = TestBed.inject(StudiesService);
   });
 
-  validateApiList<Study, StudiesService>('/studies/');
-  validateApiFilter<Study, StudiesService>('/studies/filter');
+  validateApiList<Study, StudiesService>("/studies/");
+  validateApiFilter<Study, StudiesService>("/studies/filter");
   validateApiShow<Study, StudiesService>(
-    '/studies/5',
+    "/studies/5",
     5,
     new Study(generateStudy(5))
   );
   validateApiCreate<Study, StudiesService>(
-    '/studies/',
+    "/studies/",
     new Study(generateStudy(5))
   );
   validateApiUpdate<Study, StudiesService>(
-    '/studies/5',
+    "/studies/5",
     new Study(generateStudy(5))
   );
   validateApiDestroy<Study, StudiesService>(
-    '/studies/5',
+    "/studies/5",
     5,
     new Study(generateStudy(5))
   );

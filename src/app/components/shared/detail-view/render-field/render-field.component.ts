@@ -1,19 +1,19 @@
-import { ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   ImageSizes,
   ImageUrl,
   isImageUrl,
   toRelative,
-} from '@interfaces/apiInterfaces';
-import { AbstractModel, UnresolvedModel } from '@models/AbstractModel';
-import { DateTime, Duration } from 'luxon';
-import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+} from "@interfaces/apiInterfaces";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import { DateTime, Duration } from "luxon";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: 'baw-render-field',
+  selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
     <dl *ngIf="styling === FieldStyling.Plain">
@@ -76,9 +76,9 @@ export class RenderFieldComponent
   public FieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.Plain;
-  private errorText = '(error)';
-  private loadingText = '(loading)';
-  private noValueText = '(no value)';
+  private errorText = "(error)";
+  private loadingText = "(loading)";
+  private noValueText = "(no value)";
 
   constructor(private ref: ChangeDetectorRef) {
     super();
@@ -110,13 +110,13 @@ export class RenderFieldComponent
       this.humanizeObservable(value);
     } else if (value instanceof AbstractModel) {
       this.humanizeAbstractModel(value);
-    } else if (typeof value === 'object') {
+    } else if (typeof value === "object") {
       // TODO Implement optional treeview
       this.humanizeObject(value);
-    } else if (typeof value === 'boolean') {
+    } else if (typeof value === "boolean") {
       this.styling = FieldStyling.Checkbox;
       this.display = value;
-    } else if (typeof value === 'string') {
+    } else if (typeof value === "string") {
       this.humanizeString(value);
     } else {
       this.display = value.toString();
@@ -133,7 +133,7 @@ export class RenderFieldComponent
       this.setLoading();
     } else {
       this.styling = FieldStyling.Model;
-      this.display = '';
+      this.display = "";
       this.model = value;
     }
   }
@@ -184,7 +184,7 @@ export class RenderFieldComponent
     this.setLoading();
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
-    reader.addEventListener('loadend', (e) => {
+    reader.addEventListener("loadend", (e) => {
       this.styling = FieldStyling.Code;
       this.display = e.target.result.toString();
     });

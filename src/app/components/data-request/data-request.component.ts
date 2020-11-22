@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { WithFormCheck } from '@guards/form/form.guard';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { dataRequestCategory, dataRequestMenuItem } from './data-request.menus';
-import { fields as requestFields } from './data-request.schema.json';
-import { fields as annotationFields } from './download-annotations.schema.json';
+import { Component } from "@angular/core";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
+import { fields as requestFields } from "./data-request.schema.json";
+import { fields as annotationFields } from "./download-annotations.schema.json";
 
 @Component({
-  selector: 'baw-data-request',
+  selector: "baw-data-request",
   template: `
     <h1>Data Request</h1>
 

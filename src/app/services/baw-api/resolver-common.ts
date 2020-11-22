@@ -1,11 +1,11 @@
-import { Type } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { Id } from '@interfaces/apiInterfaces';
-import { AbstractData } from '@models/AbstractData';
-import { AbstractModel } from '@models/AbstractModel';
-import { Observable, of } from 'rxjs';
-import { catchError, map, take } from 'rxjs/operators';
+import { Type } from "@angular/core";
+import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { Id } from "@interfaces/apiInterfaces";
+import { AbstractData } from "@models/AbstractData";
+import { AbstractModel } from "@models/AbstractModel";
+import { Observable, of } from "rxjs";
+import { catchError, map, take } from "rxjs/operators";
 import {
   ApiCreate,
   ApiDestroy,
@@ -14,9 +14,9 @@ import {
   ApiShow,
   ApiUpdate,
   IdOr,
-} from './api-common';
-import { ApiErrorDetails } from './api.interceptor.service';
-import { BawApiService } from './baw-api.service';
+} from "./api-common";
+import { ApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService } from "./baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class
@@ -162,10 +162,10 @@ export class ListResolver<
     deps: Type<A>[]
   ) {
     return {
-      list: name + 'ListResolver',
+      list: name + "ListResolver",
       providers: [
         {
-          provide: name + 'ListResolver',
+          provide: name + "ListResolver",
           useClass: resolver,
           deps,
         },
@@ -197,10 +197,10 @@ export class ShowResolver<
     deps: Type<A>[]
   ) {
     return {
-      show: name + 'ShowResolver',
+      show: name + "ShowResolver",
       providers: [
         {
-          provide: name + 'ShowResolver',
+          provide: name + "ShowResolver",
           useClass: resolver,
           deps,
         },
@@ -252,7 +252,7 @@ export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
-    console.warn('resolver-common: Failed to detect any resolvers');
+    console.warn("resolver-common: Failed to detect any resolvers");
     return models;
   }
 

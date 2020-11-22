@@ -4,21 +4,21 @@ import {
   ImageSizes,
   ImageUrl,
   TimezoneInformation,
-} from '@interfaces/apiInterfaces';
-import faker from 'faker';
+} from "@interfaces/apiInterfaces";
+import faker from "faker";
 
 const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
   accessLevel: () =>
-    faker.random.arrayElement<AccessLevel>(['Reader', 'Writer', 'Owner']),
+    faker.random.arrayElement<AccessLevel>(["Reader", "Writer", "Owner"]),
   boolean: () => faker.random.boolean(),
-  description: () => faker.lorem.sentence().replace(specialCharRegex, ''),
+  description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
     [0, 1, 2, 3, 4]
       .map(() => faker.lorem.sentences())
-      .join(' ')
-      .replace(specialCharRegex, ''),
+      .join(" ")
+      .replace(specialCharRegex, ""),
   descriptionHtml: () =>
     `<b>${modelData.param()}</b><br><p>${modelData.description()}</p>`,
   defaults: {
@@ -39,8 +39,8 @@ export const modelData = {
       1411200,
     ],
   },
-  hash: () => 'SHA256::' + modelData.hexaDecimal(256 / 4).substr(2),
-  html: () => 'hello <b>world</b>',
+  hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substr(2),
+  html: () => "hello <b>world</b>",
   id: (id?: Id) => (id ? id : faker.random.number(25)),
   ids: () => randomArray(0, 5, () => faker.random.number(100)),
   imageUrl: () => faker.image.imageUrl(),
@@ -49,11 +49,11 @@ export const modelData = {
   longitude: () => parseFloat(faker.address.longitude()),
   notes: () => randomObject(0, 5),
   offset: () =>
-    faker.random.arrayElement(['+', '-']) +
+    faker.random.arrayElement(["+", "-"]) +
     faker.random.number(11) +
-    ':' +
-    faker.random.arrayElement(['00', '30']),
-  param: () => faker.name.title().replace(specialCharRegex, ''),
+    ":" +
+    faker.random.arrayElement(["00", "30"]),
+  param: () => faker.name.title().replace(specialCharRegex, ""),
   seconds: () => faker.random.number(86400 - 30) + 30,
   startEndSeconds: () => {
     const min = faker.random.number(86400 - 30) + 30;
@@ -68,9 +68,9 @@ export const modelData = {
   timestamp: () => faker.date.past().toISOString(),
   tzInfoTz: () =>
     faker.random.arrayElement([
-      'America/Costa_Rica',
-      'Australia/Brisbane',
-      'Asia/Makassar',
+      "America/Costa_Rica",
+      "Australia/Brisbane",
+      "Asia/Makassar",
     ]),
   uuid: () => faker.random.uuid(),
   hexaDecimal,
@@ -152,7 +152,7 @@ function imageUrls(url?: string): ImageUrl[] {
     { image: ImageSizes.TINY, size: 30 },
   ].map(({ image, size }) => ({
     size: image,
-    url: url ? url + '/300/300' : faker.image.imageUrl(size, size),
+    url: url ? url + "/300/300" : faker.image.imageUrl(size, size),
     width: size,
     height: size,
   }));
@@ -165,22 +165,22 @@ function timezone(): TimezoneInformation {
   return faker.random.arrayElement<TimezoneInformation>([
     {
       identifierAlt: null,
-      identifier: 'America/Costa_Rica',
-      friendlyIdentifier: 'America - Costa Rica',
+      identifier: "America/Costa_Rica",
+      friendlyIdentifier: "America - Costa Rica",
       utcOffset: -21600,
       utcTotalOffset: -21600,
     },
     {
-      identifierAlt: 'Brisbane',
-      identifier: 'Australia/Brisbane',
-      friendlyIdentifier: 'Australia - Brisbane',
+      identifierAlt: "Brisbane",
+      identifier: "Australia/Brisbane",
+      friendlyIdentifier: "Australia - Brisbane",
       utcOffset: 36000,
       utcTotalOffset: 36000,
     },
     {
       identifierAlt: null,
-      identifier: 'Asia/Makassar',
-      friendlyIdentifier: 'Asia - Makassar',
+      identifier: "Asia/Makassar",
+      friendlyIdentifier: "Asia - Makassar",
       utcOffset: 28800,
       utcTotalOffset: 28800,
     },
@@ -193,29 +193,29 @@ function timezone(): TimezoneInformation {
  * @param count Size of hash
  */
 function hexaDecimal(count: number = 1): string {
-  let wholeString = '';
+  let wholeString = "";
   for (let i = 0; i < count; i++) {
     wholeString += faker.random.arrayElement([
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
     ]);
   }
 
-  return '0x' + wholeString;
+  return "0x" + wholeString;
 }
 
 /**
@@ -252,8 +252,8 @@ function randomObject(min: number, max: number): object {
 
   for (let i = 0; i < len; ++i) {
     obj[
-      faker.random.word().replace(specialCharRegex, '')
-    ] = faker.random.words().replace(specialCharRegex, '');
+      faker.random.word().replace(specialCharRegex, "")
+    ] = faker.random.words().replace(specialCharRegex, "");
   }
 
   return obj;

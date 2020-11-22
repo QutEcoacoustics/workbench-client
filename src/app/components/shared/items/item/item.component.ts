@@ -3,17 +3,17 @@ import {
   Component,
   Input,
   OnInit,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Href } from '@interfaces/menusInterfaces';
-import { StrongRoute } from '@interfaces/strongRoute';
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Href } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 
 /**
  * Item Component
  */
 @Component({
-  selector: 'baw-items-item',
+  selector: "baw-items-item",
   template: `
     <div class="clearfix" style="font-size: 0.925rem;">
       <!-- Item icon -->
@@ -65,7 +65,7 @@ export class ItemComponent implements OnInit {
       return;
     }
 
-    if (typeof this.uri === 'object') {
+    if (typeof this.uri === "object") {
       this.internalLink = true;
       this.link = this.uri.toString();
     } else {

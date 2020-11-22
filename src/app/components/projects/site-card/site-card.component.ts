@@ -3,13 +3,13 @@ import {
   Component,
   Input,
   OnInit,
-} from '@angular/core';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
+} from "@angular/core";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
 
 @Component({
-  selector: 'baw-site-card',
+  selector: "baw-site-card",
   template: `
     <li class="list-group-item">
       <div class="image">
@@ -58,7 +58,7 @@ import { Site } from '@models/Site';
       </div>
     </li>
   `,
-  styleUrls: ['./site-card.component.scss'],
+  styleUrls: ["./site-card.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteCardComponent implements OnInit {

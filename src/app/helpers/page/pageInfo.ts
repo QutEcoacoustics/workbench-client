@@ -1,12 +1,12 @@
-import { Type } from '@angular/core';
-import { Data } from '@angular/router';
+import { Type } from "@angular/core";
+import { Data } from "@angular/router";
 import {
   Category,
   MenuRoute,
   Menus,
   ResolverList,
-} from '@interfaces/menusInterfaces';
-import { PageComponent } from './pageComponent';
+} from "@interfaces/menusInterfaces";
+import { PageComponent } from "./pageComponent";
 
 /**
  * Page info interface.

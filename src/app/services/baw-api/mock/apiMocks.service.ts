@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
 import {
   ApiFilter,
   ApiShow,
@@ -10,15 +10,15 @@ import {
   ReadAndUpdateApi,
   ReadonlyApi,
   StandardApi,
-} from '@baw-api/api-common';
-import { BawApiService } from '@baw-api/baw-api.service';
-import { ServiceToken } from '@baw-api/ServiceTokens';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { Observable } from 'rxjs';
-import { MockModel } from './baseApiMock.service';
+} from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { ServiceToken } from "@baw-api/ServiceTokens";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Observable } from "rxjs";
+import { MockModel } from "./baseApiMock.service";
 
 export const MOCK = new ServiceToken<MockStandardApiService>(
-  'STANDARD_API_SERVICE'
+  "STANDARD_API_SERVICE"
 );
 
 const multipleModels = (...args: any[]) => new Observable<MockModel[]>();

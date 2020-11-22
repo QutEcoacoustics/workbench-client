@@ -1,23 +1,23 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { FieldType } from '@ngx-formly/core';
-import { getTimeZones, TimeZone } from '@vvo/tzdb';
-import { merge, Observable, Subject } from 'rxjs';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
+import { FieldType } from "@ngx-formly/core";
+import { getTimeZones, TimeZone } from "@vvo/tzdb";
+import { merge, Observable, Subject } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 /**
  * Timezone Input
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'formly-timezone-input',
+  selector: "formly-timezone-input",
   template: `
     <div class="form-group">
       <label *ngIf="to.label" [for]="field.id">
@@ -66,11 +66,11 @@ import {
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
-  @ViewChild('instance', { static: true }) public instance: NgbTypeahead;
+  @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
   public formControl: FormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
-  public defaultTime = '(no match)';
+  public defaultTime = "(no match)";
   public error: boolean;
   public offset: string = this.defaultTime;
   public timezone: TimeZone;
@@ -81,7 +81,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
     this.formControl.setValidators(() => {
       if (!isInstantiated(this.timezone)) {
         if (this.to.required && this.formControl.dirty) {
-          return { [this.field.key.toString()]: 'You must select a timezone' };
+          return { [this.field.key.toString()]: "You must select a timezone" };
         } else {
           return null;
         }
@@ -91,7 +91,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
         (timezone) => timezone === this.timezone
       );
       return this.error
-        ? { [this.field.key.toString()]: 'Invalid timezone selected' }
+        ? { [this.field.key.toString()]: "Invalid timezone selected" }
         : null;
     });
     this.formControl.updateValueAndValidity();

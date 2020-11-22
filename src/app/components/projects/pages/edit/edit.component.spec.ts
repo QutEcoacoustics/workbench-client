@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
-} from '@baw-api/project/projects.service';
-import { Project } from '@models/Project';
-import { SpyObject } from '@ngneat/spectator';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { testFormlyFields } from '@test/helpers/formly';
-import { assertErrorHandler } from '@test/helpers/html';
-import { mockActivatedRoute, testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { fields } from '../../project.schema.json';
-import { EditComponent } from './edit.component';
+} from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertErrorHandler } from "@test/helpers/html";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
+import { fields } from "../../project.schema.json";
+import { EditComponent } from "./edit.component";
 
-describe('ProjectsEditComponent', () => {
+describe("ProjectsEditComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: EditComponent;
   let defaultProject: Project;
@@ -47,9 +47,9 @@ describe('ProjectsEditComponent', () => {
     api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
     notifications = TestBed.inject(ToastrService);
 
-    spyOn(notifications, 'success').and.stub();
-    spyOn(notifications, 'error').and.stub();
-    spyOn(router, 'navigateByUrl').and.stub();
+    spyOn(notifications, "success").and.stub();
+    spyOn(notifications, "error").and.stub();
+    spyOn(router, "navigateByUrl").and.stub();
 
     fixture.detectChanges();
   }
@@ -58,59 +58,59 @@ describe('ProjectsEditComponent', () => {
     defaultProject = new Project(generateProject());
   });
 
-  describe('form', () => {
+  describe("form", () => {
     testFormlyFields([
       {
-        testGroup: 'Project Name Input',
+        testGroup: "Project Name Input",
         field: fields[0],
-        key: 'name',
-        label: 'Project Name',
-        type: 'input',
-        inputType: 'text',
+        key: "name",
+        label: "Project Name",
+        type: "input",
+        inputType: "text",
         required: true,
       },
       {
-        testGroup: 'Project Description Input',
+        testGroup: "Project Description Input",
         field: fields[1],
-        key: 'description',
-        label: 'Description',
-        type: 'textarea',
+        key: "description",
+        label: "Description",
+        type: "textarea",
       },
       {
-        testGroup: 'Project Image Input',
+        testGroup: "Project Image Input",
         field: fields[2],
-        key: 'image',
-        label: 'Image',
-        type: 'image',
+        key: "image",
+        label: "Image",
+        type: "image",
       },
     ]);
   });
 
-  describe('component', () => {
-    it('should create', () => {
+  describe("component", () => {
+    it("should create", () => {
       configureTestingModule(defaultProject);
       expect(component).toBeTruthy();
     });
 
-    it('should handle project error', () => {
+    it("should handle project error", () => {
       configureTestingModule(undefined, generateApiErrorDetails());
       assertErrorHandler(fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       configureTestingModule(defaultProject);
       api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
 
-    it('should handle general error', () => {
+    it("should handle general error", () => {
       configureTestingModule(defaultProject);
       api.update.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails('Unauthorized', {
-            message: 'Sign in to access this feature.',
+          generateApiErrorDetails("Unauthorized", {
+            message: "Sign in to access this feature.",
           })
         );
         return subject;
@@ -118,17 +118,17 @@ describe('ProjectsEditComponent', () => {
 
       component.submit(defaultProject);
       expect(notifications.error).toHaveBeenCalledWith(
-        'Sign in to access this feature.'
+        "Sign in to access this feature."
       );
     });
 
-    it('should handle duplicate project name', () => {
+    it("should handle duplicate project name", () => {
       configureTestingModule(defaultProject, undefined);
       api.update.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails('Unprocessable Entity', {
-            info: { name: ['has already been taken'] },
+          generateApiErrorDetails("Unprocessable Entity", {
+            info: { name: ["has already been taken"] },
           })
         );
 
@@ -138,7 +138,7 @@ describe('ProjectsEditComponent', () => {
       component.submit(defaultProject);
 
       expect(notifications.error).toHaveBeenCalledWith(
-        'Record could not be saved<br />name has already been taken'
+        "Record could not be saved<br />name has already been taken"
       );
     });
   });

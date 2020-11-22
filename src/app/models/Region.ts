@@ -1,6 +1,6 @@
-import { Injector } from '@angular/core';
-import { PROJECT, SHALLOW_SITE } from '@baw-api/ServiceTokens';
-import { regionMenuItem } from '@components/regions/regions.menus';
+import { Injector } from "@angular/core";
+import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -11,25 +11,25 @@ import {
   ImageUrl,
   Notes,
   Param,
-} from '@interfaces/apiInterfaces';
-import { assetRoot } from '@services/app-config/app-config.service';
-import { AbstractModel } from './AbstractModel';
+} from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
+import { AbstractModel } from "./AbstractModel";
 import {
   Creator,
   HasMany,
   HasOne,
   Owner,
   Updater,
-} from './AssociationDecorators';
+} from "./AssociationDecorators";
 import {
   BawCollection,
   BawDateTime,
   BawImage,
   BawPersistAttr,
-} from './AttributeDecorators';
-import { Project } from './Project';
-import { Site } from './Site';
-import { User } from './User';
+} from "./AttributeDecorators";
+import { Project } from "./Project";
+import { Site } from "./Site";
+import { User } from "./User";
 
 /**
  * A region model.
@@ -46,7 +46,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
  * A region model.
  */
 export class Region extends AbstractModel implements IRegion {
-  public readonly kind = 'Region';
+  public readonly kind = "Region";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -54,7 +54,7 @@ export class Region extends AbstractModel implements IRegion {
   @BawPersistAttr
   public readonly imageUrl?: string;
   @BawImage<Region>(`${assetRoot}/images/site/site_span4.png`, {
-    key: 'imageUrl',
+    key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
   @BawPersistAttr
@@ -78,9 +78,9 @@ export class Region extends AbstractModel implements IRegion {
   public readonly notes?: Notes;
 
   // Associations
-  @HasOne<Region, Project>(PROJECT, 'projectId')
+  @HasOne<Region, Project>(PROJECT, "projectId")
   public project?: Project;
-  @HasMany<Region, Site>(SHALLOW_SITE, 'siteIds')
+  @HasMany<Region, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
   @Creator<Region>()
   public creator?: User;

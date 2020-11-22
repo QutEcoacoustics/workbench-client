@@ -4,15 +4,15 @@ import {
   Component,
   Input,
   OnChanges,
-} from '@angular/core';
-import { Card } from '../cards.component';
+} from "@angular/core";
+import { Card } from "../cards.component";
 
 /**
  * Card Component
  */
 @Component({
-  selector: 'baw-card',
-  styleUrls: ['./card.component.scss'],
+  selector: "baw-card",
+  styleUrls: ["./card.component.scss"],
   template: `
     <div class="card h-100">
       <h4 class="card-header text-center">
@@ -51,7 +51,7 @@ export class CardComponent implements OnChanges {
   public ngOnChanges() {
     this.description = this.card.description
       ? this.card.description
-      : 'No description given';
+      : "No description given";
     this.ref.detectChanges();
   }
 }

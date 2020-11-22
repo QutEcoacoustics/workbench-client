@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SelectableItemsComponent } from './selectable-items.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { SelectableItemsComponent } from "./selectable-items.component";
 
-describe('SelectableItemsComponent', () => {
+describe("SelectableItemsComponent", () => {
   let component: SelectableItemsComponent;
   let fixture: ComponentFixture<SelectableItemsComponent>;
 
@@ -15,7 +15,7 @@ describe('SelectableItemsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 

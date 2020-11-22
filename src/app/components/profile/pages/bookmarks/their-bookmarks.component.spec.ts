@@ -1,22 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { accountResolvers } from '@baw-api/account/accounts.service';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { BookmarksService } from '@baw-api/bookmark/bookmarks.service';
-import { User } from '@models/User';
-import { SpyObject } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateUser } from '@test/fakes/User';
-import { assertErrorHandler } from '@test/helpers/html';
-import { mockActivatedRoute } from '@test/helpers/testbed';
-import { Subject } from 'rxjs';
-import { MyProjectsComponent } from '../projects/my-projects.component';
-import { TheirBookmarksComponent } from './their-bookmarks.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { accountResolvers } from "@baw-api/account/accounts.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { User } from "@models/User";
+import { SpyObject } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateUser } from "@test/fakes/User";
+import { assertErrorHandler } from "@test/helpers/html";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { Subject } from "rxjs";
+import { MyProjectsComponent } from "../projects/my-projects.component";
+import { TheirBookmarksComponent } from "./their-bookmarks.component";
 
-describe('TheirBookmarksComponent', () => {
+describe("TheirBookmarksComponent", () => {
   let api: SpyObject<BookmarksService>;
   let component: TheirBookmarksComponent;
   let defaultUser: User;
@@ -48,23 +48,23 @@ describe('TheirBookmarksComponent', () => {
     defaultUser = new User(generateUser());
   });
 
-  it('should create', () => {
+  it("should create", () => {
     configureTestingModule(defaultUser);
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should display username in title', () => {
+  it("should display username in title", () => {
     configureTestingModule(
-      new User({ ...generateUser(), userName: 'custom username' })
+      new User({ ...generateUser(), userName: "custom username" })
     );
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector('small');
-    expect(title.innerText.trim()).toContain('custom username');
+    const title = fixture.nativeElement.querySelector("small");
+    expect(title.innerText.trim()).toContain("custom username");
   });
 
-  it('should handle user error', () => {
+  it("should handle user error", () => {
     configureTestingModule(undefined, generateApiErrorDetails());
     fixture.detectChanges();
     expect(component).toBeTruthy();

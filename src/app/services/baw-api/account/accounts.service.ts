@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { IUser, User } from '@models/User';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { IUser, User } from "@models/User";
+import { Observable, of, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from '../api-common';
-import { apiReturnCodes, Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { apiReturnCodes, Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
@@ -71,5 +71,5 @@ export class AccountsService extends StandardApi<User> {
 
 export const accountResolvers = new Resolvers<User, AccountsService>(
   [AccountsService],
-  'accountId'
-).create('Account');
+  "accountId"
+).create("Account");

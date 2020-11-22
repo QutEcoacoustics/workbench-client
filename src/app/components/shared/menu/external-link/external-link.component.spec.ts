@@ -1,18 +1,18 @@
-import { RouterTestingModule } from '@angular/router/testing';
-import { MenuLink } from '@interfaces/menusInterfaces';
-import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
-import { AppConfigService } from '@services/app-config/app-config.service';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
+import { RouterTestingModule } from "@angular/router/testing";
+import { MenuLink } from "@interfaces/menusInterfaces";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import {
   assertAttribute,
   assertHref,
   assertIcon,
   assertTooltip,
-} from '@test/helpers/html';
-import { SharedModule } from '../../shared.module';
-import { MenuExternalLinkComponent } from './external-link.component';
+} from "@test/helpers/html";
+import { SharedModule } from "../../shared.module";
+import { MenuExternalLinkComponent } from "./external-link.component";
 
-describe('MenuExternalLinkComponent', () => {
+describe("MenuExternalLinkComponent", () => {
   let env: AppConfigService;
   let defaultLink: MenuLink;
   let spec: SpectatorHost<MenuExternalLinkComponent>;
@@ -23,11 +23,11 @@ describe('MenuExternalLinkComponent', () => {
   });
 
   function retrieveWrapper() {
-    return spec.query<HTMLElement>('span');
+    return spec.query<HTMLElement>("span");
   }
 
   function retrieveLink() {
-    return spec.query<HTMLAnchorElement>('a');
+    return spec.query<HTMLAnchorElement>("a");
   }
 
   function setup(inputs: Partial<MenuExternalLinkComponent> = {}) {
@@ -44,11 +44,11 @@ describe('MenuExternalLinkComponent', () => {
       {
         detectChanges: false,
         hostProps: {
-          id: 'id',
+          id: "id",
           link: defaultLink,
-          placement: 'left',
-          tooltip: 'tooltip',
-          uri: 'http://link/',
+          placement: "left",
+          tooltip: "tooltip",
+          uri: "http://link/",
           ...inputs,
         },
       }
@@ -59,124 +59,124 @@ describe('MenuExternalLinkComponent', () => {
 
   beforeEach(() => {
     defaultLink = MenuLink({
-      icon: ['fas', 'home'],
-      label: 'home',
-      uri: () => 'http://link/',
-      tooltip: () => 'tooltip',
+      icon: ["fas", "home"],
+      label: "home",
+      uri: () => "http://link/",
+      tooltip: () => "tooltip",
     });
   });
 
-  it('should create', () => {
+  it("should create", () => {
     setup();
     spec.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should have icon', () => {
+  it("should have icon", () => {
     setup({
       link: MenuLink({
         ...defaultLink,
-        icon: ['fas', 'exclamation-triangle'],
+        icon: ["fas", "exclamation-triangle"],
       }),
     });
     spec.detectChanges();
-    assertIcon(spec.element, 'fas,exclamation-triangle');
+    assertIcon(spec.element, "fas,exclamation-triangle");
   });
 
-  it('should have label', () => {
-    setup({ link: MenuLink({ ...defaultLink, label: 'custom label' }) });
+  it("should have label", () => {
+    setup({ link: MenuLink({ ...defaultLink, label: "custom label" }) });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
-    const label = spec.query<HTMLElement>('#label');
-    expect(label).toBeTruthy('Label element should contain id=\'label\'');
-    expect(label.innerText).toBe('custom label');
+    const label = spec.query<HTMLElement>("#label");
+    expect(label).toBeTruthy("Label element should contain id='label'");
+    expect(label.innerText).toBe("custom label");
   });
 
-  describe('tooltip', () => {
-    it('should have tooltip', () => {
+  describe("tooltip", () => {
+    it("should have tooltip", () => {
       setup({
-        tooltip: 'custom tooltip',
-        link: MenuLink({ ...defaultLink, tooltip: () => 'custom tooltip' }),
+        tooltip: "custom tooltip",
+        link: MenuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveWrapper(), 'custom tooltip');
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
-    it('should not use link tooltip', () => {
+    it("should not use link tooltip", () => {
       setup({
-        tooltip: 'custom tooltip',
-        link: MenuLink({ ...defaultLink, tooltip: () => 'wrong tooltip' }),
+        tooltip: "custom tooltip",
+        link: MenuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveWrapper(), 'custom tooltip');
+      assertTooltip(retrieveWrapper(), "custom tooltip");
     });
 
-    it('should handle left placement of tooltip', () => {
-      setup({ placement: 'left' });
+    it("should handle left placement of tooltip", () => {
+      setup({ placement: "left" });
       spec.detectChanges();
-      assertAttribute(retrieveWrapper(), 'placement', 'left');
+      assertAttribute(retrieveWrapper(), "placement", "left");
     });
 
-    it('should handle right placement of tooltip', () => {
-      setup({ placement: 'right' });
+    it("should handle right placement of tooltip", () => {
+      setup({ placement: "right" });
       spec.detectChanges();
-      assertAttribute(retrieveWrapper(), 'placement', 'right');
+      assertAttribute(retrieveWrapper(), "placement", "right");
     });
   });
 
-  describe('link', () => {
-    it('should not use link uri', () => {
+  describe("link", () => {
+    it("should not use link uri", () => {
       setup({
-        uri: 'http://brokenlink/',
-        link: MenuLink({ ...defaultLink, uri: () => 'http://wronglink/' }),
+        uri: "http://brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "http://wronglink/" }),
       });
       console.log(spec.component);
       spec.detectChanges();
-      assertHref(retrieveLink(), 'http://brokenlink/');
+      assertHref(retrieveLink(), "http://brokenlink/");
     });
 
-    it('should link to external website', () => {
+    it("should link to external website", () => {
       setup({
-        uri: 'http://brokenlink/',
-        link: MenuLink({ ...defaultLink, uri: () => 'http://brokenlink/' }),
+        uri: "http://brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "http://brokenlink/" }),
       });
       spec.detectChanges();
-      assertHref(retrieveLink(), 'http://brokenlink/');
+      assertHref(retrieveLink(), "http://brokenlink/");
     });
 
-    it('should convert links to AngularJS server', () => {
+    it("should convert links to AngularJS server", () => {
       setup({
-        uri: '/brokenlink/',
-        link: MenuLink({ ...defaultLink, uri: () => '/brokenlink/' }),
+        uri: "/brokenlink/",
+        link: MenuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
       });
       spec.detectChanges();
-      assertHref(retrieveLink(), env.environment.apiRoot + '/brokenlink/');
+      assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
     });
   });
 
-  describe('disabled', () => {
+  describe("disabled", () => {
     function assertDisabled(isDisabled: boolean) {
       if (isDisabled) {
-        expect(spec.query('a.disabled')).toBeTruthy();
+        expect(spec.query("a.disabled")).toBeTruthy();
       } else {
-        expect(spec.query('a.disabled')).toBeFalsy();
+        expect(spec.query("a.disabled")).toBeFalsy();
       }
     }
 
-    it('should default as enabled if disabled is undefined', () => {
+    it("should default as enabled if disabled is undefined", () => {
       setup({ link: MenuLink({ ...defaultLink, disabled: undefined }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
-    it('should be enabled if disabled is false', () => {
+    it("should be enabled if disabled is false", () => {
       setup({ link: MenuLink({ ...defaultLink, disabled: false }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
-    it('should be disabled if disabled is true', () => {
+    it("should be disabled if disabled is true", () => {
       setup({ link: MenuLink({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertDisabled(true);

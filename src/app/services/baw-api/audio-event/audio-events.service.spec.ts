@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AudioEvent } from '@models/AudioEvent';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { generateAudioEvent } from '@test/fakes/AudioEvent';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AudioEvent } from "@models/AudioEvent";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -11,10 +11,10 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from '@test/helpers/api-common';
-import { AudioEventsService } from './audio-events.service';
+} from "@test/helpers/api-common";
+import { AudioEventsService } from "./audio-events.service";
 
-describe('AudioEventsService', function () {
+describe("AudioEventsService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
@@ -29,34 +29,34 @@ describe('AudioEventsService', function () {
   });
 
   validateApiList<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/',
+    "/audio_recordings/5/audio_events/",
     undefined,
     5
   );
   validateApiFilter<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/filter',
+    "/audio_recordings/5/audio_events/filter",
     undefined,
     undefined,
     5
   );
   validateApiShow<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/10',
+    "/audio_recordings/5/audio_events/10",
     10,
     new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiCreate<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/',
+    "/audio_recordings/5/audio_events/",
     new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiUpdate<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/10',
+    "/audio_recordings/5/audio_events/10",
     new AudioEvent(generateAudioEvent(10)),
     5
   );
   validateApiDestroy<AudioEvent, AudioEventsService>(
-    '/audio_recordings/5/audio_events/10',
+    "/audio_recordings/5/audio_events/10",
     10,
     new AudioEvent(generateAudioEvent(10)),
     5

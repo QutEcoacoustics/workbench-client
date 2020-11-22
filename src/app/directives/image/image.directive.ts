@@ -5,12 +5,12 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-} from '@angular/core';
-import { SecurityService } from '@baw-api/security/security.service';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { ImageSizes, ImageUrl } from '@interfaces/apiInterfaces';
-import { assetRoot } from '@services/app-config/app-config.service';
-import { OrderedSet } from 'immutable';
+} from "@angular/core";
+import { SecurityService } from "@baw-api/security/security.service";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { assetRoot } from "@services/app-config/app-config.service";
+import { OrderedSet } from "immutable";
 
 export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 
@@ -18,7 +18,7 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
   // Directive applies directly to all image tags instead of being
   // explicitly called
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'img',
+  selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
@@ -55,7 +55,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.disableAuth || typeof this.src === 'string') {
+    if (this.disableAuth || typeof this.src === "string") {
       return;
     }
 
@@ -129,7 +129,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private errorHandler() {
     // eslint-disable-next-line no-console
-    console.warn('Failed to load image: ', this.imageRef.nativeElement.src);
+    console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
     // No longer attempt to use thumbnail
     if (this.displayThumbnail) {
@@ -156,7 +156,7 @@ export class AuthenticatedImageDirective implements OnChanges {
     const user = this.securityApi.getLocalUser();
     if (user?.authToken) {
       const tokenUrl = new URL(url);
-      tokenUrl.searchParams.set('authToken', user.authToken);
+      tokenUrl.searchParams.set("authToken", user.authToken);
       return tokenUrl.toString();
     }
     return url;

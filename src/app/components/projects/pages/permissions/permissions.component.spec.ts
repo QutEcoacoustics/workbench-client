@@ -1,20 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
-} from '@baw-api/project/projects.service';
-import { Project } from '@models/Project';
-import { SharedModule } from '@shared/shared.module';
-import { generateProject } from '@test/fakes/Project';
-import { mockActivatedRoute } from '@test/helpers/testbed';
-import { appLibraryImports } from 'src/app/app.module';
-import { PermissionsComponent } from './permissions.component';
+} from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { appLibraryImports } from "src/app/app.module";
+import { PermissionsComponent } from "./permissions.component";
 
-describe('PermissionsComponent', () => {
+describe("PermissionsComponent", () => {
   let api: ProjectsService;
   let component: PermissionsComponent;
   let defaultProject: Project;
@@ -51,7 +51,7 @@ describe('PermissionsComponent', () => {
     defaultProject = new Project(generateProject());
   });
 
-  it('should create', () => {
+  it("should create", () => {
     configureTestingModule(defaultProject);
     expect(component).toBeTruthy();
   });

@@ -2,7 +2,6 @@
   "folders": [{ "path": "." }],
   "settings": {
     "typescript.tsdk": "node_modules\\typescript\\lib",
-    "typescript.preferences.quoteStyle": "double",
     "editor.codeActionsOnSave": { "source.fixAll": true },
     "cSpell.words": [
       "dropdown",

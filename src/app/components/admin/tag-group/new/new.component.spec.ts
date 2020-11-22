@@ -1,26 +1,26 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { TagGroupsService } from '@baw-api/tag/tag-group.service';
-import { SpyObject } from '@ngneat/spectator';
-import { SharedModule } from '@shared/shared.module';
-import { mockActivatedRoute } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { appLibraryImports } from 'src/app/app.module';
-import { AdminTagGroupsNewComponent } from './new.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { TagGroupsService } from "@baw-api/tag/tag-group.service";
+import { SpyObject } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
+import { AdminTagGroupsNewComponent } from "./new.component";
 
-describe('AdminTagGroupsNewComponent', () => {
+describe("AdminTagGroupsNewComponent", () => {
   let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsNewComponent;
   let fixture: ComponentFixture<AdminTagGroupsNewComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  xdescribe('form', () => {});
+  xdescribe("form", () => {});
 
-  describe('component', () => {
+  describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [
@@ -44,18 +44,18 @@ describe('AdminTagGroupsNewComponent', () => {
       notifications = TestBed.inject(ToastrService);
       component = fixture.componentInstance;
 
-      spyOn(notifications, 'success').and.stub();
-      spyOn(notifications, 'error').and.stub();
-      spyOn(router, 'navigateByUrl').and.stub();
+      spyOn(notifications, "success").and.stub();
+      spyOn(notifications, "error").and.stub();
+      spyOn(router, "navigateByUrl").and.stub();
 
       fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
       expect(component).toBeTruthy();
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();

@@ -3,13 +3,13 @@ import {
   isGuestPredicate,
   isLoggedInPredicate,
   isProjectOwnerPredicate,
-} from './app.menus';
-import { Project } from './models/Project';
-import { SessionUser } from './models/User';
-import { ApiErrorDetails } from './services/baw-api/api.interceptor.service';
-import { ResolvedModel } from './services/baw-api/resolver-common';
+} from "./app.menus";
+import { Project } from "./models/Project";
+import { SessionUser } from "./models/User";
+import { ApiErrorDetails } from "./services/baw-api/api.interceptor.service";
+import { ResolvedModel } from "./services/baw-api/resolver-common";
 
-describe('Predicates', () => {
+describe("Predicates", () => {
   let defaultUser: SessionUser;
   let adminUser: SessionUser;
   let guestUser: SessionUser;
@@ -17,40 +17,40 @@ describe('Predicates', () => {
   beforeEach(() => {
     defaultUser = new SessionUser({
       id: 1,
-      userName: 'username',
-      authToken: 'xxxxxxxxxxxxxxx',
+      userName: "username",
+      authToken: "xxxxxxxxxxxxxxx",
       rolesMask: 2,
-      rolesMaskNames: ['user'],
+      rolesMaskNames: ["user"],
     });
     adminUser = new SessionUser({
       id: 1,
-      userName: 'username',
-      authToken: 'xxxxxxxxxxxxxxx',
+      userName: "username",
+      authToken: "xxxxxxxxxxxxxxx",
       rolesMask: 3,
-      rolesMaskNames: ['admin'],
+      rolesMaskNames: ["admin"],
     });
     guestUser = undefined;
   });
 
-  describe('isGuestPredicate', () => {
-    it('should be true when logged out', () => {
+  describe("isGuestPredicate", () => {
+    it("should be true when logged out", () => {
       expect(isGuestPredicate(guestUser)).toBeTrue();
     });
-    it('should be false when logged in', () => {
+    it("should be false when logged in", () => {
       expect(isGuestPredicate(defaultUser)).toBeFalse();
     });
   });
 
-  describe('isLoggedInPredicate', () => {
-    it('should be true when logged in', () => {
+  describe("isLoggedInPredicate", () => {
+    it("should be true when logged in", () => {
       expect(isLoggedInPredicate(defaultUser)).toBeTrue();
     });
-    it('should be false when logged out', () => {
+    it("should be false when logged out", () => {
       expect(isLoggedInPredicate(guestUser)).toBeFalse();
     });
   });
 
-  describe('isProjectOwnerPredicate', () => {
+  describe("isProjectOwnerPredicate", () => {
     let data: {
       project: ResolvedModel<Project>;
     };
@@ -60,18 +60,18 @@ describe('Predicates', () => {
         project: {
           model: new Project({
             id: 1,
-            name: 'Project',
+            name: "Project",
             ownerId: 5,
           }),
         },
       };
     });
 
-    it('should be true when logged in as admin', () => {
+    it("should be true when logged in as admin", () => {
       expect(isProjectOwnerPredicate(adminUser, data)).toBeTrue();
     });
 
-    it('should be true when logged in as owner', () => {
+    it("should be true when logged in as owner", () => {
       const user = new SessionUser({
         ...defaultUser,
         id: 5,
@@ -80,41 +80,41 @@ describe('Predicates', () => {
       expect(isProjectOwnerPredicate(user, data)).toBeTrue();
     });
 
-    it('should be false when logged in as regular user', () => {
+    it("should be false when logged in as regular user", () => {
       expect(isProjectOwnerPredicate(defaultUser, data)).toBeFalse();
     });
 
-    it('should be false when logged out', () => {
+    it("should be false when logged out", () => {
       expect(isProjectOwnerPredicate(guestUser, data)).toBeFalse();
     });
 
-    it('should handle missing data', () => {
+    it("should handle missing data", () => {
       expect(isProjectOwnerPredicate(defaultUser, undefined)).toBeFalse();
     });
 
-    it('should handle missing project', () => {
+    it("should handle missing project", () => {
       expect(isProjectOwnerPredicate(defaultUser, {})).toBeFalse();
     });
 
-    it('should handle error project', () => {
+    it("should handle error project", () => {
       expect(
         isProjectOwnerPredicate(defaultUser, {
-          project: { status: 401, message: 'Unauthorized' } as ApiErrorDetails,
+          project: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
         })
       ).toBeFalse();
     });
   });
 
-  describe('isAdminPredicate', () => {
-    it('should be true when logged in as admin', () => {
+  describe("isAdminPredicate", () => {
+    it("should be true when logged in as admin", () => {
       expect(isAdminPredicate(adminUser)).toBeTrue();
     });
 
-    it('should be false when logged in as regular user', () => {
+    it("should be false when logged in as regular user", () => {
       expect(isAdminPredicate(defaultUser)).toBeFalse();
     });
 
-    it('should be false when logged out', () => {
+    it("should be false when logged out", () => {
       expect(isAdminPredicate(guestUser)).toBeFalse();
     });
   });

@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Question } from '@models/Question';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { generateQuestion } from '@test/fakes/Question';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Question } from "@models/Question";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateQuestion } from "@test/fakes/Question";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -11,10 +11,10 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from '@test/helpers/api-common';
-import { QuestionsService } from './questions.service';
+} from "@test/helpers/api-common";
+import { QuestionsService } from "./questions.service";
 
-describe('QuestionsService', function () {
+describe("QuestionsService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
@@ -29,34 +29,34 @@ describe('QuestionsService', function () {
   });
 
   validateApiList<Question, QuestionsService>(
-    '/studies/5/questions/',
+    "/studies/5/questions/",
     undefined,
     5
   );
   validateApiFilter<Question, QuestionsService>(
-    '/studies/5/questions/filter',
+    "/studies/5/questions/filter",
     undefined,
     undefined,
     5
   );
   validateApiShow<Question, QuestionsService>(
-    '/studies/5/questions/10',
+    "/studies/5/questions/10",
     10,
     new Question(generateQuestion(10)),
     5
   );
   validateApiCreate<Question, QuestionsService>(
-    '/studies/5/questions/',
+    "/studies/5/questions/",
     new Question(generateQuestion(10)),
     5
   );
   validateApiUpdate<Question, QuestionsService>(
-    '/studies/5/questions/10',
+    "/studies/5/questions/10",
     new Question(generateQuestion(10)),
     5
   );
   validateApiDestroy<Question, QuestionsService>(
-    '/studies/5/questions/10',
+    "/studies/5/questions/10",
     10,
     new Question(generateQuestion(10)),
     5

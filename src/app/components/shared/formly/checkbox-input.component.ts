@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { FieldType } from '@ngx-formly/core';
+import { Component } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { FieldType } from "@ngx-formly/core";
 
 /**
  * Checkbox input using bootstrap to style the component
@@ -8,7 +8,7 @@ import { FieldType } from '@ngx-formly/core';
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'formly-checkbox-input',
+  selector: "formly-checkbox-input",
   template: `
     <div
       style="width: 24px;"

@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { GetRouteConfigForPage } from '@helpers/page/pageRouting';
-import { SharedModule } from '@shared/shared.module';
-import { aboutRoute } from './about.menus';
-import { ContactUsComponent } from './pages/contact-us/contact-us.component';
-import { CreditsComponent } from './pages/credits/credits.component';
-import { DisclaimersComponent } from './pages/disclaimers/disclaimers.component';
-import { EthicsComponent } from './pages/ethics/ethics.component';
+import { NgModule } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { SharedModule } from "@shared/shared.module";
+import { aboutRoute } from "./about.menus";
+import { ContactUsComponent } from "./pages/contact-us/contact-us.component";
+import { CreditsComponent } from "./pages/credits/credits.component";
+import { DisclaimersComponent } from "./pages/disclaimers/disclaimers.component";
+import { EthicsComponent } from "./pages/ethics/ethics.component";
 
 const components = [
   ContactUsComponent,

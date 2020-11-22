@@ -1,20 +1,20 @@
-import { Directive, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiFilter } from '@baw-api/api-common';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { Directive, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiFilter } from "@baw-api/api-common";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   defaultApiPageSize,
   Filters,
   InnerFilter,
-} from '@baw-api/baw-api.service';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { AbstractModel } from '@models/AbstractModel';
-import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
-import { noop, Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+} from "@baw-api/baw-api.service";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { AbstractModel } from "@models/AbstractModel";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { noop, Observable, Subject } from "rxjs";
+import { switchMap, takeUntil, tap } from "rxjs/operators";
 
-const queryKey = 'query';
-const pageKey = 'page';
+const queryKey = "query";
+const pageKey = "page";
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
@@ -110,7 +110,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           this.apiUpdate(models);
         },
         (error: ApiErrorDetails) => {
-          console.error('Scroll Template Failure: ', error);
+          console.error("Scroll Template Failure: ", error);
           this.error = error;
           this.loading = false;
         }
@@ -127,7 +127,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   private updateFromUrl() {
     const params = this.route.snapshot.queryParams;
-    this.filter = params[queryKey] ?? '';
+    this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;
     this.apiRequest$.next({ page: this.page, filterText: this.filter });
   }

@@ -1,37 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { SecurityService } from '@baw-api/security/security.service';
+import { Component, OnInit } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
-} from '@helpers/app-initializer/app-initializer';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { ImageSizes } from '@interfaces/apiInterfaces';
+} from "@helpers/app-initializer/app-initializer";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
   MenuLink,
   NavigableMenuItem,
-} from '@interfaces/menusInterfaces';
-import { SessionUser } from '@models/User';
-import { AppConfigService } from '@services/app-config/app-config.service';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { takeUntil } from 'rxjs/operators';
-import { contactUsMenuItem } from '../../about/about.menus';
-import { adminDashboardMenuItem } from '../../admin/admin.menus';
-import { homeMenuItem } from '../../home/home.menus';
-import { myAccountMenuItem } from '../../profile/profile.menus';
-import { projectsMenuItem } from '../../projects/projects.menus';
-import { loginMenuItem, registerMenuItem } from '../../security/security.menus';
+} from "@interfaces/menusInterfaces";
+import { SessionUser } from "@models/User";
+import { AppConfigService } from "@services/app-config/app-config.service";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
+import { contactUsMenuItem } from "../../about/about.menus";
+import { adminDashboardMenuItem } from "../../admin/admin.menus";
+import { homeMenuItem } from "../../home/home.menus";
+import { myAccountMenuItem } from "../../profile/profile.menus";
+import { projectsMenuItem } from "../../projects/projects.menus";
+import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 
 /**
  * Header Component
  */
 @Component({
-  selector: 'baw-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  selector: "baw-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   public activeLink: string;
@@ -60,7 +60,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.collapsed = true;
-    this.activeLink = 'projects';
+    this.activeLink = "projects";
     this.title = this.env.values.brand.name;
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
@@ -76,7 +76,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
           this.toggleCollapse(true);
         }
       },
-      (err) => console.error('HeaderComponent: ', err)
+      (err) => console.error("HeaderComponent: ", err)
     );
 
     this.api
@@ -148,8 +148,8 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
   private generateLink(item: any): MenuLink {
     return MenuLink({
       label: item.title,
-      icon: ['fas', 'home'],
-      tooltip: () => 'UPDATE ME',
+      icon: ["fas", "home"],
+      tooltip: () => "UPDATE ME",
       uri: () => item.url,
     });
   }

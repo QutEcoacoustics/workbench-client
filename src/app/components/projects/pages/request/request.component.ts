@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { ProjectsService } from '@baw-api/project/projects.service';
+import { Component, OnInit } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem,
-} from '@components/projects/projects.menus';
-import { WithFormCheck } from '@guards/form/form.guard';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { Project } from '@models/Project';
-import { List } from 'immutable';
-import { takeUntil } from 'rxjs/operators';
-import { projectsMenuItemActions } from '../list/list.component';
-import { fields } from './request.schema.json';
+} from "@components/projects/projects.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
+import { projectsMenuItemActions } from "../list/list.component";
+import { fields } from "./request.schema.json";
 
 @Component({
-  selector: 'baw-projects-request',
+  selector: "baw-projects-request",
   template: `
     <baw-wip>
       <baw-form

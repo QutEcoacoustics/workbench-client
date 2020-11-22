@@ -1,30 +1,30 @@
-import { Component, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { RegionsService } from '@baw-api/region/regions.service';
-import { projectMenuItemActions } from '@components/projects/pages/details/details.component';
+import { Component, Input } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
+import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
   projectMenuItem,
-} from '@components/projects/projects.menus';
-import { newRegionMenuItem } from '@components/regions/regions.menus';
+} from "@components/projects/projects.menus";
+import { newRegionMenuItem } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from '../../region.base.json';
+} from "@helpers/formTemplate/formTemplate";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "../../region.base.json";
 
-const projectKey = 'project';
+const projectKey = "project";
 
 /**
  * New Region Component
  */
 @Component({
-  selector: 'baw-regions-new',
+  selector: "baw-regions-new",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -48,7 +48,7 @@ class NewComponent extends FormTemplate<Region> {
     router: Router
   ) {
     super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg('created', model.name)
+      defaultSuccessMsg("created", model.name)
     );
   }
 

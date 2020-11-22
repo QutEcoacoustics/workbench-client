@@ -1,16 +1,16 @@
-import { Directive, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { ResolvedModelList, retrieveResolvers } from '@baw-api/resolver-common';
-import { WithFormCheck } from '@guards/form/form.guard';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { AbstractModel } from '@models/AbstractModel';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { PageComponent } from '../page/pageComponent';
-import { PageInfo } from '../page/pageInfo';
+import { Directive, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { AbstractModel } from "@models/AbstractModel";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ToastrService } from "ngx-toastr";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { PageComponent } from "../page/pageComponent";
+import { PageInfo } from "../page/pageInfo";
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
@@ -58,7 +58,7 @@ export abstract class FormTemplate<M extends AbstractModel>
     protected router: Router,
     private modelKey: string,
     private successMsg: (model: M) => string = (model) =>
-      defaultSuccessMsg('updated', model.id.toString()),
+      defaultSuccessMsg("updated", model.id.toString()),
     private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
     private hasFormCheck = true
   ) {
@@ -169,7 +169,7 @@ export abstract class FormTemplate<M extends AbstractModel>
  * @param name Model name
  */
 export function defaultSuccessMsg(
-  action: 'created' | 'updated' | 'destroyed',
+  action: "created" | "updated" | "destroyed",
   name: string
 ) {
   return `Successfully ${action} ${name}`;
@@ -203,7 +203,7 @@ export function extendedErrorMsg(
   // Handle additional error details
   for (const key of Object.keys(err.info)) {
     if (isInstantiated(info[key])) {
-      errMsg = errMsg + '<br />' + info[key](err.info[key]);
+      errMsg = errMsg + "<br />" + info[key](err.info[key]);
     }
   }
   return errMsg;

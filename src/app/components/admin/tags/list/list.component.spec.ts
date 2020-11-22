@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { defaultApiPageSize } from '@baw-api/baw-api.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { TagsService } from '@baw-api/tag/tags.service';
-import { Tag } from '@models/Tag';
-import { SharedModule } from '@shared/shared.module';
-import { generateTag } from '@test/fakes/Tag';
-import { assertPagination } from '@test/helpers/pagedTableTemplate';
-import { appLibraryImports } from 'src/app/app.module';
-import { AdminTagsComponent } from './list.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Tag } from "@models/Tag";
+import { SharedModule } from "@shared/shared.module";
+import { generateTag } from "@test/fakes/Tag";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { appLibraryImports } from "src/app/app.module";
+import { AdminTagsComponent } from "./list.component";
 
-describe('AdminTagsComponent', () => {
+describe("AdminTagsComponent", () => {
   let api: TagsService;
   let defaultModel: Tag;
   let defaultModels: Tag[];
@@ -44,6 +44,6 @@ describe('AdminTagsComponent', () => {
   // TODO Write tests
   assertPagination<Tag, TagsService>();
 
-  xdescribe('rows', () => {});
-  xdescribe('actions', () => {});
+  xdescribe("rows", () => {});
+  xdescribe("actions", () => {});
 });

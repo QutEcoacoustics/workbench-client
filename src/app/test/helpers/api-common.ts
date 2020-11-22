@@ -1,10 +1,10 @@
-import { CMS, CmsService } from '@baw-api/cms/cms.service';
-import { MayBeAsync } from '@helpers/advancedTypes';
-import { Id } from '@interfaces/apiInterfaces';
-import { AbstractModel } from '@models/AbstractModel';
-import { Spectator, SpyObject } from '@ngneat/spectator';
-import { CmsComponent } from '@shared/cms/cms.component';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { MayBeAsync } from "@helpers/advancedTypes";
+import { Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { Spectator, SpyObject } from "@ngneat/spectator";
+import { CmsComponent } from "@shared/cms/cms.component";
+import { BehaviorSubject, Subject } from "rxjs";
 import {
   ApiCreate,
   ApiDestroy,
@@ -13,14 +13,14 @@ import {
   ApiShow,
   ApiUpdate,
   IdOr,
-} from '../../services/baw-api/api-common';
-import { Filters } from '../../services/baw-api/baw-api.service';
-import { nStepObservable } from './general';
+} from "../../services/baw-api/api-common";
+import { Filters } from "../../services/baw-api/baw-api.service";
+import { nStepObservable } from "./general";
 
 export const defaultFilters: Filters = {
   filter: {},
   projection: {},
-  sorting: { orderBy: 'id', direction: 'asc' },
+  sorting: { orderBy: "id", direction: "asc" },
   paging: {},
 };
 
@@ -28,15 +28,15 @@ export function validateApiList<
   M extends AbstractModel,
   S extends ApiList<M, any[]>
 >(endpoint: string, models: M[] = [], ...parameters: any[]) {
-  describe('Api List', function () {
-    it('should handle list endpoint', function () {
+  describe("Api List", function () {
+    it("should handle list endpoint", function () {
       const api: S = this.service;
-      api['apiList'] = jasmine
+      api["apiList"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
       api.list(...parameters).subscribe();
 
-      expect(api['apiList']).toHaveBeenCalledWith(endpoint);
+      expect(api["apiList"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -50,15 +50,15 @@ export function validateApiFilter<
   filters: Filters = defaultFilters,
   ...parameters: any[]
 ) {
-  describe('Api Filter', function () {
-    it('should handle filter endpoint', function () {
+  describe("Api Filter", function () {
+    it("should handle filter endpoint", function () {
       const api: S = this.service;
-      api['apiFilter'] = jasmine
+      api["apiFilter"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M[]>(models));
       api.filter(filters, ...parameters).subscribe();
 
-      expect(api['apiFilter']).toHaveBeenCalledWith(endpoint, filters);
+      expect(api["apiFilter"]).toHaveBeenCalledWith(endpoint, filters);
     });
   });
 }
@@ -67,24 +67,24 @@ export function validateApiShow<
   M extends AbstractModel,
   S extends ApiShow<M, any[], IdOr<M>>
 >(endpoint: string, id: Id, model: M, ...parameters: any[]) {
-  describe('Api Show', function () {
+  describe("Api Show", function () {
     let api: S;
 
     beforeEach(function () {
       api = this.service;
-      api['apiShow'] = jasmine
+      api["apiShow"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
     });
 
-    it('should handle show endpoint using model', function () {
+    it("should handle show endpoint using model", function () {
       api.show(model, ...parameters).subscribe();
-      expect(api['apiShow']).toHaveBeenCalledWith(endpoint);
+      expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
     });
 
-    it('should handle show endpoint using id', function () {
+    it("should handle show endpoint using id", function () {
       api.show(id, ...parameters).subscribe();
-      expect(api['apiShow']).toHaveBeenCalledWith(endpoint);
+      expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -93,15 +93,15 @@ export function validateApiCreate<
   M extends AbstractModel,
   S extends ApiCreate<M, any[]>
 >(endpoint: string, model: M, ...parameters: any[]) {
-  describe('Api Create', function () {
-    it('should handle create endpoint', function () {
+  describe("Api Create", function () {
+    it("should handle create endpoint", function () {
       const api: S = this.service;
-      api['apiCreate'] = jasmine
+      api["apiCreate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
       api.create(model, ...parameters).subscribe();
 
-      expect(api['apiCreate']).toHaveBeenCalledWith(endpoint, model);
+      expect(api["apiCreate"]).toHaveBeenCalledWith(endpoint, model);
     });
   });
 }
@@ -110,15 +110,15 @@ export function validateApiUpdate<
   M extends AbstractModel,
   S extends ApiUpdate<M, any[]>
 >(endpoint: string, model: M, ...parameters: any[]) {
-  describe('Api Update', function () {
-    it('should handle update endpoint', function () {
+  describe("Api Update", function () {
+    it("should handle update endpoint", function () {
       const api: S = this.service;
-      api['apiUpdate'] = jasmine
+      api["apiUpdate"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(model));
       api.update(model, ...parameters).subscribe();
 
-      expect(api['apiUpdate']).toHaveBeenCalledWith(endpoint, model);
+      expect(api["apiUpdate"]).toHaveBeenCalledWith(endpoint, model);
     });
   });
 }
@@ -127,24 +127,24 @@ export function validateApiDestroy<
   M extends AbstractModel,
   S extends ApiDestroy<M, any[], IdOr<M>>
 >(endpoint: string, id: Id, model: M, ...parameters: any[]) {
-  describe('Api Destroy', function () {
+  describe("Api Destroy", function () {
     let api: S;
 
     beforeEach(function () {
       api = this.service;
-      api['apiDestroy'] = jasmine
+      api["apiDestroy"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<M>(null));
     });
 
-    it('should handle destroy endpoint using model', function () {
+    it("should handle destroy endpoint using model", function () {
       api.destroy(model, ...parameters).subscribe();
-      expect(api['apiDestroy']).toHaveBeenCalledWith(endpoint);
+      expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
     });
 
-    it('should handle destroy endpoint using id', function () {
+    it("should handle destroy endpoint using id", function () {
       api.destroy(id, ...parameters).subscribe();
-      expect(api['apiDestroy']).toHaveBeenCalledWith(endpoint);
+      expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -155,7 +155,7 @@ export function assertCms<T>(
 ) {
   let spectator: Spectator<T>;
 
-  describe('cms for ' + endpoint, () => {
+  describe("cms for " + endpoint, () => {
     beforeEach(async () => {
       spectator = await setup();
       const cmsService = spectator.inject(CmsService);
@@ -166,12 +166,12 @@ export function assertCms<T>(
       return spectator.query(CmsComponent);
     }
 
-    it('should have cms page', async () => {
+    it("should have cms page", async () => {
       spectator.detectChanges();
       expect(getCms()).toBeTruthy();
     });
 
-    it('should load plaintext cms', async () => {
+    it("should load plaintext cms", async () => {
       spectator.detectChanges();
       expect(getCms().page).toBe(endpoint);
     });

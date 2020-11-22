@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Tagging } from '@models/Tagging';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { generateTagging } from '@test/fakes/Tagging';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Tagging } from "@models/Tagging";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateTagging } from "@test/fakes/Tagging";
 import {
   validateApiCreate,
   validateApiDestroy,
@@ -11,10 +11,10 @@ import {
   validateApiList,
   validateApiShow,
   validateApiUpdate,
-} from '@test/helpers/api-common';
-import { TaggingsService } from './taggings.service';
+} from "@test/helpers/api-common";
+import { TaggingsService } from "./taggings.service";
 
-describe('TaggingsService', function () {
+describe("TaggingsService", function () {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
@@ -29,39 +29,39 @@ describe('TaggingsService', function () {
   });
 
   validateApiList<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/',
+    "/audio_recordings/5/audio_events/10/taggings/",
     undefined,
     5,
     10
   );
   validateApiFilter<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/filter',
+    "/audio_recordings/5/audio_events/10/taggings/filter",
     undefined,
     undefined,
     5,
     10
   );
   validateApiShow<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/15',
+    "/audio_recordings/5/audio_events/10/taggings/15",
     15,
     new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiCreate<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/',
+    "/audio_recordings/5/audio_events/10/taggings/",
     new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiUpdate<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/15',
+    "/audio_recordings/5/audio_events/10/taggings/15",
     new Tagging(generateTagging(15)),
     5,
     10
   );
   validateApiDestroy<Tagging, TaggingsService>(
-    '/audio_recordings/5/audio_events/10/taggings/15',
+    "/audio_recordings/5/audio_events/10/taggings/15",
     15,
     new Tagging(generateTagging(15)),
     5,

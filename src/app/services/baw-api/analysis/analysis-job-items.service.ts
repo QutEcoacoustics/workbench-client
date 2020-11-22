@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { AnalysisJob } from '@models/AnalysisJob';
-import { AnalysisJobItem, IAnalysisJobItem } from '@models/AnalysisJobItem';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { AnalysisJob } from "@models/AnalysisJob";
+import { AnalysisJobItem, IAnalysisJobItem } from "@models/AnalysisJobItem";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   option,
   ReadonlyApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const analysisJobId: IdParam<AnalysisJob> = id;
 const analysisJobItemId: IdParamOptional<AnalysisJobItem> = id;
@@ -55,6 +55,6 @@ export class AnalysisJobItemsService extends ReadonlyApi<
 export const analysisJobItemResolvers = new Resolvers<
   AnalysisJobItem,
   AnalysisJobItemsService
->([AnalysisJobItemsService], 'analysisJobItemId', ['analysisJobId']).create(
-  'AnalysisJobItem'
+>([AnalysisJobItemsService], "analysisJobItemId", ["analysisJobId"]).create(
+  "AnalysisJobItem"
 );

@@ -1,30 +1,30 @@
-import { DOCUMENT, Location } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { DOCUMENT, Location } from "@angular/common";
+import { Component, Inject, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   LoginDetails,
   SecurityService,
-} from '@baw-api/security/security.service';
-import { homeMenuItem } from '@components/home/home.menus';
+} from "@baw-api/security/security.service";
+import { homeMenuItem } from "@components/home/home.menus";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem,
-} from '@components/security/security.menus';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+} from "@components/security/security.menus";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   defaultErrorMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from './login.schema.json';
+} from "@helpers/formTemplate/formTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "./login.schema.json";
 
 @Component({
-  selector: 'baw-authentication-login',
+  selector: "baw-authentication-login",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -57,7 +57,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       route,
       router,
       undefined,
-      () => 'Successfully signed in',
+      () => "Successfully signed in",
       defaultErrorMsg,
       false
     );
@@ -67,7 +67,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     super.ngOnInit();
 
     if (this.api.isLoggedIn()) {
-      this.notifications.error('You are already logged in.');
+      this.notifications.error("You are already logged in.");
     }
 
     this.redirectUrl = homeMenuItem.route.toString();
@@ -77,21 +77,21 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
-    if (typeof redirect === 'boolean' && !redirect) {
+    if (typeof redirect === "boolean" && !redirect) {
       this.redirectUrl = homeMenuItem.route.toString();
       return;
     }
 
     // If external redirect
-    if (typeof redirect === 'string') {
+    if (typeof redirect === "string") {
       const redirectUrl = new URL(redirect, window.location.origin);
       const validUrl = new URL(this.apiRoot, window.location.origin);
 
       // Check if redirect url is safe
       if (
-        redirect.startsWith('/') ||
-        redirectUrl.protocol + '//' + redirectUrl.hostname ===
-          validUrl.protocol + '//' + validUrl.hostname
+        redirect.startsWith("/") ||
+        redirectUrl.protocol + "//" + redirectUrl.hostname ===
+          validUrl.protocol + "//" + validUrl.hostname
       ) {
         this.redirectUrl = redirect;
       }
@@ -106,7 +106,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   protected redirectUser() {
     if (this.redirectBack) {
       this.location.back();
-    } else if (this.redirectUrl.startsWith('/')) {
+    } else if (this.redirectUrl.startsWith("/")) {
       this.router.navigateByUrl(this.redirectUrl);
     } else {
       this.externalRedirect(this.redirectUrl);

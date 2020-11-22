@@ -1,18 +1,18 @@
-import { Location } from '@angular/common';
+import { Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
   Input,
   OnChanges,
-} from '@angular/core';
-import { MenuRoute } from '@interfaces/menusInterfaces';
-import { Placement } from '@ng-bootstrap/ng-bootstrap';
+} from "@angular/core";
+import { MenuRoute } from "@interfaces/menusInterfaces";
+import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Internal Menu Link Component
  */
 @Component({
-  selector: 'baw-menu-internal-link',
+  selector: "baw-menu-internal-link",
   template: `
     <span [placement]="placement" [ngbTooltip]="tooltip">
       <a
@@ -26,7 +26,7 @@ import { Placement } from '@ng-bootstrap/ng-bootstrap';
       </a>
     </span>
   `,
-  styleUrls: ['./internal-link.component.scss'],
+  styleUrls: ["./internal-link.component.scss"],
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -44,6 +44,6 @@ export class MenuInternalLinkComponent implements OnChanges {
   public ngOnChanges() {
     this.disabled = this.link.disabled;
     this.active =
-      this.route === this.location.path().split('?')[0] || this.disabled;
+      this.route === this.location.path().split("?")[0] || this.disabled;
   }
 }

@@ -1,54 +1,54 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { ProjectsService } from '@baw-api/project/projects.service';
-import { Project } from '@models/Project';
-import { SpyObject } from '@ngneat/spectator';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { testFormlyFields } from '@test/helpers/formly';
-import { mockActivatedRoute, testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { fields } from '../../project.schema.json';
-import { NewComponent } from './new.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { SpyObject } from "@ngneat/spectator";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { testFormlyFields } from "@test/helpers/formly";
+import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
+import { fields } from "../../project.schema.json";
+import { NewComponent } from "./new.component";
 
-describe('ProjectsNewComponent', () => {
+describe("ProjectsNewComponent", () => {
   let api: SpyObject<ProjectsService>;
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
   let notifications: ToastrService;
   let router: Router;
 
-  describe('form', () => {
+  describe("form", () => {
     testFormlyFields([
       {
-        testGroup: 'Project Name Input',
+        testGroup: "Project Name Input",
         field: fields[0],
-        key: 'name',
-        label: 'Project Name',
-        type: 'input',
-        inputType: 'text',
+        key: "name",
+        label: "Project Name",
+        type: "input",
+        inputType: "text",
         required: true,
       },
       {
-        testGroup: 'Project Description Input',
+        testGroup: "Project Description Input",
         field: fields[1],
-        key: 'description',
-        label: 'Description',
-        type: 'textarea',
+        key: "description",
+        label: "Description",
+        type: "textarea",
       },
       {
-        testGroup: 'Project Image Input',
+        testGroup: "Project Image Input",
         field: fields[2],
-        key: 'image',
-        label: 'Image',
-        type: 'image',
+        key: "image",
+        label: "Image",
+        type: "image",
       },
     ]);
   });
 
-  describe('component', () => {
+  describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [...testFormImports, MockBawApiModule],
@@ -67,29 +67,29 @@ describe('ProjectsNewComponent', () => {
       notifications = TestBed.inject(ToastrService);
       component = fixture.componentInstance;
 
-      spyOn(notifications, 'success').and.stub();
-      spyOn(notifications, 'error').and.stub();
-      spyOn(router, 'navigateByUrl').and.stub();
+      spyOn(notifications, "success").and.stub();
+      spyOn(notifications, "error").and.stub();
+      spyOn(router, "navigateByUrl").and.stub();
 
       fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
       expect(component).toBeTruthy();
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();
     });
 
-    it('should handle general error', () => {
+    it("should handle general error", () => {
       api.create.and.callFake(() => {
         const subject = new Subject<Project>();
 
         subject.error({
-          message: 'Sign in to access this feature.',
+          message: "Sign in to access this feature.",
           info: 401,
         } as ApiErrorDetails);
 
@@ -99,16 +99,16 @@ describe('ProjectsNewComponent', () => {
       component.submit({});
 
       expect(notifications.error).toHaveBeenCalledWith(
-        'Sign in to access this feature.'
+        "Sign in to access this feature."
       );
     });
 
-    it('should handle duplicate project name', () => {
+    it("should handle duplicate project name", () => {
       api.create.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails('Unprocessable Entity', {
-            info: { name: ['has already been taken'] },
+          generateApiErrorDetails("Unprocessable Entity", {
+            info: { name: ["has already been taken"] },
           })
         );
         return subject;
@@ -117,7 +117,7 @@ describe('ProjectsNewComponent', () => {
       component.submit({});
 
       expect(notifications.error).toHaveBeenCalledWith(
-        'Record could not be saved<br />name has already been taken'
+        "Record could not be saved<br />name has already been taken"
       );
     });
   });

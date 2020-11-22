@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { Dataset, IDataset } from '@models/Dataset';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Dataset, IDataset } from "@models/Dataset";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const datasetId: IdParamOptional<Dataset> = id;
 const endpoint = stringTemplate`/datasets/${datasetId}${option}`;
@@ -51,5 +51,5 @@ export class DatasetsService extends StandardApi<Dataset> {
 
 export const datasetResolvers = new Resolvers<Dataset, DatasetsService>(
   [DatasetsService],
-  'datasetId'
-).create('Dataset');
+  "datasetId"
+).create("Dataset");

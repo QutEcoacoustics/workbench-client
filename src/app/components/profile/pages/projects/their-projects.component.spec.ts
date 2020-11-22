@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TheirProjectsComponent } from './their-projects.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { TheirProjectsComponent } from "./their-projects.component";
 
 // TODO Implement
-xdescribe('TheirProjectsComponent', () => {
+xdescribe("TheirProjectsComponent", () => {
   let component: TheirProjectsComponent;
   let fixture: ComponentFixture<TheirProjectsComponent>;
 
@@ -16,7 +16,7 @@ xdescribe('TheirProjectsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

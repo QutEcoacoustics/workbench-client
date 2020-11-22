@@ -1,8 +1,8 @@
-import { AbstractModel } from '@models/AbstractModel';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { id, IdOr } from '../api-common';
-import { defaultApiPageSize, Filters, Meta } from '../baw-api.service';
+import { AbstractModel } from "@models/AbstractModel";
+import { Observable, of } from "rxjs";
+import { delay } from "rxjs/operators";
+import { id, IdOr } from "../api-common";
+import { defaultApiPageSize, Filters, Meta } from "../baw-api.service";
 
 const delayPeriod = 1000;
 
@@ -25,13 +25,13 @@ export function filterMock<M extends AbstractModel>(
   const models: M[] = [];
   const meta: Meta = {
     status: 200,
-    message: 'OK',
+    message: "OK",
     filter: filters.filter,
     sorting: filters.sorting
       ? filters.sorting
       : {
-          orderBy: 'name',
-          direction: 'asc',
+          orderBy: "name",
+          direction: "asc",
         },
     paging: {
       page: filters?.paging?.page ? filters.paging.page : 1,

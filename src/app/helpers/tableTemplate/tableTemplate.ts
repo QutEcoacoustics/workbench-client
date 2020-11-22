@@ -1,12 +1,12 @@
-import { Directive, ViewChild } from '@angular/core';
+import { Directive, ViewChild } from "@angular/core";
 import {
   ColumnMode,
   DatatableComponent,
   SelectionType,
   SortType,
   TableColumn,
-} from '@swimlane/ngx-datatable';
-import { PageComponent } from '../page/pageComponent';
+} from "@swimlane/ngx-datatable";
+import { PageComponent } from "../page/pageComponent";
 
 /**
  * Table Template Class.

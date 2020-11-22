@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { SecurityService } from '@baw-api/security/security.service';
+import { Component, OnInit } from "@angular/core";
+import { SecurityService } from "@baw-api/security/security.service";
 import {
   registerMenuItem,
   securityCategory,
-} from '@components/security/security.menus';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from './register.schema.json';
+} from "@components/security/security.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "./register.schema.json";
 
 @Component({
-  selector: 'baw-authentication-register',
+  selector: "baw-authentication-register",
   template: `
     <baw-wip>
       <baw-form
@@ -40,7 +40,7 @@ class RegisterComponent extends PageComponent implements OnInit {
     if (this.api.isLoggedIn()) {
       // Disable submit button
       this.loading = true;
-      this.notifications.error('You are already logged in.');
+      this.notifications.error("You are already logged in.");
     }
   }
 

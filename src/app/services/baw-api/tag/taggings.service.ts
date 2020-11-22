@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { AnalysisJob } from '@models/AnalysisJob';
-import { AudioEvent } from '@models/AudioEvent';
-import { ITagging, Tagging } from '@models/Tagging';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { AnalysisJob } from "@models/AnalysisJob";
+import { AudioEvent } from "@models/AudioEvent";
+import { ITagging, Tagging } from "@models/Tagging";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -15,9 +15,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const analysisJobId: IdParam<AnalysisJob> = id;
 const audioEventId: IdParam<AudioEvent> = id;
@@ -91,6 +91,6 @@ export class TaggingsService extends StandardApi<
 
 export const taggingResolvers = new Resolvers<Tagging, TaggingsService>(
   [TaggingsService],
-  'taggingId',
-  ['analysisJobId', 'audioEventId']
-).create('Tagging');
+  "taggingId",
+  ["analysisJobId", "audioEventId"]
+).create("Tagging");

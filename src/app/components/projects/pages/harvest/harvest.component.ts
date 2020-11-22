@@ -1,28 +1,28 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { ResolvedModel } from '@services/baw-api/resolver-common';
-import filesize from 'filesize';
-import { List } from 'immutable';
-import { Observable, Subscription, timer } from 'rxjs';
-import { map, startWith, takeWhile } from 'rxjs/operators';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { ResolvedModel } from "@services/baw-api/resolver-common";
+import filesize from "filesize";
+import { List } from "immutable";
+import { Observable, Subscription, timer } from "rxjs";
+import { map, startWith, takeWhile } from "rxjs/operators";
 import {
   harvestProjectMenuItem,
   projectCategory,
   projectMenuItem,
-} from '../../projects.menus';
-import { projectMenuItemActions } from '../details/details.component';
+} from "../../projects.menus";
+import { projectMenuItemActions } from "../details/details.component";
 
-const projectKey = 'project';
+const projectKey = "project";
 
 @Component({
-  selector: 'baw-harvest',
-  templateUrl: './harvest.component.html',
-  styleUrls: ['./harvest.component.scss'],
+  selector: "baw-harvest",
+  templateUrl: "./harvest.component.html",
+  styleUrls: ["./harvest.component.scss"],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
@@ -37,10 +37,10 @@ class HarvestComponent extends PageComponent implements OnInit {
     next: { text?: string; disabled?: boolean };
     timer: { enable: boolean; callback?: () => void };
   }[] = [
-    { previous: {}, next: { text: 'Start' }, timer: { enable: false } },
+    { previous: {}, next: { text: "Start" }, timer: { enable: false } },
     {
-      previous: { text: 'Cancel' },
-      next: { text: 'Finished Uploading' },
+      previous: { text: "Cancel" },
+      next: { text: "Finished Uploading" },
       timer: { enable: true },
     },
     {
@@ -54,8 +54,8 @@ class HarvestComponent extends PageComponent implements OnInit {
       },
     },
     {
-      previous: { text: 'Re-submit Files' },
-      next: { text: 'Finish Review' },
+      previous: { text: "Re-submit Files" },
+      next: { text: "Finish Review" },
       timer: { enable: false },
     },
     {
@@ -79,12 +79,12 @@ class HarvestComponent extends PageComponent implements OnInit {
     summary: 5,
   };
   public harvestSteps = [
-    { label: 'Start' },
-    { label: 'Credentials' },
-    { label: 'Check' },
-    { label: 'Review' },
-    { label: 'Harvest' },
-    { label: 'Summary' },
+    { label: "Start" },
+    { label: "Credentials" },
+    { label: "Check" },
+    { label: "Review" },
+    { label: "Harvest" },
+    { label: "Summary" },
   ];
   private intervalSpeed = 300;
 

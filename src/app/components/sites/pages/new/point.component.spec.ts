@@ -1,34 +1,34 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { regionResolvers } from '@baw-api/region/regions.service';
-import { SitesService } from '@baw-api/site/sites.service';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
-} from '@helpers/embedGoogleMaps/embedGoogleMaps';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
+} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
-} from '@ngneat/spectator';
-import { FormComponent } from '@shared/form/form.component';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { generateRegion } from '@test/fakes/Region';
-import { generateSite } from '@test/fakes/Site';
-import { testFormlyFields } from '@test/helpers/formly';
-import { assertErrorHandler } from '@test/helpers/html';
-import { testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { fields } from '../../point.base.json';
-import { PointNewComponent } from './point.component';
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
+import { generateSite } from "@test/fakes/Site";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertErrorHandler } from "@test/helpers/html";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { fields } from "../../point.base.json";
+import { PointNewComponent } from "./point.component";
 
-describe('PointNewComponent', () => {
+describe("PointNewComponent", () => {
   let spectator: SpectatorRouting<PointNewComponent>;
   const createComponent = createRoutingFactory({
     component: PointNewComponent,
@@ -38,41 +38,41 @@ describe('PointNewComponent', () => {
     stubsEnabled: true,
   });
 
-  describe('form', () => {
+  describe("form", () => {
     testFormlyFields([
       {
-        testGroup: 'Point Name Input',
+        testGroup: "Point Name Input",
         field: fields[1],
-        key: 'name',
-        type: 'input',
+        key: "name",
+        type: "input",
         required: true,
-        label: 'Point Name',
-        inputType: 'text',
+        label: "Point Name",
+        inputType: "text",
       },
       {
-        testGroup: 'Point Description Input',
+        testGroup: "Point Description Input",
         field: fields[2],
-        key: 'description',
-        type: 'textarea',
-        label: 'Description',
+        key: "description",
+        type: "textarea",
+        label: "Description",
       },
       {
-        testGroup: 'Point Location Input',
+        testGroup: "Point Location Input",
         field: fields[4],
-        key: 'location',
-        label: 'Location',
+        key: "location",
+        label: "Location",
       },
       {
-        testGroup: 'Point Image Input',
+        testGroup: "Point Image Input",
         field: fields[9],
-        key: 'imageUrl',
-        type: 'image',
-        label: 'Image',
+        key: "imageUrl",
+        type: "image",
+        label: "Image",
       },
     ]);
   });
 
-  describe('component', () => {
+  describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultRegion: Region;
@@ -105,22 +105,22 @@ describe('PointNewComponent', () => {
       defaultRegion = new Region(generateRegion());
     });
 
-    it('should create', () => {
+    it("should create", () => {
       setup();
       expect(spectator.component).toBeTruthy();
     });
 
-    it('should handle project error', () => {
+    it("should handle project error", () => {
       setup(generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should handle region error', () => {
+    it("should handle region error", () => {
       setup(undefined, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       setup();
       const site = new Site(generateSite());
       api.create.and.callFake(() => new Subject());
@@ -132,7 +132,7 @@ describe('PointNewComponent', () => {
       );
     });
 
-    it('should redirect to site', () => {
+    it("should redirect to site", () => {
       setup();
       const site = new Site(generateSite());
       api.create.and.callFake(() => new BehaviorSubject<Site>(site));

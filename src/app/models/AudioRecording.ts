@@ -1,17 +1,17 @@
-import { Injector } from '@angular/core';
-import { ACCOUNT, SHALLOW_SITE } from '@baw-api/ServiceTokens';
-import { Duration } from 'luxon';
+import { Injector } from "@angular/core";
+import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { Duration } from "luxon";
 import {
   DateTimeTimezone,
   HasAllUsers,
   Id,
   Uuid,
-} from '../interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import { Creator, Deleter, HasOne, Updater } from './AssociationDecorators';
-import { BawDateTime, BawDuration } from './AttributeDecorators';
-import type { Site } from './Site';
-import type { User } from './User';
+} from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawDuration } from "./AttributeDecorators";
+import type { Site } from "./Site";
+import type { User } from "./User";
 
 /**
  * An audio recording model
@@ -39,14 +39,14 @@ export interface IAudioRecording extends HasAllUsers {
  * An audio recording model
  */
 export class AudioRecording extends AbstractModel implements IAudioRecording {
-  public readonly kind = 'AudioRecording';
+  public readonly kind = "AudioRecording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
   @BawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
-  @BawDuration<AudioRecording>({ key: 'durationSeconds' })
+  @BawDuration<AudioRecording>({ key: "durationSeconds" })
   public readonly duration: Duration;
   public readonly durationSeconds?: number;
   public readonly sampleRateHertz?: number;
@@ -76,9 +76,9 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public updater?: User;
   @Deleter<AudioRecording>()
   public deleter?: User;
-  @HasOne<AudioRecording, User>(ACCOUNT, 'uploaderId')
+  @HasOne<AudioRecording, User>(ACCOUNT, "uploaderId")
   public uploader?: User;
-  @HasOne<AudioRecording, Site>(SHALLOW_SITE, 'siteId')
+  @HasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
   constructor(audioRecording: IAudioRecording, injector?: Injector) {
@@ -86,15 +86,15 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    console.warn('AudioRecording viewUrl not implement.');
-    return '/FIX_ME';
+    console.warn("AudioRecording viewUrl not implement.");
+    return "/FIX_ME";
   }
 }
 
 export type AudioRecordingStatus =
-  | 'new'
-  | 'uploading'
-  | 'to_check'
-  | 'ready'
-  | 'corrupt'
-  | 'aborted';
+  | "new"
+  | "uploading"
+  | "to_check"
+  | "ready"
+  | "corrupt"
+  | "aborted";

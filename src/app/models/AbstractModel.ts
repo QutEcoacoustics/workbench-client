@@ -1,7 +1,7 @@
-import { Injector } from '@angular/core';
-import { DateTime, Duration } from 'luxon';
-import { Id } from '../interfaces/apiInterfaces';
-import { Meta } from '../services/baw-api/baw-api.service';
+import { Injector } from "@angular/core";
+import { DateTime, Duration } from "luxon";
+import { Id } from "../interfaces/apiInterfaces";
+import { Meta } from "../services/baw-api/baw-api.service";
 
 /**
  * BAW Server Abstract Model
@@ -22,14 +22,14 @@ export abstract class AbstractModel {
    * Hidden meta symbol
    * This stores the metadata associated with the model
    */
-  private static metaKey = Symbol('meta');
+  private static metaKey = Symbol("meta");
 
   /**
    * Hidden attributes symbol.
    * This stores the list of model attributes which are used to
    * generate the toJSON() output.
    */
-  public static attributeKey = Symbol('attributes');
+  public static attributeKey = Symbol("attributes");
 
   /**
    * Model ID
@@ -64,7 +64,7 @@ export abstract class AbstractModel {
       } else if (value instanceof DateTime) {
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
-        output[attribute] = value.as('seconds');
+        output[attribute] = value.as("seconds");
       } else {
         output[attribute] = this[attribute];
       }
@@ -78,8 +78,8 @@ export abstract class AbstractModel {
    * @param value Display custom value
    */
   public toString(value?: string): string {
-    if (!value && this['name']) {
-      value = this['name'];
+    if (!value && this["name"]) {
+      value = this["name"];
     }
     const identifier = value ? `${value} (${this.id})` : this.id.toString();
     return `${this.kind}: ${identifier}`;
@@ -105,7 +105,7 @@ export abstract class AbstractModel {
 export class UnresolvedModel extends AbstractModel {
   private static readonly model = Object.freeze(new UnresolvedModel());
   private static readonly models = Object.freeze([]);
-  public readonly kind = 'UnresolvedModel';
+  public readonly kind = "UnresolvedModel";
 
   static get one(): Readonly<UnresolvedModel> {
     return this.model;
@@ -120,10 +120,10 @@ export class UnresolvedModel extends AbstractModel {
   }
 
   public toString(): string {
-    return 'UnresolvedModel';
+    return "UnresolvedModel";
   }
 
   public get viewUrl(): string {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }

@@ -1,19 +1,19 @@
-import { RouterTestingModule } from '@angular/router/testing';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
-import { createComponentFactory, Spectator } from '@ngneat/spectator';
-import { assetRoot } from '@services/app-config/app-config.service';
-import { SharedModule } from '@shared/shared.module';
-import { generateProject } from '@test/fakes/Project';
-import { generateRegion } from '@test/fakes/Region';
-import { generateSite } from '@test/fakes/Site';
-import { assertImage, assertRoute } from '@test/helpers/html';
-import { websiteHttpUrl } from '@test/helpers/url';
-import { SiteCardComponent } from './site-card.component';
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { assetRoot } from "@services/app-config/app-config.service";
+import { SharedModule } from "@shared/shared.module";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
+import { generateSite } from "@test/fakes/Site";
+import { assertImage, assertRoute } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
+import { SiteCardComponent } from "./site-card.component";
 
-describe('SiteCardComponent', () => {
+describe("SiteCardComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
@@ -44,39 +44,39 @@ describe('SiteCardComponent', () => {
     });
   }
 
-  it('should create', () => {
+  it("should create", () => {
     setup(true);
     spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
   });
 
-  describe('title', () => {
-    it('should display site name', () => {
+  describe("title", () => {
+    it("should display site name", () => {
       setup(true);
       spectator.detectChanges();
-      const name = spectator.query<HTMLHeadingElement>('h5#name');
+      const name = spectator.query<HTMLHeadingElement>("h5#name");
       expect(name).toBeTruthy();
       expect(name.innerText).toContain(defaultSite.name);
     });
 
-    it('should navigate user to site when clicking site name', () => {
+    it("should navigate user to site when clicking site name", () => {
       setup(true);
       spectator.detectChanges();
-      const name = spectator.query<HTMLAnchorElement>('#nameLink');
+      const name = spectator.query<HTMLAnchorElement>("#nameLink");
       assertRoute(name, defaultSite.getViewUrl(defaultProject));
     });
   });
 
-  describe('image', () => {
+  describe("image", () => {
     function getImage() {
-      return spectator.query<HTMLImageElement>('img');
+      return spectator.query<HTMLImageElement>("img");
     }
 
     function getImageLink() {
-      return spectator.query<HTMLAnchorElement>('#imageLink');
+      return spectator.query<HTMLAnchorElement>("#imageLink");
     }
 
-    it('should display site image', () => {
+    it("should display site image", () => {
       const site = new Site({ ...generateSite(), imageUrl: undefined });
       setup(site);
       spectator.detectChanges();
@@ -88,13 +88,13 @@ describe('SiteCardComponent', () => {
       );
     });
 
-    it('should display custom site image', () => {
+    it("should display custom site image", () => {
       setup(true);
       spectator.detectChanges();
       assertImage(getImage(), defaultSite.imageUrl, `${defaultSite.name} alt`);
     });
 
-    it('should navigate user to site when clicking site image', () => {
+    it("should navigate user to site when clicking site image", () => {
       setup(true);
       spectator.detectChanges();
       assertRoute(getImageLink(), defaultSite.getViewUrl(defaultProject));
@@ -103,12 +103,12 @@ describe('SiteCardComponent', () => {
 
   const inputTypes = [
     {
-      modelType: 'site',
+      modelType: "site",
       setup: () => setup(true),
       play: true,
     },
     {
-      modelType: 'region',
+      modelType: "region",
       setup: () => setup(false, true),
       play: false,
     },
@@ -117,9 +117,9 @@ describe('SiteCardComponent', () => {
   inputTypes.forEach((inputType) => {
     function getButtons() {
       return {
-        details: spectator.query<HTMLButtonElement>('#details'),
-        play: spectator.query<HTMLButtonElement>('#play'),
-        visualize: spectator.query<HTMLButtonElement>('#visualize'),
+        details: spectator.query<HTMLButtonElement>("#details"),
+        play: spectator.query<HTMLButtonElement>("#play"),
+        visualize: spectator.query<HTMLButtonElement>("#visualize"),
       };
     }
 
@@ -127,17 +127,17 @@ describe('SiteCardComponent', () => {
       expect(button.innerText.trim()).toBe(text);
     }
 
-    describe(inputType.modelType + ' buttons', () => {
+    describe(inputType.modelType + " buttons", () => {
       beforeEach(() => {
         inputType.setup();
         spectator.detectChanges();
       });
 
-      it('should display details button', () => {
-        assertButton(getButtons().details, 'Details');
+      it("should display details button", () => {
+        assertButton(getButtons().details, "Details");
       });
 
-      it('should navigate user to site when clicking details button', () => {
+      it("should navigate user to site when clicking details button", () => {
         assertRoute(
           getButtons().details,
           spectator.component.model.getViewUrl(defaultProject)
@@ -145,48 +145,48 @@ describe('SiteCardComponent', () => {
       });
 
       if (inputType.play) {
-        it('should display play button if site model', () => {
-          assertButton(getButtons().play, 'Play');
+        it("should display play button if site model", () => {
+          assertButton(getButtons().play, "Play");
         });
 
-        xit('should navigate user to listen page when clicking play button', () => {});
+        xit("should navigate user to listen page when clicking play button", () => {});
       } else {
-        it('should not display play button', () => {
+        it("should not display play button", () => {
           expect(getButtons().play).toBeFalsy();
         });
       }
 
-      it('should display visualize button', () => {
-        assertButton(getButtons().visualize, 'Visualise');
+      it("should display visualize button", () => {
+        assertButton(getButtons().visualize, "Visualise");
       });
 
-      xit('should navigate user to visualizer page when clicking play button', () => {});
+      xit("should navigate user to visualizer page when clicking play button", () => {});
     });
   });
 
-  describe('points', () => {
+  describe("points", () => {
     function getPoints() {
-      return spectator.query<HTMLSpanElement>('span.badge');
+      return spectator.query<HTMLSpanElement>("span.badge");
     }
 
-    it('should not display if site model', () => {
+    it("should not display if site model", () => {
       setup(true);
       spectator.detectChanges();
       expect(getPoints()).toBeFalsy();
     });
 
-    it('should display 0 region points', () => {
+    it("should display 0 region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: undefined });
       setup(false, region);
       spectator.detectChanges();
-      expect(getPoints().innerText.trim()).toBe('0 Points');
+      expect(getPoints().innerText.trim()).toBe("0 Points");
     });
 
-    it('should display multiple region points', () => {
+    it("should display multiple region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: [1, 2, 3] });
       setup(false, region);
       spectator.detectChanges();
-      expect(getPoints().innerText.trim()).toBe('3 Points');
+      expect(getPoints().innerText.trim()).toBe("3 Points");
     });
   });
 });

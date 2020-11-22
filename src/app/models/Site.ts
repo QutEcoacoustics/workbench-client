@@ -1,11 +1,11 @@
-import { Injector } from '@angular/core';
-import { id, IdOr } from '@baw-api/api-common';
-import { PROJECT } from '@baw-api/ServiceTokens';
-import { pointMenuItem } from '@components/sites/points.menus';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { assetRoot } from '@services/app-config/app-config.service';
-import { MapMarkerOption } from '@shared/map/map.component';
-import { siteMenuItem } from '../components/sites/sites.menus';
+import { Injector } from "@angular/core";
+import { id, IdOr } from "@baw-api/api-common";
+import { PROJECT } from "@baw-api/ServiceTokens";
+import { pointMenuItem } from "@components/sites/points.menus";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { assetRoot } from "@services/app-config/app-config.service";
+import { MapMarkerOption } from "@shared/map/map.component";
+import { siteMenuItem } from "../components/sites/sites.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -17,17 +17,17 @@ import {
   Notes,
   Param,
   TimezoneInformation,
-} from '../interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import { Creator, HasMany, Updater } from './AssociationDecorators';
+} from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasMany, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
   BawDateTime,
   BawImage,
   BawPersistAttr,
-} from './AttributeDecorators';
-import type { Project } from './Project';
-import type { User } from './User';
+} from "./AttributeDecorators";
+import type { Project } from "./Project";
+import type { User } from "./User";
 
 /**
  * A site model.
@@ -52,7 +52,7 @@ export interface ISite extends HasAllUsers, HasDescription {
  * A site model.
  */
 export class Site extends AbstractModel implements ISite {
-  public readonly kind = 'Site';
+  public readonly kind = "Site";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -60,7 +60,7 @@ export class Site extends AbstractModel implements ISite {
   @BawPersistAttr
   public readonly imageUrl?: string;
   @BawImage<Site>(`${assetRoot}/images/site/site_span4.png`, {
-    key: 'imageUrl',
+    key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
   @BawPersistAttr
@@ -98,7 +98,7 @@ export class Site extends AbstractModel implements ISite {
   public creator?: User;
   @Updater<Site>()
   public updater?: User;
-  @HasMany<Site, Project>(PROJECT, 'projectIds')
+  @HasMany<Site, Project>(PROJECT, "projectIds")
   public projects?: Project[];
 
   constructor(site: ISite, injector?: Injector) {
@@ -115,8 +115,8 @@ export class Site extends AbstractModel implements ISite {
 
   public get viewUrl(): string {
     if (this.projectIds.size === 0) {
-      console.error('Site model has no project id, cannot find url.');
-      return '';
+      console.error("Site model has no project id, cannot find url.");
+      return "";
     }
 
     return this.getViewUrl(this.projectIds.values().next().value);

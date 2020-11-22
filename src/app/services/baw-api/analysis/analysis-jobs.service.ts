@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import { AnalysisJob, IAnalysisJob } from '@models/AnalysisJob';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { AnalysisJob, IAnalysisJob } from "@models/AnalysisJob";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   option,
   ReadAndUpdateApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
@@ -50,4 +50,4 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
 export const analysisJobResolvers = new Resolvers<
   AnalysisJob,
   AnalysisJobsService
->([AnalysisJobsService], 'analysisJobId').create('AnalysisJob');
+>([AnalysisJobsService], "analysisJobId").create("AnalysisJob");

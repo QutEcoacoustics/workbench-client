@@ -1,29 +1,29 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { retrieveResolvers } from '@baw-api/resolver-common';
-import { SecurityService } from '@baw-api/security/security.service';
-import { siteResolvers } from '@baw-api/site/sites.service';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
-import { SessionUser } from '@models/User';
-import { List } from 'immutable';
-import { siteHarvestMenuItem, sitesCategory } from '../../sites.menus';
-import { siteMenuItemActions } from '../details/site.component';
+import { Component, Inject, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { SecurityService } from "@baw-api/security/security.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { SessionUser } from "@models/User";
+import { List } from "immutable";
+import { siteHarvestMenuItem, sitesCategory } from "../../sites.menus";
+import { siteMenuItemActions } from "../details/site.component";
 
-const projectKey = 'project';
-const siteKey = 'site';
+const projectKey = "project";
+const siteKey = "site";
 
 /**
  * Site Harvest Component
  */
 @Component({
-  selector: 'baw-sites-harvest',
-  templateUrl: './harvest.component.html',
+  selector: "baw-sites-harvest",
+  templateUrl: "./harvest.component.html",
 })
 class SiteHarvestComponent extends PageComponent implements OnInit {
   public project: Project;
@@ -49,7 +49,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   }
 
   public getHarvestFileRoute() {
-    return 'not_implemented';
+    return "not_implemented";
   }
 }
 

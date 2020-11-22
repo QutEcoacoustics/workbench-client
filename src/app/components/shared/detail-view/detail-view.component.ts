@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { AbstractModel } from '@models/AbstractModel';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Component, Input } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
-  selector: 'baw-detail-view',
+  selector: "baw-detail-view",
   template: `
     <div *ngFor="let field of fields" class="row">
       <dt class="col-sm-3 text-left text-sm-right font-weight-bold">

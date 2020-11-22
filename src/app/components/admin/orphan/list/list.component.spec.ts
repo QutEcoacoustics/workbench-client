@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { defaultApiPageSize } from '@baw-api/baw-api.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { ShallowSitesService } from '@baw-api/site/sites.service';
-import { Site } from '@models/Site';
-import { SharedModule } from '@shared/shared.module';
-import { generateSite } from '@test/fakes/Site';
-import { assertPagination } from '@test/helpers/pagedTableTemplate';
-import { appLibraryImports } from 'src/app/app.module';
-import { AdminOrphansComponent } from './list.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { Site } from "@models/Site";
+import { SharedModule } from "@shared/shared.module";
+import { generateSite } from "@test/fakes/Site";
+import { assertPagination } from "@test/helpers/pagedTableTemplate";
+import { appLibraryImports } from "src/app/app.module";
+import { AdminOrphansComponent } from "./list.component";
 
-describe('AdminOrphansComponent', () => {
+describe("AdminOrphansComponent", () => {
   let api: ShallowSitesService;
   let defaultModel: Site;
   let defaultModels: Site[];
@@ -42,8 +42,8 @@ describe('AdminOrphansComponent', () => {
   });
 
   // TODO Write Tests
-  assertPagination<Site, ShallowSitesService>('orphanFilter');
+  assertPagination<Site, ShallowSitesService>("orphanFilter");
 
-  xdescribe('rows', () => {});
-  xdescribe('actions', () => {});
+  xdescribe("rows", () => {});
+  xdescribe("actions", () => {});
 });

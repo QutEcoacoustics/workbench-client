@@ -1,24 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { retrieveResolvers } from '@baw-api/resolver-common';
-import { shallowSiteResolvers } from '@baw-api/site/sites.service';
-import { fields as baseFields } from '@components/sites/site.base.json';
-import { fields as extendedFields } from '@components/sites/site.extended.json';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { Site } from '@models/Site';
-import { List } from 'immutable';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { shallowSiteResolvers } from "@baw-api/site/sites.service";
+import { fields as baseFields } from "@components/sites/site.base.json";
+import { fields as extendedFields } from "@components/sites/site.extended.json";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { Site } from "@models/Site";
+import { List } from "immutable";
 import {
   adminOrphanMenuItem,
   adminOrphansCategory,
   adminOrphansMenuItem,
-} from '../orphans.menus';
+} from "../orphans.menus";
 
-const siteKey = 'site';
+const siteKey = "site";
 
 @Component({
-  selector: 'baw-admin-orphan',
+  selector: "baw-admin-orphan",
   template: `
     <div *ngIf="!failure">
       <h1>Orphan Site Details</h1>

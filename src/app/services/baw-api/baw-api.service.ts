@@ -1,18 +1,18 @@
-import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { isPlatformBrowser } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
 import {
   Inject,
   Injectable,
   InjectionToken,
   Injector,
   PLATFORM_ID,
-} from '@angular/core';
-import { XOR } from '@helpers/advancedTypes';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { AbstractModel } from '@models/AbstractModel';
-import { SessionUser } from '@models/User';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+} from "@angular/core";
+import { XOR } from "@helpers/advancedTypes";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { AbstractModel } from "@models/AbstractModel";
+import { SessionUser } from "@models/User";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const defaultApiPageSize = 25;
 
@@ -29,7 +29,7 @@ export const apiReturnCodes = {
   internalServerFailure: 500,
 };
 
-export const STUB_MODEL_BUILDER = new InjectionToken('test.model.builder');
+export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
 /**
  * Interface with BAW Server Rest API
@@ -51,7 +51,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * User local storage location
    */
-  protected userLocalStorageKey = 'baw.client.user';
+  protected userLocalStorageKey = "baw.client.user";
 
   /**
    * Handle API collection response
@@ -101,7 +101,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
     this.handleSingleResponse = (response: ApiResponse<Model>) => {
       if (response.data instanceof Array) {
         throw new Error(
-          'Received an array of API results when only a single result was expected'
+          "Received an array of API results when only a single result was expected"
         );
       }
 
@@ -137,7 +137,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
       try {
         return new SessionUser(JSON.parse(userData));
       } catch (err) {
-        console.error('Failed to create session user: ', err);
+        console.error("Failed to create session user: ", err);
         this.clearSessionUser();
       }
     }
@@ -336,7 +336,7 @@ export class RangeInterval {
   constructor(public interval: string) {
     const regex = /(\[|\()(.*),(.*)(\)|\])/;
     if (!regex.test(this.interval)) {
-      throw Error('Range Interval: Invalid pattern provided');
+      throw Error("Range Interval: Invalid pattern provided");
     }
   }
 
@@ -406,7 +406,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
     /** Which key to sort by */
     orderBy: string;
     /** Sorting direction */
-    direction: 'desc' | 'asc';
+    direction: "desc" | "asc";
   };
   /** Current page data */
   paging?: Paging;

@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { Site } from '@models/Site';
-import { User } from '@models/User';
-import { List } from 'immutable';
-import { defaultAudioIcon, defaultUserIcon } from 'src/app/app.menus';
-import { statisticsCategory, statisticsMenuItem } from '../statistics.menus';
+import { Component, OnInit } from "@angular/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { Site } from "@models/Site";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
+import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
 /**
  * Statistics Component
  */
 @Component({
-  selector: 'baw-statistics',
-  templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.scss'],
+  selector: "baw-statistics",
+  templateUrl: "./statistics.component.html",
+  styleUrls: ["./statistics.component.scss"],
 })
 class StatisticsComponent extends PageComponent implements OnInit {
   public groupOne: List<{
@@ -36,83 +36,83 @@ class StatisticsComponent extends PageComponent implements OnInit {
   public ngOnInit() {
     this.groupOne = List([
       {
-        icon: ['fas', 'home'],
-        name: 'Projects',
-        value: 'Unknown',
+        icon: ["fas", "home"],
+        name: "Projects",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'bullseye'],
-        name: 'Annotations',
-        value: 'Unknown',
+        icon: ["fas", "bullseye"],
+        name: "Annotations",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'tags'],
-        name: 'Available tags',
-        value: 'Unknown',
+        icon: ["fas", "tags"],
+        name: "Available tags",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'map-marker-alt'],
-        name: 'Sites',
-        value: 'Unknown',
+        icon: ["fas", "map-marker-alt"],
+        name: "Sites",
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
-        name: 'Audio recordings',
-        value: 'Unknown',
+        name: "Audio recordings",
+        value: "Unknown",
       },
       {
         icon: defaultUserIcon,
-        name: 'Users',
-        value: 'Unknown',
+        name: "Users",
+        value: "Unknown",
       },
     ]);
 
     this.groupTwo = List([
       {
-        icon: ['fas', 'tags'],
-        name: 'Unique tags attached to annotations',
-        value: 'Unknown',
+        icon: ["fas", "tags"],
+        name: "Unique tags attached to annotations",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'tags'],
-        name: 'Tags attached to annotations',
-        value: 'Unknown',
+        icon: ["fas", "tags"],
+        name: "Tags attached to annotations",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'bullseye'],
-        name: 'New annotations in the last month',
-        value: 'Unknown',
+        icon: ["fas", "bullseye"],
+        name: "New annotations in the last month",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'clock'],
-        name: 'Overall annotation duration',
-        value: 'Unknown',
+        icon: ["fas", "clock"],
+        name: "Overall annotation duration",
+        value: "Unknown",
       },
       {
         icon: defaultUserIcon,
-        name: 'Users Online',
-        value: 'Unknown',
+        name: "Users Online",
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
-        name: 'Overall audio recording file size',
-        value: 'Unknown',
+        name: "Overall audio recording file size",
+        value: "Unknown",
       },
       {
         icon: defaultAudioIcon,
-        name: 'New audio recordings in last month',
-        value: 'Unknown',
+        name: "New audio recordings in last month",
+        value: "Unknown",
       },
       {
-        icon: ['fas', 'clock'],
-        name: 'Overall audio duration',
-        value: 'Unknown',
+        icon: ["fas", "clock"],
+        name: "Overall audio duration",
+        value: "Unknown",
       },
     ]);
 
-    this.recentAnnotations = [{ updated: 'Unknown' }];
+    this.recentAnnotations = [{ updated: "Unknown" }];
 
-    this.recentRecordings = [{ duration: 'Unknown', uploaded: 'Unknown' }];
+    this.recentRecordings = [{ duration: "Unknown", uploaded: "Unknown" }];
   }
 
   public isExpanded(
@@ -122,7 +122,7 @@ class StatisticsComponent extends PageComponent implements OnInit {
       | Recording[]
       | RecordingExpanded[]
   ): group is AnnotationExpanded[] | RecordingExpanded[] {
-    return Object.values(group[0]).indexOf('site') > -1;
+    return Object.values(group[0]).indexOf("site") > -1;
   }
 }
 

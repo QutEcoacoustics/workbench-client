@@ -1,31 +1,31 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { accountResolvers } from '@baw-api/account/accounts.service';
-import { Filters } from '@baw-api/baw-api.service';
-import { ProjectsService } from '@baw-api/project/projects.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { accountResolvers } from "@baw-api/account/accounts.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   theirProfileCategory,
   theirProfileMenuItem,
   theirProjectsMenuItem,
-} from '@components/profile/profile.menus';
-import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { Project } from '@models/Project';
-import { User } from '@models/User';
-import { List } from 'immutable';
-import { theirProfileActions } from '../profile/their-profile.component';
+} from "@components/profile/profile.menus";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { theirProfileActions } from "../profile/their-profile.component";
 
-const accountKey = 'account';
+const accountKey = "account";
 
 @Component({
-  selector: 'baw-their-projects',
-  templateUrl: './projects.component.html',
+  selector: "baw-their-projects",
+  templateUrl: "./projects.component.html",
 })
 class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   public columns = [
-    { name: 'Project' },
-    { name: 'Sites' },
-    { name: 'Permission' },
+    { name: "Project" },
+    { name: "Sites" },
+    { name: "Permission" },
   ];
   protected api: ProjectsService;
 
@@ -36,7 +36,7 @@ class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
         projects.map((project) => ({
           project,
           sites: project.siteIds.size,
-          permission: 'FIX ME',
+          permission: "FIX ME",
         })),
       route
     );

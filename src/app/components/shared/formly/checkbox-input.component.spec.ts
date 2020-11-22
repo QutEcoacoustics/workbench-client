@@ -3,14 +3,14 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
-import { FormlyModule, FormlyTemplateOptions } from '@ngx-formly/core';
-import { formlyRoot } from 'src/app/app.helper';
-import { FormlyCheckboxInput } from './checkbox-input.component';
+} from "@angular/forms";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
+import { formlyRoot } from "src/app/app.helper";
+import { FormlyCheckboxInput } from "./checkbox-input.component";
 
-describe('FormlyCheckboxInput', () => {
+describe("FormlyCheckboxInput", () => {
   let model: object;
   let formGroup: FormGroup;
   let spectator: SpectatorHost<FormlyCheckboxInput>;
@@ -25,14 +25,14 @@ describe('FormlyCheckboxInput', () => {
   });
 
   function getCheckbox() {
-    return spectator.query<HTMLInputElement>('input[type=\'checkbox\']');
+    return spectator.query<HTMLInputElement>("input[type='checkbox']");
   }
 
   function setup(
-    key: string = 'checkbox',
+    key: string = "checkbox",
     options: FormlyTemplateOptions = {}
   ) {
-    formGroup = new FormGroup({ checkbox: new FormControl('') });
+    formGroup = new FormGroup({ checkbox: new FormControl("") });
     model = {};
 
     spectator = createHost(
@@ -47,7 +47,7 @@ describe('FormlyCheckboxInput', () => {
           field: {
             model,
             key,
-            formControl: formGroup.get('checkbox'),
+            formControl: formGroup.get("checkbox"),
             templateOptions: options,
           },
         },
@@ -56,19 +56,19 @@ describe('FormlyCheckboxInput', () => {
     spectator.detectChanges();
   }
 
-  it('should display checkbox', () => {
+  it("should display checkbox", () => {
     setup();
     expect(getCheckbox()).toBeTruthy();
   });
 
-  it('should activate checkbox on click', () => {
+  it("should activate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
     checkbox.click();
     expect(checkbox.checked).toBeTruthy();
   });
 
-  it('should deactivate checkbox on click', () => {
+  it("should deactivate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
     checkbox.click();

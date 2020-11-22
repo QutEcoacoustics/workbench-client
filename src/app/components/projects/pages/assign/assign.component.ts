@@ -1,39 +1,39 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { ShallowSitesService } from '@baw-api/site/sites.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   projectCategory,
   projectMenuItem,
-} from '@components/projects/projects.menus';
-import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
-import { List } from 'immutable';
-import { projectMenuItemActions } from '../details/details.component';
+} from "@components/projects/projects.menus";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { List } from "immutable";
+import { projectMenuItemActions } from "../details/details.component";
 
-const projectKey = 'project';
+const projectKey = "project";
 
 @Component({
-  selector: 'baw-assign',
-  templateUrl: './assign.component.html',
-  styleUrls: ['./assign.component.scss'],
+  selector: "baw-assign",
+  templateUrl: "./assign.component.html",
+  styleUrls: ["./assign.component.scss"],
 })
 class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   // TODO Move this back into the admin dashboard
   public columns = [
-    { name: 'Site Id' },
-    { name: 'Name' },
-    { name: 'Description' },
+    { name: "Site Id" },
+    { name: "Name" },
+    { name: "Description" },
   ];
   public sortKeys = {
-    siteId: 'id',
-    name: 'name',
-    description: 'descriptionHtmlTagline',
+    siteId: "id",
+    name: "name",
+    description: "descriptionHtmlTagline",
   };
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
@@ -48,7 +48,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
       route
     );
 
-    this.filterKey = 'name';
+    this.filterKey = "name";
   }
 
   public get project(): Project {
@@ -56,7 +56,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   }
 
   public onSelect(event) {
-    console.log('Select: ', event);
+    console.log("Select: ", event);
   }
 }
 

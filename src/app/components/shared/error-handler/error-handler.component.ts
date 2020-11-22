@@ -1,13 +1,13 @@
-import { Component, Input } from '@angular/core';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { apiReturnCodes } from '@baw-api/baw-api.service';
-import { reportProblemMenuItem } from '@components/report-problem/report-problem.menus';
+import { Component, Input } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 
 /**
  * Error Handler Wrapper
  */
 @Component({
-  selector: 'baw-error-handler',
+  selector: "baw-error-handler",
   template: `
     <ng-container *ngIf="error">
       <div [ngSwitch]="error.status">

@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Injector } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
-import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
-import type { Project } from '@models/Project';
-import { ISite, Site } from '@models/Site';
-import type { User } from '@models/User';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, Injector } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import type { Project } from "@models/Project";
+import { ISite, Site } from "@models/Site";
+import type { User } from "@models/User";
+import { Observable } from "rxjs";
 import {
   Empty,
   Filter,
@@ -16,9 +16,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from '../api-common';
-import { Filters } from '../baw-api.service';
-import { Resolvers } from '../resolver-common';
+} from "../api-common";
+import { Filters } from "../baw-api.service";
+import { Resolvers } from "../resolver-common";
 
 function orphanOption(x?: Filter | Empty) {
   return option(x);
@@ -96,7 +96,7 @@ export class ShallowSitesService extends StandardApi<Site> {
   ): Observable<Site[]> {
     return this.apiFilter(
       endpointShallow(Empty, Filter),
-      user ? filterByForeignKey<Site>(filters, 'creatorId', user) : filters
+      user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
     );
   }
   public show(model: IdOr<Site>): Observable<Site> {
@@ -131,11 +131,11 @@ export class ShallowSitesService extends StandardApi<Site> {
 
 export const siteResolvers = new Resolvers<Site, SitesService>(
   [SitesService],
-  'siteId',
-  ['projectId']
-).create('Site');
+  "siteId",
+  ["projectId"]
+).create("Site");
 
 export const shallowSiteResolvers = new Resolvers<Site, ShallowSitesService>(
   [ShallowSitesService],
-  'siteId'
-).create('ShallowSite');
+  "siteId"
+).create("ShallowSite");

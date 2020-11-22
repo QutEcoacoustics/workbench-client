@@ -1,8 +1,8 @@
-import { PartialWith } from '@helpers/advancedTypes';
-import { Param } from '@interfaces/apiInterfaces';
-import { AbstractModel } from '@models/AbstractModel';
-import { Observable } from 'rxjs';
-import { BawApiService, Filters } from './baw-api.service';
+import { PartialWith } from "@helpers/advancedTypes";
+import { Param } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { Observable } from "rxjs";
+import { BawApiService, Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel
@@ -73,12 +73,12 @@ export function filterByForeignKey<T>(
   };
 }
 
-export type Empty = '';
-export type New = 'new';
-export type Filter = 'filter';
-export const Empty: Empty = '';
-export const New: New = 'new';
-export const Filter: Filter = 'filter';
+export type Empty = "";
+export type New = "new";
+export type Filter = "filter";
+export const Empty: Empty = "";
+export const New: New = "new";
+export const Filter: Filter = "filter";
 
 /**
  * API List functionality
@@ -141,7 +141,7 @@ export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
    *
    * @param args URL parameter values
    */
-  update(model: PartialWith<M, 'id'>, ...urlParameters: P): Observable<M>;
+  update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
 }
 /**
  * API Delete functionality
@@ -179,7 +179,7 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract create(model: M, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, 'id'>,
+    model: PartialWith<M, "id">,
     ...urlParameters: P
   ): Observable<M>;
   public abstract destroy(
@@ -263,7 +263,7 @@ export abstract class ReadAndUpdateApi<
   ): Observable<M[]>;
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, 'id'>,
+    model: PartialWith<M, "id">,
     ...urlParameters: P
   ): Observable<M>;
 }
@@ -290,7 +290,7 @@ export abstract class NonDestructibleApi<
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract create(model: M, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, 'id'>,
+    model: PartialWith<M, "id">,
     ...urlParameters: P
   ): Observable<M>;
 }

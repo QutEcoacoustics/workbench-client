@@ -1,15 +1,15 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { apiReturnCodes } from '@baw-api/baw-api.service';
-import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { SharedModule } from '../shared.module';
-import { ErrorHandlerComponent } from './error-handler.component';
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { SharedModule } from "../shared.module";
+import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
-  template: '<baw-error-handler [error]=\'error\'></baw-error-handler>',
+  template: "<baw-error-handler [error]='error'></baw-error-handler>",
 })
 class MockComponent implements OnInit {
   public error: ApiErrorDetails;
@@ -19,7 +19,7 @@ class MockComponent implements OnInit {
   public ngOnInit() {
     this.error = {
       status: 401,
-      message: 'You need to log in or register before continuing.',
+      message: "You need to log in or register before continuing.",
     } as ApiErrorDetails;
     this.ref.detectChanges();
   }
@@ -30,7 +30,7 @@ class MockComponent implements OnInit {
   }
 }
 
-describe('ErrorHandlerComponent', () => {
+describe("ErrorHandlerComponent", () => {
   let component: ErrorHandlerComponent;
   let mockComponent: MockComponent;
   let fixture: ComponentFixture<ErrorHandlerComponent>;
@@ -40,7 +40,7 @@ describe('ErrorHandlerComponent', () => {
     title: string,
     nativeElement: any = fixture.nativeElement
   ) {
-    const titleEl = nativeElement.querySelector('h1');
+    const titleEl = nativeElement.querySelector("h1");
 
     if (!title) {
       expect(titleEl).toBeFalsy();
@@ -55,7 +55,7 @@ describe('ErrorHandlerComponent', () => {
     description: string,
     nativeElement: any = fixture.nativeElement
   ) {
-    const bodyEl = nativeElement.querySelector('p');
+    const bodyEl = nativeElement.querySelector("p");
 
     if (!description) {
       expect(bodyEl).toBeFalsy();
@@ -79,54 +79,54 @@ describe('ErrorHandlerComponent', () => {
     mockComponent = mockFixture.componentInstance;
   });
 
-  it('should create', () => {
+  it("should create", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should handle unauthorized code', () => {
-    component.error = generateApiErrorDetails('Unauthorized', {
-      message: 'You need to log in or register before continuing.',
+  it("should handle unauthorized code", () => {
+    component.error = generateApiErrorDetails("Unauthorized", {
+      message: "You need to log in or register before continuing.",
     });
     fixture.detectChanges();
 
-    assertTitle('Unauthorized Access');
-    assertDescription('You need to log in or register before continuing.');
+    assertTitle("Unauthorized Access");
+    assertDescription("You need to log in or register before continuing.");
   });
 
-  it('should handle not found code', () => {
-    component.error = generateApiErrorDetails('Not Found', {
-      message: 'Could not find the requested item.',
+  it("should handle not found code", () => {
+    component.error = generateApiErrorDetails("Not Found", {
+      message: "Could not find the requested item.",
     });
     fixture.detectChanges();
 
-    assertTitle('Not Found');
-    assertDescription('Could not find the requested item.');
+    assertTitle("Not Found");
+    assertDescription("Could not find the requested item.");
   });
 
-  it('should handle zero code', () => {
-    component.error = generateApiErrorDetails('Custom', {
+  it("should handle zero code", () => {
+    component.error = generateApiErrorDetails("Custom", {
       status: 0,
-      message: 'Unknown error has occurred.',
+      message: "Unknown error has occurred.",
     });
     fixture.detectChanges();
 
-    assertTitle('Unknown Error');
-    assertDescription('Unknown error has occurred.');
+    assertTitle("Unknown Error");
+    assertDescription("Unknown error has occurred.");
   });
 
-  it('should handle unknown code', () => {
-    component.error = generateApiErrorDetails('Custom', {
+  it("should handle unknown code", () => {
+    component.error = generateApiErrorDetails("Custom", {
       status: apiReturnCodes.unknown,
-      message: 'Unknown error has occurred.',
+      message: "Unknown error has occurred.",
     });
     fixture.detectChanges();
 
-    assertTitle('Unknown Error');
-    assertDescription('Unknown error has occurred.');
+    assertTitle("Unknown Error");
+    assertDescription("Unknown error has occurred.");
   });
 
-  it('should handle undefined code', () => {
+  it("should handle undefined code", () => {
     component.error = undefined;
     fixture.detectChanges();
 
@@ -134,7 +134,7 @@ describe('ErrorHandlerComponent', () => {
     assertDescription(undefined);
   });
 
-  it('should handle null code', () => {
+  it("should handle null code", () => {
     component.error = null;
     fixture.detectChanges();
 
@@ -142,24 +142,24 @@ describe('ErrorHandlerComponent', () => {
     assertDescription(undefined);
   });
 
-  it('should detect changes', () => {
+  it("should detect changes", () => {
     mockFixture.detectChanges();
 
     const nativeElement = mockFixture.nativeElement;
-    assertTitle('Unauthorized Access', nativeElement);
+    assertTitle("Unauthorized Access", nativeElement);
     assertDescription(
-      'You need to log in or register before continuing.',
+      "You need to log in or register before continuing.",
       nativeElement
     );
 
     mockComponent.setError(
-      generateApiErrorDetails('Not Found', {
-        message: 'Could not find the requested item.',
+      generateApiErrorDetails("Not Found", {
+        message: "Could not find the requested item.",
       })
     );
     mockFixture.detectChanges();
 
-    assertTitle('Not Found', nativeElement);
-    assertDescription('Could not find the requested item.', nativeElement);
+    assertTitle("Not Found", nativeElement);
+    assertDescription("Could not find the requested item.", nativeElement);
   });
 });

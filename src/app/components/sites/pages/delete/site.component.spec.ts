@@ -1,25 +1,25 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { siteResolvers, SitesService } from '@baw-api/site/sites.service';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
-} from '@ngneat/spectator';
-import { FormComponent } from '@shared/form/form.component';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { generateSite } from '@test/fakes/Site';
-import { assertErrorHandler } from '@test/helpers/html';
-import { testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { SiteDeleteComponent } from './site.component';
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateSite } from "@test/fakes/Site";
+import { assertErrorHandler } from "@test/helpers/html";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { SiteDeleteComponent } from "./site.component";
 
-describe('SiteDeleteComponent', () => {
+describe("SiteDeleteComponent", () => {
   let api: SpyObject<SitesService>;
   let defaultProject: Project;
   let defaultSite: Site;
@@ -59,30 +59,30 @@ describe('SiteDeleteComponent', () => {
     defaultSite = new Site(generateSite());
   });
 
-  describe('form', () => {
-    it('should have no fields', () => {
+  describe("form", () => {
+    it("should have no fields", () => {
       setup(defaultProject, defaultSite);
       expect(spectator.component.fields).toEqual([]);
     });
   });
 
-  describe('component', () => {
-    it('should create', () => {
+  describe("component", () => {
+    it("should create", () => {
       setup(defaultProject, defaultSite);
       expect(spectator.component).toBeTruthy();
     });
 
-    it('should handle project error', () => {
+    it("should handle project error", () => {
       setup(undefined, defaultSite, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should handle site error', () => {
+    it("should handle site error", () => {
       setup(defaultProject, undefined, undefined, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       setup(defaultProject, defaultSite);
       api.destroy.and.callFake(() => new Subject());
       spectator.component.submit({ ...defaultSite });
@@ -92,8 +92,8 @@ describe('SiteDeleteComponent', () => {
       );
     });
 
-    it('should redirect to projects', () => {
-      const spy = spyOnProperty(defaultProject, 'viewUrl');
+    it("should redirect to projects", () => {
+      const spy = spyOnProperty(defaultProject, "viewUrl");
       setup(defaultProject, defaultSite);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 

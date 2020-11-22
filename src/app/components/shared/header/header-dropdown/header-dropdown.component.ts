@@ -3,21 +3,21 @@ import {
   Component,
   Input,
   OnInit,
-} from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { HeaderDropDownConvertedLink } from '@helpers/app-initializer/app-initializer';
+} from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
+import { HeaderDropDownConvertedLink } from "@helpers/app-initializer/app-initializer";
 import {
   getRoute,
   isExternalLink,
   isInternalRoute,
-} from '@interfaces/menusInterfaces';
+} from "@interfaces/menusInterfaces";
 
 /**
  * Header Dropdown Item.
  * Displays a dropdown list of items for the user to choose from.
  */
 @Component({
-  selector: 'baw-header-dropdown',
+  selector: "baw-header-dropdown",
   template: `
     <li class="nav-item dropdown" ngbDropdown>
       <button

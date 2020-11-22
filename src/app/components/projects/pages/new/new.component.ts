@@ -1,26 +1,26 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { ProjectsService } from '@baw-api/project/projects.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
-} from '@components/projects/projects.menus';
+} from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { AnyMenuItem } from '@interfaces/menusInterfaces';
-import { Project } from '@models/Project';
-import { List } from 'immutable';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from '../../project.schema.json';
-import { projectsMenuItemActions } from '../list/list.component';
+} from "@helpers/formTemplate/formTemplate";
+import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
+import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "../../project.schema.json";
+import { projectsMenuItemActions } from "../list/list.component";
 
 @Component({
-  selector: 'baw-projects-new',
+  selector: "baw-projects-new",
   template: `
     <baw-form
       *ngIf="!failure"
@@ -47,7 +47,7 @@ class NewComponent extends FormTemplate<Project> {
       route,
       router,
       undefined,
-      (model) => defaultSuccessMsg('created', model.name),
+      (model) => defaultSuccessMsg("created", model.name),
       projectErrorMsg
     );
   }

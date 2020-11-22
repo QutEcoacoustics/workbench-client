@@ -1,6 +1,6 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { IRegion } from '@models/Region';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { IRegion } from "@models/Region";
+import { modelData } from "@test/helpers/faker";
 
 export function generateRegion(id?: Id): Required<IRegion> {
   return {

@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import {
   aboutCategory,
   contactUsMenuItem,
-} from '@components/about/about.menus';
-import { WithFormCheck } from '@guards/form/form.guard';
-import { PageComponent } from '@helpers/page/pageComponent';
-import { fields } from './contact-us.schema.json';
+} from "@components/about/about.menus";
+import { WithFormCheck } from "@guards/form/form.guard";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { fields } from "./contact-us.schema.json";
 
 @Component({
-  selector: 'baw-about-contact-us',
+  selector: "baw-about-contact-us",
   template: `
     <baw-wip>
       <baw-form

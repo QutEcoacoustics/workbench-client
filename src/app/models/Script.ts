@@ -1,6 +1,6 @@
-import { Injector } from '@angular/core';
-import { SCRIPT } from '@baw-api/ServiceTokens';
-import { adminScriptMenuItem } from '@components/admin/scripts/scripts.menus';
+import { Injector } from "@angular/core";
+import { SCRIPT } from "@baw-api/ServiceTokens";
+import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -8,11 +8,11 @@ import {
   HasDescription,
   Id,
   Param,
-} from '../interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import { Creator, HasOne } from './AssociationDecorators';
-import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
-import type { User } from './User';
+} from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import type { User } from "./User";
 
 /**
  * A script model
@@ -31,7 +31,7 @@ export interface IScript extends HasCreator, HasDescription {
 }
 
 export class Script extends AbstractModel implements IScript {
-  public readonly kind = 'Script';
+  public readonly kind = "Script";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -62,14 +62,14 @@ export class Script extends AbstractModel implements IScript {
   // Associations
   @Creator<Script>()
   public creator?: User;
-  @HasOne<Script, Script>(SCRIPT, 'groupId')
+  @HasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
 
   constructor(script: IScript, injector?: Injector) {
     super(script, injector);
 
     this.executableSettingsMediaType =
-      script.executableSettingsMediaType ?? 'text/plain';
+      script.executableSettingsMediaType ?? "text/plain";
   }
 
   public get viewUrl(): string {

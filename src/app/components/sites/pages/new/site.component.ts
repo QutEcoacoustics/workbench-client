@@ -1,26 +1,26 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { SitesService } from '@baw-api/site/sites.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { SitesService } from "@baw-api/site/sites.service";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
-} from '@helpers/formTemplate/formTemplate';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
-import { ToastrService } from 'ngx-toastr';
-import { fields } from '../../site.base.json';
+} from "@helpers/formTemplate/formTemplate";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { ToastrService } from "ngx-toastr";
+import { fields } from "../../site.base.json";
 
-const projectKey = 'project';
+const projectKey = "project";
 
 @Component({
-  selector: 'baw-sites-new',
-  templateUrl: './new.component.html',
+  selector: "baw-sites-new",
+  templateUrl: "./new.component.html",
 })
 export class SiteNewComponent extends FormTemplate<Site> {
   public fields = fields;
-  public title = '';
+  public title = "";
 
   constructor(
     protected api: SitesService,
@@ -33,7 +33,7 @@ export class SiteNewComponent extends FormTemplate<Site> {
       route,
       router,
       undefined,
-      (model) => defaultSuccessMsg('created', model.name),
+      (model) => defaultSuccessMsg("created", model.name),
       siteErrorMsg
     );
   }

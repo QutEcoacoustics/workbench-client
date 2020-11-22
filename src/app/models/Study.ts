@@ -1,16 +1,16 @@
-import { Injector } from '@angular/core';
-import { DATASET } from '@baw-api/ServiceTokens';
+import { Injector } from "@angular/core";
+import { DATASET } from "@baw-api/ServiceTokens";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
   Id,
   Param,
-} from '@interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import { Creator, HasOne, Updater } from './AssociationDecorators';
-import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
-import type { Dataset } from './Dataset';
-import type { User } from './User';
+} from "@interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { Creator, HasOne, Updater } from "./AssociationDecorators";
+import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import type { Dataset } from "./Dataset";
+import type { User } from "./User";
 
 export interface IStudy extends HasCreatorAndUpdater {
   id?: Id;
@@ -19,7 +19,7 @@ export interface IStudy extends HasCreatorAndUpdater {
 }
 
 export class Study extends AbstractModel implements IStudy {
-  public readonly kind = 'Studies';
+  public readonly kind = "Studies";
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -38,7 +38,7 @@ export class Study extends AbstractModel implements IStudy {
   public creator?: User;
   @Updater<Study>()
   public updater?: User;
-  @HasOne<Study, Dataset>(DATASET, 'datasetId')
+  @HasOne<Study, Dataset>(DATASET, "datasetId")
   public dataset?: Dataset;
 
   constructor(study: IStudy, injector?: Injector) {
@@ -46,6 +46,6 @@ export class Study extends AbstractModel implements IStudy {
   }
 
   public get viewUrl(): string {
-    throw new Error('Study viewUrl not implemented.');
+    throw new Error("Study viewUrl not implemented.");
   }
 }

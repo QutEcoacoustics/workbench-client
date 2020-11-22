@@ -1,31 +1,31 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { RegionsService } from '@baw-api/region/regions.service';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
-} from '@helpers/embedGoogleMaps/embedGoogleMaps';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
+} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
-} from '@ngneat/spectator';
-import { FormComponent } from '@shared/form/form.component';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { generateRegion } from '@test/fakes/Region';
-import { testFormlyFields } from '@test/helpers/formly';
-import { assertErrorHandler } from '@test/helpers/html';
-import { testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { fields } from '../../region.base.json';
-import { NewComponent } from './new.component';
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertErrorHandler } from "@test/helpers/html";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { fields } from "../../region.base.json";
+import { NewComponent } from "./new.component";
 
-describe('RegionsNewComponent', () => {
+describe("RegionsNewComponent", () => {
   let spectator: SpectatorRouting<NewComponent>;
   const createComponent = createRoutingFactory({
     component: NewComponent,
@@ -35,28 +35,28 @@ describe('RegionsNewComponent', () => {
     stubsEnabled: true,
   });
 
-  describe('form', () => {
+  describe("form", () => {
     testFormlyFields([
       {
-        testGroup: 'Site Name Input',
+        testGroup: "Site Name Input",
         field: fields[1],
-        key: 'name',
-        type: 'input',
+        key: "name",
+        type: "input",
         required: true,
-        label: 'Site Name',
-        inputType: 'text',
+        label: "Site Name",
+        inputType: "text",
       },
       {
-        testGroup: 'Site Description Input',
+        testGroup: "Site Description Input",
         field: fields[2],
-        key: 'description',
-        type: 'textarea',
-        label: 'Description',
+        key: "description",
+        type: "textarea",
+        label: "Description",
       },
     ]);
   });
 
-  describe('component', () => {
+  describe("component", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
 
@@ -80,17 +80,17 @@ describe('RegionsNewComponent', () => {
       defaultProject = new Project(generateProject());
     });
 
-    it('should create', () => {
+    it("should create", () => {
       setup();
       expect(spectator.component).toBeTruthy();
     });
 
-    it('should handle project error', () => {
+    it("should handle project error", () => {
       setup(generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       setup();
       api.create.and.callFake(() => new Subject());
 
@@ -98,7 +98,7 @@ describe('RegionsNewComponent', () => {
       expect(api.create).toHaveBeenCalled();
     });
 
-    it('should redirect to region', () => {
+    it("should redirect to region", () => {
       setup();
       const region = new Region(generateRegion());
       api.create.and.callFake(() => new BehaviorSubject<Region>(region));

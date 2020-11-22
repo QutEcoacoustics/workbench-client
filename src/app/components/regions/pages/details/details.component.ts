@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { regionResolvers } from '@baw-api/region/regions.service';
-import { retrieveResolvers } from '@baw-api/resolver-common';
-import { SitesService } from '@baw-api/site/sites.service';
-import { projectMenuItem } from '@components/projects/projects.menus';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { SitesService } from "@baw-api/site/sites.service";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   deleteRegionMenuItem,
   editRegionMenuItem,
   regionMenuItem,
   regionsCategory,
-} from '@components/regions/regions.menus';
-import { newPointMenuItem } from '@components/sites/points.menus';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { PaginationTemplate } from '@helpers/paginationTemplate/paginationTemplate';
-import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
-import { WidgetMenuItem } from '@menu/widgetItem';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
-import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
-import { List } from 'immutable';
+} from "@components/regions/regions.menus";
+import { newPointMenuItem } from "@components/sites/points.menus";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { List } from "immutable";
 
 export const regionMenuItemActions = [
   newPointMenuItem,
@@ -28,15 +28,15 @@ export const regionMenuItemActions = [
   deleteRegionMenuItem,
 ];
 
-const projectKey = 'project';
-const regionKey = 'region';
+const projectKey = "project";
+const regionKey = "region";
 
 /**
  * Region Details Component
  */
 @Component({
-  selector: 'baw-region',
-  styleUrls: ['./details.component.scss'],
+  selector: "baw-region",
+  styleUrls: ["./details.component.scss"],
   template: `
     <ng-container *ngIf="region">
       <!-- Region Details -->
@@ -87,7 +87,7 @@ const regionKey = 'region';
   `,
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
-  public defaultDescription = '<i>No description found</i>';
+  public defaultDescription = "<i>No description found</i>";
   public project: Project;
   public region: Region;
   public sites: List<Site> = List([]);
@@ -103,7 +103,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       route,
       config,
       sitesApi,
-      'name',
+      "name",
       () => [this.project.id],
       (sites) => (this.sites = List(sites)),
       () => ({ regionId: { eq: this.region.id } })

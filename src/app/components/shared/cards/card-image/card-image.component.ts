@@ -4,15 +4,15 @@ import {
   Component,
   Input,
   OnChanges,
-} from '@angular/core';
-import { Card } from '../cards.component';
+} from "@angular/core";
+import { Card } from "../cards.component";
 
 /**
  * Card Image Component
  */
 @Component({
-  selector: 'baw-card-image',
-  styleUrls: ['./card-image.component.scss'],
+  selector: "baw-card-image",
+  styleUrls: ["./card-image.component.scss"],
   template: `
     <div class="card h-100">
       <!-- Card Image -->
@@ -74,7 +74,7 @@ export class CardImageComponent implements OnChanges {
   public ngOnChanges() {
     this.description = this.card.description
       ? this.card.description
-      : 'No description given';
+      : "No description given";
     this.ref.detectChanges();
   }
 }

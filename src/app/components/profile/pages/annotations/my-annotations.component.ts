@@ -1,28 +1,28 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ShallowAudioEventsService } from '@baw-api/audio-event/audio-events.service';
-import { Filters } from '@baw-api/baw-api.service';
-import { userResolvers } from '@baw-api/user/user.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
   myAnnotationsMenuItem,
-} from '@components/profile/profile.menus';
-import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
-import { AudioEvent, IAudioEvent } from '@models/AudioEvent';
-import { User } from '@models/User';
-import { List } from 'immutable';
-import { myAccountActions } from '../profile/my-profile.component';
+} from "@components/profile/profile.menus";
+import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
+import { User } from "@models/User";
+import { List } from "immutable";
+import { myAccountActions } from "../profile/my-profile.component";
 
-const userKey = 'user';
+const userKey = "user";
 
 @Component({
-  selector: 'baw-my-annotations',
-  templateUrl: './annotations.component.html',
+  selector: "baw-my-annotations",
+  templateUrl: "./annotations.component.html",
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
-  public columns = [{ name: 'Site' }, { name: 'Updated' }, { name: 'Tags' }];
-  public sortKeys = { updated: 'updatedAt' };
+  public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
+  public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
   constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {

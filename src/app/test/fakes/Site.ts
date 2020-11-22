@@ -1,6 +1,6 @@
-import { Id } from '@interfaces/apiInterfaces';
-import { ISite } from '@models/Site';
-import { modelData } from '@test/helpers/faker';
+import { Id } from "@interfaces/apiInterfaces";
+import { ISite } from "@models/Site";
+import { modelData } from "@test/helpers/faker";
 
 export function generateSite(id?: Id, hasRegion?: boolean): Required<ISite> {
   return {

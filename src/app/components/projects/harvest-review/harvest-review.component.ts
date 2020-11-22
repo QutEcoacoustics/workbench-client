@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractModel } from '@models/AbstractModel';
-import { Project } from '@models/Project';
-import { Site } from '@models/Site';
-import { Status } from '../../shared/indicator/indicator.component';
+import { Component, OnInit } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { Status } from "../../shared/indicator/indicator.component";
 
 @Component({
-  selector: 'baw-project-harvest-review',
-  templateUrl: './harvest-review.component.html',
+  selector: "baw-project-harvest-review",
+  templateUrl: "./harvest-review.component.html",
   styles: [
     `
       .status {
@@ -24,37 +24,37 @@ export class HarvestReviewComponent implements OnInit {
 
   public ngOnInit(): void {
     const projectPool = [
-      new Project({ id: 1, name: 'QLD' }),
-      new Project({ id: 2, name: 'NSW' }),
-      new Project({ id: 3, name: 'TAS' }),
-      new Project({ id: 4, name: 'VIC' }),
-      new Project({ id: 5, name: 'SA' }),
-      new Project({ id: 6, name: 'NT' }),
-      new Project({ id: 7, name: 'WA' }),
+      new Project({ id: 1, name: "QLD" }),
+      new Project({ id: 2, name: "NSW" }),
+      new Project({ id: 3, name: "TAS" }),
+      new Project({ id: 4, name: "VIC" }),
+      new Project({ id: 5, name: "SA" }),
+      new Project({ id: 6, name: "NT" }),
+      new Project({ id: 7, name: "WA" }),
     ];
     const sitePool = [
-      new Site({ id: 1, name: 'Avaries' }),
-      new Site({ id: 2, name: 'Gympie' }),
-      new Site({ id: 3, name: 'Woondum' }),
+      new Site({ id: 1, name: "Avaries" }),
+      new Site({ id: 2, name: "Gympie" }),
+      new Site({ id: 3, name: "Woondum" }),
     ];
     const pointPool = Array.from(Array(10).keys()).map(
-      (id) => new Site({ id, name: 'Point' + id })
+      (id) => new Site({ id, name: "Point" + id })
     );
 
     this.generateRootFolder(
-      'Creek',
+      "Creek",
       projectPool.slice(0, 3),
       sitePool,
       pointPool
     );
     this.generateRootFolder(
-      'Woodland',
+      "Woodland",
       projectPool.slice(3, 7),
       sitePool,
       pointPool
     );
     this.generateRootFolder(
-      'Desert',
+      "Desert",
       projectPool.slice(2, 5),
       sitePool,
       pointPool

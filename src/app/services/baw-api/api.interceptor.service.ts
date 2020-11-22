@@ -6,17 +6,17 @@ import {
   HttpParams,
   HttpRequest,
   HttpResponse,
-} from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+} from "@angular/common/http";
+import { Inject, Injectable } from "@angular/core";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   toCamelCase,
   toSnakeCase,
-} from '@helpers/case-converter/case-converter';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { ApiResponse } from './baw-api.service';
-import { SecurityService } from './security/security.service';
+} from "@helpers/case-converter/case-converter";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
+import { ApiResponse } from "./baw-api.service";
+import { SecurityService } from "./security/security.service";
 
 /**
  * BAW API Interceptor.
@@ -47,11 +47,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // Don't add these headers to requests to cms service
-    if (request.responseType !== 'text') {
+    if (request.responseType !== "text") {
       request = request.clone({
         setHeaders: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
     }
@@ -157,7 +157,7 @@ function isErrorDetails(
 ): errorResponse is ApiErrorDetails {
   const keys = Object.keys(errorResponse);
   return (
-    keys.length <= 3 && keys.includes('status') && keys.includes('message')
+    keys.length <= 3 && keys.includes("status") && keys.includes("message")
   );
 }
 

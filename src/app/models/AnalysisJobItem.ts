@@ -1,11 +1,11 @@
-import { Injector } from '@angular/core';
-import { ANALYSIS_JOB, AUDIO_RECORDING } from '@baw-api/ServiceTokens';
-import { DateTimeTimezone, Id } from '@interfaces/apiInterfaces';
-import { AbstractModel } from './AbstractModel';
-import type { AnalysisJob } from './AnalysisJob';
-import { HasOne } from './AssociationDecorators';
-import { BawDateTime } from './AttributeDecorators';
-import type { AudioRecording } from './AudioRecording';
+import { Injector } from "@angular/core";
+import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import type { AnalysisJob } from "./AnalysisJob";
+import { HasOne } from "./AssociationDecorators";
+import { BawDateTime } from "./AttributeDecorators";
+import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -21,7 +21,7 @@ export interface IAnalysisJobItem {
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
-  public readonly kind = 'AnalysisJobItem';
+  public readonly kind = "AnalysisJobItem";
   public readonly id?: Id;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
@@ -39,9 +39,9 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne<AnalysisJobItem, AnalysisJob>(ANALYSIS_JOB, 'analysisJobId')
+  @HasOne<AnalysisJobItem, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
-  @HasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, 'audioRecordingId')
+  @HasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
@@ -49,16 +49,16 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   }
 
   public get viewUrl(): string {
-    throw new Error('AnalysisJobItem viewUrl not implemented.');
+    throw new Error("AnalysisJobItem viewUrl not implemented.");
   }
 }
 
 export type AnalysisJobItemStatus =
-  | 'successful'
-  | 'new'
-  | 'queued'
-  | 'working'
-  | 'failed'
-  | 'timed_out'
-  | 'cancelling'
-  | 'cancelled';
+  | "successful"
+  | "new"
+  | "queued"
+  | "working"
+  | "failed"
+  | "timed_out"
+  | "cancelling"
+  | "cancelled";

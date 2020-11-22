@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { apiReturnCodes } from '@baw-api/baw-api.service';
-import { IPageInfo } from '@helpers/page/pageInfo';
-import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   template: `
@@ -25,10 +25,10 @@ export class ResolverHandlerComponent
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (data: IPageInfo) => this.handleResolvers(data),
       (err) => {
-        console.error('ErrorHandlerComponent: ', err);
+        console.error("ErrorHandlerComponent: ", err);
         this.error = {
           status: apiReturnCodes.unknown,
-          message: 'Unable to load data from Server.',
+          message: "Unable to load data from Server.",
         };
       }
     );

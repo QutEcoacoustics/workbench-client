@@ -1,28 +1,28 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { projectResolvers } from '@baw-api/project/projects.service';
-import { regionResolvers } from '@baw-api/region/regions.service';
-import { siteResolvers, SitesService } from '@baw-api/site/sites.service';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
-} from '@ngneat/spectator';
-import { FormComponent } from '@shared/form/form.component';
-import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
-import { generateProject } from '@test/fakes/Project';
-import { generateRegion } from '@test/fakes/Region';
-import { generateSite } from '@test/fakes/Site';
-import { assertErrorHandler } from '@test/helpers/html';
-import { testFormImports } from '@test/helpers/testbed';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { PointDeleteComponent } from './point.component';
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
+import { generateSite } from "@test/fakes/Site";
+import { assertErrorHandler } from "@test/helpers/html";
+import { testFormImports } from "@test/helpers/testbed";
+import { ToastrService } from "ngx-toastr";
+import { BehaviorSubject, Subject } from "rxjs";
+import { PointDeleteComponent } from "./point.component";
 
-describe('PointDeleteComponent', () => {
+describe("PointDeleteComponent", () => {
   let api: SpyObject<SitesService>;
   let defaultProject: Project;
   let defaultRegion: Region;
@@ -68,25 +68,25 @@ describe('PointDeleteComponent', () => {
     defaultSite = new Site(generateSite(undefined, true));
   });
 
-  describe('form', () => {
-    it('should have no fields', () => {
+  describe("form", () => {
+    it("should have no fields", () => {
       setup(defaultProject, defaultRegion, defaultSite);
       expect(spectator.component.fields).toEqual([]);
     });
   });
 
-  describe('component', () => {
-    it('should create', () => {
+  describe("component", () => {
+    it("should create", () => {
       setup(defaultProject, defaultRegion, defaultSite);
       expect(spectator.component).toBeTruthy();
     });
 
-    it('should handle project error', () => {
+    it("should handle project error", () => {
       setup(undefined, defaultRegion, defaultSite, generateApiErrorDetails());
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should handle region error', () => {
+    it("should handle region error", () => {
       setup(
         defaultProject,
         undefined,
@@ -98,7 +98,7 @@ describe('PointDeleteComponent', () => {
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should handle site error', () => {
+    it("should handle site error", () => {
       setup(
         defaultProject,
         defaultRegion,
@@ -110,7 +110,7 @@ describe('PointDeleteComponent', () => {
       assertErrorHandler(spectator.fixture);
     });
 
-    it('should call api', () => {
+    it("should call api", () => {
       setup(defaultProject, defaultRegion, defaultSite);
       api.destroy.and.callFake(() => new Subject());
       spectator.component.submit({ ...defaultSite });
@@ -120,8 +120,8 @@ describe('PointDeleteComponent', () => {
       );
     });
 
-    it('should redirect to projects', () => {
-      const spy = spyOnProperty(defaultRegion, 'viewUrl');
+    it("should redirect to projects", () => {
+      const spy = spyOnProperty(defaultRegion, "viewUrl");
       setup(defaultProject, defaultRegion, defaultSite);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 

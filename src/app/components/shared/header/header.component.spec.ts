@@ -1,33 +1,33 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
-import { SecurityService } from '@baw-api/security/security.service';
-import { ImageSizes } from '@interfaces/apiInterfaces';
-import { SessionUser } from '@models/User';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { SecurityService } from "@baw-api/security/security.service";
+import { ImageSizes } from "@interfaces/apiInterfaces";
+import { SessionUser } from "@models/User";
 import {
   AppConfigService,
   assetRoot,
-} from '@services/app-config/app-config.service';
-import { generateSessionUser, generateUser } from '@test/fakes/User';
-import { modelData } from '@test/helpers/faker';
-import { assertImage, assertRoute } from '@test/helpers/html';
-import { websiteHttpUrl } from '@test/helpers/url';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { appLibraryImports } from 'src/app/app.module';
-import { contactUsMenuItem } from '../../about/about.menus';
-import { adminDashboardMenuItem } from '../../admin/admin.menus';
-import { homeMenuItem } from '../../home/home.menus';
-import { myAccountMenuItem } from '../../profile/profile.menus';
-import { projectsMenuItem } from '../../projects/projects.menus';
-import { loginMenuItem, registerMenuItem } from '../../security/security.menus';
-import { SharedModule } from '../shared.module';
-import { HeaderDropdownComponent } from './header-dropdown/header-dropdown.component';
-import { HeaderItemComponent } from './header-item/header-item.component';
-import { HeaderComponent } from './header.component';
+} from "@services/app-config/app-config.service";
+import { generateSessionUser, generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { assertImage, assertRoute } from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
+import { BehaviorSubject, Subject } from "rxjs";
+import { appLibraryImports } from "src/app/app.module";
+import { contactUsMenuItem } from "../../about/about.menus";
+import { adminDashboardMenuItem } from "../../admin/admin.menus";
+import { homeMenuItem } from "../../home/home.menus";
+import { myAccountMenuItem } from "../../profile/profile.menus";
+import { projectsMenuItem } from "../../projects/projects.menus";
+import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
+import { SharedModule } from "../shared.module";
+import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "./header-item/header-item.component";
+import { HeaderComponent } from "./header.component";
 
-describe('HeaderComponent', () => {
+describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let api: SecurityService;
@@ -35,7 +35,7 @@ describe('HeaderComponent', () => {
   let router: Router;
 
   function setUser(isLoggedIn: boolean, user?: SessionUser) {
-    spyOn(api, 'getLocalUser').and.callFake(() => (isLoggedIn ? user : null));
+    spyOn(api, "getLocalUser").and.callFake(() => (isLoggedIn ? user : null));
   }
 
   beforeEach(() => {
@@ -60,108 +60,108 @@ describe('HeaderComponent', () => {
     env = TestBed.inject(AppConfigService);
     component = fixture.componentInstance;
 
-    viewport.set('extra-large');
+    viewport.set("extra-large");
   });
 
   afterAll(() => {
     viewport.reset();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     setUser(false);
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
   });
 
-  describe('links', () => {
+  describe("links", () => {
     const userRoles = [
-      { type: 'guest', links: { register: true, login: true } },
-      { type: 'logged in', links: { profile: true, logout: true } },
-      { type: 'admin', links: { profile: true, logout: true, admin: true } },
+      { type: "guest", links: { register: true, login: true } },
+      { type: "logged in", links: { profile: true, logout: true } },
+      { type: "admin", links: { profile: true, logout: true, admin: true } },
     ];
 
     userRoles.forEach((userType) => {
-      describe(userType.type + ' user', () => {
+      describe(userType.type + " user", () => {
         let isLoggedIn: boolean;
         let user: SessionUser;
 
         beforeEach(() => {
-          if (userType.type === 'guest') {
+          if (userType.type === "guest") {
             isLoggedIn = false;
             user = undefined;
           } else {
             isLoggedIn = true;
             user = new SessionUser({
               id: 1,
-              authToken: 'xxxxxxxxxxxxxxx',
-              userName: 'Username',
-              rolesMask: userType.type === 'admin' ? 1 : 2,
-              rolesMaskNames: userType.type === 'user' ? ['user'] : ['admin'],
+              authToken: "xxxxxxxxxxxxxxx",
+              userName: "Username",
+              rolesMask: userType.type === "admin" ? 1 : 2,
+              rolesMaskNames: userType.type === "user" ? ["user"] : ["admin"],
             });
           }
         });
 
-        it('should create brand name link', () => {
+        it("should create brand name link", () => {
           setUser(isLoggedIn, user);
           fixture.detectChanges();
 
-          const brand = fixture.nativeElement.querySelector('a.navbar-brand');
+          const brand = fixture.nativeElement.querySelector("a.navbar-brand");
           assertRoute(brand, homeMenuItem.route.toString());
           expect(brand.innerText).toContain(env.values.brand.name);
         });
 
-        it('should create projects link', () => {
+        it("should create projects link", () => {
           setUser(isLoggedIn, user);
           fixture.detectChanges();
 
-          const link = fixture.nativeElement.querySelectorAll('a.nav-link')[0];
+          const link = fixture.nativeElement.querySelectorAll("a.nav-link")[0];
           assertRoute(link, projectsMenuItem.route.toString());
           expect(link.innerText).toContain(projectsMenuItem.label);
         });
 
-        it('should create contact us link', () => {
+        it("should create contact us link", () => {
           setUser(isLoggedIn, user);
           fixture.detectChanges();
 
-          const link = fixture.nativeElement.querySelectorAll('a.nav-link')[2];
+          const link = fixture.nativeElement.querySelectorAll("a.nav-link")[2];
           assertRoute(link, contactUsMenuItem.route.toString());
           expect(link.innerText).toContain(contactUsMenuItem.label);
         });
 
-        it('should create header links from external config', () => {
+        it("should create header links from external config", () => {
           setUser(isLoggedIn, user);
           fixture.detectChanges();
 
-          const link = fixture.nativeElement.querySelectorAll('a.nav-link')[1];
+          const link = fixture.nativeElement.querySelectorAll("a.nav-link")[1];
           expect(link).toBeTruthy();
-          expect(link.innerText).toContain('<< content1 >>');
+          expect(link.innerText).toContain("<< content1 >>");
         });
 
-        it('should create header dropdown links from external config', () => {
+        it("should create header dropdown links from external config", () => {
           setUser(isLoggedIn, user);
           fixture.detectChanges();
 
           const dropdown = fixture.nativeElement.querySelector(
-            'baw-header-dropdown'
+            "baw-header-dropdown"
           );
           expect(dropdown).toBeTruthy();
           expect(
-            dropdown.querySelector('button#dropdownBasic').innerText.trim()
-          ).toBe('<< content2 >>');
-          expect(dropdown.querySelectorAll('.dropdown-item').length).toBe(2);
+            dropdown.querySelector("button#dropdownBasic").innerText.trim()
+          ).toBe("<< content2 >>");
+          expect(dropdown.querySelectorAll(".dropdown-item").length).toBe(2);
         });
 
         it(
-          'should' +
-            (!userType.links.register ? ' not' : '') +
-            ' display register link',
+          "should" +
+            (!userType.links.register ? " not" : "") +
+            " display register link",
           () => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const link = fixture.nativeElement.querySelector(
-              '#register-header-link'
+              "#register-header-link"
             );
 
             if (userType.links.register) {
@@ -174,15 +174,15 @@ describe('HeaderComponent', () => {
         );
 
         it(
-          'should' +
-            (!userType.links.login ? ' not' : '') +
-            ' display login link',
+          "should" +
+            (!userType.links.login ? " not" : "") +
+            " display login link",
           () => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const link = fixture.nativeElement.querySelector(
-              '#login-header-link'
+              "#login-header-link"
             );
 
             if (userType.links.login) {
@@ -195,20 +195,20 @@ describe('HeaderComponent', () => {
         );
 
         it(
-          'should' +
-            (!userType.links.profile ? ' not' : '') +
-            ' display profile name',
+          "should" +
+            (!userType.links.profile ? " not" : "") +
+            " display profile name",
           fakeAsync(() => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const profile = fixture.nativeElement.querySelector(
-              '#login-widget'
+              "#login-widget"
             );
 
             if (userType.links.profile) {
               assertRoute(profile, myAccountMenuItem.route.toString());
-              expect(profile.innerText.trim()).toBe('Username');
+              expect(profile.innerText.trim()).toBe("Username");
             } else {
               expect(profile).toBeFalsy();
             }
@@ -216,22 +216,22 @@ describe('HeaderComponent', () => {
         );
 
         if (userType.links.profile) {
-          it('should display default profile icon', fakeAsync(() => {
+          it("should display default profile icon", fakeAsync(() => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const profile = fixture.nativeElement.querySelector(
-              '#login-widget'
+              "#login-widget"
             );
-            const image = profile.querySelector('img');
+            const image = profile.querySelector("img");
             assertImage(
               image,
               `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-              'Profile Icon'
+              "Profile Icon"
             );
           }));
 
-          it('should display small profile custom icon', fakeAsync(() => {
+          it("should display small profile custom icon", fakeAsync(() => {
             const url = modelData.image.imageUrl(60, 60);
             const customUser = new SessionUser({
               ...user,
@@ -260,26 +260,26 @@ describe('HeaderComponent', () => {
             fixture.detectChanges();
 
             const profile = fixture.nativeElement.querySelector(
-              '#login-widget'
+              "#login-widget"
             );
-            const image = profile.querySelector('img');
-            assertImage(image, url, 'Profile Icon');
+            const image = profile.querySelector("img");
+            assertImage(image, url, "Profile Icon");
           }));
         }
 
         it(
-          'should' + (!userType.links.logout ? ' not' : '') + ' display logout',
+          "should" + (!userType.links.logout ? " not" : "") + " display logout",
           fakeAsync(() => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const logout = fixture.nativeElement.querySelectorAll(
-              'button.nav-link'
+              "button.nav-link"
             )[1];
 
             if (userType.links.logout) {
               expect(logout).toBeTruthy();
-              expect(logout.innerText.trim()).toBe('Logout');
+              expect(logout.innerText.trim()).toBe("Logout");
             } else {
               expect(logout).toBeFalsy();
             }
@@ -287,15 +287,15 @@ describe('HeaderComponent', () => {
         );
 
         it(
-          'should' +
-            (!userType.links.admin ? ' not' : '') +
-            ' display admin settings',
+          "should" +
+            (!userType.links.admin ? " not" : "") +
+            " display admin settings",
           fakeAsync(() => {
             setUser(isLoggedIn, user);
             fixture.detectChanges();
 
             const settings = fixture.nativeElement.querySelector(
-              '#admin-settings'
+              "#admin-settings"
             );
 
             if (userType.links.admin) {
@@ -310,45 +310,45 @@ describe('HeaderComponent', () => {
     });
   });
 
-  describe('logout', () => {
-    it('should call signOut when logout button pressed', fakeAsync(() => {
+  describe("logout", () => {
+    it("should call signOut when logout button pressed", fakeAsync(() => {
       setUser(
         true,
         new SessionUser({
           id: 1,
-          authToken: 'xxxxxxxxxxxxxxx',
-          userName: 'custom username',
+          authToken: "xxxxxxxxxxxxxxx",
+          userName: "custom username",
           rolesMask: 2,
-          rolesMaskNames: ['user'],
-          lastSeenAt: '2019-12-18T11:16:08.233+10:00',
+          rolesMaskNames: ["user"],
+          lastSeenAt: "2019-12-18T11:16:08.233+10:00",
         })
       );
-      spyOn(api, 'signOut').and.callFake(() => new BehaviorSubject<void>(null));
+      spyOn(api, "signOut").and.callFake(() => new BehaviorSubject<void>(null));
       fixture.detectChanges();
 
       const logout = fixture.nativeElement.querySelectorAll(
-        'button.nav-link'
+        "button.nav-link"
       )[1];
       logout.click();
 
       expect(api.signOut).toHaveBeenCalled();
     }));
 
-    it('should redirect to home page when logout successful', fakeAsync(() => {
+    it("should redirect to home page when logout successful", fakeAsync(() => {
       setUser(
         true,
         new SessionUser({ ...generateSessionUser(), ...generateUser() })
       );
-      spyOn(api, 'signOut').and.callFake(() => {
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<void>();
         subject.complete();
         return subject;
       });
-      spyOn(router, 'navigate').and.stub();
+      spyOn(router, "navigate").and.stub();
       fixture.detectChanges();
 
       const logout = fixture.nativeElement.querySelectorAll(
-        'button.nav-link'
+        "button.nav-link"
       )[1];
       logout.click();
 
@@ -358,17 +358,17 @@ describe('HeaderComponent', () => {
     }));
 
     // TODO Move to E2E Tests
-    it('should display register after logout', fakeAsync(() => {
+    it("should display register after logout", fakeAsync(() => {
       let count = 0;
       const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(api, 'getAuthTrigger').and.callFake(() => loggedInTrigger);
-      spyOn(api, 'signOut').and.callFake(() => {
+      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<any>();
         subject.complete();
         return subject;
       });
-      spyOn(router, 'navigate').and.stub();
-      spyOn(api, 'getLocalUser').and.callFake(() => {
+      spyOn(router, "navigate").and.stub();
+      spyOn(api, "getLocalUser").and.callFake(() => {
         if (count !== 0) {
           return null;
         } else {
@@ -380,7 +380,7 @@ describe('HeaderComponent', () => {
       fixture.detectChanges();
 
       const logout = fixture.nativeElement.querySelectorAll(
-        'button.nav-link'
+        "button.nav-link"
       )[1];
       logout.click();
 
@@ -388,24 +388,24 @@ describe('HeaderComponent', () => {
       loggedInTrigger.next(null);
       fixture.detectChanges();
 
-      const link = fixture.nativeElement.querySelectorAll('a.nav-link')[3];
+      const link = fixture.nativeElement.querySelectorAll("a.nav-link")[3];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(registerMenuItem.label);
       assertRoute(link, registerMenuItem.route.toString());
     }));
 
     // TODO Move to E2E Tests
-    it('should display login after logout', fakeAsync(() => {
+    it("should display login after logout", fakeAsync(() => {
       let count = 0;
       const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(api, 'getAuthTrigger').and.callFake(() => loggedInTrigger);
-      spyOn(api, 'signOut').and.callFake(() => {
+      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      spyOn(api, "signOut").and.callFake(() => {
         const subject = new Subject<any>();
         subject.complete();
         return subject;
       });
-      spyOn(router, 'navigate').and.stub();
-      spyOn(api, 'getLocalUser').and.callFake(() => {
+      spyOn(router, "navigate").and.stub();
+      spyOn(api, "getLocalUser").and.callFake(() => {
         if (count !== 0) {
           return null;
         } else {
@@ -417,7 +417,7 @@ describe('HeaderComponent', () => {
       fixture.detectChanges();
 
       const logout = fixture.nativeElement.querySelectorAll(
-        'button.nav-link'
+        "button.nav-link"
       )[1];
       logout.click();
 
@@ -425,7 +425,7 @@ describe('HeaderComponent', () => {
       loggedInTrigger.next(null);
       fixture.detectChanges();
 
-      const link = fixture.nativeElement.querySelectorAll('a.nav-link')[4];
+      const link = fixture.nativeElement.querySelectorAll("a.nav-link")[4];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(loginMenuItem.label);
       assertRoute(link, loginMenuItem.route.toString());
@@ -433,57 +433,57 @@ describe('HeaderComponent', () => {
   });
 
   // TODO Fix these tests, they don't appear to actually tests the component
-  describe('navbar collapsed logic', () => {
-    it('should collapse at bootstrap md size', () => {
+  describe("navbar collapsed logic", () => {
+    it("should collapse at bootstrap md size", () => {
       setUser(false);
       fixture.detectChanges();
 
-      const navbar = fixture.nativeElement.querySelector('nav');
+      const navbar = fixture.nativeElement.querySelector("nav");
       let expandLgClass = false;
       navbar.classList.forEach((className: string) => {
-        if (className === 'navbar-expand-lg') {
+        if (className === "navbar-expand-lg") {
           expandLgClass = true;
         }
       });
       expect(expandLgClass).toBeTrue();
 
       const button = fixture.nativeElement.querySelector(
-        'button.navbar-toggler'
+        "button.navbar-toggler"
       );
       expect(button).toBeTruthy();
     });
 
-    it('navbar should initially be collapsed', () => {
-      viewport.set('medium');
+    it("navbar should initially be collapsed", () => {
+      viewport.set("medium");
       setUser(false);
       fixture.detectChanges();
 
-      const navbar = fixture.nativeElement.querySelector('div.collapse');
+      const navbar = fixture.nativeElement.querySelector("div.collapse");
       expect(navbar).toBeTruthy();
     });
 
-    it('navbar should open on toggle button press', () => {
-      viewport.set('medium');
+    it("navbar should open on toggle button press", () => {
+      viewport.set("medium");
       setUser(false);
       fixture.detectChanges();
 
       const button = fixture.nativeElement.querySelector(
-        'button.navbar-toggler'
+        "button.navbar-toggler"
       );
       button.click();
       fixture.detectChanges();
 
-      const navbar = fixture.nativeElement.querySelector('div.collapse');
+      const navbar = fixture.nativeElement.querySelector("div.collapse");
       expect(navbar).toBeFalsy();
     });
 
-    it('navbar should close on toggle button press', () => {
-      viewport.set('medium');
+    it("navbar should close on toggle button press", () => {
+      viewport.set("medium");
       setUser(false);
       fixture.detectChanges();
 
       const button = fixture.nativeElement.querySelector(
-        'button.navbar-toggler'
+        "button.navbar-toggler"
       );
       button.click();
       fixture.detectChanges();
@@ -491,10 +491,10 @@ describe('HeaderComponent', () => {
       button.click();
       fixture.detectChanges();
 
-      const navbar = fixture.nativeElement.querySelector('div.collapse');
+      const navbar = fixture.nativeElement.querySelector("div.collapse");
       expect(navbar).toBeTruthy();
     });
 
-    xit('navbar should close on navigation', () => {});
+    xit("navbar should close on navigation", () => {});
   });
 });

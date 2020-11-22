@@ -1,7 +1,7 @@
-import { Type } from '@angular/core';
-import { MenuRoute } from '@interfaces/menusInterfaces';
-import { WithUnsubscribe } from '../unsubscribe/unsubscribe';
-import { IPageInfo, PageInfo } from './pageInfo';
+import { Type } from "@angular/core";
+import { MenuRoute } from "@interfaces/menusInterfaces";
+import { WithUnsubscribe } from "../unsubscribe/unsubscribe";
+import { IPageInfo, PageInfo } from "./pageInfo";
 
 export interface IPageComponent {
   readonly pageInfo: PageInfo;
@@ -37,7 +37,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
   public static AndMenuRoute(menu: MenuRoute): typeof PageComponent {
     if (!this._pageInfo) {
       throw new Error(
-        'AndMenuRoute must be called after LinkComponentToPageInfo'
+        "AndMenuRoute must be called after LinkComponentToPageInfo"
       );
     }
 

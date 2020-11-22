@@ -1,7 +1,7 @@
-import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
-import { Filters } from '@baw-api/baw-api.service';
-import { AbstractModel } from '@models/AbstractModel';
-import { Subject } from 'rxjs';
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { AbstractModel } from "@models/AbstractModel";
+import { Subject } from "rxjs";
 
 /**
  * Default step size for timeouts

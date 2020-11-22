@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ResolvedModelList, retrieveResolvers } from '@baw-api/resolver-common';
-import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
-import { PageInfo } from '@helpers/page/pageInfo';
-import { AccessLevel } from '@interfaces/apiInterfaces';
-import { AbstractModel } from '@models/AbstractModel';
-import { Project } from '@models/Project';
-import { Region } from '@models/Region';
-import { Site } from '@models/Site';
-import { WidgetComponent } from '../widget/widget.component';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { AccessLevel } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { WidgetComponent } from "../widget/widget.component";
 
 /**
  * Permissions Shield Component.
  * Displays the user badges and access levels for the model.
  */
 @Component({
-  selector: 'baw-permissions-shield',
+  selector: "baw-permissions-shield",
   template: `
     <section *ngIf="model" class="pr-3 pl-3 pb-3">
       <baw-user-badge
@@ -86,21 +86,21 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
 
     [
       {
-        id: 'creatorId',
-        label: 'Created By',
-        userKey: 'creator',
-        timestampKey: 'createdAt',
+        id: "creatorId",
+        label: "Created By",
+        userKey: "creator",
+        timestampKey: "createdAt",
       },
       {
-        id: 'updaterId',
-        label: 'Updated By',
-        userKey: 'updater',
-        timestampKey: 'updatedAt',
+        id: "updaterId",
+        label: "Updated By",
+        userKey: "updater",
+        timestampKey: "updatedAt",
       },
       {
-        id: 'ownerId',
-        label: 'Owned By',
-        userKey: 'owner',
+        id: "ownerId",
+        label: "Owned By",
+        userKey: "owner",
       },
     ].forEach((badge) => {
       if (isInstantiated(model[badge.id])) {
@@ -117,9 +117,9 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
 
   private getAccessLevel(resolvedModels: ResolvedModelList): AccessLevel {
     if (resolvedModels.project) {
-      return resolvedModels.project['accessLevel'];
+      return resolvedModels.project["accessLevel"];
     }
 
-    return this.model['accessLevel'] ?? null;
+    return this.model["accessLevel"] ?? null;
   }
 }
