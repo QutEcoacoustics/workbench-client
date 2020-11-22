@@ -113,7 +113,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: artifacts/TESTS-*.xml
+          files: artifacts/**/TESTS-*.xml
           report_individual_runs: "true"
 
   publish:
