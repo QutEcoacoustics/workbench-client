@@ -6,7 +6,7 @@ import { FieldType } from "@ngx-formly/core";
  * Location Input
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: "formly-password-confirmation-input",
   template: `
     <div class="form-group">
@@ -56,7 +56,7 @@ import { FieldType } from "@ngx-formly/core";
     <input type="hidden" [id]="field.id" [formControl]="formControl" />
   `,
 })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormlyPasswordConfirmationInput
   extends FieldType
   implements OnInit {

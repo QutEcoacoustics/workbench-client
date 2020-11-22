@@ -1,18 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { noop, Observable } from "rxjs";
-import {
-  delay,
-  filter,
-  map,
-  takeUntil,
-  tap,
-  withLatestFrom,
-} from "rxjs/operators";
+import { delay, filter, map, takeUntil, withLatestFrom } from "rxjs/operators";
 import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { AppConfigService } from "./services/app-config/app-config.service";
 

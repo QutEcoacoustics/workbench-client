@@ -25,7 +25,7 @@ describe("Association Decorators", () => {
     key: string,
     output: AbstractModel | AbstractModel[]
   ) {
-    // tslint:disable-next-line no-unused-expression
+    // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
     model[key];
     await promise;
     expect(model[key]).toEqual(output);
@@ -140,7 +140,7 @@ describe("Association Decorators", () => {
             undefined,
             "param1"
           );
-          // tslint:disable-next-line no-unused-expression
+          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
@@ -157,7 +157,7 @@ describe("Association Decorators", () => {
             "param1",
             "param2"
           );
-          // tslint:disable-next-line no-unused-expression
+          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
@@ -178,7 +178,7 @@ describe("Association Decorators", () => {
         it("should handle default primary key", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.multiple }, injector);
-          // tslint:disable-next-line no-unused-expression
+          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith({
             filter: { id: { in: [1, 2] } },
@@ -192,7 +192,7 @@ describe("Association Decorators", () => {
             injector,
             "customKey"
           );
-          // tslint:disable-next-line no-unused-expression
+          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
           model.childModels;
           expect(api.filter).toHaveBeenCalledWith({
             filter: { customKey: { in: [1, 2] } },
@@ -208,7 +208,7 @@ describe("Association Decorators", () => {
 
           const model = createModel({ ids: idsType.single }, injector);
           for (let i = 0; i < 5; i++) {
-            // tslint:disable-next-line no-unused-expression
+            // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
             model.childModels;
           }
 
@@ -287,7 +287,7 @@ describe("Association Decorators", () => {
     it("should handle single parameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
       const model = createModel({ id: 1, param1: 5 }, injector, ["param1"]);
-      // tslint:disable-next-line no-unused-expression
+      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, 5);
     });
@@ -298,7 +298,7 @@ describe("Association Decorators", () => {
         "param1",
         "param2",
       ]);
-      // tslint:disable-next-line no-unused-expression
+      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, 5, 10);
     });
@@ -309,7 +309,7 @@ describe("Association Decorators", () => {
         "param1",
         "param2",
       ]);
-      // tslint:disable-next-line no-unused-expression
+      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
       model.childModel;
       expect(api.show).toHaveBeenCalledWith(1, 5, undefined);
     });
@@ -332,7 +332,7 @@ describe("Association Decorators", () => {
 
       const model = createModel({ id: 1 }, injector);
       for (let i = 0; i < 5; i++) {
-        // tslint:disable-next-line no-unused-expression
+        // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
         model.childModel;
       }
 

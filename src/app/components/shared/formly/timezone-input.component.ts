@@ -16,7 +16,7 @@ import {
  * Timezone Input
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: "formly-timezone-input",
   template: `
     <div class="form-group">
@@ -64,7 +64,7 @@ import {
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
   public formControl: FormControl;

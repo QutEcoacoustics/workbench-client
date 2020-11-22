@@ -17,7 +17,7 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 @Directive({
   // Directive applies directly to all image tags instead of being
   // explicitly called
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
@@ -128,7 +128,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Handle image error event
    */
   private errorHandler() {
-    // tslint:disable-next-line: no-console
+    // eslint-disable-next-line no-console
     console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
     // No longer attempt to use thumbnail

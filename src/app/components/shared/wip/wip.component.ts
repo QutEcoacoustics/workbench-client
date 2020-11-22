@@ -18,7 +18,7 @@ import { AppConfigService } from "@services/app-config/app-config.service";
     </div>
   `,
   styleUrls: ["./wip.component.scss"],
-  // tslint:disable-next-line: use-component-view-encapsulation
+  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

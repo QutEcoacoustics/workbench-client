@@ -71,9 +71,9 @@ export type HttpClientBody =
   | Blob
   | string
   | number
-  // tslint:disable-next-line: ban-types
+  // eslint-disable-next-line @typescript-eslint/ban-types
   | Object
-  // tslint:disable-next-line: ban-types
+  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string | number | Object | null)[]
   | null;
 

@@ -13,7 +13,7 @@ import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class FormTemplate<M extends AbstractModel>
   extends WithFormCheck(PageComponent)
   implements OnInit {

@@ -10,7 +10,7 @@ import { List } from "immutable";
  * ! Warning, test manually after changes
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: "formly-location-input",
   template: `
     <div class="form-group">
@@ -62,7 +62,7 @@ import { List } from "immutable";
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormlyLocationInput extends FieldType implements OnInit {
   public formControl: FormControl;
   public latitude: number;

@@ -13,7 +13,7 @@ import { PageComponent } from "../page/pageComponent";
  * Handles creating all the generic logic required for a simple datatable containing component.
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 

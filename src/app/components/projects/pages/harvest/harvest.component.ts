@@ -23,7 +23,7 @@ const projectKey = "project";
   selector: "baw-harvest",
   templateUrl: "./harvest.component.html",
   styleUrls: ["./harvest.component.scss"],
-  // tslint:disable-next-line: use-component-view-encapsulation
+  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
 class HarvestComponent extends PageComponent implements OnInit {

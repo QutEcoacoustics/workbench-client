@@ -7,7 +7,7 @@ import { FieldType } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: "formly-image-input",
   template: `
     <div class="form-group">
@@ -30,7 +30,7 @@ import { FieldType } from "@ngx-formly/core";
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormlyImageInput extends FieldType {
   public formControl: FormControl;
 }

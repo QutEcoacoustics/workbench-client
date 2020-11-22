@@ -373,7 +373,7 @@ describe("FormComponent", () => {
 
     function submit() {
       buttonPressed = false;
-      // tslint:disable-next-line: rxjs-no-ignored-error
+      // eslint-disable-next-line 
       component.submitFunction.subscribe((data) => {
         buttonPressed = true;
       });
@@ -393,7 +393,7 @@ describe("FormComponent", () => {
 
     it("should call submit function OnClick with user input", (done) => {
       component.fields = defaultFields;
-      // tslint:disable-next-line: rxjs-no-ignored-error
+      // eslint-disable-next-line 
       component.submitFunction.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });
@@ -442,7 +442,7 @@ describe("FormComponent", () => {
           },
         },
       ];
-      // tslint:disable-next-line: rxjs-no-ignored-error
+      // eslint-disable-next-line
       component.submitFunction.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });

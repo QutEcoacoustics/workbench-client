@@ -190,6 +190,6 @@ export class SessionUser extends AbstractModel implements ISessionUser {
  * 3 (0011) indicate an admin account.
  */
 function isModelAdmin(model: User | SessionUser): boolean {
-  // tslint:disable-next-line: no-bitwise
+  // eslint-disable-next-line no-bitwise
   return !!(model.rolesMask & 1);
 }

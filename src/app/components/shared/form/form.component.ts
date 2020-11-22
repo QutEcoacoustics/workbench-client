@@ -19,7 +19,7 @@ import { ToastrService } from "ngx-toastr";
   selector: "baw-form",
   templateUrl: "./form.component.html",
   styleUrls: ["./form.component.scss"],
-  // tslint:disable-next-line: use-component-view-encapsulation
+  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent extends WithUnsubscribe() implements OnInit {
@@ -33,7 +33,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
   @Input() public title?: string;
 
   // Rename is required to stop formly from hijacking the variable
-  // tslint:disable-next-line: no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output("onSubmit") public submitFunction = new EventEmitter<any>();
 
   public form: FormGroup;
