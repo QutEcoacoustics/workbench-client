@@ -34,22 +34,18 @@ describe("Predicates", () => {
 
   describe("isGuestPredicate", () => {
     it("should be true when logged out", () => {
-      expect(false).toBeTrue();
       expect(isGuestPredicate(guestUser)).toBeTrue();
     });
     it("should be false when logged in", () => {
-      expect(false).toBeTrue();
       expect(isGuestPredicate(defaultUser)).toBeFalse();
     });
   });
 
   describe("isLoggedInPredicate", () => {
     it("should be true when logged in", () => {
-      expect(false).toBeTrue();
       expect(isLoggedInPredicate(defaultUser)).toBeTrue();
     });
     it("should be false when logged out", () => {
-      expect(false).toBeTrue();
       expect(isLoggedInPredicate(guestUser)).toBeFalse();
     });
   });
@@ -72,7 +68,6 @@ describe("Predicates", () => {
     });
 
     it("should be true when logged in as admin", () => {
-      expect(false).toBeTrue();
       expect(isProjectOwnerPredicate(adminUser, data)).toBeTrue();
     });
 
