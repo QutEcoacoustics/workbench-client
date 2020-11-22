@@ -106,9 +106,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
-      - name: View Assets
-        run: ls -R
-        working-directory: artifacts
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.5
         with:
@@ -117,7 +114,7 @@ jobs:
           report_individual_runs: "true"
 
   publish:
-    name: "Publish docker container"
+    name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
     needs: ["test", "build"]
     # only on tag or commit to master
