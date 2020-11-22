@@ -5,12 +5,12 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   template: `
     <div [ngSwitch]="status">
       <!-- Success Status -->
-      <div *ngSwitchCase="Status.Success" class="mx-auto" style="width: 14px;">
+      <div *ngSwitchCase="Status.success" class="mx-auto" style="width: 14px;">
         <fa-icon style="color: limegreen;" [icon]="['fas', 'check']"></fa-icon>
       </div>
 
       <!-- Error Status -->
-      <div *ngSwitchCase="Status.Error" class="mx-auto" style="width: 10px;">
+      <div *ngSwitchCase="Status.error" class="mx-auto" style="width: 10px;">
         <fa-icon style="color: red;" [icon]="['fas', 'times']"></fa-icon>
       </div>
 

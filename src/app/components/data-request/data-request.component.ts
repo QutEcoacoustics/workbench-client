@@ -35,7 +35,8 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
         subTitle="
           Use this form to request a customized annotations list or other data related to the
           audio recordings on this website. You <strong>do not need</strong> to use this form
-          if you need the standard <strong>annotations CSV</strong> download."
+          if you need the standard <strong>annotations CSV</strong> download.
+        "
         submitLabel="Submit"
         [model]="requestModel"
         [fields]="requestFields"

@@ -17,6 +17,7 @@
       "rules": {
         "no-underscore-dangle": "off",
         "@typescript-eslint/member-ordering": "off",
+        // TODO Re-enable
         "@typescript-eslint/ban-types": "off",
         "no-shadow": "off",
         "@typescript-eslint/no-shadow": ["error"],

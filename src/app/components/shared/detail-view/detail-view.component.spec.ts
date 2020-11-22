@@ -129,7 +129,7 @@ describe("DetailViewComponent", () => {
             },
           },
           {
-            key: "string",
+            key: "text",
             templateOptions: {
               label: "custom label 1",
             },
