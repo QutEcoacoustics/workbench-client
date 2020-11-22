@@ -1,17 +1,17 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Filters } from "@baw-api/baw-api.service";
-import { SitesService } from "@baw-api/site/sites.service";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { ISite, Site } from "@models/Site";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
-import { List } from "immutable";
-import { merge, noop, Observable } from "rxjs";
-import { switchMap, takeUntil } from "rxjs/operators";
+import { Component, Input, OnInit } from '@angular/core';
+import { Filters } from '@baw-api/baw-api.service';
+import { SitesService } from '@baw-api/site/sites.service';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { Project } from '@models/Project';
+import { Region } from '@models/Region';
+import { ISite, Site } from '@models/Site';
+import { MapMarkerOption, sanitizeMapMarkers } from '@shared/map/map.component';
+import { List } from 'immutable';
+import { merge, noop, Observable } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: "baw-site-map",
+  selector: 'baw-site-map',
   template: `<baw-map [markers]="markers"></baw-map>`,
 })
 export class SiteMapComponent extends WithUnsubscribe() implements OnInit {

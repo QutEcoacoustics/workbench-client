@@ -1,22 +1,22 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { AuthenticatedImageModule } from '@directives/image/image.module';
 import {
   createComponentFactory,
   createHostFactory,
   Spectator,
   SpectatorHost,
   SpectatorOptions,
-} from "@ngneat/spectator";
-import { modelData } from "@test/helpers/faker";
-import { List } from "immutable";
-import { CardImageComponent } from "./card-image/card-image.component";
-import { CardImageMockModel } from "./card-image/card-image.component.spec";
-import { CardComponent } from "./card/card.component";
-import { CardsComponent } from "./cards.component";
+} from '@ngneat/spectator';
+import { modelData } from '@test/helpers/faker';
+import { List } from 'immutable';
+import { CardImageComponent } from './card-image/card-image.component';
+import { CardImageMockModel } from './card-image/card-image.component.spec';
+import { CardComponent } from './card/card.component';
+import { CardsComponent } from './cards.component';
 
-describe("CardsComponent", () => {
+describe('CardsComponent', () => {
   let defaultModel: CardImageMockModel;
   let spectator: Spectator<CardsComponent>;
   const options: SpectatorOptions<CardsComponent> = {
@@ -33,11 +33,11 @@ describe("CardsComponent", () => {
   const createHost = createHostFactory(options);
 
   function getDefaultCards() {
-    return spectator.queryAll("baw-card");
+    return spectator.queryAll('baw-card');
   }
 
   function getImageCards() {
-    return spectator.queryAll("baw-card-image");
+    return spectator.queryAll('baw-card-image');
   }
 
   beforeEach(() => {
@@ -47,72 +47,72 @@ describe("CardsComponent", () => {
     });
   });
 
-  it("should create", () => {
+  it('should create', () => {
     spectator = createComponent({ detectChanges: false });
-    spectator.setInput("cards", List([{ title: "title" }]));
+    spectator.setInput('cards', List([{ title: 'title' }]));
     expect(spectator.component).toBeTruthy();
   });
 
-  describe("error handling", () => {
+  describe('error handling', () => {
     beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-    it("should handle no cards", () => {
+    it('should handle no cards', () => {
       spectator.detectChanges();
       expect(getImageCards().length).toBe(0);
       expect(getDefaultCards().length).toBe(0);
     });
 
-    it("should handle empty cards list", () => {
-      spectator.setInput("cards", List([]));
+    it('should handle empty cards list', () => {
+      spectator.setInput('cards', List([]));
       spectator.detectChanges();
       expect(getImageCards().length).toBe(0);
       expect(getDefaultCards().length).toBe(0);
     });
 
-    it("should error on mixed card types", () => {
-      const defaultCard = { title: "title" };
+    it('should error on mixed card types', () => {
+      const defaultCard = { title: 'title' };
       const imageCard = {
-        title: "title",
+        title: 'title',
         model: new CardImageMockModel({
           id: 1,
           image: modelData.imageUrls(),
         }),
       };
       expect(() =>
-        spectator.setInput("cards", List([defaultCard, imageCard]))
+        spectator.setInput('cards', List([defaultCard, imageCard]))
       ).toThrow();
     });
   });
 
-  describe("default cards", () => {
+  describe('default cards', () => {
     function assertCard(card: Element, title: string) {
-      expect(card.querySelector("h4").textContent).toBe(title);
+      expect(card.querySelector('h4').textContent).toBe(title);
     }
 
     beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-    it("should create single card", () => {
-      spectator.setInput("cards", List([{ title: "title" }]));
+    it('should create single card', () => {
+      spectator.setInput('cards', List([{ title: 'title' }]));
       spectator.detectChanges();
       expect(getDefaultCards().length).toBe(1);
     });
 
-    it("should create single card with title", () => {
-      spectator.setInput("cards", List([{ title: "custom title" }]));
+    it('should create single card with title', () => {
+      spectator.setInput('cards', List([{ title: 'custom title' }]));
       spectator.detectChanges();
-      assertCard(getDefaultCards()[0], "custom title");
+      assertCard(getDefaultCards()[0], 'custom title');
     });
 
-    it("should create multiple cards", () => {
-      const titles = [1, 2, 3].map((id) => ({ title: "title" + id }));
-      spectator.setInput("cards", List(titles));
+    it('should create multiple cards', () => {
+      const titles = [1, 2, 3].map((id) => ({ title: 'title' + id }));
+      spectator.setInput('cards', List(titles));
       spectator.detectChanges();
       expect(getDefaultCards().length).toBe(3);
     });
 
-    it("should create multiple cards with titles", () => {
-      const titles = [1, 2, 3].map((id) => ({ title: "title" + id }));
-      spectator.setInput("cards", List(titles));
+    it('should create multiple cards with titles', () => {
+      const titles = [1, 2, 3].map((id) => ({ title: 'title' + id }));
+      spectator.setInput('cards', List(titles));
       spectator.detectChanges();
       getDefaultCards().forEach((card, index) => {
         assertCard(card, titles[index].title);
@@ -120,47 +120,47 @@ describe("CardsComponent", () => {
     });
   });
 
-  describe("image cards", () => {
+  describe('image cards', () => {
     function assertCard(card: Element, title: string) {
-      expect(card.querySelector("h4").textContent).toBe(title);
+      expect(card.querySelector('h4').textContent).toBe(title);
     }
 
     beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-    it("should create single card", () => {
+    it('should create single card', () => {
       spectator.setInput(
-        "cards",
-        List([{ title: "title", model: defaultModel }])
+        'cards',
+        List([{ title: 'title', model: defaultModel }])
       );
       spectator.detectChanges();
       expect(getImageCards().length).toBe(1);
     });
 
-    it("should create single card with title", () => {
+    it('should create single card with title', () => {
       spectator.setInput(
-        "cards",
-        List([{ title: "custom title", model: defaultModel }])
+        'cards',
+        List([{ title: 'custom title', model: defaultModel }])
       );
       spectator.detectChanges();
-      assertCard(getImageCards()[0], "custom title");
+      assertCard(getImageCards()[0], 'custom title');
     });
 
-    it("should create multiple cards", () => {
+    it('should create multiple cards', () => {
       const titles = [1, 2, 3].map((id) => ({
-        title: "title" + id,
+        title: 'title' + id,
         model: defaultModel,
       }));
-      spectator.setInput("cards", List(titles));
+      spectator.setInput('cards', List(titles));
       spectator.detectChanges();
       expect(getImageCards().length).toBe(3);
     });
 
-    it("should create multiple cards with titles", () => {
+    it('should create multiple cards with titles', () => {
       const titles = [1, 2, 3].map((id) => ({
-        title: "title" + id,
+        title: 'title' + id,
         model: defaultModel,
       }));
-      spectator.setInput("cards", List(titles));
+      spectator.setInput('cards', List(titles));
       spectator.detectChanges();
       getImageCards().forEach((card, index) => {
         assertCard(card, titles[index].title);
@@ -168,23 +168,23 @@ describe("CardsComponent", () => {
     });
   });
 
-  describe("content", () => {
+  describe('content', () => {
     let hostSpectator: SpectatorHost<CardsComponent>;
 
-    it("should handle content", () => {
+    it('should handle content', () => {
       hostSpectator = createHost(
         `<baw-cards><h1>Internal Content</h1></baw-cards>`
       );
-      const content = hostSpectator.query<HTMLDivElement>("#content");
-      const header = hostSpectator.query<HTMLHeadingElement>("h1");
-      expect(content).not.toHaveStyle({ display: "none" });
-      expect(header.textContent).toBe("Internal Content");
+      const content = hostSpectator.query<HTMLDivElement>('#content');
+      const header = hostSpectator.query<HTMLHeadingElement>('h1');
+      expect(content).not.toHaveStyle({ display: 'none' });
+      expect(header.textContent).toBe('Internal Content');
     });
 
-    it("should handle no content", () => {
+    it('should handle no content', () => {
       hostSpectator = createHost(`<baw-cards></baw-cards>`);
-      const content = hostSpectator.query<HTMLDivElement>("#content");
-      expect(content).toHaveStyle({ display: "none" });
+      const content = hostSpectator.query<HTMLDivElement>('#content');
+      expect(content).toHaveStyle({ display: 'none' });
     });
   });
 });

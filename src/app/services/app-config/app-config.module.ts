@@ -1,11 +1,11 @@
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import {
   API_CONFIG,
   API_ROOT,
   AppInitializer,
-} from "@helpers/app-initializer/app-initializer";
-import { ToastrModule } from "ngx-toastr";
-import { AppConfigService } from "./app-config.service";
+} from '@helpers/app-initializer/app-initializer';
+import { ToastrModule } from 'ngx-toastr';
+import { AppConfigService } from './app-config.service';
 
 @NgModule({
   imports: [ToastrModule],

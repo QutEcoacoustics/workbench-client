@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { MenuAction } from "@interfaces/menusInterfaces";
-import { Placement } from "@ng-bootstrap/ng-bootstrap";
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { MenuAction } from '@interfaces/menusInterfaces';
+import { Placement } from '@ng-bootstrap/ng-bootstrap';
 
 /**
  * Menu Button Component
  */
 @Component({
-  selector: "baw-menu-button",
+  selector: 'baw-menu-button',
   template: `
     <button
       class="btn text-left"
@@ -20,7 +20,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
       <span class="d-none" [id]="id">{{ tooltip }}</span>
     </button>
   `,
-  styleUrls: ["./button.component.scss"],
+  styleUrls: ['./button.component.scss'],
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

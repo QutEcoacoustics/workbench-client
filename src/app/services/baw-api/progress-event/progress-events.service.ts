@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IProgressEvent, ProgressEvent } from "@models/ProgressEvent";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { IProgressEvent, ProgressEvent } from '@models/ProgressEvent';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   option,
   ReadAndCreateApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const progressEventId: IdParamOptional<ProgressEvent> = id;
 const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
@@ -46,4 +46,4 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
 export const progressEventResolvers = new Resolvers<
   ProgressEvent,
   ProgressEventsService
->([ProgressEventsService], "progressEventId").create("ProgressEvent");
+>([ProgressEventsService], 'progressEventId').create('ProgressEvent');

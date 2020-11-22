@@ -27,7 +27,6 @@
       "**/package-lock.json",
       "**/tsconfig.json",
       "**/tsconfig*.json",
-      "**/tslint.json",
       "**/vscode-extension/**"
     ],
     "workbench.colorCustomizations": {
@@ -48,12 +47,13 @@
     },
     "peacock.color": "#2b7489",
     "angularKarmaTestExplorer.debugMode": true,
-    "explorer.compactFolders": false
+    "explorer.compactFolders": false,
+    "files.eol": "\n"
   },
   "extensions": {
     "recommendations": [
       "cyrilletuzi.angular-schematics",
-      "ms-vscode.vscode-typescript-tslint-plugin",
+      "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
       "msjsdiag.debugger-for-chrome",
       "hbenl.vscode-test-explorer",

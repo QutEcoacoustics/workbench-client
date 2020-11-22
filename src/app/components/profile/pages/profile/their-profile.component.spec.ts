@@ -1,17 +1,17 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { accountResolvers } from "@baw-api/account/accounts.service";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { User } from "@models/User";
-import { SharedModule } from "@shared/shared.module";
-import { generateUser } from "@test/fakes/User";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { TheirProfileComponent } from "./their-profile.component";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { accountResolvers } from '@baw-api/account/accounts.service';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { User } from '@models/User';
+import { SharedModule } from '@shared/shared.module';
+import { generateUser } from '@test/fakes/User';
+import { mockActivatedRoute } from '@test/helpers/testbed';
+import { TheirProfileComponent } from './their-profile.component';
 
-xdescribe("TheirProfileComponent", () => {
+xdescribe('TheirProfileComponent', () => {
   let component: TheirProfileComponent;
   let fixture: ComponentFixture<TheirProfileComponent>;
   let defaultUser: User;
@@ -45,7 +45,7 @@ xdescribe("TheirProfileComponent", () => {
     defaultUser = new User(generateUser());
   });
 
-  it("should create", () => {
+  it('should create', () => {
     configureTestingModule(defaultUser);
     expect(component).toBeTruthy();
   });

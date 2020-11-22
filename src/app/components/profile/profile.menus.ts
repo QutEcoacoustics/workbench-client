@@ -1,140 +1,140 @@
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
+import { Category, MenuLink, MenuRoute } from '@interfaces/menusInterfaces';
+import { StrongRoute } from '@interfaces/strongRoute';
 import {
   defaultEditIcon,
   defaultUserIcon,
   isAdminPredicate,
   isLoggedInPredicate,
-} from "src/app/app.menus";
+} from 'src/app/app.menus';
 
-export const myAccountRoute = StrongRoute.Base.add("my_account");
+export const myAccountRoute = StrongRoute.Base.add('my_account');
 
 /**
  * My Account Menus
  */
 export const myAccountCategory: Category = {
   icon: defaultUserIcon,
-  label: "My Profile",
+  label: 'My Profile',
   route: myAccountRoute,
 };
 
 export const myAccountMenuItem = MenuRoute({
   icon: defaultUserIcon,
-  label: "My Profile",
+  label: 'My Profile',
   order: 2,
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
-  tooltip: () => "View profile",
+  tooltip: () => 'View profile',
 });
 
 export const myEditMenuItem = MenuRoute({
   icon: defaultEditIcon,
-  label: "Edit my profile",
+  label: 'Edit my profile',
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for your profile",
+  route: myAccountMenuItem.route.add('edit'),
+  tooltip: () => 'Change the details for your profile',
 });
 
 export const myProjectsMenuItem = MenuRoute({
-  icon: ["fas", "globe-asia"],
-  label: "My Projects",
+  icon: ['fas', 'globe-asia'],
+  label: 'My Projects',
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("projects"),
+  route: myAccountMenuItem.route.add('projects'),
   tooltip: (user) => `Projects ${user.userName} can access`,
 });
 
 export const mySitesMenuItem = MenuRoute({
-  icon: ["fas", "map-marker-alt"],
-  label: "My Sites",
+  icon: ['fas', 'map-marker-alt'],
+  label: 'My Sites',
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("sites"),
+  route: myAccountMenuItem.route.add('sites'),
   tooltip: (user) => `Sites ${user.userName} can access`,
 });
 
 export const myBookmarksMenuItem = MenuRoute({
-  icon: ["fas", "bookmark"],
-  label: "My Bookmarks",
+  icon: ['fas', 'bookmark'],
+  label: 'My Bookmarks',
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("bookmarks"),
+  route: myAccountMenuItem.route.add('bookmarks'),
   tooltip: (user) => `Bookmarks created by ${user.userName}`,
 });
 
 export const myAnnotationsMenuItem = MenuRoute({
-  icon: ["fas", "bullseye"],
-  label: "My Annotations",
+  icon: ['fas', 'bullseye'],
+  label: 'My Annotations',
   order: 3,
   predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("annotations"),
+  route: myAccountMenuItem.route.add('annotations'),
   tooltip: (user) => `Annotations created by ${user.userName}`,
 });
 
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
-  ":accountId"
+export const theirProfileRoute = StrongRoute.Base.add('user_accounts').add(
+  ':accountId'
 );
 
 export const theirProfileCategory: Category = {
-  icon: ["fas", "user-circle"],
-  label: "Their Profile",
+  icon: ['fas', 'user-circle'],
+  label: 'Their Profile',
   route: theirProfileRoute,
 };
 
 export const theirProfileMenuItem = MenuRoute({
   icon: theirProfileCategory.icon,
-  label: "Their Profile",
+  label: 'Their Profile',
   order: myAccountMenuItem.order,
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
-  tooltip: () => "View their profile",
+  tooltip: () => 'View their profile',
 });
 
 export const theirEditMenuItem = MenuRoute({
   icon: myEditMenuItem.icon,
-  label: "Edit their profile",
+  label: 'Edit their profile',
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: theirProfileMenuItem.route.add("edit"),
-  tooltip: () => "Change the details for this profile",
+  route: theirProfileMenuItem.route.add('edit'),
+  tooltip: () => 'Change the details for this profile',
 });
 
 export const theirProjectsMenuItem = MenuRoute({
   icon: myProjectsMenuItem.icon,
-  label: "Their Projects",
+  label: 'Their Projects',
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: theirProfileMenuItem.route.add("projects"),
-  tooltip: () => "Projects they can access",
+  route: theirProfileMenuItem.route.add('projects'),
+  tooltip: () => 'Projects they can access',
 });
 
 export const theirSitesMenuItem = MenuRoute({
   icon: mySitesMenuItem.icon,
-  label: "Their Sites",
+  label: 'Their Sites',
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: theirProfileMenuItem.route.add("sites"),
-  tooltip: () => "Sites they can access",
+  route: theirProfileMenuItem.route.add('sites'),
+  tooltip: () => 'Sites they can access',
 });
 
 export const theirBookmarksMenuItem = MenuRoute({
   icon: myBookmarksMenuItem.icon,
-  label: "Their Bookmarks",
+  label: 'Their Bookmarks',
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: theirProfileMenuItem.route.add("bookmarks"),
-  tooltip: () => "Bookmarks created by them",
+  route: theirProfileMenuItem.route.add('bookmarks'),
+  tooltip: () => 'Bookmarks created by them',
 });
 
 export const theirAnnotationsMenuItem = MenuRoute({
   icon: myAnnotationsMenuItem.icon,
-  label: "Their Annotations",
+  label: 'Their Annotations',
   parent: theirProfileMenuItem,
   predicate: isAdminPredicate,
-  route: theirProfileMenuItem.route.add("annotations"),
-  tooltip: () => "Annotations created by them",
+  route: theirProfileMenuItem.route.add('annotations'),
+  tooltip: () => 'Annotations created by them',
 });

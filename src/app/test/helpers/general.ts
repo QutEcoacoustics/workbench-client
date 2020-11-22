@@ -1,7 +1,7 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
-import { AbstractModel } from "@models/AbstractModel";
-import { Subject } from "rxjs";
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { Filters } from '@baw-api/baw-api.service';
+import { AbstractModel } from '@models/AbstractModel';
+import { Subject } from 'rxjs';
 
 /**
  * Default step size for timeouts
@@ -10,6 +10,7 @@ export const testStepInterval = 0;
 
 /**
  * Create an observable which will return after a number of steps
+ *
  * @param subject Subject to update
  * @param callback Return value for subject
  * @param isError Call `subject.error()`

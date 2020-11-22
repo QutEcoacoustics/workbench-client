@@ -1,7 +1,8 @@
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig } from '@ngx-formly/core';
 
 /**
  * Test form fields match expected outputs
+ *
  * @param formInputs Fields to test
  */
 export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
@@ -22,7 +23,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           setup();
         });
 
-        it("should contain input", () => {
+        it('should contain input', () => {
           expect(field).toBeTruthy();
         });
 
@@ -30,7 +31,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           expect(field.key).toBe(key);
         });
 
-        it(`should ${required ? "not " : ""}be required`, () => {
+        it(`should ${required ? 'not ' : ''}be required`, () => {
           expect(field.templateOptions?.required ?? false).toBe(required);
         });
 
@@ -41,7 +42,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
         }
 
         if (label) {
-          it("should have label", () => {
+          it('should have label', () => {
             expect(field.templateOptions.label).toBe(label);
           });
         }
@@ -53,7 +54,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
         }
 
         if (description) {
-          it("should contain description", () => {
+          it('should contain description', () => {
             expect(field.templateOptions.description).toBe(description);
           });
         }

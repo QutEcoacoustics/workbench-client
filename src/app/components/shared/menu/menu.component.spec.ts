@@ -1,21 +1,21 @@
-import { Data, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
-import { MenuAction, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
-import { WidgetDirective } from "@menu/widget.directive";
-import { SessionUser } from "@models/User";
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { IconsModule } from "@shared/icons/icons.module";
-import { generateSessionUser } from "@test/fakes/User";
-import { assertIcon } from "@test/helpers/html";
-import { List } from "immutable";
-import { MockComponent } from "ng-mocks";
-import { MenuButtonComponent } from "./button/button.component";
-import { MenuExternalLinkComponent } from "./external-link/external-link.component";
-import { MenuInternalLinkComponent } from "./internal-link/internal-link.component";
-import { MenuComponent } from "./menu.component";
+import { Data, Params } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { SecurityService } from '@baw-api/security/security.service';
+import { MenuAction, MenuLink, MenuRoute } from '@interfaces/menusInterfaces';
+import { StrongRoute } from '@interfaces/strongRoute';
+import { WidgetDirective } from '@menu/widget.directive';
+import { SessionUser } from '@models/User';
+import { createRoutingFactory, SpectatorRouting } from '@ngneat/spectator';
+import { IconsModule } from '@shared/icons/icons.module';
+import { generateSessionUser } from '@test/fakes/User';
+import { assertIcon } from '@test/helpers/html';
+import { List } from 'immutable';
+import { MockComponent } from 'ng-mocks';
+import { MenuButtonComponent } from './button/button.component';
+import { MenuExternalLinkComponent } from './external-link/external-link.component';
+import { MenuInternalLinkComponent } from './internal-link/internal-link.component';
+import { MenuComponent } from './menu.component';
 
 const mock = {
   action: MockComponent(MenuButtonComponent),
@@ -23,7 +23,7 @@ const mock = {
   internal: MockComponent(MenuInternalLinkComponent),
 };
 
-describe("MenuComponent", () => {
+describe('MenuComponent', () => {
   let api: SecurityService;
   let defaultUser: SessionUser;
   let defaultMenuAction: MenuAction;
@@ -35,7 +35,7 @@ describe("MenuComponent", () => {
     declarations: [mock.action, mock.external, mock.internal, WidgetDirective],
     imports: [IconsModule, RouterTestingModule, MockBawApiModule],
   });
-  const menuTypes: ("action" | "secondary")[] = ["action", "secondary"];
+  const menuTypes: ('action' | 'secondary')[] = ['action', 'secondary'];
 
   function getMenuActions() {
     return spec.queryAll(mock.action);
@@ -50,7 +50,7 @@ describe("MenuComponent", () => {
   }
 
   function setLoggedInState(user: SessionUser = defaultUser) {
-    spyOn(api, "getLocalUser").and.callFake(() => user);
+    spyOn(api, 'getLocalUser').and.callFake(() => user);
   }
 
   function setup(
@@ -70,69 +70,69 @@ describe("MenuComponent", () => {
   beforeEach(() => {
     defaultUser = new SessionUser(generateSessionUser());
     defaultMenuAction = MenuAction({
-      label: "label",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
+      label: 'label',
+      icon: ['fas', 'home'],
+      tooltip: () => 'tooltip',
       action: () => {},
     });
     defaultMenuLink = MenuLink({
-      label: "label",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      uri: () => "http://brokenlink/",
+      label: 'label',
+      icon: ['fas', 'home'],
+      tooltip: () => 'tooltip',
+      uri: () => 'http://brokenlink/',
     });
     defaultMenuRoute = MenuRoute({
-      label: "label",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
+      label: 'label',
+      icon: ['fas', 'home'],
+      tooltip: () => 'tooltip',
+      route: StrongRoute.Base.add('home'),
     });
   });
 
-  describe("menu", () => {
+  describe('menu', () => {
     function getTitle() {
-      return spec.query<HTMLHeadingElement>("h6");
+      return spec.query<HTMLHeadingElement>('h6');
     }
 
     function getWidget() {
-      return spec.query("#widget");
+      return spec.query('#widget');
     }
 
     function assertTitle(title: string) {
       expect(getTitle()).toHaveText(title);
     }
 
-    it("should create default title when none provided", () => {
+    it('should create default title when none provided', () => {
       setup({ links: List([]) });
       spec.detectChanges();
-      assertTitle("MENU");
+      assertTitle('MENU');
     });
 
-    it("should create title when provided", () => {
+    it('should create title when provided', () => {
       setup({
         links: List([]),
-        title: { label: "SECONDARY", icon: ["fas", "home"] },
+        title: { label: 'SECONDARY', icon: ['fas', 'home'] },
       });
       spec.detectChanges();
-      assertTitle("SECONDARY");
+      assertTitle('SECONDARY');
     });
 
-    it("should create title icon when provided", () => {
+    it('should create title icon when provided', () => {
       setup({
         links: List([]),
-        title: { label: "SECONDARY", icon: ["fas", "home"] },
+        title: { label: 'SECONDARY', icon: ['fas', 'home'] },
       });
       spec.detectChanges();
-      assertIcon(getTitle(), "fas,home");
+      assertIcon(getTitle(), 'fas,home');
     });
 
-    it("should create capitalized title", () => {
+    it('should create capitalized title', () => {
       setup({
         links: List([]),
-        title: { label: "secondary", icon: ["fas", "home"] },
+        title: { label: 'secondary', icon: ['fas', 'home'] },
       });
       spec.detectChanges();
-      assertTitle("SECONDARY");
+      assertTitle('SECONDARY');
     });
 
     menuTypes.forEach((menuType) => {
@@ -156,32 +156,32 @@ describe("MenuComponent", () => {
       });
     });
 
-    it("should not create widget when none provided", () => {
+    it('should not create widget when none provided', () => {
       setup({ links: List([]) });
       spec.detectChanges();
       expect(getWidget().childElementCount).toBe(0);
     });
 
-    xit("should create widget when provided", () => {});
+    xit('should create widget when provided', () => {});
   });
 
   [
     {
-      title: "Menu Action",
+      title: 'Menu Action',
       baseLink: () => defaultMenuAction,
       create: (data) => MenuAction(data),
       getLink: () => getMenuActions(),
       action: true,
     },
     {
-      title: "Menu External Link",
+      title: 'Menu External Link',
       baseLink: () => defaultMenuLink,
       create: (data) => MenuLink(data),
       getLink: () => getMenuLinks(),
       link: true,
     },
     {
-      title: "Menu Internal Link",
+      title: 'Menu Internal Link',
       baseLink: () => defaultMenuRoute,
       create: (data) => MenuRoute(data),
       getLink: () => getMenuRoutes(),
@@ -229,23 +229,23 @@ describe("MenuComponent", () => {
           setup({ menuType, links: List([createLink()]) });
           spec.detectChanges();
           expect(test.getLink()[0].placement).toBe(
-            menuType === "action" ? "left" : "right"
+            menuType === 'action' ? 'left' : 'right'
           );
         });
       });
 
-      it("should set link tooltip", () => {
+      it('should set link tooltip', () => {
         const link = createLink();
-        setup({ menuType: "action", links: List([link]) });
+        setup({ menuType: 'action', links: List([link]) });
         spec.detectChanges();
         expect(test.getLink()[0].tooltip).toBe(link.tooltip());
       });
 
-      it("should set link tooltip with username", () => {
+      it('should set link tooltip with username', () => {
         const link = createLink({
           tooltip: (user: SessionUser) => `Custom tooltip for ${user.userName}`,
         });
-        setup({ menuType: "action", links: List([link]) });
+        setup({ menuType: 'action', links: List([link]) });
         setLoggedInState();
         spec.detectChanges();
         expect(test.getLink()[0].tooltip).toBe(
@@ -253,17 +253,17 @@ describe("MenuComponent", () => {
         );
       });
 
-      it("should set link link", () => {
+      it('should set link link', () => {
         const link = createLink();
-        setup({ menuType: "action", links: List([link]) });
+        setup({ menuType: 'action', links: List([link]) });
         spec.detectChanges();
         expect(test.getLink()[0].link).toEqual(link);
       });
 
-      describe("predicate", () => {
-        it("should filter links without passing predicate", () => {
+      describe('predicate', () => {
+        it('should filter links without passing predicate', () => {
           setup({
-            menuType: "action",
+            menuType: 'action',
             links: List([
               createLink({ predicate: undefined }),
               createLink({ predicate: () => false }),
@@ -274,25 +274,25 @@ describe("MenuComponent", () => {
           assertLinks(2);
         });
 
-        it("should filter duplicate links (by object identity)", () => {
+        it('should filter duplicate links (by object identity)', () => {
           const link = createLink();
-          setup({ menuType: "action", links: List([link, link, link]) });
+          setup({ menuType: 'action', links: List([link, link, link]) });
           spec.detectChanges();
           assertLinks(1);
         });
 
-        it("should not provide user to predicate function when unauthenticated", (done) => {
+        it('should not provide user to predicate function when unauthenticated', (done) => {
           const link = createLink({
             predicate: (_user) => {
               expect(_user).toBe(null);
               done();
             },
           });
-          setup({ menuType: "action", links: List([link]) });
+          setup({ menuType: 'action', links: List([link]) });
           spec.detectChanges();
         });
 
-        it("should provide user to predicate function when authenticated", (done) => {
+        it('should provide user to predicate function when authenticated', (done) => {
           const user = new SessionUser(generateSessionUser());
           const link = createLink({
             predicate: (_user) => {
@@ -300,12 +300,12 @@ describe("MenuComponent", () => {
               done();
             },
           });
-          setup({ menuType: "action", links: List([link]) });
+          setup({ menuType: 'action', links: List([link]) });
           setLoggedInState(user);
           spec.detectChanges();
         });
 
-        it("should provide page data to predicate function", (done) => {
+        it('should provide page data to predicate function', (done) => {
           const data = { value: 42 };
           const link = createLink({
             predicate: (_, _data) => {
@@ -313,79 +313,79 @@ describe("MenuComponent", () => {
               done();
             },
           });
-          setup({ menuType: "action", links: List([link]) }, data);
+          setup({ menuType: 'action', links: List([link]) }, data);
           spec.detectChanges();
         });
       });
     });
   });
 
-  describe("Menu External Link", () => {
-    it("should set uri route", () => {
-      setup({ menuType: "action", links: List([defaultMenuLink]) });
+  describe('Menu External Link', () => {
+    it('should set uri route', () => {
+      setup({ menuType: 'action', links: List([defaultMenuLink]) });
       spec.detectChanges();
       expect(getMenuLinks()[0].uri).toBe(defaultMenuLink.uri({}));
     });
 
-    it("should set uri route with parameter", () => {
+    it('should set uri route with parameter', () => {
       const params = { attribute: 10 };
       const link = MenuLink({
         ...defaultMenuLink,
         uri: (_params: Params) => `http://broken_link/${_params.attribute}`,
       });
-      setup({ menuType: "action", links: List([link]) }, undefined, params);
+      setup({ menuType: 'action', links: List([link]) }, undefined, params);
       spec.detectChanges();
-      expect(getMenuLinks()[0].uri).toBe("http://broken_link/10");
+      expect(getMenuLinks()[0].uri).toBe('http://broken_link/10');
     });
   });
 
-  describe("Menu Internal Link", () => {
-    it("should set link route", () => {
-      setup({ menuType: "action", links: List([defaultMenuRoute]) });
+  describe('Menu Internal Link', () => {
+    it('should set link route', () => {
+      setup({ menuType: 'action', links: List([defaultMenuRoute]) });
       spec.detectChanges();
       expect(getMenuRoutes()[0].route).toBe(defaultMenuRoute.route.format({}));
     });
 
-    it("should set link route with parameter", () => {
+    it('should set link route with parameter', () => {
       const params = { attribute: 10 };
       const link = MenuRoute({
         ...defaultMenuRoute,
-        route: StrongRoute.Base.add("home").add(":attribute"),
+        route: StrongRoute.Base.add('home').add(':attribute'),
       });
-      setup({ menuType: "action", links: List([link]) }, undefined, params);
+      setup({ menuType: 'action', links: List([link]) }, undefined, params);
       spec.detectChanges();
-      expect(getMenuRoutes()[0].route).toBe("/home/10");
+      expect(getMenuRoutes()[0].route).toBe('/home/10');
     });
   });
 
-  describe("item ordering", () => {
+  describe('item ordering', () => {
     function arrange(a: number, b: number, c: number) {
       // Labels are set so that lexicographical order can be determined
-      const linkA = MenuRoute({ ...defaultMenuRoute, label: "b", order: a });
-      const linkB = MenuLink({ ...defaultMenuLink, label: "a", order: b });
-      const linkC = MenuAction({ ...defaultMenuAction, label: "z", order: c });
+      const linkA = MenuRoute({ ...defaultMenuRoute, label: 'b', order: a });
+      const linkB = MenuLink({ ...defaultMenuLink, label: 'a', order: b });
+      const linkC = MenuAction({ ...defaultMenuAction, label: 'z', order: c });
       return List([linkA, linkB, linkC]);
     }
 
     function getAllLinks() {
-      return spec.queryAll<HTMLElement>("li");
+      return spec.queryAll<HTMLElement>('li');
     }
 
     function assertLinkA(el: HTMLElement) {
-      expect(el.querySelector("baw-menu-internal-link")).toBeTruthy();
+      expect(el.querySelector('baw-menu-internal-link')).toBeTruthy();
     }
 
     function assertLinkB(el: HTMLElement) {
-      expect(el.querySelector("baw-menu-external-link")).toBeTruthy();
+      expect(el.querySelector('baw-menu-external-link')).toBeTruthy();
     }
 
     function assertLinkC(el: HTMLElement) {
-      expect(el.querySelector("baw-menu-button")).toBeTruthy();
+      expect(el.querySelector('baw-menu-button')).toBeTruthy();
     }
 
     menuTypes.forEach((menuType) => {
       describe(menuType, () => {
-        it("should order links", () => {
+        it('should order links', () => {
           setup({ menuType, links: arrange(3, 2, 1) });
           spec.detectChanges();
 
@@ -395,7 +395,7 @@ describe("MenuComponent", () => {
           assertLinkC(links[1]);
         });
 
-        it("ensures order is stable if not specified", () => {
+        it('ensures order is stable if not specified', () => {
           setup({ menuType, links: arrange(undefined, undefined, undefined) });
           spec.detectChanges();
 
@@ -405,7 +405,7 @@ describe("MenuComponent", () => {
           assertLinkC(links[3]);
         });
 
-        it("should sort lexicographically only if order is equal", () => {
+        it('should sort lexicographically only if order is equal', () => {
           setup({ menuType, links: arrange(3, 3, 3) });
           spec.detectChanges();
 
@@ -415,7 +415,7 @@ describe("MenuComponent", () => {
           assertLinkC(links[3]);
         });
 
-        it("should order links with order link first", () => {
+        it('should order links with order link first', () => {
           setup({ menuType, links: arrange(undefined, undefined, -3) });
           spec.detectChanges();
 
@@ -425,7 +425,7 @@ describe("MenuComponent", () => {
           assertLinkC(links[1]);
         });
 
-        it("should order sub-links", () => {
+        it('should order sub-links', () => {
           const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
           const child = MenuRoute({ ...defaultMenuRoute, parent, order: 1 });
           setup({ menuType, links: List([child, parent]) });
@@ -436,18 +436,18 @@ describe("MenuComponent", () => {
           expect(links[1].link).toEqual(child);
         });
 
-        it("should order sub-links inside a parent", () => {
+        it('should order sub-links inside a parent', () => {
           const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
           const child1 = MenuRoute({
             ...defaultMenuRoute,
             parent,
-            label: "b",
+            label: 'b',
             order: 1,
           });
           const child2 = MenuRoute({
             ...defaultMenuRoute,
             parent,
-            label: "a",
+            label: 'a',
             order: 1,
           });
           setup({ menuType, links: List([child2, child1, parent]) });

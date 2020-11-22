@@ -1,15 +1,15 @@
-import { GoogleMapsModule } from "@angular/google-maps";
+import { GoogleMapsModule } from '@angular/google-maps';
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
-import { Site } from "@models/Site";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { generateSite } from "@test/fakes/Site";
-import { List } from "immutable";
-import { MapComponent } from "./map.component";
+} from '@helpers/embedGoogleMaps/embedGoogleMaps';
+import { Site } from '@models/Site';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { generateSite } from '@test/fakes/Site';
+import { List } from 'immutable';
+import { MapComponent } from './map.component';
 
-describe("MapComponent", () => {
+describe('MapComponent', () => {
   let spectator: Spectator<MapComponent>;
   const createComponent = createComponentFactory({
     component: MapComponent,
@@ -17,39 +17,39 @@ describe("MapComponent", () => {
   });
 
   function getMap() {
-    return spectator.query<HTMLElement>("google-map");
+    return spectator.query<HTMLElement>('google-map');
   }
 
   function getInfoWindow() {
-    return spectator.query<HTMLElement>("map-info-window");
+    return spectator.query<HTMLElement>('map-info-window');
   }
 
   function getMarker() {
-    return spectator.queryAll<HTMLElement>("map-marker");
+    return spectator.queryAll<HTMLElement>('map-marker');
   }
 
   beforeAll(async () => await embedGoogleMaps());
   beforeEach(async () => (spectator = createComponent()));
   afterAll(() => destroyGoogleMaps());
 
-  it("should create", () => {
-    spectator.setInput("markers", List([]));
+  it('should create', () => {
+    spectator.setInput('markers', List([]));
     spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
   });
 
-  it("should display placeholder", () => {
-    spectator.setInput("markers", List([]));
+  it('should display placeholder', () => {
+    spectator.setInput('markers', List([]));
     spectator.detectChanges();
     const label = spectator
-      .query<HTMLDivElement>("div.map-placeholder")
+      .query<HTMLDivElement>('div.map-placeholder')
       .innerText.trim();
-    expect(label).toBe("No locations specified");
+    expect(label).toBe('No locations specified');
   });
 
-  it("should display map", () => {
+  it('should display map', () => {
     spectator.setInput(
-      "markers",
+      'markers',
       List([new Site(generateSite()).getMapMarker()])
     );
     spectator.detectChanges();
@@ -57,9 +57,9 @@ describe("MapComponent", () => {
     expect(getMap()).toBeTruthy();
   });
 
-  it("should have info window", () => {
+  it('should have info window', () => {
     spectator.setInput(
-      "markers",
+      'markers',
       List([new Site(generateSite()).getMapMarker()])
     );
     spectator.detectChanges();
@@ -67,9 +67,9 @@ describe("MapComponent", () => {
     expect(getMap()).toBeTruthy();
   });
 
-  it("should display single site", () => {
+  it('should display single site', () => {
     spectator.setInput(
-      "markers",
+      'markers',
       List([new Site(generateSite()).getMapMarker()])
     );
     spectator.detectChanges();
@@ -77,11 +77,11 @@ describe("MapComponent", () => {
     expect(getInfoWindow()).toBeTruthy();
   });
 
-  it("should display multiple markers", () => {
+  it('should display multiple markers', () => {
     const markers = List(
       [1, 2, 3].map(() => new Site(generateSite()).getMapMarker())
     );
-    spectator.setInput("markers", markers);
+    spectator.setInput('markers', markers);
     spectator.detectChanges();
 
     expect(getMarker().length).toBe(3);

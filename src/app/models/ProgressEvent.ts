@@ -1,12 +1,12 @@
-import { Injector } from "@angular/core";
-import { DATASET_ITEM } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import { Dataset } from "./Dataset";
-import type { DatasetItem } from "./DatasetItem";
-import type { User } from "./User";
+import { Injector } from '@angular/core';
+import { DATASET_ITEM } from '@baw-api/ServiceTokens';
+import { DateTimeTimezone, HasCreator, Id } from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, HasOne } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import { Dataset } from './Dataset';
+import type { DatasetItem } from './DatasetItem';
+import type { User } from './User';
 
 export interface IProgressEvent extends HasCreator {
   id?: Id;
@@ -15,7 +15,7 @@ export interface IProgressEvent extends HasCreator {
 }
 
 export class ProgressEvent extends AbstractModel implements IProgressEvent {
-  public readonly kind = "ProgressEvent";
+  public readonly kind = 'ProgressEvent';
   @BawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
@@ -36,6 +36,6 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   }
 
   public get viewUrl(): string {
-    throw new Error("ProgressEvent viewUrl not implemented.");
+    throw new Error('ProgressEvent viewUrl not implemented.');
   }
 }

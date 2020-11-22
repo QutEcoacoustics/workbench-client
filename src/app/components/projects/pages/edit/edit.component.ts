@@ -1,31 +1,31 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   projectResolvers,
   ProjectsService,
-} from "@baw-api/project/projects.service";
+} from '@baw-api/project/projects.service';
 import {
   editProjectMenuItem,
   projectCategory,
   projectMenuItem,
-} from "@components/projects/projects.menus";
+} from '@components/projects/projects.menus';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { Project } from "@models/Project";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { fields } from "../../project.schema.json";
-import { projectMenuItemActions } from "../details/details.component";
-import { projectErrorMsg } from "../new/new.component";
+} from '@helpers/formTemplate/formTemplate';
+import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { Project } from '@models/Project';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { fields } from '../../project.schema.json';
+import { projectMenuItemActions } from '../details/details.component';
+import { projectErrorMsg } from '../new/new.component';
 
-const projectKey = "project";
+const projectKey = 'project';
 
 @Component({
-  selector: "baw-project-edit",
+  selector: 'baw-project-edit',
   template: `
     <!-- Move ngIf to baw-form when baw-wip removed -->
     <baw-wip *ngIf="!failure">
@@ -55,7 +55,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
       route,
       router,
       projectKey,
-      (model) => defaultSuccessMsg("updated", model.name),
+      (model) => defaultSuccessMsg('updated', model.name),
       projectErrorMsg
     );
   }

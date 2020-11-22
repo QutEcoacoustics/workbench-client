@@ -1,33 +1,33 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { accountResolvers } from "@baw-api/account/accounts.service";
-import { Filters } from "@baw-api/baw-api.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { accountResolvers } from '@baw-api/account/accounts.service';
+import { Filters } from '@baw-api/baw-api.service';
+import { ShallowSitesService } from '@baw-api/site/sites.service';
 import {
   theirProfileCategory,
   theirProfileMenuItem,
   theirSitesMenuItem,
-} from "@components/profile/profile.menus";
-import { siteAnnotationsMenuItem } from "@components/sites/sites.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Site } from "@models/Site";
-import { User } from "@models/User";
-import { List } from "immutable";
-import { theirProfileActions } from "../profile/their-profile.component";
+} from '@components/profile/profile.menus';
+import { siteAnnotationsMenuItem } from '@components/sites/sites.menus';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { Site } from '@models/Site';
+import { User } from '@models/User';
+import { List } from 'immutable';
+import { theirProfileActions } from '../profile/their-profile.component';
 
-const accountKey = "account";
+const accountKey = 'account';
 
 @Component({
-  selector: "baw-their-sites",
-  templateUrl: "./sites.component.html",
+  selector: 'baw-their-sites',
+  templateUrl: './sites.component.html',
 })
 class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [
-    { name: "Site" },
-    { name: "Recent Audio Upload" },
-    { name: "Permission" },
-    { name: "Annotation" },
+    { name: 'Site' },
+    { name: 'Recent Audio Upload' },
+    { name: 'Permission' },
+    { name: 'Annotation' },
   ];
   protected api: ShallowSitesService;
 
@@ -38,8 +38,8 @@ class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
       (sites) =>
         sites.map((site) => ({
           site,
-          recentAudioUpload: "(fix_me)",
-          permission: "FIX ME",
+          recentAudioUpload: '(fix_me)',
+          permission: 'FIX ME',
           annotation: siteAnnotationsMenuItem.uri(undefined),
         })),
       route

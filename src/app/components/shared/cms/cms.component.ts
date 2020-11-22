@@ -5,16 +5,16 @@ import {
   Input,
   OnInit,
   Renderer2,
-} from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { CMS, CmsService } from "@baw-api/cms/cms.service";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+} from '@angular/core';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { CMS, CmsService } from '@baw-api/cms/cms.service';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
 
 /**
  * CMS Wrapper
  */
 @Component({
-  selector: "baw-cms",
+  selector: 'baw-cms',
   template: `
     <ng-container *ngIf="loading">
       <h4 class="text-center">Loading</h4>

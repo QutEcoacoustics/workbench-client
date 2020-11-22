@@ -1,5 +1,5 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {
   ApiFilter,
   ApiShow,
@@ -10,28 +10,22 @@ import {
   ReadAndUpdateApi,
   ReadonlyApi,
   StandardApi,
-} from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { ServiceToken } from "@baw-api/ServiceTokens";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { Observable } from "rxjs";
-import { MockModel } from "./baseApiMock.service";
+} from '@baw-api/api-common';
+import { BawApiService } from '@baw-api/baw-api.service';
+import { ServiceToken } from '@baw-api/ServiceTokens';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { Observable } from 'rxjs';
+import { MockModel } from './baseApiMock.service';
 
 export const MOCK = new ServiceToken<MockStandardApiService>(
-  "STANDARD_API_SERVICE"
+  'STANDARD_API_SERVICE'
 );
 
-const multipleModels = (...args: any[]) => {
-  return new Observable<MockModel[]>();
-};
+const multipleModels = (...args: any[]) => new Observable<MockModel[]>();
 
-const singleModel = (...args: any[]) => {
-  return new Observable<MockModel>();
-};
+const singleModel = (...args: any[]) => new Observable<MockModel>();
 
-const deleteMock = (...args: any[]) => {
-  return new Observable<MockModel | void>();
-};
+const deleteMock = (...args: any[]) => new Observable<MockModel | void>();
 
 @Injectable()
 export class MockStandardApiService extends StandardApi<MockModel> {
@@ -69,9 +63,7 @@ export class MockImmutableApiService extends ImmutableApi<MockModel> {
 }
 
 @Injectable()
-export class MockNonDestructibleApiService extends NonDestructibleApi<
-  MockModel
-> {
+export class MockNonDestructibleApiService extends NonDestructibleApi<MockModel> {
   constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -135,7 +127,8 @@ export class MockReadonlyApiService extends ReadonlyApi<MockModel> {
 }
 
 @Injectable()
-export class MockShowApiService extends BawApiService<MockModel>
+export class MockShowApiService
+  extends BawApiService<MockModel>
   implements ApiShow<MockModel, [], IdOr<MockModel>> {
   constructor(
     http: HttpClient,
@@ -149,7 +142,8 @@ export class MockShowApiService extends BawApiService<MockModel>
 }
 
 @Injectable()
-export class MockFilterApiService extends BawApiService<MockModel>
+export class MockFilterApiService
+  extends BawApiService<MockModel>
   implements ApiFilter<MockModel> {
   constructor(
     http: HttpClient,

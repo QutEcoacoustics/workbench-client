@@ -1,9 +1,9 @@
-import { Injector } from "@angular/core";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { User } from "./User";
+import { Injector } from '@angular/core';
+import { DateTimeTimezone, Id } from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, Updater } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { User } from './User';
 
 export interface IQuestion {
   id?: Id;
@@ -16,7 +16,7 @@ export interface IQuestion {
 }
 
 export class Question extends AbstractModel implements IQuestion {
-  public readonly kind = "Question";
+  public readonly kind = 'Question';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -41,6 +41,6 @@ export class Question extends AbstractModel implements IQuestion {
   }
 
   public get viewUrl(): string {
-    throw new Error("Question viewUrl not implemented.");
+    throw new Error('Question viewUrl not implemented.');
   }
 }

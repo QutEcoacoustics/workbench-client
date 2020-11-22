@@ -1,5 +1,5 @@
-import { Injector } from "@angular/core";
-import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
+import { Injector } from '@angular/core';
+import { AUDIO_RECORDING } from '@baw-api/ServiceTokens';
 import {
   DateTimeTimezone,
   Description,
@@ -7,12 +7,12 @@ import {
   HasDescription,
   Id,
   Param,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { AudioRecording } from "./AudioRecording";
-import type { User } from "./User";
+} from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, HasOne, Updater } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { AudioRecording } from './AudioRecording';
+import type { User } from './User';
 
 /**
  * A bookmark model.
@@ -26,7 +26,7 @@ export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
 }
 
 export class Bookmark extends AbstractModel implements IBookmark {
-  public readonly kind = "Bookmark";
+  public readonly kind = 'Bookmark';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -53,7 +53,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public creator?: User;
   @Updater<Bookmark>()
   public updater?: User;
-  @HasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @HasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, 'audioRecordingId')
   public audioRecording?: AudioRecording;
 
   constructor(bookmark: IBookmark, injector?: Injector) {
@@ -61,12 +61,12 @@ export class Bookmark extends AbstractModel implements IBookmark {
   }
 
   public listenViewUrl(recordingId: Id, startOffset?: number): string {
-    throw new Error("Bookmark listenViewUrl not implemented.");
+    throw new Error('Bookmark listenViewUrl not implemented.');
   }
 
   public get viewUrl(): string {
     // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
-    console.warn("Bookmark viewUrl not implemented.");
-    return "/broken_link";
+    console.warn('Bookmark viewUrl not implemented.');
+    return '/broken_link';
   }
 }

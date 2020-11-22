@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-  selector: "baw-indicator",
+  selector: 'baw-indicator',
   template: `
     <div [ngSwitch]="status">
       <!-- Success Status -->

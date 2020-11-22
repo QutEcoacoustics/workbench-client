@@ -1,10 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Filters } from "@baw-api/baw-api.service";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { RegionsService } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { SitesService } from "@baw-api/site/sites.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Filters } from '@baw-api/baw-api.service';
+import { projectResolvers } from '@baw-api/project/projects.service';
+import { RegionsService } from '@baw-api/region/regions.service';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { SitesService } from '@baw-api/site/sites.service';
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -13,19 +13,19 @@ import {
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
-} from "@components/projects/projects.menus";
-import { newSiteMenuItem } from "@components/sites/sites.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { ISite, Site } from "@models/Site";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { List } from "immutable";
-import { merge } from "rxjs";
+} from '@components/projects/projects.menus';
+import { newSiteMenuItem } from '@components/sites/sites.menus';
+import { exploreAudioMenuItem } from '@helpers/page/externalMenus';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { PaginationTemplate } from '@helpers/paginationTemplate/paginationTemplate';
+import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { Project } from '@models/Project';
+import { Region } from '@models/Region';
+import { ISite, Site } from '@models/Site';
+import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { List } from 'immutable';
+import { merge } from 'rxjs';
 
 export const projectMenuItemActions = [
   exploreAudioMenuItem,
@@ -36,10 +36,10 @@ export const projectMenuItemActions = [
   deleteProjectMenuItem,
 ];
 
-const projectKey = "project";
+const projectKey = 'project';
 
 @Component({
-  selector: "baw-project",
+  selector: 'baw-project',
   template: `
     <ng-container *ngIf="project">
       <h1>{{ project.name }}</h1>
@@ -104,12 +104,12 @@ const projectKey = "project";
       ></ngb-pagination>
     </ng-container>
   `,
-  styleUrls: ["./details.component.scss"],
+  styleUrls: ['./details.component.scss'],
 })
 class DetailsComponent extends PaginationTemplate<any> implements OnInit {
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
-  public defaultDescription = "<i>No description found</i>";
+  public defaultDescription = '<i>No description found</i>';
   public hasRegions: boolean;
   public hasSites: boolean;
   public project: Project;
@@ -132,7 +132,7 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
       route,
       config,
       undefined,
-      "name",
+      'name',
       () => [this.project.id],
       (models) => {
         this.apiReturnCount++;

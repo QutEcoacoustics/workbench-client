@@ -1,28 +1,28 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   scriptResolvers,
   ScriptsService,
-} from "@baw-api/script/scripts.service";
+} from '@baw-api/script/scripts.service';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { Script } from "@models/Script";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { adminScriptActions } from "../details/details.component";
-import { fields } from "../script.base.schema.json";
+} from '@helpers/formTemplate/formTemplate';
+import { Script } from '@models/Script';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { adminScriptActions } from '../details/details.component';
+import { fields } from '../script.base.schema.json';
 import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,
   adminScriptsCategory,
-} from "../scripts.menus";
+} from '../scripts.menus';
 
-const scriptKey = "script";
+const scriptKey = 'script';
 
 @Component({
-  selector: "baw-admin-scripts-edit",
+  selector: 'baw-admin-scripts-edit',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -46,7 +46,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, scriptKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
+      defaultSuccessMsg('updated', model.name)
     );
   }
 

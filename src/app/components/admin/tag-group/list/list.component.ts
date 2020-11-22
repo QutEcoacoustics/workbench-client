@@ -1,18 +1,18 @@
-import { Component } from "@angular/core";
-import { TagGroupsService } from "@baw-api/tag/tag-group.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { TagGroup } from "@models/TagGroup";
-import { List } from "immutable";
+import { Component } from '@angular/core';
+import { TagGroupsService } from '@baw-api/tag/tag-group.service';
+import { adminDashboardMenuItem } from '@components/admin/admin.menus';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { Id } from '@interfaces/apiInterfaces';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { TagGroup } from '@models/TagGroup';
+import { List } from 'immutable';
 import {
   adminDeleteTagGroupMenuItem,
   adminEditTagGroupMenuItem,
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
-} from "../tag-group.menus";
+} from '../tag-group.menus';
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
@@ -22,15 +22,15 @@ export const adminTagGroupMenuItemActions = [
 ];
 
 @Component({
-  selector: "baw-admin-tag-groups-list",
-  templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
+  selector: 'baw-admin-tag-groups-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
-  public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
+  public columns = [{ name: 'Tag' }, { name: 'Group' }, { name: 'Model' }];
   public sortKeys = {
-    tag: "tagId",
-    group: "groupIdentifier",
+    tag: 'tagId',
+    group: 'groupIdentifier',
   };
 
   constructor(api: TagGroupsService) {
@@ -42,19 +42,19 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
       }))
     );
 
-    this.filterKey = "groupIdentifier";
+    this.filterKey = 'groupIdentifier';
   }
 
   public editPath(tagGroup: TagGroup): string {
     return adminEditTagGroupMenuItem.route
       .toString()
-      .replace(":tagGroupId", tagGroup.id.toString());
+      .replace(':tagGroupId', tagGroup.id.toString());
   }
 
   public deletePath(tag: TagGroup): string {
     return adminDeleteTagGroupMenuItem.route
       .toString()
-      .replace(":tagGroupId", tag.id.toString());
+      .replace(':tagGroupId', tag.id.toString());
   }
 }
 

@@ -1,27 +1,27 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   tagGroupResolvers,
   TagGroupsService,
-} from "@baw-api/tag/tag-group.service";
+} from '@baw-api/tag/tag-group.service';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { TagGroup } from "@models/TagGroup";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { adminTagGroupMenuItemActions } from "../list/list.component";
+} from '@helpers/formTemplate/formTemplate';
+import { TagGroup } from '@models/TagGroup';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { adminTagGroupMenuItemActions } from '../list/list.component';
 import {
   adminDeleteTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
-} from "../tag-group.menus";
+} from '../tag-group.menus';
 
-const tagGroupKey = "tagGroup";
+const tagGroupKey = 'tagGroup';
 
 @Component({
-  selector: "baw-admin-tag-groups-delete",
+  selector: 'baw-admin-tag-groups-delete',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -47,7 +47,7 @@ class AdminTagGroupsDeleteComponent
     router: Router
   ) {
     super(notifications, route, router, tagGroupKey, (model) =>
-      defaultSuccessMsg("destroyed", model.groupIdentifier)
+      defaultSuccessMsg('destroyed', model.groupIdentifier)
     );
   }
 

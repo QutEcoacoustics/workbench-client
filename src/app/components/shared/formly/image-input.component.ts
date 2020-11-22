@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { FieldType } from "@ngx-formly/core";
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { FieldType } from '@ngx-formly/core';
 
 /**
  * Image Input
@@ -8,7 +8,7 @@ import { FieldType } from "@ngx-formly/core";
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-image-input",
+  selector: 'formly-image-input',
   template: `
     <div class="form-group">
       <label *ngIf="to.label" [for]="field.id">

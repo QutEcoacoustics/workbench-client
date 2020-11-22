@@ -1,23 +1,23 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TagGroupsService } from "@baw-api/tag/tag-group.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TagGroupsService } from '@baw-api/tag/tag-group.service';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { TagGroup } from "@models/TagGroup";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { adminTagGroupsMenuItemActions } from "../list/list.component";
+} from '@helpers/formTemplate/formTemplate';
+import { TagGroup } from '@models/TagGroup';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { adminTagGroupsMenuItemActions } from '../list/list.component';
 import {
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
-} from "../tag-group.menus";
-import { fields } from "../tag-group.schema.json";
+} from '../tag-group.menus';
+import { fields } from '../tag-group.schema.json';
 
 @Component({
-  selector: "baw-admin-tag-groups-new",
+  selector: 'baw-admin-tag-groups-new',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -40,7 +40,7 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     router: Router
   ) {
     super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.groupIdentifier)
+      defaultSuccessMsg('created', model.groupIdentifier)
     );
   }
 

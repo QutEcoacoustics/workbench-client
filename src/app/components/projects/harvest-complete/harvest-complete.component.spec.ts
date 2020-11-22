@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { HarvestCompleteComponent } from "./harvest-complete.component";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HarvestCompleteComponent } from './harvest-complete.component';
 
-xdescribe("HarvestCompleteComponent", () => {
+xdescribe('HarvestCompleteComponent', () => {
   let component: HarvestCompleteComponent;
   let fixture: ComponentFixture<HarvestCompleteComponent>;
 
@@ -15,7 +15,7 @@ xdescribe("HarvestCompleteComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

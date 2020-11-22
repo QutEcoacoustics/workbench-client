@@ -1,19 +1,19 @@
-import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
+import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
 import {
   ImageSizes,
   ImageUrl,
   isImageUrl,
   toRelative,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
-import { DateTime, Duration } from "luxon";
-import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+} from '@interfaces/apiInterfaces';
+import { AbstractModel, UnresolvedModel } from '@models/AbstractModel';
+import { DateTime, Duration } from 'luxon';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: "baw-render-field",
+  selector: 'baw-render-field',
   template: `
     <!-- Display plain text -->
     <dl *ngIf="styling === FieldStyling.Plain">
@@ -76,9 +76,9 @@ export class RenderFieldComponent
   public FieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.Plain;
-  private errorText = "(error)";
-  private loadingText = "(loading)";
-  private noValueText = "(no value)";
+  private errorText = '(error)';
+  private loadingText = '(loading)';
+  private noValueText = '(no value)';
 
   constructor(private ref: ChangeDetectorRef) {
     super();
@@ -110,13 +110,13 @@ export class RenderFieldComponent
       this.humanizeObservable(value);
     } else if (value instanceof AbstractModel) {
       this.humanizeAbstractModel(value);
-    } else if (typeof value === "object") {
+    } else if (typeof value === 'object') {
       // TODO Implement optional treeview
       this.humanizeObject(value);
-    } else if (typeof value === "boolean") {
+    } else if (typeof value === 'boolean') {
       this.styling = FieldStyling.Checkbox;
       this.display = value;
-    } else if (typeof value === "string") {
+    } else if (typeof value === 'string') {
       this.humanizeString(value);
     } else {
       this.display = value.toString();
@@ -125,6 +125,7 @@ export class RenderFieldComponent
 
   /**
    * Convert abstract model to human readable output
+   *
    * @param value Display input
    */
   private humanizeAbstractModel(value: AbstractModel) {
@@ -132,7 +133,7 @@ export class RenderFieldComponent
       this.setLoading();
     } else {
       this.styling = FieldStyling.Model;
-      this.display = "";
+      this.display = '';
       this.model = value;
     }
   }
@@ -140,6 +141,7 @@ export class RenderFieldComponent
   /**
    * Convert string to human readable output. Currently this only checks if the
    * string is an image url.
+   *
    * @param value Display input
    */
   private humanizeString(value: string) {
@@ -159,6 +161,7 @@ export class RenderFieldComponent
 
   /**
    * Convert object to human readable output
+   *
    * @param value Display input
    */
   private humanizeObject(value: object) {
@@ -174,13 +177,14 @@ export class RenderFieldComponent
 
   /**
    * Convert blob to human readable output
+   *
    * @param value Display input
    */
   private humanizeBlob(value: Blob) {
     this.setLoading();
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
-    reader.addEventListener("loadend", (e) => {
+    reader.addEventListener('loadend', (e) => {
       this.styling = FieldStyling.Code;
       this.display = e.target.result.toString();
     });
@@ -193,6 +197,7 @@ export class RenderFieldComponent
 
   /**
    * Convert observable to human readable output
+   *
    * @param value Display input
    */
   private humanizeObservable(
@@ -214,6 +219,7 @@ export class RenderFieldComponent
   /**
    * Convert array to human readable output. This also handles
    * an array of image urls.
+   *
    * @param value Display input
    */
   private humanizeArray(value: ModelView[] | ImageUrl[]) {
@@ -241,6 +247,7 @@ export class RenderFieldComponent
   /**
    * Determine if image is valid
    * ! This function is untested, edit carefully
+   *
    * @param src Source URL
    * @param validCallback Valid image callback
    * @param invalidCallback Invalid image callback
@@ -266,6 +273,7 @@ export class RenderFieldComponent
 
 /**
  * Create a human readable datetime string
+ *
  * @param value DateTime value
  */
 export function humanizeDateTime(value: DateTime): string {

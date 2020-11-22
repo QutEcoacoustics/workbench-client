@@ -1,6 +1,6 @@
-import { Id } from "@interfaces/apiInterfaces";
-import { IResponse } from "@models/Response";
-import { modelData } from "@test/helpers/faker";
+import { Id } from '@interfaces/apiInterfaces';
+import { IResponse } from '@models/Response';
+import { modelData } from '@test/helpers/faker';
 
 export function generateResponse(id?: Id): Required<IResponse> {
   return {

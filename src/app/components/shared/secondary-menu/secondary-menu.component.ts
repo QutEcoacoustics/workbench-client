@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { DefaultMenu } from "@helpers/page/defaultMenus";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DefaultMenu } from '@helpers/page/defaultMenus';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { MenuRoute, NavigableMenuItem } from '@interfaces/menusInterfaces';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { List } from 'immutable';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Secondary Menu Component.
@@ -15,7 +15,7 @@ import { takeUntil } from "rxjs/operators";
  * user the path they've taken.
  */
 @Component({
-  selector: "baw-secondary-menu",
+  selector: 'baw-secondary-menu',
   template: `
     <baw-menu
       [links]="contextLinks"

@@ -1,6 +1,6 @@
-import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
-import { DateTime, Duration } from "luxon";
-import { AbstractModel } from "./AbstractModel";
+import { Id, Ids, ImageSizes, ImageUrl } from '@interfaces/apiInterfaces';
+import { DateTime, Duration } from 'luxon';
+import { AbstractModel } from './AbstractModel';
 
 /**
  * Add key to the models attributes
@@ -44,7 +44,7 @@ export function BawImage<T extends AbstractModel>(
     opts,
     (model, key, imageUrls: string | ImageUrl[]) => {
       // Convert string to ImageURL[] and append default image
-      if (typeof imageUrls === "string") {
+      if (typeof imageUrls === 'string') {
         model[key] = [
           { size: ImageSizes.UNKNOWN, url: imageUrls },
           defaultImage,
@@ -133,6 +133,7 @@ export function BawDuration<T extends AbstractModel>(
 
 /**
  * Abstract code required for baw decorators
+ *
  * @param opts Options to apply
  * @param setValue Set the value of the models decorated key
  */
@@ -142,13 +143,13 @@ function createDecorator<T extends AbstractModel>(
 ) {
   return function (model: AbstractModel, key: string) {
     // Store decorated keys value
-    const decoratedKey = Symbol("_" + key);
+    const decoratedKey = Symbol('_' + key);
     let keySetter: (args: any) => void;
 
     // If override key provided, intercept its getter to update the decorated key
     if (opts?.key) {
       // Store override keys value
-      const overrideKey = Symbol("_" + opts.key);
+      const overrideKey = Symbol('_' + opts.key);
 
       // Update override key access
       Object.defineProperty(model, opts.key, {

@@ -1,5 +1,5 @@
-import { Injector } from "@angular/core";
-import { InnerFilter } from "@baw-api/baw-api.service";
+import { Injector } from '@angular/core';
+import { InnerFilter } from '@baw-api/baw-api.service';
 import {
   DateTimeTimezone,
   Description,
@@ -7,12 +7,12 @@ import {
   HasDescription,
   Id,
   Param,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { AudioRecording } from "./AudioRecording";
-import type { User } from "./User";
+} from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, Deleter } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { AudioRecording } from './AudioRecording';
+import type { User } from './User';
 
 export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
   id?: Id;
@@ -21,7 +21,7 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
 }
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
-  public readonly kind = "Saved Search";
+  public readonly kind = 'Saved Search';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -50,7 +50,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   }
 
   public get viewUrl(): string {
-    console.error("SavedSearch viewUrl not implement");
-    return "not_implemented";
+    console.error('SavedSearch viewUrl not implement');
+    return 'not_implemented';
   }
 }

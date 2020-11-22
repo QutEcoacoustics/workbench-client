@@ -1,5 +1,5 @@
-import { Directive } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Directive } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * File Value Accessor
@@ -11,8 +11,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
   selector: "input[type=file]",
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
-    "(change)": "onChange($event.target.files)",
-    "(blur)": "onTouched()",
+    '(change)': 'onChange($event.target.files)',
+    '(blur)': 'onTouched()',
   },
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: FileValueAccessor, multi: true },

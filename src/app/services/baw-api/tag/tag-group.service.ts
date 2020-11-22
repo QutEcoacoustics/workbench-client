@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ITagGroup, TagGroup } from "@models/TagGroup";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { ITagGroup, TagGroup } from '@models/TagGroup';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
 const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
@@ -56,5 +56,5 @@ export class TagGroupsService extends StandardApi<TagGroup> {
 
 export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupsService>(
   [TagGroupsService],
-  "tagGroupId"
-).create("TagGroup");
+  'tagGroupId'
+).create('TagGroup');

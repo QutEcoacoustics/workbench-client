@@ -1,36 +1,36 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { projectResolvers } from "@baw-api/project/projects.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { projectResolvers } from '@baw-api/project/projects.service';
 import {
   regionResolvers,
   RegionsService,
-} from "@baw-api/region/regions.service";
+} from '@baw-api/region/regions.service';
 import {
   editRegionMenuItem,
   regionMenuItem,
   regionsCategory,
-} from "@components/regions/regions.menus";
+} from '@components/regions/regions.menus';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { fields } from "../../region.base.json";
-import { regionMenuItemActions } from "../details/details.component";
+} from '@helpers/formTemplate/formTemplate';
+import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { Project } from '@models/Project';
+import { Region } from '@models/Region';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { fields } from '../../region.base.json';
+import { regionMenuItemActions } from '../details/details.component';
 
-const projectKey = "project";
-const regionKey = "region";
+const projectKey = 'project';
+const regionKey = 'region';
 
 /**
  * Edit Region Component
  */
 @Component({
-  selector: "baw-regions-edit",
+  selector: 'baw-regions-edit',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -54,7 +54,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, regionKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
+      defaultSuccessMsg('updated', model.name)
     );
   }
 

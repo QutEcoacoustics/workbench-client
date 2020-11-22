@@ -1,25 +1,25 @@
-import { Injector } from "@angular/core";
-import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
-import { libraryMenuItem, listenMenuItem } from "@helpers/page/externalMenus";
+import { Injector } from '@angular/core';
+import { AUDIO_RECORDING, TAG } from '@baw-api/ServiceTokens';
+import { libraryMenuItem, listenMenuItem } from '@helpers/page/externalMenus';
 import {
   DateTimeTimezone,
   HasAllUsers,
   Id,
   Ids,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+} from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
 import {
   Creator,
   Deleter,
   HasMany,
   HasOne,
   Updater,
-} from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { AudioRecording } from "./AudioRecording";
-import type { Tag } from "./Tag";
-import { ITagging, Tagging } from "./Tagging";
-import type { User } from "./User";
+} from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { AudioRecording } from './AudioRecording';
+import type { Tag } from './Tag';
+import { ITagging, Tagging } from './Tagging';
+import type { User } from './User';
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -33,7 +33,7 @@ export interface IAudioEvent extends HasAllUsers {
 }
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
-  public readonly kind = "AudioEvent";
+  public readonly kind = 'AudioEvent';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -66,9 +66,9 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   public updater?: User;
   @Deleter<AudioEvent>()
   public deleter?: User;
-  @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, 'audioRecordingId')
   public audioRecording?: AudioRecording;
-  @HasMany<AudioEvent, Tag>(TAG, "tagIds")
+  @HasMany<AudioEvent, Tag>(TAG, 'tagIds')
   public tags?: Tag[];
 
   constructor(audioEvent: IAudioEvent, injector?: Injector) {

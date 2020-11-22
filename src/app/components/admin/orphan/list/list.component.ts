@@ -1,23 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { Filters } from "@baw-api/baw-api.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
-import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
-import { assignSiteMenuItem } from "@components/projects/projects.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Site } from "@models/Site";
-import { List } from "immutable";
+import { Component, OnInit } from '@angular/core';
+import { Filters } from '@baw-api/baw-api.service';
+import { ShallowSitesService } from '@baw-api/site/sites.service';
+import { adminDashboardMenuItem } from '@components/admin/admin.menus';
+import { adminMenuItemActions } from '@components/admin/dashboard/dashboard.component';
+import { assignSiteMenuItem } from '@components/projects/projects.menus';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { Id } from '@interfaces/apiInterfaces';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { Site } from '@models/Site';
+import { List } from 'immutable';
 import {
   adminOrphanMenuItem,
   adminOrphansCategory,
   adminOrphansMenuItem,
-} from "../orphans.menus";
+} from '../orphans.menus';
 
 @Component({
-  selector: "baw-admin-orphans",
-  templateUrl: "./list.component.html",
+  selector: 'baw-admin-orphans',
+  templateUrl: './list.component.html',
 })
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
@@ -33,12 +33,12 @@ class AdminOrphansComponent
       }))
     );
 
-    this.filterKey = "name";
+    this.filterKey = 'name';
   }
 
   public ngOnInit(): void {
-    this.columns = [{ name: "Id" }, { name: "Site" }, { name: "Model" }];
-    this.sortKeys = { id: "id", site: "name" };
+    this.columns = [{ name: 'Id' }, { name: 'Site' }, { name: 'Model' }];
+    this.sortKeys = { id: 'id', site: 'name' };
     this.getPageData();
   }
 

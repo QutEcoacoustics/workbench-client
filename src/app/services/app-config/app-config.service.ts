@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   Configuration,
   Environment,
   isConfiguration,
   Values,
-} from "@helpers/app-initializer/app-initializer";
-import { ToastrService } from "ngx-toastr";
-import { environment } from "src/environments/environment";
+} from '@helpers/app-initializer/app-initializer';
+import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
-export const assetRoot = "/assets";
+export const assetRoot = '/assets';
 
 /**
  * App Config Service.
@@ -20,15 +20,15 @@ export class AppConfigService {
 
   constructor(private notification: ToastrService) {
     if (!isConfiguration(environment)) {
-      console.error("Detected invalid environment.");
+      console.error('Detected invalid environment.');
       this.notification.error(
-        "The website is not configured correctly. Try coming back at another time.",
-        "Unrecoverable Error",
+        'The website is not configured correctly. Try coming back at another time.',
+        'Unrecoverable Error',
         {
           closeButton: false,
           disableTimeOut: true,
           tapToDismiss: false,
-          positionClass: "toast-center-center",
+          positionClass: 'toast-center-center',
         }
       );
       return;

@@ -4,9 +4,9 @@ import {
   QueryList,
   Type,
   ViewChildren,
-} from "@angular/core";
-import { CanDeactivate } from "@angular/router";
-import { FormComponent } from "@shared/form/form.component";
+} from '@angular/core';
+import { CanDeactivate } from '@angular/router';
+import { FormComponent } from '@shared/form/form.component';
 
 /**
  * Interface for FormCheckingPageComponent.
@@ -19,11 +19,13 @@ export interface FormCheckingComponent {
 
 /**
  * Add form checking to the component
+ *
  * @param Base Class to extend
  */
 export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
   @Directive()
-  class FormCheckingPageComponent extends Base
+  class FormCheckingPageComponent
+    extends Base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
@@ -56,12 +58,12 @@ export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
 
   public canDeactivate(component: FormCheckingComponent): boolean {
     // If component doesn't have a form, ignore it
-    if (typeof component.isFormTouched !== "function") {
+    if (typeof component.isFormTouched !== 'function') {
       return true;
     }
 
     return component.isFormTouched()
-      ? confirm("Form data will be lost! Are you sure you want to leave?")
+      ? confirm('Form data will be lost! Are you sure you want to leave?')
       : true;
   }
 }

@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/site/sites.service";
-import { regionMenuItem } from "@components/regions/regions.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import { List } from "immutable";
+import { Component, OnInit } from '@angular/core';
+import { projectResolvers } from '@baw-api/project/projects.service';
+import { regionResolvers } from '@baw-api/region/regions.service';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { siteResolvers } from '@baw-api/site/sites.service';
+import { regionMenuItem } from '@components/regions/regions.menus';
+import { exploreAudioMenuItem } from '@helpers/page/externalMenus';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { PermissionsShieldComponent } from '@menu/permissions-shield.component';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { Project } from '@models/Project';
+import { Region } from '@models/Region';
+import { Site } from '@models/Site';
+import { List } from 'immutable';
 import {
   deletePointMenuItem,
   editPointMenuItem,
@@ -19,8 +19,8 @@ import {
   pointHarvestMenuItem,
   pointMenuItem,
   pointsCategory,
-} from "../../points.menus";
-import { SiteDetailsComponent } from "./site.component";
+} from '../../points.menus';
+import { SiteDetailsComponent } from './site.component';
 
 export const pointMenuItemActions = [
   exploreAudioMenuItem,
@@ -30,12 +30,12 @@ export const pointMenuItemActions = [
   deletePointMenuItem,
 ];
 
-const projectKey = "project";
-const regionKey = "region";
-const siteKey = "site";
+const projectKey = 'project';
+const regionKey = 'region';
+const siteKey = 'site';
 
 @Component({
-  selector: "baw-point-details",
+  selector: 'baw-point-details',
   template: `
     <baw-site
       *ngIf="project && region && site"

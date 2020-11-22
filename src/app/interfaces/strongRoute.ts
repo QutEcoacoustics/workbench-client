@@ -1,6 +1,6 @@
-import { Type } from "@angular/core";
-import { Route, Routes } from "@angular/router";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { Type } from '@angular/core';
+import { Route, Routes } from '@angular/router';
+import { PageComponent } from '@helpers/page/pageComponent';
 
 export type RouteConfigCallback = (
   component: Type<PageComponent> | null,
@@ -26,6 +26,7 @@ export class StrongRoute {
 
   /**
    * Constructor
+   *
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
@@ -40,7 +41,7 @@ export class StrongRoute {
     this.root = this;
     this.name = name;
     this.parent = null;
-    this.isParameter = this.name ? name.startsWith(":") : false;
+    this.isParameter = this.name ? name.startsWith(':') : false;
 
     if (parent) {
       this.parent = parent;
@@ -56,14 +57,14 @@ export class StrongRoute {
     this.parameters = parameters;
 
     if (full.length > 1) {
-      this.fullRoute = this.toRoute().join("/");
+      this.fullRoute = this.toRoute().join('/');
     } else if (full.length === 1) {
       this.fullRoute = this.name;
     } else {
       this.fullRoute = undefined;
     }
 
-    this.config = { path: this.fullRoute, pathMatch: "full", ...config };
+    this.config = { path: this.fullRoute, pathMatch: 'full', ...config };
   }
 
   /**
@@ -75,6 +76,7 @@ export class StrongRoute {
 
   /**
    * Add a child route
+   *
    * @param name Route name
    * @param config Additional router configurations
    */
@@ -84,6 +86,7 @@ export class StrongRoute {
 
   /**
    * Add a new feature module route (inherit parent path without recalculating parent routes)
+   *
    * @param name Route name
    * @param config Additional router configurations
    */
@@ -99,8 +102,8 @@ export class StrongRoute {
   public format(args: { [key: string]: string | number }): string {
     if (!args) {
       // Should only be unit tests which encounter this
-      console.error("Route arguments are " + args);
-      return "";
+      console.error('Route arguments are ' + args);
+      return '';
     }
 
     if (Object.keys(args).length < this.parameters.length) {
@@ -127,11 +130,12 @@ export class StrongRoute {
       }
     };
 
-    return this.full.map(prepareParam).join("/");
+    return this.full.map(prepareParam).join('/');
   }
 
   /**
    * Compile the list of routes for a module
+   *
    * @param callback Callback function (usually: GetRouteConfigForPage)
    */
   public compileRoutes(callback: RouteConfigCallback): Routes {
@@ -145,10 +149,10 @@ export class StrongRoute {
         return a.path === null ? -1 : 1;
       }
 
-      const aRoutes = a.path.split("/");
-      const bRoutes = b.path.split("/");
-      const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(":");
-      const bParamRoute = bRoutes[bRoutes.length - 1].startsWith(":");
+      const aRoutes = a.path.split('/');
+      const bRoutes = b.path.split('/');
+      const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(':');
+      const bParamRoute = bRoutes[bRoutes.length - 1].startsWith(':');
 
       // Order routes with less parents with priority
       if (aRoutes.length !== bRoutes.length) {
@@ -187,7 +191,7 @@ export class StrongRoute {
    * eg. "/home/house"
    */
   public toString(): string {
-    return "/" + (this.fullRoute ? this.fullRoute : "");
+    return '/' + (this.fullRoute ? this.fullRoute : '');
   }
 
   /**

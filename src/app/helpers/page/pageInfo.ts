@@ -1,18 +1,19 @@
-import { Type } from "@angular/core";
-import { Data } from "@angular/router";
+import { Type } from '@angular/core';
+import { Data } from '@angular/router';
 import {
   Category,
   MenuRoute,
   Menus,
   ResolverList,
-} from "@interfaces/menusInterfaces";
-import { PageComponent } from "./pageComponent";
+} from '@interfaces/menusInterfaces';
+import { PageComponent } from './pageComponent';
 
 /**
  * Page info interface.
  * This stores information required to generate the various menus of the page.
  * Also stores metadata about the page, like the icon to use, and the route
  * for that page.
+ *
  * @extends Data
  */
 export interface IPageInfo extends Data {

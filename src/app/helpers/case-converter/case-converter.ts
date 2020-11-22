@@ -1,12 +1,13 @@
-import camelCase from "just-camel-case";
-import snakeCase from "just-snake-case";
+import camelCase from 'just-camel-case';
+import snakeCase from 'just-snake-case';
 
 // List of whitelist keys which should have their values converted
-import * as whitelist from "./whitelist.json";
+import * as whitelist from './whitelist.json';
 
 /**
  * Deeply converts keys of an object from one case to another.
  * Function was created here: https://github.com/travelperk/case-converter (repo no longer exists)
+ *
  * @copyright MIT
  * @author travelperk
  * @param oldObject to convert
@@ -23,14 +24,14 @@ const convertCase = (
   // Prevent conversion of periods (.)
   function converterFn(valToConvert?: string): string {
     return valToConvert
-      .split(".")
+      .split('.')
       .map((split) => callback(split))
-      .join(".");
+      .join('.');
   }
 
   if (
     !oldObject ||
-    typeof oldObject !== "object" ||
+    typeof oldObject !== 'object' ||
     !Object.keys(oldObject).length
   ) {
     // Change object value
@@ -60,12 +61,14 @@ const convertCase = (
 
 /**
  * Convert object to camelCase
+ *
  * @param obj Object to convert
  */
 export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
 
 /**
  * Convert object to snake_case
+ *
  * @param obj Object to convert
  */
 export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);

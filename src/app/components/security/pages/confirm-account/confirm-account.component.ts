@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import {
   confirmAccountMenuItem,
   loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
   unlockAccountMenuItem,
-} from "@components/security/security.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { List } from "immutable";
-import { fields } from "./confirm-account.schema.json";
+} from '@components/security/security.menus';
+import { WithFormCheck } from '@guards/form/form.guard';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { List } from 'immutable';
+import { fields } from './confirm-account.schema.json';
 
 @Component({
-  selector: "baw-confirm-account",
+  selector: 'baw-confirm-account',
   template: `
     <baw-wip>
       <baw-form

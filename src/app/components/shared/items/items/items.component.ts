@@ -4,16 +4,16 @@ import {
   Input,
   OnChanges,
   OnInit,
-} from "@angular/core";
-import { List } from "immutable";
-import { ItemInterface } from "../item/item.component";
+} from '@angular/core';
+import { List } from 'immutable';
+import { ItemInterface } from '../item/item.component';
 
 /**
  * Items Component.
  * This creates a list of items split into two columns.
  */
 @Component({
-  selector: "baw-items",
+  selector: 'baw-items',
   template: `
     <div class="row pb-3">
       <div class="col-sm-6">

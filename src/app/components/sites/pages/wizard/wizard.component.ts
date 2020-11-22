@@ -1,22 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { projectResolvers } from '@baw-api/project/projects.service';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { projectMenuItemActions } from '@components/projects/pages/details/details.component';
 import {
   projectCategory,
   projectMenuItem,
-} from "@components/projects/projects.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { Project } from "@models/Project";
-import { List } from "immutable";
-import { newSiteMenuItem } from "../../sites.menus";
+} from '@components/projects/projects.menus';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { Project } from '@models/Project';
+import { List } from 'immutable';
+import { newSiteMenuItem } from '../../sites.menus';
 
-const projectKey = "project";
+const projectKey = 'project';
 
 @Component({
-  selector: "baw-wizard",
+  selector: 'baw-wizard',
   styles: [
     `
       button {

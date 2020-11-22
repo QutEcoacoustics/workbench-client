@@ -1,18 +1,18 @@
-import { isPlatformBrowser } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
   Inject,
   Injectable,
   InjectionToken,
   Injector,
   PLATFORM_ID,
-} from "@angular/core";
-import { XOR } from "@helpers/advancedTypes";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { AbstractModel } from "@models/AbstractModel";
-import { SessionUser } from "@models/User";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+} from '@angular/core';
+import { XOR } from '@helpers/advancedTypes';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { AbstractModel } from '@models/AbstractModel';
+import { SessionUser } from '@models/User';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export const defaultApiPageSize = 25;
 
@@ -29,7 +29,7 @@ export const apiReturnCodes = {
   internalServerFailure: 500,
 };
 
-export let STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
+export const STUB_MODEL_BUILDER = new InjectionToken('test.model.builder');
 
 /**
  * Interface with BAW Server Rest API
@@ -51,16 +51,18 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * User local storage location
    */
-  protected userLocalStorageKey = "baw.client.user";
+  protected userLocalStorageKey = 'baw.client.user';
 
   /**
    * Handle API collection response
+   *
    * @param response Api Response
    */
   private handleCollectionResponse: (response: ApiResponse<Model>) => Model[];
 
   /**
    * Handle API single model response
+   *
    * @param response Api Response
    */
   private handleSingleResponse: (response: ApiResponse<Model>) => Model;
@@ -99,7 +101,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
     this.handleSingleResponse = (response: ApiResponse<Model>) => {
       if (response.data instanceof Array) {
         throw new Error(
-          "Received an array of API results when only a single result was expected"
+          'Received an array of API results when only a single result was expected'
         );
       }
 
@@ -135,7 +137,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
       try {
         return new SessionUser(JSON.parse(userData));
       } catch (err) {
-        console.error("Failed to create session user: ", err);
+        console.error('Failed to create session user: ', err);
         this.clearSessionUser();
       }
     }
@@ -145,6 +147,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Add user session data to the local storage
+   *
    * @param user User details
    */
   protected storeLocalUser(user: SessionUser): void {
@@ -160,6 +163,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from list route
+   *
    * @param path API path
    */
   protected apiList(path: string): Observable<Model[]> {
@@ -168,6 +172,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from filter route
+   *
    * @param path API path
    * @param filters API filters
    */
@@ -182,6 +187,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from show route
+   *
    * @param path API path
    */
   protected apiShow(path: string): Observable<Model> {
@@ -190,6 +196,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from create route
+   *
    * @param path API path
    * @param body Request body
    */
@@ -201,6 +208,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from update route
+   *
    * @param path API path
    * @param body Request body
    */
@@ -212,6 +220,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from destroy route
+   *
    * @param path API path
    */
   protected apiDestroy(path: string): Observable<Model | void> {
@@ -221,6 +230,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
@@ -230,6 +240,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `DELETE` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
@@ -239,6 +250,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `POST` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    * @param body Request body
    */
@@ -252,6 +264,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `PATCH` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    * @param body Request body
    */
@@ -264,6 +277,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Concatenates path with apiRoot to form a full URL.
+   *
    * @param path Path fragment
    */
   private getPath(path: string): string {
@@ -320,9 +334,9 @@ export interface Comparisons {
  */
 export class RangeInterval {
   constructor(public interval: string) {
-    const regex: RegExp = /(\[|\()(.*),(.*)(\)|\])/;
+    const regex = /(\[|\()(.*),(.*)(\)|\])/;
     if (!regex.test(this.interval)) {
-      throw Error("Range Interval: Invalid pattern provided");
+      throw Error('Range Interval: Invalid pattern provided');
     }
   }
 
@@ -392,7 +406,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
     /** Which key to sort by */
     orderBy: string;
     /** Sorting direction */
-    direction: "desc" | "asc";
+    direction: 'desc' | 'asc';
   };
   /** Current page data */
   paging?: Paging;

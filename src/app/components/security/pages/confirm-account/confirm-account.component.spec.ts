@@ -1,32 +1,32 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { FormComponent } from "@shared/form/form.component";
-import { testFormlyFields } from "@test/helpers/formly";
-import { testFormImports } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
-import { ConfirmPasswordComponent } from "./confirm-account.component";
-import { fields } from "./confirm-account.schema.json";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { FormComponent } from '@shared/form/form.component';
+import { testFormlyFields } from '@test/helpers/formly';
+import { testFormImports } from '@test/helpers/testbed';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmPasswordComponent } from './confirm-account.component';
+import { fields } from './confirm-account.schema.json';
 
-describe("ConfirmPasswordComponent", () => {
+describe('ConfirmPasswordComponent', () => {
   let component: ConfirmPasswordComponent;
   let fixture: ComponentFixture<ConfirmPasswordComponent>;
   let notifications: ToastrService;
 
-  describe("form", () => {
+  describe('form', () => {
     testFormlyFields([
       {
-        testGroup: "Username/Email Address Input",
+        testGroup: 'Username/Email Address Input',
         field: fields[0],
-        label: "Username or Email Address",
-        key: "login",
-        type: "input",
-        inputType: "text",
+        label: 'Username or Email Address',
+        key: 'login',
+        type: 'input',
+        inputType: 'text',
         required: true,
       },
     ]);
   });
 
-  describe("component", () => {
+  describe('component', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [...testFormImports, MockBawApiModule],
@@ -38,15 +38,15 @@ describe("ConfirmPasswordComponent", () => {
       notifications = TestBed.inject(ToastrService);
       fixture.detectChanges();
 
-      spyOn(notifications, "success").and.stub();
-      spyOn(notifications, "error").and.stub();
+      spyOn(notifications, 'success').and.stub();
+      spyOn(notifications, 'error').and.stub();
     });
 
-    it("should create", () => {
+    it('should create', () => {
       expect(component).toBeTruthy();
     });
 
     // TODO should call api
-    xit("should call api", () => {});
+    xit('should call api', () => {});
   });
 });

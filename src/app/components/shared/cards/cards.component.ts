@@ -4,16 +4,16 @@ import {
   Component,
   Input,
   OnChanges,
-} from "@angular/core";
-import { ImageUrl } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
-import { List } from "immutable";
+} from '@angular/core';
+import { ImageUrl } from '@interfaces/apiInterfaces';
+import { AbstractModel } from '@models/AbstractModel';
+import { List } from 'immutable';
 
 /**
  * Cards Component
  */
 @Component({
-  selector: "baw-cards",
+  selector: 'baw-cards',
   template: `
     <div class="row justify-content-center">
       <ng-container *ngIf="imageCards; else defaultCards">
@@ -67,7 +67,7 @@ export class CardsComponent implements OnChanges {
       // If some cards have images but others do not, throw error
       if (hasNormalCards && hasImageCards) {
         throw new Error(
-          "If an image is given, all cards must have image component."
+          'If an image is given, all cards must have image component.'
         );
       }
     }

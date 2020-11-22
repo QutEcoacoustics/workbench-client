@@ -1,17 +1,17 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { PageNotFoundComponent } from "./page-not-found.component";
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { PageNotFoundComponent } from './page-not-found.component';
 
-describe("PageNotFoundComponent", () => {
+describe('PageNotFoundComponent', () => {
   let spec: Spectator<PageNotFoundComponent>;
   const createComponent = createComponentFactory(PageNotFoundComponent);
 
   beforeEach(() => (spec = createComponent()));
 
-  it("should create", () => {
+  it('should create', () => {
     expect(spec.element).toBeTruthy();
   });
 
-  it("should have message", () => {
-    expect(spec.element).toHaveText("Not Found! TODO: make me better!");
+  it('should have message', () => {
+    expect(spec.element).toHaveText('Not Found! TODO: make me better!');
   });
 });

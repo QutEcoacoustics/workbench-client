@@ -1,8 +1,8 @@
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from '@services/app-config/app-config.service';
 import {
   myAccountMenuItem,
   theirProfileMenuItem,
-} from "../components/profile/profile.menus";
+} from '../components/profile/profile.menus';
 import {
   AuthToken,
   DateTimeTimezone,
@@ -10,9 +10,9 @@ import {
   ImageUrl,
   TimezoneInformation,
   UserName,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { BawDateTime, BawImage, BawPersistAttr } from "./AttributeDecorators";
+} from '../interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { BawDateTime, BawImage, BawPersistAttr } from './AttributeDecorators';
 
 /**
  * A user model.
@@ -53,8 +53,8 @@ export class User extends AbstractModel implements IUser {
   public static get deletedUser(): User {
     return new User({
       id: -1,
-      email: "deleted-user@noreply.com.au",
-      userName: "Deleted User",
+      email: 'deleted-user@noreply.com.au',
+      userName: 'Deleted User',
     });
   }
   /**
@@ -64,12 +64,12 @@ export class User extends AbstractModel implements IUser {
   public static get unknownUser(): User {
     return new User({
       id: -2,
-      email: "unknown-user@noreply.com.au",
-      userName: "Unknown User",
+      email: 'unknown-user@noreply.com.au',
+      userName: 'Unknown User',
     });
   }
 
-  public readonly kind = "User";
+  public readonly kind = 'User';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -81,7 +81,7 @@ export class User extends AbstractModel implements IUser {
   @BawPersistAttr
   public readonly imageUrls?: ImageUrl[];
   @BawImage<User>(`${assetRoot}/images/user/user_span4.png`, {
-    key: "imageUrls",
+    key: 'imageUrls',
   })
   public readonly image: ImageUrl[];
   @BawPersistAttr
@@ -146,7 +146,7 @@ export interface ISessionUser extends IUser {
  */
 export class SessionUser extends AbstractModel implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
-  public readonly kind = "SessionUser";
+  public readonly kind = 'SessionUser';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -155,8 +155,8 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   public readonly userName?: UserName;
   @BawPersistAttr
   public readonly imageUrls?: ImageUrl[];
-  @BawImage<SessionUser>("/assets/images/user/user_span4.png", {
-    key: "imageUrls",
+  @BawImage<SessionUser>('/assets/images/user/user_span4.png', {
+    key: 'imageUrls',
   })
   public readonly image: ImageUrl[];
   @BawPersistAttr

@@ -1,14 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from '@angular/core';
 import {
   BootstrapColorTypes,
   BootstrapScreenSizes,
-} from "@helpers/bootstrapTypes";
+} from '@helpers/bootstrapTypes';
 
 /**
  * Loading Animation
  */
 @Component({
-  selector: "baw-loading",
+  selector: 'baw-loading',
   template: `
     <div class="d-flex justify-content-center m-0 p-0">
       <div id="spinner" role="status" [ngClass]="spinnerClass">
@@ -18,9 +18,9 @@ import {
   `,
 })
 export class LoadingComponent implements OnInit {
-  @Input() public color: BootstrapColorTypes = "info";
-  @Input() public size: BootstrapScreenSizes = "md";
-  @Input() public type: "border" | "grower" = "border";
+  @Input() public color: BootstrapColorTypes = 'info';
+  @Input() public size: BootstrapScreenSizes = 'md';
+  @Input() public type: 'border' | 'grower' = 'border';
 
   public spinnerClass: { [klass: string]: true };
 

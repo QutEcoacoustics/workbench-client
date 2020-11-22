@@ -1,20 +1,20 @@
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { MockModel } from "./mock/baseApiMock.service";
-import { retrieveResolvers } from "./resolver-common";
+import { ApiErrorDetails } from './api.interceptor.service';
+import { MockModel } from './mock/baseApiMock.service';
+import { retrieveResolvers } from './resolver-common';
 
 // TODO Write unit tests
-xdescribe("API Resolvers", () => {
-  describe("BawResolvers", () => {});
-  describe("Resolvers", () => {});
-  describe("ListResolver", () => {});
-  describe("ShowResolver", () => {});
+xdescribe('API Resolvers', () => {
+  describe('BawResolvers', () => {});
+  describe('Resolvers', () => {});
+  describe('ListResolver', () => {});
+  describe('ShowResolver', () => {});
 });
 
-describe("retrieveResolvers", () => {
-  it("should handle single resolver", () => {
+describe('retrieveResolvers', () => {
+  it('should handle single resolver', () => {
     const data: any = {
       resolvers: {
-        resolvedModel: "customResolver",
+        resolvedModel: 'customResolver',
       },
       resolvedModel: {
         model: new MockModel({ id: 1 }),
@@ -26,10 +26,10 @@ describe("retrieveResolvers", () => {
     });
   });
 
-  it("should handle array resolver", () => {
+  it('should handle array resolver', () => {
     const data: any = {
       resolvers: {
-        resolvedModel: "customResolver",
+        resolvedModel: 'customResolver',
       },
       resolvedModel: {
         model: [new MockModel({ id: 1 })],
@@ -41,11 +41,11 @@ describe("retrieveResolvers", () => {
     });
   });
 
-  it("should handle multiple resolvers", () => {
+  it('should handle multiple resolvers', () => {
     const data: any = {
       resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
+        resolvedModel1: 'customResolver1',
+        resolvedModel2: 'customResolver2',
       },
       resolvedModel1: {
         model: new MockModel({ id: 1 }),
@@ -61,18 +61,18 @@ describe("retrieveResolvers", () => {
     });
   });
 
-  it("should handle single errored resolver", () => {
+  it('should handle single errored resolver', () => {
     const data: any = {
       resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
-        resolvedModel3: "customResolver3",
+        resolvedModel1: 'customResolver1',
+        resolvedModel2: 'customResolver2',
+        resolvedModel3: 'customResolver3',
       },
       resolvedModel1: {
         model: [new MockModel({ id: 1 })],
       },
       resolvedModel2: {
-        error: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
+        error: { status: 401, message: 'Unauthorized' } as ApiErrorDetails,
       },
       resolvedModel3: {
         model: [new MockModel({ id: 2 })],
@@ -82,21 +82,21 @@ describe("retrieveResolvers", () => {
     expect(retrieveResolvers(data)).toBeFalse();
   });
 
-  it("should handle multiple errored resolver", () => {
+  it('should handle multiple errored resolver', () => {
     const data: any = {
       resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
-        resolvedModel3: "customResolver2",
+        resolvedModel1: 'customResolver1',
+        resolvedModel2: 'customResolver2',
+        resolvedModel3: 'customResolver2',
       },
       resolvedModel1: {
-        error: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
+        error: { status: 401, message: 'Unauthorized' } as ApiErrorDetails,
       },
       resolvedModel2: {
-        error: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
+        error: { status: 401, message: 'Unauthorized' } as ApiErrorDetails,
       },
       resolvedModel3: {
-        error: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
+        error: { status: 401, message: 'Unauthorized' } as ApiErrorDetails,
       },
     };
 

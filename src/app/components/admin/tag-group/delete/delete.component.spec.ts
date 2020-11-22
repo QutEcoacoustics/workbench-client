@@ -1,26 +1,26 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
 import {
   tagGroupResolvers,
   TagGroupsService,
-} from "@baw-api/tag/tag-group.service";
-import { TagGroup } from "@models/TagGroup";
-import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import { generateTagGroup } from "@test/fakes/TagGroup";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
-import { adminTagGroupsMenuItem } from "../tag-group.menus";
-import { AdminTagGroupsDeleteComponent } from "./delete.component";
+} from '@baw-api/tag/tag-group.service';
+import { TagGroup } from '@models/TagGroup';
+import { SpyObject } from '@ngneat/spectator';
+import { SharedModule } from '@shared/shared.module';
+import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
+import { generateTagGroup } from '@test/fakes/TagGroup';
+import { assertErrorHandler } from '@test/helpers/html';
+import { mockActivatedRoute } from '@test/helpers/testbed';
+import { ToastrService } from 'ngx-toastr';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { appLibraryImports } from 'src/app/app.module';
+import { adminTagGroupsMenuItem } from '../tag-group.menus';
+import { AdminTagGroupsDeleteComponent } from './delete.component';
 
-describe("AdminTagGroupsDeleteComponent", () => {
+describe('AdminTagGroupsDeleteComponent', () => {
   let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsDeleteComponent;
   let defaultTagGroup: TagGroup;
@@ -54,9 +54,9 @@ describe("AdminTagGroupsDeleteComponent", () => {
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
 
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(notifications, 'success').and.stub();
+    spyOn(notifications, 'error').and.stub();
+    spyOn(router, 'navigateByUrl').and.stub();
 
     fixture.detectChanges();
   }
@@ -65,32 +65,32 @@ describe("AdminTagGroupsDeleteComponent", () => {
     defaultTagGroup = new TagGroup(generateTagGroup());
   });
 
-  describe("form", () => {
-    it("should have no fields", () => {
+  describe('form', () => {
+    it('should have no fields', () => {
       configureTestingModule(defaultTagGroup);
       expect(component.fields).toEqual([]);
     });
   });
 
-  describe("component", () => {
-    it("should create", () => {
+  describe('component', () => {
+    it('should create', () => {
       configureTestingModule(defaultTagGroup);
       expect(component).toBeTruthy();
     });
 
-    it("should handle tag group error", () => {
+    it('should handle tag group error', () => {
       configureTestingModule(undefined, generateApiErrorDetails());
       assertErrorHandler(fixture);
     });
 
-    it("should call api", () => {
+    it('should call api', () => {
       configureTestingModule(defaultTagGroup);
       api.destroy.and.callFake(() => new Subject());
       component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
-    it("should redirect to tag group list", () => {
+    it('should redirect to tag group list', () => {
       configureTestingModule(defaultTagGroup);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 

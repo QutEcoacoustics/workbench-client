@@ -1,22 +1,22 @@
-import { Directive, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { AbstractModel } from "@models/AbstractModel";
+import { Directive, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ApiFilter } from '@baw-api/api-common';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { Filters } from '@baw-api/baw-api.service';
+import { ResolvedModelList, retrieveResolvers } from '@baw-api/resolver-common';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { AbstractModel } from '@models/AbstractModel';
 import {
   ColumnMode,
   DatatableComponent,
   SelectionType,
   SortType,
   TableColumn,
-} from "@swimlane/ngx-datatable";
-import { Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { defaultDebounceTime } from "src/app/app.helper";
-import { PageComponent } from "../page/pageComponent";
+} from '@swimlane/ngx-datatable';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { defaultDebounceTime } from 'src/app/app.helper';
+import { PageComponent } from '../page/pageComponent';
 
 /**
  * Paged Template Class.
@@ -168,8 +168,8 @@ export interface TablePage {
 }
 
 export interface SortEvent {
-  newValue: "asc" | "desc";
-  prevValue: "asc" | "desc";
+  newValue: 'asc' | 'desc';
+  prevValue: 'asc' | 'desc';
   column: {
     sortable: boolean;
     prop: string;

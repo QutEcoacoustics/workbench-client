@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { noop, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { defaultDebounceTime } from "src/app/app.helper";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { noop, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { defaultDebounceTime } from 'src/app/app.helper';
 
 @Component({
-  selector: "baw-debounce-input",
+  selector: 'baw-debounce-input',
   template: `
     <div class="input-group mb-3">
       <div *ngIf="label" class="input-group-prepend">
@@ -22,8 +22,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
 })
 export class DebounceInputComponent implements OnInit {
   @Input() public label: string;
-  @Input() public placeholder = "";
-  @Input() public default = "";
+  @Input() public placeholder = '';
+  @Input() public default = '';
   @Output() public filter = new EventEmitter<string>();
 
   private input$ = new Subject<string>();

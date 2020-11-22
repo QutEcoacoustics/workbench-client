@@ -1,8 +1,8 @@
-import { Injector } from "@angular/core";
-import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
-import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { analysisJobMenuItem } from "@helpers/page/externalMenus";
-import { Duration } from "luxon";
+import { Injector } from '@angular/core';
+import { SAVED_SEARCH, SCRIPT } from '@baw-api/ServiceTokens';
+import { adminAnalysisJobMenuItem } from '@components/admin/analysis-jobs/analysis-jobs.menus';
+import { analysisJobMenuItem } from '@helpers/page/externalMenus';
+import { Duration } from 'luxon';
 import {
   DateTimeTimezone,
   Description,
@@ -10,17 +10,17 @@ import {
   HasDescription,
   Id,
   Param,
-} from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+} from '../interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, Deleter, HasOne, Updater } from './AssociationDecorators';
 import {
   BawDateTime,
   BawDuration,
   BawPersistAttr,
-} from "./AttributeDecorators";
-import type { SavedSearch } from "./SavedSearch";
-import type { Script } from "./Script";
-import type { User } from "./User";
+} from './AttributeDecorators';
+import type { SavedSearch } from './SavedSearch';
+import type { Script } from './Script';
+import type { User } from './User';
 
 /**
  * An analysis job model.
@@ -43,7 +43,7 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
 }
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
-  public readonly kind = "AnalysisJob";
+  public readonly kind = 'AnalysisJob';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -76,7 +76,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @BawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
-  @BawDuration<AnalysisJob>({ key: "overallDurationSeconds" })
+  @BawDuration<AnalysisJob>({ key: 'overallDurationSeconds' })
   public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
@@ -88,9 +88,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: User;
   @Deleter<AnalysisJob>()
   public deleter?: User;
-  @HasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
+  @HasOne<AnalysisJob, Script>(SCRIPT, 'scriptId')
   public script?: Script;
-  @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
+  @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, 'savedSearchId')
   public savedSearch?: SavedSearch;
 
   constructor(analysisJob: IAnalysisJob, injector?: Injector) {
@@ -110,9 +110,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 }
 
 export type AnalysisJobStatus =
-  | "before_save"
-  | "new"
-  | "preparing"
-  | "processing"
-  | "suspended"
-  | "completed";
+  | 'before_save'
+  | 'new'
+  | 'preparing'
+  | 'processing'
+  | 'suspended'
+  | 'completed';

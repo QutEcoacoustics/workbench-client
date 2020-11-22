@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { FieldType } from "@ngx-formly/core";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
-import { List } from "immutable";
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
+import { FieldType } from '@ngx-formly/core';
+import { MapMarkerOption, sanitizeMapMarkers } from '@shared/map/map.component';
+import { List } from 'immutable';
 
 /**
  * Location Input
@@ -11,7 +11,7 @@ import { List } from "immutable";
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-location-input",
+  selector: 'formly-location-input',
   template: `
     <div class="form-group">
       <label for="latitude"> Latitude {{ to.required ? " *" : "" }} </label>
@@ -72,8 +72,8 @@ export class FormlyLocationInput extends FieldType implements OnInit {
   public marker: List<MapMarkerOption>;
 
   public ngOnInit() {
-    this.latitude = this.model["latitude"];
-    this.longitude = this.model["longitude"];
+    this.latitude = this.model['latitude'];
+    this.longitude = this.model['longitude'];
     this.setMarker(this.latitude, this.longitude);
     this.formControl.setValidators(() => {
       const error = this.validateCoordinates();
@@ -90,8 +90,8 @@ export class FormlyLocationInput extends FieldType implements OnInit {
       latitude: this.latitude,
       longitude: this.longitude,
     });
-    this.model["latitude"] = this.latitude;
-    this.model["longitude"] = this.longitude;
+    this.model['latitude'] = this.latitude;
+    this.model['longitude'] = this.longitude;
     this.setMarker(this.latitude, this.longitude);
   }
 
@@ -101,6 +101,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
 
   /**
    * Set marker position, or set to null if lat/lng missing
+   *
    * @param latitude Latitude
    * @param longitude Longitude
    */
@@ -126,13 +127,13 @@ export class FormlyLocationInput extends FieldType implements OnInit {
     if (!isInstantiated(this.latitude) !== !isInstantiated(this.longitude)) {
       this.latitudeError = !isInstantiated(this.latitude);
       this.longitudeError = !isInstantiated(this.longitude);
-      return "Both latitude and longitude must be set or left empty";
+      return 'Both latitude and longitude must be set or left empty';
     } else if (this.latitude < -90 || this.latitude > 90) {
       this.latitudeError = true;
-      return "Latitude must be between -90 and 90";
+      return 'Latitude must be between -90 and 90';
     } else if (this.longitude < -180 || this.longitude > 180) {
       this.longitudeError = true;
-      return "Longitude must be between -180 and 180";
+      return 'Longitude must be between -180 and 180';
     }
   }
 }

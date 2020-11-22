@@ -1,30 +1,30 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ProjectsService } from "@baw-api/project/projects.service";
-import { userResolvers } from "@baw-api/user/user.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ProjectsService } from '@baw-api/project/projects.service';
+import { userResolvers } from '@baw-api/user/user.service';
 import {
   myAccountCategory,
   myAccountMenuItem,
   myProjectsMenuItem,
-} from "@components/profile/profile.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
-import { User } from "@models/User";
-import { List } from "immutable";
-import { myAccountActions } from "../profile/my-profile.component";
+} from '@components/profile/profile.menus';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { Project } from '@models/Project';
+import { User } from '@models/User';
+import { List } from 'immutable';
+import { myAccountActions } from '../profile/my-profile.component';
 
-const userKey = "user";
+const userKey = 'user';
 
 @Component({
-  selector: "baw-my-projects",
-  templateUrl: "./projects.component.html",
+  selector: 'baw-my-projects',
+  templateUrl: './projects.component.html',
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
+    { name: 'Project' },
+    { name: 'Sites' },
+    { name: 'Permission' },
   ];
 
   constructor(api: ProjectsService, route: ActivatedRoute) {
@@ -34,7 +34,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
         projects.map((project) => ({
           project,
           sites: project.siteIds.size,
-          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
+          permission: 'UNKNOWN', // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
         })),
       route
     );

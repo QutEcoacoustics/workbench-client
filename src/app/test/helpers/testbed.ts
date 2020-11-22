@@ -1,19 +1,19 @@
-import { CommonModule } from "@angular/common";
-import { HttpHeaders } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ResolvedModel } from "@baw-api/resolver-common";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
-import { LoadingModule } from "@shared/loading/loading.module";
-import { ToastrModule } from "ngx-toastr";
-import { BehaviorSubject } from "rxjs";
-import { formlyRoot, toastrRoot } from "src/app/app.helper";
+import { CommonModule } from '@angular/common';
+import { HttpHeaders } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRouteSnapshot, Data, Params } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ResolvedModel } from '@baw-api/resolver-common';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { FormlyModule } from '@ngx-formly/core';
+import { LoadingModule } from '@shared/loading/loading.module';
+import { ToastrModule } from 'ngx-toastr';
+import { BehaviorSubject } from 'rxjs';
+import { formlyRoot, toastrRoot } from 'src/app/app.helper';
 
 export const testFormImports = [
   CommonModule,
@@ -31,6 +31,7 @@ export const testFormImports = [
 
 /**
  * Create a mock ActivatedRoute class
+ *
  * @param resolvers Activated Route Data Resolvers
  * @param data Activated Route Data
  * @param params Activated Route Params

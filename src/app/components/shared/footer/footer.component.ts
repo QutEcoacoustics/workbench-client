@@ -1,20 +1,20 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { AppConfigService } from '@services/app-config/app-config.service';
 import {
   contactUsMenuItem,
   creditsMenuItem,
   disclaimersMenuItem,
   ethicsMenuItem,
-} from "../../about/about.menus";
-import { statisticsMenuItem } from "../../statistics/statistics.menus";
+} from '../../about/about.menus';
+import { statisticsMenuItem } from '../../statistics/statistics.menus';
 
 /**
  * Footer Component
  */
 @Component({
-  selector: "baw-footer",
-  templateUrl: "./footer.component.html",
-  styleUrls: ["./footer.component.scss"],
+  selector: 'baw-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent implements OnInit {

@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IStudy, Study } from "@models/Study";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { IStudy, Study } from '@models/Study';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const studyId: IdParamOptional<Study> = id;
 const endpoint = stringTemplate`/studies/${studyId}${option}`;
@@ -51,5 +51,5 @@ export class StudiesService extends StandardApi<Study> {
 
 export const studyResolvers = new Resolvers<Study, StudiesService>(
   [StudiesService],
-  "studyId"
-).create("Study");
+  'studyId'
+).create('Study');

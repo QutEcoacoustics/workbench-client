@@ -1,23 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AudioRecording } from "@models/AudioRecording";
-import { List } from "immutable";
-import { fields } from "../audio-recording.schema.json";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { audioRecordingResolvers } from '@baw-api/audio-recording/audio-recordings.service';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { AudioRecording } from '@models/AudioRecording';
+import { List } from 'immutable';
+import { fields } from '../audio-recording.schema.json';
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
   adminAudioRecordingsMenuItem,
-} from "../audio-recordings.menus";
+} from '../audio-recordings.menus';
 
-const audioRecordingKey = "audioRecording";
+const audioRecordingKey = 'audioRecording';
 
 @Component({
-  selector: "baw-admin-audio-recording",
+  selector: 'baw-admin-audio-recording',
   template: `
     <div *ngIf="!failure">
       <h1>Audio Recording Details</h1>

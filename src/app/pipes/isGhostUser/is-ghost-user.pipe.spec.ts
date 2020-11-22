@@ -1,19 +1,19 @@
-import { User } from "@models/User";
-import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
-import { generateUser } from "@test/fakes/User";
-import { IsGhostUserPipe } from "./is-ghost-user.pipe";
+import { User } from '@models/User';
+import { createPipeFactory, SpectatorPipe } from '@ngneat/spectator';
+import { generateUser } from '@test/fakes/User';
+import { IsGhostUserPipe } from './is-ghost-user.pipe';
 
-describe("IsGhostUserPipe", () => {
+describe('IsGhostUserPipe', () => {
   let spec: SpectatorPipe<IsGhostUserPipe>;
   const createPipe = createPipeFactory(IsGhostUserPipe);
 
   function assertPipe(val: boolean) {
     val
-      ? expect(spec.element).toHaveText("true")
-      : expect(spec.element).toHaveText("false");
+      ? expect(spec.element).toHaveText('true')
+      : expect(spec.element).toHaveText('false');
   }
 
-  function setup(value: User, type: "unknown" | "deleted" | "all") {
+  function setup(value: User, type: 'unknown' | 'deleted' | 'all') {
     spec = createPipe(`<p>{{ value | isGhostUser:type }}</p>`, {
       hostProps: { value, type },
     });
@@ -21,28 +21,28 @@ describe("IsGhostUserPipe", () => {
 
   [
     {
-      type: "unknown" as "unknown",
+      type: 'unknown' as 'unknown',
       unknown: true,
       deleted: false,
     },
     {
-      type: "deleted" as "deleted",
+      type: 'deleted' as 'deleted',
       unknown: false,
       deleted: true,
     },
     {
-      type: "all" as "all",
+      type: 'all' as 'all',
       unknown: true,
       deleted: true,
     },
   ].forEach((testCase) => {
     describe(testCase.type, () => {
-      it("should return true for undefined value", () => {
+      it('should return true for undefined value', () => {
         setup(undefined, testCase.type);
         assertPipe(true);
       });
 
-      it("should return true for null value", () => {
+      it('should return true for null value', () => {
         setup(null, testCase.type);
         assertPipe(true);
       });
@@ -57,7 +57,7 @@ describe("IsGhostUserPipe", () => {
         assertPipe(testCase.deleted);
       });
 
-      it("should return false for normal user", () => {
+      it('should return false for normal user', () => {
         setup(new User(generateUser()), testCase.type);
         assertPipe(false);
       });

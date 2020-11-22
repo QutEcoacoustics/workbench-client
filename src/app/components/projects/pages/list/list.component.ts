@@ -1,17 +1,17 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProjectsService } from '@baw-api/project/projects.service';
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
   requestProjectMenuItem,
-} from "@components/projects/projects.menus";
-import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { IProject, Project } from "@models/Project";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { Card } from "@shared/cards/cards.component";
-import { List } from "immutable";
+} from '@components/projects/projects.menus';
+import { PaginationTemplate } from '@helpers/paginationTemplate/paginationTemplate';
+import { IProject, Project } from '@models/Project';
+import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Card } from '@shared/cards/cards.component';
+import { List } from 'immutable';
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -19,7 +19,7 @@ export const projectsMenuItemActions = [
 ];
 
 @Component({
-  selector: "baw-projects-list",
+  selector: 'baw-projects-list',
   template: `
     <ng-container *ngIf="!error">
       <baw-debounce-input
@@ -68,7 +68,7 @@ class ListComponent extends PaginationTemplate<Project> {
       route,
       config,
       projectsService,
-      "name",
+      'name',
       () => [],
       (projects) => {
         const cards = projects.map((project) => project.getCard());

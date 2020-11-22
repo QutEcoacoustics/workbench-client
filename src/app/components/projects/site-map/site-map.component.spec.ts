@@ -1,29 +1,29 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SitesService } from "@baw-api/site/sites.service";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { ISite, Site } from "@models/Site";
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { defaultApiPageSize, Filters } from '@baw-api/baw-api.service';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
+import { SitesService } from '@baw-api/site/sites.service';
+import { Project } from '@models/Project';
+import { Region } from '@models/Region';
+import { ISite, Site } from '@models/Site';
 import {
   createComponentFactory,
   Spectator,
   SpyObject,
-} from "@ngneat/spectator";
-import { MapComponent } from "@shared/map/map.component";
-import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import { generateProject } from "@test/fakes/Project";
-import { generateRegion } from "@test/fakes/Region";
-import { generateSite } from "@test/fakes/Site";
-import { interceptApiRequests, nStepObservable } from "@test/helpers/general";
-import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
-import { SiteMapComponent } from "./site-map.component";
+} from '@ngneat/spectator';
+import { MapComponent } from '@shared/map/map.component';
+import { SharedModule } from '@shared/shared.module';
+import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
+import { generateProject } from '@test/fakes/Project';
+import { generateRegion } from '@test/fakes/Region';
+import { generateSite } from '@test/fakes/Site';
+import { interceptApiRequests, nStepObservable } from '@test/helpers/general';
+import { MockComponent } from 'ng-mocks';
+import { Subject } from 'rxjs';
+import { SiteMapComponent } from './site-map.component';
 
 const MockMap = MockComponent(MapComponent);
 
-describe("SiteMapComponent", () => {
+describe('SiteMapComponent', () => {
   let api: SpyObject<SitesService>;
   let spectator: Spectator<SiteMapComponent>;
   const createComponent = createComponentFactory({
@@ -34,7 +34,7 @@ describe("SiteMapComponent", () => {
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
-    spectator.setInput("project", new Project(generateProject()));
+    spectator.setInput('project', new Project(generateProject()));
     api = spectator.inject(SitesService);
   });
 
@@ -97,44 +97,44 @@ describe("SiteMapComponent", () => {
     expect(getMapMarkers()).toEqual(generateMarkers(allSites));
   }
 
-  it("should handle error", async () => {
+  it('should handle error', async () => {
     const promise = Promise.all(
       interceptApiRequest([generateApiErrorDetails()])
     );
     await assertMapMarkers(promise, []);
   });
 
-  describe("markers", () => {
-    it("should display map placeholder box when no sites found", async () => {
+  describe('markers', () => {
+    it('should display map placeholder box when no sites found', async () => {
       const promise = Promise.all(interceptApiRequest([[]]));
       await assertMapMarkers(promise, []);
     });
 
-    it("should display map marker for single site", async () => {
+    it('should display map marker for single site', async () => {
       const sites = generatePagedSites(1);
       const promise = Promise.all(interceptApiRequest(sites));
       await assertMapMarkers(promise, sites);
     });
 
-    it("should display map markers for multiple sites", async () => {
+    it('should display map markers for multiple sites', async () => {
       const sites = generatePagedSites(25);
       const promise = Promise.all(interceptApiRequest(sites));
       await assertMapMarkers(promise, sites);
     });
 
-    it("should request all pages if number of sites exceeds api page amount", async () => {
+    it('should request all pages if number of sites exceeds api page amount', async () => {
       const sites = generatePagedSites(26);
       const promise = Promise.all(interceptApiRequest(sites));
       await assertMapMarkers(promise, sites);
     });
 
-    it("should display map markers for all sites over multiple pages", async () => {
+    it('should display map markers for all sites over multiple pages', async () => {
       const sites = generatePagedSites(100);
       const promise = Promise.all(interceptApiRequest(sites));
       await assertMapMarkers(promise, sites);
     });
 
-    it("should display map markers as requests return", async () => {
+    it('should display map markers as requests return', async () => {
       const sites = generatePagedSites(100);
       const promises = interceptApiRequest(sites);
 
@@ -144,7 +144,7 @@ describe("SiteMapComponent", () => {
       await assertMapMarkers(promises[3], sites);
     });
 
-    it("should sanitize map markers", async () => {
+    it('should sanitize map markers', async () => {
       const sites = generatePagedSites(100, {
         latitude: undefined,
         longitude: undefined,
@@ -156,7 +156,7 @@ describe("SiteMapComponent", () => {
     });
   });
 
-  describe("api", () => {
+  describe('api', () => {
     function assertFilter(page: number, project: Project, region?: Region) {
       return (filters: Filters<ISite>, model: Project) => {
         expect(filters).toEqual(
@@ -171,7 +171,7 @@ describe("SiteMapComponent", () => {
       };
     }
 
-    it("should generate filter commands with initial filter", async () => {
+    it('should generate filter commands with initial filter', async () => {
       const sites = generatePagedSites(1);
       const promise = Promise.all(
         interceptApiRequest(sites, [
@@ -184,7 +184,7 @@ describe("SiteMapComponent", () => {
       spectator.detectChanges();
     });
 
-    it("should generate filter commands with incremental page numbers", async () => {
+    it('should generate filter commands with incremental page numbers', async () => {
       const sites = generatePagedSites(100);
       const promise = Promise.all(
         interceptApiRequest(sites, [
@@ -200,8 +200,8 @@ describe("SiteMapComponent", () => {
       spectator.detectChanges();
     });
 
-    it("should generate filter commands with region id", async () => {
-      spectator.setInput("region", new Region(generateRegion()));
+    it('should generate filter commands with region id', async () => {
+      spectator.setInput('region', new Region(generateRegion()));
       const sites = generatePagedSites(1);
       const promise = Promise.all(
         interceptApiRequest(sites, [

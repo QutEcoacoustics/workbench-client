@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ISavedSearch, SavedSearch } from "@models/SavedSearch";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { ISavedSearch, SavedSearch } from '@models/SavedSearch';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -12,9 +12,9 @@ import {
   IdParamOptional,
   ImmutableApi,
   option,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const savedSearchId: IdParamOptional<SavedSearch> = id;
 const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;
@@ -49,4 +49,4 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
 export const savedSearchResolvers = new Resolvers<
   SavedSearch,
   SavedSearchesService
->([SavedSearchesService], "savedSearchId").create("SavedSearch");
+>([SavedSearchesService], 'savedSearchId').create('SavedSearch');

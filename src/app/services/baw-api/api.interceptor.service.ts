@@ -6,17 +6,17 @@ import {
   HttpParams,
   HttpRequest,
   HttpResponse,
-} from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+} from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
 import {
   toCamelCase,
   toSnakeCase,
-} from "@helpers/case-converter/case-converter";
-import { Observable, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { ApiResponse } from "./baw-api.service";
-import { SecurityService } from "./security/security.service";
+} from '@helpers/case-converter/case-converter';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { ApiResponse } from './baw-api.service';
+import { SecurityService } from './security/security.service';
 
 /**
  * BAW API Interceptor.
@@ -34,6 +34,7 @@ export class BawApiInterceptor implements HttpInterceptor {
    * Intercept http requests and handle appending login tokens and errors.
    * This interceptor also handles converting the variable names in json objects
    * from snake case to camel case, and back again for outgoing and ingoing requests.
+   *
    * @param request Http Request
    * @param next Function to be run after interceptor
    */
@@ -46,11 +47,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // Don't add these headers to requests to cms service
-    if (request.responseType !== "text") {
+    if (request.responseType !== 'text') {
       request = request.clone({
         setHeaders: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       });
     }
@@ -103,6 +104,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 
   /**
    * Writes error to console and throws error
+   *
    * @param response HTTP Error
    * @throws Observable<never>
    */
@@ -147,6 +149,7 @@ interface ApiErrorResponse extends HttpErrorResponse {
 
 /**
  * Determine if error response has already been processed
+ *
  * @param errorResponse Error response
  */
 function isErrorDetails(
@@ -154,12 +157,13 @@ function isErrorDetails(
 ): errorResponse is ApiErrorDetails {
   const keys = Object.keys(errorResponse);
   return (
-    keys.length <= 3 && keys.includes("status") && keys.includes("message")
+    keys.length <= 3 && keys.includes('status') && keys.includes('message')
   );
 }
 
 /**
  * Determine if error response is from API
+ *
  * @param errorResponse Error response
  */
 function isErrorResponse(

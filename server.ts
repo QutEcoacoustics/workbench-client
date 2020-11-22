@@ -6,6 +6,8 @@
 
 import "zone.js/dist/zone-node";
 
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   API_CONFIG,
@@ -14,8 +16,6 @@ import {
 import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/app-config/app-config.service";
 import express from "express";
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
 import { environment } from "src/environments/environment";
 import { AppServerModule } from "./src/main.server";
 

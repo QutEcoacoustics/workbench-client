@@ -1,28 +1,28 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   tagGroupResolvers,
   TagGroupsService,
-} from "@baw-api/tag/tag-group.service";
+} from '@baw-api/tag/tag-group.service';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { TagGroup } from "@models/TagGroup";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { adminTagGroupMenuItemActions } from "../list/list.component";
+} from '@helpers/formTemplate/formTemplate';
+import { TagGroup } from '@models/TagGroup';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { adminTagGroupMenuItemActions } from '../list/list.component';
 import {
   adminEditTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
-} from "../tag-group.menus";
-import { fields } from "../tag-group.schema.json";
+} from '../tag-group.menus';
+import { fields } from '../tag-group.schema.json';
 
-const tagGroupKey = "tagGroup";
+const tagGroupKey = 'tagGroup';
 
 @Component({
-  selector: "baw-admin-tag-groups-edit",
+  selector: 'baw-admin-tag-groups-edit',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -48,7 +48,7 @@ class AdminTagGroupsEditComponent
     router: Router
   ) {
     super(notifications, route, router, tagGroupKey, (model) =>
-      defaultSuccessMsg("updated", model.groupIdentifier)
+      defaultSuccessMsg('updated', model.groupIdentifier)
     );
   }
 

@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { SitesService } from "@baw-api/site/sites.service";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Component, Input, OnInit } from '@angular/core';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { SitesService } from '@baw-api/site/sites.service';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { Project } from '@models/Project';
+import { Site } from '@models/Site';
 
 @Component({
-  selector: "baw-project-harvest-complete",
-  templateUrl: "./harvest-complete.component.html",
+  selector: 'baw-project-harvest-complete',
+  templateUrl: './harvest-complete.component.html',
 })
 export class HarvestCompleteComponent
   extends PagedTableTemplate<TableRow, Site>
@@ -15,8 +15,8 @@ export class HarvestCompleteComponent
   @Input() public project: Project;
   public sites: Site[];
   public error: ApiErrorDetails;
-  public columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];
-  public sortKeys = { id: "id", name: "name" };
+  public columns = [{ name: 'Id' }, { name: 'Name' }, { name: 'Actions' }];
+  public sortKeys = { id: 'id', name: 'name' };
 
   constructor(api: SitesService) {
     super(
@@ -37,11 +37,11 @@ export class HarvestCompleteComponent
   }
 
   public playPath(site: Site) {
-    return "/broken_link";
+    return '/broken_link';
   }
 
   public visualizePath(site: Site) {
-    return "/broken_link";
+    return '/broken_link';
   }
 }
 

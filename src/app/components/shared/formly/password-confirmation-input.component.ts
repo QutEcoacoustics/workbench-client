@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { FieldType } from "@ngx-formly/core";
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { FieldType } from '@ngx-formly/core';
 
 /**
  * Location Input
  */
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-password-confirmation-input",
+  selector: 'formly-password-confirmation-input',
   template: `
     <div class="form-group">
       <label for="password">Password {{ to.required ? " *" : "" }}</label>
@@ -61,9 +61,9 @@ export class FormlyPasswordConfirmationInput
   extends FieldType
   implements OnInit {
   public formControl: FormControl;
-  public password = "";
+  public password = '';
   public passwordError: boolean;
-  public confirmation = "";
+  public confirmation = '';
   public confirmationError: boolean;
 
   public ngOnInit() {
@@ -81,7 +81,7 @@ export class FormlyPasswordConfirmationInput
     this.formControl.setValue({
       password: this.password,
     });
-    this.model["password"] = this.password;
+    this.model['password'] = this.password;
   }
 
   public getError(): string {
@@ -101,10 +101,10 @@ export class FormlyPasswordConfirmationInput
 
     if (this.password.length < 6) {
       this.passwordError = true;
-      return "Password must be longer than 6 characters";
+      return 'Password must be longer than 6 characters';
     } else if (this.password !== this.confirmation) {
       this.confirmationError = true;
-      return "Passwords do not match";
+      return 'Passwords do not match';
     }
   }
 }

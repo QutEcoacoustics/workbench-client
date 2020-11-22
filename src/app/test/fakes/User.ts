@@ -1,6 +1,6 @@
-import { Id } from "@interfaces/apiInterfaces";
-import { ISessionUser, IUser } from "@models/User";
-import { modelData } from "@test/helpers/faker";
+import { Id } from '@interfaces/apiInterfaces';
+import { ISessionUser, IUser } from '@models/User';
+import { modelData } from '@test/helpers/faker';
 
 export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
   return {
@@ -10,7 +10,7 @@ export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
     signInCount: modelData.random.number(100),
     failedAttempts: modelData.random.number(100),
     rolesMask: isAdmin ? 1 : 2,
-    rolesMaskNames: isAdmin ? ["admin"] : ["user"],
+    rolesMaskNames: isAdmin ? ['admin'] : ['user'],
     imageUrls: modelData.imageUrls(),
     preferences: modelData.randomObject(0, 5),
     isConfirmed: modelData.boolean(),
@@ -26,8 +26,8 @@ export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
     updatedAt: modelData.timestamp(),
     lastSeenAt: modelData.timestamp(),
     ...modelData.random.arrayElement([
-      { rolesMask: 1, rolesMaskNames: ["Admin"] },
-      { rolesMask: 2, rolesMaskNames: ["User"] },
+      { rolesMask: 1, rolesMaskNames: ['Admin'] },
+      { rolesMask: 2, rolesMaskNames: ['User'] },
     ]),
     tzinfoTz: modelData.tzInfoTz(),
   };

@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Dataset } from "@models/Dataset";
-import { DatasetItem, IDatasetItem } from "@models/DatasetItem";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { Dataset } from '@models/Dataset';
+import { DatasetItem, IDatasetItem } from '@models/DatasetItem';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   ImmutableApi,
   option,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const datasetId: IdParam<Dataset> = id;
 const datasetItemId: IdParamOptional<DatasetItem> = id;
@@ -50,7 +50,10 @@ export class DatasetItemsService extends ImmutableApi<
   ): Observable<DatasetItem> {
     return this.apiShow(endpoint(dataset, model, Empty));
   }
-  public create(model: DatasetItem, dataset: IdOr<Dataset>): Observable<DatasetItem> {
+  public create(
+    model: DatasetItem,
+    dataset: IdOr<Dataset>
+  ): Observable<DatasetItem> {
     return this.apiCreate(endpoint(dataset, Empty, Empty), model);
   }
   public destroy(
@@ -64,4 +67,4 @@ export class DatasetItemsService extends ImmutableApi<
 export const datasetItemResolvers = new Resolvers<
   DatasetItem,
   DatasetItemsService
->([DatasetItemsService], "datasetItemId").create("DatasetItem");
+>([DatasetItemsService], 'datasetItemId').create('DatasetItem');

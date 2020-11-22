@@ -1,9 +1,9 @@
-import { Params } from "@angular/router";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { WidgetMenuItem } from "@menu/widgetItem";
-import { List } from "immutable";
-import { SessionUser } from "../models/User";
-import { StrongRoute } from "./strongRoute";
+import { Params } from '@angular/router';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { WidgetMenuItem } from '@menu/widgetItem';
+import { List } from 'immutable';
+import { SessionUser } from '../models/User';
+import { StrongRoute } from './strongRoute';
 
 /**
  * Part of an (a single file/directory) internal angular route
@@ -44,6 +44,7 @@ export interface LabelAndIcon {
 
 /**
  * Category interface
+ *
  * @extends LabelAndIcon
  */
 export interface Category extends LabelAndIcon {
@@ -57,7 +58,7 @@ export interface Category extends LabelAndIcon {
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
-export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
+export type MenuItemKinds = 'MenuAction' | 'MenuLink' | 'MenuRoute';
 
 /**
  * User callback function
@@ -67,6 +68,7 @@ export type UserCallback<T> = null | ((user?: SessionUser, data?: any) => T);
 /**
  * An item designed to be in a menu.
  * Do not use this directly, see the derived interfaces.
+ *
  * @extends LabelAndIcon
  */
 export interface MenuItem extends LabelAndIcon {
@@ -104,19 +106,20 @@ export interface MenuItem extends LabelAndIcon {
  * MenuLink interface. Defines all the requirements of a href that points
  * to an external location, but not an internal route or page.
  * e.g. https://google.com.
+ *
  * @extends MenuItem
  */
 export interface MenuLink extends MenuItem {
-  kind: "MenuLink";
+  kind: 'MenuLink';
   /**
    * The URL or fragment this link points to
    */
   uri: Href;
 }
 
-export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
+export function MenuLink<T extends Omit<MenuLink, 'kind'>>(item: T): MenuLink {
   return Object.assign(item, {
-    kind: "MenuLink" as "MenuLink",
+    kind: 'MenuLink' as 'MenuLink',
     active: false,
     indentation: 0,
   });
@@ -125,10 +128,11 @@ export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
 /**
  * MenuRoute interface. Defines an internal page/route within this application.
  * Must be known to this angular app. e.g. /security/login
+ *
  * @extends MenuItem
  */
 export interface MenuRoute extends MenuItem {
-  kind: "MenuRoute";
+  kind: 'MenuRoute';
   /**
    * The internal route this menu item points to
    */
@@ -140,11 +144,11 @@ export interface MenuRoute extends MenuItem {
   parent?: MenuRoute;
 }
 
-export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
+export function MenuRoute<T extends Omit<MenuRoute, 'kind'>>(
   item: T
 ): MenuRoute {
   return Object.assign(item, {
-    kind: "MenuRoute" as "MenuRoute",
+    kind: 'MenuRoute' as 'MenuRoute',
     active: false,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
     order: item.parent ? item.parent.order : item.order,
@@ -154,18 +158,19 @@ export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
 /**
  * Action Link interface. Defines all the requirements of an non-navigable menu
  * item. A button.
+ *
  * @extends MenuItem
  */
 export interface MenuAction extends MenuItem {
-  kind: "MenuAction";
+  kind: 'MenuAction';
   action: () => any | void;
 }
 
-export function MenuAction<T extends Omit<MenuAction, "kind">>(
+export function MenuAction<T extends Omit<MenuAction, 'kind'>>(
   item: T
 ): MenuAction {
   return Object.assign(item, {
-    kind: "MenuAction" as "MenuAction",
+    kind: 'MenuAction' as 'MenuAction',
     active: false,
     indentation: 0,
   });
@@ -185,31 +190,35 @@ export type NavigableMenuItem = MenuLink | MenuRoute;
 
 /**
  * Determines if a menu item is a button (MenuAction)
+ *
  * @param menuItem Menu item
  */
 export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
-  return menuItem.kind === "MenuAction";
+  return menuItem.kind === 'MenuAction';
 }
 
 /**
  * Determines if a menu item is part of the MenuItem interface
+ *
  * @param menuItem Menu item
  */
 export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
-  return menuItem.kind === "MenuRoute";
+  return menuItem.kind === 'MenuRoute';
 }
 
 /**
  * Determines if a menu item is part of the MenuLink interface
+ *
  * @param menuItem Menu item
  */
 export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
-  return menuItem.kind === "MenuLink";
+  return menuItem.kind === 'MenuLink';
 }
 
 /**
  * Get link route. This is only required because typescript is unable to
  * properly type-check links in template.
+ *
  * @param link Menu item
  * @returns Either full route, or uri
  */
@@ -219,6 +228,7 @@ export function getRoute(link: NavigableMenuItem, params?: Params): string {
 
 /**
  * Determines if an object is part of the Navigable interface
+ *
  * @param menuItem Menu item
  */
 export function isNavigableMenuItem(
@@ -230,6 +240,7 @@ export function isNavigableMenuItem(
 /**
  * MenusInfo interface. This stores information required to generate the
  * various menus attached to a component.
+ *
  * @param actions List of actions
  * @param links List of secondary links
  */

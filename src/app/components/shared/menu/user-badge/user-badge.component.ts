@@ -1,14 +1,14 @@
-import { Component, Input } from "@angular/core";
-import { ImageSizes } from "@interfaces/apiInterfaces";
-import { User } from "@models/User";
-import { DateTime } from "luxon";
+import { Component, Input } from '@angular/core';
+import { ImageSizes } from '@interfaces/apiInterfaces';
+import { User } from '@models/User';
+import { DateTime } from 'luxon';
 
 /**
  * App User Badge Component.
  * A single menu widget displaying a user account and its relationship to the model
  */
 @Component({
-  selector: "baw-user-badge",
+  selector: 'baw-user-badge',
   template: `
     <!-- Heading -->
     <h5 id="label">{{ label }}</h5>
@@ -67,7 +67,7 @@ import { DateTime } from "luxon";
       </div>
     </ng-container>
   `,
-  styleUrls: ["./user-badge.component.scss"],
+  styleUrls: ['./user-badge.component.scss'],
 })
 export class UserBadgeComponent {
   @Input() public label: string;

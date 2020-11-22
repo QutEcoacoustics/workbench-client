@@ -1,27 +1,27 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { tagResolvers, TagsService } from '@baw-api/tag/tags.service';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { Tag, TagType } from "@models/Tag";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { adminTagsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag.schema.json";
+} from '@helpers/formTemplate/formTemplate';
+import { Tag, TagType } from '@models/Tag';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { adminTagsMenuItemActions } from '../list/list.component';
+import { fields } from '../tag.schema.json';
 import {
   adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
   adminTagsMenuItem,
-} from "../tags.menus";
+} from '../tags.menus';
 
-const tagKey = "tag";
-const tagTypesKey = "tagTypes";
+const tagKey = 'tag';
+const tagTypesKey = 'tagTypes';
 
 @Component({
-  selector: "baw-admin-tags-edit",
+  selector: 'baw-admin-tags-edit',
   template: `
     <baw-form
       *ngIf="!failure"
@@ -45,7 +45,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, tagKey, (model) =>
-      defaultSuccessMsg("updated", model.text)
+      defaultSuccessMsg('updated', model.text)
     );
   }
 

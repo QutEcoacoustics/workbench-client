@@ -1,5 +1,6 @@
 /**
  * Fetch request with multiple attempts
+ *
  * @param input Fetch input details (URL)
  * @param delay Delay amount in milliseconds
  * @param limit Maximum number of attempts
@@ -31,7 +32,7 @@ export function fetchRetry<T = Response>(
     // Retry fetch
     function retry(attempt: number) {
       if (attempt >= limit - 1) {
-        return reject("Failed to fetch item after " + limit + " attempt/s.");
+        return reject('Failed to fetch item after ' + limit + ' attempt/s.');
       }
 
       setTimeout(() => {

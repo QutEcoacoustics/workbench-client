@@ -1,13 +1,14 @@
 /**
  * Templates a string by substituting placeholders for tokens later in execution.
  * It is designed to work as the tag function for tagged interpolated strings.
+ *
  * @returns A reusable template function that is statically checked for arity and
  * parameter type compatibility with the placeholders from the interpolated string.
  * @param strings The strings around the tokens to template
  * @param placeholders Placeholders that are substituted for token when
  *  templating is done. Note these are transform functions.
  */
-export function stringTemplate<T extends ((input: any) => any)[]>(
+export function stringTemplate<T extends((input: any) => any)[]>(
   strings: TemplateStringsArray,
   ...placeholders: T
 ) {
@@ -23,7 +24,7 @@ export function stringTemplate<T extends ((input: any) => any)[]>(
 
     result[result.length - 1] = strings[strings.length - 1];
 
-    return result.join("");
+    return result.join('');
   };
 }
 

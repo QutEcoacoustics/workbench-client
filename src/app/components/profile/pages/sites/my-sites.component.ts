@@ -1,32 +1,32 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { userResolvers } from "@baw-api/user/user.service";
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ShallowSitesService } from '@baw-api/site/sites.service';
+import { userResolvers } from '@baw-api/user/user.service';
 import {
   myAccountCategory,
   myAccountMenuItem,
   mySitesMenuItem,
-} from "@components/profile/profile.menus";
-import { siteAnnotationsMenuItem } from "@components/sites/sites.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Site } from "@models/Site";
-import { User } from "@models/User";
-import { List } from "immutable";
-import { myAccountActions } from "../profile/my-profile.component";
+} from '@components/profile/profile.menus';
+import { siteAnnotationsMenuItem } from '@components/sites/sites.menus';
+import { PagedTableTemplate } from '@helpers/tableTemplate/pagedTableTemplate';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { Site } from '@models/Site';
+import { User } from '@models/User';
+import { List } from 'immutable';
+import { myAccountActions } from '../profile/my-profile.component';
 
-const userKey = "user";
+const userKey = 'user';
 
 @Component({
-  selector: "baw-my-sites",
-  templateUrl: "./sites.component.html",
+  selector: 'baw-my-sites',
+  templateUrl: './sites.component.html',
 })
 class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [
-    { name: "Site" },
-    { name: "Recent Audio Upload" },
-    { name: "Permission" },
-    { name: "Annotation" },
+    { name: 'Site' },
+    { name: 'Recent Audio Upload' },
+    { name: 'Permission' },
+    { name: 'Annotation' },
   ];
 
   constructor(api: ShallowSitesService, route: ActivatedRoute) {
@@ -38,8 +38,8 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
       (sites) =>
         sites.map((site) => ({
           site,
-          recentAudioUpload: "(none)",
-          permission: "UNKNOWN",
+          recentAudioUpload: '(none)',
+          permission: 'UNKNOWN',
           annotation: siteAnnotationsMenuItem.uri(undefined),
         })),
       route

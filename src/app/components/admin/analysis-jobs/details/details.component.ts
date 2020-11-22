@@ -1,23 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AnalysisJob } from "@models/AnalysisJob";
-import { List } from "immutable";
-import { fields } from "../analysis-job.schema.json";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { analysisJobResolvers } from '@baw-api/analysis/analysis-jobs.service';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { adminAnalysisJobsMenuItem } from '@components/admin/admin.menus';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { AnalysisJob } from '@models/AnalysisJob';
+import { List } from 'immutable';
+import { fields } from '../analysis-job.schema.json';
 import {
   adminAnalysisJobMenuItem,
   adminAnalysisJobsCategory,
-} from "../analysis-jobs.menus";
+} from '../analysis-jobs.menus';
 
-const analysisJobKey = "analysisJob";
+const analysisJobKey = 'analysisJob';
 
 @Component({
-  selector: "baw-admin-analysis-job",
+  selector: 'baw-admin-analysis-job',
   template: `
     <div *ngIf="!failure">
       <h1>Analysis Job Details</h1>

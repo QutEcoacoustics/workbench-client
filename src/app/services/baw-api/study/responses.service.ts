@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IResponse, Response } from "@models/Response";
-import { Study } from "@models/Study";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { IResponse, Response } from '@models/Response';
+import { Study } from '@models/Study';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const studyId: IdParam<Study> = id;
 const responseId: IdParamOptional<Response> = id;
@@ -91,11 +91,11 @@ export class ShallowResponsesService extends StandardApi<Response> {
 
 export const responseResolvers = new Resolvers<Response, ResponsesService>(
   [ResponsesService],
-  "responseId",
-  ["studyId"]
-).create("Response");
+  'responseId',
+  ['studyId']
+).create('Response');
 
 export const shallowResponseResolvers = new Resolvers<
   Response,
   ShallowResponsesService
->([ShallowResponsesService], "responseId").create("ShallowResponse");
+>([ShallowResponsesService], 'responseId').create('ShallowResponse');

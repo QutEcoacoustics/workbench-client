@@ -1,24 +1,24 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ResolvedModel } from "@baw-api/resolver-common";
-import { userResolvers, UserService } from "@baw-api/user/user.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ResolvedModel } from '@baw-api/resolver-common';
+import { userResolvers, UserService } from '@baw-api/user/user.service';
 import {
   myAccountCategory,
   myAccountMenuItem,
   myEditMenuItem,
-} from "@components/profile/profile.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { User } from "@models/User";
-import { List } from "immutable";
-import { myAccountActions } from "../profile/my-profile.component";
-import { fields } from "./my-edit.schema.json";
+} from '@components/profile/profile.menus';
+import { WithFormCheck } from '@guards/form/form.guard';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { User } from '@models/User';
+import { List } from 'immutable';
+import { myAccountActions } from '../profile/my-profile.component';
+import { fields } from './my-edit.schema.json';
 
-const userKey = "user";
+const userKey = 'user';
 
 @Component({
-  selector: "baw-my-edit",
+  selector: 'baw-my-edit',
   template: `
     <baw-wip>
       <ng-container *ngIf="model">
@@ -69,18 +69,20 @@ class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
 
   /**
    * Edit form submission
+   *
    * @param $event Form response
    */
   public submitEdit($event: any) {
-    console.log("Edit Submission: ", $event);
+    console.log('Edit Submission: ', $event);
   }
 
   /**
    * Delete form submission
+   *
    * @param $event Form response
    */
   public submitDelete($event: any) {
-    console.log("Delete Submission", $event);
+    console.log('Delete Submission', $event);
   }
 }
 

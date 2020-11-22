@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Bookmark, IBookmark } from "@models/Bookmark";
-import type { User } from "@models/User";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { Bookmark, IBookmark } from '@models/Bookmark';
+import type { User } from '@models/User';
+import { Observable } from 'rxjs';
 import {
   Empty,
   Filter,
@@ -14,9 +14,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const bookmarkId: IdParamOptional<Bookmark> = id;
 const endpoint = stringTemplate`/bookmarks/${bookmarkId}${option}`;
@@ -42,7 +42,7 @@ export class BookmarksService extends StandardApi<Bookmark> {
     user?: IdOr<User>
   ): Observable<Bookmark[]> {
     return this.filter(
-      user ? filterByForeignKey<IBookmark>(filters, "creatorId", user) : filters
+      user ? filterByForeignKey<IBookmark>(filters, 'creatorId', user) : filters
     );
   }
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {
@@ -61,5 +61,5 @@ export class BookmarksService extends StandardApi<Bookmark> {
 
 export const bookmarkResolvers = new Resolvers<Bookmark, BookmarksService>(
   [BookmarksService],
-  "bookmarkId"
-).create("Bookmark");
+  'bookmarkId'
+).create('Bookmark');

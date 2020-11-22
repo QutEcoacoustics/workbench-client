@@ -1,29 +1,29 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   accountResolvers,
   AccountsService,
-} from "@baw-api/account/accounts.service";
+} from '@baw-api/account/accounts.service';
 import {
   theirEditMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
-} from "@components/profile/profile.menus";
+} from '@components/profile/profile.menus';
 import {
   defaultSuccessMsg,
   FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { User } from "@models/User";
-import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import { fields } from "../../profile.schema.json";
-import { theirProfileActions } from "../profile/their-profile.component";
+} from '@helpers/formTemplate/formTemplate';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { User } from '@models/User';
+import { List } from 'immutable';
+import { ToastrService } from 'ngx-toastr';
+import { fields } from '../../profile.schema.json';
+import { theirProfileActions } from '../profile/their-profile.component';
 
-const accountKey = "account";
+const accountKey = 'account';
 
 @Component({
-  selector: "baw-their-edit",
+  selector: 'baw-their-edit',
   template: `
     <baw-wip *ngIf="!failure">
       <baw-form
@@ -53,7 +53,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
     router: Router
   ) {
     super(notifications, route, router, accountKey, (model) =>
-      defaultSuccessMsg("updated", model.userName)
+      defaultSuccessMsg('updated', model.userName)
     );
   }
 

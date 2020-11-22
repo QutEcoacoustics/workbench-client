@@ -1,10 +1,10 @@
-import { ConfigOption } from "@ngx-formly/core";
+import { ConfigOption } from '@ngx-formly/core';
 import {
   formlyInputTypes,
   formlyValidationMessages,
   formlyWrappers,
-} from "@shared/formly/custom-inputs.module";
-import { GlobalConfig } from "ngx-toastr";
+} from '@shared/formly/custom-inputs.module';
+import { GlobalConfig } from 'ngx-toastr';
 
 /**
  * Toastr Service global defaults
@@ -12,7 +12,7 @@ import { GlobalConfig } from "ngx-toastr";
 export const toastrRoot: Partial<GlobalConfig> = {
   closeButton: true,
   enableHtml: true,
-  positionClass: "toast-top-center",
+  positionClass: 'toast-top-center',
 };
 
 /**

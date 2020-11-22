@@ -1,12 +1,12 @@
-import { Directive, ViewChild } from "@angular/core";
+import { Directive, ViewChild } from '@angular/core';
 import {
   ColumnMode,
   DatatableComponent,
   SelectionType,
   SortType,
   TableColumn,
-} from "@swimlane/ngx-datatable";
-import { PageComponent } from "../page/pageComponent";
+} from '@swimlane/ngx-datatable';
+import { PageComponent } from '../page/pageComponent';
 
 /**
  * Table Template Class.
@@ -37,15 +37,16 @@ export abstract class TableTemplate<T> extends PageComponent {
 
   /**
    * Update table with filtered results
+   *
    * @param $event Update event
    */
   public updateFilter($event: any): void {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.filterTempRows.filter((row) => {
-      return !val || this.filterMatch(val, row);
-    });
+    const temp = this.filterTempRows.filter(
+      (row) => !val || this.filterMatch(val, row)
+    );
 
     // update the rows
     this.rows = temp;
@@ -55,6 +56,7 @@ export abstract class TableTemplate<T> extends PageComponent {
 
   /**
    * Check if val contains field. Case insensitive.
+   *
    * @param filter Filter value
    * @param cell Cell value to compare
    */

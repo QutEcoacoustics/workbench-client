@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { MapMarkerOption, sanitizeMapMarkers } from "./map.component";
+import { Component, Input, OnInit } from '@angular/core';
+import { List } from 'immutable';
+import { MapMarkerOption, sanitizeMapMarkers } from './map.component';
 
 @Component({
-  selector: "baw-map",
+  selector: 'baw-map',
   template: `
     <ng-container *ngIf="hasMarkers; else placeholderMap">
       <div class="map-container">
@@ -16,7 +16,7 @@ import { MapMarkerOption, sanitizeMapMarkers } from "./map.component";
       <div class="map-placeholder"><span>No locations specified</span></div>
     </ng-template>
   `,
-  styleUrls: ["./map.component.scss"],
+  styleUrls: ['./map.component.scss'],
 })
 export class MockMapComponent implements OnInit {
   @Input() public markers: List<MapMarkerOption>;

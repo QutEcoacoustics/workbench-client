@@ -1,6 +1,6 @@
-import { Injector } from "@angular/core";
-import { SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { projectMenuItem } from "@components/projects/projects.menus";
+import { Injector } from '@angular/core';
+import { SHALLOW_REGION, SHALLOW_SITE } from '@baw-api/ServiceTokens';
+import { projectMenuItem } from '@components/projects/projects.menus';
 import {
   AccessLevel,
   DateTimeTimezone,
@@ -12,20 +12,20 @@ import {
   ImageUrl,
   Notes,
   Param,
-} from "@interfaces/apiInterfaces";
-import { assetRoot } from "@services/app-config/app-config.service";
-import { Card } from "@shared/cards/cards.component";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
+} from '@interfaces/apiInterfaces';
+import { assetRoot } from '@services/app-config/app-config.service';
+import { Card } from '@shared/cards/cards.component';
+import { AbstractModel } from './AbstractModel';
+import { Creator, HasMany, Owner, Updater } from './AssociationDecorators';
 import {
   BawCollection,
   BawDateTime,
   BawImage,
   BawPersistAttr,
-} from "./AttributeDecorators";
-import type { Region } from "./Region";
-import type { Site } from "./Site";
-import type { User } from "./User";
+} from './AttributeDecorators';
+import type { Region } from './Region';
+import type { Site } from './Site';
+import type { User } from './User';
 
 /**
  * A project model.
@@ -45,7 +45,7 @@ export interface IProject extends HasAllUsers, HasDescription {
  * A project model.
  */
 export class Project extends AbstractModel implements IProject {
-  public readonly kind = "Project";
+  public readonly kind = 'Project';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -56,7 +56,7 @@ export class Project extends AbstractModel implements IProject {
   public readonly descriptionHtmlTagline?: Description;
   public readonly imageUrl?: string;
   @BawImage<Project>(`${assetRoot}/images/project/project_span4.png`, {
-    key: "imageUrl",
+    key: 'imageUrl',
   })
   public readonly image: ImageUrl[];
   public readonly accessLevel?: AccessLevel;
@@ -78,9 +78,9 @@ export class Project extends AbstractModel implements IProject {
   public readonly notes?: Notes;
 
   // Associations
-  @HasMany<Project, Site>(SHALLOW_SITE, "siteIds")
+  @HasMany<Project, Site>(SHALLOW_SITE, 'siteIds')
   public sites?: Site[];
-  @HasMany<Project, Region>(SHALLOW_REGION, "regionIds")
+  @HasMany<Project, Region>(SHALLOW_REGION, 'regionIds')
   public regions?: Region[];
   @Creator<Project>()
   public creator?: User;

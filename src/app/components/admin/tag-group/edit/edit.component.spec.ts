@@ -1,25 +1,25 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { MockBawApiModule } from '@baw-api/baw-apiMock.module';
 import {
   tagGroupResolvers,
   TagGroupsService,
-} from "@baw-api/tag/tag-group.service";
-import { TagGroup } from "@models/TagGroup";
-import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import { generateTagGroup } from "@test/fakes/TagGroup";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
-import { AdminTagGroupsEditComponent } from "./edit.component";
+} from '@baw-api/tag/tag-group.service';
+import { TagGroup } from '@models/TagGroup';
+import { SpyObject } from '@ngneat/spectator';
+import { SharedModule } from '@shared/shared.module';
+import { generateApiErrorDetails } from '@test/fakes/ApiErrorDetails';
+import { generateTagGroup } from '@test/fakes/TagGroup';
+import { assertErrorHandler } from '@test/helpers/html';
+import { mockActivatedRoute } from '@test/helpers/testbed';
+import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { appLibraryImports } from 'src/app/app.module';
+import { AdminTagGroupsEditComponent } from './edit.component';
 
-describe("AdminTagGroupsEditComponent", () => {
+describe('AdminTagGroupsEditComponent', () => {
   let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsEditComponent;
   let defaultTagGroup: TagGroup;
@@ -53,9 +53,9 @@ describe("AdminTagGroupsEditComponent", () => {
     notifications = TestBed.inject(ToastrService);
     component = fixture.componentInstance;
 
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
+    spyOn(notifications, 'success').and.stub();
+    spyOn(notifications, 'error').and.stub();
+    spyOn(router, 'navigateByUrl').and.stub();
 
     fixture.detectChanges();
   }
@@ -64,20 +64,20 @@ describe("AdminTagGroupsEditComponent", () => {
     defaultTagGroup = new TagGroup(generateTagGroup());
   });
 
-  xdescribe("form", () => {});
+  xdescribe('form', () => {});
 
-  describe("component", () => {
-    it("should create", () => {
+  describe('component', () => {
+    it('should create', () => {
       configureTestingModule(defaultTagGroup);
       expect(component).toBeTruthy();
     });
 
-    it("should handle tag group error", () => {
+    it('should handle tag group error', () => {
       configureTestingModule(undefined, generateApiErrorDetails());
       assertErrorHandler(fixture);
     });
 
-    it("should call api", () => {
+    it('should call api', () => {
       configureTestingModule(defaultTagGroup);
       api.update.and.callFake(() => new Subject());
       component.submit({});

@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { accountResolvers } from "@baw-api/account/accounts.service";
-import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { TagsService } from "@baw-api/tag/tags.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { accountResolvers } from '@baw-api/account/accounts.service';
+import { BookmarksService } from '@baw-api/bookmark/bookmarks.service';
+import { ProjectsService } from '@baw-api/project/projects.service';
+import { ResolvedModel } from '@baw-api/resolver-common';
+import { ShallowSitesService } from '@baw-api/site/sites.service';
+import { TagsService } from '@baw-api/tag/tags.service';
 import {
   theirAnnotationsMenuItem,
   theirBookmarksMenuItem,
@@ -14,16 +14,16 @@ import {
   theirProfileMenuItem,
   theirProjectsMenuItem,
   theirSitesMenuItem,
-} from "@components/profile/profile.menus";
-import { projectsMenuItem } from "@components/projects/projects.menus";
-import { siteMenuItem } from "@components/sites/sites.menus";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
-import { Tag } from "@models/Tag";
-import { User } from "@models/User";
-import { ItemInterface } from "@shared/items/item/item.component";
-import { List } from "immutable";
+} from '@components/profile/profile.menus';
+import { projectsMenuItem } from '@components/projects/projects.menus';
+import { siteMenuItem } from '@components/sites/sites.menus';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { AnyMenuItem } from '@interfaces/menusInterfaces';
+import { AbstractModel } from '@models/AbstractModel';
+import { Tag } from '@models/Tag';
+import { User } from '@models/User';
+import { ItemInterface } from '@shared/items/item/item.component';
+import { List } from 'immutable';
 
 export const theirProfileActions = [
   theirEditMenuItem,
@@ -33,12 +33,12 @@ export const theirProfileActions = [
   theirAnnotationsMenuItem,
 ];
 
-const accountKey = "account";
+const accountKey = 'account';
 
 @Component({
-  selector: "baw-their-profile",
-  templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.scss"],
+  selector: 'baw-their-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss'],
 })
 class TheirProfileComponent extends PageComponent implements OnInit {
   public lastSeenAt: string;
@@ -46,12 +46,12 @@ class TheirProfileComponent extends PageComponent implements OnInit {
   public thirdPerson = true;
   public user: User;
   public userStatistics: List<ItemInterface> = List([
-    { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
-    { icon: ["fas", "tags"], name: "Tags", value: "..." },
-    { icon: ["fas", "bookmark"], name: "Bookmarks", value: "..." },
-    { icon: siteMenuItem.icon, name: "Sites", value: "..." },
+    { icon: projectsMenuItem.icon, name: 'Projects', value: '...' },
+    { icon: ['fas', 'tags'], name: 'Tags', value: '...' },
+    { icon: ['fas', 'bookmark'], name: 'Bookmarks', value: '...' },
+    { icon: siteMenuItem.icon, name: 'Sites', value: '...' },
     // TODO Implement
-    { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
+    { icon: ['fas', 'bullseye'], name: 'Annotations', value: 'Unknown' },
   ]);
 
   constructor(
@@ -76,7 +76,7 @@ class TheirProfileComponent extends PageComponent implements OnInit {
     this.user = accountModel.model;
     this.lastSeenAt = this.user.lastSeenAt
       ? this.user.lastSeenAt.toRelative()
-      : "Unknown time since last logged in";
+      : 'Unknown time since last logged in';
 
     this.projectsApi.filterByCreator({}, this.user).subscribe(
       (models) => this.extractTotal(0, models),
@@ -114,7 +114,7 @@ class TheirProfileComponent extends PageComponent implements OnInit {
   private handleError(index: number) {
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
-      value: "Unknown",
+      value: 'Unknown',
     }));
   }
 }

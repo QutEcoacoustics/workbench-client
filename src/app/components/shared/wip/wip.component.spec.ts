@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
-import { appLibraryImports } from "src/app/app.module";
-import { SharedModule } from "../shared.module";
-import { WIPComponent } from "./wip.component";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
+import { appLibraryImports } from 'src/app/app.module';
+import { SharedModule } from '../shared.module';
+import { WIPComponent } from './wip.component';
 
-describe("WIPComponent", () => {
+describe('WIPComponent', () => {
   let component: WIPComponent;
   let fixture: ComponentFixture<WIPComponent>;
 
@@ -19,7 +19,7 @@ describe("WIPComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 

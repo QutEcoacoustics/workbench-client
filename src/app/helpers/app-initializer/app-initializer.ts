@@ -1,12 +1,12 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { XOR } from "@helpers/advancedTypes";
-import { NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { environment } from "src/environments/environment";
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { XOR } from '@helpers/advancedTypes';
+import { NavigableMenuItem } from '@interfaces/menusInterfaces';
+import { environment } from 'src/environments/environment';
 
-export let API_CONFIG = new InjectionToken<Promise<Configuration>>(
-  "baw.api.config"
+export const API_CONFIG = new InjectionToken<Promise<Configuration>>(
+  'baw.api.config'
 );
-export let API_ROOT = new InjectionToken<string>("baw.api.root");
+export const API_ROOT = new InjectionToken<string>('baw.api.root');
 
 /**
  * App Initializer class.
@@ -30,7 +30,7 @@ export class AppInitializer {
   public static apiRootFactory() {
     return isConfiguration(environment)
       ? environment?.environment?.apiRoot
-      : "";
+      : '';
   }
 }
 
@@ -66,7 +66,7 @@ export interface Environment {
  * External configuration file contents
  */
 export interface Configuration {
-  kind: "Configuration";
+  kind: 'Configuration';
   production: boolean;
   version: string;
   environment: Environment;
@@ -78,7 +78,7 @@ export interface Configuration {
  * Wrapper to automatically initialize kind key
  */
 export class Configuration implements Configuration {
-  public kind: "Configuration" = "Configuration";
+  public kind: 'Configuration' = 'Configuration';
   public production: boolean;
   public version: string;
   public environment: Environment;
@@ -91,12 +91,13 @@ export class Configuration implements Configuration {
 
 /**
  * Determine if a variable is of the Configuration type
+ *
  * @param config Variable to evaluate
  */
 export function isConfiguration(
   config: Configuration
 ): config is Configuration {
-  const hasKind = config?.kind === "Configuration";
+  const hasKind = config?.kind === 'Configuration';
   const hasEnvironment = !!config?.environment;
   const hasValues = !!config?.values;
   const hasApiRoot = !!config?.environment?.apiRoot;
@@ -108,10 +109,11 @@ type Links = XOR<HeaderLink, HeaderDropDownLink>;
 
 /**
  * Determine if a variable is of the HeaderLink type
+ *
  * @param link Variable to evaluate
  */
 export function isHeaderLink(link: Links): link is HeaderLink {
-  return "title" in link;
+  return 'title' in link;
 }
 
 /**

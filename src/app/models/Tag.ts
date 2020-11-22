@@ -1,14 +1,14 @@
-import { Injector } from "@angular/core";
+import { Injector } from '@angular/core';
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
   Id,
-} from "../interfaces/apiInterfaces";
-import { AbstractData } from "./AbstractData";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { User } from "./User";
+} from '../interfaces/apiInterfaces';
+import { AbstractData } from './AbstractData';
+import { AbstractModel } from './AbstractModel';
+import { Creator, Updater } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { User } from './User';
 
 /**
  * Tag model interface
@@ -26,7 +26,7 @@ export interface ITag extends HasCreatorAndUpdater {
  * Tag model
  */
 export class Tag extends AbstractModel implements ITag {
-  public readonly kind = "Tag";
+  public readonly kind = 'Tag';
   @BawPersistAttr
   public readonly id?: Id;
   @BawPersistAttr
@@ -57,8 +57,8 @@ export class Tag extends AbstractModel implements ITag {
   }
 
   public get viewUrl(): string {
-    console.warn("Tag viewUrl method not implemented");
-    return "/broken_link";
+    console.warn('Tag viewUrl method not implemented');
+    return '/broken_link';
   }
 
   public toString(): string {
@@ -67,7 +67,7 @@ export class Tag extends AbstractModel implements ITag {
 }
 
 export class TagType extends AbstractData {
-  public readonly kind = "TagType";
+  public readonly kind = 'TagType';
   public readonly name: string;
 
   constructor(data: { name: string }) {

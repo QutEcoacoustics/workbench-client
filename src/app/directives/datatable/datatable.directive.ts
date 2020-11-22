@@ -1,13 +1,13 @@
-import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { Directive, ElementRef, Host, Input, OnInit } from '@angular/core';
+import { defaultApiPageSize } from '@baw-api/baw-api.service';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 /**
  * Datatable default directives.
  * Assigns defaults to ngx-datatable element.
  */
 @Directive({
-  selector: "[bawDatatableDefaults]",
+  selector: '[bawDatatableDefaults]',
 })
 export class DatatableDirective implements OnInit {
   @Input() public externalPaging = true;
@@ -16,7 +16,7 @@ export class DatatableDirective implements OnInit {
   @Input() public headerHeight = 50;
   @Input() public limit = defaultApiPageSize;
   @Input() public reorderable = false;
-  @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
+  @Input() public rowHeight: ((row: any) => number) | number | 'auto' = 'auto';
   @Input() public scrollbarH = true;
 
   constructor(
@@ -26,7 +26,7 @@ export class DatatableDirective implements OnInit {
 
   public ngOnInit(): void {
     // Set class
-    this.datatableRef.nativeElement.classList.add("bootstrap");
+    this.datatableRef.nativeElement.classList.add('bootstrap');
 
     // Set overrides
     this.datatable.externalPaging = this.externalPaging;

@@ -1,12 +1,12 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector, Type } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ITag, Tag, TagType } from "@models/Tag";
-import { User } from "@models/User";
-import { Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector, Type } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { ITag, Tag, TagType } from '@models/Tag';
+import { User } from '@models/User';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   Empty,
   Filter,
@@ -16,14 +16,14 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { Filters } from "../baw-api.service";
+} from '../api-common';
+import { Filters } from '../baw-api.service';
 import {
   BawProvider,
   BawResolver,
   ResolvedModel,
   Resolvers,
-} from "../resolver-common";
+} from '../resolver-common';
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
@@ -50,7 +50,7 @@ export class TagsService extends StandardApi<Tag> {
   ): Observable<Tag[]> {
     return this.apiFilter(
       endpoint(Empty, Filter),
-      user ? filterByForeignKey<Tag>(filters, "creatorId", user) : filters
+      user ? filterByForeignKey<Tag>(filters, 'creatorId', user) : filters
     );
   }
   public show(model: IdOr<Tag>): Observable<Tag> {
@@ -72,11 +72,11 @@ export class TagsService extends StandardApi<Tag> {
    */
   public tagTypes(): Observable<TagType[]> {
     return of([
-      "general",
-      "common_name",
-      "species_name",
-      "looks_like",
-      "sounds_like",
+      'general',
+      'common_name',
+      'species_name',
+      'looks_like',
+      'sounds_like',
     ]).pipe(map((types) => types.map((type) => new TagType({ name: type }))));
   }
 }
@@ -85,7 +85,7 @@ class TagResolvers {
   public create(name: string) {
     const additionalProvider = new Resolvers<Tag, TagsService>(
       [TagsService],
-      "tagId"
+      'tagId'
     ).create(name);
     const tagTypeProvider = new TagTypeResolvers().create(name);
     const providers = [
@@ -119,10 +119,10 @@ class TagTypeResolvers extends BawResolver<
     providers: BawProvider[];
   } {
     return {
-      tagTypes: name + "TagTypesResolver",
+      tagTypes: name + 'TagTypesResolver',
       providers: [
         {
-          provide: name + "TagTypesResolver",
+          provide: name + 'TagTypesResolver',
           useClass: resolver,
           deps,
         },
@@ -138,4 +138,4 @@ class TagTypeResolvers extends BawResolver<
   }
 }
 
-export const tagResolvers = new TagResolvers().create("Tag");
+export const tagResolvers = new TagResolvers().create('Tag');

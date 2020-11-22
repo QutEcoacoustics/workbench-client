@@ -1,4 +1,4 @@
-import { Injector } from "@angular/core";
+import { Injector } from '@angular/core';
 import {
   DateTimeTimezone,
   Description,
@@ -6,11 +6,11 @@ import {
   HasDescription,
   Id,
   Param,
-} from "@interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
-import type { User } from "./User";
+} from '@interfaces/apiInterfaces';
+import { AbstractModel } from './AbstractModel';
+import { Creator, Updater } from './AssociationDecorators';
+import { BawDateTime, BawPersistAttr } from './AttributeDecorators';
+import type { User } from './User';
 
 export interface IDataset extends HasCreatorAndUpdater, HasDescription {
   id?: Id;
@@ -18,7 +18,7 @@ export interface IDataset extends HasCreatorAndUpdater, HasDescription {
 }
 
 export class Dataset extends AbstractModel implements IDataset {
-  public readonly kind = "Dataset";
+  public readonly kind = 'Dataset';
   @BawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
@@ -45,6 +45,6 @@ export class Dataset extends AbstractModel implements IDataset {
   }
 
   public get viewUrl(): string {
-    throw new Error("Dataset viewUrl not implemented.");
+    throw new Error('Dataset viewUrl not implemented.');
   }
 }

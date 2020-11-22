@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
-import { SharedModule } from "@shared/shared.module";
-import { appLibraryImports } from "src/app/app.module";
-import { ReportProblemComponent } from "./report-problem.component";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockAppConfigModule } from '@services/app-config/app-configMock.module';
+import { SharedModule } from '@shared/shared.module';
+import { appLibraryImports } from 'src/app/app.module';
+import { ReportProblemComponent } from './report-problem.component';
 
-describe("ReportProblemComponent", () => {
+describe('ReportProblemComponent', () => {
   let component: ReportProblemComponent;
   let fixture: ComponentFixture<ReportProblemComponent>;
 
@@ -19,7 +19,7 @@ describe("ReportProblemComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

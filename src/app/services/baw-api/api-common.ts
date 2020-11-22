@@ -1,8 +1,8 @@
-import { PartialWith } from "@helpers/advancedTypes";
-import { Param } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
-import { Observable } from "rxjs";
-import { BawApiService, Filters } from "./baw-api.service";
+import { PartialWith } from '@helpers/advancedTypes';
+import { Param } from '@interfaces/apiInterfaces';
+import { AbstractModel } from '@models/AbstractModel';
+import { Observable } from 'rxjs';
+import { BawApiService, Filters } from './baw-api.service';
 
 /**
  * Variable is an id or AbstractModel
@@ -32,6 +32,7 @@ export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
 
 /**
  * Create parameter (used by stringTemplate)
+ *
  * @param x Api parameter
  */
 export function param(x: Param) {
@@ -40,6 +41,7 @@ export function param(x: Param) {
 
 /**
  * Create option (used by stringTemplate)
+ *
  * @param x Api option
  */
 export function option(x?: New | Filter | Empty) {
@@ -48,6 +50,7 @@ export function option(x?: New | Filter | Empty) {
 
 /**
  * Modify a base filter to add a foreign key condition
+ *
  * @param filters Base Filters
  * @param key Foreign key
  * @param model Foreign key value
@@ -70,12 +73,12 @@ export function filterByForeignKey<T>(
   };
 }
 
-export type Empty = "";
-export type New = "new";
-export type Filter = "filter";
-export const Empty: Empty = "";
-export const New: New = "new";
-export const Filter: Filter = "filter";
+export type Empty = '';
+export type New = 'new';
+export type Filter = 'filter';
+export const Empty: Empty = '';
+export const New: New = 'new';
+export const Filter: Filter = 'filter';
 
 /**
  * API List functionality
@@ -83,6 +86,7 @@ export const Filter: Filter = "filter";
 export interface ApiList<M, P extends any[] = []> {
   /**
    * Get list of models
+   *
    * @param args URL parameter values
    */
   list(...urlParameters: P): Observable<M[]>;
@@ -94,6 +98,7 @@ export interface ApiList<M, P extends any[] = []> {
 export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get list of models, but filtered using the filter API
+   *
    * @param args URL parameter values
    */
   filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
@@ -109,6 +114,7 @@ export interface ApiShow<
 > {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
   show(model: M | I, ...urlParameters: P): Observable<M>;
@@ -120,6 +126,7 @@ export interface ApiShow<
 export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
   create(model: M, ...urlParameters: P): Observable<M>;
@@ -131,9 +138,10 @@ export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
 export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
-  update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
+  update(model: PartialWith<M, 'id'>, ...urlParameters: P): Observable<M>;
 }
 /**
  * API Delete functionality
@@ -145,6 +153,7 @@ export interface ApiDestroy<
 > {
   /**
    * destroy  individual model
+   *
    * @param args URL parameter values
    */
   destroy(model: I, ...urlParameters: P): Observable<M | void>;
@@ -170,7 +179,7 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract create(model: M, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, "id">,
+    model: PartialWith<M, 'id'>,
     ...urlParameters: P
   ): Observable<M>;
   public abstract destroy(
@@ -254,7 +263,7 @@ export abstract class ReadAndUpdateApi<
   ): Observable<M[]>;
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, "id">,
+    model: PartialWith<M, 'id'>,
     ...urlParameters: P
   ): Observable<M>;
 }
@@ -281,7 +290,7 @@ export abstract class NonDestructibleApi<
   public abstract show(model: IdOr<M>, ...urlParameters: P): Observable<M>;
   public abstract create(model: M, ...urlParameters: P): Observable<M>;
   public abstract update(
-    model: PartialWith<M, "id">,
+    model: PartialWith<M, 'id'>,
     ...urlParameters: P
   ): Observable<M>;
 }

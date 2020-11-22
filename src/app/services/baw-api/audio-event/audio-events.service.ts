@@ -1,11 +1,11 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
-import { AudioRecording } from "@models/AudioRecording";
-import { User } from "@models/User";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { API_ROOT } from '@helpers/app-initializer/app-initializer';
+import { stringTemplate } from '@helpers/stringTemplate/stringTemplate';
+import { AudioEvent, IAudioEvent } from '@models/AudioEvent';
+import { AudioRecording } from '@models/AudioRecording';
+import { User } from '@models/User';
+import { Observable } from 'rxjs';
 import {
   ApiFilter,
   Empty,
@@ -17,9 +17,9 @@ import {
   IdParamOptional,
   option,
   StandardApi,
-} from "../api-common";
-import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+} from '../api-common';
+import { BawApiService, Filters } from '../baw-api.service';
+import { Resolvers } from '../resolver-common';
 
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;
@@ -93,7 +93,7 @@ export class ShallowAudioEventsService
   public filterByCreator(filters: Filters<IAudioEvent>, user?: IdOr<User>) {
     return this.filter(
       user
-        ? filterByForeignKey<IAudioEvent>(filters, "creatorId", user)
+        ? filterByForeignKey<IAudioEvent>(filters, 'creatorId', user)
         : filters
     );
   }
@@ -102,6 +102,6 @@ export class ShallowAudioEventsService
 export const audioEventResolvers = new Resolvers<
   AudioEvent,
   AudioEventsService
->([AudioEventsService], "audioEventId", ["audioRecordingId"]).create(
-  "AudioEvent"
+>([AudioEventsService], 'audioEventId', ['audioRecordingId']).create(
+  'AudioEvent'
 );

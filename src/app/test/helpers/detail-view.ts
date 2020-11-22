@@ -1,17 +1,18 @@
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
-import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
-import { DateTime, Duration } from "luxon";
-import { assertImage } from "./html";
+import { isInstantiated } from '@helpers/isInstantiated/isInstantiated';
+import { ImageUrl, toRelative } from '@interfaces/apiInterfaces';
+import { humanizeDateTime } from '@shared/detail-view/render-field/render-field.component';
+import { DateTime, Duration } from 'luxon';
+import { assertImage } from './html';
 
 /**
  * Find a label from a list of detail view items
+ *
  * @param nativeElement Fixture native element
  * @param label Label to find
  */
 function findDetailIndex(nativeElement: HTMLElement, label: string) {
   let detailIndex = -1;
-  const details = nativeElement.querySelectorAll("dt");
+  const details = nativeElement.querySelectorAll('dt');
   details.forEach((detail, index) => {
     if (detail.innerText.trim() === label) {
       detailIndex = index;
@@ -26,15 +27,15 @@ function findDetailIndex(nativeElement: HTMLElement, label: string) {
  */
 export function assertDetail(detail: Detail) {
   describe(`${detail.label} (${detail.key})`, function () {
-    it("should display " + detail.key, function () {
+    it('should display ' + detail.key, function () {
       const index = findDetailIndex(this.fixture.nativeElement, detail.label);
       expect(index).toBeGreaterThanOrEqual(0);
     });
 
-    it("should display " + detail.key + " value", function () {
+    it('should display ' + detail.key + ' value', function () {
       const element: HTMLElement = this.fixture.nativeElement;
       const index = findDetailIndex(element, detail.label);
-      const views = element.querySelectorAll("dl");
+      const views = element.querySelectorAll('dl');
 
       assertValue(detail, index, views);
     });
@@ -63,17 +64,17 @@ function assertValue(
   } else if (isInstantiated(detail.children)) {
     assertChildren(index, views, detail.children);
   } else {
-    fail("Detail value not set");
+    fail('Detail value not set');
   }
 }
 
 function assertCheckbox(view: HTMLDListElement, value: boolean) {
-  const checkbox: HTMLInputElement = view.querySelector("input");
+  const checkbox: HTMLInputElement = view.querySelector('input');
   expect(!!checkbox.checked).toBe(value);
 }
 
 function assertCode(view: HTMLDListElement, value: object) {
-  const code: HTMLElement = view.querySelector("#code");
+  const code: HTMLElement = view.querySelector('#code');
   expect(code.innerHTML.trim()).toBe(JSON.stringify(value));
 }
 
@@ -81,7 +82,7 @@ function assertPlainText(
   view: HTMLDListElement,
   value: string | number | DateTime | Duration
 ) {
-  const plainText: HTMLElement = view.querySelector("#plain");
+  const plainText: HTMLElement = view.querySelector('#plain');
   let result: string;
 
   if (value instanceof DateTime) {
@@ -96,16 +97,16 @@ function assertPlainText(
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
-  const model: HTMLElement = view.querySelector("#model");
+  const model: HTMLElement = view.querySelector('#model');
   expect(model.innerHTML.trim()).toBe(value);
 }
 
 function assertImageUrl(view: HTMLDListElement, value: string | ImageUrl[]) {
-  const image: HTMLImageElement = view.querySelector("#image");
+  const image: HTMLImageElement = view.querySelector('#image');
   assertImage(
     image,
     value instanceof Array ? value[0].url : value,
-    "model image alt"
+    'model image alt'
   );
 }
 

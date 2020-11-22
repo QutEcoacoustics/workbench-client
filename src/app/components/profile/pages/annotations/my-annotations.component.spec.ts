@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MyAnnotationsComponent } from "./my-annotations.component";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MyAnnotationsComponent } from './my-annotations.component';
 
-xdescribe("MyAnnotationsComponent", () => {
+xdescribe('MyAnnotationsComponent', () => {
   let component: MyAnnotationsComponent;
   let fixture: ComponentFixture<MyAnnotationsComponent>;
 
@@ -15,7 +15,7 @@ xdescribe("MyAnnotationsComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

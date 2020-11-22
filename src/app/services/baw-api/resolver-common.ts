@@ -1,11 +1,11 @@
-import { Type } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { Id } from "@interfaces/apiInterfaces";
-import { AbstractData } from "@models/AbstractData";
-import { AbstractModel } from "@models/AbstractModel";
-import { Observable, of } from "rxjs";
-import { catchError, map, take } from "rxjs/operators";
+import { Type } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { Id } from '@interfaces/apiInterfaces';
+import { AbstractData } from '@models/AbstractData';
+import { AbstractModel } from '@models/AbstractModel';
+import { Observable, of } from 'rxjs';
+import { catchError, map, take } from 'rxjs/operators';
 import {
   ApiCreate,
   ApiDestroy,
@@ -14,9 +14,9 @@ import {
   ApiShow,
   ApiUpdate,
   IdOr,
-} from "./api-common";
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { BawApiService } from "./baw-api.service";
+} from './api-common';
+import { ApiErrorDetails } from './api.interceptor.service';
+import { BawApiService } from './baw-api.service';
 
 /**
  * Baw Resolver Wrapper Class
@@ -55,6 +55,7 @@ export abstract class BawResolver<
 
       /**
        * Resolve the model
+       *
        * @param route Route Snapshot
        */
       public resolve(
@@ -70,9 +71,9 @@ export abstract class BawResolver<
         return resolverFn(route, this.api, modelId, args).pipe(
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           take(1), // Only take first response
-          catchError((error: ApiErrorDetails) => {
-            return of({ error }); // Modify output to match ResolvedModel interface
-          })
+          catchError(
+            (error: ApiErrorDetails) => of({ error }) // Modify output to match ResolvedModel interface
+          )
         );
       }
     }
@@ -82,6 +83,7 @@ export abstract class BawResolver<
 
   /**
    * Create providers required for app modules
+   *
    * @param name Resolver name
    * @param resolver Resolver class
    * @param deps Resolver dependencies
@@ -94,6 +96,7 @@ export abstract class BawResolver<
 
   /**
    * Create resolver api request
+   *
    * @param route Activated Route Snapshot
    * @param api Baw api service
    * @param id Model id
@@ -124,6 +127,7 @@ export class Resolvers<
 
   /**
    * Create providers
+   *
    * @param name Name of provider
    */
   public create(name: string) {
@@ -158,10 +162,10 @@ export class ListResolver<
     deps: Type<A>[]
   ) {
     return {
-      list: name + "ListResolver",
+      list: name + 'ListResolver',
       providers: [
         {
-          provide: name + "ListResolver",
+          provide: name + 'ListResolver',
           useClass: resolver,
           deps,
         },
@@ -193,10 +197,10 @@ export class ShowResolver<
     deps: Type<A>[]
   ) {
     return {
-      show: name + "ShowResolver",
+      show: name + 'ShowResolver',
       providers: [
         {
-          provide: name + "ShowResolver",
+          provide: name + 'ShowResolver',
           useClass: resolver,
           deps,
         },
@@ -230,6 +234,7 @@ export interface ResolvedModel<
 
 /**
  * Convert URL ID param to Id type
+ *
  * @param id ID parameter
  */
 function convertToId(id: string): Id {
@@ -239,6 +244,7 @@ function convertToId(id: string): Id {
 /**
  * Verify all resolvers resolve without errors. Returns object containing all
  * resolved models using the resolver key as the object key.
+ *
  * @param data Page Data
  */
 export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
@@ -246,7 +252,7 @@ export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
-    console.warn("resolver-common: Failed to detect any resolvers");
+    console.warn('resolver-common: Failed to detect any resolvers');
     return models;
   }
 

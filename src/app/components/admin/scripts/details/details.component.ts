@@ -1,30 +1,30 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers } from "@baw-api/resolver-common";
-import { scriptResolvers } from "@baw-api/script/scripts.service";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Script } from "@models/Script";
-import { List } from "immutable";
-import { fields as baseFields } from "../script.base.schema.json";
-import { fields as extendedFields } from "../script.extended.schema.json";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { retrieveResolvers } from '@baw-api/resolver-common';
+import { scriptResolvers } from '@baw-api/script/scripts.service';
+import { PageComponent } from '@helpers/page/pageComponent';
+import { PageInfo } from '@helpers/page/pageInfo';
+import { WithUnsubscribe } from '@helpers/unsubscribe/unsubscribe';
+import { Script } from '@models/Script';
+import { List } from 'immutable';
+import { fields as baseFields } from '../script.base.schema.json';
+import { fields as extendedFields } from '../script.extended.schema.json';
 import {
   adminEditScriptMenuItem,
   adminNewScriptsMenuItem,
   adminScriptMenuItem,
   adminScriptsCategory,
   adminScriptsMenuItem,
-} from "../scripts.menus";
+} from '../scripts.menus';
 
 export const adminScriptActions = [
   adminNewScriptsMenuItem,
   adminEditScriptMenuItem,
 ];
-const scriptKey = "script";
+const scriptKey = 'script';
 
 @Component({
-  selector: "baw-admin-script",
+  selector: 'baw-admin-script',
   template: `
     <div *ngIf="!failure">
       <h1>Script Details</h1>

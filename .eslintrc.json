@@ -13,7 +13,7 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "plugins": ["eslint-plugin-rxjs"],
+      "plugins": ["eslint-plugin-rxjs", "rxjs-angular"],
       "rules": {
         "@angular-eslint/component-selector": [
           "error",
@@ -67,7 +67,7 @@
         "rxjs/no-internal": "error",
         "rxjs/no-nested-subscribe": "error",
         "rxjs/no-unsafe-takeuntil": "error",
-        "rxjs-prefer-angular-takeuntil": "error",
+        "rxjs-angular/prefer-takeuntil": "error",
         "space-before-function-paren": [
           "error",
           {

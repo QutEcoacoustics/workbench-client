@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { Component, OnInit } from '@angular/core';
+import { WithFormCheck } from '@guards/form/form.guard';
+import { PageComponent } from '@helpers/page/pageComponent';
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
-} from "./report-problem.menus";
-import { fields } from "./report-problem.schema.json";
+} from './report-problem.menus';
+import { fields } from './report-problem.schema.json';
 
 @Component({
-  selector: "baw-report-problem",
+  selector: 'baw-report-problem',
   template: `
     <baw-wip>
       <baw-form
@@ -42,6 +42,7 @@ class ReportProblemComponent
 
   /**
    * Form submission
+   *
    * @param $event Form response
    */
   public submit($event: any) {

@@ -1,31 +1,32 @@
-import { ComponentFixture } from "@angular/core/testing";
-import { By } from "@angular/platform-browser";
-import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { defaultApiPageSize, Filters, Paging } from "@baw-api/baw-api.service";
-import { AbstractModel } from "@models/AbstractModel";
-import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { BehaviorSubject, Subject } from "rxjs";
+import { ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ApiFilter } from '@baw-api/api-common';
+import { ApiErrorDetails } from '@baw-api/api.interceptor.service';
+import { defaultApiPageSize, Filters, Paging } from '@baw-api/baw-api.service';
+import { AbstractModel } from '@models/AbstractModel';
+import { ErrorHandlerComponent } from '@shared/error-handler/error-handler.component';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 /**
  * Get all rows from datatable component
  */
 export function getDatatableRows(fixture: ComponentFixture<any>) {
-  return fixture.nativeElement.querySelectorAll("datatable-body-row");
+  return fixture.nativeElement.querySelectorAll('datatable-body-row');
 }
 
 /**
  * Get all cells from a row of a datatable component
+ *
  * @param row Row to query
  */
 export function getDatatableCells(row: any) {
-  return row.querySelectorAll("datatable-body-cell");
+  return row.querySelectorAll('datatable-body-cell');
 }
 
 function assignModelMetadata(models: AbstractModel[], paging: Paging) {
   models.forEach((model) => {
     model.addMetadata({
-      message: "OK",
+      message: 'OK',
       status: 200,
       paging,
     });
@@ -34,6 +35,7 @@ function assignModelMetadata(models: AbstractModel[], paging: Paging) {
 
 /**
  * Mock an API response for the datatable component
+ *
  * @param api Filter API
  * @param models Models to return
  * @param paging Override paging defaults
@@ -42,7 +44,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   api: ApiFilter<M, any[]>,
   models: M[],
   paging?: Paging,
-  apiAction: string = "filter"
+  apiAction: string = 'filter'
 ) {
   paging = {
     page: 1,
@@ -65,8 +67,8 @@ export function datatableApiResponse<M extends AbstractModel>(
 export function assertPagination<
   M extends AbstractModel,
   S extends ApiFilter<M, any[]>
->(apiAction: string = "filter") {
-  describe("pagination", function () {
+>(apiAction: string = 'filter') {
+  describe('pagination', function () {
     let api: S;
     let defaultModels: M[];
     let defaultPaging: Paging;
@@ -106,16 +108,17 @@ export function assertPagination<
     }
 
     function hasPager() {
-      return !fixture.nativeElement.querySelector("datatable-pager").hidden;
+      return !fixture.nativeElement.querySelector('datatable-pager').hidden;
     }
 
     function getPagerButtons() {
-      return fixture.nativeElement.querySelectorAll("datatable-pager li");
+      return fixture.nativeElement.querySelectorAll('datatable-pager li');
     }
 
     /**
      * Click button after a period of time. This is to allow the
      * first response to complete before sending a second request.
+     *
      * @param button Button Element
      */
     function click(button: HTMLButtonElement) {
@@ -137,60 +140,60 @@ export function assertPagination<
       };
     });
 
-    it("should send " + apiAction + " request", () => {
+    it('should send ' + apiAction + ' request', () => {
       datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
       expect(api[apiAction]).toHaveBeenCalledWith({});
     });
 
-    it("should request the second page from api", (done) => {
+    it('should request the second page from api', (done) => {
       assertSecondRequestFilters(done, { paging: { page: 2 } }, [
         defaultModels[0],
       ]);
       fixture.detectChanges();
 
-      const pageBtn = fixture.nativeElement.querySelectorAll("li.pages a")[1];
+      const pageBtn = fixture.nativeElement.querySelectorAll('li.pages a')[1];
       click(pageBtn);
     });
 
-    it("should request next page from api", (done) => {
+    it('should request next page from api', (done) => {
       assertSecondRequestFilters(done, { paging: { page: 2 } }, [
         defaultModels[0],
       ]);
       fixture.detectChanges();
 
-      const pager = fixture.nativeElement.querySelector("datatable-pager");
-      const pageBtn = pager.querySelectorAll("li a")[6];
+      const pager = fixture.nativeElement.querySelector('datatable-pager');
+      const pageBtn = pager.querySelectorAll('li a')[6];
       click(pageBtn);
     });
 
-    it("should request final page from api", (done) => {
+    it('should request final page from api', (done) => {
       assertSecondRequestFilters(done, { paging: { page: 4 } }, [
         defaultModels[0],
       ]);
       fixture.detectChanges();
 
-      const pager = fixture.nativeElement.querySelector("datatable-pager");
-      const pageBtn = pager.querySelectorAll("li a")[7];
+      const pager = fixture.nativeElement.querySelector('datatable-pager');
+      const pageBtn = pager.querySelectorAll('li a')[7];
       click(pageBtn);
     });
 
-    it("should handle api request failure", () => {
-      apiErrorResponse({ status: 401, message: "Unauthorized" });
+    it('should handle api request failure', () => {
+      apiErrorResponse({ status: 401, message: 'Unauthorized' });
       fixture.detectChanges();
 
       const errorHandler: ErrorHandlerComponent = fixture.debugElement.query(
-        By.css("baw-error-handler")
+        By.css('baw-error-handler')
       ).componentInstance;
       expect(errorHandler).toBeTruthy();
 
       expect(errorHandler.error).toEqual({
         status: 401,
-        message: "Unauthorized",
+        message: 'Unauthorized',
       });
     });
 
-    it("should handle no rows", () => {
+    it('should handle no rows', () => {
       datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
 
@@ -199,7 +202,7 @@ export function assertPagination<
       expect(hasPager()).toBeFalse();
     });
 
-    it("should handle single row", () => {
+    it('should handle single row', () => {
       datatableApiResponse(api, [defaultModels[0]], defaultPaging, apiAction);
       fixture.detectChanges();
 
@@ -208,7 +211,7 @@ export function assertPagination<
       expect(hasPager()).toBeFalse();
     });
 
-    it("should handle full api page response", () => {
+    it('should handle full api page response', () => {
       datatableApiResponse(
         api,
         defaultModels,
@@ -222,7 +225,7 @@ export function assertPagination<
       expect(hasPager()).toBeFalse();
     });
 
-    it("should handle 4 pages", () => {
+    it('should handle 4 pages', () => {
       datatableApiResponse(
         api,
         [defaultModels[0]],
