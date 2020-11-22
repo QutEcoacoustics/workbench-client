@@ -29,7 +29,7 @@ const apiConfigPromise = fetchRetry<Partial<Configuration>>(
   });
 
 // Await page load
-const domContentLoadedPromise = new Promise((resolve) =>
+const domContentLoadedPromise = new Promise<void>((resolve) =>
   document.addEventListener("DOMContentLoaded", () => {
     document.removeEventListener("DOMContentLoader", () => {});
     resolve();
