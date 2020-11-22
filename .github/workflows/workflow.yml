@@ -106,6 +106,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
+      - name: View Assets
+        run: ls -R /
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.5
         with:
