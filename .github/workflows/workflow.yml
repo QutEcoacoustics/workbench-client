@@ -107,12 +107,13 @@ jobs:
         with:
           path: artifacts
       - name: View Assets
-        run: ls -R /
+        run: ls -R
+        working-directory: artifacts
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: TESTS-*.xml
+          files: artifacts/TESTS-*.xml
           report_individual_runs: "true"
 
   publish:
