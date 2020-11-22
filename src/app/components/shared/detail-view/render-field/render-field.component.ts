@@ -30,7 +30,7 @@ import { takeUntil } from "rxjs/operators";
       <baw-checkbox
         id="checkbox"
         class="m-0"
-        [checked]="display"
+        [checked]="isChecked()"
         [disabled]="true"
         [isCentered]="false"
       ></baw-checkbox>
@@ -43,7 +43,7 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display Image -->
     <dl *ngIf="styling === FieldStyling.Image">
-      <img id="image" alt="model image alt" [src]="display" />
+      <img id="image" alt="model image alt" [src]="getSource()" />
     </dl>
 
     <!-- Display nested fields -->
@@ -85,6 +85,14 @@ export class RenderFieldComponent
   }
   public ngOnChanges(): void {
     this.humanize(this.value);
+  }
+
+  public isChecked(): boolean {
+    return this.display as boolean;
+  }
+
+  public getSource(): ImageUrl[] {
+    return this.display as ImageUrl[];
   }
 
   private humanize(value: ModelView) {

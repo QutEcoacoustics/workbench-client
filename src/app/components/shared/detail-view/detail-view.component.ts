@@ -11,7 +11,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       </dt>
       <baw-render-field
         class="col-sm-9"
-        [value]="model[field.key]"
+        [value]="getValue(field)"
       ></baw-render-field>
     </div>
   `,
@@ -27,5 +27,7 @@ export class DetailViewComponent {
   @Input() public fields: FormlyFieldConfig[];
   @Input() public model: AbstractModel;
 
-  constructor() {}
+  public getValue(field: FormlyFieldConfig) {
+    return this.model[field.key as string];
+  }
 }

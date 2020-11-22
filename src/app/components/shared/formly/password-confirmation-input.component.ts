@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
 /**
@@ -56,8 +57,10 @@ import { FieldType } from "@ngx-formly/core";
   `,
 })
 // tslint:disable-next-line: component-class-suffix
-export class FormlyPasswordConfirmationInput extends FieldType
+export class FormlyPasswordConfirmationInput
+  extends FieldType
   implements OnInit {
+  public formControl: FormControl;
   public password = "";
   public passwordError: boolean;
   public confirmation = "";

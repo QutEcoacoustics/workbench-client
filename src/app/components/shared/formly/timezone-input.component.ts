@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
@@ -66,6 +67,7 @@ import {
 // tslint:disable-next-line: component-class-suffix
 export class FormlyTimezoneInput extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
+  public formControl: FormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
   public defaultTime = "(no match)";

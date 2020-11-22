@@ -22,7 +22,7 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 })
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
-  @Input() public src: ImageUrl[];
+  @Input() public src: ImageUrl[] | string;
   /** Image thumbnail size to display if exists */
   @Input() public thumbnail: ImageSizes;
   /** Do not append auth token to image url */
@@ -30,6 +30,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /** Disable authenticated image directive on image */
   @Input() public disableAuth: boolean;
 
+  private _src: ImageUrl[];
   /**
    * Tracks potential url options to be used for src
    */
@@ -54,12 +55,13 @@ export class AuthenticatedImageDirective implements OnChanges {
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.disableAuth) {
+    if (this.disableAuth || typeof this.src === "string") {
       return;
     }
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
+      this._src = this.src;
       this.imageRef.nativeElement.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
@@ -73,15 +75,15 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // Prepend new urls (except default urls) to urls set
     this.urls = OrderedSet<string>(
-      this.src
+      this._src
         ?.filter((imageUrl) => imageUrl.size !== ImageSizes.DEFAULT)
         .map((imageUrl) => imageUrl.url) ?? []
     ).concat(this.urls);
 
     // Retrieve default image if exists
     this.defaultImage =
-      this.src?.find((imageUrl) => imageUrl.size === ImageSizes.DEFAULT)?.url ??
-      this.defaultImage;
+      this._src?.find((imageUrl) => imageUrl.size === ImageSizes.DEFAULT)
+        ?.url ?? this.defaultImage;
 
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
@@ -103,7 +105,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // Find thumbnail if exists
     if (!url && this.displayThumbnail) {
-      url = this.src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
+      url = this._src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
     }
 
     // Retrieve first url from set
@@ -166,7 +168,7 @@ export class AuthenticatedImageDirective implements OnChanges {
       ? this.urls.count() + 1 === this.usedUrls.count()
       : this.urls.count() === this.usedUrls.count();
 
-    return !this.src || hasDefaultImageAvailable;
+    return !this._src || hasDefaultImageAvailable;
   }
 
   /**

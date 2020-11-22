@@ -27,7 +27,7 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Recent Audio Upload"> </ngx-datatable-column>
     <ngx-datatable-column name="Permission"> </ngx-datatable-column>
-    <ngx-datatable-column name="Annotation" width="115" maxWidth="115">
+    <ngx-datatable-column name="Annotation" [width]="115" [maxWidth]="115">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a class="btn btn-sm btn-default" [routerLink]="[value]">
           Annotation

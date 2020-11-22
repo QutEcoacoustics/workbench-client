@@ -2,6 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "alwaysStrict": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "declaration": false,
@@ -14,11 +15,11 @@
     "module": "ES2020",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "outDir": "./dist/out-tsc",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "target": "ES2015",
 
     "paths": {
