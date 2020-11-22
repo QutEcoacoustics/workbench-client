@@ -59,9 +59,10 @@ export class AuthenticatedImageDirective implements OnChanges {
       return;
     }
 
+    this._src = this.src;
+
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      this._src = this.src;
       this.imageRef.nativeElement.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();

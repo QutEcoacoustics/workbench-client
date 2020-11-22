@@ -92,11 +92,11 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       // Convert incoming data
-      map((response) => {
-        if (response instanceof HttpResponse) {
-          return response.clone({ body: toCamelCase(response.body) });
-        }
-      }),
+      map((response) =>
+        response instanceof HttpResponse
+          ? response.clone({ body: toCamelCase(response.body) })
+          : response
+      ),
       catchError(this.handleError)
     );
   }
